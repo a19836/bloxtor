@@ -1,0 +1,121 @@
+.taskflowchartmenu .task.task_trycatchexception {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_trycatchexception .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_trycatchexception .eps:hover:after {
+	content:"Drag the small circles to link to another box";
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep {
+	width:30px;
+	height:auto;
+	position:absolute;
+	top:0;
+	bottom:0;
+	display:inline-block;
+	border:0;
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep[connection_exit_id=try] {
+	left:-28px;
+	right:auto;
+	text-align:left;
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep[connection_exit_id=catch] {
+	left:auto;
+	right:-28px;
+	text-align:right;
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep:hover:after {
+	margin:-33px 0 0 0;
+	display:block;
+	color:#999;
+	white-space:nowrap;
+	text-align:center;
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep[connection_exit_id=try]:hover:after {
+	content:"No exception";
+	margin-left:-25px;
+	margin-right:20px;
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep[connection_exit_id=catch]:hover:after {
+	content:"With exception";
+	margin-left:20px;
+	margin-right:-25px;
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep span {
+	width:30px;
+	min-width:auto;
+	max-width:none;
+	height:30px;
+	line-height:30px;
+	margin:2px 0 0;
+	padding:0;
+	display:inline-block !important;
+	position:relative;
+	top:0;
+	left:0;
+	border:0;
+	border-radius:100%;
+	font-weight:bold;
+	font-size:90%;
+	white-space:nowrap;
+	overflow:hidden;
+	box-sizing:border-box;
+	text-align:center;
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep[connection_exit_id=try] span {
+	background:#51D87A;
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep[connection_exit_id=catch] span {
+	background:#FF4D4D;
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep span:before {
+	display:block;
+	color:#fff;
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep[connection_exit_id=try] span:before {
+	content:"Try";
+}
+.taskflowchartdiagram .task.task_trycatchexception .ep[connection_exit_id=catch] span:before {
+	content:"Catch";
+}
+
+.try_catch_exception_task_html {
+	width:360px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .try_catch_exception_task_html {
+	width:100%;
+}
+
+.try_catch_exception_task_html .class_name {
+	/*margin-top:15px;*/
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .try_catch_exception_task_html .class_name {
+	margin-top:0;
+}
+
+.try_catch_exception_task_html .class_name, 
+   .try_catch_exception_task_html .var_name {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.try_catch_exception_task_html .class_name label, 
+   .try_catch_exception_task_html .var_name label {
+	width:120px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .try_catch_exception_task_html .class_name label, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .try_catch_exception_task_html .var_name label {
+	width:75px;
+}
+.try_catch_exception_task_html .class_name input, 
+   .try_catch_exception_task_html .var_name input {
+	width:200px;   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .try_catch_exception_task_html .class_name input, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .try_catch_exception_task_html .var_name input {
+	width:calc(100% - 115px);   
+}

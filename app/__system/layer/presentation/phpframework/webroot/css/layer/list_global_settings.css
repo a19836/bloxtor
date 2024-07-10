@@ -1,0 +1,22 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+.global_settings {min-width:530px; height:200px; text-align:left; margin:0 auto; padding:20px;}
+.global_settings .form_fields {margin:0 auto;}
+.global_settings .form_field {float:none; clear:left; margin-bottom:3px;}
+.global_settings .form_field label {width:210px; text-align:left; display:inline-block;}
+.global_settings .form_field input {width:300px; font-size:12px; font-size:inherit;} 
+.global_settings .form_field select {width:308px; font-size:12px; font-size:inherit;}
+.global_settings .form_field .icon.delete {display:none;}
+.global_settings .buttons {float:none; clear:left; width:100%; text-align:center; margin-top:20px; display:none;}
+.global_settings .buttons input {}
+
+/* from deployment diagram */
+.global_settings.from_deployment .form_field label {width:160px;}
+.global_settings.from_deployment .form_field span {margin-left:5px;}
+.global_settings.from_deployment .form_field .icon.delete {display:inline-block; margin-left:5px;}

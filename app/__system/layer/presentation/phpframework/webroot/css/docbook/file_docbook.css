@@ -1,0 +1,60 @@
+.file_docbook .class {
+	margin:10px;
+}
+.file_docbook .class > label:before {
+	content:"Class: ";
+	font-weight:normal;
+}
+.file_docbook ul {
+	margin:20px 0 20px 40px;
+}
+.file_docbook > ul.methods {
+	margin:10px;
+}
+.file_docbook ul li {
+	margin:20px 0 20px 40px;
+	white-space:pre;
+}
+.file_docbook ul li.method,
+  .file_docbook ul li.prop {
+	list-style-type:disc;
+}
+.file_docbook ul li.comments {
+	margin-bottom:0;
+}
+.file_docbook ul li.comments + .method,
+  .file_docbook ul li.comments + .prop {
+	margin-top:0;
+}
+
+.file_docbook .methods .method,
+  .file_docbook .props .prop {
+	font-weight:bold;
+}
+.file_docbook .methods .method .comments,
+  .file_docbook .props .prop .comments {
+	font-weight:normal;
+	color:#999;
+	white-space:pre;
+}
+
+
+.file_docbook textarea {
+	width:100%;
+	padding:10px;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	border:0;
+	background:none;
+	box-sizing:border-box;
+	white-space:pre; /*very important otherwise the text will be word wrapped! */
+}
+
+.error {
+	margin:10px;
+	color:#B51E3F;
+	text-align:center;
+}

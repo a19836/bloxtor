@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<ibatis>
+
+	<cache_model id="oneDayFeed" type="MEMORY">
+		<flush_interval hours="24"/>
+		<property name="reference_type" value="WEAK"/>
+	</cache_model>
+
+	<result_map id="mdschannel" class="com.mds.domain.MdsFeedChannel">
+		<result property="feedId" column="feed_id" java_type="java.lang.Integer" jdbc_type="INTEGER"/>
+		<result property="ownerId" column="owner_id" java_type="java.lang.Integer" jdbc_type="INTEGER"/>
+		<result property="feedTypeId" column="feed_type_id" java_type="java.lang.Integer" jdbc_type="INTEGER"/>
+		<result property="feedGenreId" column="feed_genre_id" java_type="java.lang.Integer" jdbc_type="INTEGER"/>    
+		<result property="sourceUrl" column="source_url" java_type="java.lang.String" jdbc_type="VARCHAR"/>
+		<result property="sourceFileSize" column="source_filesize" java_type="java.lang.Double" jdbc_type="float8"/>
+		<result property="feedTitle" column="Feed_Title" java_type="java.lang.String" jdbc_type="VARCHAR"/>
+		<result property="linkUrl" column="link_url" java_type="java.lang.String" jdbc_type="VARCHAR"/>
+		<result property="language" column="language" java_type="java.lang.String" jdbc_type="VARCHAR"/>
+		<result property="copyright" column="copyright" java_type="java.lang.String" jdbc_type="VARCHAR"/>
+		<result property="thumnailUrl" column="thumbnail_url" java_type="java.lang.String" jdbc_type="VARCHAR"/>
+		<result property="lastBuildDate" column="last_builddate" java_type="java.util.Date" jdbc_type="TIMESTAMP"/>
+		<result property="pubDate" column="PubDate" java_type="java.util.Date" jdbc_type="TIMESTAMP"/>
+		<result property="lastModified" column="Last_Modified" java_type="java.util.Date" jdbc_type="TIMESTAMP"/>
+		<result property="description" column="description" java_type="java.lang.String" jdbc_type="VARCHAR"/>
+	</result_map>
+	  
+	<result_map id="uriType" class="com.mds.domain.UriTypeData">
+		<result property="uriId" column="uri_id" java_type="java.lang.Integer" jdbc_type="INTEGER"/>
+		<result property="uriName" column="uri_name" java_type="java.lang.String" jdbc_type="VARCHAR"/>
+		<result property="providerId" column="provider_id" java_type="java.lang.Integer" jdbc_type="INTEGER"/>
+		<result property="feedId" column="feed_id" java_type="java.lang.Integer" jdbc_type="INTEGER"/>
+		<result property="isUpdate" column="is_update" java_type="java.lang.Integer" jdbc_type="INTEGER"/>
+	</result_map>
+
+	<result_map id="anexoType" class="object.user.test.Anexo">
+		<result property="ID"   	column="id_anexo" 	output_type="object.php.Integer" 			input_type="object.db.DBPrimitive.int"	/>
+		<result property="Type" 	column="tipo" 		output_type="object.php.Primitive.string" 	input_type="object.db.DBPrimitive.varchar"		/>
+		<result property="Date" 	column="data" 		output_type="object.php.Primitive.string" 	input_type="object.db.DBPrimitive.varchar"		/>
+		<result property="Name"		column="nome" 		output_type="object.php.Primitive.string" 	input_type="object.db.DBPrimitive.varchar"		/>
+		<result property="Address" 	column="endereco" 	output_type="object.php.Primitive.string" 	input_type="object.db.DBPrimitive.varchar"		/>
+	</result_map>
+
+	<select id="getFeedChannelData" parameter_class="object.php.ArrayList" result_map="anexoType">
+		SELECT id_anexo, tipo, data, nome, endereco FROM anexo where id_anexo in (#value#, #value2#)
+	</select>
+
+	<select id="getFeedChannelData2" parameter_class="sys.context.user.logic.XXX" result_map="mdschannel">
+		select feed_id,owner_id,Feed_Type_ID,Feed_Genre_ID,Source_Url,Source_FileSize,Feed_Title,Link_Url,Language,Copyright,Thumbnail_url,last_builddate, PubDate, Last_Modified,Feed_Title,description from mds_feeds_master where feed_id=#value#
+	</select>
+
+	<select id="getEnclosure" parameter_class="map"  result_map="enclosureDetails">
+		select file_size,file_type,url,item_id from mds_feeds_media where item_id=#itemId# and type_id=#typeId#
+	</select>
+
+	<insert id="insert_feeditems" parameter_class="object.php.HashMap">
+		INSERT INTO anexo (id_anexo, tipo, data, nome, endereco) VALUES (1239,'#type#','#date#','#name#','#address#')
+	</insert> 
+	  
+	<insert id="insert_mediakeywords" parameter_class="object.db.String">
+		INSERT INTO mds_feed_media_keyword (MediaKeyword,Item_ID,Moddate) 
+		VALUES (#value#,(select currval('mds_feeds_items_Item_ID_seq')),current_timestamp)
+	</insert> 
+
+	<insert id="insert_mediacontent" parameter_class="com.mds.feed.parser.data.MDSEnclosureBean">
+		INSERT INTO mds_feeds_media (File_Size,File_Type,Url,Item_ID,type_id,Moddate) 
+		VALUES (#length#,#type#,#url#,(select currval('mds_feeds_items_item_id_seq')),#typeId#,current_timestamp)
+	</insert> 
+
+	<delete id="deleteItemmediaKeyword" parameter_class="java.lang.Integer">
+		delete from mds_feed_media_keyword where mds_feed_media_keyword.item_id IN(select item_id from mds_feeds_items where mds_feeds_items.feed_id=#feedId#)
+	</delete>
+
+	<parameter_map id="auditSPInput" class="map" >
+	<parameter property="PA_IN_NODEID" jdbc_type="VARCHAR" java_type="java.lang.String" mode="IN"/>
+	<parameter property="PA_IN_EVENTID" jdbc_type="NUMBER" java_type="java.lang.Integer" mode="IN"/>
+	<parameter property="PA_IN_RSTRANSACTIONKEY" jdbc_type="VARCHAR" java_type="java.lang.String" mode="IN"/>
+	<parameter property="PA_IN_CUSTOMERTRANSACTIONKEY" jdbc_type="VARCHAR" java_type="java.lang.String" mode="IN"/>
+	<parameter property="PA_IN_USERKEY" jdbc_type="VARCHAR" java_type="java.lang.String" mode="IN"/>
+	<parameter property="PA_IN_TIMESTAMP" jdbc_type="TIMESTAMP" java_type="java.sql.Timestamp" mode="IN"/>
+	<parameter property="PA_IN_ELAPSEDTIME" jdbc_type="NUMBER" java_type="java.lang.Long" mode="IN"/>
+	<parameter property="PA_IN_RESULT" jdbc_type="NUMBER" java_type="java.lang.Long" mode="IN"/>
+	<parameter property="PA_IN_REASON" jdbc_type="NUMBER" java_type="java.lang.Long" mode="IN"/>
+	<parameter property="PA_IN_EVENTDATE" jdbc_type="TIMESTAMP" java_type="java.sql.Timestamp" mode="IN"/>
+	<parameter property="PA_IN_SIGNATURE" jdbc_type="VARCHAR" java_type="java.lang.String" mode="IN"/>
+	<parameter property="PA_IN_SITEID" jdbc_type="NUMBER" java_type="java.lang.Long" mode="IN"/>
+	<parameter property="PA_IN_CUSTOMERID" jdbc_type="NUMBER" java_type="java.lang.Long" mode="IN"/>
+	<parameter property="PA_IN_ACCOUNTID" jdbc_type="NUMBER" java_type="java.lang.Long" mode="IN"/>
+	<parameter property="PA_IN_DEVICEID" jdbc_type="NUMBER" java_type="java.lang.Long" mode="IN"/>
+	<parameter property="PA_IN_USERTYPE" jdbc_type="CHAR" java_type="java.lang.String" mode="IN"/>
+	<parameter property="PA_IN_EVENTDATA" jdbc_type="VARCHAR" java_type="java.lang.String" mode="IN"/>
+	<parameter property="PA_OUT_RESULTCODE" jdbc_type="NUMBER" java_type="java.lang.Long" mode="OUT"/>
+	</parameter_map>
+
+	<procedure id="updateAuditDetail" parameter_map="auditSPInput">
+	{ call PR_RS_INSERT_AUDITLOG (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }
+	</procedure> 
+
+</ibatis>

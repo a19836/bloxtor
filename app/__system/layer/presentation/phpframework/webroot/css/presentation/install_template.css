@@ -1,0 +1,341 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+/* TOP BAR */
+.top_bar {
+	margin-bottom:20px;
+}
+
+/* install_template */
+.install_template {
+	border:0;
+}
+.install_template > ul {
+	margin-top:20px !important;
+	background:none;
+	border:0;
+	text-align:center;
+	font-size:13px;
+}
+.install_template > .project:not(.hidden) + ul,
+  .install_template > .layer:not(.hidden) + .project.hidden + ul {
+	margin-top:40px !important;
+}
+.install_template > ul li {
+	margin:0 !important;
+	background:none !important;
+	border:none !important;
+	display:inline-block;
+	float:none !important;
+	font-weight:normal;
+	cursor:pointer;
+}
+.install_template > ul li:not(:first-child) {
+	border-left:1px solid #DFE1ED !important;
+	border-radius:0;
+}
+.install_template > ul li a {
+	margin:0 5px;
+	padding:0 10px !important;
+	border-bottom:1px solid transparent !important;
+	color:#83889E !important;
+	float:none !important;
+	text-decoration:none !important;
+}
+.install_template > ul li.ui-state-active a {
+	font-weight:bold;
+	/*border-bottom-color:var(--icon-active-color) !important;*/
+	color:#2C2D34 !important;
+}
+
+/* layer + project */
+
+.install_template > .layer,
+  .install_template > .project {
+	width:315px;
+	margin:5px auto;
+	text-align:right;
+	color:#999;
+}
+.install_template > .layer label,
+  .install_template > .project label {
+	width:100px;
+	font-weight:normal;
+	display:inline-block;
+	text-align:left;
+}
+.install_template > .layer select,
+  .install_template > .project select {
+	width:calc(100% - 110px);
+	margin-right:5px;
+	font-size:inherit;
+	color:inherit;
+}
+
+/* file_upload */
+
+.install_template > .file_upload {
+	text-align:center;
+}
+.install_template > .file_upload > .title {
+	margin:20px 0 0;
+	color:#999;
+}
+.install_template > .file_upload .upload_file {
+	width:315px;
+	/*width:calc(100% - 57px);*/
+	margin:10px auto 0;
+	display:block;
+	font-size:inherit;
+}
+.install_template > .file_upload .upload_file::file-selector-button {
+	padding:10px;
+	border:1px solid rgba(0,0,0, .1);
+	border-radius:inherit;
+}
+.install_template > .file_upload .upload_url {
+	margin:10px auto 0 auto;
+}
+.install_template > .file_upload .upload_url input {
+	width:calc(100% - 74px);
+	max-width:322px;
+	margin-left:5px;
+	margin-right:5px;
+	padding:10px;
+	box-sizing:border-box;
+	font-size:inherit;
+}
+.install_template > .file_upload .upload_url .icon.delete {
+	height:16px;
+	margin-left:0;
+	display:inline-block;
+	float:none;
+	vertical-align:middle;
+	font-size:14px;
+}
+.install_template > .file_upload .upload_url .icon.delete::before {
+	margin-top:2px;
+	display:block;
+}
+
+.install_template > .file_upload .go_to_templates_download_page {
+	width:100%;
+	margin:40px 0 30px;
+	text-align:center;
+	color:#999;
+}
+
+/* install_store_template */
+
+.install_template > .install_store_template {
+	text-align:center;
+}
+.install_template > .install_store_template > .title {
+	margin:20px 0 0;
+	color:#999;
+}
+.install_template > .install_store_template > .search_template {
+	max-width:250px;
+	margin:10px auto 0;
+	color:#999;
+	position:relative;
+	display:inline-block;
+}
+.install_template > .install_store_template > .search_template .icon.search {
+	cursor:default;
+	color:inherit;
+}
+.install_template > .install_store_template > .search_template input {
+	width:100%;
+	margin-left:-28px;
+	padding:10px 20px 10px 25px;
+	color:inherit;
+	border-color:inherit;
+	border-radius:0.2rem;
+	font-size:10pt;
+	box-sizing:border-box;
+}
+.install_template > .install_store_template > .search_template input::placeholder {
+	color:inherit;
+}
+.install_template > .install_store_template > .search_template .icon.close {
+	margin:0;
+	position:absolute;
+	top:13px;
+	right:7px;
+}
+.install_template > .install_store_template ul {
+	max-height: calc(100% - 90px);
+	margin:20px 0 0;
+	padding:10px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+	overflow: auto;
+}
+.install_template > .install_store_template ul li.loading {
+	margin-top:20px;
+	padding-left:30px;
+}
+.install_template > .install_store_template ul li.empty {
+	margin-top:20px;
+}
+.install_template > .install_store_template ul li:not(.loading):not(.empty) {
+	width:300px;
+	margin:30px;
+	padding:0;
+	display: inline-block;
+	background: #fff;
+	border:1px solid var(--main-iframe-bg, #ccc);
+	border-radius:5px;
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 5%);
+	position:relative;
+	font-size:10px;
+}
+.install_template > .install_store_template ul li:not(.loading):not(.empty):hover {
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 20%);
+}
+.install_template > .install_store_template ul li.hidden {
+	display:none !important;
+}
+.install_template > .install_store_template ul li .img_label {
+	width:100%;
+	height:100%;
+	display:block;
+	color:inherit;
+	overflow:hidden;
+}
+.install_template > .install_store_template ul li .img_label:hover::before {
+	content:"Click to preview template";
+	position:absolute;
+	top:-15px;
+	left:0;
+	font-size:8px;
+	color:#999;
+}
+.install_template > .install_store_template ul li .img_label:hover {
+	text-decoration:none;
+}
+.install_template > .install_store_template ul li .photo {
+	height:180px;
+	margin:0;
+	display:block;
+	overflow:overlay;
+	background-color:var(--main-iframe-bg, #ccc);
+}
+.install_template > .install_store_template ul li .photo::-webkit-scrollbar-track,
+  .install_template > .install_store_template ul li .photo::-webkit-scrollbar-thumb {
+	background:transparent;
+}
+.install_template > .install_store_template ul li .photo img {
+	width:100%;
+	/*min-height:180px;*/
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+}
+.install_template > .install_store_template ul li .photo .image {
+	width:auto;
+	margin-top:40px;
+	font-size:100px;
+	opacity:.5;
+	color:#000;
+}
+.install_template > .install_store_template ul li .photo .image::before {
+	content:"\f03e";
+	margin:0;
+}
+.install_template > .install_store_template ul li label {
+	margin:0;
+	padding:15px 10px 20px;
+	display:block;
+	position:relative;
+	text-align:center;
+	word-break:break-all;
+	white-space:break-spaces;
+	border-top:1px solid var(--main-iframe-bg, #ccc);
+	border-bottom-left-radius:5px;
+	border-bottom-right-radius:5px;
+	cursor:inherit;
+}
+.install_template > .install_store_template ul li .choose_template,
+  .install_template > .install_store_template ul li .view_template {
+	margin:0 10px 10px;
+	/*text-decoration:underline;*/
+}
+.install_template > .install_store_template ul li .choose_template:hover,
+  .install_template > .install_store_template ul li .view_template:hover {
+    /*color:var(--icon-hover-color);*/
+}
+.install_template > .install_store_template ul li .view_template {
+    float:left;
+}
+.install_template > .install_store_template ul li .choose_template {
+    float:right;
+}
+.install_template > .install_store_template ul li .choose_template .icon,
+  .install_template > .install_store_template ul li .view_template .icon {
+	color:inherit;
+	display:none;
+}
+.install_template > .install_store_template ul li .choose_page .icon::before {
+	font-size:12px;
+}
+
+/* TEMPLATE POPUPS - view_store_template_popup */
+
+.view_store_template_popup {
+	position:fixed;
+	top:10px !important;
+	left:10px !important;
+	right:10px !important;
+	bottom:10px !important;
+	border:3px solid #000;
+	padding:0;
+}
+.view_store_template_popup.in_popup {
+	top:45px !important;
+}
+.view_store_template_popup iframe {
+	width:100% !important;
+	height:calc(100% - 50px) !important;
+}
+.view_store_template_popup .install_template {
+	margin:-7px 30px 0 0;
+	float:right;
+	font-size:11px;
+	background:#8CA9FF;
+	border-color:#8CA9FF;
+}
+
+/* MESSAGES */
+
+.messages {
+	margin:10px 10px 20px 10px;
+	padding:10px;
+	background-color:#CCC;
+	border:1px solid #999;
+}
+.messages li ul li {
+	margin-left:20px;
+}
+.messages li ul li.ok {
+	color:green;
+	font-weight:bold;
+}
+.messages li ul li.error {
+	color:#B51E3F;
+	font-weight:bold;
+}
+.messages li ul li.info {
+	color:#999;
+	font-weight:bold;
+}
+.messages li ul li.exception {
+	color:brown;
+}

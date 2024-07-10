@@ -1,0 +1,70 @@
+.popup_overlay {
+	display:none;
+	top:0px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	position:absolute;/* DO NOT CHANGE THIS POSITION TO FIXED, OTHERWISE THE OVERLAY WILL NOT WORK CORRECTLY WHEN THE WINDOW IS SCROLL DOWN */
+	background-color:#333;
+	opacity:0.6;
+	filter: alpha(opacity=60);/* For IE */
+	z-index:1000;
+}
+.popup_loading {
+	position:fixed;
+	z-index:1002;
+	padding:5px;
+	background-color:#666;
+	border:1px outset #000;
+	
+	-moz-border-radius:0.5em;
+	-webkit-border-radius:0.5em;
+	border-radius:0.5em;
+	opacity:0.8;
+	filter: alpha(opacity=80);/* For IE */
+}
+.popup_loading .spining {
+	background:url('../img/loading.gif') no-repeat;
+	width:24px;
+	height:24px;
+}
+.popup_close {
+	background: url("../img/fancybox_sprite.png") no-repeat;
+	position: absolute;
+	top: -10px;
+	right: -10px;
+	width: 36px;
+	height: 36px;
+	cursor: pointer;
+	z-index:1003;
+}
+
+.myfancypopup {
+	display:none;
+	position:absolute;
+	border:1px outset #999;
+	-moz-border-radius:0.5em;
+	-webkit-border-radius:0.5em;
+	border-radius:0.5em;
+	background-color:#FFF;
+	padding:10px 20px 10px 20px;
+	z-index:1001;
+	cursor:move;
+}
+.myfancypopup .title {
+	text-align:center;
+	/*font-size:16px;
+	color:#333;*/
+	margin-bottom:5px;
+	min-width:150px;
+}
+.myfancypopup .content {
+	color:#666;
+}
+
+
+.myfancypopup iframe {
+	border:0;
+	padding:0;
+	margin:0;
+}

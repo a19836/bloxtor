@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<tasks>
+	<task start="1">
+		<id>1</id>
+		<type>if</type>
+		<properties>
+			<group join="and">
+				<item>
+					<first>$x</first>
+					<operator>&gt;</operator>
+					<second>3</second>
+				</item>
+				<group join="or">
+					<item>
+						<first>$x</first>
+						<operator>=</operator>
+						<second>$y</second>
+					</item>
+					<item>
+						<first>$y</first>
+						<operator>!=</operator>
+						<second>1</second>
+					</item>
+				</group>
+				<item>
+					<first>$y</first>
+					<operator><![CDATA[<]]></operator>
+					<second>6</second>
+				</item>
+			</group>
+		</properties>
+		<exits>
+			<true>
+				<task_id>2</task_id>
+			</true>
+			<false>
+				<task_id>4</task_id>
+			</false>
+		</exits>
+	</task>
+
+	<task>
+		<id>2</id>
+		<type>set_var</type>
+		<properties>
+			<value>1234</value>
+			<type>numeric</type>
+			<return_var_name>xpto</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>3</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>3</id>
+		<type>define_var</type>
+		<properties>
+			<value>blablabla</value>
+			<type>string</type>
+			<return_var_name>ypto</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>4</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>4</id>
+		<type>include_file</type>
+		<properties>
+			<include>test/utils/Util.php</include>
+			<include type="once">test/utils/YYY.php</include>
+			<include>test/utils/XXX.php</include>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>5</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>5</id>
+		<type>call_work_flow</type>
+		<properties>
+			<workflow_id>123123</workflow_id>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>6</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>6</id>
+		<type>call_function</type>
+		<properties>
+			<function_name>foo</function_name>
+			<parameters>
+				<parameter>$x</parameter>
+				<parameter>joao</parameter>
+				<parameter>123</parameter>
+			</parameters>
+			<return_var_name>bar</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>67</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>67</id>
+		<type>create_class_object</type>
+		<properties>
+			<file_path>lib/util/foo/FooHandler.php</file_path>
+			<class_name>FooHandler</class_name>
+			<parameters>
+				<parameter>$x</parameter>
+				<parameter>$y</parameter>
+				<parameter>123</parameter>
+			</parameters>
+			<return_var_name>FooHandler</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>7</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>7</id>
+		<type>call_object_method</type>
+		<properties>
+			<object_var>$FooHandler</object_var>
+			<method_name>bar</method_name>
+			<parameters>
+				<parameter>$x</parameter>
+				<parameter>$y</parameter>
+				<parameter>123</parameter>
+			</parameters>
+			<return_var_name>bar</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>8</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>8</id>
+		<type>catch_exception</type>
+		<properties>
+			<file_path>exception file path</file_path>
+			<class_name>exception class name</class_name>
+			<return_var_name>e</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>10</task_id>
+			</ok>
+			<exception>
+				<task_id>89</task_id>
+			</exception>
+		</exits>
+	</task>
+
+	<task>
+		<id>89</id>
+		<type>print_exception</type>
+		<properties>
+			<object_var>$e</object_var>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>9</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>9</id>
+		<type>throw_exception</type>
+		<properties>
+			<file_path>exception file path</file_path>
+			<class_name>exception class name</class_name>
+			<description>exception description</description>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>10</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>10</id>
+		<type>switch</type>
+		<properties>
+			<object_var>$name</object_var>
+			<cases>
+				<case value="joao" exit="11" />
+				<case value="paulo" exit="11" />
+				<case value="lopes" exit="11" />
+			</cases>
+			<default exit="11" />
+		</properties>
+	</task>
+
+	<task>
+		<id>11</id>
+		<type>set_array</type>
+		<properties>
+			<items>
+				<item key="0">32</item>
+				<item>joao</item>
+				<item key="2">
+					<items>
+						<item key="ABC">abc_1</item>
+						<item key="DEF">def_2</item>
+					</items>
+				</item>
+			</items>
+			<return_var_name>bar</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>12</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>12</id>
+		<type>set_date</type>
+		<properties>
+			<value>2012-03-29</value>
+			<format>d-m-Y</format>
+			<return_var_name>my_date</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>13</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>13</id>
+		<type>code</type>
+		<properties>
+			<code><![CDATA[
+			if ($bar == "asd") {
+				$t = false;
+			}
+			else {
+				$t = new StdClass();
+				$t->name = 'joao';
+				$t->age = 23;
+			}
+			
+			var_dump($t);
+			]]></code>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>14</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>14</id>
+		<type>set_query_data</type>
+		<properties>
+			<db_driver>MYSQLDB</db_driver>
+			<sql><![CDATA[update item set name='jp' where id=1;]]></sql>
+			<return_var_name>status</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>15</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>15</id>
+		<type>get_query_data</type>
+		<properties>
+			<db_driver>PGDB</db_driver>
+			<sql><![CDATA[select * from item;]]></sql>
+			<return_var_name>items</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>16</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>16</id>
+		<type>call_ibatis_query</type>
+		<properties>
+			<db_driver>MYSQLDB</db_driver>
+			<module>test.protocol</module>
+			<service>get_protocols</service>
+			<parameters>
+				<parameter key="x">yy</parameter>
+				<parameter>123</parameter>
+			</parameters>
+			<options>
+				<option>$yy</option>
+				<option key="3">felk</option>
+			</options>
+			<return_var_name>query_xpto</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>17</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>17</id>
+		<type>call_business_logic</type>
+		<properties>
+			<module>test.protocol</module>
+			<service>TestProtocolService.getAllProtocols</service>
+			<parameters>
+				<parameter key="x">$yy</parameter>
+				<parameter>
+					<items>
+						<item key="0">32</item>
+						<item>joao</item>
+						<item key="2">
+							<items>
+								<item key="ABC">abc_1</item>
+								<item key="DEF">def_2</item>
+							</items>
+						</item>
+					</items>
+				</parameter>
+			</parameters>
+			<options>
+				<option>yy</option>
+				<option key="DB_DRIVER">MYSQL</option>
+			</options>
+			<return_var_name>business_logic_xpto</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id>18</task_id>
+			</ok>
+		</exits>
+	</task>
+
+	<task>
+		<id>18</id>
+		<type>call_presentation</type>
+		<properties>
+			<presentation>presentation id</presentation>
+			<url>/admin/protocols/list_protocols</url>
+			<external_objects>
+				<external_object>$x</external_object>
+				<external_object>$y</external_object>
+				<external_object>$t</external_object>
+			</external_objects>
+			<includes>
+				<include>test/utils/Util.php</include>
+				<include type="once">test/utils/YYY.php</include>
+				<include>test/utils/XXX.php</include>
+			</includes>
+			<return_var_name>page_html</return_var_name>
+		</properties>
+		<exits>
+			<ok>
+				<task_id></task_id>
+			</ok>
+		</exits>
+	</task>
+</tasks>

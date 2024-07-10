@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Text Typed</label>
+	<tag>texttyped</tag>
+	<settings>
+		<resizable>1</resizable>
+		<create_widget_class>TextTypedWidget</create_widget_class>
+	</settings>
+	<template_widget><![CDATA[]]></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property string">
+			<label class="col-md-4 col-sm-5 col-form-label">String 1: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="string_1" />
+		</div>
+		<div class="form-group row settings-property string">
+			<label class="col-md-4 col-sm-5 col-form-label">String 2: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="string_2" />
+		</div>
+		<div class="form-group row settings-property string">
+			<label class="col-md-4 col-sm-5 col-form-label">String 3: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="string_3" />
+		</div>
+		<div class="form-group row settings-property string">
+			<label class="col-md-4 col-sm-5 col-form-label">String 4: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="string_4" />
+		</div>
+		<div class="form-group row settings-property string">
+			<label class="col-md-4 col-sm-5 col-form-label">String 5: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="string_5" />
+		</div>
+		<div class="form-group row settings-property string">
+			<label class="col-md-4 col-sm-5 col-form-label">String 6: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="string_6" />
+		</div>
+		<div class="form-group row settings-property string">
+			<label class="col-md-4 col-sm-5 col-form-label">String 7: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="string_7" />
+		</div>
+		<div class="form-group row settings-property string">
+			<label class="col-md-4 col-sm-5 col-form-label">String 8: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="string_8" />
+		</div>
+		<div class="form-group row settings-property string">
+			<label class="col-md-4 col-sm-5 col-form-label">String 9: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="string_9" />
+		</div>
+		<div class="form-group row settings-property string">
+			<label class="col-md-4 col-sm-5 col-form-label">String 10: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="string_10" />
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-texttyped:before,
+		  body > .menu-widget.menu-widget-texttyped.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function TextTypedWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.texttyped.onCloneMenuWidget",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.texttyped.cleanHtml",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.texttyped.parseSettings",
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.texttyped.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.texttyped.saveSettingsField",
+				});
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				var strings = widget.attr("data-strings");
+				strings = ui_creator.parseJson(strings);
+				
+				if (strings)
+					for (var i = 0; i < strings.length; i++)
+						widget_settings["string_" + (i + 1)] = strings[i];
+			};
+			
+			me.prepareJSCode = function(widget) {
+				if (!widget.children("script")[0]) {
+					var id = widget.attr("id");
+					var s = document.createElement('script');
+					s.type = 'text/javascript';
+					
+					var code = ''
++ 'if (typeof initTextTyped != "function")'
++ '	function initTextTyped(selector) {'
++ '  	var typed_options = {'
++ '          typeSpeed:60,'
++ '          startDelay:0,'
++ '          backDelay:700,'
++ '          backSpeed:0,'
++ '          smartBackspace:true,'
++ '          fadeOut:false,'
++ '          fadeOutClass:"typed-fade-out",'
++ '          fadeOutDelay:500,'
++ '          shuffle:false,'
++ '          loop:false,'
++ '          loopCount:1/0,' /*infinity*/
++ '          showCursor:true,'
++ '          cursorChar:"|",'
++ '          autoInsertCss:true,'
++ '          bindInputFocusEvents:false,'
++ '          attr:"",'
++ '          contentType:"html",'
++ '		};'
++ '	'
++ '		var items = document.querySelectorAll(selector);'
++ '		for (var i = 0, len = items.length; i < len; i++) {'
++ '      		var main_elm = items[i];'
++ '      		var sentences = JSON.parse( main_elm.getAttribute("data-strings") );'
++ '			'
++ '        	var spans = main_elm.childNodes;'
++ '        	for(j = 0; j < spans.length; j++)'
++ '          		if (spans[j] && ("" + spans[j].nodeName).toUpperCase() == "SPAN")'
++ '          			main_elm.removeChild(spans[j]);'
++ '        	'
++ '	       	var span = document.createElement("span");'
++ '        	main_elm.appendChild(span);'
++ '        	'
++ '        	if (sentences && sentences.length) {'
++ '          		typed_options.strings = sentences;'
++ '        		new Typed(span, typed_options);'
++ '			}'
++ '		}'
++ '	}'
++ '	'
++ 'if(typeof window.Typed == "undefined") {'
++ '	var scripts = document.head.querySelectorAll("script");'
++ '  var typed_script = false;'
++ '  for(j = 0, len = scripts.length; j < len; j++) {'
++ '  	var src = "" + scripts[j].src;'
++ '       if (src.indexOf("typed.min.js") != -1 || src.indexOf("typed.js") != -1) {'
++ '       	typed_script = scripts[j];'
++ '        	break;'
++ '       }'
++ '  }'
++ '  if (!typed_script) {'
++ '       var typed_script = document.createElement("script");'
++ '       typed_script.src = "https://cdn.jsdelivr.net/npm/typed.js@2.0.11";'
++ '       document.head.appendChild(typed_script);'
++ '  }'
++ '  typed_script.onload = function() {'
++ '  	initTextTyped("[data-texttyped]");'
++ '  };'
++ '}'
++ 'else'
++ '  initTextTyped("#' + id + '");'
++ '';
+			
+					try {
+						s.appendChild(document.createTextNode(code));
+						widget[0].appendChild(s);
+					} catch (e) {
+						s.text = code;
+						widget[0].appendChild(s);
+					}
+				}
+			}
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) {
+					var id = "texttyped-" + parseInt(Math.random() * 1000);
+					widget.attr("data-texttyped", "1").attr("id", id).attr("data-strings", '["Text row one","Text row two","Text row three"]');
+					
+					me.prepareJSCode(widget);
+				}
+				
+				return widget;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				me.prepareJSCode(widget);
+				
+				return ui_creator.getCleanedHtmlElement(widget[0]);
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				ui_creator.addMenuSettingsContextMenu( menu_settings.find(".settings-properties input") );
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("string")) {
+						var inputs = sprop.parent().find(" > .string > input");
+						var strings = [];
+						
+						for (var i = 0; i < inputs.length; i++) {
+							var v = $(inputs[i]).val();
+							
+							if (v != "")
+								strings.push(v);
+						}
+						
+						widget.attr("data-strings", JSON.stringify(strings));
+						
+						//reset text typed
+						var doc = widget[0].ownerDocument;
+						var win = doc.defaultView || doc.parentWindow;
+						win.initTextTyped("#" + widget.attr("id"));
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import><?php echo $vars["business_logic_modules_common_path"]; ?>cache_handler.xml</import>
+	
+	<services>
+		
+	</services>
+</beans>

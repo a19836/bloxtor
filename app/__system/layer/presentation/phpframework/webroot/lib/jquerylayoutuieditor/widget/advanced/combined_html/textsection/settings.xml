@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Text Section</label>
+	<tag>textsection</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_node_name>section</template_node_name>
+		<create_widget_class>TextSectionWidget</create_widget_class>
+	</settings>
+	<template_widget><![CDATA[
+<h1 class="heading droppable">Insert title here</h1>
+<p class="paragraph droppable">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
+<style>
+.bdg-section {
+  padding-top:100px;
+  padding-bottom:100px;
+  font-family:Helvetica, serif;
+  background-color:#fafafa;
+}
+.bdg-section .heading {
+  padding:10px;
+}
+.bdg-section .paragraph {
+  padding:10px;
+}
+</style>
+	]]></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property style">
+			<label class="col-12 col-form-label">Style: </label>
+			<textarea class="col-12 form-control"></textarea>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-textsection:before,
+		  body > .menu-widget.menu-widget-textsection.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-textsection > .settings-properties .style textarea {
+			height:300px !important;
+			text-align:left;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function TextSectionWidget(ui_creator, menu_widget) {
+			var me = this;
+			var default_style = '';
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.textsection.onCloneMenuWidget",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.textsection.cleanHtml",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.textsection.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.textsection.saveSettingsField",
+				});
+				
+				default_style = menu_widget.find(" > .template-widget > style").html();
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) 
+					widget.addClass("bdg-section");
+
+				return widget;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				var style = widget.children("style");
+				
+				if (!style[0]) {
+					style = $('<style>' + default_style + '</style>');
+					widget.append(style);
+				}
+				
+				return ui_creator.getCleanedHtmlElement(widget[0]);
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var style = widget.children("style");
+				
+				if (!style[0]) {
+					style = $('<style>' + default_style + '</style>');
+					widget.append(style);
+				}
+				
+				var textarea = menu_settings.find(".settings-properties .style textarea");
+				textarea.val( style.html() );
+				
+				ui_creator.addMenuSettingsContextMenu(textarea);
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("style")) {
+						var style = widget.children("style");
+						
+						if (!style[0]) {
+							style = $('<style></style>');
+							widget.append(style);
+						}
+						
+						style.html(field_value);
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

@@ -1,0 +1,38 @@
+.taskflowchartmenu .task.task_ns {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_ns .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_ns .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.ns_task_html {
+	width:320px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .ns_task_html {
+	width:100%;
+}
+
+.ns_task_html .value {
+	width:100%;
+	min-height:20px;
+	margin-top:10px;
+	margin-bottom:5px;
+}
+.ns_task_html .value label {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .ns_task_html .value label {
+	width:65px;
+}
+.ns_task_html .value input {
+	width:200px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .ns_task_html .value input {
+	width:calc(100% - 85px);   
+}
+

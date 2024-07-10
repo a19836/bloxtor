@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>12</label>
+	<tag>container-12</tag>
+	<settings>
+		<resizable>1</resizable>
+		<menu_class>container</menu_class>
+		<template_class>container row</template_class>
+		<create_widget_class>CreateWidgetContainerClassObj</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget style="display:-webkit-box; display:-ms-flexbox; display:flex; -ms-flex-wrap:wrap; flex-wrap:wrap; height:100%; box-sizing:border-box;"><![CDATA[
+			<div class="droppable col-12" style="position:relative; width:100%; min-height:1px; padding:15px; -webkit-box-flex:0; -ms-flex:0 0 100%; flex:0 0 100%; max-width:100%; box-sizing:border-box;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+	]]></template_widget>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-container-12:before,
+		   body > .menu-widget.menu-widget-container-12.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-container-12 > span:first-child,
+		   body > .menu-widget.menu-widget-container-12.ui-draggable-dragging > span:first-child {
+			display:none;
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-container-12 > .template-widget.row,
+		   body > .menu-widget.menu-widget-container-12.ui-draggable-dragging > .template-widget.row {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-container-12 li.group.settings-properties > ul .columns table .container-col-move,
+		   .layout-ui-editor > .menu-settings.menu-settings-container-12 li.group.settings-properties > ul .columns table .container-col-icon {
+			width:20px;
+			vertical-align:middle;
+			cursor:pointer;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-container-12 .settings-properties table .container-col-icon {
+			width:20px;
+			font-size:14px;
+			text-align:center;
+		}
+	]]></menu_css>
+	<!--template_css><![CDATA[
+		.template-widget.template-widget-container-12 {
+			border:1px dashed rgba(170,170,170,0.7);
+		}
+		.template-widget.template-widget-container-12.row {
+			margin:0;
+		}
+		.template-widget.template-widget-container-12.row > .droppable {
+			padding:10px;
+			border:1px dashed rgba(170,170,170,0.7);
+			box-sizing: border-box;
+		}
+	]]></template_css-->
+</widget>

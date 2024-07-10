@@ -1,0 +1,1 @@
+a:1:{i:0;a:1:{s:7:"methods";a:1:{s:16:"print_code_trace";a:10:{s:4:"name";s:16:"print_code_trace";s:16:"start_line_index";i:2;s:17:"start_token_index";i:1;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:22:"start_args_token_index";i:4;s:20:"end_args_token_index";i:5;s:25:"start_brackets_line_index";i:2;s:26:"start_brackets_token_index";i:7;}}}}

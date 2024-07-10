@@ -1,0 +1,28 @@
+.taskflowchartmenu .task.task_code {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_code .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_code .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.code_task_html textarea, .code_task_html .ace_editor {
+	width:100%;
+	height:200px;
+	border:2px inset #CCC;
+	box-sizing:border-box;
+}
+
+.code_task_html .pretify {
+	margin-bottom:5px;
+	text-align:right;
+	display:none;
+}
+.code_task_html .pretify a {
+	cursor:pointer;
+}
+
+

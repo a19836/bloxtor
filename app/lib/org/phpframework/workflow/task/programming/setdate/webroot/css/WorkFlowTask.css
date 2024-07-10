@@ -1,0 +1,58 @@
+.taskflowchartmenu .task.task_setdate {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_setdate .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_setdate .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.set_date_task_html {
+	width:390px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_date_task_html {
+	width:100%;
+}
+
+.set_date_task_html .sample,
+  .set_date_task_html .format {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.set_date_task_html .format {
+	/*margin-top:15px;*/
+	margin-bottom:20px;
+}
+.set_date_task_html .sample label,
+  .set_date_task_html .format label {
+	width:135px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_date_task_html .sample label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .set_date_task_html .format label {
+	width:40px;
+}
+.set_date_task_html .sample select {
+	width:210px;   
+}
+.set_date_task_html .format input {
+	width:200px;   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_date_task_html .sample select {
+	width:calc(100% - 45px);   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_date_task_html .format input {
+	width:calc(100% - 55px);   
+}
+.set_date_task_html .format .info {
+	padding-top:10px;
+	font-size:90%;
+	text-align:right;
+}
+.set_date_task_html .format .info a {
+	color:var(--link-color);
+}
+
+

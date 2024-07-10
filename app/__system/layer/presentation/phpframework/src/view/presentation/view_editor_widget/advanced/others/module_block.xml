@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Call Module or Block</label>
+	<tag>call-module-or-block</tag>
+	<settings>
+		<create_widget_class>TemplateCallModuleOrBlockWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<!-- Note that the template_widget must be the same than the entity/presentation/edit_simple_template_layout.php -->
+	<template_widget><![CDATA[
+		<div class="template_block_item">
+			<div class="template_block_item_header">
+				Call block <span class="block_name"></span><span class="block_project"> in <span></span> project.</span>
+			</div>
+			
+			<input class="block hidden" type="text" value="" />
+			<select class="region_block_type hidden">
+				<option value>default</option>
+				<option>string</option>
+				<option>variable</option>
+			</select>
+			<div class="block_simulated_html"></div>
+		</div>
+	]]></template_widget>
+	<properties></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-call-module-or-block:before,
+		  body > .menu-widget.menu-widget-call-module-or-block.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets > .widget-header.widget-header-call-module-or-block .options .props,
+		   .layout-ui-editor > .template-widgets > .widget-header.widget-header-call-module-or-block .options .toggle {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-id,
+		   .layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-classes,
+		   .layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-properties,
+		   .layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-widget,
+		   .layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-general,
+		   .layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-dimension,
+		   .layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-typography,
+		   .layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-decorations,
+		   .layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-events,
+		   .layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-others,
+		   .layout-ui-editor > .menu-settings.menu-settings-call-module-or-block .settings-extra,
+			.layout-ui-editor > .menu-settings.menu-settings-call-module-or-block li.settings-tabs > ul > li.settings-tab-properties,
+			.layout-ui-editor > .menu-settings.menu-settings-call-module-or-block li.settings-tabs > ul > li.settings-tab-widget,
+			.layout-ui-editor > .menu-settings.menu-settings-call-module-or-block li.settings-tabs > ul > li.settings-tab-style,
+			.layout-ui-editor > .menu-settings.menu-settings-call-module-or-block li.settings-tabs > ul > li.settings-tab-events,
+			.layout-ui-editor > .menu-settings.menu-settings-call-module-or-block li.settings-tabs > ul > li.settings-tab-extra {
+			display:none;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-call-module-or-block li.settings-tabs {
+			margin-top:35px;
+		}
+		
+		.layout-ui-editor > .menu-layers .group.group-call-module-or-block > ul {
+			display:none !important;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.main-droppable .template-widget.template-widget-call-module-or-block {
+			width:100% !important;
+			box-sizing:border-box !important;
+		}
+		.main-droppable.borders .template-widget.template-widget-call-module-or-block {
+			width:calc(100% - var(--html-element-left-spacing) - var(--html-element-right-spacing)) !important;
+			padding-top:0 !important;
+		}
+		.template-widget.template-widget-call-module-or-block:before {
+			height:auto !important;
+			margin-top:0 !important;
+			background:none !important;
+		}
+		
+		.template-widget.template-widget-call-module-or-block .template_block_item > .block,
+		  .template-widget.template-widget-call-module-or-block .template_block_item > .region_block_type {
+			display:none !important;
+		}
+		.template-widget.template-widget-call-module-or-block .template_block_item > .template_block_item_header {
+			padding:5px !important;
+			display:block !important;
+			background:#000 !important;
+			color:#fff !important;
+			vertical-align:top !important;
+			text-align:left !important;
+			font-weight:normal !important;
+			font-size:12px !important;
+			font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+		}
+		.template-widget.template-widget-call-module-or-block > .template_block_item > .template_block_item_header > .block_name {
+			cursor:pointer !important;
+		}
+		.template-widget.template-widget-call-module-or-block > .template_block_item > .template_block_item_header > .block_name:focus-visible {
+			outline:1px solid #000;
+			outline-offset:1px;
+			border-radius:1px;
+		}
+		.template-widget.template-widget-call-module-or-block > .template_block_item > .template_block_item_header > .block_name:empty {
+			width:100px;
+			display:inline-block;
+			background: linear-gradient(180deg, rgba(0,0,0,0) calc(100% - 1px), rgba(192,192,192,1) calc(100%), rgba(0,0,0,0) calc(100% + 1px));
+		}
+		.template-widget.template-widget-call-module-or-block > .template_block_item:not(.with_project) > .template_block_item_header > .block_project {
+			display:none;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function TemplateCallModuleOrBlockWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs['call-module-or-block'].parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs['call-module-or-block'].cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs['call-module-or-block'].onCreateTemplateWidget",
+				});
+				
+				menu_widget.removeAttr("data-on-clone-menu-widget-func");
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeType == Node.ELEMENT_NODE && html_element.classList.contains("template_block_item"))
+					return true;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				var template_block_item = widget.children(".template_block_item");
+				var block_id = template_block_item.children(".block").val();
+				var block_id_type = template_block_item.children(".region_block_type").val();
+				var project = template_block_item.find(" > .template_block_item_header > .block_project > span").text();
+				project = project.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n").replace(/&emsp;/g, "\t").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+				
+				var block_id_str = getArgumentCode(block_id, block_id_type);
+				
+				var p = project.replace(/"/g, "");
+				var project_str = p && p != selected_project_id ? ', ' + project : '';
+				
+				var code = "<? \n";
+				
+				//if in the onCreateTemplateWidget the html_element already exists, don't add the block_local_variables, bc it means they already exists or were removed on purpose by the user.
+				if (template_block_item.is(".with_block_local_variables"))
+					code += '$block_local_variables = array();' + "\n"
+				
+				code += 'include $EVC->getBlockPath(' + block_id_str + project_str + ');' + "\n"
+					+ 'echo $EVC->getCMSLayer()->getCMSBlockLayer()->getBlock(' + block_id_str + ');' + "\n"
+					+ "?>";
+				//console.log(code);
+				
+				return code;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				me.prepareCreatedTemplateWidget(widget, html_element);
+				
+				//call handler
+				if (!html_element) {
+					if (typeof onCodeLayoutUIEditorModuleBlockWidgetDragAndDrop == "function")
+						onCodeLayoutUIEditorModuleBlockWidgetDragAndDrop(widget, chooseCodeLayoutUIEditorModuleBlockFromFileManagerTree);
+					else
+						alert("onCodeLayoutUIEditorModuleBlockWidgetDragAndDrop function does not exist! Please only use this widget in the __system/phpframework/src/view/presentation/edit_view.php file");
+				}
+				else 
+					me.simulateHtml(widget);
+			};
+			
+			//allow this function to be called by the module_block_tree.xml without be in conflict with the me.onCreateTemplateWidget method
+			me.prepareCreatedTemplateWidget = function(widget, html_element) {
+				var template_block_item = widget.children(".template_block_item");
+				
+				//prepare template_block_item to be the same than the default html in this widget
+				if (html_element) {
+					widget.html("");
+					widget.append(html_element); //This is very important so we don't loose the events previously set in the children.
+					
+					template_block_item = widget.children(".template_block_item");
+				}
+				else //if no html_element, include the block_local_variables in code in the me.cleanHtml method
+					template_block_item.addClass("with_block_local_variables");
+				
+				//prepare template_block_item
+				var block_name = template_block_item.find(" > .template_block_item_header > .block_name");
+				var project = template_block_item.find(" > .template_block_item_header > .block_project > span").text();
+				var project = project.replace(/"/g, "");
+				var with_project = project && project != selected_project_id;
+				
+				if (with_project)
+					template_block_item.addClass("with_project");
+				
+				//prepare editable box
+				widget.attr("contenteditable", "false");
+				
+				//prepare block name with editable name
+				block_name.attr("contenteditable", "true")
+				  .mouseup(function(e) {
+					//prevents that the TextSelection open the inline menu
+					e.preventDefault();
+					e.stopPropagation();
+					
+					ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+				  })
+				  .keyup(function(e) {
+				  	me.updateBlockName(widget);
+				  })
+				  .blur(function(e) {
+				  	me.updateBlockName(widget);
+				  })
+				  .click(function(e) {
+				  	if (typeof onCodeLayoutUIEditorModuleBlockWidgetDragAndDrop == "function")
+						onCodeLayoutUIEditorModuleBlockWidgetDragAndDrop(widget, chooseCodeLayoutUIEditorModuleBlockFromFileManagerTree, true);
+					else {
+					  	var old_block_id = block_name.text();
+					  	var new_block_id = prompt("Block", old_block_id);
+					  	
+					  	if (new_block_id) {
+					  		block_name.text(new_block_id);
+					  		me.updateBlockName(widget);
+					  	}
+					}
+				  });
+			};
+			
+			/* UTILS */
+			
+			me.updateBlockName = function(widget) {
+				//because this method is called in key pressed, we should give a timeout in case the user wants to write a word
+				if (widget[0].timeout_id)
+		  			clearTimeout(widget[0].timeout_id);
+		  		
+			  	widget[0].timeout_id = setTimeout(function() {
+			  		if (widget[0].timeout_id) {
+			  			clearTimeout(widget[0].timeout_id);
+			  			widget[0].timeout_id = null;
+			  		}
+			  		
+					var template_block_item = widget.children(".template_block_item");
+					var span = template_block_item.find(" > .template_block_item_header > .block_name");
+					
+					var old_block_id = template_block_item.children(".block").val();
+					var old_block_id_type = template_block_item.children(".region_block_type").val();
+					var block_id = span.text();
+					var block_id = ("" + block_id).replace(/^\s/g, "").replace(/\s$/g, ""); //trim
+					var first_char = block_id[0];
+					var last_char = block_id[block_id.length - 1];
+					var block_id_type = "";
+					var block_id_str = "";
+					
+					if (first_char == '$') { //if: $a"... or $a'...
+						block_id = block_id_str = block_id.replace(/["']/g, "");
+						block_id_type = "variable";
+					}
+					else {
+						block_id_type = getArgumentType(block_id);
+						block_id_type = block_id_type == "text" ? "string" : block_id_type;
+						
+						if (block_id_type == "string") {
+							block_id = block_id.replace(/"/g, "");
+							
+							if (block_id)
+								block_id_str = '"' + block_id + '"';
+						}
+					}
+					
+					template_block_item.children(".block").val(block_id);
+					template_block_item.children(".region_block_type").val(block_id_type);
+					
+					//set new block_id if is different and set cursor caret where it was before.
+					if (block_id_str != span.text()) {
+						var doc = span[0].ownerDocument || span[0].document;
+						var win = doc.defaultView || doc.parentWindow;
+						var selection = win.getSelection();
+						
+						var range = selection.getRangeAt(0);
+						var offset = range.endOffset > 0 ? range.endOffset - 1 : 0;
+						
+						span.text(block_id_str);
+						
+						try {
+							var range = doc.createRange();
+							range.setStart(span[0].childNodes[0], offset);
+							range.collapse(true);
+							selection.removeAllRanges();
+							selection.addRange(range);
+						}
+						catch(e) {
+							if (console && console.log)
+								console.log(e);
+						}
+					}
+					
+					if (old_block_id != block_id || old_block_id_type != block_id_type)
+						me.simulateHtml(widget);
+			  	}, 1000);
+			};
+			
+			me.updateWidgetWithBlockId = function(widget, block_id, project) {
+				//preparing block id
+				block_id = ("" + block_id).replace(/^\s/g, "").replace(/\s$/g, ""); //trim
+				
+				//by default the block_id is always the name of a file, so it should be taken care and convert to a string.
+				var block_id_quotes = getArgumentCode(block_id, "string"); 
+				var project_quotes = getArgumentCode(project, "string");
+				
+				var with_project = project && project != selected_project_id;
+				
+				//preparing widget
+				var template_block_item = widget.children(".template_block_item");
+				
+				if (with_project)
+					template_block_item.addClass("with_project");
+				else
+					template_block_item.removeClass("with_project");
+				
+				template_block_item.find(" > .template_block_item_header > .block_name").text(block_id_quotes);
+				template_block_item.find(" > .template_block_item_header > .block_project > span").text(project_quotes);
+				template_block_item.children(".block").val(block_id);
+				template_block_item.children(".region_block_type").val("string");
+				
+				//call simulate block
+				//me.simulateHtml(widget); //Doesn't make sense to call it here because this function is only called when the widget is code, this is, on edit_view_advanced and edit_entity_advanced.
+			};
+			
+			me.simulateHtml = function(widget) {
+				var template_block_item = widget.children(".template_block_item");
+				
+				if (template_block_item[0]) {
+					var block_id = template_block_item.children(".block").val();
+					var doc = widget[0].ownerDocument || widget[0].document;
+					var win = doc.defaultView || doc.parentWindow;
+					
+					//call simulate block
+					if (block_id && typeof win.prepareRegionBlockSimulatedHtml == "function")
+						win.prepareRegionBlockSimulatedHtml(template_block_item[0]);
+					else {
+						var block_simulated_html = template_block_item.children(".block_simulated_html");
+						block_simulated_html.html("");
+						block_simulated_html[0].setAttribute("contenteditable", "false");
+						block_simulated_html[0].setAttribute("spellcheck", "false");
+					}
+				}
+			};
+		}
+	]]></menu_js>
+</widget>

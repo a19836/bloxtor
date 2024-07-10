@@ -1,0 +1,38 @@
+.taskflowchartmenu .task.task_createclassobject {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_createclassobject .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_createclassobject .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.create_class_object_task_html {
+	width:390px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_class_object_task_html {
+	width:100%;
+}
+
+.create_class_object_task_html .class_name {
+	width:100%;
+	min-height:20px;
+	/*margin-top:15px;*/
+	margin-bottom:5px;
+}
+.create_class_object_task_html .class_name label {
+	width:135px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_class_object_task_html .class_name label {
+	width:65px;
+}
+.create_class_object_task_html .class_name input {
+	width:200px;   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_class_object_task_html .class_name input {
+	width:calc(100% - 100px);   
+}
+
+

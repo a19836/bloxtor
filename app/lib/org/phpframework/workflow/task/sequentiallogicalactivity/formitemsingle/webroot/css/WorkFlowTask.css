@@ -1,0 +1,15 @@
+.taskflowchartmenu .task.task_slaitemsingle {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_slaitemsingle .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_slaitemsingle .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+/* task properties */
+.sla .slaitemsingle_task_html {
+	
+}

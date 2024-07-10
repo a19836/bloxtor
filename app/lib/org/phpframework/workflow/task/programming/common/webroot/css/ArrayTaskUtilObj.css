@@ -1,0 +1,132 @@
+.selected_task_properties .array_items {
+	margin-top:0px;
+}
+.selected_task_properties .array_items ul, 
+  .selected_task_properties .array_items li {
+	float:none;
+	clear:left;
+	min-width:390px;
+	background-color:#FFF;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .array_items ul, 
+  .taskflowchart.fixed_side_properties .selected_task_properties .array_items li {
+	min-width:180px;
+}
+
+.selected_task_properties .array_items ul {
+	border:1px solid #CCC;
+	padding:5px 5px 0px 5px;
+	margin:5px 0px 5px 0px;
+}
+.selected_task_properties .array_items ul ul {
+	width:auto;
+	margin-left:20px;
+}
+.selected_task_properties .array_items .items {
+	height:20px;
+	margin-bottom:5px;
+}
+.selected_task_properties .array_items li.item {
+	min-height:20px;
+	margin-bottom:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .array_items li.item {
+	position:relative;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .array_items li.item:hover:before {
+	content:" ";
+	width:calc(100% - 24px);
+	height:26px;
+	position:absolute;
+	top:-25px;
+	left:0;
+	clear:both;
+	background:#f7f7f7;
+	border:1px solid #ddd;
+}
+.selected_task_properties .array_items li.item:after {
+	content:" ";
+	height:1px;
+	display:block;
+	clear:both;
+}
+.selected_task_properties .array_items input {
+	margin-right:5px;
+	height:17px;
+	line-height:17px;
+}
+.selected_task_properties .array_items textarea {
+	margin-right:5px;
+	height:15px;
+	line-height:17px;
+}
+.selected_task_properties .array_items select {
+	margin-right:5px;
+	height:21px;
+	line-height:21px;
+}
+.selected_task_properties .array_items input.value {
+	width:130px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .array_items input.value {
+	width:calc(100% - 120px);
+}
+.selected_task_properties .array_items textarea.value {
+	width:146px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .array_items textarea.value {
+	width:121px;
+}
+.selected_task_properties .array_items input.key, 
+   .selected_task_properties .array_items select.key_type, 
+   .selected_task_properties .array_items select.value_type {
+	width:60px;
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .array_items select.key_type, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .array_items select.value_type {
+	width:65px;
+	position:absolute;
+	top:-22px;
+	left:3px;
+	display:none;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .array_items select.value_type {
+	left:auto;
+	right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .array_items .item:hover > select.key_type, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .array_items .item:hover > select.value_type {
+	display:inline-block;
+}
+.selected_task_properties .array_items select.value_type {
+	float:none;
+	display:inline-block;
+}
+.selected_task_properties .array_items textarea.key {
+	width:56px;
+}
+.selected_task_properties .array_items .add_variable {
+	margin-top:4px;
+	margin-left:-23px;
+}
+
+.selected_task_properties .array_items .item .remove {
+	margin:auto 0;
+}
+.selected_task_properties .array_items > .items > .group_add {
+	margin-left:10px;
+}
+.selected_task_properties .array_items .items .group_add::before {
+	content:"\f271";
+}
+.selected_task_properties .array_items .items .item_add::before {
+	content:"\f0fe";
+	font-size:16px;
+	margin-left:1px;
+}

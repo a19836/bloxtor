@@ -1,0 +1,9 @@
+#right_panel {
+	left:0;
+	top:45px;
+	right:0px;
+	bottom:0px;
+}
+body.main_navigator_reverse #right_panel {
+	right:0px;
+}

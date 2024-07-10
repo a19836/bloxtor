@@ -1,0 +1,565 @@
+.taskflowchartmenu .task.task_server {
+	width:70px !important;
+	height:60px !important;
+	
+	background-image:url('../img/logo.svg');
+	background-color:#4070FF !important;
+	background-size:40px 30px !important; 
+	background-position:center 10px !important; 
+	
+	border-radius:5px !important;
+	border:0 !important;
+	box-shadow:none !important;
+}
+.taskflowchartmenu .task.task_server span {
+	line-height:normal;
+	margin-top:40px;
+	display:block;
+	color:#FFF;
+	font-size:11px;
+}
+.taskflowchartdiagram .task.task_server {
+	height:auto !important;
+	min-height:60px !important;
+	
+	background-image:url('../img/logo.svg');
+	background-color:#4070FF;
+	background-size:40px 30px !important; 
+	background-position:center 10px !important; 
+	
+	border-radius:5px;
+	border:0 !important;
+}
+.taskflowchartdiagram .task.task_server > .info {
+	width:100% !important;
+	line-height:normal;
+	margin-top:40px !important;
+	display:block;
+	color:#FFF;
+	font-size:11px;
+	font-weight:bold;
+}
+
+.selected_task_properties .properties_task_id, 
+  .selected_connection_properties .properties_connection_id {
+	width:100% !important;
+}
+
+.server_task_html {
+	border:0;
+}
+.server_task_html ul.ui-tabs-nav {
+	background:none;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-radius: 0;
+}
+.server_task_html .ui-tabs-panel {
+	padding:15px 0 0;
+}
+
+/* details_container */
+.server_task_html > .details_container > div {
+	margin:5px 0;
+}
+.server_task_html > .details_container > div > label {
+	width:120px;
+	display:inline-block;
+}
+.server_task_html > .details_container > div > input {
+	width:calc(100% - 135px);
+	min-width:100px;
+}
+.server_task_html > .details_container > div > select {
+	width:calc(100% - 128px);
+	min-width:100px;
+}
+.server_task_html > .details_container > div > textarea {
+	width:100%;
+	min-width:100px;
+	height:100px;
+	box-sizing:border-box;
+}
+.server_task_html > .details_container > .host > input.host {
+	width:calc(100% - 206px);
+}
+.server_task_html > .details_container > .host > input.port {
+	width:55px;
+	min-width:auto;
+}
+.server_task_html > .details_container > div > .info {
+	text-align:right;
+	color:#555;
+	font-size:90%;
+}
+
+/* templates_container */
+.server_task_html .templates_container > table {
+	width:553px;
+}
+.server_task_html .templates_container > table .name {
+	width:200px;
+	text-align:center;
+}
+.server_task_html .templates_container > table .created_date,
+  .server_task_html .templates_container > table .modified_date {
+	width:150px;
+	text-align:center;
+}
+.server_task_html .templates_container > table .actions {
+	width:53px;
+	text-align:center;
+}
+.server_task_html .templates_container > table .name input {
+	width:100%;
+	margin-bottom:5px;
+	text-align:left;
+}
+.server_task_html .templates_container > table .created_date span,
+  .server_task_html .templates_container > table .modified_date span {
+	font-size:90%
+}
+
+/* templates_container - popup */
+.server_task_html .templates_container > .myfancypopup {
+	width:96vw;
+	height:96vh;
+	position:fixed;
+	top:2vh;
+	left:2vw;
+	box-sizing:border-box;
+}
+.server_task_html .templates_container > .popup_overlay {
+	width:auto !important;
+	height:auto !important;
+	position:fixed;
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+}
+
+.server_task_html .templates_container > .myfancypopup.template_properties > ul.ui-tabs-nav {
+	background:none;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-radius: 0;
+}
+
+/* templates_container - template_workflow */
+.server_task_html .template_workflow {
+	position:relative;
+	height:90%;
+	height:calc(100% - 40px);
+	box-sizing:border-box;
+}
+.server_task_html .template_workflow > .taskflowchart {
+	position:absolute;
+	top:0;
+	left:-15px; /* padding-left of popup is 15px */
+	right:-15px; /* padding-right of popup is 15px */
+	bottom:-15px; /* padding-bottom of popup is 15px */
+	font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family:var(--main-font-family);
+}
+.server_task_html .template_workflow > .taskflowchart > .tasks_flow {
+	
+}
+
+.server_task_html .template_workflow > .taskflowchart .tasks_flow #layer_presentations,
+  .server_task_html .template_workflow > .taskflowchart .tasks_flow #layer_bls,
+  .server_task_html .template_workflow > .taskflowchart .tasks_flow #layer_dals,
+  .server_task_html .template_workflow > .taskflowchart .tasks_flow #layer_dbs,
+  .server_task_html .template_workflow > .taskflowchart .tasks_flow #layer_drivers {
+	width:100%; 
+	height:25%; 
+	min-height:100px; 
+	border-top:1px dashed #DFE1ED;
+	text-align:center;
+}
+.server_task_html .template_workflow > .taskflowchart .tasks_flow #layer_presentations {
+	border-top:0;
+}
+.server_task_html .template_workflow > .taskflowchart .tasks_flow #layer_drivers {
+	border-bottom:0;
+}
+.server_task_html .template_workflow > .taskflowchart .tasks_flow .layer_title {
+	width:90vw; 
+	width:calc(100vw - 160px); 
+	padding:10px;
+	position:sticky; 
+	top:0;
+	left:0; 
+	color:#83889E; 
+	display:block; 
+	white-space:nowrap;
+	text-align:left;
+}
+.server_task_html .template_workflow > .taskflowchart .tasks_flow .task .ep {
+	cursor:default;
+}
+.server_task_html .template_workflow > .taskflowchart .tasks_flow .task .short_actions .move_action {
+	display:none;
+}
+
+/* templates_container - task_context_menu (task_context_menu is a child of body) */
+.task_context_menu, 
+  .connection_context_menu {
+	z-index:9999999999 !important; /* very important otherwise the contextmenus from the layers diagram will not show bc everytime the myfancypopup gets open, it will set the bigger z-index for the popup. So we need to set the contextmenu to a huge number, bc the myfancypopup ignores the contextmenus */
+}
+
+.task_context_menu .activate_task a, 
+  .task_context_menu .activate_task a:hover, 
+  .task_context_menu .activate_task a.active, 
+  .task_context_menu .activate_task a.active:hover {
+	background:none;
+}
+.task_context_menu .activate_task a::before {
+	width:15px;
+	display:inline-block;
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f14a";
+	margin-right:12px;
+	font-size:14px;
+	color:green;
+}
+.task_context_menu .activate_task a.active::before {
+	opacity:.5;
+	color:#999;
+}
+
+/* templates_container - template_workflow - tasks_properties */
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties, 
+  .server_task_html .template_workflow > .taskflowchart .selected_connection_properties {
+	height:auto !important;
+}
+
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html {
+	width:450px;
+}
+
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html .migrate_db_schema label {
+	margin-top:20px;
+}
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html .migrate_db_schema label,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html .migrate_db_data label,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html .remove_deprecated_tables_and_attributes label {
+	width:auto;
+}
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html .migrate_db_schema input,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html .migrate_db_data input,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html .remove_deprecated_tables_and_attributes input {
+	width:auto;
+}
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html .migrate_db_schema span,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html .migrate_db_data span,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .db_driver_task_html .remove_deprecated_tables_and_attributes span {
+	margin-left:25px;
+	display:block;
+	font-size:70%;
+	color:#555;
+}
+
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .wordpress_installations {
+	margin-top:20px;
+}
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .wordpress_installations .invalid {
+	opacity:.5;
+}
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .wordpress_installations .invalid:after {
+	content:"May not exist anymore...";
+	margin-left:10px;
+	font-size:90%;
+	color:#4070FF;
+}
+
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .data_access_layer_task_html > .files,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .businesslogic_layer_task_html > .files,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .files {
+	width:380px;
+	margin-top:20px;
+}
+/*.server_task_html .template_workflow > .taskflowchart .selected_task_properties .data_access_layer_task_html > .files > label,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .businesslogic_layer_task_html > .files > label,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .files > label {
+	
+}
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .data_access_layer_task_html > .files .icon,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .businesslogic_layer_task_html > .files .icon,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .files .icon,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .default_project .icon {
+	display:inline-block;
+	float:none;
+	margin-top:0;
+	vertical-align:middle;
+}*/
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .data_access_layer_task_html > .files > .info,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .businesslogic_layer_task_html > .files > .info,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .files > .info {
+	font-size:90%;
+	color:#555;
+}
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .data_access_layer_task_html > .files > ul,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .businesslogic_layer_task_html > .files > ul,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .files > ul {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .data_access_layer_task_html > .files li,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .businesslogic_layer_task_html > .files li,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .files li {
+	list-style:none;
+	margin-bottom:5px;
+}
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .data_access_layer_task_html > .files li.no_files,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .businesslogic_layer_task_html > .files li.no_files,
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .files li.no_files {
+	margin-top:20px;
+	margin-bottom:20px;
+	color:#333;
+}
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .data_access_layer_task_html > .files li input[type=text],
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .businesslogic_layer_task_html > .files li input[type=text],
+  .server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .files li input[type=text] {
+	width:300px;
+}
+
+.server_task_html .template_workflow > .taskflowchart .selected_task_properties .presentation_layer_task_html > .default_project {
+	margin-bottom:20px;
+}
+
+/* templates_container - template_workflow - global vars and settings popup */
+.server_task_html_template_global_vars_and_settings_popup iframe {
+	width:580px !important;
+	height:300px !important;
+}
+
+/* templates_container - template_actions */
+.server_task_html .template_actions {
+	position: relative;
+	height: 90%;
+	height: calc(100% - 40px);
+	box-sizing: border-box;
+	overflow:auto;
+}
+.server_task_html .template_actions .info {
+	font-size:90%;
+	color:#555;
+}
+.server_task_html .template_actions .server_installation_folder_path {
+	margin-bottom:20px;
+}
+.server_task_html .template_actions .server_installation_folder_path > label,
+  .server_task_html .template_actions .server_installation_url > label {
+	width:260px;
+	display:inline-block;
+}
+.server_task_html .template_actions .server_installation_folder_path > input,
+  .server_task_html .template_actions .server_installation_url > input {
+	width:300px;
+}
+.server_task_html .template_actions .available_actions {
+	margin-top:20px;
+}
+/*.server_task_html .template_actions .available_actions .icon.add,
+  .server_task_html .template_actions .actions .action .icon {
+	display:inline-block;
+	margin-top:0;
+	vertical-align:middle;
+	float:none;
+}*/
+.server_task_html .template_actions .actions {
+	margin-top:20px;
+}
+.server_task_html .template_actions .actions .no_actions {
+	list-style:none;
+}
+.server_task_html .template_actions .actions .action {
+	margin-bottom:20px;
+}
+.server_task_html .template_actions .actions .action > div {
+	margin-left:20px;
+}
+.server_task_html .template_actions .actions .action > .up {
+	display:none;
+}
+.server_task_html .template_actions .actions .action ~ .action > .up {
+	display:inline-block;
+}
+.server_task_html .template_actions .actions .action:last-child > .down {
+	display:none;
+}
+
+.server_task_html .template_actions .actions .action.action_run_test_units > ol {
+	margin-top:10px;
+	margin-left:20px;
+}
+.server_task_html .template_actions .actions .action.action_run_test_units > ol .no_test_units {
+	list-style:none;
+}
+.server_task_html .template_actions .actions .action.action_run_test_units > ol li input {
+	width:400px;
+	margin-bottom:5px;
+}
+.server_task_html .template_actions .actions .action.action_run_test_units > ol li:not(.no_test_units) .up {
+	display:none;
+}
+.server_task_html .template_actions .actions .action.action_run_test_units > ol li:not(.no_test_units) ~ li:not(.no_test_units) .up {
+	display:inline-block;
+}
+.server_task_html .template_actions .actions .action.action_run_test_units > ol li:not(.no_test_units):last-child .down {
+	display:none;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .obfuscate_proprietary_php_files {
+	margin-top:20px;
+	font-size:90%;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .obfuscate_proprietary_js_files {
+	font-size:90%;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .create_licence {
+	margin-top:20px;
+	font-size:90%;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .create_licence ul {
+	margin-left:40px;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li {
+	margin-bottom:5px;
+	list-style:none;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li label {
+	width:300px;
+	display:inline-block;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.projects_maximum_number input,
+  .server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.users_maximum_number input,
+  .server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.end_users_maximum_number input,
+  .server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.actions_maximum_number input {
+	width:50px;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.private_key textarea,
+  .server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.public_key textarea {
+	width:320px;
+	height:100px;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.private_key_file input,
+  .server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.public_key_file input,
+  .server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.passphrase input,
+  .server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.allowed_paths input {
+	width:320px;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.private_key_file .info,
+  .server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.public_key_file .info,
+  .server_task_html .template_actions .actions .action.action_copy_layers > .create_licence li.passphrase .info {
+	margin-left:255px;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .allowed_domains {
+	margin-top:20px;
+	font-size:90%;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .allowed_domains label {
+	width:120px;
+	display:inline-block;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .allowed_domains input {
+	width:490px;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .allowed_domains .info {
+	margin-left:125px;
+}
+.server_task_html .template_actions .actions .action.action_copy_layers > .check_allowed_domains_port {
+	margin-top:10px;
+	font-size:90%;
+}
+.server_task_html .template_actions .actions .action.action_copy_files > .files {
+	margin-top:20px;
+}
+.server_task_html .template_actions .actions .action.action_copy_files > .files > ul {
+	margin-top:10px;
+}
+.server_task_html .template_actions .actions .action.action_copy_files > .files li {
+	list-style:none;
+	margin-bottom:5px;
+}
+.server_task_html .template_actions .actions .action.action_copy_files > .files li input {
+	width:450px;
+}
+.server_task_html .template_actions .actions .action.action_copy_files > .server_relative_folder_path > input {
+	width:300px;
+}
+.server_task_html .template_actions .actions .action.action_execute_shell_cmds > textarea {
+	display:block;
+	width:100%;
+	height:200px;
+	box-sizing:border-box;
+}
+
+/* deployments_container */
+.server_task_html .deployments_container > .deploy_template {
+	margin-bottom:15px;
+}
+/*.server_task_html .deployments_container > .deploy_template > .icon {
+	display:inline-block;
+	margin-top:0;
+	vertical-align:middle;
+	float:none;
+}*/
+.server_task_html .deployments_container > .deploy_template > .info {
+	margin-top:5px;
+	display:block;
+	color:#555;
+	font-size:90%;
+}
+.server_task_html .deployments_container > table th,
+  .server_task_html .deployments_container > table td {
+	text-align:center;
+	font-size:90%;
+}
+.server_task_html .deployments_container > table tbody tr:nth-child(even) {
+	background:#f7f7f7;
+}
+.server_task_html .deployments_container > table tbody td {
+	border-top:1px solid #f7f7f7;
+}
+.server_task_html .deployments_container > table .selected {
+	width:20px;
+}
+.server_task_html .deployments_container > table .deployment_id {
+	width:50px;
+}
+.server_task_html .deployments_container > table .template {
+	width:180px;
+}
+.server_task_html .deployments_container > table .created_date {
+	width:150px;
+}
+.server_task_html .deployments_container > table .status {
+	width:50px;
+}
+.server_task_html .deployments_container > table .error_message {
+	width:100px;
+}
+.server_task_html .deployments_container > table .actions {
+	width:140px;
+}
+.server_task_html .deployments_container > table .ok {
+	background:rgba(0, 255, 0, .3);
+}
+.server_task_html .deployments_container > table .error {
+	background:rgba(255, 0, 0, .3);
+}
+
+.server_task_html .frozen_overlay {
+	position:fixed;
+	left:0;
+	top:0;
+	right:0;
+	bottom:0;
+	background-color:#333;
+	background-color:rgba(0, 0, 0, .5);
+}

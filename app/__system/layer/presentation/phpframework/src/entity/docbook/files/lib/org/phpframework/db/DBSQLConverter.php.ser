@@ -1,0 +1,238 @@
+a:1:{i:0;a:1:{s:7:"methods";a:23:{s:25:"convertObjectToDefaultSQL";a:15:{s:4:"name";s:25:"convertObjectToDefaultSQL";s:16:"start_line_index";i:4;s:17:"start_token_index";i:7;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:14;s:20:"end_args_token_index";i:23;s:9:"arguments";a:2:{s:5:"$data";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:4;s:26:"start_brackets_token_index";i:25;s:23:"end_brackets_line_index";i:6;s:24:"end_brackets_token_index";i:37;s:14:"end_line_index";i:6;s:15:"end_token_index";i:37;}s:25:"convertDefaultSQLToObject";a:15:{s:4:"name";s:25:"convertDefaultSQLToObject";s:16:"start_line_index";i:8;s:17:"start_token_index";i:39;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:46;s:20:"end_args_token_index";i:55;s:9:"arguments";a:2:{s:4:"$sql";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:8;s:26:"start_brackets_token_index";i:57;s:23:"end_brackets_line_index";i:10;s:24:"end_brackets_token_index";i:69;s:14:"end_line_index";i:10;s:15:"end_token_index";i:69;}s:26:"buildDefaultTableInsertSQL";a:20:{s:4:"name";s:26:"buildDefaultTableInsertSQL";s:16:"start_line_index";i:17;s:17:"start_token_index";i:73;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:180:"/*
+	 * @param $table_name: string with table name
+	 * @param $attributes: array with attributes and values, like: 
+	 	array("attribute_name_1" => "attribute_value_1", ...)
+	 */";}s:25:"start_comments_line_index";i:12;s:26:"start_comments_token_index";i:71;s:23:"end_comments_line_index";i:16;s:24:"end_comments_token_index";i:71;s:22:"start_args_token_index";i:80;s:20:"end_args_token_index";i:92;s:9:"arguments";a:3:{s:11:"$table_name";N;s:11:"$attributes";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:17;s:26:"start_brackets_token_index";i:94;s:23:"end_brackets_line_index";i:49;s:24:"end_brackets_token_index";i:251;s:14:"end_line_index";i:49;s:15:"end_token_index";i:251;}s:26:"buildDefaultTableUpdateSQL";a:20:{s:4:"name";s:26:"buildDefaultTableUpdateSQL";s:16:"start_line_index";i:62;s:17:"start_token_index";i:255;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:403:"/*
+	 * @param $table_name: string with table name
+	 * @param $attributes: array with attributes and values, like: 
+	 	array("attribute_name_1" => "attribute_value_1", ...)
+	 * @param $conditions: array with conditions. See more info about this in the getSQLConditions method
+	 * @param $options: array with: 
+	 	array(
+	 		"conditions_join" => null/"and"/"or"
+	 		"all" => true/false
+	 	)
+	 */";}s:25:"start_comments_line_index";i:51;s:26:"start_comments_token_index";i:253;s:23:"end_comments_line_index";i:61;s:24:"end_comments_token_index";i:253;s:22:"start_args_token_index";i:262;s:20:"end_args_token_index";i:281;s:9:"arguments";a:4:{s:11:"$table_name";N;s:11:"$attributes";N;s:11:"$conditions";s:5:"false";s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:62;s:26:"start_brackets_token_index";i:283;s:23:"end_brackets_line_index";i:104;s:24:"end_brackets_token_index";i:576;s:14:"end_line_index";i:104;s:15:"end_token_index";i:576;}s:26:"buildDefaultTableDeleteSQL";a:20:{s:4:"name";s:26:"buildDefaultTableDeleteSQL";s:16:"start_line_index";i:115;s:17:"start_token_index";i:580;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:279:"/*
+	 * @param $table_name: string with table name
+	 * @param $conditions: array with conditions. See more info about this in the getSQLConditions method
+	 * @param $options: array with: 
+	 	array(
+	 		"conditions_join" => null/"and"/"or"
+	 		"all" => true/false
+	 	)
+	 */";}s:25:"start_comments_line_index";i:106;s:26:"start_comments_token_index";i:578;s:23:"end_comments_line_index";i:114;s:24:"end_comments_token_index";i:578;s:22:"start_args_token_index";i:587;s:20:"end_args_token_index";i:603;s:9:"arguments";a:3:{s:11:"$table_name";N;s:11:"$conditions";s:5:"false";s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:115;s:26:"start_brackets_token_index";i:605;s:23:"end_brackets_line_index";i:135;s:24:"end_brackets_token_index";i:820;s:14:"end_line_index";i:135;s:15:"end_token_index";i:820;}s:24:"buildDefaultTableFindSQL";a:20:{s:4:"name";s:24:"buildDefaultTableFindSQL";s:16:"start_line_index";i:151;s:17:"start_token_index";i:824;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:458:"/*
+	 * @param $table_name: string with table name
+	 * @param $attributes: array with attributes and values, like: 
+	 	array("attribute_name_1", ...)
+	 * @param $conditions: array with conditions. See more info about this in the getSQLConditions method
+	 * @param $options: array with: 
+	 	array(
+	 		"conditions_join" => null/"and"/"or"
+	 		"sorts" => array(
+	 			array("column" => "attribute_name_1", "order" => "asc"),
+	 			...
+	 		)
+	 	)
+	 */";}s:25:"start_comments_line_index";i:137;s:26:"start_comments_token_index";i:822;s:23:"end_comments_line_index";i:150;s:24:"end_comments_token_index";i:822;s:22:"start_args_token_index";i:831;s:20:"end_args_token_index";i:854;s:9:"arguments";a:4:{s:11:"$table_name";N;s:11:"$attributes";s:5:"false";s:11:"$conditions";s:5:"false";s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:151;s:26:"start_brackets_token_index";i:856;s:23:"end_brackets_line_index";i:195;s:24:"end_brackets_token_index";i:1110;s:14:"end_line_index";i:195;s:15:"end_token_index";i:1110;}s:25:"buildDefaultTableCountSQL";a:20:{s:4:"name";s:25:"buildDefaultTableCountSQL";s:16:"start_line_index";i:205;s:17:"start_token_index";i:1114;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:254:"/*
+	 * @param $table_name: string with table name
+	 * @param $conditions: array with conditions. See more info about this in the getSQLConditions method
+	 * @param $options: array with: 
+	 	array(
+	 		"conditions_join" => null/"and"/"or"
+	 	)
+	 */";}s:25:"start_comments_line_index";i:197;s:26:"start_comments_token_index";i:1112;s:23:"end_comments_line_index";i:204;s:24:"end_comments_token_index";i:1112;s:22:"start_args_token_index";i:1121;s:20:"end_args_token_index";i:1137;s:9:"arguments";a:3:{s:11:"$table_name";N;s:11:"$conditions";s:5:"false";s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:205;s:26:"start_brackets_token_index";i:1139;s:23:"end_brackets_line_index";i:223;s:24:"end_brackets_token_index";i:1313;s:14:"end_line_index";i:223;s:15:"end_token_index";i:1313;}s:36:"buildDefaultTableFindRelationshipSQL";a:20:{s:4:"name";s:36:"buildDefaultTableFindRelationshipSQL";s:16:"start_line_index";i:248;s:17:"start_token_index";i:1317;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:510:"/*
+	 * @param $table_name: string with table name
+	 * @param $rel_elm: array with:
+ 		array(
+ 			"keys" => ...
+ 			"attributes" => ...
+ 			"conditions" => ...
+ 			"groups_by" => ...
+ 			"sorts" => ...
+ 		)
+	 * @param $parent_conditions: array with conditions, like
+	 	array(
+	 		"attribute_name_1" => "attribute_value_1", 
+	 		...
+	 	)
+	 * @param $options: array with: 
+	 	array(
+	 		"sorts" => array(
+	 			array("column" => "attribute_name_1", "order" => "asc"),
+	 			...
+	 		)
+	 	)
+	 */";}s:25:"start_comments_line_index";i:225;s:26:"start_comments_token_index";i:1315;s:23:"end_comments_line_index";i:247;s:24:"end_comments_token_index";i:1315;s:22:"start_args_token_index";i:1324;s:20:"end_args_token_index";i:1343;s:9:"arguments";a:4:{s:11:"$table_name";N;s:8:"$rel_elm";N;s:18:"$parent_conditions";s:5:"false";s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:248;s:26:"start_brackets_token_index";i:1345;s:23:"end_brackets_line_index";i:279;s:24:"end_brackets_token_index";i:1799;s:14:"end_line_index";i:279;s:15:"end_token_index";i:1799;}s:37:"buildDefaultTableCountRelationshipSQL";a:20:{s:4:"name";s:37:"buildDefaultTableCountRelationshipSQL";s:16:"start_line_index";i:297;s:17:"start_token_index";i:1803;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:378:"/*
+	 * @param $table_name: string with table name
+	 * @param $rel_elm: array with:
+ 		array(
+ 			"keys" => ...
+ 			"attributes" => ...
+ 			"conditions" => ...
+ 			"groups_by" => ...
+ 		)
+	 * @param $parent_conditions: array with conditions, like
+	 	array(
+	 		"attribute_name_1" => "attribute_value_1", 
+	 		...
+	 	)
+	 * @param $options: none. N/A for now...
+	 */";}s:25:"start_comments_line_index";i:281;s:26:"start_comments_token_index";i:1801;s:23:"end_comments_line_index";i:296;s:24:"end_comments_token_index";i:1801;s:22:"start_args_token_index";i:1810;s:20:"end_args_token_index";i:1829;s:9:"arguments";a:4:{s:11:"$table_name";N;s:8:"$rel_elm";N;s:18:"$parent_conditions";s:5:"false";s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:297;s:26:"start_brackets_token_index";i:1831;s:23:"end_brackets_line_index";i:326;s:24:"end_brackets_token_index";i:2164;s:14:"end_line_index";i:326;s:15:"end_token_index";i:2164;}s:33:"buildDefaultTableFindColumnMaxSQL";a:20:{s:4:"name";s:33:"buildDefaultTableFindColumnMaxSQL";s:16:"start_line_index";i:333;s:17:"start_token_index";i:2168;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:155:"/*
+	 * @param $table_name: string with table name
+	 * @param $attribute_name: string with attribute name
+	 * @param $options: none. N/A for now...
+	 */";}s:25:"start_comments_line_index";i:328;s:26:"start_comments_token_index";i:2166;s:23:"end_comments_line_index";i:332;s:24:"end_comments_token_index";i:2166;s:22:"start_args_token_index";i:2175;s:20:"end_args_token_index";i:2187;s:9:"arguments";a:3:{s:11:"$table_name";N;s:15:"$attribute_name";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:333;s:26:"start_brackets_token_index";i:2189;s:23:"end_brackets_line_index";i:337;s:24:"end_brackets_token_index";i:2225;s:14:"end_line_index";i:337;s:15:"end_token_index";i:2225;}s:28:"getSQLRelationshipConditions";a:20:{s:4:"name";s:28:"getSQLRelationshipConditions";s:16:"start_line_index";i:349;s:17:"start_token_index";i:2233;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:3:{i:0;s:72:"/**************************** RELATIONSHIPS ***************************/";i:1;s:512:"/*
+	   getSQLRelationshipConditions: parses the following:
+		<condition column="user_id" operator="!=">10</condition><!-- user_id belongs to the employee table -->
+		<condition column="type"><table value="computer" /><operator><![CDATA[<=]]></operator><value>hp</value></condition><!-- type belongs to the computer table -->
+		<condition column="xxx" table="ttt" operator="&gt;" refcolumn="yyy" reftable="www" value="10" />
+		<condition><![CDATA[length(item.title) > 0 and item.status=1]]></condition>	
+	*/";i:2;s:108:"//used too in app/__system/layer/presentation/phpframework/src/util/CMSPresentationFormSettingsUIHandler.php";}s:25:"start_comments_line_index";i:339;s:26:"start_comments_token_index";i:2227;s:23:"end_comments_line_index";i:349;s:24:"end_comments_token_index";i:2231;s:22:"start_args_token_index";i:2240;s:20:"end_args_token_index";i:2256;s:9:"arguments";a:3:{s:11:"$conditions";N;s:11:"$table_name";s:5:"false";s:18:"$parent_conditions";s:5:"false";}s:25:"start_brackets_line_index";i:349;s:26:"start_brackets_token_index";i:2258;s:23:"end_brackets_line_index";i:414;s:24:"end_brackets_token_index";i:2917;s:14:"end_line_index";i:414;s:15:"end_token_index";i:2917;}s:22:"getSQLRelationshipSort";a:20:{s:4:"name";s:22:"getSQLRelationshipSort";s:16:"start_line_index";i:426;s:17:"start_token_index";i:2921;s:4:"type";s:9:"protected";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:316:"/*
+	   getSQLRelationshipSort: parses the following:
+		<sort column="title" table="computer" order="asc" />
+		<sort column="id" order="desc" />
+		
+		$sorts:
+		- array("id", "name")
+		- array("id" => "asc", "name" => "desc")
+		- array(array("column" => "id"), array("column" => "name", "order" => "asc"))
+	*/";}s:25:"start_comments_line_index";i:416;s:26:"start_comments_token_index";i:2919;s:23:"end_comments_line_index";i:425;s:24:"end_comments_token_index";i:2919;s:22:"start_args_token_index";i:2928;s:20:"end_args_token_index";i:2940;s:9:"arguments";a:3:{s:6:"$sorts";N;s:11:"$table_name";N;s:9:"$group_by";s:5:"false";}s:25:"start_brackets_line_index";i:426;s:26:"start_brackets_token_index";i:2942;s:23:"end_brackets_line_index";i:460;s:24:"end_brackets_token_index";i:3237;s:14:"end_line_index";i:460;s:15:"end_token_index";i:3237;}s:28:"getSQLRelationshipAttributes";a:20:{s:4:"name";s:28:"getSQLRelationshipAttributes";s:16:"start_line_index";i:472;s:17:"start_token_index";i:3241;s:4:"type";s:9:"protected";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:333:"/*
+	   getSQLRelationshipAttributes: parses the following:
+	   	<attribute name="name" column="title" table="computer" />
+		<attribute column="*" table="item" />
+		
+		$attrs:
+		- array("id", "name")
+		- array("id" => "", "name" => "title")
+		- array(array("column" => "id"), array("column" => "name", "name" => "title"))
+	*/";}s:25:"start_comments_line_index";i:462;s:26:"start_comments_token_index";i:3239;s:23:"end_comments_line_index";i:471;s:24:"end_comments_token_index";i:3239;s:22:"start_args_token_index";i:3248;s:20:"end_args_token_index";i:3256;s:9:"arguments";a:3:{s:6:"$attrs";N;s:11:"$table_name";N;s:5:"$keys";N;}s:25:"start_brackets_line_index";i:472;s:26:"start_brackets_token_index";i:3258;s:23:"end_brackets_line_index";i:516;s:24:"end_brackets_token_index";i:3693;s:14:"end_line_index";i:516;s:15:"end_token_index";i:3693;}s:23:"getSQLRelationshipJoins";a:20:{s:4:"name";s:23:"getSQLRelationshipJoins";s:16:"start_line_index";i:536;s:17:"start_token_index";i:3697;s:4:"type";s:9:"protected";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:848:"/*
+	  getSQLRelationshipJoins: Parses the following:
+	  	<key pcolumn="user_id" fcolumn="employee_id" ftable="employee_computer" join="left" />
+		<key pcolumn="id" ptable="employee_computer" fcolumn="computer_id" ftable="computer" />
+		<key pcolumn="title" ptable="employee_computer">jp</key>
+		<key pcolumn="title" ptable="employee_computer" join="left">jp left</key>
+		<key fcolumn="computer_model" ftable="computer" value="hp" />
+		<key pcolumn="id" ptable="employee_computer" fcolumn="computer_id" ftable="computer" value="1" operator="!=" />
+		<key pcolumn="yyy" ptable="item" fcolumn="yyy" ftable="item" />
+		<key pcolumn="xxx" value="xxx" />
+		<key pcolumn="www" ptable="item" value="www" />
+		<key fcolumn="ttt" ftable="item" value="ttt" />
+			
+		$key["join"] can have the following values:
+		- inner
+		- left
+		- right
+	*/";}s:25:"start_comments_line_index";i:518;s:26:"start_comments_token_index";i:3695;s:23:"end_comments_line_index";i:535;s:24:"end_comments_token_index";i:3695;s:22:"start_args_token_index";i:3704;s:20:"end_args_token_index";i:3709;s:9:"arguments";a:2:{s:5:"$keys";N;s:11:"$table_name";N;}s:25:"start_brackets_line_index";i:536;s:26:"start_brackets_token_index";i:3711;s:23:"end_brackets_line_index";i:639;s:24:"end_brackets_token_index";i:4955;s:14:"end_line_index";i:639;s:15:"end_token_index";i:4955;}s:25:"getSQLRelationshipGroupBy";a:20:{s:4:"name";s:25:"getSQLRelationshipGroupBy";s:16:"start_line_index";i:649;s:17:"start_token_index";i:4959;s:4:"type";s:9:"protected";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:294:"/*
+	  getSQLRelationshipGroupBy: Parses the following:
+	  	<group_by column="id" table="item" />
+		<group_by column="id" table="item" having="max(item.id) = 1" />
+		<group_by column="id" table="item">
+			<having><![CDATA[max(item.id) > 1 and min(item.id)<10]]></having>
+		</group_by>
+	*/";}s:25:"start_comments_line_index";i:641;s:26:"start_comments_token_index";i:4957;s:23:"end_comments_line_index";i:648;s:24:"end_comments_token_index";i:4957;s:22:"start_args_token_index";i:4966;s:20:"end_args_token_index";i:4971;s:9:"arguments";a:2:{s:9:"$group_by";N;s:11:"$table_name";N;}s:25:"start_brackets_line_index";i:649;s:26:"start_brackets_token_index";i:4973;s:23:"end_brackets_line_index";i:699;s:24:"end_brackets_token_index";i:5333;s:14:"end_line_index";i:699;s:15:"end_token_index";i:5333;}s:16:"getSQLAttributes";a:20:{s:4:"name";s:16:"getSQLAttributes";s:16:"start_line_index";i:703;s:17:"start_token_index";i:5337;s:4:"type";s:9:"protected";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:62:"/**************************** SQL ***************************/";}s:25:"start_comments_line_index";i:701;s:26:"start_comments_token_index";i:5335;s:23:"end_comments_line_index";i:701;s:24:"end_comments_token_index";i:5335;s:22:"start_args_token_index";i:5344;s:20:"end_args_token_index";i:5346;s:9:"arguments";a:1:{s:11:"$attributes";N;}s:25:"start_brackets_line_index";i:703;s:26:"start_brackets_token_index";i:5348;s:23:"end_brackets_line_index";i:724;s:24:"end_brackets_token_index";i:5525;s:14:"end_line_index";i:724;s:15:"end_token_index";i:5525;}s:16:"getSQLConditions";a:20:{s:4:"name";s:16:"getSQLConditions";s:16:"start_line_index";i:835;s:17:"start_token_index";i:5531;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:2:{i:0;s:264:"/*public static function getSQLConditions($conditions) {
+		$sql = "";
+		if(is_array($conditions)) {
+			foreach($conditions as $key => $value) {
+				$sql .= ($sql ? " AND " : "") . $key . "=" . self::createBaseExprValue($value);
+			}
+		}
+		return $sql;
+	}*/";i:1;s:2936:"/*
+	$join = "and"; //$join= "or";
+	$conditions = array(
+		"age" => array(array("operator" => ">", "value" => 21), array("operator" => "<=", "value" => 24)),
+		//"age" => array(22,23,24),
+		
+		"skin" => array("operator" => "in", "value" => "brown, 1"),
+		//"skin" => array("operator" => "in", "value" => array("brown", 1)),
+		//"skin" => array("operator" => "like", "value" => "br%n"),
+		
+		"or" => array(
+			"end_date" => array("operator" => ">", "value" => date("Y-m-d H:i:00")),
+			"and" => array(
+				"end_date" => "0000-00-00 00:00:00",
+				"begin_date" => array("operator" => ">", "value" => date("Y-m-d H:i:00")),
+			),
+		)
+		//"or" => array(
+		//	"AND" => array(
+		//		"is_active" => 1,
+		//		"is_white" => 0
+		//	),
+		//),
+		
+		"aNd" => "name like 'jo%o'",
+	);
+	
+	$conditions = array(
+		"a.type" => $_POST["type"] ? $_POST["type"] : 0,
+		"a.employee_id" => $_POST["employee_id"],
+		"a.appointment_id" => array(
+			"value" => $_POST["appointment_id"] ? $_POST["appointment_id"] : 0,
+			"operator" => "!="
+		),
+		"or" => array(
+			0 => array(
+				"and" => array(
+					"da.begin_date" => array(
+						"value" => $_POST["begin_date"],
+						"operator" => ">="
+					),
+					"da.end_date" => array(
+						"value" => $_POST["begin_date"],
+						"operator" => ">="
+					)
+				)
+			),
+			1 => array(
+				"and" => array(
+					"da.begin_date" => array(
+						"value" => $_POST["end_date"],
+						"operator" => ">="
+					),
+					"da.end_date" => array(
+						"value" => $_POST["end_date"],
+						"operator" => ">="
+					)
+				)
+			)
+		)
+	);
+	R: `a`.`type` = 0 AND `a`.`employee_id` = '2' AND `a`.`appointment_id` != 0 AND (((`da`.`begin_date` >= '2019-06-25 08:30:00' AND `da`.`end_date` >= '2019-06-25 08:30:00')) OR ((`da`.`begin_date` >= '2019-06-25 08:45:00' AND `da`.`end_date` >= '2019-06-25 08:45:00')))
+	
+	$conditions = array(
+		"a.type" => $_POST["type"] ? $_POST["type"] : 0,
+		"a.employee_id" => $_POST["employee_id"],
+		"a.appointment_id" => array(
+			"value" => $_POST["appointment_id"] ? $_POST["appointment_id"] : 0,
+			"operator" => "!="
+		),
+		"or" => array(
+			0 => array(
+				"and" => array(
+					"da.begin_date" => array(
+						"value" => $_POST["begin_date"],
+						"operator" => "<="
+					),
+					"da.end_date" => array(
+						"value" => $_POST["begin_date"],
+						"operator" => ">="
+					)
+				)
+			),
+			"and" => array(
+				"da.begin_date" => array(
+					0 => array(
+						"value" => $_POST["begin_date"],
+						"operator" => ">="
+					),
+					1 => array(
+						"value" => $_POST["end_date"],
+						"operator" => "<="
+					)
+				)
+			)
+		)
+	);
+	R: `a`.`type` = 0 AND `a`.`employee_id` = '2' AND `a`.`appointment_id` != 0 AND (((`da`.`begin_date` <= '2019-06-25 08:20:00' AND `da`.`end_date` >= '2019-06-25 08:20:00')) OR (`da`.`begin_date` >= '2019-06-25 08:20:00' AND `da`.`begin_date` <= '2019-06-25 08:35:00'))
+	*/";}s:25:"start_comments_line_index";i:726;s:26:"start_comments_token_index";i:5527;s:23:"end_comments_line_index";i:834;s:24:"end_comments_token_index";i:5529;s:22:"start_args_token_index";i:5538;s:20:"end_args_token_index";i:5554;s:9:"arguments";a:3:{s:11:"$conditions";N;s:5:"$join";s:5:"false";s:15:"$key_table_name";s:2:"""";}s:25:"start_brackets_line_index";i:835;s:26:"start_brackets_token_index";i:5556;s:23:"end_brackets_line_index";i:896;s:24:"end_brackets_token_index";i:6165;s:14:"end_line_index";i:896;s:15:"end_token_index";i:6165;}s:10:"getSQLSort";a:15:{s:4:"name";s:10:"getSQLSort";s:16:"start_line_index";i:898;s:17:"start_token_index";i:6167;s:4:"type";s:9:"protected";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:6174;s:20:"end_args_token_index";i:6176;s:9:"arguments";a:1:{s:5:"$sort";N;}s:25:"start_brackets_line_index";i:898;s:26:"start_brackets_token_index";i:6178;s:23:"end_brackets_line_index";i:919;s:24:"end_brackets_token_index";i:6349;s:14:"end_line_index";i:919;s:15:"end_token_index";i:6349;}s:33:"prepareTableAttributeWithFunction";a:20:{s:4:"name";s:33:"prepareTableAttributeWithFunction";s:16:"start_line_index";i:922;s:17:"start_token_index";i:6353;s:4:"type";s:9:"protected";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:49:"//parse attribute with functions like: lower(xxx)";}s:25:"start_comments_line_index";i:921;s:26:"start_comments_token_index";i:6351;s:23:"end_comments_line_index";i:922;s:24:"end_comments_token_index";i:6351;s:22:"start_args_token_index";i:6360;s:20:"end_args_token_index";i:6369;s:9:"arguments";a:2:{s:10:"$attr_name";N;s:11:"$table_name";s:5:"false";}s:25:"start_brackets_line_index";i:922;s:26:"start_brackets_token_index";i:6371;s:23:"end_brackets_line_index";i:946;s:24:"end_brackets_token_index";i:6540;s:14:"end_line_index";i:946;s:15:"end_token_index";i:6540;}s:25:"prepareTableAttributeName";a:15:{s:4:"name";s:25:"prepareTableAttributeName";s:16:"start_line_index";i:948;s:17:"start_token_index";i:6542;s:4:"type";s:9:"protected";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:6549;s:20:"end_args_token_index";i:6558;s:9:"arguments";a:2:{s:10:"$attr_name";N;s:11:"$table_name";s:5:"false";}s:25:"start_brackets_line_index";i:948;s:26:"start_brackets_token_index";i:6560;s:23:"end_brackets_line_index";i:963;s:24:"end_brackets_token_index";i:6714;s:14:"end_line_index";i:963;s:15:"end_token_index";i:6714;}s:19:"createBaseExprValue";a:15:{s:4:"name";s:19:"createBaseExprValue";s:16:"start_line_index";i:965;s:17:"start_token_index";i:6716;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:6723;s:20:"end_args_token_index";i:6725;s:9:"arguments";a:1:{s:6:"$value";N;}s:25:"start_brackets_line_index";i:965;s:26:"start_brackets_token_index";i:6727;s:23:"end_brackets_line_index";i:977;s:24:"end_brackets_token_index";i:6832;s:14:"end_line_index";i:977;s:15:"end_token_index";i:6832;}s:32:"createBaseExprValueForOperatorIn";a:15:{s:4:"name";s:32:"createBaseExprValueForOperatorIn";s:16:"start_line_index";i:979;s:17:"start_token_index";i:6834;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:6841;s:20:"end_args_token_index";i:6843;s:9:"arguments";a:1:{s:6:"$value";N;}s:25:"start_brackets_line_index";i:979;s:26:"start_brackets_token_index";i:6845;s:23:"end_brackets_line_index";i:985;s:24:"end_brackets_token_index";i:6884;s:14:"end_line_index";i:985;s:15:"end_token_index";i:6884;}s:32:"createBaseExprValueForOperatorIs";a:15:{s:4:"name";s:32:"createBaseExprValueForOperatorIs";s:16:"start_line_index";i:987;s:17:"start_token_index";i:6886;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:6893;s:20:"end_args_token_index";i:6895;s:9:"arguments";a:1:{s:6:"$value";N;}s:25:"start_brackets_line_index";i:987;s:26:"start_brackets_token_index";i:6897;s:23:"end_brackets_line_index";i:993;s:24:"end_brackets_token_index";i:6936;s:14:"end_line_index";i:993;s:15:"end_token_index";i:6936;}}}}

@@ -1,0 +1,812 @@
+a:1:{s:22:"PHPCodePrintingHandler";a:1:{s:7:"methods";a:52:{s:23:"getPHPClassesFromFolder";a:20:{s:4:"name";s:23:"getPHPClassesFromFolder";s:16:"start_line_index";i:8;s:17:"start_token_index";i:18;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:20:"/* START: GETTERS */";}s:25:"start_comments_line_index";i:7;s:26:"start_comments_token_index";i:16;s:23:"end_comments_line_index";i:7;s:24:"end_comments_token_index";i:16;s:22:"start_args_token_index";i:25;s:20:"end_args_token_index";i:27;s:9:"arguments";a:1:{s:12:"$folder_path";N;}s:25:"start_brackets_line_index";i:8;s:26:"start_brackets_token_index";i:29;s:23:"end_brackets_line_index";i:20;s:24:"end_brackets_token_index";i:120;s:14:"end_line_index";i:20;s:15:"end_token_index";i:120;}s:34:"getPHPClassesFromFolderRecursively";a:15:{s:4:"name";s:34:"getPHPClassesFromFolderRecursively";s:16:"start_line_index";i:22;s:17:"start_token_index";i:122;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:129;s:20:"end_args_token_index";i:131;s:9:"arguments";a:1:{s:12:"$folder_path";N;}s:25:"start_brackets_line_index";i:22;s:26:"start_brackets_token_index";i:133;s:23:"end_brackets_line_index";i:34;s:24:"end_brackets_token_index";i:224;s:14:"end_line_index";i:34;s:15:"end_token_index";i:224;}s:21:"getPHPClassesFromFile";a:15:{s:4:"name";s:21:"getPHPClassesFromFile";s:16:"start_line_index";i:36;s:17:"start_token_index";i:226;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:233;s:20:"end_args_token_index";i:235;s:9:"arguments";a:1:{s:10:"$file_path";N;}s:25:"start_brackets_line_index";i:36;s:26:"start_brackets_token_index";i:237;s:23:"end_brackets_line_index";i:42;s:24:"end_brackets_token_index";i:283;s:14:"end_line_index";i:42;s:15:"end_token_index";i:283;}s:23:"getPHPClassesFromString";a:20:{s:4:"name";s:23:"getPHPClassesFromString";s:16:"start_line_index";i:45;s:17:"start_token_index";i:287;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:43:"//http://es.php.net/manual/pt_BR/tokens.php";}s:25:"start_comments_line_index";i:44;s:26:"start_comments_token_index";i:285;s:23:"end_comments_line_index";i:45;s:24:"end_comments_token_index";i:285;s:22:"start_args_token_index";i:294;s:20:"end_args_token_index";i:296;s:9:"arguments";a:1:{s:9:"$php_code";N;}s:25:"start_brackets_line_index";i:45;s:26:"start_brackets_token_index";i:298;s:23:"end_brackets_line_index";i:48;s:24:"end_brackets_token_index";i:320;s:14:"end_line_index";i:48;s:15:"end_token_index";i:320;}s:23:"getPHPClassesFromTokens";a:15:{s:4:"name";s:23:"getPHPClassesFromTokens";s:16:"start_line_index";i:50;s:17:"start_token_index";i:322;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:329;s:20:"end_args_token_index";i:331;s:9:"arguments";a:1:{s:7:"$tokens";N;}s:25:"start_brackets_line_index";i:50;s:26:"start_brackets_token_index";i:333;s:23:"end_brackets_line_index";i:533;s:24:"end_brackets_token_index";i:4467;s:14:"end_line_index";i:533;s:15:"end_token_index";i:4467;}s:29:"prepareClassNameWithNameSpace";a:15:{s:4:"name";s:29:"prepareClassNameWithNameSpace";s:16:"start_line_index";i:535;s:17:"start_token_index";i:4469;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:4476;s:20:"end_args_token_index";i:4485;s:9:"arguments";a:2:{s:11:"$class_name";N;s:10:"$namespace";s:2:"""";}s:25:"start_brackets_line_index";i:535;s:26:"start_brackets_token_index";i:4487;s:23:"end_brackets_line_index";i:537;s:24:"end_brackets_token_index";i:4539;s:14:"end_line_index";i:537;s:15:"end_token_index";i:4539;}s:30:"decoupleClassNameWithNameSpace";a:15:{s:4:"name";s:30:"decoupleClassNameWithNameSpace";s:16:"start_line_index";i:539;s:17:"start_token_index";i:4541;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:4548;s:20:"end_args_token_index";i:4550;s:9:"arguments";a:1:{s:11:"$class_name";N;}s:25:"start_brackets_line_index";i:539;s:26:"start_brackets_token_index";i:4552;s:23:"end_brackets_line_index";i:550;s:24:"end_brackets_token_index";i:4660;s:14:"end_line_index";i:550;s:15:"end_token_index";i:4660;}s:16:"getClassFromFile";a:15:{s:4:"name";s:16:"getClassFromFile";s:16:"start_line_index";i:608;s:17:"start_token_index";i:5190;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:5197;s:20:"end_args_token_index";i:5202;s:9:"arguments";a:2:{s:10:"$file_path";N;s:11:"$class_name";N;}s:25:"start_brackets_line_index";i:608;s:26:"start_brackets_token_index";i:5204;s:23:"end_brackets_line_index";i:617;s:24:"end_brackets_token_index";i:5264;s:14:"end_line_index";i:617;s:15:"end_token_index";i:5264;}s:22:"getClassFromPHPClasses";a:15:{s:4:"name";s:22:"getClassFromPHPClasses";s:16:"start_line_index";i:619;s:17:"start_token_index";i:5266;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:5273;s:20:"end_args_token_index";i:5278;s:9:"arguments";a:2:{s:8:"$classes";N;s:11:"$class_name";N;}s:25:"start_brackets_line_index";i:619;s:26:"start_brackets_token_index";i:5280;s:23:"end_brackets_line_index";i:632;s:24:"end_brackets_token_index";i:5414;s:14:"end_line_index";i:632;s:15:"end_token_index";i:5414;}s:25:"searchClassFromPHPClasses";a:15:{s:4:"name";s:25:"searchClassFromPHPClasses";s:16:"start_line_index";i:634;s:17:"start_token_index";i:5416;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:5423;s:20:"end_args_token_index";i:5428;s:9:"arguments";a:2:{s:8:"$classes";N;s:11:"$class_name";N;}s:25:"start_brackets_line_index";i:634;s:26:"start_brackets_token_index";i:5430;s:23:"end_brackets_line_index";i:647;s:24:"end_brackets_token_index";i:5575;s:14:"end_line_index";i:647;s:15:"end_token_index";i:5575;}s:25:"getClassPathFromClassName";a:20:{s:4:"name";s:25:"getClassPathFromClassName";s:16:"start_line_index";i:650;s:17:"start_token_index";i:5579;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:134:"//checks if the $class_name really exists in file and if not checks for the correspondent with the namespace and return the class_path";}s:25:"start_comments_line_index";i:649;s:26:"start_comments_token_index";i:5577;s:23:"end_comments_line_index";i:650;s:24:"end_comments_token_index";i:5577;s:22:"start_args_token_index";i:5586;s:20:"end_args_token_index";i:5591;s:9:"arguments";a:2:{s:10:"$file_path";N;s:11:"$class_name";N;}s:25:"start_brackets_line_index";i:650;s:26:"start_brackets_token_index";i:5593;s:23:"end_brackets_line_index";i:666;s:24:"end_brackets_token_index";i:5706;s:14:"end_line_index";i:666;s:15:"end_token_index";i:5706;}s:14:"getClassOfFile";a:20:{s:4:"name";s:14:"getClassOfFile";s:16:"start_line_index";i:669;s:17:"start_token_index";i:5710;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:135:"//based in a file, get the correspondent class (basically based in the file name, get sthe correspondent class data inside of the file.";}s:25:"start_comments_line_index";i:668;s:26:"start_comments_token_index";i:5708;s:23:"end_comments_line_index";i:669;s:24:"end_comments_token_index";i:5708;s:22:"start_args_token_index";i:5717;s:20:"end_args_token_index";i:5719;s:9:"arguments";a:1:{s:10:"$file_path";N;}s:25:"start_brackets_line_index";i:669;s:26:"start_brackets_token_index";i:5721;s:23:"end_brackets_line_index";i:689;s:24:"end_brackets_token_index";i:5867;s:14:"end_line_index";i:689;s:15:"end_token_index";i:5867;}s:24:"getClassPropertyFromFile";a:15:{s:4:"name";s:24:"getClassPropertyFromFile";s:16:"start_line_index";i:691;s:17:"start_token_index";i:5869;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:5876;s:20:"end_args_token_index";i:5884;s:9:"arguments";a:3:{s:10:"$file_path";N;s:11:"$class_name";N;s:10:"$prop_name";N;}s:25:"start_brackets_line_index";i:691;s:26:"start_brackets_token_index";i:5886;s:23:"end_brackets_line_index";i:701;s:24:"end_brackets_token_index";i:5976;s:14:"end_line_index";i:701;s:15:"end_token_index";i:5976;}s:19:"getFunctionFromFile";a:15:{s:4:"name";s:19:"getFunctionFromFile";s:16:"start_line_index";i:703;s:17:"start_token_index";i:5978;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:5985;s:20:"end_args_token_index";i:5997;s:9:"arguments";a:3:{s:10:"$file_path";N;s:10:"$func_name";N;s:11:"$class_name";s:1:"0";}s:25:"start_brackets_line_index";i:703;s:26:"start_brackets_token_index";i:5999;s:23:"end_brackets_line_index";i:710;s:24:"end_brackets_token_index";i:6049;s:14:"end_line_index";i:710;s:15:"end_token_index";i:6049;}s:21:"getFunctionFromString";a:15:{s:4:"name";s:21:"getFunctionFromString";s:16:"start_line_index";i:712;s:17:"start_token_index";i:6051;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:6058;s:20:"end_args_token_index";i:6070;s:9:"arguments";a:3:{s:9:"$contents";N;s:10:"$func_name";N;s:11:"$class_name";s:1:"0";}s:25:"start_brackets_line_index";i:712;s:26:"start_brackets_token_index";i:6072;s:23:"end_brackets_line_index";i:735;s:24:"end_brackets_token_index";i:6311;s:14:"end_line_index";i:735;s:15:"end_token_index";i:6311;}s:21:"getNamespacesFromFile";a:15:{s:4:"name";s:21:"getNamespacesFromFile";s:16:"start_line_index";i:737;s:17:"start_token_index";i:6313;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:6320;s:20:"end_args_token_index";i:6322;s:9:"arguments";a:1:{s:10:"$file_path";N;}s:25:"start_brackets_line_index";i:737;s:26:"start_brackets_token_index";i:6324;s:23:"end_brackets_line_index";i:748;s:24:"end_brackets_token_index";i:6368;s:14:"end_line_index";i:748;s:15:"end_token_index";i:6368;}s:15:"getUsesFromFile";a:15:{s:4:"name";s:15:"getUsesFromFile";s:16:"start_line_index";i:750;s:17:"start_token_index";i:6370;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:6377;s:20:"end_args_token_index";i:6379;s:9:"arguments";a:1:{s:10:"$file_path";N;}s:25:"start_brackets_line_index";i:750;s:26:"start_brackets_token_index";i:6381;s:23:"end_brackets_line_index";i:761;s:24:"end_brackets_token_index";i:6425;s:14:"end_line_index";i:761;s:15:"end_token_index";i:6425;}s:19:"getIncludesFromFile";a:15:{s:4:"name";s:19:"getIncludesFromFile";s:16:"start_line_index";i:763;s:17:"start_token_index";i:6427;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:6434;s:20:"end_args_token_index";i:6436;s:9:"arguments";a:1:{s:10:"$file_path";N;}s:25:"start_brackets_line_index";i:763;s:26:"start_brackets_token_index";i:6438;s:23:"end_brackets_line_index";i:776;s:24:"end_brackets_token_index";i:6482;s:14:"end_line_index";i:776;s:15:"end_token_index";i:6482;}s:26:"getClassPropertiesFromFile";a:20:{s:4:"name";s:26:"getClassPropertiesFromFile";s:16:"start_line_index";i:859;s:17:"start_token_index";i:6876;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:1098:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	private static function getCodeInstructionFromFile($file_path, $types) {
+		$instructions = array();
+		
+		if ($file_path && file_exists($file_path) && $types) {
+			$types = is_array($types) ? $types : array($types);
+			
+			$contents = file_get_contents($file_path);
+			$contents = str_replace("\r\n", "\n", $contents);
+			$lines = explode("\n", $contents);
+			
+			$t = count($lines);
+			for ($i = 0; $i < $t; $i++) {
+				$line = $lines[$i];
+				$trimmed = trim($line);
+				
+				foreach ($types as $type)
+					if ($type) {
+						$pos = stripos($trimmed, $type);
+						
+						//checks instruction at the begginning of the line
+						if ($pos === 0) {
+							$start_pos = $pos + strlen($type);
+							$end_pos = strpos($trimmed, ";", $start_pos);
+							$end_pos = $end_pos !== false ? $end_pos : strlen($end_pos);
+							
+							$instruction = trim( substr($trimmed, $start_pos, $end_pos - $start_pos) );
+							$instructions[] = array($instruction, $type);
+							
+							break;
+						}
+					}
+			}
+		}
+		
+		return $instructions;
+	}*/";}s:25:"start_comments_line_index";i:821;s:26:"start_comments_token_index";i:6874;s:23:"end_comments_line_index";i:857;s:24:"end_comments_token_index";i:6874;s:22:"start_args_token_index";i:6883;s:20:"end_args_token_index";i:6888;s:9:"arguments";a:2:{s:10:"$file_path";N;s:11:"$class_name";N;}s:25:"start_brackets_line_index";i:859;s:26:"start_brackets_token_index";i:6890;s:23:"end_brackets_line_index";i:866;s:24:"end_brackets_token_index";i:6939;s:14:"end_line_index";i:866;s:15:"end_token_index";i:6939;}s:28:"getClassPropertiesFromString";a:15:{s:4:"name";s:28:"getClassPropertiesFromString";s:16:"start_line_index";i:868;s:17:"start_token_index";i:6941;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:6948;s:20:"end_args_token_index";i:6953;s:9:"arguments";a:2:{s:9:"$contents";N;s:11:"$class_name";N;}s:25:"start_brackets_line_index";i:868;s:26:"start_brackets_token_index";i:6955;s:23:"end_brackets_line_index";i:1010;s:24:"end_brackets_token_index";i:8372;s:14:"end_line_index";i:1010;s:15:"end_token_index";i:8372;}s:23:"getFunctionCodeFromFile";a:20:{s:4:"name";s:23:"getFunctionCodeFromFile";s:16:"start_line_index";i:1211;s:17:"start_token_index";i:8376;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:7781:"/* This is DEPRECATED bc if php is obfuscated this doesn't work. Besides it doesn't get the values correctly if they have comments at the first line of the properties value
+	public static function getClassPropertiesFromFile($file_path, $class_name) {
+		$properties = array();
+		
+		if ($file_path && file_exists($file_path) && $class_name) {
+			$contents = file_get_contents($file_path);
+			
+			$classes = self::getPHPClassesFromString($contents);
+			$c = self::getClassFromPHPClasses($classes, $class_name);
+			$class_name = $c["name"];
+			$start_brackets_line = $c["start_brackets_line_index"];
+			
+			if (is_numeric($start_brackets_line)) {
+				$contents = str_replace("\r\n", "\n", $contents);
+				$lines = explode("\n", $contents);
+				
+				//GETTING PROPERTIES IN TEXT
+				$line = $lines[ $start_brackets_line - 1 ];
+				$pos = strpos($line, "{");
+				$pos = $pos !== false ? $pos : strlen($line);
+				
+				$intervals = array();
+				$t = $c["methods"] ? count($c["methods"]) : 0;
+				for ($i = 0; $i < $t; $i++) {
+					$sli = is_numeric($c["methods"][$i]["start_comments_line_index"]) ? $c["methods"][$i]["start_comments_line_index"] : $c["methods"][$i]["start_line_index"];
+					$intervals[] = array($sli, $c["methods"][$i]["end_line_index"]);
+				}
+				
+				$new_c = substr($line, $pos + 1);
+				$idx = $start_brackets_line - 1;
+				while (true) {
+					++$idx;
+					
+					if ($idx + 1 >= $c["end_line_index"])
+						break;
+					
+					$allowed = true;
+					foreach ($intervals as $interval)
+						if ($idx + 1 >= $interval[0] && $idx + 1 <= $interval[1]) {
+							$allowed = false;
+							break;
+						}
+					
+					if ($allowed && trim($lines[$idx])) 
+						$new_c .= "\n" . $lines[$idx];
+				}
+				$new_c = trim($new_c);
+				
+				//PARSEING PROPERTIES
+				$t = strlen($new_c);
+				$open_single_quotes = $open_double_quotes = $open_multiple_comments = $open_single_comments = false;
+				$prop_doc_comments = $prop_comments = array();
+				
+				for ($i = 0; $i < $t; $i++) {
+					$char = $new_c[$i];
+					
+					if (!$open_single_quotes && !$open_double_quotes && !$open_multiple_comments && !$open_single_comments && ($char == '$' ||
+						(strtolower($char) == "c" && strtolower($new_c[$i+1]) == "o" && strtolower($new_c[$i+2]) == "n" && strtolower($new_c[$i+3]) == "s" && strtolower($new_c[$i+4]) == "t")
+					)) {
+						$idx = $char == '$' ? $i : $i + 5;
+						
+						$settings = "";
+						for ($j = $idx - 1; $j >= 0; --$j) {
+							$char = $new_c[$j];
+							
+							if ($char == ";" || $char == "{" || $char == "}" || $char == "\n")
+								break;
+							else if ($char != "\t") 
+								$settings = $char . $settings;
+						}
+						
+						$var_name = "";
+						for ($j = $idx + 1; $j < $t; $j++) {
+							$char = $new_c[$j];
+							
+							if ($char == " " || $char == "=" || $char == "\t" || $char == "\n" || $char == ";")
+								break;
+							else 
+								$var_name .= $char;
+						}
+						
+						$value = "";
+						$start_value = false;
+						for ($j = $j - 1; $j < $t; $j++) {
+							$char = $new_c[$j];
+							
+							if ($start_value) {
+								$value .= $char;
+								
+								if ($char == "'" && !$open_double_quotes && !$open_multiple_comments && !$open_single_comments && !TextSanitizer::isCharEscaped($new_c, $j)) 
+									$open_single_quotes = !$open_single_quotes;
+								else if ($char == '"' && !$open_single_quotes && !$open_multiple_comments && !$open_single_comments && !TextSanitizer::isCharEscaped($new_c, $j)) 
+									$open_double_quotes = !$open_double_quotes;
+								else if ($char == '/' && $new_c[$j + 1] == "*" && !$open_single_quotes && !$open_double_quotes && !$open_single_comments) {
+									$open_multiple_comments = true;
+									++$j;
+								}
+								else if ($open_multiple_comments && $char == '*' && $new_c[$j + 1] == "/") {
+									$open_multiple_comments = false;
+									++$j;
+								}
+								else if ($char == '/' && $new_c[$j + 1] == "/" && !$open_single_quotes && !$open_double_quotes && !$open_multiple_comments) {
+									$open_single_comments = true;
+									++$j;
+								}
+								else if ($open_single_comments && $char == "\n")
+									$open_single_comments = false;
+							}
+							
+							if (!$open_single_quotes && !$open_double_quotes && !$open_multiple_comments && !$open_single_comments) {
+								if ($char == ";") {
+									if ($j == $i + 1)
+										$value = null;
+									else
+										$value = substr($value, 0, strlen($value) - 1);//remove ;
+									
+									break;
+								}
+								else if (!$start_value && $char == "=")
+									$start_value = true;
+							}
+						}
+						$value = $value ? trim($value) : $value;
+						
+						$i = $j;
+						
+						$settings = trim(strtolower($settings));
+						$type = strpos($settings, "private") !== false ? "private" : (strpos($settings, "protected") !== false ? "protected" : "public");
+						
+						$quote_char = substr($value, 0, 1);
+						$var_type = $value && ($quote_char == '"' || $quote_char == "'") ? "string" : "";
+						
+						if ($quote_char == '"' || $quote_char == "'") {
+							$value = substr($value, 1);
+							$value = substr($value, -1) == $quote_char ? substr($value, 0, -1) : $value;
+							$value = $quote_char == '"' ? str_replace('\\"', '"', $value) : str_replace("\\'", "'", $value);//in case of slashes and \" or \' accorddingly. Do not add the addcslashes here. We only want to add the \\" and \\', because we are getting php code directly.
+							
+							if ($quote_char == "'")
+								$value = str_replace('$', '\\$', $value);//$variables inside of single quotes are escaped because are simply strings and not variables.
+						}
+						
+						//check inline comments
+						$pos = strpos($new_c, "\n", $i);
+						$pos = $pos !== false ? $pos : $t;
+						$aux = trim(substr($new_c, $i + 1, $pos - $i));
+						
+						if ($aux && substr($aux, 0, 2) == "//") {
+							$prop_comments[] = $aux;
+							$i = $pos;
+						}
+						
+						$properties[] = array(
+							"name" => $var_name,
+							"type" => $type,
+							"value" => $value,
+							"var_type" => $var_type,
+							"static" => strpos($settings, "static") !== false,
+							"const" => strpos($settings, "const") !== false,
+							"doc_comments" => $prop_doc_comments ? $prop_doc_comments : null,
+							"comments" => $prop_comments ? $prop_comments : null,
+						);
+						
+						$prop_doc_comments = $prop_comments = array();
+					}
+					else if ($char == "'" && !$open_double_quotes && !$open_multiple_comments && !$open_single_comments && !TextSanitizer::isCharEscaped($new_c, $i)) {
+						$open_single_quotes = !$open_single_quotes;
+					}
+					else if ($char == '"' && !$open_single_quotes && !$open_multiple_comments && !$open_single_comments && !TextSanitizer::isCharEscaped($new_c, $i)) {
+						$open_double_quotes = !$open_double_quotes;
+					}
+					else if ($char == '/' && $new_c[$i + 1] == "*" && !$open_single_quotes && !$open_double_quotes && !$open_single_comments) {
+						$pos = strpos($new_c, "*" . "/", $i); //"*" . "/" is bc this method code is commented!
+						$pos = $pos !== false ? $pos + 1 : $t;
+						$prop_doc_comments[] = substr($new_c, $i, $pos - $i + 1);
+						
+						$open_multiple_comments = true;
+						++$i;
+					}
+					else if ($open_multiple_comments && $char == '*' && $new_c[$i + 1] == "/") {
+						$open_multiple_comments = false;
+						++$i;
+					}
+					else if ($char == '/' && $new_c[$i + 1] == "/" && !$open_single_quotes && !$open_double_quotes && !$open_multiple_comments) {
+						$pos = strpos($new_c, "\n", $i);
+						$pos = $pos !== false ? $pos : $t;
+						$prop_comments[] = substr($new_c, $i, $pos - $i);
+						
+						$open_single_comments = true;
+						++$i;
+					}
+					else if ($open_single_comments && $char == "\n") {
+						$open_single_comments = false;
+					}
+				}
+			}
+		}
+		
+		return $properties;
+	}*/";}s:25:"start_comments_line_index";i:1011;s:26:"start_comments_token_index";i:8374;s:23:"end_comments_line_index";i:1209;s:24:"end_comments_token_index";i:8374;s:22:"start_args_token_index";i:8383;s:20:"end_args_token_index";i:8402;s:9:"arguments";a:4:{s:10:"$file_path";N;s:10:"$func_name";N;s:11:"$class_name";s:1:"0";s:4:"$raw";s:5:"false";}s:25:"start_brackets_line_index";i:1211;s:26:"start_brackets_token_index";i:8404;s:23:"end_brackets_line_index";i:1218;s:24:"end_brackets_token_index";i:8457;s:14:"end_line_index";i:1218;s:15:"end_token_index";i:8457;}s:25:"getFunctionCodeFromString";a:15:{s:4:"name";s:25:"getFunctionCodeFromString";s:16:"start_line_index";i:1220;s:17:"start_token_index";i:8459;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:8466;s:20:"end_args_token_index";i:8485;s:9:"arguments";a:4:{s:9:"$contents";N;s:10:"$func_name";N;s:11:"$class_name";s:1:"0";s:4:"$raw";s:5:"false";}s:25:"start_brackets_line_index";i:1220;s:26:"start_brackets_token_index";i:8487;s:23:"end_brackets_line_index";i:1248;s:24:"end_brackets_token_index";i:8736;s:14:"end_line_index";i:1248;s:15:"end_token_index";i:8736;}s:30:"getCodeWithoutCommentsFromFile";a:20:{s:4:"name";s:30:"getCodeWithoutCommentsFromFile";s:16:"start_line_index";i:1302;s:17:"start_token_index";i:8740;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:1553:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function getFunctionCodeFromFile($file_path, $function_name, $class_name = 0) {
+		if ($file_path && file_exists($file_path) && $function_name) {
+			$f = self::getFunctionFromFile($file_path, $function_name, $class_name);
+			$function_name = $f["name"];
+			$start_brackets_line = $f["start_brackets_line_index"];
+			$end_line = $f["end_line_index"];
+			
+			if (is_numeric($start_brackets_line)) {
+				$contents = file_get_contents($file_path);
+				$contents = str_replace("\r\n", "\n", $contents);
+				$lines = explode("\n", $contents);
+				
+				//TODO: change this code to work with obfuscated php
+				
+				$code = "";
+				
+				$line = $lines[ $start_brackets_line - 1 ];
+				$pos = strpos($line, "{");
+				$pos = $pos !== false ? $pos : strlen($line);
+				$new_c = trim(substr($line, $pos + 1));
+				if ($new_c)
+					$code .= "$new_c";
+				
+				$idx = $start_brackets_line - 1;
+				while (true) {
+					++$idx;
+					
+					if ($idx + 1 >= $end_line) 
+						break;
+					
+					$l = str_replace("\n", "", $lines[$idx]);
+					$l = $l[0] == "\t" ? substr($l, 1) : $l;
+					if ($class_name)//it executes twice if it is a method.
+						$l = $l[0] == "\t" ? substr($l, 1) : $l;
+					
+					$code .= "\n$l";
+				}
+				
+				$line = $lines[ $end_line - 1 ];
+				$pos = strpos($line, "}");
+				$pos = $pos !== false ? $pos : strlen($line);
+				$new_c = trim(substr($line, 0, $pos));
+				if ($new_c) 
+					$code .= "\n$new_c";
+				
+				return trim($code);
+			}
+		}
+		
+		return false;
+	}*/";}s:25:"start_comments_line_index";i:1249;s:26:"start_comments_token_index";i:8738;s:23:"end_comments_line_index";i:1300;s:24:"end_comments_token_index";i:8738;s:22:"start_args_token_index";i:8747;s:20:"end_args_token_index";i:8749;s:9:"arguments";a:1:{s:10:"$file_path";N;}s:25:"start_brackets_line_index";i:1302;s:26:"start_brackets_token_index";i:8751;s:23:"end_brackets_line_index";i:1307;s:24:"end_brackets_token_index";i:8790;s:14:"end_line_index";i:1307;s:15:"end_token_index";i:8790;}s:22:"getCodeWithoutComments";a:15:{s:4:"name";s:22:"getCodeWithoutComments";s:16:"start_line_index";i:1309;s:17:"start_token_index";i:8792;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:8799;s:20:"end_args_token_index";i:8801;s:9:"arguments";a:1:{s:5:"$code";N;}s:25:"start_brackets_line_index";i:1309;s:26:"start_brackets_token_index";i:8803;s:23:"end_brackets_line_index";i:1337;s:24:"end_brackets_token_index";i:8986;s:14:"end_line_index";i:1337;s:15:"end_token_index";i:8986;}s:19:"renameClassFromFile";a:20:{s:4:"name";s:19:"renameClassFromFile";s:16:"start_line_index";i:1342;s:17:"start_token_index";i:8994;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:3:{i:0;s:18:"/* END: GETTERS */";i:1;s:20:"/* START: RENAMES */";i:2;s:82:"//$old_class_name and $new_class_name must be the full class names with namespaces";}s:25:"start_comments_line_index";i:1338;s:26:"start_comments_token_index";i:8988;s:23:"end_comments_line_index";i:1342;s:24:"end_comments_token_index";i:8992;s:22:"start_args_token_index";i:9001;s:20:"end_args_token_index";i:9009;s:9:"arguments";a:3:{s:10:"$file_path";N;s:15:"$old_class_name";N;s:15:"$new_class_name";N;}s:25:"start_brackets_line_index";i:1342;s:26:"start_brackets_token_index";i:9011;s:23:"end_brackets_line_index";i:1356;s:24:"end_brackets_token_index";i:9167;s:14:"end_line_index";i:1356;s:15:"end_token_index";i:9167;}s:22:"renameFunctionFromFile";a:15:{s:4:"name";s:22:"renameFunctionFromFile";s:16:"start_line_index";i:1358;s:17:"start_token_index";i:9169;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:9176;s:20:"end_args_token_index";i:9191;s:9:"arguments";a:4:{s:10:"$file_path";N;s:14:"$old_func_name";N;s:14:"$new_func_name";N;s:11:"$class_name";s:1:"0";}s:25:"start_brackets_line_index";i:1358;s:26:"start_brackets_token_index";i:9193;s:23:"end_brackets_line_index";i:1370;s:24:"end_brackets_token_index";i:9299;s:14:"end_line_index";i:1370;s:15:"end_token_index";i:9299;}s:17:"editClassFromFile";a:20:{s:4:"name";s:17:"editClassFromFile";s:16:"start_line_index";i:1374;s:17:"start_token_index";i:9305;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:2:{i:0;s:18:"/* END: RENAMES */";i:1;s:18:"/* START: EDITS */";}s:25:"start_comments_line_index";i:1371;s:26:"start_comments_token_index";i:9301;s:23:"end_comments_line_index";i:1373;s:24:"end_comments_token_index";i:9303;s:22:"start_args_token_index";i:9312;s:20:"end_args_token_index";i:9320;s:9:"arguments";a:3:{s:10:"$file_path";N;s:19:"$old_class_settings";N;s:19:"$new_class_settings";N;}s:25:"start_brackets_line_index";i:1374;s:26:"start_brackets_token_index";i:9322;s:23:"end_brackets_line_index";i:1451;s:24:"end_brackets_token_index";i:10151;s:14:"end_line_index";i:1451;s:15:"end_token_index";i:10151;}s:20:"editFunctionFromFile";a:20:{s:4:"name";s:20:"editFunctionFromFile";s:16:"start_line_index";i:1559;s:17:"start_token_index";i:10155;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:4094:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function editClassFromFile($file_path, $old_class_settings, $new_class_settings) {
+		$old_class_name = self::prepareClassNameWithNameSpace($old_class_settings["name"], $old_class_settings["namespace"]);
+		
+		if ($file_path && file_exists($file_path) && $old_class_name && $new_class_settings["name"]) {
+			$c = self::getClassFromFile($file_path, $old_class_name);
+			
+			$old_class_name = $c["name"];
+			$start_line = $c["start_line_index"];
+			$start_brackets_line = $c["start_brackets_line_index"];
+			
+			if (is_numeric($start_line)) {
+				$contents = file_get_contents($file_path);
+				$contents = str_replace("\r\n", "\n", $contents);
+				$lines = explode("\n", $contents);
+				
+				//TODO: change this code to work with obfuscated php
+				
+				$new_contents = implode("\n", array_slice($lines, 0, $start_line - 1) );
+				
+				$line = $lines[ $start_line - 1 ];
+				$new_c = "";
+				$parts = explode(" ", $line);
+				$t = count($parts);
+				for ($i = 0; $i < $t; $i++) {
+					if (strtolower(trim($parts[$i])) == "class" || strtolower(trim($parts[$i])) == "abstract") 
+						break;
+					else 
+						$new_c .= ($i > 0 ? " " : "") . $parts[$i];
+				}
+				
+				$new_c = trim($new_c);
+				if ($new_c) 
+					$new_contents .= "\n$new_c";
+				
+				//remove namespace from $new_class_settings bc they will be take care after
+				$new_namespace = $new_class_settings["namespace"];
+				$new_includes = $new_class_settings["includes"];
+				$new_uses = $new_class_settings["uses"];
+				$new_class_settings["namespace"] = null;
+				$new_class_settings["includes"] = null;
+				$new_class_settings["uses"] = null;
+				
+				$new_contents .= "\n" . self::getClassString($new_class_settings);
+				
+				if ($start_brackets_line == $start_line) 
+					$pos = strpos($line, "{", strpos($line, $old_class_name) + 1);
+				else {
+					$line = $lines[ $start_brackets_line - 1 ];
+					$pos = strpos($line, "{");
+				}
+				
+				$pos = $pos !== false ? $pos : strlen($line);
+				$new_c = trim(substr($line, $pos));
+				if ($new_c) 
+					$new_contents .= " $new_c";
+				
+				$new_contents .= "\n" . implode("\n", array_slice($lines, $start_brackets_line) );
+				
+				$new_contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $new_contents));
+				
+				if (file_put_contents($file_path, $new_contents) > 0) {
+					$status = true;
+					$new_class_settings["namespace"] = $new_namespace;
+					
+					//update namespace if different
+					if ($old_class_settings["namespace"] != $new_class_settings["namespace"] && ($old_class_settings["namespace"] || $new_class_settings["namespace"])) 
+						$status = self::replaceNamespaceFromFile($file_path, $old_class_settings["namespace"], $new_class_settings["namespace"]);
+					
+					
+					//add includes and uses to the begining of file or after the first namespace
+					if ($status && ($new_includes || $new_uses)) {
+						$new_c = "";
+						
+						if ($new_includes)
+							foreach ($new_includes as $include)
+								if (is_array($include) && trim($include[0]))
+									$new_c .= "include" . ($include[1] ? "_once" : "") . " " . $include[0] . ";\n";
+								else if (!is_array($include) && trim($include))
+									$new_c .= "include_once $include;\n";
+						
+						if ($new_uses)
+							foreach ($new_uses as $use => $alias)
+								if (trim($use))
+									$new_c .= "use $use" . (trim($alias) ? " as $alias" : "") . ";\n";
+						
+						$status = self::addCodeToBeginOfFileOrAfterFirstNamespace($file_path, $new_c);
+					}
+					
+					if ($status && isset($new_class_settings["code"])) {
+						$new_class_name = self::prepareClassNameWithNameSpace($new_class_settings["name"], $new_class_settings["namespace"]);
+						
+						$status = self::removeClassPropertiesFromFile($file_path, $new_class_name) && self::addClassPropertiesToFile($file_path, $new_class_name, $new_class_settings["code"]);
+					}
+					
+					//if status false, re-save the old code
+					if (!$status)
+						file_put_contents($file_path, $contents);
+					
+					return $status;
+				}
+			}
+		}
+		
+		return false;
+	}*/";}s:25:"start_comments_line_index";i:1452;s:26:"start_comments_token_index";i:10153;s:23:"end_comments_line_index";i:1557;s:24:"end_comments_token_index";i:10153;s:22:"start_args_token_index";i:10162;s:20:"end_args_token_index";i:10177;s:9:"arguments";a:4:{s:10:"$file_path";N;s:18:"$old_func_settings";N;s:18:"$new_func_settings";N;s:11:"$class_name";s:1:"0";}s:25:"start_brackets_line_index";i:1559;s:26:"start_brackets_token_index";i:10179;s:23:"end_brackets_line_index";i:1601;s:24:"end_brackets_token_index";i:10610;s:14:"end_line_index";i:1601;s:15:"end_token_index";i:10610;}s:25:"editClassCommentsFromFile";a:20:{s:4:"name";s:25:"editClassCommentsFromFile";s:16:"start_line_index";i:1664;s:17:"start_token_index";i:10614;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:2214:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function editFunctionFromFile($file_path, $old_func_settings, $new_func_settings, $class_name = 0) {
+		$old_func_name = $old_func_settings["name"];
+		
+		if ($file_path && file_exists($file_path) && $old_func_name && $new_func_settings["name"]) {
+			$f = self::getFunctionFromFile($file_path, $old_func_name, $class_name);
+			$old_func_name = $f["name"];
+			$start_line = $f["start_line_index"];
+			$start_brackets_line = $f["start_brackets_line_index"];
+			$end_line = $f["end_line_index"];
+			
+			if (is_numeric($start_line)) {
+				$contents = file_get_contents($file_path);
+				$contents = str_replace("\r\n", "\n", $contents);
+				$lines = explode("\n", $contents);
+				
+				//TODO: change this code to work with obfuscated php
+				
+				$new_contents = implode("\n", array_slice($lines, 0, $start_line - 1) );
+				
+				$line = $lines[ $start_line - 1 ];
+				$new_c = "";
+				$parts = explode(" ", $line);
+				$available_types = array("public", "private", "protected", "abstract", "static", "function");
+				$t = count($parts);
+				for ($i = 0; $i < $t; $i++) {
+					if (in_array(strtolower(trim($parts[$i])), $available_types)) {
+						break;
+					}
+					else {
+						$new_c .= ($i > 0 ? " " : "") . $parts[$i];
+					}
+				}
+				$new_c = trim($new_c);
+				if ($new_c) 
+					$new_contents .= "\n$new_c";
+				
+				$new_contents .= "\n" . self::getFunctionString($new_func_settings, $class_name);
+				
+				$line = $lines[ $start_brackets_line - 1 ];
+				$pos = strpos($line, "{");
+				$pos = $pos !== false ? $pos : strlen($line);
+				$new_c = trim(substr($line, $pos));
+				if ($new_c) 
+					$new_contents .= " $new_c";
+				
+				$new_contents .= "\n" . implode("\n", array_slice($lines, $start_brackets_line) );
+				
+				$new_contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $new_contents));
+				if (file_put_contents($file_path, $new_contents) > 0) {
+					$status = true;
+					if (isset($new_func_settings["code"])) 
+						$status = self::replaceFunctionCodeFromFile($file_path, $new_func_settings["name"], $new_func_settings["code"], $class_name);
+					
+					return $status;
+				}
+			}
+		}
+		
+		return false;
+	}*/";}s:25:"start_comments_line_index";i:1602;s:26:"start_comments_token_index";i:10612;s:23:"end_comments_line_index";i:1662;s:24:"end_comments_token_index";i:10612;s:22:"start_args_token_index";i:10621;s:20:"end_args_token_index";i:10629;s:9:"arguments";a:3:{s:10:"$file_path";N;s:11:"$class_name";N;s:9:"$comments";N;}s:25:"start_brackets_line_index";i:1664;s:26:"start_brackets_token_index";i:10631;s:23:"end_brackets_line_index";i:1706;s:24:"end_brackets_token_index";i:11027;s:14:"end_line_index";i:1706;s:15:"end_token_index";i:11027;}s:28:"editFunctionCommentsFromFile";a:20:{s:4:"name";s:28:"editFunctionCommentsFromFile";s:16:"start_line_index";i:1716;s:17:"start_token_index";i:11031;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:320:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function editClassCommentsFromFile($file_path, $class_name, $comments) {
+		if ($class_name) {
+			$c = self::getClassFromFile($file_path, $class_name);
+			return self::editCommentsFromFile($file_path, $c, $comments);
+		}
+		return false;
+	}*/";}s:25:"start_comments_line_index";i:1707;s:26:"start_comments_token_index";i:11029;s:23:"end_comments_line_index";i:1714;s:24:"end_comments_token_index";i:11029;s:22:"start_args_token_index";i:11038;s:20:"end_args_token_index";i:11053;s:9:"arguments";a:4:{s:10:"$file_path";N;s:10:"$func_name";N;s:9:"$comments";N;s:11:"$class_name";s:1:"0";}s:25:"start_brackets_line_index";i:1716;s:26:"start_brackets_token_index";i:11055;s:23:"end_brackets_line_index";i:1761;s:24:"end_brackets_token_index";i:11504;s:14:"end_line_index";i:1761;s:15:"end_token_index";i:11504;}s:24:"removeNamespacesFromFile";a:20:{s:4:"name";s:24:"removeNamespacesFromFile";s:16:"start_line_index";i:1834;s:17:"start_token_index";i:11514;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:4:{i:0;s:353:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function editFunctionCommentsFromFile($file_path, $func_name, $comments, $class_name = 0) {
+		if ($func_name) {
+			$f = self::getFunctionFromFile($file_path, $func_name, $class_name);
+			return self::editCommentsFromFile($file_path, $f, $comments);
+		}
+		return false;
+	}*/";i:1;s:2250:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	private static function editCommentsFromFile($file_path, $obj_settings, $comments) {
+		if ($file_path && file_exists($file_path)) {
+		//echo "<pre>";print_r($obj_settings);die();
+			$start_line = $obj_settings["start_comments_line_index"];
+			$end_line = $obj_settings["end_comments_line_index"];
+			
+			if (is_numeric($start_line) || $comments) {
+				if (!is_numeric($start_line)) {
+					$start_line = $obj_settings["start_line_index"];
+					$end_line = $obj_settings["start_line_index"];
+				}
+				
+				$contents = file_get_contents($file_path);
+				$contents = str_replace("\r\n", "\n", $contents);
+				$lines = explode("\n", $contents);
+				
+				//TODO: change this code to work with obfuscated php
+				
+				$new_contents = implode("\n", array_slice($lines, 0, $start_line - 1) );
+				
+				$line = $lines[ $start_line - 1 ];
+				$simple_comment_pos = strpos($line, "//");
+				$multiple_comment_pos = strpos($line, "/*");
+				
+				$pos = $simple_comment_pos !== false && ($simple_comment_pos < $multiple_comment_pos || $multiple_comment_pos == false) ? $simple_comment_pos : $multiple_comment_pos;
+				
+				if ($pos !== false) {
+					$c = substr($line, 0, $pos);
+					$new_contents .= "\n" . (trim($c) ? $c : "");
+					$new_contents .= trim($comments) ? "\n" . $comments : "";
+					
+					$line = $lines[ $end_line - 1 ];
+					$simple_comment_pos = strrpos($line, "//");
+					$multiple_comment_pos = strrpos($line, "*" . "/"); //"*" . "/" only bc this code is commented
+					
+					if ($simple_comment_pos === false && $multiple_comment_pos === false) {
+						$new_contents .= trim($line) ? $line : "";
+					}
+					else if ($multiple_comment_pos !== false) {
+						$c = substr($line, $multiple_comment_pos + 2);
+						$new_contents .= trim($c) ? $c : "";
+					}
+				}
+				else {
+					$new_contents .= trim($comments) ? "\n" . $comments : "";
+					$new_contents .= "\n" .  (trim($line) ? $line : "");
+				}
+				
+				$new_contents .= "\n" . implode("\n", array_slice($lines, $end_line) );
+				
+				$new_contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $new_contents));
+				
+				return file_put_contents($file_path, $new_contents) > 0;
+			}
+		}
+		
+		return false;
+	}*/";i:2;s:16:"/* END: EDITS */";i:3;s:20:"/* START: REMOVES */";}s:25:"start_comments_line_index";i:1762;s:26:"start_comments_token_index";i:11506;s:23:"end_comments_line_index";i:1832;s:24:"end_comments_token_index";i:11512;s:22:"start_args_token_index";i:11521;s:20:"end_args_token_index";i:11523;s:9:"arguments";a:1:{s:10:"$file_path";N;}s:25:"start_brackets_line_index";i:1834;s:26:"start_brackets_token_index";i:11525;s:23:"end_brackets_line_index";i:1836;s:24:"end_brackets_token_index";i:11540;s:14:"end_line_index";i:1836;s:15:"end_token_index";i:11540;}s:18:"removeUsesFromFile";a:15:{s:4:"name";s:18:"removeUsesFromFile";s:16:"start_line_index";i:1838;s:17:"start_token_index";i:11542;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:11549;s:20:"end_args_token_index";i:11551;s:9:"arguments";a:1:{s:10:"$file_path";N;}s:25:"start_brackets_line_index";i:1838;s:26:"start_brackets_token_index";i:11553;s:23:"end_brackets_line_index";i:1840;s:24:"end_brackets_token_index";i:11568;s:14:"end_line_index";i:1840;s:15:"end_token_index";i:11568;}s:22:"removeIncludesFromFile";a:15:{s:4:"name";s:22:"removeIncludesFromFile";s:16:"start_line_index";i:1842;s:17:"start_token_index";i:11570;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:11577;s:20:"end_args_token_index";i:11579;s:9:"arguments";a:1:{s:10:"$file_path";N;}s:25:"start_brackets_line_index";i:1842;s:26:"start_brackets_token_index";i:11581;s:23:"end_brackets_line_index";i:1845;s:24:"end_brackets_token_index";i:11615;s:14:"end_line_index";i:1845;s:15:"end_token_index";i:11615;}s:23:"removeNamespaceFromFile";a:20:{s:4:"name";s:23:"removeNamespaceFromFile";s:16:"start_line_index";i:1923;s:17:"start_token_index";i:12015;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:1148:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	private static function removeInstructionsFromFile($file_path, $types) {
+		if ($file_path && file_exists($file_path) && $types) {
+			$types = is_array($types) ? $types : array($types);
+			
+			$contents = file_get_contents($file_path);
+			$contents = str_replace("\r\n", "\n", $contents);
+			$lines = explode("\n", $contents);
+			
+			//TODO: change this code to work with obfuscated php
+			
+			$new_contents = "";
+			
+			$t = count($lines);
+			for ($i = 0; $i < $t; $i++) {
+				$line = $lines[$i];
+				$trimmed = trim($line);
+				$exists = false;
+				
+				foreach ($types as $type) 
+					if (stripos($trimmed, $type) === 0) {
+						$fc = substr($trimmed, strlen($type), 1);
+						
+						if ($fc == " " || $fc == "$" || $fc == "'" || $fc == '"' || $fc == ";") {
+							$exists = true;
+							break;
+						}
+					}
+				
+				if (!$exists)
+					$new_contents .= ($new_contents ? "\n" : "") . $line;
+			}
+			
+			$new_contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $new_contents));
+			return file_put_contents($file_path, $new_contents) > 0;
+		}
+		
+		return false;
+	}*/";}s:25:"start_comments_line_index";i:1883;s:26:"start_comments_token_index";i:12013;s:23:"end_comments_line_index";i:1921;s:24:"end_comments_token_index";i:12013;s:22:"start_args_token_index";i:12022;s:20:"end_args_token_index";i:12027;s:9:"arguments";a:2:{s:10:"$file_path";N;s:10:"$namespace";N;}s:25:"start_brackets_line_index";i:1923;s:26:"start_brackets_token_index";i:12029;s:23:"end_brackets_line_index";i:1925;s:24:"end_brackets_token_index";i:12047;s:14:"end_line_index";i:1925;s:15:"end_token_index";i:12047;}s:17:"removeUseFromFile";a:15:{s:4:"name";s:17:"removeUseFromFile";s:16:"start_line_index";i:1927;s:17:"start_token_index";i:12049;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:12056;s:20:"end_args_token_index";i:12061;s:9:"arguments";a:2:{s:10:"$file_path";N;s:4:"$use";N;}s:25:"start_brackets_line_index";i:1927;s:26:"start_brackets_token_index";i:12063;s:23:"end_brackets_line_index";i:1929;s:24:"end_brackets_token_index";i:12081;s:14:"end_line_index";i:1929;s:15:"end_token_index";i:12081;}s:21:"removeIncludeFromFile";a:15:{s:4:"name";s:21:"removeIncludeFromFile";s:16:"start_line_index";i:1931;s:17:"start_token_index";i:12083;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:12090;s:20:"end_args_token_index";i:12095;s:9:"arguments";a:2:{s:10:"$file_path";N;s:8:"$include";N;}s:25:"start_brackets_line_index";i:1931;s:26:"start_brackets_token_index";i:12097;s:23:"end_brackets_line_index";i:1934;s:24:"end_brackets_token_index";i:12134;s:14:"end_line_index";i:1934;s:15:"end_token_index";i:12134;}s:29:"removeClassPropertiesFromFile";a:15:{s:4:"name";s:29:"removeClassPropertiesFromFile";s:16:"start_line_index";i:1981;s:17:"start_token_index";i:12599;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:12606;s:20:"end_args_token_index";i:12611;s:9:"arguments";a:2:{s:10:"$file_path";N;s:11:"$class_name";N;}s:25:"start_brackets_line_index";i:1981;s:26:"start_brackets_token_index";i:12613;s:23:"end_brackets_line_index";i:2038;s:24:"end_brackets_token_index";i:13099;s:14:"end_line_index";i:2038;s:15:"end_token_index";i:13099;}s:19:"removeClassFromFile";a:20:{s:4:"name";s:19:"removeClassFromFile";s:16:"start_line_index";i:2096;s:17:"start_token_index";i:13103;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:1892:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function removeClassPropertiesFromFile($file_path, $class_name) {
+		if ($file_path && file_exists($file_path) && $class_name) {
+			$c = self::getClassFromFile($file_path, $class_name);
+			$start_brackets_line = $c["start_brackets_line_index"];
+			
+			if (is_numeric($start_brackets_line)) {
+				$contents = file_get_contents($file_path);
+				$contents = str_replace("\r\n", "\n", $contents);
+				$lines = explode("\n", $contents);
+				
+				//TODO: change this code to work with obfuscated php
+				
+				$new_contents = implode("\n", array_slice($lines, 0, $start_brackets_line - 1) );
+				
+				$line = $lines[ $start_brackets_line - 1 ];
+				$pos = strpos($line, "{");
+				$pos = $pos !== false ? $pos : strlen($line);
+				$new_contents .= "\n" . substr($line, 0, $pos + 1);
+				
+				$intervals = array();
+				$t = $c["methods"] ? count($c["methods"]) : 0;
+				for ($i = 0; $i < $t; $i++) {
+					$method = $c["methods"][$i];
+					$sl = is_numeric($method["start_comments_line_index"]) ? $method["start_comments_line_index"] : $method["start_line_index"];
+					$intervals[] = array($sl, $method["end_line_index"], $method);
+				}
+				
+				$idx = $start_brackets_line - 1;
+				while (true) {
+					++$idx;
+					
+					if ($idx + 1 >= $c["end_line_index"]) 
+						break;
+					
+					foreach ($intervals as $interval) {
+						if ($idx + 1 >= $interval[0] && $idx + 1 <= $interval[1]) {
+							if ($idx + 1 == $interval[0]) {
+								$new_contents .= "\n";
+							}
+							
+							$new_contents .= "\n" . $lines[$idx];
+							break;
+						}
+					}
+				}
+				
+				$new_contents .= "\n" . implode("\n", array_slice($lines, $idx) );
+				
+				$new_contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $new_contents));
+				return file_put_contents($file_path, $new_contents) > 0;
+			}
+		}
+		
+		return false;
+	}*/";}s:25:"start_comments_line_index";i:2039;s:26:"start_comments_token_index";i:13101;s:23:"end_comments_line_index";i:2094;s:24:"end_comments_token_index";i:13101;s:22:"start_args_token_index";i:13110;s:20:"end_args_token_index";i:13115;s:9:"arguments";a:2:{s:10:"$file_path";N;s:11:"$class_name";N;}s:25:"start_brackets_line_index";i:2096;s:26:"start_brackets_token_index";i:13117;s:23:"end_brackets_line_index";i:2138;s:24:"end_brackets_token_index";i:13512;s:14:"end_line_index";i:2138;s:15:"end_token_index";i:13512;}s:22:"removeFunctionFromFile";a:20:{s:4:"name";s:22:"removeFunctionFromFile";s:16:"start_line_index";i:2165;s:17:"start_token_index";i:13516;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:1006:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function removeClassFromFile($file_path, $class_name) {
+		$class_name = $class_name ? trim($class_name) : $class_name;
+		
+		if ($file_path && file_exists($file_path) && $class_name) {
+			self::editClassCommentsFromFile($file_path, $class_name, "");
+			
+			$contents = file_get_contents($file_path);
+			$contents = str_replace("\r\n", "\n", $contents);
+			
+			$c = self::getClassFromFile($file_path, $class_name);
+			$start_line = $c["start_line_index"];
+			$end_line = $c["end_line_index"];
+			
+			//TODO: change this code to work with obfuscated php
+			
+			$available_types = array("class", "abstract");
+			$new_contents = self::removeItemFromContents($contents, $start_line, $end_line, $available_types);
+			
+			$new_contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $new_contents));
+			return $contents != $new_contents ? file_put_contents($file_path, $new_contents) > 0 : true;
+		}
+		
+		return false;
+	}*/";}s:25:"start_comments_line_index";i:2139;s:26:"start_comments_token_index";i:13514;s:23:"end_comments_line_index";i:2163;s:24:"end_comments_token_index";i:13514;s:22:"start_args_token_index";i:13523;s:20:"end_args_token_index";i:13535;s:9:"arguments";a:3:{s:10:"$file_path";N;s:10:"$func_name";N;s:11:"$class_name";s:1:"0";}s:25:"start_brackets_line_index";i:2165;s:26:"start_brackets_token_index";i:13537;s:23:"end_brackets_line_index";i:2207;s:24:"end_brackets_token_index";i:13935;s:14:"end_line_index";i:2207;s:15:"end_token_index";i:13935;}s:27:"replaceFunctionCodeFromFile";a:20:{s:4:"name";s:27:"replaceFunctionCodeFromFile";s:16:"start_line_index";i:2236;s:17:"start_token_index";i:13943;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:3:{i:0;s:1090:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function removeFunctionFromFile($file_path, $func_name, $class_name = 0) {
+		$func_name = $func_name ? trim($func_name) : false;
+		
+		if ($file_path && file_exists($file_path) && $func_name) {
+			self::editFunctionCommentsFromFile($file_path, $func_name, "", $class_name);
+			
+			$f = self::getFunctionFromFile($file_path, $func_name, $class_name);
+			$start_line = $f["start_line_index"];
+			$end_line = $f["end_line_index"];
+			
+			$contents = file_get_contents($file_path);
+			$contents = str_replace("\r\n", "\n", $contents);
+			
+			//TODO: change this code to work with obfuscated php
+			
+			$available_types = array("public", "private", "protected", "abstract", "static", "function");
+			$new_contents = self::removeItemFromContents($contents, $start_line, $end_line, $available_types);
+	
+			$new_contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $new_contents));
+			return $contents != $new_contents ? file_put_contents($file_path, $new_contents) > 0 : true;
+		}
+		
+		return false;
+	}*/";i:1;s:18:"/* END: REMOVES */";i:2;s:21:"/* START: REPLACES */";}s:25:"start_comments_line_index";i:2208;s:26:"start_comments_token_index";i:13937;s:23:"end_comments_line_index";i:2235;s:24:"end_comments_token_index";i:13941;s:22:"start_args_token_index";i:13950;s:20:"end_args_token_index";i:13965;s:9:"arguments";a:4:{s:10:"$file_path";N;s:10:"$func_name";N;s:5:"$code";N;s:11:"$class_name";s:1:"0";}s:25:"start_brackets_line_index";i:2236;s:26:"start_brackets_token_index";i:13967;s:23:"end_brackets_line_index";i:2276;s:24:"end_brackets_token_index";i:14414;s:14:"end_line_index";i:2276;s:15:"end_token_index";i:14414;}s:24:"replaceNamespaceFromFile";a:20:{s:4:"name";s:24:"replaceNamespaceFromFile";s:16:"start_line_index";i:2323;s:17:"start_token_index";i:14418;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:1724:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function replaceFunctionCodeFromFile($file_path, $function_name, $code, $class_name = 0) {
+		if ($file_path && file_exists($file_path) && $function_name) {
+			$f = self::getFunctionFromFile($file_path, $function_name, $class_name);
+			$function_name = $f["name"];
+			$start_brackets_line = $f["start_brackets_line_index"];
+			$end_line = $f["end_line_index"];
+			
+			if (is_numeric($start_brackets_line)) {
+				$contents = file_get_contents($file_path);
+				$contents = str_replace("\r\n", "\n", $contents);
+				$lines = explode("\n", $contents);
+				
+				//TODO: change this code to work with obfuscated php
+				
+				$prefix = $class_name ? "\t" : "";
+				
+				$new_contents = implode("\n", array_slice($lines, 0, $start_brackets_line - 1) );
+				
+				$line = $lines[ $start_brackets_line - 1 ];
+				$pos = strpos($line, "{");
+				$pos = $pos !== false ? $pos : strlen($line);
+				$new_c = trim(substr($line, 0, $pos + 1));
+				if ($new_c)
+					$new_contents .= "\n$prefix$new_c";
+				
+				$code = $code ? $code : "";
+				$new_contents .= $class_name ? "\n$prefix$prefix" . str_replace("\n", "\n$prefix$prefix", $code) : "\n\t" . str_replace("\n", "\n\t", $code);
+				
+				$line = $lines[ $end_line - 1 ];
+				$pos = strpos($line, "}");
+				$pos = $pos !== false ? $pos : 0;
+				$new_c = trim(substr($line, $pos));
+				if ($new_c)
+					$new_contents .= "\n$prefix$new_c";
+				
+				$new_contents .= "\n" . implode("\n", array_slice($lines, $end_line) );
+			
+				$new_contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $new_contents));
+				return file_put_contents($file_path, $new_contents) > 0;
+			}
+		}
+		
+		return false;
+	}*/";}s:25:"start_comments_line_index";i:2277;s:26:"start_comments_token_index";i:14416;s:23:"end_comments_line_index";i:2321;s:24:"end_comments_token_index";i:14416;s:22:"start_args_token_index";i:14425;s:20:"end_args_token_index";i:14433;s:9:"arguments";a:3:{s:10:"$file_path";N;s:14:"$old_namespace";N;s:14:"$new_namespace";N;}s:25:"start_brackets_line_index";i:2323;s:26:"start_brackets_token_index";i:14435;s:23:"end_brackets_line_index";i:2343;s:24:"end_brackets_token_index";i:14640;s:14:"end_line_index";i:2343;s:15:"end_token_index";i:14640;}s:19:"addNamespacesToFile";a:20:{s:4:"name";s:19:"addNamespacesToFile";s:16:"start_line_index";i:2347;s:17:"start_token_index";i:14646;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:2:{i:0;s:19:"/* END: REPLACES */";i:1;s:17:"/* START: ADDS */";}s:25:"start_comments_line_index";i:2344;s:26:"start_comments_token_index";i:14642;s:23:"end_comments_line_index";i:2346;s:24:"end_comments_token_index";i:14644;s:22:"start_args_token_index";i:14653;s:20:"end_args_token_index";i:14658;s:9:"arguments";a:2:{s:10:"$file_path";N;s:11:"$namespaces";N;}s:25:"start_brackets_line_index";i:2347;s:26:"start_brackets_token_index";i:14660;s:23:"end_brackets_line_index";i:2362;s:24:"end_brackets_token_index";i:14786;s:14:"end_line_index";i:2362;s:15:"end_token_index";i:14786;}s:13:"addUsesToFile";a:15:{s:4:"name";s:13:"addUsesToFile";s:16:"start_line_index";i:2364;s:17:"start_token_index";i:14788;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:14795;s:20:"end_args_token_index";i:14800;s:9:"arguments";a:2:{s:10:"$file_path";N;s:5:"$uses";N;}s:25:"start_brackets_line_index";i:2364;s:26:"start_brackets_token_index";i:14802;s:23:"end_brackets_line_index";i:2376;s:24:"end_brackets_token_index";i:14896;s:14:"end_line_index";i:2376;s:15:"end_token_index";i:14896;}s:17:"addIncludesToFile";a:15:{s:4:"name";s:17:"addIncludesToFile";s:16:"start_line_index";i:2378;s:17:"start_token_index";i:14898;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:14905;s:20:"end_args_token_index";i:14910;s:9:"arguments";a:2:{s:10:"$file_path";N;s:9:"$includes";N;}s:25:"start_brackets_line_index";i:2378;s:26:"start_brackets_token_index";i:14912;s:23:"end_brackets_line_index";i:2392;s:24:"end_brackets_token_index";i:15047;s:14:"end_line_index";i:2392;s:15:"end_token_index";i:15047;}s:20:"addCodeToBeginOfFile";a:15:{s:4:"name";s:20:"addCodeToBeginOfFile";s:16:"start_line_index";i:2394;s:17:"start_token_index";i:15049;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:15056;s:20:"end_args_token_index";i:15061;s:9:"arguments";a:2:{s:10:"$file_path";N;s:5:"$code";N;}s:25:"start_brackets_line_index";i:2394;s:26:"start_brackets_token_index";i:15063;s:23:"end_brackets_line_index";i:2407;s:24:"end_brackets_token_index";i:15197;s:14:"end_line_index";i:2407;s:15:"end_token_index";i:15197;}s:41:"addCodeToBeginOfFileOrAfterFirstNamespace";a:15:{s:4:"name";s:41:"addCodeToBeginOfFileOrAfterFirstNamespace";s:16:"start_line_index";i:2409;s:17:"start_token_index";i:15199;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:15206;s:20:"end_args_token_index";i:15211;s:9:"arguments";a:2:{s:10:"$file_path";N;s:5:"$code";N;}s:25:"start_brackets_line_index";i:2409;s:26:"start_brackets_token_index";i:15213;s:23:"end_brackets_line_index";i:2436;s:24:"end_brackets_token_index";i:15449;s:14:"end_line_index";i:2436;s:15:"end_token_index";i:15449;}s:14:"addClassToFile";a:15:{s:4:"name";s:14:"addClassToFile";s:16:"start_line_index";i:2438;s:17:"start_token_index";i:15451;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:15458;s:20:"end_args_token_index";i:15463;s:9:"arguments";a:2:{s:10:"$file_path";N;s:15:"$class_settings";N;}s:25:"start_brackets_line_index";i:2438;s:26:"start_brackets_token_index";i:15465;s:23:"end_brackets_line_index";i:2468;s:24:"end_brackets_token_index";i:15770;s:14:"end_line_index";i:2468;s:15:"end_token_index";i:15770;}s:24:"addClassPropertiesToFile";a:15:{s:4:"name";s:24:"addClassPropertiesToFile";s:16:"start_line_index";i:2470;s:17:"start_token_index";i:15772;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:15779;s:20:"end_args_token_index";i:15787;s:9:"arguments";a:3:{s:10:"$file_path";N;s:11:"$class_name";N;s:5:"$code";N;}s:25:"start_brackets_line_index";i:2470;s:26:"start_brackets_token_index";i:15789;s:23:"end_brackets_line_index";i:2498;s:24:"end_brackets_token_index";i:16066;s:14:"end_line_index";i:2498;s:15:"end_token_index";i:16066;}s:17:"addFunctionToFile";a:20:{s:4:"name";s:17:"addFunctionToFile";s:16:"start_line_index";i:2536;s:17:"start_token_index";i:16070;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:1338:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function addClassPropertiesToFile($file_path, $class_name, $code) {
+		if ($file_path && file_exists($file_path) && $class_name && $code) {
+			$c = self::getClassFromFile($file_path, $class_name);
+			$start_brackets_line = $c["start_brackets_line_index"];
+			
+			if (is_numeric($start_brackets_line)) {
+				$contents = file_get_contents($file_path);
+				$contents = str_replace("\r\n", "\n", $contents);
+				$lines = explode("\n", $contents);
+				
+				//TODO: change this code to work with obfuscated php
+				
+				$new_contents = implode("\n", array_slice($lines, 0, $start_brackets_line - 1) );
+				
+				$line = $lines[ $start_brackets_line - 1 ];
+				$pos = strpos($line, "{");
+				$pos = $pos !== false ? $pos : strlen($line);
+				$new_contents .= "\n" . substr($line, 0, $pos + 1);
+				
+				$new_contents .= "\n\t" . str_replace("\n", "\n\t", $code) . "\n\t";
+				
+				$new_c = trim( substr($line, $pos + 1) );
+				if ($new_c) {
+					$new_contents .= "\n" . $new_c;
+				}
+				
+				$new_contents .= "\n" . implode("\n", array_slice($lines, $start_brackets_line) );
+				
+				$new_contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $new_contents));
+				return file_put_contents($file_path, $new_contents) > 0;
+			}
+		}
+		
+		return false;
+	}*/";}s:25:"start_comments_line_index";i:2499;s:26:"start_comments_token_index";i:16068;s:23:"end_comments_line_index";i:2534;s:24:"end_comments_token_index";i:16068;s:22:"start_args_token_index";i:16077;s:20:"end_args_token_index";i:16089;s:9:"arguments";a:3:{s:10:"$file_path";N;s:18:"$function_settings";N;s:11:"$class_name";s:1:"0";}s:25:"start_brackets_line_index";i:2536;s:26:"start_brackets_token_index";i:16091;s:23:"end_brackets_line_index";i:2587;s:24:"end_brackets_token_index";i:16642;s:14:"end_line_index";i:2587;s:15:"end_token_index";i:16642;}s:14:"getClassString";a:20:{s:4:"name";s:14:"getClassString";s:16:"start_line_index";i:2661;s:17:"start_token_index";i:16650;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:3:{i:0;s:2354:"/* This is DEPRECATED bc if php is obfuscated this doesn't work.
+	public static function addFunctionToFile($file_path, $function_settings, $class_name = 0) {
+		$name = trim($function_settings["name"]);
+		
+		if ($file_path && $name) {
+			//PREPARING FUNCTION STRING
+			$str = self::getFunctionString($function_settings, $class_name);
+			
+			$code = $function_settings["code"];
+			$code = $code ? ($class_name ? "\t\t" . str_replace("\n", "\n\t\t", $code) : str_replace("\n", "\n\t", $code)) : "";
+			$str .= " {\n$code\n}\n";
+			
+			//SAVING FUNCTION STRING TO CLASS
+			if ($class_name) {
+				if (file_exists($file_path)) {
+					$c = self::getClassFromFile($file_path, $class_name);
+					$end_line = $c["end_line_index"];
+					
+					if (is_numeric($end_line)) {
+						$contents = file_get_contents($file_path);
+						$contents = str_replace("\r\n", "\n", $contents);
+						$lines = explode("\n", $contents);
+					
+						//TODO: change this code to work with obfuscated php
+						
+						$new_contents = implode("\n", array_slice($lines, 0, $end_line - 1) );
+					
+						$line = $lines[ $end_line - 1 ];
+						$pos = strpos($line, "}");
+						$pos = $pos !== false ? $pos : 0;
+					
+						$new_c = trim(substr($line, 0, $pos));
+						if ($new_c) 
+							$new_contents .= "\n$new_c";
+					
+						$new_contents .= "\n\n$str";
+					
+						$new_c = trim(substr($line, $pos));
+						if ($new_c) 
+							$new_contents .= "\n$new_c";
+					
+						$new_contents .= "\n" . implode("\n", array_slice($lines, $end_line) );
+					
+						$new_contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $new_contents));
+						return file_put_contents($file_path, $new_contents) > 0;
+					}
+				}
+			}
+			//SAVING FUNCTION STRING AS A GENERIC FUNCTION
+			else {
+				if (file_exists($file_path)) {
+					$contents = file_get_contents($file_path);
+					$contents = str_replace("\r\n", "\n", $contents);
+					$pos = strrpos($contents, "?>");
+			
+					if ($pos !== false) 
+						$contents = substr($contents, 0, $pos) . "\n\n$str\n" . substr($contents, $pos);
+					else 
+						$contents .= (empty($contents) ? "<?php" : "\n") . "\n$str?>";
+				}
+				else 
+					$contents = "<?php\n$str\n?>";
+				
+				$contents = str_replace("\n\n\n", "\n\n", str_replace("\t\n", "\n", $contents));
+				return file_put_contents($file_path, $contents) > 0;
+			}
+		}
+		
+		return false;
+	}*/";i:1;s:15:"/* END: ADDS */";i:2;s:18:"/* START: UTILS */";}s:25:"start_comments_line_index";i:2588;s:26:"start_comments_token_index";i:16644;s:23:"end_comments_line_index";i:2660;s:24:"end_comments_token_index";i:16648;s:22:"start_args_token_index";i:16657;s:20:"end_args_token_index";i:16659;s:9:"arguments";a:1:{s:15:"$class_settings";N;}s:25:"start_brackets_line_index";i:2661;s:26:"start_brackets_token_index";i:16661;s:23:"end_brackets_line_index";i:2735;s:24:"end_brackets_token_index";i:17496;s:14:"end_line_index";i:2735;s:15:"end_token_index";i:17496;}s:17:"getFunctionString";a:15:{s:4:"name";s:17:"getFunctionString";s:16:"start_line_index";i:2737;s:17:"start_token_index";i:17498;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:17505;s:20:"end_args_token_index";i:17514;s:9:"arguments";a:2:{s:18:"$function_settings";N;s:11:"$class_name";s:5:"false";}s:25:"start_brackets_line_index";i:2737;s:26:"start_brackets_token_index";i:17516;s:23:"end_brackets_line_index";i:2808;s:24:"end_brackets_token_index";i:18349;s:14:"end_line_index";i:2808;s:15:"end_token_index";i:18349;}s:22:"getClassPropertyString";a:15:{s:4:"name";s:22:"getClassPropertyString";s:16:"start_line_index";i:2810;s:17:"start_token_index";i:18351;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:18358;s:20:"end_args_token_index";i:18360;s:9:"arguments";a:1:{s:18:"$property_settings";N;}s:25:"start_brackets_line_index";i:2810;s:26:"start_brackets_token_index";i:18362;s:23:"end_brackets_line_index";i:2837;s:24:"end_brackets_token_index";i:18743;s:14:"end_line_index";i:2837;s:15:"end_token_index";i:18743;}}}}

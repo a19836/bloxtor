@@ -1,0 +1,45 @@
+.top_bar .title {
+	max-width:calc(100% - 45px) !important;
+}
+.top_bar .title .export_type {
+	width:230px;
+	display:inline-block;
+}
+.top_bar .title .doc_name {
+	width:160px;
+	display:inline-block;
+}
+
+/* EXPORT */
+.export_form {
+	text-align:center;
+}
+.export_form select[name=export_type] {
+  	width:230px;
+  	position:absolute;
+  	top:14px;
+  	left:60px;
+  	z-index:9999;
+  	border:1px solid #ccc;
+  	background:var(--main-iframe-bg);
+  	color:var(--main-iframe-color);
+  	box-sizing:border-box;
+}
+.export_form input[name=doc_name] {
+	width:160px;
+  	position:absolute;
+  	top:14px;
+  	left:380px;
+  	z-index:9999;
+  	border:1px solid #ccc;
+  	background:transparent;
+  	color:var(--main-iframe-color);
+  	box-sizing:border-box;
+}
+.relationship .settings {
+	display:none;
+}
+.edit_single_query:not(.covertable_sql) .data_access_obj .relationship .query .sql_text_area {
+	height:calc(100vh - 70px);
+	margin-top:-90px;
+}

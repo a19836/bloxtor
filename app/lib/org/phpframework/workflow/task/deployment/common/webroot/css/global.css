@@ -1,0 +1,31 @@
+.taskflowchartdiagram .task:hover:before,
+  .taskflowchartdiagram .task .task_info {
+	display:none !important;
+}
+.taskflowchartdiagram .task:hover:after {
+	bottom:-25px !important;
+	left:-5px !important;
+	background:none !important;
+}
+.taskflowchartdiagram .task:hover .short_actions {
+	padding:10px;
+	top:-30px;
+	left:-5px;
+}
+
+.selected_task_properties .icon.clean::before {
+	/*content:"\f12d";*/
+	content:"\f51a";
+}
+.selected_task_properties .icon.undo::before {
+	content:"\f2ea";
+}
+.selected_task_properties .icon.right::before {
+	content:"\f0a9";
+	display:block;
+	margin-top:1px;
+}
+.selected_task_properties .icon.star::before {
+	content:"\f005";
+	color:#ffd700;
+}

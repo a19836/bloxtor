@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Tool Tip</label>
+	<tag>tooltip</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_node_name>span</template_node_name>
+		<create_widget_class>ToolTipWidget</create_widget_class>
+	</settings>
+	<template_widget><![CDATA[
+some text here
+<style>
+.tooltip-component {
+	position:relative;
+	display:inline-block;
+	min-width:10px;
+	min-height:10px;
+}
+.tooltip-component[title]::after {
+	font-family:Helvetica, sans-serif;
+	background:rgba(55, 61, 73, 0.95);
+	border-radius:3px;
+	bottom:100%;
+	color:#fff;
+	content:attr(title);
+	display:block;
+	font-size:12px;
+	left:50%;
+	line-height:normal;
+	max-width:32rem;
+	opacity:0;
+	overflow:hidden;
+	padding:8px 16px;
+	pointer-events:none;
+	position:absolute;
+	text-overflow:ellipsis;
+	transform:translate(-50%, 0);
+	transition:opacity 0.25s, transform 0.25s;
+	white-space:nowrap;
+	box-sizing:border-box;
+	z-index:10;
+}
+.tooltip-component[title-visible=true]::after, 
+  .tooltip-component[title]:focus::after, 
+  .tooltip-component[title]:hover::after {
+	opacity:1;
+	transform:translate(-50%, -0.5rem);
+}
+.tooltip-component[title-pos=right]::after {
+	bottom:50%;
+	left:100%;
+	transform:translate(0, 50%);
+}
+.tooltip-component[title-pos=right]:focus::after, 
+  .tooltip-component[title-pos=right]:hover::after, 
+  .tooltip-component[title-visible=true][title-pos=right]::after {
+	transform:translate(0.5rem, 50%);
+}
+.tooltip-component[title-pos=bottom]::after {
+	bottom:auto;
+	top:100%;
+	transform:translate(-50%, 0);
+}
+.tooltip-component[title-pos=bottom]:focus::after, 
+  .tooltip-component[title-pos=bottom]:hover::after, 
+  .tooltip-component[title-visible=true][title-pos=bottom]::after {
+	transform:translate(-50%, 0.5rem);
+}
+.tooltip-component[title-pos=left]::after {
+	bottom:50%;
+	left:auto;
+	right:100%;
+	transform:translate(0, 50%);
+}
+.tooltip-component[title-pos=left]:focus::after, 
+  .tooltip-component[title-pos=left]:hover::after, 
+  .tooltip-component[title-visible=true][title-pos=left]::after {
+	transform:translate(-0.5rem, 50%);
+}
+.tooltip-component[title-length=small]::after {
+	white-space:normal;
+	width:80px;
+}
+.tooltip-component[title-length=medium]::after {
+	white-space:normal;
+	width:150px;
+}
+.tooltip-component[title-length=large]::after {
+	white-space:normal;
+	width:300px;
+}
+.tooltip-component[title-length=fit]::after {
+	white-space:normal;
+	width:100%;
+}
+// IE 11 bugfix
+button.tooltip-component[title] {
+	overflow:visible;
+}
+</style>
+	]]></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property style">
+			<label class="col-12 col-form-label">Style: </label>
+			<textarea class="col-12 form-control"></textarea>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-tooltip:before,
+		  body > .menu-widget.menu-widget-tooltip.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-tooltip > .settings-properties .style textarea {
+			height:300px !important;
+			text-align:left;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function ToolTipWidget(ui_creator, menu_widget) {
+			var me = this;
+			var default_style = '';
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.tooltip.onCloneMenuWidget",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.tooltip.cleanHtml",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.tooltip.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.tooltip.saveSettingsField",
+				});
+				
+				default_style = menu_widget.find(" > .template-widget > style").html();
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) 
+					widget.attr("title", "Some tooltip text here").addClass("tooltip-component");
+
+				return widget;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				var style = widget.children("style");
+				
+				if (!style[0]) {
+					style = $('<style>' + default_style + '</style>');
+					widget.append(style);
+				}
+				
+				return ui_creator.getCleanedHtmlElement(widget[0]);
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var style = widget.children("style");
+				
+				if (!style[0]) {
+					style = $('<style>' + default_style + '</style>');
+					widget.append(style);
+				}
+				
+				var textarea = menu_settings.find(".settings-properties .style textarea");
+				textarea.val( style.html() );
+				
+				ui_creator.addMenuSettingsContextMenu(textarea);
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("style")) {
+						var style = widget.children("style");
+						
+						if (!style[0]) {
+							style = $('<style></style>');
+							widget.append(style);
+						}
+						
+						style.html(field_value);
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

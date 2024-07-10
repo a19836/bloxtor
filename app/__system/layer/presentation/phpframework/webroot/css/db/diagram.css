@@ -1,0 +1,225 @@
+/* TOP BAR */
+.top_bar header > ul {
+	right:27px;
+}
+.top_bar.in_popup header > ul {
+	right:63px;
+}
+.top_bar.in_popup header > ul li.save {
+	margin-top:2px;
+}
+
+/* ICONS */
+.icon.update_db_diagram_automatically::before {
+	content:"\f00b";
+}
+.icon.update_db_diagram_automatically::after {
+	content:"\f079";
+}
+.icon.create_diagram_sql::before {
+	content:"\f542";
+}
+.icon.create_diagram_sql::after {
+	content:"\f1c0";
+}
+
+/* TASKS FLOW CHART */
+.in_popup .taskflowchart .workflow_menu.top_bar_menu {
+	top:17px;
+	right:43px;
+}
+.taskflowchart .workflow_menu.top_bar_menu li.hidden {
+	display:none;
+}
+.taskflowchart.with_top_bar_menu .tasks_menu, 
+  .taskflowchart.with_top_bar_menu .tasks_menu_hide, 
+  .taskflowchart.with_top_bar_menu .tasks_flow {
+	top:50px !important;
+}
+.taskflowchart .tasks_menu {
+	width:0px !important;
+	display:none;
+	overflow:hidden;
+}
+.taskflowchart .tasks_flow {
+	left:0px !important;
+}
+.taskflowchart .tasks_flow.drop_hover { /* .drop_hover is set in admin_menu.js */
+	box-shadow:inset 0 0 30px 0px rgba(0, 0, 0, .1);
+}
+.taskflowchart.fixed_side_properties .tasks_flow:not(.task_properties_shown):not(.connection_properties_shown),
+  .taskflowchart:not(.fixed_side_properties) .tasks_flow {
+	right:0px !important;
+}
+.taskflowchart.fixed_side_properties .tasks_menu_hide:not(.task_properties_shown):not(.connection_properties_shown),
+  .taskflowchart:not(.fixed_side_properties) .tasks_menu_hide {
+	display:none;
+}
+
+.taskflowchart ::-webkit-scrollbar { /* for: .tasks_flow, .selected_task_properties and .selected_connection_properties */
+	height:10px;
+}
+
+.taskflowchart.fixed_side_properties:not(.reverse) > .tasks_flow {
+	left:305px;
+}
+.taskflowchart.fixed_side_properties.reverse > .tasks_flow {
+	right:305px;
+}
+.taskflowchart.fixed_side_properties:not(.reverse) > .tasks_menu_hide {
+	left:300px;
+}
+.taskflowchart.fixed_side_properties.reverse > .tasks_menu_hide {
+	right:300px;
+}
+.taskflowchart.fixed_side_properties > .selected_task_properties, 
+  .taskflowchart.fixed_side_properties > .selected_connection_properties {
+	width:300px;
+}
+.taskflowchart.with_top_bar_menu.fixed_side_properties .selected_task_properties,
+  .taskflowchart.with_top_bar_menu.fixed_side_properties .selected_connection_properties,
+  .taskflowchart.with_top_bar_menu.fixed_side_properties .selected_task_properties.maximize_properties:not(.collapsed_properties), 
+  .taskflowchart.with_top_bar_menu.fixed_side_properties .selected_connection_properties.maximize_properties:not(.collapsed_properties) {
+	height:auto !important;
+	top:45px !important;
+	bottom:0 !important;
+}
+.taskflowchart.with_top_bar_menu.fixed_side_properties .selected_task_properties > .resize_properties_panel,
+  .taskflowchart.with_top_bar_menu.fixed_side_properties .selected_connection_properties > .resize_properties_panel,
+  .taskflowchart.with_top_bar_menu.fixed_side_properties .selected_task_properties > .maximize_minimize_icon,
+  .taskflowchart.with_top_bar_menu.fixed_side_properties .selected_connection_properties > .maximize_minimize_icon {
+	display:none;
+}
+
+.taskflowchart.with_top_bar_menu.fixed_side_properties .selected_task_properties > .toggle_properties_side_icon,
+  .taskflowchart.with_top_bar_menu.fixed_side_properties .selected_connection_properties > .toggle_properties_side_icon {
+	right:45px;
+}
+
+.taskflowchart.with_top_bar_menu.fixed_side_properties .selected_task_properties > .generic_buttons,
+  .taskflowchart.with_top_bar_menu.fixed_side_properties .selected_connection_properties > .generic_buttons {
+	right:75px;
+}
+
+.taskflowchart.with_top_bar_menu.fixed_properties > .selected_task_properties .properties_task_id,
+  .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_task_properties .properties_task_id {
+	width:calc(100% - 165px);
+}
+.taskflowchart.with_top_bar_menu.fixed_side_properties.auto_save_disabled > .selected_task_properties .properties_task_id {
+	width:calc(100% - 195px);
+}
+.taskflowchart.with_top_bar_menu.fixed_properties.auto_save_disabled > .selected_task_properties .properties_task_id {
+	width:calc(100% - 225px);
+}
+.taskflowchart.with_top_bar_menu.fixed_properties > .selected_task_properties.collapsed_properties .properties_task_id, 
+  .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_task_properties.collapsed_properties .properties_task_id {
+	width:calc(100% - 200px);
+}
+
+.taskflowchart.with_top_bar_menu.fixed_properties > .selected_connection_properties .properties_connection_id,
+  .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_connection_properties .properties_connection_id {
+	width:calc(100% - 205px);
+}
+.taskflowchart.with_top_bar_menu.fixed_side_properties.auto_save_disabled > .selected_connection_properties .properties_connection_id {
+	width:calc(100% - 235px);
+}
+.taskflowchart.with_top_bar_menu.fixed_properties.auto_save_disabled > .selected_connection_properties .properties_connection_id {
+	width:calc(100% - 265px);
+}
+.taskflowchart.with_top_bar_menu.fixed_properties > .selected_connection_properties.collapsed_properties .properties_connection_id, 
+  .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_connection_properties.collapsed_properties .properties_connection_id {
+	width:calc(100% - 240px);
+}
+
+.taskflowchart .selected_task_properties > .content > div,
+  .taskflowchart .selected_task_properties > .content > div .ui-tabs-nav li.ui-tabs-active {
+	background:transparent;
+}
+
+/* CONTEXT MENUS */
+body .task_context_menu .start_task:not(.is_start_task) a,
+  body .task_context_menu .start_task:not(.is_start_task) a {
+	padding-left:15px !important;
+	/*background:url("../../common/img/icon/refresh_icon.png") no-repeat scroll 4px 4px !important;*/
+}
+.task_context_menu .start_task a::before {
+	width:15px;
+	display:inline-block;
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f2f1";
+	margin-right:12px;
+}
+
+/* LOADING PANEL */
+.loading_panel {
+	position:fixed;
+	top:0px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	background-color:#333;
+	opacity:0.6;
+	filter: alpha(opacity=60);/* For IE */
+	z-index:9000;
+}
+
+/* POPUP */
+.create_diagram_sql_popup {
+	left:10px;
+	top:10px;
+	bottom:10px;
+	right:10px;
+}
+.create_diagram_sql_popup iframe {
+	width:100% !important;
+	height:100% !important;
+}
+
+.show_sync_sql_popup {
+	top:10px;
+	left:10px;
+	right:10px;
+	bottom:10px;
+}
+.show_sync_sql_popup > ul {
+	max-height:calc(100% - 125px);
+	margin-bottom:20px;
+	overflow:auto;
+}
+.show_sync_sql_popup > ul > li:not(:last-child) {
+	padding-bottom:20px;
+}
+.show_sync_sql_popup > ul > li.show_sql:last-child {
+	padding-bottom:20px;
+	border-bottom:1px solid var(--main-iframe-bg);
+}
+.show_sync_sql_popup > ul > li > .table_header {
+	margin:0;
+	padding:10px;
+	background-color:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+	border:0;
+	border-radius:0;
+}
+.show_sync_sql_popup > ul > li > .table_header .icon {
+	float:right;
+}
+.show_sync_sql_popup > ul > li.show_sql > .table_header .icon:before {
+	content:"\f78c";
+}
+.show_sync_sql_popup > ul > li > .sql_statement {
+	padding:10px 20px;
+}
+.show_sync_sql_popup > ul > li:last-child > .sql_statement {
+	padding-bottom:0;
+}
+.show_sync_sql_popup > ul > li:not(.show_sql) > .sql_statement {
+	display:none;
+}
+.show_sync_sql_popup > .button {
+	padding:0 20px 20px;
+	text-align:center;
+}
+

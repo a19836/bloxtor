@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<!-- 
+	To start the memcache service please execute this: 
+		memcached -d -l 127.0.0.1 -p 11211 -m 64
+	-->
+
+	<var name="memcache_host">127.0.0.1</var>
+	<var name="memcache_port">11211</var>
+	<var name="memcache_timeout"></var>
+	
+	<!-- DRIVER -->
+	<bean name="MemcacheHandler" path="lib.org.phpframework.memcache.MemcacheHandler">
+		<function name="connect">
+			<parameter index="1" reference="memcache_host"></parameter>
+			<parameter index="2" reference="memcache_port"></parameter>
+			<parameter index="3" reference="memcache_timeout"></parameter>
+		</function>
+	</bean>
+</beans>

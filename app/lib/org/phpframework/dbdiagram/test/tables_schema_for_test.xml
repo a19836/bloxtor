@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<tables>
+	<table>
+		<name>zip</name>
+		<drop_before_create>1</drop_before_create>
+		<engine>InnoDB</engine>
+		<charset>utf8</charset>
+		<collate>utf8_bin</collate>
+		<attributes>
+			<attribute name="zip_id" type="varchar" length="15" unsigned="0" not_null="1" default="0" comment="" auto_increment="0" />
+			<attribute name="zone_id" type="bigint" length="" unsigned="1" not_null="1" default="0" comment="" />
+			<attribute name="created_date" type="timestamp" length="" unsigned="" not_null="1" default="'0000-00-00 00:00:00'" comment="" />
+			<attribute name="modified_date" type="timestamp" length="" unsigned="" not_null="1" default="CURRENT_TIMESTAMP" comment="" on_update="CURRENT_TIMESTAMP" />
+		</attributes>
+		<keys>
+			<primary_keys>
+				<primary_key attribute="zip_id,zone_id" />
+			</primary_keys>
+			<foreign_keys>
+				<foreign_key name="fk_zip_zone_id" attribute="zone_id" reference_table="zone" reference_attribute="zone_id" on_delete="RESTRICT" on_update="CASCADE" />
+			</foreign_keys>
+			<unique_keys>
+				<unique_key name="uk_zip_zip_id" attribute="zip_id" type="" />
+			</unique_keys>
+			<index_keys>
+				<unique_key name="idx_zip_zip_id" attribute="zip_id" type="btree" />
+				<unique_key name="idx_zip_zone_id" attribute="zone_id" type="hash" />
+			</index_keys>
+		</keys>
+	</table>
+	<table>
+		<name>company</name>
+		<drop_before_create>1</drop_before_create>
+		<engine>MyISAM</engine>
+		<charset>utf8</charset>
+		<collate>utf8_bin</collate>
+		<attributes>
+			<attribute name="company_id" type="bigint" length="" unsigned="1" not_null="1" default="0" comment="" auto_increment="1" />
+			<attribute name="corporate_name" type="varchar" length="100" unsigned="" not_null="1" default="" comment="nome corporativo" />
+			<attribute name="marketing_name" type="varchar" length="100" unsigned="" not_null="1" default="" comment="nome da empresa" />
+			<attribute name="social_security_number" type="varchar" length="50" unsigned="" not_null="1" default="" comment="ssn or nif" />
+			<attribute name="created_date" type="timestamp" length="" unsigned="" not_null="1" default="'0000-00-00 00:00:00'" comment="" />
+			<attribute name="modified_date" type="timestamp" length="" unsigned="" not_null="1" default="CURRENT_TIMESTAMP" comment="" on_update="CURRENT_TIMESTAMP" />
+		</attributes>
+		<keys>
+			<primary_keys>
+				<primary_key attribute="company_id" />
+			</primary_keys>
+			<!--foreign_keys>
+				<foreign_key name="" attribute="" reference_table="" reference_attribute="" on_delete="" on_update="" />
+			</foreign_keys-->
+			<unique_keys>
+				<unique_key name="uk_company_ssn" attribute="social_security_number" type="" />
+			</unique_keys>
+			<index_keys>
+				<unique_key name="idx_company_ssn" attribute="social_security_number" type="" />
+			</index_keys>
+		</keys>
+	</table>
+</tables>

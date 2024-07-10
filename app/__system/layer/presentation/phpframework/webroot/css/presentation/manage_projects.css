@@ -1,0 +1,94 @@
+/* TOP BAR */
+.top_bar .info {
+	color:#999;
+	font-size:80%;
+}
+
+/* PROJECTS */
+.projects_list {
+	margin-bottom:20px;
+	text-align:center;
+}
+.projects_list .layer_projects {
+	display:inline-block;
+}
+
+.projects_list .default_project {
+	margin:20px 0;
+}
+.projects_list .default_project select {
+	font-size:inherit;
+}
+
+.projects_list table {
+	width:100%;
+	clear:left;
+	float:none;
+}
+.projects_list table th {
+	font-weight:bold;
+	text-transform:uppercase;
+	font-size:10px;
+	height:20px;
+	line-height:15px;
+}
+.projects_list table td {
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+}
+.projects_list table .project {
+	width:200px;
+	text-align:center;
+}
+.projects_list table .path {
+	width:200px;
+	padding:0 3px 0px 3px;
+	text-align:center;
+}
+.projects_list table .buttons {
+	width:170px;
+	text-align:center;
+}
+.projects_list table .buttons .icon {
+	width:20px;
+	height:20px;
+	vertical-align:middle;
+}
+.projects_list table .buttons .icon.add {
+	font-size:14px;
+}
+.projects_list table .buttons .icon.edit::before {display:block; margin-top:2px;}
+.projects_list table .buttons .icon.edit_project_global_variables::before {content:"\f0ac"; color:#999;}
+.projects_list table .buttons .icon.edit_project_global_variables::after {content:"\f304";}
+.projects_list table .buttons .icon.edit_config::before {content:"\f013"; color:#999;}
+.projects_list table .buttons .icon.edit_config::after {content:"\f304";}
+.projects_list table .buttons .icon.edit_init::before {content:"\f573"; display:block; margin-top:2px;}
+.projects_list table .buttons .icon.manage_references::before {content:"\f572";}
+.projects_list table .buttons .icon.view::before {display:block; margin-top:2px;}
+.projects_list table .buttons .icon.delete::before {display:block; margin-top:2px;}
+
+/* POPUP */
+.edit_project_details_popup {
+	width:535px;
+	height:345px;
+}
+.edit_project_details_popup.big {
+	position:fixed !important;
+	top:10px !important;
+	left:10px !important;
+	right:10px !important;
+	bottom:10px !important;
+	width:auto;
+	height:auto;
+}
+.edit_project_details_popup:not(.big) {
+	position:fixed !important;
+	top:calc(50% - (335px/2)) !important;
+	left:calc(50% - (535px/2)) !important;
+	right:10px !important;
+	bottom:10px !important;
+}
+.edit_project_details_popup iframe {
+	width:100%;
+	height:100%;
+}

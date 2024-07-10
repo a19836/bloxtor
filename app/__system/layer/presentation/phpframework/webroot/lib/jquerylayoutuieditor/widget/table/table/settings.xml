@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Table</label>
+	<tag>table</tag>
+	<files>
+		<js>../createWidgetTableHandler.js</js>
+		<css>../createWidgetTableHandler.css</css>
+	</files>
+	<settings>
+		<resizable>1</resizable>
+		<menu_settings_class>table-sections-menu-settings</menu_settings_class>
+		<template_class>droppable</template_class>
+		<template_node_name>table</template_node_name>
+		<create_widget_class>TableWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="thead">
+			<label>Table Head: <i class="zmdi zmdi-hc-lg zmdi-plus add"></i></label>
+			<div class="no-rows">There are no rows</div>
+			<table>
+				<tbody></tbody>
+			</table>
+		</div>
+		<div class="tbody">
+			<label>Table Body: <i class="zmdi zmdi-hc-lg zmdi-plus add"></i></label>
+			<div class="no-rows">There are no rows</div>
+			<table>
+				<tbody></tbody>
+			</table>
+		</div>
+		<div class="tfoot">
+			<label>Table Foot: <i class="zmdi zmdi-hc-lg zmdi-plus add"></i></label>
+			<div class="no-rows">There are no rows</div>
+			<table>
+				<tbody></tbody>
+			</table>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-table:before,
+		  body > .menu-widget.menu-widget-table.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		/* bc of the resize, otherwise will be very dificult to resize the table bc the inner elements take precendent and the resize event for the table won't fire bc the inner elements are upfront of the table. */
+		.template-widget.template-widget-table {
+			border: 10px solid #f7f7f7; 
+		}
+		.template-widget.template-widget-table.widget-active {
+			border:10px solid #f7f7f7 !important;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function TableWidget(ui_creator, menu_widget) {
+			var me = this;
+			var TableHandler = new createWidgetTableHandler(ui_creator, menu_widget); //init the other part of the container
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.table.parseHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.table.onCreateTemplateWidget",
+					"data-on-open-widget-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.table.onOpenWidgetHeader",
+					"data-on-close-widget-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.table.onCloseWidgetHeader",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.table.onOpenWidgetSettings",
+					"data-on-close-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.table.onCloseWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.table.saveSettingsField",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeName.toLowerCase() == "table") {
+					html_element = $(html_element);
+					
+					return {
+						droppable: html_element,
+					};
+				}
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element) {
+					widget.css({width: "100%", "min-height": "20px"});
+					//Note that if the widget is empty the width and min-height will be ignored, but it's ok bc is the Browsers default behaviour. Only when we add a tbody or thead or tfoot with trs, the table uses the width and min-height. Do not add here "display: block", otherwise the children will not have 100% width and it will look weird after.
+					widget.attr("data-widget-list-table", "");
+					
+					var value = prompt("Please write the number of rows and columns that you wish? (space delimiter. eg: '2 3', means 2 rows with 3 columns)");
+					
+					if (!value)
+						value = "1 1";
+					
+					ui_creator.updateMenuLayer(widget); //update table in menu layer before it creates the table-body widget, otherwise the it will create a new table-body in the root of menu-layer, bc there isn't yet a table widget in the menu layer.
+					
+					value = value.replace(/^\s+/g, "").replace(/\s+$/g, "").replace(/\s\s+/g, " ");
+					var parts = value.split(" ");
+					var rows = Math.abs(parseInt(parts[0]));
+					var cols = Math.abs(parseInt(parts[1]));
+					
+					if (rows) {
+						cols = cols ? cols : 1;
+						
+						//add table head
+						var thead = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-head", widget, null);
+						var tr = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-row", thead, null);
+						
+						for (var i = 0; i < cols; i++) {
+							var col = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-column-head", tr, null);
+							col.html("col label");
+						}
+						
+						//add table body
+						var tbody = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-body", widget, null);
+						
+						for (var i = 0; i < rows; i++) {
+							var tr = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-row", tbody, null);
+							tr.attr("data-widget-item", "");
+							
+							for (var j = 0; j < cols; j++) {
+								var col = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-column", tr, null);
+								col.html("col value");
+							}
+						}
+						
+						//add loading row
+						var tr = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-row", tbody, null);
+						tr.attr("data-widget-loading", "");
+						
+						var td = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-column", tr, null);
+						td.attr("colspan", cols).attr("class", td.attr("class") + " border-0 text-center text-muted small p-3").html("Loading message");
+						
+						//add empty row
+						var tr = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-row", tbody, null);
+						tr.attr("data-widget-empty", "");
+						
+						var td = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-column", tr, null);
+						td.attr("colspan", cols).attr("class", td.attr("class") + " border-0 text-center text-muted small p-3").html("Empty message");
+					}
+				}
+			};
+			
+			me.onOpenWidgetHeader = function(widget, widget_header) {
+				widget_header.find(" > .options > .add-table-child").remove();
+				var add = $('<i class="zmdi zmdi-plus-circle option add-table-child" title="Add Tr/THead/TBody/TFoot"></i>');
+					
+				add.click(function(event) {
+					addChild(widget);
+				});
+				
+				add.insertBefore( widget_header.find(" > .options > .close") );
+			};
+			
+			me.onCloseWidgetHeader = function(widget, widget_header) {
+				widget_header.find(" > .options > .add-table-child").remove();
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				menu_settings.find(".settings-actions  > ul > li > button.add-table-child").remove();
+				
+				var add = $('<button class="btn add-table-child">Add Tr/THead/TBody/TFoot <i class="zmdi zmdi-plus-circle"></i></button>');
+				
+				add.click(function(event) {
+					addChild(widget);
+				});
+				
+				menu_settings.find(".settings-actions > ul > li").append(add);
+				
+				//load current settings
+				var ul = menu_settings.find(".settings-properties > ul");
+				
+				TableHandler.prepareTableSectionSettings(ul);
+				
+				//load table sections
+				var children = widget.children("thead, tbody, tfoot, tr");
+				$.each(children, function(idx, widget_table_section) { //must loop synchronously bc if the table contains only trs, then the trs should show by order.
+					TableHandler.loadTableSectionSettings(ul, $(widget_table_section));
+				});
+			};
+			
+			me.onCloseWidgetSettings = function(widget, menu_settings) {
+				menu_settings.find(".settings-actions  > ul > li > button.add-table-child").remove();
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				return TableHandler.saveSettingsField(field, widget, status);
+			};
+			
+			function addChild(widget) {
+				var type = prompt("Please write the type of child that you wish to add? (available options: tr/thead/tbody/tfoot)", "tr");
+				var available_options = ["tr", "thead", "tbody", "tfoot"];
+				
+				if (!type || type == "" || available_options.indexOf(type.toLowerCase()) == -1)
+					ui_creator.showError("You must enter 1 of the following options: tr/thead/tbody/tfoot");
+				else {
+					type = type.toLowerCase();
+					
+					var suffix = "row";
+					switch (type) {
+						case "thead": suffix = "head"; break;
+						case "tbody": suffix = "body"; break;
+						case "tfoot": suffix = "foot"; break;
+					}
+					
+					ui_creator.createTemplateWidgetFromMenuWidgetTag("table-" + suffix, widget, null);
+				}
+			}
+		}
+	]]></menu_js>
+</widget>

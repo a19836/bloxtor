@@ -1,0 +1,251 @@
+/* TOP BAR */
+.edit_single_query > .top_bar header {
+	z-index:9999;
+}
+.edit_single_query > .top_bar .title { 
+	max-width:calc(100% - 70px);
+	z-index:1;
+	position:absolute;
+}
+.edit_single_query > .top_bar .title .query_type {
+	width:95px;
+	display:inline-block;
+}
+.edit_single_query > .top_bar .title .query_name {
+	width:220px;
+	display:inline-block;
+}
+.edit_single_query:not(.covertable_sql) .top_bar li.add_new_table,
+  .edit_single_query:not(.covertable_sql) .top_bar li.update_tables_attributes,
+  .edit_single_query:not(.covertable_sql) .top_bar li.toggle_ui,
+  .edit_single_query:not(.covertable_sql) .top_bar li.toggle_settings,
+  .edit_single_query:not(.covertable_sql) .top_bar li.create_sql_from_ui,
+  .edit_single_query:not(.covertable_sql) .top_bar li.create_ui_from_sql,
+  .edit_single_query:not(.covertable_sql) .top_bar li.auto_convert_activation,
+  .edit_single_query .top_bar li.select_query:not(.show) {
+	display:none !important;
+}
+.edit_single_query > .top_bar li.sub_menu ul li a > .icon.add {
+	height:auto;
+}
+
+
+/* RELATIONSHIP */
+.edit_single_query .data_access_obj {
+	padding:0;
+	z-index:0;
+}
+.edit_single_query:not(.covertable_sql) .data_access_obj {
+	border:0;
+}
+.edit_single_query .relationship {
+	margin:0;
+	padding:0;
+	border:0;
+	display:none;
+}
+.edit_single_query .relationship .header_buttons {
+	display:none;
+}
+.edit_single_query .relationship .rel_type {
+	width:80px;
+	margin:0;
+	position:fixed;
+	top:14px;
+	left:50px;
+	z-index:9999;
+}
+/*.in_popup .edit_single_query .relationship .rel_type {
+	top:16px;
+	left:53px;
+}*/
+.edit_single_query .relationship .rel_type label {
+	display:none;
+}
+.edit_single_query .relationship .rel_type select {
+	width:80px;
+	border:1px solid #ccc;
+	background:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+}
+.in_popup .edit_single_query .relationship .rel_type select {
+	background:var(--main-popup-header-bg);
+	color:var(--main-popup-header-color);
+}
+.edit_single_query .relationship .rel_name {
+	width:220px;
+	margin:0;
+	position:fixed;
+	top:14px;
+	left:220px;
+	z-index:9999;
+}
+/*.in_popup .edit_single_query .relationship .rel_name {
+	top:16px;
+	left:230px;
+}*/
+.edit_single_query .relationship .rel_name label {
+	display:none;
+}
+.edit_single_query .relationship .rel_name input {
+	width:200px;
+	border:1px solid #ccc;
+	background:transparent;
+	color:var(--main-iframe-color);
+}
+.in_popup .edit_single_query .relationship .rel_name input {
+	background:var(--main-popup-header-bg);
+	color:var(--main-popup-header-color);
+}
+.in_popup .edit_single_query .relationship .rel_name input::placeholder {
+	color:var(--main-popup-header-color);
+}
+
+/* RELATIONSHIP - QUERY */
+.edit_single_query .relationship .query {
+	margin:0;
+	padding:0;
+	border:0;
+	background:transparent;
+	position:relative;
+	overflow:visible;
+}
+.edit_single_query .relationship .query > .query_tabs {
+	display:none;
+}
+.edit_single_query .relationship .query > .ui-widget-content {
+	display:block !important;
+	margin-top:100px;
+	border-top:1px solid #000;
+}
+.edit_single_query .relationship .query .sql_text_area {
+	height:100px;
+	margin-top:-100px;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	border-top:0;
+}
+.edit_single_query:not(.covertable_sql) .data_access_obj .relationship .query .sql_text_area {
+	height:calc(100vh - 105px);
+	margin-top:-90px;
+	border:1px solid #aaa;
+}
+  .edit_single_query.covertable_sql .data_access_obj .relationship.query_select .query.hide_taskflowchart.hide_query_settings .sql_text_area,
+  .edit_single_query.covertable_sql .data_access_obj .relationship:not(.query_select) .query.hide_query_settings .sql_text_area {
+	height:calc(100vh - 115px);
+	position:unset;
+}
+.edit_single_query .relationship .query .sql_text_area textarea, 
+  .edit_single_query .relationship .query .sql_text_area .ace_editor {
+	width:100%;
+	height:100%; 
+	border-top:0;
+}
+.edit_single_query:not(.covertable_sql) .relationship .query .query_select {
+	display:none !important;
+}
+.edit_single_query .relationship .query .query_select .taskflowchart,
+  .edit_single_query .relationship .query .query_select .taskflowchart .tasks_flow,
+  .edit_single_query .relationship .query .query_select .taskflowchart .workflow_menu {
+	width:100%;
+	min-width:auto;
+}
+.edit_single_query .relationship .query .query_select .taskflowchart {
+	height:auto !important;
+	margin:0;
+	position:relative;
+}
+.edit_single_query .relationship .query.hide_taskflowchart .query_select .taskflowchart {
+	display:none;
+}
+.edit_single_query .relationship .query .query_select .taskflowchart .tasks_flow {
+	height:calc(50vh - 115px);
+	/*min-height:250px;
+	max-height:350px;*/
+	margin:0;
+	position:relative;
+	overflow-y:auto;
+	overflow-x:auto;
+	background:#fff;
+	box-sizing:border-box;
+}
+.edit_single_query .relationship .query.hide_query_settings .query_select .taskflowchart .tasks_flow {
+	height:calc(100vh - 215px);
+}
+.edit_single_query .relationship .query .query_select .taskflowchart .workflow_menu {
+	display:none;
+}
+.edit_single_query .relationship .query table {
+	margin-left:auto;
+	margin-right:auto;
+	border:0;
+}
+.edit_single_query .relationship.query_insert .query_insert_update_delete, 
+  .edit_single_query .relationship.query_update .query_insert_update_delete, 
+  .edit_single_query .relationship.query_delete .query_insert_update_delete {
+	height:calc(100vh - 225px);
+	padding-bottom:40px;
+	border:0;
+	box-sizing:border-box;
+}
+.edit_single_query:not(.covertable_sql) .relationship .query_insert_update_delete,
+  .edit_single_query .relationship .query.hide_query_settings .query_insert_update_delete {
+	display:none !important;
+}
+.edit_single_query .relationship .query_insert_update_delete .query_insert_update_delete_tabs {
+	text-align:left;
+}
+.edit_single_query .relationship .query .query_insert_update_delete .query_insert_update_delete_tab {
+	height:calc(100% - 75px);
+	overflow:auto;
+}
+.edit_single_query .relationship.query_select .query_select {
+	border:0;
+}
+.edit_single_query .relationship .query .query_select .query_settings {
+	height:calc(50vh - 100px);
+	padding-top:10px;
+	padding-bottom:40px;
+	border-top:1px solid #000;
+	border-radius:0;
+	box-sizing:border-box;
+}
+.edit_single_query .relationship .query.hide_taskflowchart .query_select .query_settings {
+	height:calc(100vh - 215px);
+	border-top:0;
+}
+.edit_single_query .relationship .query .query_select .query_settings .query_settings_tab {
+	height:100%;
+	overflow:auto;
+}
+.edit_single_query .relationship .query .query_select .query_settings .advanced_query_settings {
+	margin-top:auto;
+	right:10px;
+	bottom:10px;
+}
+.edit_single_query .relationship .query .query_select .query_settings > .query_settings_tabs {
+	border-top-left-radius:0;
+	border-top-right-radius:0;
+}
+.edit_single_query .relationship .sub_limit_start {
+	height:auto;
+	margin-top:0;
+	padding-top:35px;
+	overflow:visible;
+}
+.edit_single_query .relationship .query .query_select .query_settings .sub_limit_start .limit_start .limit label, 
+  .edit_single_query .relationship .query .query_select .query_settings .sub_limit_start .limit_start .start label {
+	font-weight:normal;
+}
+
+.edit_single_query .relationship .query .query_select .taskflowchart .selected_connection_properties {
+	min-height:calc(50vh - 55px) !important;
+	background:var(--main-template-bg);
+}
+
+/* RELATIONSHIP - MAIN SETTINGS */
+.edit_single_query .relationship .settings {
+	height:150px;
+}

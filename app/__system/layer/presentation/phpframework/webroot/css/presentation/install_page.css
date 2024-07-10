@@ -1,0 +1,361 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+/* TOP BAR */
+.top_bar {
+	margin-bottom:20px;
+}
+.top_bar header > ul > li.button > a > .loading {
+	height:16px;
+	margin-right:5px;
+}
+.top_bar header > ul > li.button > a.loading {
+	cursor:wait;
+}
+.top_bar header > ul > li.button > a.loading .icon {
+	cursor:inherit;
+}
+
+/* install_page */
+.install_page {
+	border:0;
+}
+.install_page > ul {
+	margin-top:20px !important;
+	background:none;
+	border:0;
+	text-align:center;
+	font-size:13px;
+}
+.install_page > ul li {
+	margin:0 !important;
+	background:none !important;
+	border:none !important;
+	display:inline-block;
+	float:none !important;
+	font-weight:normal;
+	cursor:pointer;
+}
+.install_page > ul li:not(:first-child) {
+	border-left:1px solid #DFE1ED !important;
+	border-radius:0;
+}
+.install_page > ul li a {
+	margin:0 5px;
+	padding:0 10px !important;
+	border-bottom:1px solid transparent !important;
+	color:#83889E !important;
+	float:none !important;
+	text-decoration:none !important;
+}
+.install_page > ul li.ui-state-active a {
+	font-weight:bold;
+	/*border-bottom-color:var(--icon-active-color) !important;*/
+	color:#2C2D34 !important;
+}
+
+/* file_upload */
+
+.install_page > .file_upload {
+	text-align:center;
+}
+.install_page > .file_upload > .title {
+	margin:20px 0 0;
+	color:#999;
+}
+.install_page > .file_upload .upload_file {
+	width:315px;
+	/*width:calc(100% - 57px);*/
+	margin:10px auto 0;
+	display:block;
+	font-size:inherit;
+}
+.install_page > .file_upload .upload_file::file-selector-button {
+	padding:10px;
+	border:1px solid rgba(0,0,0, .1);
+	border-radius:inherit;
+}
+.install_page > .file_upload .upload_url {
+	margin:10px auto 0 auto;
+}
+.install_page > .file_upload .upload_url input {
+	width:calc(100% - 74px);
+	max-width:322px;
+	margin-left:5px;
+	margin-right:5px;
+	padding:10px;
+	box-sizing:border-box;
+	font-size:inherit;
+}
+.install_page > .file_upload .upload_url .icon.delete {
+	height:16px;
+	margin-left:0;
+	display:inline-block;
+	float:none;
+	vertical-align:middle;
+	font-size:14px;
+}
+.install_page > .file_upload .upload_url .icon.delete::before {
+	margin-top:2px;
+	display:block;
+}
+
+.install_page > .file_upload .go_to_pages_download_page {
+	width:100%;
+	margin:40px 0 30px;
+	text-align:center;
+	color:#999;
+}
+
+/* install_page_url */
+
+.install_page > .install_page_url {
+	text-align:center;
+}
+.install_page > .install_page_url > .title {
+	margin:20px 0 0;
+	color:#999;
+}
+.install_page > .install_page_url .remote_url {
+	width:315px;
+	/*width:calc(100% - 57px);*/
+	margin:10px auto 0;
+	padding:10px 25px 10px 10px;
+	font-size:inherit;
+}
+.install_page > .install_page_url .icon.refresh {
+	margin:13px 0 0 -25px;
+}
+.install_page > .install_page_url .icon.refresh.loading {
+	cursor:wait;
+}
+.install_page > .install_page_url .icon.refresh.loading:before {
+	content:"";
+}
+.install_page > .install_page_url iframe {
+	width:100%;
+	height:calc(100vh - 260px);
+	min-height:300px;
+	margin:20px 0 0;
+	padding:0;
+	border:1px solid rgba(0,0,0, .1);
+	box-sizing:border-box;
+}
+
+/* install_store_page */
+
+.install_page > .install_store_page {
+	text-align:center;
+}
+.install_page > .install_store_page > .title {
+	margin:20px 0 0;
+	color:#999;
+}
+.install_page > .install_store_page > .search_page {
+	max-width:250px;
+	margin:10px auto 0;
+	color:#999;
+	position:relative;
+	display:inline-block;
+}
+.install_page > .install_store_page > .search_page .icon.search {
+	cursor:default;
+	color:inherit;
+}
+.install_page > .install_store_page > .search_page input {
+	width:100%;
+	margin-left:-28px;
+	padding:10px 20px 10px 25px;
+	color:inherit;
+	border-color:inherit;
+	border-radius:0.2rem;
+	font-size:10pt;
+	box-sizing:border-box;
+}
+.install_page > .install_store_page > .search_page input::placeholder {
+	color:inherit;
+}
+.install_page > .install_store_page > .search_page .icon.close {
+	margin:0;
+	position:absolute;
+	top:13px;
+	right:7px;
+}
+.install_page > .install_store_page ul {
+	max-height: calc(100% - 90px);
+	margin:20px 0 0;
+	padding:10px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+	overflow: auto;
+}
+.install_page > .install_store_page ul li.loading {
+	margin-top:20px;
+	padding-left:30px;
+}
+.install_page > .install_store_page ul li.empty {
+	margin-top:20px;
+}
+.install_page > .install_store_page ul li:not(.loading):not(.empty) {
+	width:300px;
+	margin:30px;
+	padding:10px 10px 50px 10px;
+	display: inline-block;
+	background: #fff;
+	border: 1px solid var(--main-iframe-bg, #ccc);
+	border-radius: 5px;
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 5%);
+	position:relative;
+	font-size:10px;
+	cursor:pointer;
+}
+.install_page > .install_store_page ul li.hidden {
+	display:none !important;
+}
+.install_page > .install_store_page ul li:not(.loading):not(.empty):hover {
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 20%);
+}
+.install_page > .install_store_page ul li:not(.loading):not(.empty):hover::before {
+	content:"Click to preview pre-built page";
+	position:absolute;
+	top:-15px;
+	left:0;
+	font-size:8px;
+	color:#999;
+}
+.install_page > .install_store_page ul li .photo {
+	width:auto;
+	height:180px;
+	margin:-10px;
+	display:inline-block;
+	overflow:overlay;
+}
+.install_page > .install_store_page ul li .photo::-webkit-scrollbar-track,
+  .install_page > .install_store_page ul li .photo::-webkit-scrollbar-thumb {
+	background:transparent;
+}
+.install_page > .install_store_page ul li .photo img {
+	width:100%;
+	/*min-height:180px;
+	opacity:.8;*/
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+}
+.install_page > .install_store_page ul li .photo .image {
+	width:auto;
+	margin-top:40px;
+	font-size:100px;
+	opacity:.2;
+	color:#ccc;
+}
+.install_page > .install_store_page ul li .photo .image::before {
+	content:"\f815";
+}
+.install_page > .install_store_page ul li label {
+	margin:5px 0 10px;
+	display: block;
+	text-align: center;
+	font-weight:normal;
+}
+.install_page > .install_store_page ul li img + label,
+  .install_page > .install_store_page ul li .photo + label {
+	margin:10px -10px 10px;
+	padding:15px 10px 0;
+	border-top:1px solid var(--main-iframe-bg, #ddd);
+}
+.install_page > .install_store_page ul li .photo + label {
+	margin-top:0;
+}
+.install_page > .install_store_page ul li div {
+	margin:5px 0 10px;
+	display: block;
+	text-align: center;
+	font-weight:normal;
+	color:#999;
+}
+.install_page > .install_store_page ul li .choose_page,
+  .install_page > .install_store_page ul li .view_page {
+	position:absolute;
+	bottom:10px;
+}
+.install_page > .install_store_page ul li .view_page {
+	left:10px;
+}
+.install_page > .install_store_page ul li .choose_page {
+	width:70px;
+	margin:auto;
+	left:0;
+	right:0;
+}
+.install_page > .install_store_page ul li .view_page + .choose_page {
+	left:auto;
+	right:10px;
+}
+.install_page > .install_store_page ul li .choose_page .icon,
+  .install_page > .install_store_page ul li .view_page .icon {
+	color:inherit;
+	display:none;
+}
+.install_page > .install_store_page ul li a.choose_page .icon::before {
+	font-size:12px;
+}
+
+/* PAGE POPUPS - view_store_page_popup */
+
+.view_store_page_popup {
+	position:fixed;
+	top:10px !important;
+	left:10px !important;
+	right:10px !important;
+	bottom:10px !important;
+	border:3px solid #000;
+	padding:0;
+}
+.view_store_page_popup.in_popup {
+	top:45px !important;
+}
+.view_store_page_popup iframe {
+	width:100% !important;
+	height:calc(100% - 50px) !important;
+}
+.view_store_page_popup .install_page {
+	margin:-7px 30px 0 0;
+	float:right;
+	font-size:11px;
+	background:#8CA9FF;
+	border-color:#8CA9FF;
+}
+
+/* MESSAGES */
+
+.messages {
+	margin:10px 10px 20px 10px;
+	padding:10px;
+	background-color:#CCC;
+	border:1px solid #999;
+}
+.messages li {
+	margin-left:20px;
+}
+.messages li.ok {
+	color:green;
+	font-weight:bold;
+}
+.messages li.error {
+	color:#B51E3F;
+	font-weight:bold;
+}
+.messages li.info {
+	color:#999;
+	font-weight:bold;
+}
+.messages li.exception {
+	color:brown;
+}

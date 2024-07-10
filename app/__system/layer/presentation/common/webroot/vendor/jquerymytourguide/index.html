@@ -1,0 +1,42 @@
+<html>
+<head>
+</head>
+<body>
+	<h1>More examples <a href="lib/tourguide/index.html" target="eg">here</a></h1>
+	<ul>
+		<li>
+			<button class="btn">Button TEST 1</button>
+			<button class="btn">Button TEST 2</button>
+			<button class="btn2" style="display:none">Button TEST 3</button>
+		</li>
+		<li>
+			<div class="msg">Some msg</div>
+		</li>
+	</ul>
+	<div>
+		<button onClick="MyTourGuide.restart()">Restart tour again</button>
+	</div>
+	
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<script language="javascript" type="text/javascript" src="lib/tourguide/tourguide.js"></script>
+	<script language="javascript" type="text/javascript" src="js/MyTourGuide.js"></script>
+	<script>
+	var steps = [
+		{
+			"selector":".btn, .btn2",
+			"title":"Tooltip Tour Guide",
+			"content":"Create a new project by clicking in the blue button",
+		},
+		{
+			"selector":".msg",
+			"title":"Tooltip Tour Guide",
+			"content":"then click the created project to select it..."
+		}
+	];
+
+	MyTourGuide.init({
+		steps: steps
+	});
+	</script>
+</body>
+</html>

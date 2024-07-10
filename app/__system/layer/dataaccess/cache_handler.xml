@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<!-- START FILE SYSTEM HANDLER --> 
+	<bean name="ServiceCacheHandler" path="org.phpframework.cache.service.filesystem.FileSystemServiceCacheHandler" path_prefix="<?php echo LIB_PATH;?>">
+		<constructor_arg><?php echo $vars["dal_module_cache_maximum_size"]; ?></constructor_arg>
+		
+		<property name="rootPath"><?php echo $vars["dal_cache_path"] . $vars["current_dal_module_id"]; ?></property>
+		<property name="defaultTTL"><?php echo $vars["dal_default_cache_ttl"]; ?></property>
+	</bean>
+	<!-- END FILE SYSTEM HANDLER --> 
+	
+	<!-- START MEMCACHE HANDLER -->
+	<!-- 
+	<import><?php echo CONFIG_PATH;?>/beans/memcache_driver.xml</import>
+	
+	<bean name="ServiceCacheHandler" path="org.phpframework.cache.service.memcache.MemcacheServiceCacheHandler" path_prefix="<?php echo LIB_PATH;?>">
+		<property name="rootPath"><?php echo $vars["dal_cache_path"] . $vars["current_dal_module_id"]; ?></property>
+		<property name="defaultTTL"><?php echo $vars["dal_default_cache_ttl"]; ?></property>
+		
+		<property name="memcacheHandler" reference="MemcacheHandler"></property>
+	</bean>
+	-->
+	<!-- END MEMCACHE HANDLER --> 
+	
+	<!-- START MONGODB HANDLER --> 
+	<!-- 
+	<import><?php echo CONFIG_PATH;?>/beans/mongodb_driver.xml</import>
+	
+	<bean name="ServiceCacheHandler" path="org.phpframework.cache.service.mongodb.MongoDBServiceCacheHandler" path_prefix="<?php echo LIB_PATH;?>">
+		<property name="rootPath"><?php echo $vars["dal_cache_path"] . $vars["current_dal_module_id"]; ?></property>
+		<property name="defaultTTL"><?php echo $vars["dal_default_cache_ttl"]; ?></property>
+		
+		<property name="mongoDBHandler" reference="MongoDBHandler"></property>
+	</bean>
+	-->
+	<!-- END MONGODB HANDLER --> 
+</beans>

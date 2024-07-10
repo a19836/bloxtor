@@ -1,0 +1,81 @@
+.taskflowchartmenu .task.task_setvar {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_setvar .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_setvar .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.set_var_task_html {
+	width:390px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_var_task_html {
+	width:100%;
+	box-sizing:border-box;
+}
+
+.set_var_task_html .result {
+	margin:0;
+	padding:0;
+	padding-top:5px;
+	border:0;
+}
+
+.set_var_task_html .value {
+	/*margin-top:10px;*/
+}
+.set_var_task_html .value,
+   .set_var_task_html .var_type {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.set_var_task_html .value label,
+   .set_var_task_html .var_type label {
+	width:50px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_var_task_html .value label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_var_task_html .var_type label {
+	width:35px;
+}
+.set_var_task_html .value input {
+	width:270px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_var_task_html .value input {
+	width:calc(100% - 75px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_var_task_html.with_search .value input {
+	width:calc(100% - 100px);
+}
+.set_var_task_html .value textarea, 
+  .set_var_task_html .value .ace_editor {
+	float:none;
+	clear:left;
+	width:100%;
+	height:110px;
+	margin-top:3px;
+	border:1px inset #CCC;
+}
+.set_var_task_html .value .search {
+	display:none;
+	margin-left:0;
+	margin-right:5px;
+}
+.set_var_task_html.with_search .value .search {
+	display:inline-block;
+}
+.set_var_task_html .value .textarea {
+	margin-left:0;
+	margin-right:5px;
+}
+.set_var_task_html .value .maximize {
+	display:none;
+	margin-left:0;
+}
+.set_var_task_html .value .add_variable {
+	margin-left:-23px;
+}

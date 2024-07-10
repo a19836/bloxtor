@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<bean name="ServiceCacheHandler" path="org.phpframework.cache.service.filesystem.FileSystemServiceCacheHandler" path_prefix="<?php echo LIB_PATH;?>">
+		<constructor_arg><?php echo $vars["dbl_module_cache_maximum_size"]; ?></constructor_arg>
+		
+		<property name="rootPath"><?php echo $vars["dbl_cache_path"]; ?></property>
+		<property name="defaultTTL"><?php echo $vars["dbl_default_cache_ttl"]; ?></property>
+	</bean>
+</beans>

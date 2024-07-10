@@ -1,0 +1,28 @@
+/*.taskflowchartdiagram ._jsPlumb_connector path {
+	stroke-width:unset !important;
+}*/
+.taskflowchartdiagram .end_point {
+	opacity:1 !important;
+}
+.taskflowchartdiagram .task.logic_task.is_start_task:not(:hover):before,
+  .taskflowchartdiagram .task.logic_task:hover:not(.dragActive):before, 
+  .taskflowchartdiagram .task.logic_task.is_start_task:not(:hover) .task_info,
+  .taskflowchartdiagram .task.logic_task:hover:not(.dragActive) > .task_info {
+	display:block !important;
+}
+.taskflowchartdiagram .task.logic_task .short_actions {
+	top:-28px !important;
+	right:-55px !important;
+}
+
+/* task properties */
+.sla .sla_item_task_html {
+	
+}
+.sla .sla_item_task_html .sla_group_item > .sla_group_header > .sla_group_sub_header > .condition_type {
+	margin:0;
+}
+.sla .sla_item_task_html .sla_group_item > .sla_group_header > .sla_group_sub_header > .condition_value {
+	float:right;
+}
+

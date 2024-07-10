@@ -1,0 +1,33 @@
+.selected_task_properties .broker_method_obj {
+	width:430px;
+	min-height:45px;
+	margin:0 auto 5px auto;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .broker_method_obj {
+	width:100%;
+}
+.selected_task_properties .broker_method_obj label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .broker_method_obj label {
+	width:65px;
+}
+.selected_task_properties .broker_method_obj select {
+	width:237px;
+	margin-bottom:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .broker_method_obj select {
+	width:calc(100% - 70px);
+}
+.selected_task_properties .broker_method_obj input {
+	width:210px;
+	margin-left:113px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .broker_method_obj input {
+	width:calc(100% - 95px);
+	margin-left:67px;
+}
+.selected_task_properties .broker_method_obj .search {
+	/*margin-top:2px;*/
+}

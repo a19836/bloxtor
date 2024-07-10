@@ -1,0 +1,44 @@
+/* TOP BAR */
+.top_bar header > .title {
+	max-width:calc(100% - 60px);
+}
+
+/* RELATIONSHIP */
+.edit_includes .data_access_obj {
+	box-sizing:border-box;
+	z-index:0;
+}
+.edit_includes .data_access_obj .description {
+	background:none;
+	border:none;
+	text-align:left;
+	margin:0;
+	padding:0;
+	display:inline-block;
+}
+.edit_includes .data_access_obj .includes .add {
+	margin-top:0;
+	margin-left:5px;
+	display:inline-block;
+	float:none;
+	vertical-align:middle;
+}
+.edit_includes .data_access_obj .includes .fields {
+	width:100%;
+	margin:10px 0 0 0;
+}
+.edit_includes .data_access_obj .includes .include {
+	margin-bottom:5px;
+}
+.edit_includes .data_access_obj .includes .include label,
+  .edit_includes .data_access_obj .includes .include input,
+  .edit_includes .data_access_obj .includes .include .icon {
+	vertical-align:middle;
+}
+.edit_includes .data_access_obj .includes .include {
+	min-width:445px;
+}
+.edit_includes .data_access_obj .includes .include input.include_path {
+	min-width:200px;
+	width:calc(100% - 250px);
+}

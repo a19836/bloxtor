@@ -1,0 +1,49 @@
+/* --------------------------------------------
+    GLOBAL RESET
+----------------------------------------------- */
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, img, q, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin:0;padding:0;border:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;outline:none;}
+body {line-height:1.5;}
+ul, ul li {list-style: none; list-style-position:outside; margin: 0; padding: 0;}
+ol, ol li {list-style: decimal; list-style-position:outside; margin: 0; padding: 0;}
+strong {font-weight:bold;}
+table {border-collapse:separate;border-spacing:0;}
+caption, th, td {text-align:left;font-weight:normal;}
+table, td, th {vertical-align:middle;}
+blockquote:before, blockquote:after, q:before, q:after {content:"";}
+blockquote, q {quotes:"" "";}
+a img {border:none;}
+address {font-style:normal;}
+a:active{ outline: none;}
+input, select, textarea {vertical-align:middle;}
+* { outline:0; } /* get rid of annoying firefox link dotted outlines */
+
+/* --------------------------------------------
+   GENERAL SETTINGS
+----------------------------------------------- */
+a {
+	color:blue;
+	text-decoration:none;
+}
+a:hover {
+	text-decoration:underline;
+}
+
+.hidden {
+	display:none;
+}
+
+input, select, textarea {
+	font-family:inherit;
+}
+
+label {
+	font-family:inherit;
+}
+
+iframe {
+	padding:5px 5px 5px 5px;
+}
+
+.clear {
+	clear: both;
+}

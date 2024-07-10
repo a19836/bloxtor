@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+	<label></label>
+	<tag></tag>
+	<!--files>
+		<task_properties_html>WorkFlowTaskHtml.php</task_properties_html>
+		<connection_properties_html>WorkFlowConnectionHtml.php</task_properties_html>
+		<css>css/WorkFlowTask.css</css>
+		<js>js/WorkFlowTask.js</js>
+	</files-->
+	<!--css></css-->
+	<settings>
+		<!--js_code></js_code-->
+		<task_menu>
+			<!--show_context_menu>0</show_context_menu>
+			<show_set_label_menu>0</show_set_label_menu>
+			<show_properties_menu>0</show_properties_menu>
+			<show_start_task_menu>0</show_start_task_menu>
+			<show_delete_menu>false</show_delete_menu-->
+		</task_menu>
+		<connection_menu>
+			<!--show_context_menu>0</show_context_menu>
+			<show_set_label_menu>0</show_set_label_menu>
+			<show_properties_menu>0</show_properties_menu>
+			<show_connector_types_menu>0</show_connector_types_menu>
+			<show_overlay_types_menu>0</show_overlay_types_menu>
+			<show_delete_menu>false</show_delete_menu-->
+		</connection_menu>
+		<callback>
+			<on_load_task_properties></on_load_task_properties>
+			<on_submit_task_properties></on_submit_task_properties>
+			<on_complete_task_properties></on_complete_task_properties>
+			<on_cancel_task_properties></on_cancel_task_properties>
+			
+			<on_load_connection_properties></on_load_connection_properties>
+			<on_submit_connection_properties></on_submit_connection_properties>
+			<on_complete_connection_properties></on_complete_connection_properties>
+			<on_cancel_connection_properties></on_cancel_connection_properties>
+			
+			<on_start_task_label></on_start_task_label>
+			<on_check_task_label></on_check_task_label>
+			<on_submit_task_label></on_submit_task_label>
+			<on_cancel_task_label></on_cancel_task_label>
+			<on_complete_task_label></on_complete_task_label>
+			
+			<on_check_connection_label></on_check_connection_label>
+			<on_submit_connection_label></on_submit_connection_label>
+			<on_cancel_connection_label></on_cancel_connection_label>
+			<on_complete_connection_label></on_complete_connection_label>
+			
+			<on_success_task_cloning></on_success_task_cloning>
+			<on_success_task_append></on_success_task_append>
+			<on_success_task_creation></on_success_task_creation>
+			<on_check_task_deletion></on_check_task_deletion>
+			<on_success_task_deletion></on_success_task_deletion>
+			<on_task_drag_stop_validation></on_task_drag_stop_validation>
+			<on_task_drag_stop_end></on_task_drag_stop_end>
+			
+			<on_success_task_between_connection></on_success_task_between_connection>
+			<on_success_connection_drag></on_success_connection_drag>
+			<on_success_connection_drop></on_success_connection_drop>
+			<on_success_connection_deletion></on_success_connection_deletion>
+			
+			<on_show_task_menu></on_show_task_menu>
+			<on_show_connection_menu></on_show_connection_menu>
+			
+			<on_click_task></on_click_task>
+			<on_click_connection></on_click_connection>
+		</callback>
+		<center_inner_elements></center_inner_elements>
+		<is_resizable_task></is_resizable_task>
+		<allow_inner_tasks_outside_connections>1</allow_inner_tasks_outside_connections>
+	</settings>
+	<code_parser>
+		<statements></statements>
+		<reserved_static_method_class_names></reserved_static_method_class_names>
+		<reserved_object_method_names></reserved_object_method_names>
+		<reserved_function_names></reserved_function_names>
+	</code_parser>
+</task>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Custom Container</label>
+	<tag>bscontainercustom</tag>
+	<settings>
+		<menu_class>bscontainer</menu_class>
+		<create_widget_class>BSContainerCustomWidget</create_widget_class>
+	</settings>
+	<menu_widget><![CDATA[
+			<input class="custom-values" placeHolder="Enter your own..." title="Enter the columns definition with space delimiter. eg: 2 6 4" />
+	]]></menu_widget>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bscontainercustom,
+		  body > .menu-widget.menu-widget-bscontainercustom.ui-draggable-dragging {
+			width:70px;
+			background-color:#83889E;
+			text-align:center;
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bscontainercustom:before,
+		  body > .menu-widget.menu-widget-bscontainercustom.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+			left:20px;
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bscontainercustom > .custom-values,
+		  body > .menu-widget.menu-widget-bscontainercustom.ui-draggable-dragging > .custom-values {
+			width:calc(100% + 2px);
+			margin:30px -2px -1px -2px;
+			font-size:6pt;
+			text-align:center;
+			box-sizing:border-box;
+			border:1px solid #83889E;
+			border-radius:0;
+			border-bottom-left-radius:2px;
+			border-bottom-right-radius:2px;
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bscontainercustom:hover:before {
+			box-shadow:none;
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bscontainercustom:hover {
+			box-shadow:0 0 10px 0px rgba(0, 0, 0, .2);
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSContainerCustomWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-drag-start-func": ui_creator.obj_var_name + ".menu_widgets_objs.bscontainercustom.checkCustomContainer",
+					"data-on-drag-stop-func": ui_creator.obj_var_name + ".menu_widgets_objs.bscontainercustom.onDropMenuWidget",
+				});
+			};
+			
+			me.checkCustomContainer = function(widget, event, ui_obj) {
+				if ($(widget).find(".custom-values").val() == "") {
+					ui_creator.showError('Please fill the field with your values.');
+					return false;
+				}
+				
+				return true;
+			};
+			
+			//resets the values (in the menu widget CustomContainer)
+			me.onDropMenuWidget = function(menu_widget, widget, event, ui_obj) {
+				menu_widget = $(menu_widget);
+				var cv = menu_widget.find(".custom-values").val();
+				cv = cv ? cv.replace(/[,;]/g, " ").split(" ") : [];
+				var obj = new CreateWidgetBootstrapContainerClassObj(ui_creator, menu_widget, "bscontainercustom", cv);
+				
+				obj.onDropMenuWidget(menu_widget, widget, event, ui_obj);
+				
+				menu_widget.find(".custom-values").val("");
+			};
+		}
+	]]></menu_js>
+</widget>

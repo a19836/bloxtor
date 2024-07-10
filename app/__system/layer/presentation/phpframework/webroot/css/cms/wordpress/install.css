@@ -1,0 +1,15 @@
+/* WORDPRESS */
+.install_wordpress {
+	text-align:center;
+}
+.install_wordpress label {
+	display:block;
+	width:100%;
+	min-height:20px;
+	font-weight:normal;
+}
+.install_wordpress .button {
+	display:inline-block;
+	margin:40px 20px;
+	font-size:inherit;
+}

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Map</label>
+	<tag>map</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_node_name>iframe</template_node_name>
+		<create_widget_class>MapWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property src">
+			<label class="col-md-4 col-sm-5 col-form-label">Source: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="src" />
+		</div>
+		<div class="form-group row settings-property frameborder">
+			<label class="col-md-4 col-sm-5 col-form-label">Frameborder: </label>
+			<input type="checkbox" name="frameborder" value="1" />
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-map:before,
+		  body > .menu-widget.menu-widget-map.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-map {
+			border-radius:0 5px 5px 0;
+		}
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-map .options .option.toggle {
+			display:none;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		/* bc of the resize, otherwise will be very dificult to resize this element, bc the focus will be inside of the iframe. */
+		.template-widget.template-widget-map {
+			border: 10px solid #f7f7f7; 
+		}
+		.template-widget.template-widget-map.widget-active {
+			border:10px solid #f7f7f7 !important;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function MapWidget(ui_creator, menu_widget) {
+			var me = this;
+			var default_src = "https://maps.google.com/maps?&z=1&t=q&output=embed";
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.map.parseHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.map.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.map.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.map.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.map.parseSettings",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				return html_element && html_element.nodeName.toLowerCase() == "map";
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element) 
+					widget.attr("src", default_src).attr("frameborder", "0");
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				ui_creator.addMenuSettingsContextMenu( menu_settings.find(".settings-properties input") );
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["src"] = widget.attr("src");
+				widget_settings["frameborder"] = widget.attr("frameborder") ? 1 : 0;
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("frameborder")) {
+						if (field.is(":checked"))
+							widget.attr("frameborder", "frameborder");
+						else
+							widget.removeAttr("frameborder");
+					}
+					else if (sprop.hasClass("src")) {
+						field_value = field_value.replace(/^\s+/g, "").replace(/\s+$/g, "");//trim url
+						
+						if (field_value != "")
+							widget.attr("src", field_value);
+						else {
+							ui_creator.showError("Map src cannot be empty!");
+							field.val( widget.attr("src") );
+						}
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

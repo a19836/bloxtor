@@ -1,0 +1,160 @@
+.taskflowchartmenu .task.task_switch {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_switch {
+	height:auto !important;
+}
+.taskflowchartdiagram .task.task_switch:not(.is_start_task):not(:hover):before {
+	content:" ";
+	position:absolute;
+	top:-5px !important;
+	left:-5px !important;
+	right:-5px !important;
+	bottom:-5px !important;
+	border:1px solid #426efa;
+	border-radius:5px;
+}
+.taskflowchartdiagram .task.task_switch:hover:before {
+	bottom:-5px !important;
+}
+.taskflowchartdiagram .task.task_switch:hover:after {
+	bottom:-25px !important;
+}
+.taskflowchartdiagram .task.task_switch .eps {
+	width:100%;
+	height:auto;
+	min-height:50px;
+	margin:0 auto;
+	padding:50px 0 0;
+	top:0 !important;
+	background-image:url('../img/bg.svg');
+	background-size:65px;
+	background-position:center 0;
+	float:none;
+}
+.taskflowchartdiagram .task.task_switch:hover .eps {
+	width:175px;
+	margin-left:-52px;
+}
+.taskflowchartdiagram .task.task_switch .eps:hover:after {
+	content:"Drag the rectangles to link to another box";
+	left:0;
+	bottom:-5px;
+}
+.taskflowchartdiagram .task.task_switch .ep {
+	height:20px;
+	border-radius:3px;
+	margin:0 5px 5px;
+	box-sizing:border-box;
+	width:auto;
+	display:block;
+	float:none;
+	clear:both;
+}
+.taskflowchartdiagram .task.task_switch .ep span {
+	width:100%;
+	min-width:auto;
+	max-width:none;
+	display:block !important;
+	position:relative;
+	top:auto;
+	left:0;
+	color:#000;
+	background:transparent;
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	display:inline-block;
+	box-sizing:border-box;
+	border:0;
+	line-height:normal;
+}
+
+.switch_task_html {
+	width:290px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .switch_task_html {
+	width:100%;
+}
+
+.switch_task_html .object_var, .switch_task_html .object_type {
+	width:100%;
+	min-height:20px;
+}
+.switch_task_html .object_var {
+	/*margin-top:15px;*/
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .switch_task_html .object_var {
+	margin-top:0;
+}
+.switch_task_html .object_type {
+	margin-top:5px;
+}
+.switch_task_html .cases {
+	width:100%;
+	margin:10px 0px 15px 0px;
+}
+.switch_task_html .default_exit {
+	width:100%;
+	height:20px;
+}
+
+.switch_task_html .object_var label, 
+  .switch_task_html .object_type label {
+	width:90px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .switch_task_html .object_var label, 
+  .taskflowchart.fixed_side_properties .selected_task_properties .switch_task_html .object_type label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .switch_task_html .default_exit label {
+	width:60px;
+}
+.switch_task_html .default_exit label {
+	width:90px;
+}
+.switch_task_html .cases label {
+	width:60px;
+}
+.switch_task_html .object_var input {
+	width:150px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .switch_task_html .object_var input {
+	width:calc(100% - 75px);
+}
+.switch_task_html .cases input {
+	width:200px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .switch_task_html .cases input {
+	width:calc(100% - 65px);
+}
+
+.switch_task_html .cases ul {
+	float:none;
+	clear:left;
+	margin-left:20px;
+}
+.switch_task_html .cases ul li {
+	width:100%;
+	float:none;
+	clear:left;
+	margin-top:5px;
+}
+.switch_task_html .cases .case_property_exit {
+	width:20px;
+	height:20px;
+	margin-left:10px;
+	margin-right:5px;
+	display:inline-block;
+	vertical-align:middle;
+}
+
+.switch_task_html .default_property_exit {
+	width:20px;
+	height:20px;
+	display:inline-block;
+	vertical-align:middle;
+}
+.switch_task_html .task_property_exit {
+	display:none;
+}
+
+

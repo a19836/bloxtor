@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sql_mapping>
+	<insert id="insert_reserved_db_table_name">
+		insert into sysauth_reserved_db_table_name (reserved_db_table_name_id, name, created_date, modified_date) values (#reserved_db_table_name_id#, '#name#', '#created_date#', '#modified_date#')
+	</insert>
+	
+	<update id="update_reserved_db_table_name">
+		update sysauth_reserved_db_table_name set name='#name#', modified_date='#modified_date#' where reserved_db_table_name_id=#reserved_db_table_name_id#
+	</update>
+	
+	<delete id="delete_reserved_db_table_name">
+		delete from sysauth_reserved_db_table_name where reserved_db_table_name_id=#reserved_db_table_name_id#
+	</delete>
+	
+	<delete id="delete_all_reserved_db_table_names">
+		delete from sysauth_reserved_db_table_name
+	</delete>
+	
+	<select id="get_reserved_db_table_name">
+		select * from sysauth_reserved_db_table_name where reserved_db_table_name_id=#reserved_db_table_name_id#
+	</select>
+	
+	<select id="get_all_reserved_db_table_names">
+		select * from sysauth_reserved_db_table_name
+	</select>
+	
+	<select id="get_reserved_db_table_names_by_conditions">
+		select * from sysauth_reserved_db_table_name where #conditions#
+	</select>
+</sql_mapping>

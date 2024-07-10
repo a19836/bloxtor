@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Table Column Head</label>
+	<tag>table-column-head</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_class>droppable</template_class>
+		<create_widget_class>TableColumnHeadWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[&nbsp;]]></template_widget>
+	<properties></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-table-column-head:before,
+		  body > .menu-widget.menu-widget-table-column-head.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function TableColumnHeadWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-column-head'].parseHtml",
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-column-head'].onCloneMenuWidget",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-column-head'].onCreateTemplateWidget",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeName.toLowerCase() == "th") {
+					html_element = $(html_element);
+					
+					return {
+						droppable: html_element,
+					};
+				}
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) {
+					var elm = document.createElement('th');
+					return ui_creator.getNewTemplateWidgetBasedInHtmlElement(widget, elm, null);
+				}
+				
+				return ui_creator.onCloneMenuWidget(widget, html_element);
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (html_element) {
+					if (html_element.childNodes.length == 0)
+						$(html_element).append("&nbsp;"); //add speace by default, like the browsers do by default. This space will be removed on save action.
+				}
+				else {
+					widget.append("&nbsp;");
+					
+					var p = widget.parent();
+					var pnn = p[0].nodeName.toLowerCase();
+					
+					if (pnn != "tr") {
+						var parent = p.closest('tr');
+						
+						if (parent[0]) {
+							parent.append(widget);
+							return;
+						}
+						
+						var parent = p.closest('tbody, thead, tfoot');
+						
+						if (parent[0]) {
+							var tr = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-row", parent, null);
+							tr.append(widget);
+							return;
+						}
+						
+						var parent = p.closest('table');
+						
+						if (parent[0]) {
+							var tbody = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-body", parent, null);
+							var tr = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-row", tbody, null);
+							tr.append(widget);
+							return;
+						}
+						
+						widget.remove();
+						ui_creator.showError("This item can only be dropped into Table elements!");
+					}
+				}
+			};
+		}
+	]]></menu_js>
+</widget>

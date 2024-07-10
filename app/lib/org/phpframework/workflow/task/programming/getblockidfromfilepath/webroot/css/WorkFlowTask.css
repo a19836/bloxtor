@@ -1,0 +1,60 @@
+.taskflowchartmenu .task.task_getblockidfromfilepath {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_getblockidfromfilepath .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_getblockidfromfilepath .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.get_block_id_from_file_path_task_html {
+	width:430px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_block_id_from_file_path_task_html {
+	width:100%;
+}
+
+.get_block_id_from_file_path_task_html .value {
+	margin-bottom:5px;
+}
+.get_block_id_from_file_path_task_html .value,
+   .get_block_id_from_file_path_task_html .type {
+	width:430px;
+	min-height:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_block_id_from_file_path_task_html .value,
+   .taskflowchart.fixed_side_properties .selected_task_properties .get_block_id_from_file_path_task_html .type {
+	width:100%;
+}
+.get_block_id_from_file_path_task_html .value label,
+   .get_block_id_from_file_path_task_html .type label,
+   .get_block_id_from_file_path_task_html .broker_method_obj label {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_block_id_from_file_path_task_html .value label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .get_block_id_from_file_path_task_html .type label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .get_block_id_from_file_path_task_html .broker_method_obj label {
+	width:100px;
+}
+.get_block_id_from_file_path_task_html .value input {
+	width:210px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_block_id_from_file_path_task_html .value input {
+	width:calc(100% - 113px);
+}
+.get_block_id_from_file_path_task_html .broker_method_obj select {
+	width:217px;
+}
+.get_block_id_from_file_path_task_html .broker_method_obj input {
+	width:193px;
+	margin-left:103px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_block_id_from_file_path_task_html .broker_method_obj input {
+	width:calc(100% - 130px);
+	margin-left:102px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_block_id_from_file_path_task_html .broker_method_obj select {
+	width:calc(100% - 105px);
+}

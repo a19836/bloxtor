@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Alert</label>
+	<tag>bsalert</tag>
+	<settings>
+		<create_widget_class>BSAlertWidget</create_widget_class>
+	</settings>
+	<files>
+		<css>../../CreateWidgetBootstrapClassObj.css</css>
+		<js>../../CreateWidgetBootstrapClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bsalert:before,
+		  body > .menu-widget.menu-widget-bsalert.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .myfancypopup.layout-ui-editor-bootstrap-widgets-popup.bsalert > .content > ul > li.large img {
+			max-width:300px;
+			max-height:250px;
+			height:auto;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSAlertWidget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapClassObj(ui_creator, menu_widget, "bsalert");
+			obj.extend(this);
+			
+			obj.available_items = {
+				"5.3": [
+					{
+						image: '#widget_webroot_url#alert_1.png',
+						name: '',
+						html: '<div class="alert alert-primary alert-dismissible fade show" role="alert">A simple primary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+					},
+					{
+						image: '#widget_webroot_url#alert_2.png',
+						name: '',
+						html: '<div class="alert alert-secondary alert-dismissible fade show" role="alert">A simple secondary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+					},
+					{
+						image: '#widget_webroot_url#alert_3.png',
+						name: '',
+						html: '<div class="alert alert-success alert-dismissible fade show" role="alert">A simple success alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+					},
+					{
+						image: '#widget_webroot_url#alert_4.png',
+						name: '',
+						html: '<div class="alert alert-danger alert-dismissible fade show" role="alert">A simple danger alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+					},
+					{
+						image: '#widget_webroot_url#alert_5.png',
+						name: '',
+						html: '<div class="alert alert-warning alert-dismissible fade show" role="alert">A simple warning alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+					},
+					{
+						image: '#widget_webroot_url#alert_6.png',
+						name: '',
+						html: '<div class="alert alert-info alert-dismissible fade show" role="alert">A simple info alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+					},
+					{
+						image: '#widget_webroot_url#alert_7.png',
+						name: '',
+						html: '<div class="alert alert-light alert-dismissible fade show" role="alert">A simple light alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+					},
+					{
+						image: '#widget_webroot_url#alert_8.png',
+						name: '',
+						html: '<div class="alert alert-dark alert-dismissible fade show" role="alert">A simple dark alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+					},
+					{
+						image: '#widget_webroot_url#alert_9.png',
+						name: '',
+						html: '<div class="alert alert-success" role="alert"><h4 class="alert-heading">Well done!</h4><p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p><hr><p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p></div>',
+						class: 'large'
+					}
+				],
+			};
+		}
+	]]></menu_js>
+</widget>

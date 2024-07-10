@@ -1,0 +1,74 @@
+.taskflowchartmenu .task.task_validator {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_validator .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_validator .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.validator_task_html {
+	width:390px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .validator_task_html {
+	width:100%;
+	box-sizing:border-box;
+}
+.validator_task_html > .info {
+	text-align:center;
+	margin-bottom:15px;
+}
+.validator_task_html > .info a {
+	color:var(--link-color);
+}
+.validator_task_html .method,
+   .validator_task_html .value,
+   .validator_task_html .offset {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.validator_task_html .method label,
+   .validator_task_html .value label,
+   .validator_task_html .offset label {
+	width:50px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .validator_task_html .method label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .validator_task_html .value label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .validator_task_html .offset label {
+	width:40px;
+}
+.validator_task_html .method select {
+	width:calc(100% - 55px);
+}
+.validator_task_html .value input,
+  .validator_task_html .offset input {
+	width:260px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .validator_task_html .method select {
+	width:calc(100% - 45px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .validator_task_html .value input,
+  .taskflowchart.fixed_side_properties .selected_task_properties .validator_task_html .offset input {
+	width:calc(100% - 120px);
+}
+.validator_task_html .value select,
+   .validator_task_html .offset select {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+	float:none;
+	display:inline-block;
+	margin-bottom:0;
+}
+.validator_task_html .value .add_variable,
+  .validator_task_html .offset .add_variable {
+	margin-left:-23px;
+}

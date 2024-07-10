@@ -1,0 +1,52 @@
+.taskflowchartmenu .task.task_rendertemplateregion {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_rendertemplateregion .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_rendertemplateregion .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.render_template_region_task_html {
+	width:395px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .render_template_region_task_html {
+	width:100%;
+}
+
+.render_template_region_task_html .region {
+	margin-bottom:5px;
+}
+.render_template_region_task_html .region,
+   .render_template_region_task_html .type {
+	width:100%;
+	min-height:20px;
+}
+.render_template_region_task_html .region label,
+   .render_template_region_task_html .type label,
+   .render_template_region_task_html .broker_method_obj label {
+	width:135px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .render_template_region_task_html .region label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .render_template_region_task_html .type label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .render_template_region_task_html .broker_method_obj label {
+	width:90px;
+}
+.render_template_region_task_html .region input {
+	width:230px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .render_template_region_task_html .region input {
+	width:calc(100% - 105px);
+}
+.render_template_region_task_html .broker_method_obj input {
+	margin-left:140px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .render_template_region_task_html .broker_method_obj input {
+	width:calc(100% - 120px);
+	margin-left:92px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .render_template_region_task_html .broker_method_obj select {
+	width:calc(100% - 95px);
+}

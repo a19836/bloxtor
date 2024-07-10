@@ -1,0 +1,213 @@
+.taskflowchartmenu .task.task_callpresentationlayerwebservice {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_callpresentationlayerwebservice .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_callpresentationlayerwebservice .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.call_presentation_layer_web_service_task_html {
+	width:430px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html {
+	width:auto;
+}
+
+.call_presentation_layer_web_service_task_html .get_automatically,
+   .call_presentation_layer_web_service_task_html .project,
+   .call_presentation_layer_web_service_task_html .page {
+	width:430px;
+	min-height:20px;
+	margin:0 auto 5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .get_automatically,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .project,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .page {
+	width:100%;
+}
+.call_presentation_layer_web_service_task_html .get_automatically {
+	/*margin-top:15px;*/
+}
+.call_presentation_layer_web_service_task_html .get_automatically.disabled .icon {
+	opacity:.1;
+	cursor:default;
+}
+.call_presentation_layer_web_service_task_html .extvars,
+   .call_presentation_layer_web_service_task_html .incs,
+   .call_presentation_layer_web_service_task_html .incs_once {
+   	min-width:430px;
+   	min-height:20px;
+	margin-bottom:5px;
+   	padding-top:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .extvars,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs_once {
+   	min-width:auto;
+}
+.call_presentation_layer_web_service_task_html .extvars .array_items .items,
+   .call_presentation_layer_web_service_task_html .incs .array_items .items,
+   .call_presentation_layer_web_service_task_html .incs_once .array_items .items {
+	position:absolute;
+	margin-top:-22px;
+	margin-left:180px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .extvars .array_items .items,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs .array_items .items,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs_once .array_items .items {
+	margin-left:130px;
+}
+.call_presentation_layer_web_service_task_html .extvars .array_items ul .items,
+   .call_presentation_layer_web_service_task_html .incs .array_items ul .items,
+   .call_presentation_layer_web_service_task_html .incs_once .array_items ul .items {
+	position:static;
+	margin-top:0;
+	margin-left:0;
+}
+
+.call_presentation_layer_web_service_task_html .get_automatically label {
+	width:170px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .get_automatically label {
+	width:135px;
+}
+.call_presentation_layer_web_service_task_html .get_automatically .icon {
+	width:23px;
+	height:23px;
+}
+.call_presentation_layer_web_service_task_html .get_automatically .icon::before {
+	content:"\f022";
+}
+.call_presentation_layer_web_service_task_html .get_automatically .icon::after {
+	content:"\f079";
+}
+.call_presentation_layer_web_service_task_html .get_automatically .icon:hover::after {
+	color:#000;
+}
+.call_presentation_layer_web_service_task_html .broker_method_obj label,
+   .call_presentation_layer_web_service_task_html .project label,
+   .call_presentation_layer_web_service_task_html .page label,
+   .call_presentation_layer_web_service_task_html .extvars .main_label,
+   .call_presentation_layer_web_service_task_html .incs .main_label,
+   .call_presentation_layer_web_service_task_html .incs_once .main_label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .broker_method_obj label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .project label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .page label {
+	width:40px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .extvars .main_label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs .main_label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs_once .main_label {
+	width:70px;
+}
+.call_presentation_layer_web_service_task_html .broker_method_obj input,
+   .call_presentation_layer_web_service_task_html .project input,
+   .call_presentation_layer_web_service_task_html .page input,
+   .call_presentation_layer_web_service_task_html .extvars .external_vars_code {
+	width:230px;
+	margin-right:5px;
+}
+.call_presentation_layer_web_service_task_html .incs .includes_code,
+   .call_presentation_layer_web_service_task_html .incs_once .includes_once_code {
+   	width:210px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .broker_method_obj input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .project input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .page input {
+	width:calc(100% - 120px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .extvars .external_vars_code {
+   	width:calc(100% - 149px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs .includes_code,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs_once .includes_once_code {
+   	width:calc(100% - 170px);
+}
+
+.call_presentation_layer_web_service_task_html .project select,
+   .call_presentation_layer_web_service_task_html .page select,
+   .call_presentation_layer_web_service_task_html .extvars .external_vars_type,
+   .call_presentation_layer_web_service_task_html .incs .includes_type,
+   .call_presentation_layer_web_service_task_html .incs_once .includes_once_type {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+}
+
+.call_presentation_layer_web_service_task_html .advanced_settings {
+	margin-top:20px;
+	padding:2px 5px 5px 5px;
+	border:1px inset #CCC;
+}
+.call_presentation_layer_web_service_task_html .advanced_settings_label {
+	display:block;
+	width:100%;
+	height:20px;
+	text-align:center;
+	margin-bottom:5px;
+	color:#999;
+}
+
+.call_presentation_layer_web_service_task_html .incs .array_items .items .group_add, 
+   .call_presentation_layer_web_service_task_html .incs_once .array_items .items .group_add {
+	display:none;
+}
+.call_presentation_layer_web_service_task_html .incs .array_items .items .item_add, 
+   .call_presentation_layer_web_service_task_html .incs_once .array_items .items .item_add {
+	margin-left:10px;
+}
+.call_presentation_layer_web_service_task_html .incs .array_items .item .key, 
+   .call_presentation_layer_web_service_task_html .incs .array_items .item .key_type, 
+   .call_presentation_layer_web_service_task_html .incs_once .array_items .item .key, 
+   .call_presentation_layer_web_service_task_html .incs_once .array_items .item .key_type {
+	display:none !important;
+}
+.call_presentation_layer_web_service_task_html .incs .array_items .item .value, 
+   .call_presentation_layer_web_service_task_html .incs_once .array_items .item .value {
+	width:305px;
+	margin-right:0;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs .array_items .item .value, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs_once .array_items .item .value {
+	width:calc(100% - 65px);
+}
+.call_presentation_layer_web_service_task_html .incs .array_items .item .value_type, 
+   .call_presentation_layer_web_service_task_html .incs_once .array_items .item .value_type {
+	margin-left:5px;
+}
+.call_presentation_layer_web_service_task_html .incs .array_items .item .add_variable, 
+   .call_presentation_layer_web_service_task_html .incs_once .array_items .item .add_variable {
+	margin-left:-18px;
+}
+.call_presentation_layer_web_service_task_html .incs .array_items ul, 
+   .call_presentation_layer_web_service_task_html .incs_once .array_items ul {
+	border:0;
+	margin-top:5px;
+	margin-bottom:0;
+	padding-top:0;
+	padding-bottom:0;
+}
+.call_presentation_layer_web_service_task_html .incs .search, 
+   .call_presentation_layer_web_service_task_html .incs_once .search {
+	margin-top:2px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs .search, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_presentation_layer_web_service_task_html .incs_once .search {
+	margin-top:0;
+}
+
+.call_presentation_layer_web_service_task_html .incs .array_items .search, 
+   .call_presentation_layer_web_service_task_html .incs_once .array_items .search {
+	
+}
+

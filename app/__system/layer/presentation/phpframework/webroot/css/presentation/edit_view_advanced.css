@@ -1,0 +1,91 @@
+/* TOP BAR */
+.top_bar {
+	margin-bottom:10px;
+}
+.top_bar header {
+	z-index:4;
+}
+.top_bar header .title {
+	max-width:calc(100% - 420px);
+}
+.top_bar.in_popup header .title {
+	max-width:calc(100% - 455px);
+}
+.top_bar header > ul {
+	right:183px;
+}
+.top_bar.in_popup header > ul {
+	right:218px;
+}
+.with_top_bar_tab > .tabs {
+	z-index:4;
+}
+
+/* VIEW OBJ */
+.view_obj {
+	width:100%;
+	overflow:hidden;
+	margin:0 auto;
+	padding:0;
+	border:0;
+}
+
+.view_obj .code_layout_ui_editor {
+	height:calc(100vh - 50px);
+	min-height:300px;
+	padding:0 !important;
+	position:relative;
+}
+.view_obj #ui .taskflowchart {
+	height:calc(100vh - 50px) !important;
+}
+
+.view_obj #ui .taskflowchart .tasks_flow.drop_hover { /* .drop_hover is set in admin_menu.js */
+	box-shadow:inset 0 0 30px 0px rgba(0, 0, 0, .1);
+}
+
+.view_obj .code_layout_ui_editor .code_menu.top_bar_menu,
+  .view_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right,
+  .view_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	z-index:5;
+}
+.view_obj .code_menu.top_bar_menu,
+  .view_obj .taskflowchart.with_top_bar_menu .workflow_menu.top_bar_menu {
+	right:165px;
+}
+.view_obj.in_popup .code_menu.top_bar_menu,
+  .view_obj.in_popup .taskflowchart.with_top_bar_menu .workflow_menu.top_bar_menu {
+	right:200px;
+}
+.view_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:350px;
+}
+.view_obj.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:385px;
+	color:var(--main-popup-header-color);
+}
+.view_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right {
+	right:217px;
+}
+.view_obj.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right {
+	right:252px;
+	color:var(--main-popup-header-color);
+}
+.view_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu {
+	right:-60px;
+}
+.view_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.save,
+  .view_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.full-screen {
+	display:none !important;
+}
+.view_obj .code_layout_ui_editor .layout-ui-editor:not(.layout-shown) > .options > .options-left {
+	display:none;
+}
+
+/* To print the workflow */
+@media print {
+	.view_obj {
+		overflow:visible !important;
+		border:0 !important;
+	}
+}

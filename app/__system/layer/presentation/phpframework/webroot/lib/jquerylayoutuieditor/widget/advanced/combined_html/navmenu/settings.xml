@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Nav Menu</label>
+	<tag>navmenu</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_class>container droppable</template_class>
+		<template_node_name>nav</template_node_name>
+		<create_widget_class>NavMenuWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<!--template_widget><![CDATA[
+		<a href="#" class="droppable">Home</a>
+		<a href="#" class="droppable">About</a>
+		<a href="#" class="droppable">Contact</a>
+	]]></template_widget-->
+	<properties><![CDATA[]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-navmenu:before,
+		  body > .menu-widget.menu-widget-navmenu.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets > .droppable-header.droppable-header-navmenu {
+			margin-top:-1rem;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-navmenu .settings-properties table .container-col-icon {
+			width:20px;
+			font-size:14px;
+			text-align:center;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.main-droppable.borders .template-widget.template-widget-navmenu > a.droppable:not(.template-widget) {
+			border:var(--html-element-border);
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function NavMenuWidget(ui_creator, menu_widget) {
+			var me = this;
+			var default_column_node_name = "a";
+			
+			me.ignore_attributes = ["contenteditable"];
+			
+			me.init = function() {
+				//init the other part of the container
+				var obj = new CreateWidgetContainerClassObj(ui_creator, menu_widget);
+				obj.options.default_column_class = "";
+				obj.options.default_column_class_prefix = "";
+				obj.options.default_column_node_name = default_column_node_name;
+				obj.options.is_reset_columns_allowed = true;
+				obj.options.add_container_col_default_values = {
+					attrs: 'style="min-width:20px; min-height:20px;"'
+				};
+				obj.init();
+				
+				//extends this obj methods to this class
+				for (var key in obj)
+					if (typeof me[key] == "undefined" && typeof obj[key] == "function")
+						me[key] = obj[key];
+				
+				menu_widget.attr({
+						"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.navmenu.parseHtml",
+						"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.navmenu.onCloneMenuWidget",
+						"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.navmenu.cleanHtml",
+						"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.navmenu.onCreateTemplateWidget",
+						"data-on-open-droppable-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.navmenu.onOpenDroppableHeader",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.navmenu.parseSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.navmenu.saveSettingsField",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeName.toLowerCase() == "nav") {
+					html_element = $(html_element);
+					
+					if (html_element.children().length == html_element.children("a").length) {
+						//DEPRECATED so the children can be converted to widgets
+						//get only the childNodes that are node.ELEMENT_NODE and check if they belong to another widget.
+						/*var children = html_element.children(default_column_node_name);
+						var t = children.length;
+						
+						for (var i = 0; i < t; i++) {
+							var child = children[i];
+							
+							//checks if the child is not a template_region or another non-default widget
+							if (!ui_creator.isHtmlElementANonDefaultMenuWidget(child))
+								$(child).addClass("droppable ignore-widget"); //add class ignore-widget, so this children doesn't get converted into a widget.
+						}*/
+						
+						return {
+							droppable: html_element,
+						}
+					}
+				}
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget.children().removeAttr("contenteditable");
+				widget_settings["cols"] = me.getContainerColsProperties(widget);
+				widget.children().attr("contenteditable", "true");
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (html_element) //otherwise the widget will have the default content defined in the template_widget xml tag
+					widget = ui_creator.getNewTemplateWidgetBasedInHtmlElement(widget, html_element, null);
+				
+				widget.attr("contenteditable", "false");
+				
+				/*No need anymore bc now, we add some default children below in the onCreateTemplateWidget
+				widget.children().each(function(id, child) {
+					child = $(child);
+					child.attr("contenteditable", "true");
+					ui_creator.updateTemplateWidgetLabel(child, "A");
+				});*/
+				
+				return widget;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				widget.removeAttr("contenteditable");
+				widget.children().removeAttr("contenteditable");
+				
+				var html = ui_creator.getCleanedHtmlElement(widget[0]);
+				
+				widget.attr("contenteditable", "false");
+				widget.children().attr("contenteditable", "true");
+				
+				return html;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				//prepare editable box
+				widget.attr("contenteditable", "false");
+				widget.children("a").attr("contenteditable", "true");
+				
+				if (!html_element) {
+					//create some default children, but as normal template-widgets
+					widget.html('<a href="#" style="min-width:20px; min-height:20px;">Home</a><a href="#" style="min-width:20px; min-height:20px;">About</a><a href="#" style="min-width:20px; min-height:20px;">Contact</a>');
+					
+					ui_creator.convertHtmlElementToWidget( widget.children() );
+				}
+			};
+			
+			me.onOpenDroppableHeader = function(droppable, droppable_header) {
+				var label = droppable_header.children("label");
+				label.attr("data-label-bkp", label.html());
+				label.html("A");
+			};
+
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var sp = field.parent().closest(".settings-properties");
+					var sprop = field.parentsUntil(sp, ".settings-property").first();
+					
+					if (sprop.hasClass("columns")) {
+						var curr_length = widget.children(default_column_node_name).length;
+						
+						me.saveContainerSettingsField(field, widget, status, {
+							droppable_inner_html: '&nbsp;',
+							init_new_droppable: false
+						});
+						
+						var children = widget.children(default_column_node_name);
+						var new_length = children.length;
+						
+						if (curr_length < new_length) {
+							var new_child = children.last();
+							
+							sprop.find("table tbody tr").last().find(" > .container-col-attrs input").val('href="#"');
+							new_child.html("Some text here").attr("href", "#").attr("contenteditable", "true");
+							
+							new_child.removeClass("droppable"); //remove droppable class added by default by the saveContainerSettingsField method
+							//convert child to real widget
+							ui_creator.createTemplateWidgetFromMenuWidgetTag("href", widget, new_child[0]);
+						}
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

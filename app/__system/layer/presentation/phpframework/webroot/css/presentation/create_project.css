@@ -1,0 +1,220 @@
+body:not(.in_popup),
+  body:not(.in_popup) #main_column {
+	background:#fff;
+}
+body #main_column {
+	min-height:auto;
+}
+.create_project.changing_to_step:after {
+	content:"";
+	display:block;
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	z-index:9999;
+	background:rgba(255, 255, 255, .5);
+}
+
+/* Top Bar */
+.create_project .top_bar:not(.create_project_top_bar) {
+	display:none !important;
+}
+.create_project .top_bar.create_project_top_bar header > ul > li.button {
+	margin-left:10px;
+	margin-right:10px;
+	float:right;
+}
+.create_project .top_bar.create_project_top_bar.in_popup header > ul > li.button.continue {
+	margin-right:0;
+}
+.create_project .top_bar.create_project_top_bar.in_popup header > ul > li.button.back {
+	margin-right:5px;
+}
+.create_project .top_bar.create_project_top_bar header > ul > li.button > a.active {
+	background:var(--main-popup-header-bg);
+	color:var(--main-popup-header-color);
+}
+.create_project .top_bar.create_project_top_bar.in_popup header > ul > li.button > a.active {
+	background:var(--main-popup-header-color); /* flip colors on purpose */
+	color:var(--main-popup-header-bg);
+}
+.create_project .top_bar.create_project_top_bar.in_popup header > ul > li.cancel > a {
+	background:var(--main-iframe-color) !important;
+	color:var(--main-iframe-bg) !important;
+}
+.create_project .top_bar.create_project_top_bar header > ul > li.button > a:not(.active) {
+	opacity:.5;
+	cursor:not-allowed;
+}
+
+/* Loading */
+.create_project > .loading {
+	width:16px;
+	height:16px;
+	position:fixed;
+	top:50%;
+	left:50%;
+	z-index:99999;
+}
+.create_project:not(.changing_to_step) > .loading {
+	display:none;
+}
+
+/* STEP 0 - Edit project Details */
+.create_project .creation_step_0 .edit_project_details {
+	margin-top:60px;
+}
+.create_project .creation_step_0 .edit_project_details .buttons {
+	display:none;
+}
+.create_project .creation_step_0 .edit_project_details .toggle_advanced_options {
+	margin-top:20px;
+	position:initial;
+	top:unset;
+	left:unset;
+	right:unset;
+	bottom:unset;
+	text-align:center;
+}
+
+/* STEP 1 - Project Type */
+.create_project .creation_step_1 {
+	text-align:center;
+	margin-top:40px;
+}
+.create_project .creation_step_1 > .title {
+	margin-bottom:20px;
+	font-size:14px;
+	font-weight:bold;
+	text-align:center;
+}
+.create_project .creation_step_1 .project_type  {
+	width:300px;
+	margin:20px;
+	padding:20px;
+	display:inline-block;
+	border:1px solid #ddd;
+	border-radius:5px;
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 20%);
+	vertical-align:top;
+	position:relative;
+}
+.create_project .creation_step_1 .project_type.selected  {
+	border-color:var(--link-color);
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 70%);
+}
+.create_project .creation_step_1 .project_type.chosen_template::after {
+	content:"This template is the current chosen template";
+	display:block;
+	color:var(--link-color);
+	cursor:auto;
+	/*text-align:center;*/
+	position:absolute;
+	left:0;
+	right:0;
+	bottom:-20px;
+}
+.create_project .creation_step_1 .project_type.project_default_template.chosen_template::after {
+	content:"This page is currently related with the project default template";
+}
+.create_project .creation_step_1 .project_type .title {
+	font-size:110%;
+	font-weight:bold;
+	text-align:center;
+	color:#000;
+}
+.create_project .creation_step_1 .project_type .title .icon {
+	margin-left:5px;
+	color:var(--link-color);
+	font-size:14px;
+	float:right;
+}
+.create_project .creation_step_1 .project_type .description {
+	height:35px;
+	margin:10px 0 20px;
+	color:#777;
+}
+
+/* STEP 3 - Finish */
+.create_project .creation_step_2 .message {
+	max-width:500px;
+	margin:40px auto 0;
+	padding:0 20px 20px;
+	text-align:center;
+}
+.create_project .creation_step_2 .message .title {
+	font-size:14px;
+	font-weight:bold;
+	text-align:center;
+}
+.create_project .creation_step_2 .message .info {
+	margin-top:20px;
+	padding:10px;
+	color:var(--main-iframe-top-title-color, inherit);
+	background:var(--main-iframe-bg, #eee);
+	border:1px solid var(--resize-bar-border, #ccc);
+	border-radius:5px;
+}
+.create_project .creation_step_2 .message .sentence_1 {
+	margin-top:20px;
+}
+.create_project .creation_step_2 .message .sentence_2 {
+	margin-top:5px;
+}
+.create_project .creation_step_2 .message button {
+	margin-top:40px;
+}
+
+/* STEP 2 - Store Program List */
+.create_project .creation_step_3 > .title {
+	display:block;
+	margin:40px 0 0;
+	font-size:14px;
+	font-weight:bold;
+	text-align:center;
+}
+.create_project .creation_step_3 > .sub_title {
+	margin:10px 0 20px;
+	font-size:10px;
+	text-align:center;
+	opacity:.5;
+}
+.create_project .creation_step_3 > .sub_title a {
+	color:inherit;
+}
+
+.create_project:not(.local_upload_shown) .creation_step_3 .install_program .step_0 .install_program_step_0_with_tabs > ul {
+	display:none;
+}
+.create_project .creation_step_3 .install_program .step_0 .install_program_step_0_with_tabs .install_store_program > .title {
+	display:none;
+}
+.create_project .creation_step_3 .install_program .step_0 .install_program_step_0_with_tabs .install_store_program ul li:not(.loading):not(.empty) {
+	padding-bottom:10px;
+	cursor:pointer;
+	position:relative;
+}
+.create_project .creation_step_3 .install_program .step_0 .install_program_step_0_with_tabs .install_store_program ul li.selected {
+	border-color:var(--link-color);
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 70%);
+}
+.create_project .creation_step_3 .install_program .step_0 .install_program_step_0_with_tabs .install_store_program ul li:not(.loading):not(.empty):hover:before {
+	content:"Click to select this project";
+	position:absolute;
+	top:-15px;
+	left:5px;
+	opacity:.5;
+	font-size:90%;
+	white-space:nowrap;
+}
+.create_project .creation_step_3 .install_program .step_0 .install_program_step_0_with_tabs .install_store_program ul li.selected:not(.loading):not(.empty):hover:before {
+	content:"Click to unselect this project";
+}
+.create_project .creation_step_3 .install_program .step_0 .install_program_step_0_with_tabs .install_store_program ul li div {
+	margin-bottom:0;
+}
+.create_project .creation_step_3 .install_program .step_0 .install_program_step_0_with_tabs .install_store_program ul li .choose_program {
+	display:none;
+}

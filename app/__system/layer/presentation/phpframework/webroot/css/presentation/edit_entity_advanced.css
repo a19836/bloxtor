@@ -1,0 +1,147 @@
+/* TOP BAR */
+.top_bar {
+	margin-bottom:10px;
+}
+.top_bar header {
+	z-index:4;
+}
+.top_bar header .title {
+	max-width:calc(100% - 430px);
+}
+.top_bar.project_with_auto_view.view_file_exists header .title {
+	max-width:calc(100% - 480px);
+}
+.top_bar.project_with_auto_view:not(.view_file_exists) header .title {
+	max-width:calc(100% - 500px);
+}
+.top_bar header > ul {
+	right:183px;
+}
+.top_bar.project_with_auto_view.view_file_exists header > ul {
+	right:232px;
+}
+.top_bar.project_with_auto_view:not(.view_file_exists) header > ul {
+	right:246px;
+}
+
+.with_top_bar_tab > .tabs {
+	z-index:4;
+}
+
+
+/* ENTITY OBJ */
+.entity_obj {
+	width:100%;
+	overflow:hidden;
+	margin:0 auto;
+	padding:0;
+	border:0;
+}
+.entity_obj #view_tab,
+  .entity_obj #add_view_tab {
+	float:right;
+}
+.entity_obj #add_view_tab a {
+	width:30px;
+}
+.entity_obj:not(.view_file_exists) #add_view_tab a {
+	width:60px;
+}
+.entity_obj #add_view_tab .icon.add {
+	margin:0 4px 0 -2px;
+	font-size:14px;
+	color:#FC3C44;
+	color:var(--icon-hover-color);
+	vertical-align:middle;
+}
+.entity_obj #add_view_tab .icon.view_tab {
+	margin-top:3px;
+}
+
+.entity_obj .code_layout_ui_editor {
+	height:calc(100vh - 50px);
+	min-height:300px;
+	padding:0 !important;
+	position:relative;
+}
+.entity_obj #ui .taskflowchart {
+	height:calc(100vh - 50px) !important;
+}
+.entity_obj #ui .taskflowchart .tasks_flow.drop_hover { /* .drop_hover is set in admin_menu.js */
+	box-shadow:inset 0 0 30px 0px rgba(0, 0, 0, .1);
+}
+
+.entity_obj .code_layout_ui_editor .code_menu.top_bar_menu,
+  .entity_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right,
+  .entity_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	z-index:5;
+}
+.entity_obj .code_menu.top_bar_menu,
+  .entity_obj .taskflowchart.with_top_bar_menu .workflow_menu.top_bar_menu {
+	right:165px;
+}
+.entity_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right {
+	right:279px;
+}
+.entity_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu {
+	right:-122px;
+}
+.entity_obj.project_with_auto_view .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu {
+	right:-122px;
+}
+.entity_obj.project_with_auto_view:not(.view_file_exists) .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu {
+	right:-123px;
+}
+.entity_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:412px;
+}
+.entity_obj.project_with_auto_view.view_file_exists .code_menu.top_bar_menu,
+  .entity_obj.project_with_auto_view.view_file_exists .taskflowchart.with_top_bar_menu .workflow_menu.top_bar_menu {
+	right:214px;
+}
+.entity_obj.project_with_auto_view.view_file_exists .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right {
+	right:328px;
+}
+.entity_obj.project_with_auto_view.view_file_exists .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:461px;
+}
+.entity_obj.project_with_auto_view:not(.view_file_exists) .code_menu.top_bar_menu,
+  .entity_obj.project_with_auto_view:not(.view_file_exists) .taskflowchart.with_top_bar_menu .workflow_menu.top_bar_menu {
+	right:227px;
+}
+.entity_obj.project_with_auto_view:not(.view_file_exists) .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right {
+	right:342px;
+}
+.entity_obj.project_with_auto_view:not(.view_file_exists) .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:475px;
+}
+
+.entity_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.save,
+  .entity_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.full-screen {
+	display:none !important;
+}
+.entity_obj .code_layout_ui_editor .layout-ui-editor:not(.layout-shown) > .options > .options-left {
+	display:none;
+}
+
+#view {
+	width:100%;
+	padding:0;
+	margin:0;
+}
+
+#view iframe {
+	width:100%;
+	border:0;
+	padding:0;
+	margin:0;
+}
+
+/* To print the workflow */
+@media print {
+	.entity_obj {
+		overflow:visible !important;
+		border:0 !important;
+	}
+}
+  

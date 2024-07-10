@@ -1,0 +1,81 @@
+.taskflowchartmenu .task.task_getquerydata {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_getquerydata .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_getquerydata .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.get_query_data_task_html {
+	width:430px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_query_data_task_html {
+	width:auto;
+}
+
+.get_query_data_task_html .sql {
+	width:430px;
+	min-height:20px;
+	margin:0 auto 5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_query_data_task_html .sql {
+	width:100%;
+}
+.get_query_data_task_html .sql label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_query_data_task_html .sql label {
+	width:55px;
+}
+.get_query_data_task_html .sql .sql_variable {
+	width:210px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_query_data_task_html .sql_variable {
+	width:calc(100% - 154px);
+}
+.get_query_data_task_html .sql textarea.sql_value {
+	display:none;
+}
+.get_query_data_task_html .sql textarea.sql_editor, 
+  .get_query_data_task_html .sql .ace_editor {
+	width:405px;
+	height:100px;
+	float:none;
+	clear:left;
+	margin:5px 0;
+	background-color:#FFF;
+	border:1px inset #CCC;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_query_data_task_html .sql textarea.sql_editor, 
+  .taskflowchart.fixed_side_properties .selected_task_properties .get_query_data_task_html .sql .ace_editor {
+	width:100%;
+	box-sizing:border-box;
+}
+.get_query_data_task_html .sql select {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+}
+.get_query_data_task_html .opts {
+	margin-bottom:5px;
+}
+.get_query_data_task_html .opts .options_type {
+	float:none;
+	display:inline-block;
+	margin-bottom:0;
+}
+.get_query_data_task_html > div:not(.broker_method_obj) > .add_variable {
+	margin-left:-26px;
+}
+
+
+

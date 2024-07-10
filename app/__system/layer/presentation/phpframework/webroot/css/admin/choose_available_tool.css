@@ -1,0 +1,197 @@
+.choose_available_tool > .title {
+	color:#666;
+	font-size: 16px;
+	font-weight: bold;
+	margin: 10px 0 0px 0px;
+	text-align: center;
+}
+.choose_available_tool > ul {
+	height:calc(100vh - 70px);
+	padding:50px 0;
+	overflow-y:auto;
+	text-align:center;
+	box-sizing:border-box;
+}
+.choose_available_tool li {
+	width:220px;
+	height:120px;
+	margin:10px !important;
+	display:inline-block;
+	position:relative;
+	border:1px solid transparent;
+	border-radius:5px;
+	color:var(--icon-folder-color);
+	cursor:pointer;
+	overflow:hidden;
+}
+.choose_available_tool li:hover {
+	/*border-color:#eee;
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 20%);*/
+	color:var(--icon-hover-color);
+	opacity:.9;
+}
+.choose_available_tool li.delimiter {
+	width:auto;
+	height:0;
+	margin:20px !important;
+	display:block;
+	border:0;
+	border-top:1px solid #ccc;
+	box-shadow:none;
+	cursor:default;
+}
+.choose_available_tool li > label {
+	margin-top:10px;
+	display:block;
+	text-align:center;
+	cursor:pointer;
+}
+.choose_available_tool li > .description {
+	height:0;
+	position:absolute;
+	top:auto;
+	bottom:-10px;
+	left:0;
+	right:0;
+	box-sizing:border-box;
+	vertical-align:middle;
+	cursor:pointer;
+	transition:all 1s;
+	
+	background: -moz-linear-gradient(bottom, #eee 80%, #ffffff73 100%);
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(80%, #eee), color-stop(100%, #ffffff73));
+	background: -webkit-linear-gradient(bottom, #eee 80%, #ffffff73 100%);
+	background: -o-linear-gradient(bottom, #eee 80%, #ffffff73 100%);
+	background: -ms-linear-gradient(bottom, #eee 80%, #ffffff73 100%);
+	background: linear-gradient(to top, #eee 80%, #ffffff73 100%);
+}
+.choose_available_tool li:hover > .description {
+	height:60px;
+	padding:10px;
+	bottom:0;
+}
+.choose_available_tool li > .photo {
+	width:auto;
+	height:50px;
+	margin:10px auto 0;
+	background-size:100% 100% !important;
+	cursor:pointer;
+	font-size:50px;
+}
+.choose_available_tool li > .photo::before,
+  .choose_available_tool li > .photo::after {
+	color:inherit !important;
+}
+.choose_available_tool li > .photo::before {
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+}
+.choose_available_tool li.switch_admin_ui > .photo::before {
+	content:"\f5c3";
+	color:#5ed7c0;
+}
+.choose_available_tool li.switch_project > .photo::before {
+	/*content:"\f0a0";*/
+	content:"\f49e";
+	color:#fb5c5c;
+}
+.choose_available_tool li.manage_projects > .photo::before {
+	/*content:"\f233";*/
+	content:"\f49e";
+	color:#999;
+}
+.choose_available_tool li.manage_layers > .photo::before {
+	content:"\f5fd";
+	color:#f1c537;
+}
+.choose_available_tool li.manage_modules > .photo::before {
+	content:"\f61f";
+	color:#418ec2;
+}
+.choose_available_tool li.manage_users > .photo::before {
+	content:"\f0c0";
+	color:#026e15;
+}
+.choose_available_tool li.manage_test_units > .photo::before {
+	content:"\f0ae";
+	color:#1988c3;
+}
+.choose_available_tool li.manage_deployments > .photo::before {
+	content:"\f5b0";
+	color:#41998b;
+}
+.choose_available_tool li.install_program > .photo::before {
+	content:"\f51f";
+	color:#d7d9d6;
+}
+.choose_available_tool li.diff_files > .photo::before {
+	content:"\f24d";
+	color:#da77fc;
+}
+.choose_available_tool li.flush_cache > .photo::before {
+	content:"\f51a";
+	color:#6e2102;
+}
+.choose_available_tool li.about > .photo::before {
+	content:"\f05a";
+	color:#4782ef;
+}
+.choose_available_tool li.logout > .photo::before {
+	content:"\f2f5";
+	color:#b4c0d7;
+}
+.choose_available_tool li.doc_book > .photo::before {
+	/*content:"\f02d";*/
+	content:"\f518";
+	color:#6e2102;
+}
+.choose_available_tool li.other_files > .photo::before {
+	/*content:"\f86d";*/
+	content:"\f518";
+	color:#edc336;
+}
+.choose_available_tool li.vendor_files > .photo::before {
+	/*content:"\f2a1";*/
+	content:"\f518";
+	color:#f7a134;
+}
+.choose_available_tool li.dao_files > .photo::before {
+	content:"\f247";
+	color:#f7a134;
+}
+.choose_available_tool li.db_layers > .photo::before {
+	content:"\f51e";
+	color:#aab2c0;
+}
+.choose_available_tool li.data_access_layers_hibernate > .photo,
+  .choose_available_tool li.data_access_layers_ibatis > .photo {
+	width:100%;
+	margin-top:25px;
+	font-size:25px;
+}
+.choose_available_tool li.data_access_layers_hibernate > .photo::before {
+	content:"\f453";
+	color:#bdaf7b;
+}
+.choose_available_tool li.data_access_layers_hibernate > .photo::after {
+	content:"Hibernate";
+	color:#bdaf7b;
+	margin-left:10px;
+}
+.choose_available_tool li.data_access_layers_ibatis > .photo::before {
+	content:"\f453";
+	color:#debc33;
+}
+.choose_available_tool li.data_access_layers_ibatis > .photo::after {
+	content:"Ibatis";
+	color:#debc33;
+	margin-left:10px;
+}
+.choose_available_tool li.business_logic_layers > .photo::before {
+	content:"\e13b";
+	color:#3497d9;
+	-webkit-transform:scaleY(-1);
+	transform:scaleY(-1);
+	display:block;
+}

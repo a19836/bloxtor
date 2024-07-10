@@ -1,0 +1,38 @@
+.iframe_toolbar {
+	font-size:10px;
+}
+.iframe_toolbar .icon {
+	margin:0 3px;
+	font-size:15px;
+	vertical-align:middle;
+}
+.iframe_toolbar .icon.active {
+	color:var(--icon-active-color);
+}
+.iframe_toolbar input:not([type=checkbox]) {
+	width:45px;
+	margin-right:3px;
+	padding:0 15px 0 0;
+	box-sizing:border-box;
+	text-align:center;
+	font-size:inherit;
+	vertical-align:middle;
+}
+.iframe_toolbar .px {
+	margin:0 0 0 -20px;
+	padding:0;
+	text-align:left;
+	font-size:inherit;
+	vertical-align:middle;
+	cursor:text;
+}
+.iframe_toolbar .x {
+	margin:0 5px;
+	font-size:inherit;
+	vertical-align:middle;
+}
+.iframe_toolbar.desktop input,
+  .iframe_toolbar.desktop .px,
+  .iframe_toolbar.desktop .x {
+	display:none;
+}

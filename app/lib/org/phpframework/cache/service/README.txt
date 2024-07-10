@@ -1,0 +1,3 @@
+/*
+To be used internally to cache the result data from a specific Data Access or Business Logic...
+*/

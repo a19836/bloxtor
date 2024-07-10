@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+	<label>Define a Class</label>
+	<tag>createclass</tag>
+	<files>
+		<task_properties_html>WorkFlowTaskHtml.php</task_properties_html>
+		<css>../../common/css/global.css</css>
+		<css>../common/css/global.css</css>
+		<css>../common/css/FunctionUtilObj.css</css>
+		<css>css/WorkFlowTask.css</css>
+		<js>../../common/js/global.js</js>
+		<js>../common/js/global.js</js>
+		<js>../common/js/FunctionUtilObj.js</js>
+		<js>js/WorkFlowTask.js</js>
+	</files>
+	<settings>
+		<connection_menu>
+			<show_properties_menu>0</show_properties_menu>
+			<show_overlay_types_menu>0</show_overlay_types_menu>
+		</connection_menu>
+		<callback>
+			<on_load_task_properties>CreateClassTaskPropertyObj.onLoadTaskProperties</on_load_task_properties>
+			<on_submit_task_properties>CreateClassTaskPropertyObj.onSubmitTaskProperties</on_submit_task_properties>
+			<on_complete_task_properties>CreateClassTaskPropertyObj.onCompleteTaskProperties</on_complete_task_properties>
+			<on_cancel_task_properties>CreateClassTaskPropertyObj.onCancelTaskProperties</on_cancel_task_properties>
+			
+			<on_complete_task_label>CreateClassTaskPropertyObj.onCompleteLabel</on_complete_task_label>
+			
+			<on_success_task_cloning>ProgrammingTaskUtil.onTaskCloning</on_success_task_cloning>
+			<on_success_task_creation>CreateClassTaskPropertyObj.onTaskCreation</on_success_task_creation>
+			<on_check_task_deletion>ProgrammingTaskUtil.onBeforeTaskDeletion</on_check_task_deletion>
+			<on_success_task_deletion>ProgrammingTaskUtil.onAfterTaskDeletion</on_success_task_deletion>
+			
+			<on_success_task_between_connection>ProgrammingTaskUtil.onSuccessTaskBetweenConnection</on_success_task_between_connection>
+			<on_success_connection_drag>onlyAllowOneConnectionPerExitAndNotToItSelf</on_success_connection_drag>
+			<on_success_connection_drop>ProgrammingTaskUtil.onConnectionDrop</on_success_connection_drop>
+			
+			<on_show_task_menu>ProgrammingTaskUtil.addCodeMenuOnShowTaskMenu</on_show_task_menu>
+			
+			<on_click_task>showTaskPropertiesIfExists</on_click_task>
+		</callback>
+		<center_inner_elements>0</center_inner_elements>
+	</settings>
+	<code_parser>
+		<statements>Stmt_Class, Stmt_Interface</statements>
+	</code_parser>
+</task>

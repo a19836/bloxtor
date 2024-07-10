@@ -1,0 +1,143 @@
+/* ICONS */
+.icon.toggle_module_data {
+	width:20px;
+	height:20px;
+}
+.icon.toggle_module_data::before {
+	content:"\f05a";
+}
+.icon.toggle_module_data::after {
+	content:"\f06e";
+	font-size:10px;
+}
+
+/* TOP BAR */
+.top_bar header {
+	z-index:999999;
+}
+.top_bar header .title {
+	max-width:calc(100% - 60px);
+}
+
+/* GENERIC */
+.invalid {
+	width:100%;
+	text-align:center;
+	font-style:italic;
+	color:#FF0000;
+	margin-top:10px;
+	margin-bottom:20px;
+}
+.error {
+	width:100%;
+	text-align:center;
+	font-style:italic;
+	margin-bottom:20px;
+	color:#B51E3F;
+}
+
+/* BLOCK OBJ */
+.block_obj.with_top_bar_section {
+	/*margin-left:auto;
+	margin-right:auto;*/
+}
+.block_obj:not(.with_top_bar_section) {
+	padding:20px;
+}
+
+.block_obj input,
+  .block_obj select,
+  .block_obj textarea {
+	font-size:inherit;
+}
+
+/* MODULE DATA */
+.block_obj .module_data {
+	width:100%;
+	margin:0 auto;
+	padding:20px;
+	display:none;
+	box-sizing:border-box;
+}
+.block_obj .module_data .module_img {
+	width:150px;
+	height:150px;
+	line-height:150px;
+	text-transform:uppercase;
+	text-align:center;
+	font-size:14px;
+	font-weight:bold;
+	float:left;
+	margin-right:20px;
+	display:block;
+}
+.block_obj .module_data .module_img img,
+  .block_obj .module_data .module_img svg {
+	width:150px;
+	height:150px;
+	fill:var(--link-color);
+}
+.block_obj .module_data .module_img .no_photo {
+	width:150px;
+	height:150px;
+	display:block;
+	background-color:#F7F7F7;
+	border:1px outset #CCC;
+}
+.block_obj .module_data .module_label {
+	width:calc(100% - 170px);
+	height:20px;
+	margin-bottom:5px;
+	font-weight:bold;
+	font-size:14px;
+	color:var(--link-color);
+	float:left;
+}
+.block_obj .module_data .module_description {
+	width:calc(100% - 170px);
+	min-height:125px;
+	float:left;
+	margin-bottom:20px;
+}
+
+/* MODULE SETTINGS */
+.block_obj .module_settings {
+	float:none;
+	clear:left;
+	width:670px;
+}
+.block_obj .module_settings > label {
+	font-weight:normal;
+	font-style:normal;
+	opacity:.3;
+	padding-left:10px;
+}
+.block_obj .module_settings .settings {
+	/*border:1px inset #CCC;*/
+	min-height:100px;
+	text-align:center;
+	margin-top:5px;
+	padding:5px 5px;
+
+}
+
+/* MODULE ADMIN PANEL POPUP */
+.open_module_admin_panel_popup {
+	display:block;
+	margin-top:10px;
+}
+.module_admin_panel_popup {
+	width:auto;
+	height:auto;
+	top:10px;
+	left:10px;
+	right:10px;
+	bottom:10px;
+}
+.module_admin_panel_popup.in_popup {
+	margin-top:20px;
+}
+.module_admin_panel_popup iframe {
+	width:100%;
+	height:100%;
+}

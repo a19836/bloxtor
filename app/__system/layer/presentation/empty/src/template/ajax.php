@@ -1,0 +1,1 @@
+<? echo $EVC->getCMSLayer()->getCMSTemplateLayer()->renderRegion("Content"); ?>

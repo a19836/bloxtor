@@ -1,0 +1,59 @@
+.taskflowchartmenu .task.task_view {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_view .info:before {
+	background-image:url('../img/bg.svg');
+}
+
+/* task properties */
+.view_task_html .settings .choose_db_table .db_table_conditions {
+	display:none;
+}
+
+.view_task_html .ui table .ui_table_attribute_value:before {
+	display:block;
+	padding:5px;
+	color:#555;
+	background:#fff;
+}
+.view_task_html .ui table .ui_table_attribute_value.input:before {
+	content:"...";
+	width:100%;
+	min-width:100px;
+	box-sizing:border-box;
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+.view_task_html .ui table .ui_table_attribute_value.number:before {
+	content:"nn...";
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+.view_task_html .ui table .ui_table_attribute_value.date:before {
+	content:"yyyy-mm-dd";
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+.view_task_html .ui table .ui_table_attribute_value.datetime:before {
+	content:"yyyy-mm-dd hh:ii";
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+.view_task_html .ui table .ui_table_attribute_value.time:before {
+	content:"hh:ii";
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+.view_task_html .ui table .ui_table_attribute_value.checkbox:before {
+	content:"Yes/No";
+}
+.view_task_html .ui table .ui_table_attribute_value.textarea:before {
+	content:"...";
+	width:100%;
+	min-width:100px;
+	height:50px;
+	box-sizing:border-box;
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+

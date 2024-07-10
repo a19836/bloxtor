@@ -1,0 +1,401 @@
+:root {
+  	--btn-border:#FC3C44;
+	--btn-bg:#2C2D34;
+	--btn-color:#DFE1ED;/*#BFC4DB*/
+	--btn-hover-bg:#585B69;
+}
+
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:transparent;
+}
+
+/* TOP BAR */
+.top_bar {
+	margin-bottom:30px;
+}
+.top_bar header .title .sub_title {
+	margin:-9px 10px 0 0;
+	padding:8px;
+	float:right;
+	border-radius:5px;
+	background:var(--btn-bg);
+	color:var(--btn-color);
+}
+.top_bar header .title .sub_title:hover {
+	background:var(--btn-hover-bg);
+	text-decoration:none;
+}
+
+/* list_type */
+.list_type {
+	margin:0 5px 0 0;
+	text-align:center;
+	display:inline-block;
+	float:right;
+}
+.list_type a {
+	color:inherit;
+}
+.list_type .icon {
+	margin:0 5px;
+	font-size:16px;
+}
+.list_type .icon.active {
+	color:var(--icon-active-color);
+}
+.list_type .icon:not(.active) {
+	opacity:.5;
+}
+.list_type .icon:hover {
+	color:var(--icon-hover-color);
+	opacity:1;
+}
+
+/* sort_files and search_file */
+.sort_files {
+	margin:-10px 10px 0;
+	padding:7px;
+	float:right !important;
+	border-radius:5px;
+	border-color:var(--icon-active-color) !important;
+	color:var(--icon-active-color) !important;
+}
+.search_file {
+	margin:-10px 10px 0 20px;
+	white-space:nowrap;
+	color:var(--icon-active-color);
+	float:right;
+}
+.search_file .icon.search {
+	cursor:default;
+	color:inherit;
+}
+.search_file .icon.search::before {
+	line-height:normal;
+}
+.search_file input {
+	width:150px;
+	margin-left:-28px;
+	padding:7px 20px 8px 25px;
+	border-radius:5px;
+	border-color:var(--icon-active-color) !important;
+	color:inherit !important;
+}
+.search_file input::placeholder {
+	color:var(--icon-active-color);
+}
+.search_file .icon.close {
+	color:var(--icon-active-color);
+	position:absolute;
+	margin:12px 0 0 -18px;
+}
+.search_file .icon.close::before {
+	line-height:normal;
+}
+
+/* GENERIC */
+body.no_scroll {
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+}
+
+/* TREE */
+#file_tree {
+	margin:0 auto;
+}
+#file_tree li > .sub_menu {
+    display:none;
+}
+#file_tree > ul > li > ul li.hidden {
+	display:none !important;
+}
+#file_tree li.list_view > a:hover {
+	background-color:#eee;
+}
+#file_tree.list_view > ul > li > ul li > a {
+    width: calc(100% - 30px);
+    display: inline-block;
+}
+#file_tree.list_view > ul > li > ul li:nth-of-type(even) > a:not(.jstree-clicked) {
+	background-color:#F0F1F5;
+}
+#file_tree.list_view > ul > li > ul li:nth-of-type(odd) > a:not(.jstree-clicked) {
+	background-color:#F8F9FC;
+}
+
+#file_tree.block_view > ul > li > ul {
+	padding:0 20px;
+}
+#file_tree.block_view > ul > li ul {
+	white-space:initial;
+}
+#file_tree.block_view > ul > li > ul li {
+	width:220px;
+	margin:20px;
+	padding:0;
+	display:inline-block;
+	vertical-align:top;
+	position:relative;
+	background:#F8F9FC;
+	border-radius:3px;
+	border:1px solid #F0F1F5;
+	text-align:left;
+}
+#file_tree.block_view > ul > li > ul li.jstree-open {
+	width:auto;
+	display:block;
+}
+#file_tree.block_view > ul > li > ul li > i.jstree-ocl {
+	position:absolute;
+	top:0;
+	right:0;
+	z-index:1;
+}
+#file_tree.block_view > ul > li > ul li.jstree-leaf > i.jstree-ocl {
+	display:none;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor {
+	width:100%;
+	min-height:50px;
+	margin:0;
+	padding:10px;
+	box-sizing:border-box;
+	display:block;
+	cursor:default;
+	position:relative;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor:hover,
+  #file_tree.block_view > ul > li > ul li > a.jstree-anchor.jstree-hovered {
+	background-color:#fff !important;
+}
+#file_tree.block_view > ul > li > ul li.jstree-open > a.jstree-anchor {
+	border-bottom:1px solid #F0F1F5;
+	background:#eee;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor:before {
+	content:"";
+	width:50px;
+	position:absolute;
+	top:0;
+	left:0;
+	bottom:0;
+	background:#F0F1F5;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor:after {
+	content:"";
+	display:block;
+	width:100%;
+	float:none;
+	clear:both;
+}
+
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor > i {
+	width:30px;
+	height:30px;
+	margin:0px;
+	display:block;
+	box-sizing:border-box;
+	border-top-left-radius:3px;
+	border-top-right-radius:3px;
+	overflow:hidden;
+	cursor:pointer;
+	float:left;
+	position:relative;
+	font-size:25px;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor > i::before {
+	font-size:inherit;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor > label {
+	width:calc(100% - 60px);
+	line-height:12px;
+	margin-right:10px;
+	display:block;
+	text-align:left;
+	color:#585B69;
+	font-size:11px;
+	word-break:break-all;
+	white-space:break-spaces;
+	cursor:pointer;
+	float:right;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor > .icons {
+	width:calc(100% - 50px);
+	margin-top:10px;
+	text-align:right;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor > .icons > .icon {
+	margin-top:0;
+	opacity:.3;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor:hover > .icons > .icon {
+	opacity:.7;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor > .icons > .icon:last-child {
+	margin-right:0;
+}
+#file_tree.block_view > ul > li > ul li > a.jstree-anchor > .icons > .icon::before {
+	font-size:12px;
+}
+#file_tree.block_view > ul > li > ul li[data-jstree='{"icon":"entity_file"}']:hover::before,
+  #file_tree.block_view > ul > li > ul li[data-jstree='{"icon":"template_file"}']:hover::before,
+  #file_tree.block_view > ul > li > ul li[data-jstree='{"icon":"view_file"}']:hover::before,
+  #file_tree.block_view > ul > li > ul li[data-jstree='{"icon":"block_file"}']:hover::before,
+  #file_tree.block_view > ul > li > ul li[data-jstree='{"icon":"util_file"}']:hover::before,
+  #file_tree.block_view > ul > li > ul li[data-jstree='{"icon":"folder"}']:hover::before,
+  #file_tree.block_view > ul > li > ul li[data-jstree='{"icon":"template_folder"}']:hover::before {
+	width:80px;
+	content:"Click to edit";
+	position:absolute;
+	top:-17px;
+	left:5px;
+	font-size:8px;
+	color:#999;
+	text-align:left;
+	
+	/* display:none; /* This label causes too much noise, and we want to make the tool as simple as possible. */
+}
+#file_tree.block_view > ul > li > ul li[data-jstree='{"icon":"folder"}']:hover::before,
+  #file_tree.block_view > ul > li > ul li[data-jstree='{"icon":"template_folder"}']:hover::before {
+	content:"Click to open folder";
+}
+
+#file_tree li > a .icons {
+	float:right;
+}
+#file_tree li > a .icons .icon {
+	width:16px;
+	height:16px;
+	margin:5px 8px 0 7px;
+	display:inline-block;
+	float:none;
+	vertical-align:middle;
+	text-align:center;
+	overflow:hidden;
+}
+#file_tree li > a .icons .icon.create_file,
+  #file_tree li > a .icons .icon.remove,
+  #file_tree li > a .icons .icon.service_method {
+	width:13px;
+}
+#file_tree li > a .icons .icon.edit_raw_file {
+	width:20px;
+}
+#file_tree li > a .icons .icon:hover {
+	opacity:1 !important;
+}
+#file_tree li > a .icons .icon::before {
+	font-size:14px;
+	display:block;
+	color:inherit !important;
+}
+#file_tree li > a .icons .icon::after {
+	font-size:10px;
+	display:block;
+	color:#666;
+	top:6px;
+}
+#file_tree li > a .icons .icon div {
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	padding-left:20px;
+	z-index:1;
+}
+/* already exists in icons.css:
+#file_tree li > a .icons .icon.sub_menu::before {content:"\f141"; color:#666;}
+#file_tree li > a .icons .icon.refresh::before {content:"\f2f1";}
+#file_tree li > a .icons .icon.remove::before {content:"\f1f8";}
+/*#file_tree li > a .icons .icon.edit::before {content:"\f303";}*/
+#file_tree li > a .icons .icon.create_folder::before {content:"\f65e";}
+#file_tree li > a .icons .icon.create_file::before {content:"\f477";}
+#file_tree li > a .icons .icon.view_project::before {content:"\f06e";}
+#file_tree li > a .icons .icon.edit_raw_file::before {content:"\f121"; color:#999;}
+#file_tree li > a .icons .icon.edit_raw_file::after {content:"\f303";}
+#file_tree li > a .icons .icon.unzip::before {content:"\f1c6"; font:var(--fa-font-regular); font-size:12px;}
+#file_tree li > a .icons .icon.create_automatically::before {content:"\f079";}
+#file_tree li > a .icons .icon.create_uis_diagram::before {content:"\f079";}
+#file_tree li > a .icons .icon.install_template::before {content:"\f13b"; font:var(--fa-font-brands); font-size:16px;}
+#file_tree li > a .icons .icon.add_table::before {content:"\f0db";}
+#file_tree li > a .icons .icon.manage_records::before {content:"\f00b"; color:#999;}
+#file_tree li > a .icons .icon.manage_records::after {content:"\f303";}
+#file_tree li > a .icons .icon.edit_diagram::before {content:"\f0e8";}
+#file_tree li > a .icons .icon.test_unit_obj::before {content:"\f0ae"; color:#aaa;}
+#file_tree li > a .icons .icon.test_unit_obj::after {content:"\2b";}
+#file_tree li > a .icons .icon.service_method::before {content:"\e13b"; -webkit-transform:scaleY(-1); transform:scaleY(-1);}
+
+#file_tree.mytree_filtered > ul > li:only-child > a {
+	width:auto;
+	margin-top:-30px;
+	position:fixed;
+	right:0;
+	background:#fff;
+	border-bottom-left-radius:5px;
+	z-index:1;
+}
+#file_tree.mytree_filtered > ul > li:only-child > a.jstree-clicked,
+  #file_tree.mytree_filtered > ul > li:only-child > a.jstree-hovered {
+	background:transparent !important;
+	border:0;
+	border-radius:0;
+	box-shadow:none;
+}
+#file_tree.mytree_filtered > ul > li:only-child > .jstree-icon,
+  #file_tree.mytree_filtered > ul > li:only-child > a > .jstree-icon,
+  #file_tree.mytree_filtered > ul > li:only-child > a > label,
+  #file_tree.mytree_filtered > ul > li:only-child > .sub_menu,
+  #file_tree.mytree_filtered > ul > li:only-child > a > .icons .icon:not(.create_folder):not(.create_file):not(.view_project):not(.install_template):not(.refresh):not(.sub_menu) {
+	display:none;
+}
+#file_tree.list_view.mytree_filtered > ul > li:only-child > ul > li {
+	margin-left:0;
+}
+
+/*#file_tree i.project_common.entities_folder {
+    background:url("../../img/icons.png") no-repeat -93px -134px !important
+}
+#file_tree i.project.entities_folder {
+    background:url("../../img/icons.png") no-repeat -202px -46px !important;url("../img/icons.png") no-repeat -93px -134px !important
+}
+#file_tree i.main_node_dao {
+    background:url(../../img/icons.png) -51px -156px no-repeat;
+}
+#file_tree i.main_node_lib {
+    background:url("../../common/img/icon/info_icon.png") center no-repeat;
+}
+#file_tree i.main_node_test_unit {
+    background:url("../../img/db_icons.png") 0px -178px no-repeat;
+}*/
+
+.auxiliar_popup {
+	position:fixed;
+	top:10px !important;
+	left:10px !important;
+	right:10px;
+	bottom:10px;
+}
+.auxiliar_popup iframe {
+	width:100% !important;
+	height:100% !important;
+}
+
+.popup_overlay {
+	bottom:0;
+	height:auto !important;
+}
+
+.error {
+	margin-top:20px;
+	text-align:center;
+	color:#B51E3F;
+	font-weight:bold;
+}

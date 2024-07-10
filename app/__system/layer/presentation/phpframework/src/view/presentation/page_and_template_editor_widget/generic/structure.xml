@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Data Struture</label>
+	<tag>data-structure</tag>
+	<settings>
+		<create_widget_class>DataStructureWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[]]></template_widget>
+	<properties></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-data-structure:before,
+		  body > .menu-widget.menu-widget-data-structure.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets > .widget-header.widget-header-data-structure .options .props,
+		   .layout-ui-editor > .template-widgets > .widget-header.widget-header-data-structure .options .toggle {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-id,
+		   .layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-classes,
+		   .layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-properties,
+		   .layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-widget,
+		   .layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-general,
+		   .layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-dimension,
+		   .layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-typography,
+		   .layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-decorations,
+		   .layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-events,
+		   .layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-others,
+		   .layout-ui-editor > .menu-settings.menu-settings-data-structure .settings-extra,
+			.layout-ui-editor > .menu-settings.menu-settings-data-structure li.settings-tabs > ul > li.settings-tab-properties,
+			.layout-ui-editor > .menu-settings.menu-settings-data-structure li.settings-tabs > ul > li.settings-tab-widget,
+			.layout-ui-editor > .menu-settings.menu-settings-data-structure li.settings-tabs > ul > li.settings-tab-style,
+			.layout-ui-editor > .menu-settings.menu-settings-data-structure li.settings-tabs > ul > li.settings-tab-events,
+			.layout-ui-editor > .menu-settings.menu-settings-data-structure li.settings-tabs > ul > li.settings-tab-extra {
+			display:none;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-data-structure li.settings-tabs {
+			margin-top:35px;
+		}
+		
+		.layout-ui-editor > .menu-layers .group.group-data-structure > ul {
+			display:none !important;
+		}
+		
+		/* POPUP - create_db_data_structure_popup */
+		.myfancypopup.create_db_data_structure_popup {
+			
+		}
+		.myfancypopup.create_db_data_structure_popup > .iframe_top_bar_bg {
+			height:50px;
+			position:absolute;
+			top:0;
+			left:0;
+			right:0;
+			background:var(--main-popup-header-bg);
+			z-index:1;
+		}
+		.myfancypopup.create_db_data_structure_popup > .continue,
+		  .myfancypopup.create_db_data_structure_popup > .back {
+			line-height:14px;
+			padding:7px 10px;
+			position:absolute;
+			top:10px;
+			right:15px;
+			background:var(--main-popup-header-color);
+			color:var(--main-popup-header-bg);
+			font-size:7pt;
+			z-index:2;
+		}
+		.myfancypopup.create_db_data_structure_popup > .back {
+			right:90px;
+		}
+		
+		.myfancypopup.create_db_data_structure_popup.with_title {
+			padding:15px;
+		}
+		.myfancypopup.create_db_data_structure_popup.with_title > .title {
+			margin:-15px -15px 15px;
+			padding-right:150px;
+		}
+		.myfancypopup.create_db_data_structure_popup.with_title > .sub_title {
+			margin:20px 0;
+			text-align:center;
+		}
+		.myfancypopup.create_db_data_structure_popup.with_title > .db_table {
+			margin:10px 0;
+		}
+		.myfancypopup.create_db_data_structure_popup.with_title > .db_driver label,
+		  .myfancypopup.create_db_data_structure_popup.with_title > .db_table label {
+			width:60px;
+			display:inline-block;
+		}
+		.myfancypopup.create_db_data_structure_popup.with_title > .db_driver select {
+			width:calc(100% - 65px);
+			font-size:inherit;
+		}
+		.myfancypopup.create_db_data_structure_popup.with_title > .db_table select {
+			width:calc(100% - 85px);
+			margin-right:5px;
+			font-size:inherit;
+		}
+		
+		.myfancypopup.create_db_data_structure_popup.with_iframe_title {
+			width:95vw !important;
+			height:95vh !important;
+			box-sizing: border-box;
+		}
+		.myfancypopup.create_db_data_structure_popup.with_iframe_title iframe {
+			width:100%;
+			height:100%;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function DataStructureWidget(ui_creator, menu_widget) {
+			var me = this;
+			var db_driver = null;
+			var db_broker = null;
+			var db_type = "db";
+			var db_table = null;
+			var old_db_tables = null;
+			var popup = null;
+			var step = 1;
+			
+			me.DataStructureFancyPopup = new MyFancyPopupClass();
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-drag-stop-func": ui_creator.obj_var_name + ".menu_widgets_objs['data-structure'].onDropMenuWidget",
+				});
+				
+				if (typeof create_db_table_or_attribute_url == "undefined" || !create_db_table_or_attribute_url) {
+					alert("The 'create_db_table_or_attribute_url' variable does not exist or is empty! 'data-structure' widget will be removed from the layout ui editor!");
+				    
+				    	menu_widget.remove();
+				}
+				else if (typeof db_brokers_drivers_tables_attributes == "undefined" || !$.isPlainObject(db_brokers_drivers_tables_attributes) || $.isEmptyObject(db_brokers_drivers_tables_attributes)) {
+					//alert("There are no DB Drivers available. 'data-structure' widget will be removed from the layout ui editor!"); //Do not show alert bc if we edit a stastic page without DB we simply delete this menu widget silently.
+					
+					menu_widget.remove();
+				}
+			};
+			
+			me.onDropMenuWidget = function(menu_widget, widget, event, ui) {
+				popup = popup ? popup : $(".create_db_data_structure_popup");
+				
+				if (!popup[0]) {
+					popup = $('<div class="myfancypopup create_db_data_structure_popup with_title popup_with_popup_close_button popup_with_left_popup_close">'
+								+ '<div class="iframe_top_bar_bg"></div>'
+								+ '<button class="continue" onClick="' + ui_creator.obj_var_name + '.menu_widgets_objs[\'data-structure\'].DataStructureFancyPopup.settings.continueFunction(this)">Continue</button>'
+								+ '<button class="back" onClick="' + ui_creator.obj_var_name + '.menu_widgets_objs[\'data-structure\'].DataStructureFancyPopup.settings.backFunction(this)">Back</button>'
+								+ '<div class="title">Create a dynamic Form or List</div>'
+								+ '<div class="sub_title">Create automatic <strong>Forms</strong> and <strong>Lists</strong> by choosing an existing DB Table<br/>or by creating your own data structure...</div>'
+								+ '<div class="db_driver" onChange="' + ui_creator.obj_var_name + '.menu_widgets_objs[\'data-structure\'].updateDBTables(this)">'
+									+ '<label>DB Driver:</label>'
+									+ '<select></select>'
+								+ '</div>'
+								+ '<div class="db_table">'
+									+ '<label>DB Table:</label>'
+									+ '<select></select>'
+									+ '<span class="icon refresh" onClick="' + ui_creator.obj_var_name + '.menu_widgets_objs[\'data-structure\'].refreshDBTables(this)"></span>'
+								+ '</div>'
+							+ '</div>');
+					
+					$("body").append(popup);
+				}
+				
+				//prepare step
+				step = 1;
+				goToStep(widget);
+				
+				//open popup
+				me.DataStructureFancyPopup.init({
+					elementToShow: popup,
+					parentElement: document,
+					
+					onClose: function() {
+						ui_creator.deleteTemplateWidget(widget);
+					},
+					backFunction: function() {
+						if (step == 3 && popup.find(" > .db_table select").val())
+							step = 1;
+						else if (step > 1)
+							step--;
+						else
+							step = 1;
+						
+						goToStep(widget);
+					},
+					continueFunction: function() {
+						if (step == 1) {
+							var db_driver_select = popup.find(" > .db_driver select");
+							db_driver = db_driver_select.val();
+							
+							if (!db_driver) 
+								alert("You must select a DB Driver first.");
+							else {
+								db_broker = db_driver_select.find("option:selected").attr("broker_name");
+								db_table = popup.find(" > .db_table select").val();
+								
+								if (db_table)
+									step = 3;
+								else
+									step = 2;
+								
+								goToStep(widget);
+							}
+						}
+						else if (step == 2) {
+							//reset db_brokers_drivers_tables_attributes so we can the getDBTables again
+							if (db_brokers_drivers_tables_attributes[db_broker] && db_brokers_drivers_tables_attributes[db_broker][db_driver])
+								db_brokers_drivers_tables_attributes[db_broker][db_driver][db_type] = null;
+							
+							//get created table by doing the difference between 2 arrays
+							var new_db_tables = getDBTables(db_broker, db_driver, db_type);
+							var new_db_tables_name = $.isPlainObject(new_db_tables) ? Object.keys(new_db_tables) : [];
+							var old_db_tables_name = $.isPlainObject(old_db_tables) ? Object.keys(old_db_tables) : [];
+							
+							var created_tables = new_db_tables_name.filter(function(table) {return !old_db_tables_name.includes(table); });
+							db_table = created_tables[0] ? created_tables[0] : "";
+							
+							if (db_table) {
+								step = 3;
+								
+								goToStep(widget);
+							}
+							else
+								alert('Please create a DB Table first.');
+						}
+					},
+				});
+				
+				me.DataStructureFancyPopup.showPopup();
+			};
+			
+			me.updateDBTables = function() {
+				var db_driver_select = popup.find(" > .db_driver select");
+				var db_driver_name = db_driver_select.val();
+				var db_broker_name = db_driver_select.find("option:selected").attr("broker_name");
+				
+				if (db_broker_name && db_driver_name) {
+					var db_tables = getDBTables(db_broker_name, db_driver_name, db_type);
+					
+					var html = '<option value="">-- Create a new Table --</option><option disabled></option>';
+					
+					for (var table_name in db_tables)
+						html += "<option>" + table_name + "</option>";
+					
+					popup.find(" > .db_table select").html(html);
+				}
+			};
+			
+			me.refreshDBTables = function() {
+				var db_driver_select = popup.find(" > .db_driver select");
+				var db_driver_name = db_driver_select.val();
+				var db_broker_name = db_driver_select.find("option:selected").attr("broker_name");
+				
+				if (db_broker_name && db_driver_name) {
+					if (db_brokers_drivers_tables_attributes[db_broker_name] && db_brokers_drivers_tables_attributes[db_broker_name][db_driver_name])
+						db_brokers_drivers_tables_attributes[db_broker_name][db_driver_name][db_type] = null;
+					
+					me.updateDBTables();
+				}
+			};
+			
+			function goToStep(widget) {
+				if (step == 1) {
+					popup.addClass("with_title").removeClass("with_iframe_title");
+					popup.children(".iframe_top_bar_bg, .back").hide();
+					popup.children(".title, .sub_title, .db_driver, .db_table").show();
+					popup.children("iframe").remove();
+					
+					//prepare drivers
+					var repeated = [];
+					var options_html = "";
+					
+					if ($.isPlainObject(db_brokers_drivers_tables_attributes))
+						for (var broker_name in db_brokers_drivers_tables_attributes)
+							if ($.isPlainObject(db_brokers_drivers_tables_attributes[broker_name]))
+								for (var db_driver_name in db_brokers_drivers_tables_attributes[broker_name]) 
+									if (repeated.indexOf(db_driver_name) == -1) {
+										options_html += '<option broker_name="' + broker_name + '">' + db_driver_name + '</option>';
+										repeated.push(db_driver_name);
+									}
+					
+					var db_driver_select = popup.find(" > .db_driver select");
+					db_driver_select.html(options_html);
+					
+					//prepare tables
+					db_driver = db_driver_select.val();
+					
+					if (db_driver) {
+						db_broker = db_driver_select.find("option:selected").attr("broker_name");
+						
+						if (db_broker) {
+							old_db_tables = getDBTables(db_broker, db_driver, db_type);
+							
+							var options_html = '<option value="">-- Create a new Table --</option><option disabled></option>';
+							
+							for (var table_name in old_db_tables)
+								options_html += '<option>' + table_name + '</option>';
+							
+							var db_table_select = popup.find(" > .db_table select");
+							db_table_select.html(options_html);
+							
+							db_table = db_table_select.val();
+						}
+					}
+					
+					if (me.DataStructureFancyPopup.isPopupOpened())
+						me.DataStructureFancyPopup.updatePopup();
+				}
+				else if (step == 2) {
+					var url = create_db_table_or_attribute_url;
+					url += (url.indexOf("?") == -1 ? "?" : "&") + "db_broker=" + db_broker + "&db_driver=" + db_driver + "&popup=1";
+					
+					popup.children(".iframe_top_bar_bg, .back").show();
+					popup.children(".title, .sub_title, .db_driver, .db_table").hide();
+					popup.append('<iframe src="' + url + '"></iframe>');
+					popup.addClass("with_iframe_title").removeClass("with_title");
+					
+					//prepare iframe
+					var iframe = popup.children("iframe");
+					iframe.load(function() {
+						var iframe_body = iframe.contents().find("body");
+						var top_bar = iframe_body.find(".top_bar");
+						
+						if (top_bar.length > 0) {
+							top_bar.addClass("popup_with_left_popup_close popup_with_popup_close_button");
+							popup.children(".iframe_top_bar_bg").hide();
+						}
+						else { //it means some error happens
+							iframe_body[0].style.paddingTop="50px"; //Do not use .css function bc it doesn't work.
+							popup.children(".iframe_top_bar_bg").show();
+						}
+					});
+					
+					//backup db tables
+					old_db_tables = old_db_tables ? old_db_tables : getDBTables(db_broker, db_driver, db_type);
+					
+					me.DataStructureFancyPopup.updatePopup();
+				}
+				else if (step == 3) {
+					//remove iframe
+					var iframe = popup.children("iframe");
+					iframe.remove();
+					
+					//open other popup to choose UI action (form or list)
+					var opts = {
+						hide_db_broker: true,
+						hide_db_driver: true,
+						hide_type: true,
+						find_best_type: true,
+						hide_db_table: true,
+						hide_table_alias: true,
+						hide_widget_type: true,
+						widget_type: "html"
+					};
+					
+					onChooseCodeLayoutUIEditorDBTableWidgetOptions(db_broker, db_driver, db_type, db_table, widget, opts);
+					
+					//change title of other popup
+					var other_popup = DBTableWidgetOptionsFancyPopup.getPopup();
+					var title_elm = other_popup.children(".title");
+					title_elm.data("title_bkp", title_elm.html());
+					title_elm.html("Choose what you wish to show?")
+					
+					var close_func = DBTableWidgetOptionsFancyPopup.settings.onClose;
+					
+					DBTableWidgetOptionsFancyPopup.settings.onClose = function() {
+						title_elm.html( title_elm.data("title_bkp") );
+						DBTableWidgetOptionsFancyPopup.settings.onClose = close_func;
+						
+						if (typeof close_func == "function")
+							close_func();
+					};
+					
+					me.DataStructureFancyPopup.setOption("onClose", null);
+					me.DataStructureFancyPopup.hidePopup();
+				}
+			}
+		}
+	]]></menu_js>
+</widget>

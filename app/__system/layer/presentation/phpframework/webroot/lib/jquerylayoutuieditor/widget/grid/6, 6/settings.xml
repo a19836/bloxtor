@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>6, 6</label>
+	<tag>container-6-6</tag>
+	<settings>
+		<resizable>1</resizable>
+		<menu_class>container</menu_class>
+		<template_class>container row</template_class>
+		<create_widget_class>CreateWidgetContainerClassObj</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget style="display:-webkit-box; display:-ms-flexbox; display:flex; -ms-flex-wrap:wrap; flex-wrap:wrap; height:100%; box-sizing:border-box;"><![CDATA[
+		<div class="droppable col-6" style="position:relative; width:100%; min-height:1px; padding:15px; -webkit-box-flex:0; -ms-flex:0 0 50%; flex:0 0 50%; max-width:50%; box-sizing:border-box;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+		<div class="droppable col-6" style="position:relative; width:100%; min-height:1px; padding:15px; -webkit-box-flex:0; -ms-flex:0 0 50%; flex:0 0 50%; max-width:50%; box-sizing:border-box;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+	]]></template_widget>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-container-6-6:before,
+		   body > .menu-widget.menu-widget-container-6-6.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-container-6-6 > span:first-child,
+		   body > .menu-widget.menu-widget-container-6-6.ui-draggable-dragging > span:first-child {
+			display:none;
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-container-6-6 > .template-widget.row,
+		   body > .menu-widget.menu-widget-container-6-6.ui-draggable-dragging > .template-widget.row {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-container-6-6 li.group.settings-properties > ul .columns table .container-col-move,
+		   .layout-ui-editor > .menu-settings.menu-settings-container-6-6 li.group.settings-properties > ul .columns table .container-col-icon {
+			width:20px;
+			vertical-align:middle;
+			cursor:pointer;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-container-6-6 .settings-properties table .container-col-icon {
+			width:20px;
+			font-size:14px;
+			text-align:center;
+		}
+	]]></menu_css>
+	<!--template_css><![CDATA[
+		.template-widget.template-widget-container-6-6 {
+			border:1px dashed rgba(170,170,170,0.7);
+		}
+		.template-widget.template-widget-container-6-6.row {
+			margin:0;
+		}
+		.template-widget.template-widget-container-6-6.row > .droppable {
+			padding:10px;
+			border:1px dashed rgba(170,170,170,0.7);
+			box-sizing: border-box;
+		}
+	]]></template_css-->
+</widget>

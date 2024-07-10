@@ -1,0 +1,31 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:transparent;
+}
+
+.install_dependencies {
+	padding:60px 20px 40px;
+	border:0;
+	font-size:12px;
+	font-family:inherit;
+}
+.install_dependencies form {
+	text-align:center;
+}
+.install_dependencies form .title {
+	height: 25px;
+	margin: 10px 0 35px 0;
+	color: #666;
+	font-size: 14px;
+	font-weight: bold;
+}
+.install_dependencies form .info {
+	margin:0 0 35px;
+}
+.install_dependencies form input[type=submit] {
+	margin:0 10px;
+	font-size:inherit;
+}

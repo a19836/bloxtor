@@ -1,0 +1,86 @@
+.selected_task_properties .opts {
+   	width:430px;
+   	min-height:20px;
+	margin:0 auto;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .opts {
+   	width:100%;
+}
+.selected_task_properties .opts .array_items .items {
+	position:absolute;
+	margin-top:-25px;
+	margin-left:175px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .opts > .options > .items {
+	margin-top:-23px;
+	margin-left:115px;
+	white-space:nowrap;
+}
+.selected_task_properties .opts .array_items ul .items {
+	position:static;
+	margin-top:0;
+	margin-left:0;
+}
+
+.selected_task_properties .opts .main_label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .opts .main_label {
+	width:55px;
+}
+.selected_task_properties .opts .options_code {
+	width:210px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .opts .options_code {
+	width:calc(100% - 155px);
+}
+.selected_task_properties .opts .options_type {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .opts .options .item.option_:hover:before {
+	display:none;
+}
+.selected_task_properties .opts .options .item select.key {
+	width:131px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .opts .options .item select.key {
+	width:68px;
+}
+.selected_task_properties .opts .options .item .search {
+	margin-left:-25px;
+	margin-right:10px;
+	margin-top:2px;
+}
+/*.selected_task_properties .opts .options .item .add_variable + .search {
+	margin-left:-41px;
+	margin-right:25px;
+}*/
+.selected_task_properties .opts .options .items .add1,
+  .selected_task_properties .opts .options .items .add2,
+  .selected_task_properties .opts .options .items .add3 {
+	width:20px;
+}
+.selected_task_properties .opts .options .items .add1::before {
+	content:"\f055";
+	vertical-align:middle;
+	font-size:15px;
+}
+.selected_task_properties .opts .options .items .add2::before {
+	content:"\2b";
+	vertical-align:middle;
+	font-size:15px;
+}
+.selected_task_properties .opts .options .items .add3::before {
+	font:var(--fa-font-regular);
+	content:"\f0fe";
+	font-size:16px;
+	vertical-align:middle;
+}

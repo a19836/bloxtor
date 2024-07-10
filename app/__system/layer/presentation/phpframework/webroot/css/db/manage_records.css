@@ -1,0 +1,342 @@
+/* TOP BAR */
+.top_bar header > ul > li.back {
+	width:26px;
+}
+.top_bar header > ul > li.back > a {
+	width:16px;
+}
+.top_bar header > ul > li.back > a > .icon:before {
+	margin-left:0;
+}
+
+/* MANAGE RECORDS */
+.manage_records .db_type {
+	margin-left:5px;
+}
+
+/* TABLE */
+.manage_records .responsive_table {
+	margin:0;
+	/*background: #eee;
+	border:1px inset #CCC;*/
+	overflow:auto;
+}
+.manage_records table {
+	border:0;
+	width:100%;
+	background-color:#FFF;
+}
+.manage_records table th {
+	height:20px;
+	line-height:20px;
+	padding:0 5px;
+	border-right:1px solid #eee;
+	color:#999;
+	font-size:10px;
+}
+.manage_records table th .sort,
+  .manage_records table th .unsort {
+	width:16px;
+	height:12px;
+	margin:5px 0 0;
+	display:inline-block;
+	float:right;
+	vertical-align:middle;
+}
+.manage_records table th .sort::before {
+	content:"\f175";
+	vertical-align:top;
+	color:#999;
+}
+.manage_records table th .sort::after {
+	content:"\f176";
+	vertical-align:top;
+	top:0;
+	left:7px;
+	color:#999;
+	font-size:inherit;
+}
+.manage_records table th .sort.sort_asc::before {
+	color:#000;
+}
+.manage_records table th .sort.sort_desc::after {
+	color:#000;
+}
+.manage_records table th .unsort::before {
+	content:"\f00d";
+	vertical-align:top;
+}
+.manage_records table th .sort.loading {
+	width:20px;
+	height:20px;
+	-webkit-animation-name: fa-spin;
+	animation-name: fa-spin;
+	-webkit-animation-duration: var(--fa-animation-duration,2s);
+	animation-duration: var(--fa-animation-duration,2s);
+	-webkit-animation-iteration-count: var(--fa-animation-iteration-count,infinite);
+	animation-iteration-count: var(--fa-animation-iteration-count,infinite);
+	-webkit-animation-timing-function: var(--fa-animation-timing,linear);
+	animation-timing-function: var(--fa-animation-timing,linear);
+	
+	-webkit-animation-delay: var(--fa-animation-delay,0);
+	animation-delay: var(--fa-animation-delay,0);
+	-webkit-animation-direction: var(--fa-animation-direction,normal);
+	animation-direction: var(--fa-animation-direction,normal);
+}
+.manage_records table th.fks {
+	background:transparent;
+	border:0;
+}
+.manage_records table td {
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+	height:20px;
+	line-height:20px;
+	color:#333;
+	padding:0 5px;
+	vertical-align:top;
+}
+.manage_records table .editable td {
+	padding:0;
+	background:#f4f4f4;
+}
+.manage_records table .editable td.binary {
+	opacity:.5;
+	cursor:not-allowed;
+}
+.manage_records table td .file_content {
+	max-height:100px;
+	word-break:break-all;
+	overflow:auto;
+}
+.manage_records table td .file_content img,
+  .manage_records table td .file_content svg {
+	max-width:100px;
+	max-height:100px;
+}
+.manage_records table td .file_content a {
+	cursor:pointer;
+	color:var(--link-color);
+}
+.manage_records table .empty {
+	text-align:center;
+}
+.manage_records table .select_item {
+	text-align:center;
+	width:40px;
+}
+.manage_records table td.fks {
+	text-align:center;
+	background:transparent;
+}
+.manage_records table td.fks a {
+	margin:0 5px;
+}
+.manage_records table .actions {
+	text-align:center;
+	width:110px;
+}
+.manage_records table .actions .icon {
+	margin:3px 3px 0;
+	vertical-align:middle;
+	font-size:14px;
+}
+.manage_records table .actions .icon.add {
+	font-size:16px;
+}
+.manage_records table .actions .save {
+	display:none;
+}
+.manage_records table .actions .undo_toggle {
+	display:none;
+}
+.manage_records table .editable .actions .save,
+  .manage_records table .editable .actions .undo_toggle {
+	display:inline-block;
+}
+.manage_records table .editable .actions .switch {
+	display:none;
+}
+.manage_records table input:not([type=checkbox]):not([type=radio]),
+  .manage_records table textarea,
+  .manage_records table select {
+	width:100%;
+	height:100%;
+	box-sizing:border-box;
+	background:transparent;
+	border-color:transparent;
+	font-size:100%;
+	font-family:inherit;
+	text-align:inherit;
+}
+
+/* TABLE - dataTables */
+.manage_records .dataTables_length, .manage_records .dataTables_filter, .manage_records .dataTables_info, .manage_records .dataTables_paginate {
+	height:20px;
+	line-height:20px;
+	color:#555;
+	font-size:10px;
+	margin-left:5px;
+	margin-right:5px;
+}
+.manage_records .dataTables_length label, .manage_records .dataTables_filter label {
+	color:#555;
+	font-weight:normal;
+}
+.manage_records .dataTables_length select, .manage_records .dataTables_filter input {
+	background-color:#FFF;
+	color:#555;
+	font-size:10px;
+}
+.manage_records .dataTables_length select {
+	text-align:center;
+}
+.manage_records .dataTables_filter input {
+	width:200px;
+}
+.manage_records table.dataTable.compact thead th, .manage_records table.dataTable.compact thead td {
+	padding-top:0;
+	padding-bottom:0;
+	padding-right:20px;
+}
+.manage_records table.dataTable thead .sorting {
+	background:url("../../common/vendor/jquerydatatables/media/images/sort_both_dark.png") no-repeat scroll right center;
+}
+.manage_records .dataTables_wrapper .dataTables_info {
+	padding-top:4px;
+}
+.manage_records .dataTables_scrollBody {
+	/*overflow-x:hidden !important;*/
+}
+.manage_records table.dataTable.compact tbody {
+	font-size:10px;
+}
+.manage_records table.dataTable.compact tbody th, .manage_records table.dataTable.compact tbody td {
+	padding-top:0;
+	padding-bottom:0;
+}
+.manage_records .dataTables_wrapper .dataTables_paginate .paginate_button {
+	padding:0px 2px;
+}
+.manage_records .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+	background:linear-gradient(to bottom, #fff 0%, #dcdcdc 100%) repeat scroll 0 0;
+	border:1px solid #cacaca;
+	color:#333 !important;
+}
+
+/* CONDITIONS */
+.manage_records .conditions {
+	margin:20px 10px;
+	border:1px solid #ccc;
+	border-radius:5px;
+}
+.manage_records .conditions > label {
+	height:30px;
+	padding:20px 10px 10px;
+	display:block;
+	float:none;
+	font-weight:normal;
+	
+	background: -moz-linear-gradient(top, #eee 50%, #ffffff73 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, #eee), color-stop(100%, #ffffff73));
+	background: -webkit-linear-gradient(top, #eee 50%, #ffffff73 100%);
+	background: -o-linear-gradient(top, #eee 50%, #ffffff73 100%);
+	background: -ms-linear-gradient(top, #eee 50%, #ffffff73 100%);
+	background: linear-gradient(to bottom, #eee 50%, #ffffff73 100%);
+}
+.manage_records .conditions .add {
+	margin-left:5px;
+	font-size:16px;
+	vertical-align:middle;
+}
+.manage_records .conditions .delete {
+	margin-left:5px;
+	vertical-align:middle;
+	font-size:14px;
+}
+.manage_records .conditions input[type=button] {
+	font-size:inherit;
+	margin-top:-10px;
+}
+.manage_records .conditions input:not([type=button]),
+  .manage_records .conditions select {
+	background:transparent;
+	border:1px solid #ccc;
+	border-radius:3px;
+	font-size:inherit;
+}
+.manage_records .conditions > label select {
+	margin-left:5px;
+}
+.manage_records .conditions > label input {
+	margin:0 10px;
+	float:right;
+}
+.manage_records .conditions > ul {
+	
+}
+.manage_records .conditions > ul li {
+	display:inline-block;
+	padding:10px;
+	/*border-left:1px solid #ccc;*/
+}
+.manage_records .conditions > ul li:first-child {
+	border-left:0;
+}
+.manage_records .conditions > ul li label {
+	margin-right:5px;
+	display:inline-block;
+	font-weight:normal;
+}
+
+/* TOTAL */
+.manage_records .total {
+	margin:5px 10px 0 0;
+	float:right;
+	color:#999;
+}
+
+/* BUTTONS */
+.manage_records .buttons {
+	width:100%;
+	min-height:25px;
+	text-align:center;
+	margin:10px 0 0 0;
+	clear:both;
+}
+.manage_records .buttons input {
+	font-size:inherit;
+}
+
+/* ERROR */
+.manage_records .error {
+	margin:20px 0;
+	color:#B51E3F;
+	text-align:center;
+}
+
+/* POPUP */
+.manage_record_popup {
+	position:fixed !important;
+	top:10px !important;
+	left:10px !important;
+	right:10px;
+	bottom:10px;
+}
+.in_popup .manage_record_popup {
+	top:40px !important;
+}
+.manage_record_popup iframe {
+	width:100% !important;
+	height:100% !important;
+}
+
+/* PAGINATION */
+.top_pagination, .bottom_pagination {
+	margin:1rem;
+}
+.top_pagination:empty, .bottom_pagination:empty {
+	display:none;
+}
+
+

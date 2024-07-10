@@ -1,0 +1,1418 @@
+/* SLA WITH TABS */
+
+.sla {
+	border:0;
+}
+.sla .tabs.tabs_icons {
+	border-bottom-color:var(--resize-bar-border);
+}
+.sla .tabs.tabs_icons li.ui-tabs-active a {
+	background:var(--main-iframe-bg);
+}
+body:not(.dark_theme) .sla .tabs.tabs_icons li.ui-tabs-active a {
+	background:var(--main-template-bg);
+}
+.sla .tabs li a {
+	padding-bottom:8px !important;
+}
+.sla .tabs li a .icon {
+	margin-left:0;
+}
+.sla .sla_groups_flow > nav > a:hover {
+	color:var(--icon-hover-color);
+}
+.sla .sla_groups_flow > nav > a {
+	cursor:pointer;
+}
+.sla .sla_groups_flow > nav > a:not(:first-child) {
+	margin-left:13px;
+}
+.sla .sla_groups_flow > nav > a .icon {
+	margin-left:5px;
+	font-size:var(--icon-font-size);
+	vertical-align:top;
+}
+.sla .sla_groups_flow > nav > a .icon::before {
+	display:inline-block;
+	margin-top:2px;
+	margin-left:1px;
+}
+
+/* SLA GROUP ITEM */
+/* DO NOT USE THE .sla_groups_flow in css bc if the .sla_group_item is inside of the sla WorkFlow, it will loose these styles. This is used in the layout_ui_editor_widget_resource_options.js, so any change here, must be also updated there. */
+
+.sla_main_groups .deprecated_actions_message {
+	margin-bottom:15px;
+	color:red;
+}
+
+.sla_main_groups .sla_group_item {
+	position:relative;
+}
+.sla_main_groups .sla_group_item.sla_group_default {
+	display:none;
+}
+.sla_main_groups .sla_group_item:not(.sla_group_default) {
+	margin-top:10px;
+	border:1px solid #ccc;
+}
+.sla_main_groups .sla_group_empty_items {
+	margin:20px auto;
+	text-align:center;
+}
+.sla_main_groups .sla_group_item:not(.collapsed) {
+	margin-bottom:90px;
+}
+.sla_main_groups .sla_group_item:last-child {
+	margin-bottom:0;
+}
+.sla_main_groups .sla_group_item:not(.collapsed):after {
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f358";
+	
+	width:100%;
+	height:70px;
+	margin-top:10px;
+	display:block;
+	background-size:contain;
+	position:absolute;
+	font-size:70px;
+	text-align:center;
+	color:#ddd;
+}
+.sla_main_groups .sla_group_item:last-child:after {
+	display:none;
+}
+
+.sla_main_groups .sla_group_item.sla_group_item_undefined {
+	opacity:.7;
+}
+.sla_main_groups .sla_group_item.sla_group_item_undefined input,
+  .sla_main_groups .sla_group_item.sla_group_item_undefined select,
+  .sla_main_groups .sla_group_item.sla_group_item_undefined textarea {
+	background:#ccc;
+}
+
+.sla_main_groups .sla_group_item .icon.add_variable::before {
+	margin-left:1px;
+}
+
+.sla_main_groups .sla_group_item > .sla_group_header {
+	padding:.5em;
+	background:var(--main-iframe-bg);
+	position:relative;
+}
+.sla_main_groups .sla_group_item.sla_group_item_undefined > .sla_group_header {
+	background:#ccc;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .result_var_name {
+	width:350px;
+	padding-left:5px;
+	background-color:#fff;
+	
+	/* bc of the loop and group sub-groups */
+	float:none;
+	display:inline;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .result_var_name.result_var_name_output {
+	
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .action_type {
+	width:calc(100% - 480px);
+	min-width:200px;
+	margin-left:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .toggle {
+	margin:2px 5px;
+	font-size:var(--icon-font-size);
+	cursor:pointer;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .remove,
+  .sla_main_groups .sla_group_item > .sla_group_header > .move_up,
+  .sla_main_groups .sla_group_item > .sla_group_header > .move_down {
+	margin:2px 5px;
+	float:right;
+	font-size:var(--icon-font-size);
+	cursor:pointer;
+	
+	/* bc of the loop and group sub-groups */
+	background:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .move_up {
+	margin-left:5px;
+}
+.sla_groups > .sla_group_item:nth-child(3) > .sla_group_header > .move_up {
+	opacity:.1;
+	cursor:default;
+}
+.sla_groups > .sla_group_item:last-child > .sla_group_header > .move_down {
+	opacity:.1;
+	cursor:default;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .toggle:hover,
+  .sla_main_groups .sla_group_item > .sla_group_header > .remove:hover,
+  .sla_main_groups .sla_group_item > .sla_group_header > .move_up:hover,
+  .sla_main_groups .sla_group_item > .sla_group_header > .move_down:hover {
+	/*color:#000;*/
+}
+
+.sla_main_groups .sla_group_item > .sla_group_header > .toggle::before,
+  .sla_main_groups .sla_group_item > .sla_group_header > .remove::before,
+  .sla_main_groups .sla_group_item > .sla_group_header > .move_up::before,
+  .sla_main_groups .sla_group_item > .sla_group_header > .move_down::before {
+	display:inline-block;
+	margin-top:2px;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .sla_group_sub_header {
+	min-height:20px;
+	margin-top:.5em;
+	background:var(--main-iframe-bg);
+	display:none;
+}
+.sla_main_groups .sla_group_item.sla_group_item_undefined > .sla_group_header > .sla_group_sub_header {
+	background:#ccc;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .sla_group_sub_header > .condition_type {
+	width:360px;
+	margin-left:29px;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .sla_group_sub_header > .condition_value {
+	width:calc(100% - 490px);
+	min-width:200px;
+	margin-left:5px;
+	padding-left:5px;
+	display:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .sla_group_sub_header > .action_description {
+	width:100%;
+	min-height:40px;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .sla_group_sub_header > .action_description label {
+	font-size:80%;
+	color:#999;
+	float:right;
+	height:auto;
+	line-height:initial; /* reset line-heiht bc of the workflow: .selected_task_properties label */
+	opacity:.5;
+}
+.sla_main_groups .sla_group_item > .sla_group_header > .sla_group_sub_header > .action_description textarea {
+	width:100%;
+	height:30px;
+	display:block;
+	box-sizing:border-box;
+}
+.sla_main_groups .sla_group_item > .sla_group_body {
+	padding:.5em;
+	display:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties {
+	position:initial !important;
+	max-height:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body > section {
+	display:none;
+}
+
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .opts .add_variable {
+	margin-left:-23px !important;
+}
+
+/* BROKER TASK HTML */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > div {
+	margin:0 auto;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > div:after {
+	content:" ";
+	height:1px;
+	display:block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html > .get_automatically,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html > .get_automatically {
+	margin-top:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html > .get_automatically label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html > .get_automatically label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_hibernate_method_task_html .get_automatically label {
+	width:auto;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_function_task_html > .func_name,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html > .method_obj_name {
+	margin-top:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_function_task_html > .func_name > .add_variable.inline {
+	margin-left:-20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .include_file .add_variable.inline {
+	margin-left:-20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .call_business_logic_task_html > div:not(.broker_method_obj) > .add_variable,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .call_ibatis_query_task_html > div:not(.broker_method_obj) > .add_variable,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .call_hibernate_method_task_html > div:not(.broker_method_obj) > .add_variable,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .call_hibernate_method_task_html > .service_method_args > div > .add_variable, 
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .soap_connector_task_html .add_variable {
+	margin-left:-26px !important;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .call_hibernate_method_task_html > .service_method_args .sma_ids > .add_variable, 
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .call_hibernate_method_task_html > .service_method_args .sma_statuses > .add_variable,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .call_object_method_task_html .method_name .add_variable,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .get_url_contents_task_html .add_variable,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .soap_connector_task_html .client_headers > ul > li > div > .add_variable,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .soap_connector_task_html .remote_function_args .add_variable,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .call_business_logic_task_html .array_items .add_variable.inline,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .call_ibatis_query_task_html .array_items .add_variable.inline,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .call_hibernate_method_task_html .array_items .add_variable.inline {
+	margin-left:-22px !important;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .soap_connector_task_html .client_options .client_option .add_variable {
+	margin-left:-18px !important;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .brokers_layer_type {
+	width:100%;
+	height:20px;
+	float:none;
+	clear:both;
+	
+	display:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body .brokers_layer_type label {
+	display:block;
+	float:left;
+	width:130px;
+	height:20px;
+	margin-bottom:5px;
+}
+
+/* BROKER TASK HTML - CALL BUSINESS LOGIC */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html {
+	display:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html .get_automatically, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html .broker_method_obj,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html .module_id, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html .service_id, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html .params, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html .opts {
+	margin:0 auto 5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html .broker_method_obj {
+	margin-bottom:7px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html .result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_business_logic_task_html .task_property_exit {
+	display:none;
+}
+
+/* BROKER TASK HTML - CALL QUERY */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html {
+	display:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html .get_automatically,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html .broker_method_obj,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html .module_id, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html .service_type, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html .service_id {
+	margin:0 auto 5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html .broker_method_obj {
+	margin-bottom:7px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html .query_type,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html .result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_ibatis_query_task_html .task_property_exit {
+	display:none;
+}
+
+/* BROKER TASK HTML - CALL HIBERNATE METHOD */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_hibernate_method_task_html {
+	display:none;
+	margin-top:15px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_hibernate_method_task_html .get_automatically,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_hibernate_method_task_html .broker_method_obj {
+	margin:0 auto 5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_hibernate_method_task_html .broker_method_obj {
+	margin-bottom:7px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_hibernate_method_task_html .result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_hibernate_method_task_html .task_property_exit {
+	display:none;
+}
+
+/* BROKER TASK HTML - GET QUERY DATA & SET QUERY DATA */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .get_query_data_task_html,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .set_query_data_task_html {
+	display:none;
+	margin-top:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .get_query_data_task_html .broker_method_obj,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .set_query_data_task_html .broker_method_obj {
+	margin:0 auto 5px;
+	margin-bottom:7px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .get_query_data_task_html .result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .set_query_data_task_html .result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .get_query_data_task_html .task_property_exit,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .set_query_data_task_html .task_property_exit {
+	display:none;
+}
+
+/* BROKER TASK HTML - CALL FUNCTION */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_function_task_html {
+	display:none;
+	margin:20px auto;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_function_task_html .include_file {
+	width:calc(100% + 50px);
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_function_task_html .func_name label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_function_task_html .include_file label {
+	width:110px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_function_task_html .include_file input[type=text] {
+	width:180px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_function_task_html .result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_function_task_html .task_property_exit {
+	display:none;
+}
+
+/* BROKER TASK HTML - CALL OBJECT METHOD */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html {
+	display:none;
+	margin:20px auto;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .method_obj_name, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .method_name, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .method_static {
+	margin-bottom:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .include_file {
+	width:calc(100% + 50px);
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .method_obj_name label, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .method_name label, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .method_static label, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .include_file label {
+	width:110px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .include_file input[type=text] {
+	width:180px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .call_object_method_task_html .task_property_exit {
+	display:none;
+}
+
+/* BROKER TASK HTML - CALL REST CONNECTOR */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .get_url_contents_task_html .result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .get_url_contents_task_html .task_property_exit,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .get_url_contents_task_html > .info {
+	display:none;
+}
+
+/* BROKER TASK HTML - CALL SOAP CONNECTOR */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html > .type, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html .data, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html .wsdl_url, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html .client_options, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html .client_headers, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html .remote_function_name, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html .remote_function_arguments, 
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html .result_type {
+	width:500px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html .result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html .task_property_exit,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .broker_action_body > .soap_connector_task_html > .info {
+	display:none;
+}
+
+/* CREATE FORM TASK HTML */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html {
+	margin:10px auto 0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .separate_input_from_result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .result,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .task_property_exit {
+	display:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .with_form {
+	margin-top:-25px !important;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_action .add_variable.inline {
+	margin-left:-22px !important;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers > .fields > .container {
+	background:white;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field {
+	background-color:transparent;
+	border:1px solid #CCC;
+	padding-top:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field label {
+	font-style:normal;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field > .remove_field,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field > .minimize_field,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field > .move,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field > .move_up,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field > .move_down {
+	display:block;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field .class input {
+	width:160px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field .input_src input {
+	width:555px;
+	padding-right:40px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field .input_src .add_field_automatically {
+	margin-left:-45px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .fields .field .input_src .search_page {
+	margin-left:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .form_containers .tree .tree_props .default_input_data {
+	padding:0;
+}
+
+/* LAYOUT UI EDITOR */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .layout-ui-editor.full-screen {
+	top:50px !important;
+	bottom:20px !important;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .layout-ui-editor > .tabs {
+	font-size:8pt;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .layout-ui-editor > .menu-settings select {
+	font-size:80%;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .ptl_settings > .ptl_external_vars {
+	width:330px;
+}
+
+/* DATABASE TASK WORK FLOW HTML */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body > header {
+	margin:5px auto;
+	text-align:center;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body > header > .dal_broker,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body > header > .db_driver,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body > header > .db_type {
+	margin:0 5px;
+	display:inline-block;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body.database_action_body_getinsertedid > header > .db_type,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body.database_action_body_getinsertedid > article {
+	display:none !important;
+}
+
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body > footer > .opts {
+	margin:10px auto;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body > footer > .opts .options_type {
+	float:none;
+	display:inline-block;
+	margin-bottom:0;
+}
+
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table {
+	text-align:center;
+	padding-top:10px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .table {
+	display:inline-block;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .table > select {
+	margin-left:10px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .attributes,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .conditions {
+	text-align:left;
+	padding:10px;
+	display:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .attributes > label,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .conditions > label {
+	float:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .attributes li,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .conditions li {
+	width:50%;
+	margin-top:5px;
+	display:inline-block;
+	opacity:.5;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .attributes li:after,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .conditions li:after {
+	content:" ";
+	height:1px;
+	display:block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .attributes li.attr_activated,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .conditions li.attr_activated {
+	opacity:1;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .attributes li label,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .conditions li label {
+	width:100px;
+	margin-left:5px;
+	margin-right:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .attributes li .attr_value:before,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .conditions li .attr_value:before {
+	content:" = ";
+}
+
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .conditions li .attr_name,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body.database_action_body_insert .database_action_table > .conditions,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body.database_action_body_delete .database_action_table > .attributes,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body.database_action_body_insert .database_action_table > .attributes li .attr_name,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body.database_action_body_update .database_action_table > .attributes li .attr_name,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body.database_action_body_select .database_action_table > .attributes li .attr_value,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body.database_action_body_count .database_action_table > .attributes {
+	display:none !important;
+}
+
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship {
+	width:690px;
+	margin:0 auto;
+	padding:0;
+	border:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query {
+	min-height:300px;
+	margin:0;
+	padding:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .ui-tabs {
+	border:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .taskflowchart {
+	width:100%;
+	height:275px !important;
+	margin:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .taskflowchart .workflow_menu {
+	width:100%;
+	display:block !important;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .taskflowchart .workflow_menu .toggle_ui {
+	display:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .taskflowchart .taskflowchartdiagram {
+	width:100%;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .taskflowchart .taskflowchartdiagram .choose_table_or_attribute {
+	border:1px solid #999;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .taskflowchart .taskflowchartdiagram .task.task_query .info span:not(.icon) {
+	margin-top:-4px;
+	display:inline-block;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .taskflowchart .taskflowchartdiagram .task.task_query .eps {
+	background:#fff;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .taskflowchart .taskflowchartdiagram .end_point {
+	opacity:0 !important;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .query_settings .advanced_query_settings {
+	margin-top:177px;
+	font-size:inherit;
+	text-align:right;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query .query_settings .query_settings_tab {
+	border-top:1px solid #ccc;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query_settings_tab > table {
+	border:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query_settings_tab .fields .field td:not(.icon_cell) {
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query_settings_tab .fields .field td input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query_settings_tab .fields .field td select {
+	border:0;
+	background:transparent;
+}
+
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship.query_procedure .query .query_tabs .query_table_tab,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship.query_procedure .query .database_action_table {
+	display:none;
+}
+
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query_insert_update_delete .query_table {
+	width:270px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .query_insert_update_delete .query_table input {
+	padding-right:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .sub_limit_start {
+	width:100%;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .limit_start .limit {
+	width:50%;
+	text-align:left;
+	box-sizing:border-box;
+	display:inline-block;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .limit_start .start {
+	width:49%;
+	text-align:right;
+	box-sizing:border-box;
+	display:inline-block;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .limit_start .limit label, 
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .limit_start .start label {
+	margin-left:5px;
+	display:inline-block;
+	float:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .limit_start .limit input, 
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .limit_start .start input {
+	width:200px;
+	padding-right:20px;
+	display:inline-block;
+	float:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .limit_start .limit .add_variable, 
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .limit_start .start .add_variable {
+	margin-top:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .add_variable {
+	margin-left:-20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .add_variable::before {
+	font-size:var(--icon-font-size) !important;
+	margin-left:1px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .search {
+	margin:0;
+	float:none;
+	display:inline-block;
+	vertical-align:middle;
+}
+
+/* MESSAGE PANEL */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body {
+	margin:5px auto;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body > .message,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body > .redirect_url {
+	margin-top:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body > .message:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body > .redirect_url:after {
+	content:" ";
+	height:1px;
+	display:block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body > .message label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body > .redirect_url label {
+	width:100px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body > .message input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body > .redirect_url input {
+	width:282px;
+	width:calc(100% - 133px);
+	padding-right:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body > .redirect_url .search {
+	margin:-3px 0 auto -18px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .message_action_body > .redirect_url .search::before {
+	font-size:16px;
+}
+
+/* REDIRECT PANEL */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .redirect_action_body {
+	margin:5px auto;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .redirect_action_body > .redirect_type,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .redirect_action_body > .redirect_url {
+	margin-top:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .redirect_action_body > .redirect_type:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .redirect_action_body > .redirect_url:after {
+	content:" ";
+	height:1px;
+	display:block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .redirect_action_body > .redirect_type label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .redirect_action_body > .redirect_url label {
+	width:100px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .redirect_action_body > .redirect_url input {
+	width:282px;
+	width:calc(100% - 133px);
+	padding-right:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .redirect_action_body > .redirect_url .search {
+	margin:-3px 0 auto -18px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .redirect_action_body > .redirect_url .search::before {
+	font-size:16px;
+}
+
+/* RECORD PANEL */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .records_action_body {
+	margin:5px auto;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .records_action_body > .records_variable_name,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .records_action_body > .index_variable_name {
+	margin-top:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .records_action_body > .records_variable_name:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .records_action_body > .index_variable_name:after {
+	content:" ";
+	height:1px;
+	display:block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .records_action_body > .records_variable_name label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .records_action_body > .index_variable_name label {
+	width:160px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .records_action_body > .records_variable_name input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .records_action_body > .index_variable_name input {
+	width:280px;
+	width:calc(100% - 200px);
+	padding-right:20px;
+}
+
+/* CODE PANEL */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .code_action_body textarea,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .code_action_body .ace_editor {
+	width:100%;
+	height:200px;
+}
+
+/* ARRAY PANEL */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .array_action_body.array_items .add_variable.inline {
+	margin-left:-22px !important;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .array_action_body.array_items > .items {
+	margin-left:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .array_action_body.array_items ul > li:not(.item) > .items {
+	margin-left:0;
+}
+
+/* VARIABLE AND STRING PANELS */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .string_action_body,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .variable_action_body,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .sanitize_variable_action_body,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .include_file_action_body,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body {
+	margin:5px auto;
+	text-align:center;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .string_action_body:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .variable_action_body:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .sanitize_variable_action_body:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .include_file_action_body:after,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body:after {
+	content:" ";
+	height:1px;
+	display:block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .string_action_body > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .string_action_body > div > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .string_action_body > div > select,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .string_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .variable_action_body > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .variable_action_body > div > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .variable_action_body > div > select,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .variable_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .sanitize_variable_action_body > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .sanitize_variable_action_body > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .sanitize_variable_action_body > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > div > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body > div > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body > div > select,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > div > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > div > select,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > div > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > div > select,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .include_file_action_body > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .include_file_action_body > div > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings div > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings div > select,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets span {
+	display:inline-block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .string_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .variable_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .sanitize_variable_action_body > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings div > span,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets span {
+	vertical-align:middle;
+}
+
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .string_action_body > div > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .variable_action_body > div > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .sanitize_variable_action_body > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > div.variable > input {
+	padding-right:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .string_action_body > div,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .variable_action_body > div,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > div {
+	margin:5px auto 0;
+	text-align:left;
+	width:300px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .string_action_body > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .variable_action_body > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > div > label {
+	width:60px;
+	text-align:left;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > .method > select {
+	width:calc(100% - 72px);
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > .variable > input {
+	width:calc(100% - 95px);
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > .offset {
+	display:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .validate_variable_action_body > .offset > input {
+	width:calc(100% - 80px);
+}
+
+/* LIST REPORT PANEL */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body > div:not(.info) {
+	width:370px;
+	margin:0 auto 5px auto;
+	text-align:left;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body > div.info {
+	text-align:center;
+	color:#999;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body > div > label {
+	width:120px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body > .doc_name > input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .list_report_action_body > .variable > input {
+	padding-right:20px;
+}
+
+/* CALL BLOCK PANEL */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > div {
+	text-align:left;
+	margin-top:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > .block > input {
+	width:100%;
+	width:calc(100% - 170px);
+	padding-right:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > .project > select {
+	width:100%;
+	width:calc(100% - 148px);
+	box-sizing:content-box;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > .block > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > .project > label {
+	width:120px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_block_action_body > .block > .search {
+	margin-top:-3px;
+}
+
+/* CALL VIEW PANEL */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > div {
+	text-align:left;
+	margin-top:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > .view > input {
+	width:100%;
+	width:calc(100% - 170px);
+	padding-right:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > .project > select {
+	width:100%;
+	width:calc(100% - 148px);
+	box-sizing:content-box;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > .view > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > .project > label {
+	width:120px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .call_view_action_body > .view > .search {
+	margin-top:-3px;
+}
+
+/* INCLUDE FILE PANEL */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .include_file_action_body > input.path {
+	width:100%;
+	width:calc(100% - 155px);
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .include_file_action_body > input.once {
+	margin:2px 0 0 10px;
+	vertical-align:text-bottom;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .include_file_action_body > label {
+	width:100px;
+	text-align:left;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .include_file_action_body > .search_page_url {
+	margin:-3px 0 auto -45px !important;
+}
+
+/* DRAW GRAPH PANEL */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body {
+	text-align:left;
+	border:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .info {
+	margin:0 20px 20px;
+	text-align:center;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .info a {
+	color:var(--link-color);
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > ul {
+	background:none;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-radius: 0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings div {
+	margin-top:5px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings input {
+	width:100%;
+	width:calc(100% - 203px);
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_width input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_height input,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .border_width input {
+	width:100px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings label {
+	width:160px;
+	text-align:left;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets > label {
+	margin-top:20px;
+	font-weight:700;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets > label .icon {
+	display:inline-block;
+	float:none;
+	clear:both;
+	vertical-align:middle;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets > ul > li {
+	margin-top:10px;
+	padding:10px;
+	border:1px solid #ccc;
+	border-radius:3px;
+	background:#f7f7f7;
+	position:relative;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets > ul > li:first-child > .icon.delete {
+	display:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets > ul > li > .icon.delete {
+	position:absolute;
+	top:5px;
+	right:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets .other_options {
+	margin-top:10px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets .other_options li {
+	margin:5px 0 0;
+	padding:0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets .other_options li input {
+	width:160px;
+	height:20px;
+	padding-right:20px;
+	box-sizing:border-box;
+	display:inline-block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets .other_options li input.option_value {
+	width:calc(50% - 15px);
+	height:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets .other_options li .add_variable {
+	margin-left:-23px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_settings .graph_data_sets .other_options li .icon.delete {
+	margin-right:0;
+}
+
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_js_code textarea,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .draw_graph_action_body > .draw_graph_js_code .ace_editor {
+	width:100%;
+	height:200px;
+}
+
+/* CHECK LOGGED USER PERMISSIONS PANELS */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .all_permissions_checked,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .logged_user_id {
+	margin:20px 0 0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .all_permissions_checked label,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .logged_user_id label {
+	display:inline-block;
+	float:none;
+	vertical-align:middle;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .all_permissions_checked input {
+	margin:0 5px 0 0;
+	display:inline-block;
+	float:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .logged_user_id input {
+	width:200px;
+	margin:0 0 0 5px;
+	padding-right:20px;
+	display:inline-block;
+	float:none;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .users_perms {
+	margin:20px 0 0;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .users_perms table {
+	margin:0 auto;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .users_perms table .user_type_id,
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .users_perms table .activity_id {
+	min-width:115px;
+	text-align:center;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .check_logged_user_permissions_action_body .users_perms table select {
+	min-width:calc(100% - 6px);
+	margin:3px;
+}
+
+/* LOOP PANELS */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body {
+	margin:-.5em;
+	padding:.5em;
+	background:#f7f7f7;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body .loop_action_body {
+	background:#eee;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body .loop_action_body .loop_action_body {
+	background:#f7f7f7;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body .loop_action_body .loop_action_body .loop_action_body {
+	background:#eee;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body .loop_action_body .loop_action_body .loop_action_body .loop_action_body {
+	background:#f7f7f7;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body:after {
+	content:" ";
+	height:1px;
+	display:block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > header {
+	margin-bottom:30px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > header > a {
+	margin:0 10px 10px 0;
+	text-align:right;
+	display:block;
+	cursor:pointer;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > header > a:hover {
+	color:var(--icon-hover-color);
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > header > div {
+	margin-bottom:5px;
+	text-align:center;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > header > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > header > div > input {
+	display:inline-block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > header > div > label {
+	width:170px;
+	text-align:left;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > header > div > input {
+	width:100%;
+	width:calc(100% - 210px);
+	padding-right:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > .sla_sub_groups > .sla_group_item > .sla_group_body {
+	background:#fff;
+}
+
+/* GROUP PANELS */
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body {
+	margin:-.5em;
+	padding:.5em;
+	background:#f7f7f7;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body .group_action_body {
+	background:#eee;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body .group_action_body .group_action_body {
+	background:#f7f7f7;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body .group_action_body .group_action_body .group_action_body {
+	background:#eee;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body .group_action_body .group_action_body .group_action_body .group_action_body {
+	background:#f7f7f7;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body:after {
+	content:" ";
+	height:1px;
+	display:block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header {
+	margin-bottom:30px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header > a {
+	margin:0 10px 10px 0;
+	text-align:right;
+	display:block;
+	cursor:pointer;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header > a:hover {
+	color:var(--icon-hover-color);
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header > span {
+	float:left;
+	color:#666;
+ }
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header > div {
+	margin-bottom:5px;
+	text-align:center;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header > div > label,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header > div > input {
+	display:inline-block;
+	float:none;
+	clear:both;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header > div > label {
+	width:100px;
+	text-align:left;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header > div > input {
+	width:100%;
+	width:calc(100% - 140px);
+	padding-right:20px;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > .sla_sub_groups > .sla_group_item > .sla_group_body {
+	background:#fff;
+}
+
+/* SLA WORKFLOW */
+.sla #ui {
+	position:relative;
+}
+.sla #ui.tasks_flow_full_screen {
+    position: fixed;
+    top:0px;
+}
+.sla #ui > .taskflowchart {
+	min-height:400px;
+	max-height:calc(100vh - 60px);
+	overflow:visible;
+}
+.sla #ui.tasks_flow_full_screen > .taskflowchart {
+	height:100% !important;
+}
+.sla #ui > .taskflowchart > .workflow_menu {
+	position:absolute;
+	top:-30px;
+	right:101px;
+	z-index:4;
+}
+.sla #ui > .taskflowchart > .workflow_menu:before {
+	font-size:var(--icon-font-size);
+	color:#666;
+}
+.sla #ui > .taskflowchart > .workflow_menu > ul {
+	padding-top:0;
+}
+.sla #ui > .taskflowchart > .tasks_menu {
+	width:130px;
+}
+.sla #ui > .taskflowchart > .tasks_menu_hide {
+	left:130px;
+}
+.sla #ui > .taskflowchart.reverse > .tasks_menu_hide {
+	left:auto;
+	right:130px;
+}
+.sla #ui > .taskflowchart > .tasks_flow {
+	left:135px;
+}
+.sla #ui > .taskflowchart.reverse > .tasks_flow {
+	left:0;
+	right:135px;
+}
+.sla #ui > .taskflowchart > .tasks_menu > ul > li.tasks_group_disabled {
+	display:none;
+}
+.sla #ui > .taskflowchart > .tasks_menu .tasks_group_label {
+	padding-top:0;
+	border-top:0;
+}
+.sla #ui > .taskflowchart > .tasks_menu .tasks_group_label:hover:after {
+	display:none;
+}
+.sla #ui > .taskflowchart > .tasks_menu .tasks_group_sla_groups {
+	margin-top:0;
+}
+.sla #ui > .taskflowchart > .tasks_menu .tasks_group_sla_groups .tasks_group_label {
+	display:none;
+}
+.sla .workflow_message {
+	position:absolute;
+}
+.sla .workflow_message .error {
+	height:auto;
+	font-size:100%;
+}
+
+/* SLA WORKFLOW - CONTEXT MENUS */
+.connection_context_menu .delete { /* remove border top from connection contextmenu  bc the delete option is the only option available */
+	margin-top:0 !important;
+	border-top:0;
+}
+.connection_context_menu .delete::before {
+	display:none !important;
+}
+
+/* SLA WORKFLOW - TASKS */
+.sla .taskflowchart.with_top_bar_menu .tasks_menu.task_properties_shown, 
+  .sla .taskflowchart.with_top_bar_menu .tasks_menu_hide.task_properties_shown, 
+  .sla .taskflowchart.with_top_bar_menu .tasks_flow.task_properties_shown, 
+  .sla .taskflowchart.with_top_bar_menu .tasks_menu.connection_properties_shown, 
+  .sla .taskflowchart.with_top_bar_menu .tasks_menu_hide.connection_properties_shown, 
+  .sla .taskflowchart.with_top_bar_menu .tasks_flow.connection_properties_shown {
+	bottom:0 !important;
+}
+.sla #ui .taskflowchart .selected_task_properties > .properties_task_id,
+  .sla #ui .taskflowchart .selected_connection_properties > .properties_connection_id {
+	display:inline-block !important;
+}
+.sla .taskflowchart:not(.fixed_properties) .selected_task_properties > .maximize_minimize_icon,
+  .sla .taskflowchart:not(.fixed_properties) .selected_connection_properties > .maximize_minimize_icon {
+	display:none;
+}
+.sla .taskflowchart:not(.fixed_properties) .selected_task_properties > .generic_buttons,
+  .sla .taskflowchart:not(.fixed_properties) .selected_connection_properties > .generic_buttons {
+	right:30px !important;
+}
+
+.sla .taskflowchart.fixed_properties .selected_task_properties, 
+  .sla .taskflowchart.fixed_properties .selected_connection_properties {
+	z-index:999999 !important;
+}
+/*.sla .taskflowchart.fixed_properties .selected_task_properties > .resize_properties_panel .button, 
+  .sla .taskflowchart.fixed_properties .selected_connection_properties .resize_properties_panel .button {
+	margin:0;
+}*/
+.sla .taskflowchart.fixed_properties .selected_task_properties > .toggle_properties_side_icon, 
+  .sla .taskflowchart.fixed_properties .selected_connection_properties .toggle_properties_side_icon {
+	display:none;
+}
+.sla .taskflowchart.fixed_properties .selected_task_properties > .content, 
+  .sla .taskflowchart.fixed_properties .selected_connection_properties .content {
+	padding:10px 15px 15px;
+}
+.sla .taskflowchart.fixed_properties .selected_task_properties > .generic_buttons, 
+  .sla .taskflowchart.fixed_properties .selected_connection_properties .generic_buttons {
+	right:75px;
+}
+.sla .taskflowchart.fixed_properties .selected_task_properties .sla_group_item {
+	margin-bottom:0;
+}
+.sla .taskflowchart.fixed_properties .selected_task_properties .sla_group_item:after {
+	display:none;
+}
+.sla .taskflowchart .selected_task_properties .sla_group_item > .sla_group_body.selected_task_properties {
+	position:initial !important;
+	max-height:none;
+	background:#fff;
+}
+.sla .taskflowchart.fixed_properties .selected_task_properties .sla_group_item .selected_task_properties {
+	height:auto !important;
+	position:relative !important;
+}
+.sla .taskflowchart.fixed_properties .selected_task_properties .sla_group_item .selected_task_properties::before,
+  .sla .taskflowchart.fixed_properties .selected_task_properties .sla_group_item .selected_connection_properties::before {
+	display:none;
+}
+
+.sla .taskflowchart .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > header,
+  .sla .taskflowchart .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header {
+	margin-bottom:0;
+}
+.sla .taskflowchart .sla_group_item > .sla_group_body.selected_task_properties .loop_action_body > header > a,
+  .sla .taskflowchart .sla_group_item > .sla_group_body.selected_task_properties .group_action_body > header > a {
+	display:none;
+}
+.sla .taskflowchart .sla_group_item > .sla_group_body.selected_task_properties .create_form_task_html .layout-ui-editor:not(.full-screen) > .tabs {
+	background:var(--main-settings-bg);
+}
+

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Table Body</label>
+	<tag>table-body</tag>
+	<files>
+		<js>../createWidgetTableHandler.js</js>
+		<css>../createWidgetTableHandler.css</css>
+	</files>
+	<settings>
+		<menu_settings_class>table-sections-menu-settings</menu_settings_class>
+		<template_class>droppable</template_class>
+		<create_widget_class>TableBodyWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="tbody">
+			<label>Rows: <i class="zmdi zmdi-hc-lg zmdi-plus add"></i></label>
+			<div class="no-rows">There are no rows</div>
+			<table>
+				<tbody></tbody>
+			</table>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-table-body:before,
+		  body > .menu-widget.menu-widget-table-body.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function TableBodyWidget(ui_creator, menu_widget) {
+			var me = this;
+			var TableHandler = new createWidgetTableHandler(ui_creator, menu_widget); //init the other part of the container
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-body'].parseHtml",
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-body'].onCloneMenuWidget",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-body'].onCreateTemplateWidget",
+					"data-on-open-widget-header-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-body'].onOpenWidgetHeader",
+					"data-on-close-widget-header-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-body'].onCloseWidgetHeader",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-body'].onOpenWidgetSettings",
+					"data-on-close-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-body'].onCloseWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-body'].saveSettingsField",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeName.toLowerCase() == "tbody") {
+					html_element = $(html_element);
+					
+					return {
+						droppable: html_element,
+					};
+				}
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) {
+					var elm = document.createElement('tbody');
+					return ui_creator.getNewTemplateWidgetBasedInHtmlElement(widget, elm, null);
+				}
+				
+				return ui_creator.onCloneMenuWidget(widget, html_element);
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element) {
+					var parent = widget.parent();
+					var pnn = parent[0].nodeName.toLowerCase();
+					
+					if (pnn != "table") {
+						parent = widget.parent().closest('table');
+						
+						if (parent[0])
+							parent.append(widget);
+						else {
+							widget.remove();
+							ui_creator.showError("This item can only be dropped to Tables!");
+							return false;
+						}
+					}
+					
+					var prev = parent.children("thead, tbody").not(widget).last();
+					if (prev[0])
+						widget.insertAfter(prev);
+					else  {
+						var next = parent.children("tfoot").first();
+						if (next[0])
+							widget.insertBefore(next);
+					}
+				}
+			};
+			
+			me.onOpenWidgetHeader = function(widget, widget_header) {
+				widget_header.find(" > .options > .add-tbody-child").remove();
+				var add = $('<i class="zmdi zmdi-plus-circle option add-tbody-child" title="Add Row"></i>');
+				
+				add.click(function(event) {
+					addChild(widget);
+				});
+				
+				add.insertBefore( widget_header.find(" > .options > .close") );
+			};
+			
+			me.onCloseWidgetHeader = function(widget, widget_header) {
+				widget_header.find(" > .options > .add-tbody-child").remove();
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				menu_settings.find(".settings-actions  > ul > li > button.add-tbody-child").remove();
+				
+				var add = $('<button class="btn add-tbody-child">Add Row <i class="zmdi zmdi-plus-circle"></i></button>');
+				
+				add.click(function(event) {
+					addChild(widget);
+				});
+				
+				menu_settings.find(".settings-actions > ul > li").append(add);
+				
+				//load rows settings
+				var ul = menu_settings.find(".settings-properties > ul");
+				TableHandler.prepareTableSectionSettings(ul);
+				TableHandler.loadTableSectionSettings(ul, widget);
+			};
+			
+			me.onCloseWidgetSettings = function(widget, menu_settings) {
+				menu_settings.find(".settings-actions  > ul > li > button.add-tbody-child").remove();
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				return TableHandler.saveSettingsSectionField(field, widget, status);
+			};
+			
+			function addChild(widget) {
+				ui_creator.createTemplateWidgetFromMenuWidgetTag("table-row", widget, null);
+			}
+		}
+	]]></menu_js>
+</widget>

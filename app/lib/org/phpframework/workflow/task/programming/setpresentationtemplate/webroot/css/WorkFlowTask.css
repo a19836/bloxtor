@@ -1,0 +1,56 @@
+.taskflowchartmenu .task.task_setpresentationtemplate {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_setpresentationtemplate .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_setpresentationtemplate .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.set_presentation_template_task_html {
+	width:430px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_presentation_template_task_html {
+	width:100%;
+}
+
+.set_presentation_template_task_html .value {
+	margin-bottom:5px;
+}
+.set_presentation_template_task_html .value,
+   .set_presentation_template_task_html .type {
+	width:430px;
+	min-height:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_presentation_template_task_html .value,
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_presentation_template_task_html .type {
+	width:100%;
+}
+.set_presentation_template_task_html .value label,
+   .set_presentation_template_task_html .type label,
+   .set_presentation_template_task_html .broker_method_obj label {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_presentation_template_task_html .value label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_presentation_template_task_html .type label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_presentation_template_task_html .broker_method_obj label {
+	width:60px;
+}
+.set_presentation_template_task_html .value input {
+	width:230px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_presentation_template_task_html .value input {
+	width:calc(100% - 74px);
+}
+.set_presentation_template_task_html .broker_method_obj input {
+	margin-left:105px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_presentation_template_task_html .broker_method_obj input {
+	width:calc(100% - 90px);
+	margin-left:62px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_presentation_template_task_html .broker_method_obj select {
+	width:calc(100% - 65px);
+}

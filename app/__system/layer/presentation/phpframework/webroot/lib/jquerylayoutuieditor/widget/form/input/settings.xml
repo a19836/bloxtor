@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Text Box</label>
+	<tag>input</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_node_name>input</template_node_name>
+		<create_widget_class>InputWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property type">
+			<label class="col-md-4 col-sm-5 col-form-label">Type: </label>
+			<select class="col-md-8 col-sm-7 form-control" name="type">
+				<option value=""></option>
+				<option value="text">Text</option>
+				<option value="password">Password</option>
+				<option value="date">Date</option>
+				<option value="datetime-local">Datetime Local</option>
+				<option value="month">Month</option>
+				<option value="week">Week</option>
+				<option value="time">Time</option>
+				<option value="number">Numeric</option>
+				<option value="tel">Tel</option>
+				<option value="email">Email</option>
+				<option value="search">Search</option>
+				<option value="url">Url</option>
+				<option value="file">File</option>
+				<option value="hidden">Hidden</option>
+				<option value="color">Color</option>
+				<option value="range">Range</option>
+				<option disabled></option>
+				<option value="checkbox">Checkbox</option>
+				<option value="radio">Radio</option>
+				<option value="submit">Submit</option>
+				<option value="image">Image</option>
+				<option value="reset">Reset</option>
+			</select>
+		</div>
+		<div class="form-group row settings-property name">
+			<label class="col-md-4 col-sm-5 col-form-label">Name: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="name" />
+		</div>
+		<div class="form-group row settings-property value">
+			<label class="col-md-4 col-sm-5 col-form-label">Value: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="value" />
+		</div>
+		<div class="form-group row settings-property place-holder">
+			<label class="col-md-4 col-sm-5 col-form-label">Place Holder: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="place-holder" />
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-input:before,
+		  body > .menu-widget.menu-widget-input.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-input .options .option.toggle {
+			display:none;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.template-widget.template-widget-input.is-input-hidden {
+			display:none;
+		}
+		body > .droppable.borders .template-widget.template-widget-input.is-input-hidden {
+			display:inline-block;
+			opacity:.4;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function InputWidget(ui_creator, menu_widget) {
+			var me = this;
+			var available_types = ["text", "password", "date", "datetime-local", "month", "week", "time", "number", "tel", "email", "search", "url", "file", "hidden", "color", "range"];
+			
+			me.ignore_attributes = ["placeHolder"];
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.input.parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.input.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.input.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.input.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.input.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.input.parseSettings",
+					"data-on-after-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.input.reparseSettings",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				return html_element && html_element.nodeName.toLowerCase() == "input" && available_types.indexOf(("" + html_element.type).toLowerCase()) != -1;
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				var type = ("" + widget[0].type).toLowerCase();
+				
+				if (type == "hidden") {
+					widget[0].type = "text"; //change it to text otherwise the input will not show in the UI
+					widget.addClass("is-input-hidden");
+				}
+				
+				widget_settings["type"] = type;
+				widget_settings["name"] = widget.attr("name");
+				widget_settings["value"] = widget.val();
+				widget_settings["place-holder"] = widget.attr("placeHolder");
+			};
+			
+			me.reparseSettings = function(widget, widget_settings) {
+				if (widget_settings && widget_settings["class"])
+					widget_settings["class"] = widget_settings["class"].replace(/is-input-hidden/g, "");
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				var is_hidden = widget.hasClass("is-input-hidden");
+				
+				if (is_hidden)  {
+					html_element.type = "hidden";
+					widget.removeClass("is-input-hidden");
+				}
+				
+				var html = ui_creator.getCleanedHtmlElement(html_element);
+				
+				if (is_hidden)  {
+					html_element.type = "text";
+					widget.addClass("is-input-hidden");
+				}
+				
+				return html;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element)
+					widget.attr("data-allow-null", "1");
+				
+				widget.keydown(function() {
+					ui_creator.getWidgetHeader().hide();
+					ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+				})
+				.on("focus", function() {
+					ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+				});
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				ui_creator.addMenuSettingsContextMenu( menu_settings.children(".settings-properties").find("input, select") );
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("type")) {
+						if (field_value == "hidden") {
+							widget[0].type = "text";
+							widget.addClass("is-input-hidden");
+						}
+						else {
+							widget[0].type = field_value; //change type even if type is empty
+							widget.removeClass("is-input-hidden");
+							
+							//if submit input inside of a form, disable previous click events
+							if (widget.is("input[type=submit]") && widget.parent().closest("form").length > 0) {
+								widget.off("click");
+								ui_creator.setTemplateWidgetOnClickEvent(widget);
+							}
+						}
+					}
+					else if (sprop.hasClass("name")) {
+						if (field_value != "")
+							widget.attr("name", field_value);
+						else
+							widget.removeAttr("name");
+					}
+					else if (sprop.hasClass("value")) {
+						if (field_value != "")
+							widget.attr("value", field_value).val(field_value);
+						else
+							widget.attr("value", "").val("");
+					}
+					else if (sprop.hasClass("place-holder")) {
+						if (field_value != "")
+							widget.attr("placeHolder", field_value);
+						else
+							widget.removeAttr("placeHolder");
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

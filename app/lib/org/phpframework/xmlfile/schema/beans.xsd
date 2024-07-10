@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="beans" type="beansType" />
+	
+	<xs:complexType name="beansType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="var" type="elemNameType" />
+	  		
+	  		<xs:element name="bean">
+	  			<xs:complexType>
+	  				<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="constructor_arg" type="elemIndexType" />
+						<xs:element name="property" type="elemNameType" />
+						<xs:element name="function" type="functionType" />
+						
+						<xs:element name="name" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="path" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="path_prefix" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="extension" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="extend" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="namespace" type="valueType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+	  				
+	  				<xs:attribute name="name" type="xs:string" />
+	  				<xs:attribute name="path" type="xs:string" />
+	  				<xs:attribute name="path_prefix" type="xs:string" />
+	  				<xs:attribute name="extension" type="xs:string" />
+	  				<xs:attribute name="extend" type="xs:string" />
+	  				<xs:attribute name="namespace" type="xs:string" />
+	  				<xs:attribute name="bean_group" type="xs:string" />
+	  			</xs:complexType>
+	  		</xs:element>
+	  		
+	  		<xs:element name="services" type="servicesType" />
+	  		
+	  		<xs:element name="function" type="functionType" />
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name="elemNameType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="reference" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="value" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="name" type="valueType" minOccurs="0" maxOccurs="1" />
+			
+			<xs:group ref="listGroup" />
+		</xs:choice>
+		
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="value" type="xs:string" />
+		<xs:attribute name="reference" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="elemIndexType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="reference" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="value" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="index" type="valueIntegerType" minOccurs="0" maxOccurs="1" />
+			
+			<xs:group ref="listGroup" />
+		</xs:choice>
+		
+		<xs:attribute name="value" type="xs:string" />
+		<xs:attribute name="index" type="xs:integer" />
+		<xs:attribute name="reference" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="functionType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="parameter" type="elemIndexType" />
+			
+			<xs:element name="name" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="namespace" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="reference" type="valueType" minOccurs="0" maxOccurs="1" />
+		</xs:choice>
+		
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="namespace" type="xs:string" />
+		<xs:attribute name="reference" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="servicesType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="service">
+	  			<xs:complexType mixed="true">
+	  				<xs:choice minOccurs="0" maxOccurs="unbounded">
+	  					<xs:element name="to_delete">
+	  						<xs:complexType>
+	  							<xs:choice minOccurs="0" maxOccurs="unbounded">
+		  							<xs:element name="service">
+							  			<xs:complexType mixed="true">
+							  				<xs:choice minOccurs="0" maxOccurs="unbounded">
+							  					<xs:element name="type" type="valueType" minOccurs="0" maxOccurs="1" />
+							  					<xs:element name="module_id" type="valueType" minOccurs="0" maxOccurs="1" />
+							  					<xs:element name="key" type="valueType" minOccurs="0" maxOccurs="1" />
+							  					<xs:element name="script" type="valueType" minOccurs="0" maxOccurs="1" />
+							  				</xs:choice>
+							  				
+							  				<xs:attribute name="type" type="xs:string" />
+							  				<xs:attribute name="module_id" type="xs:string" />
+							  				<xs:attribute name="key" type="xs:string" />
+							  				<xs:attribute name="script" type="xs:string" />
+							  			</xs:complexType>
+							  		</xs:element>
+						  		</xs:choice>
+	  						</xs:complexType>
+	  					</xs:element>
+	  					
+	  					<xs:element name="id" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="key" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="validation_script" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				
+		  				<!-- DAL LAYER -->
+		  				<xs:element name="file" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="query" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="obj" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				
+		  				<!-- BUSINESS LOGIC LAYER -->
+		  				<xs:element name="constructor" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="function" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="namespace" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				
+		  				<!-- CACHE LAYER -->
+		  				<xs:element name="cache_handler" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="to_cache" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="module_id" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="cache_type" type="valueCacheType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="ttl" type="valueIntegerType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="id_type" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				<xs:element name="headers" type="valueType" minOccurs="0" maxOccurs="1" />
+	  				</xs:choice>
+	  				
+	  				<xs:attribute name="id" type="xs:string" />
+	  				<xs:attribute name="key" type="xs:string" />
+	  				<xs:attribute name="validation_script" type="xs:string" />
+	  				
+	  				<!-- DAL LAYER -->
+	  				<xs:attribute name="file" type="xs:string" />
+	  				<xs:attribute name="query" type="xs:string" />
+	  				<xs:attribute name="obj" type="xs:string" />
+	  				
+	  				<!-- BUSINESS LOGIC LAYER -->
+	  				<xs:attribute name="constructor" type="xs:string" />
+	  				<xs:attribute name="function" type="xs:string" />
+	  				<xs:attribute name="namespace" type="xs:string" />
+	  				
+	  				<!-- CACHE LAYER -->
+	  				<xs:attribute name="cache_handler" type="xs:string" />
+	  				<xs:attribute name="to_cache" type="xs:string" />
+	  				<xs:attribute name="module_id" type="xs:string" />
+	  				<xs:attribute name="cache_type" type="cacheType" />
+	  				<xs:attribute name="ttl" type="xs:integer" />
+	  				<xs:attribute name="id_type" type="xs:string" />
+	  				<xs:attribute name="headers" type="xs:string" />
+	  			</xs:complexType>
+	  		</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name="valueType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="value" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="valueIntegerType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="xs:integer">
+				<xs:attribute name="value" type="xs:integer" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="valueCacheType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="cacheType">
+				<xs:attribute name="value" type="cacheType" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="cacheType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value=""/>
+			<xs:enumeration value="php"/>
+			<xs:enumeration value="text"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:group name="listGroup">
+		<xs:choice>
+			<xs:element name="list" >
+				<xs:complexType>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="item" type="elemNameType" />
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:group>
+</xs:schema>

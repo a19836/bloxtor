@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Template Region Param</label>
+	<tag>region-param</tag>
+	<settings>
+		<create_widget_class>TemplateRegionParamWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[
+		<pre class="php-content"></pre>
+	]]></template_widget>
+	<properties></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-region-param:before,
+		  body > .menu-widget.menu-widget-region-param.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#region_param.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets > .widget-header.widget-header-region-param .options .props,
+		   .layout-ui-editor > .template-widgets > .widget-header.widget-header-region-param .options .toggle {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-region-param .settings-id,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-param .settings-classes,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-param .settings-properties,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-param .settings-widget,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-param .settings-general,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-param .settings-dimension,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-param .settings-typography,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-param .settings-decorations,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-param .settings-events,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-param .settings-others,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-param .settings-extra,
+			.layout-ui-editor > .menu-settings.menu-settings-region-param li.settings-tabs > ul > li.settings-tab-properties,
+			.layout-ui-editor > .menu-settings.menu-settings-region-param li.settings-tabs > ul > li.settings-tab-widget,
+			.layout-ui-editor > .menu-settings.menu-settings-region-param li.settings-tabs > ul > li.settings-tab-style,
+			.layout-ui-editor > .menu-settings.menu-settings-region-param li.settings-tabs > ul > li.settings-tab-events,
+			.layout-ui-editor > .menu-settings.menu-settings-region-param li.settings-tabs > ul > li.settings-tab-extra {
+			display:none;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-region-param li.settings-tabs {
+			margin-top:35px;
+		}
+		
+		.layout-ui-editor > .menu-layers .group.group-region-param > ul {
+			display:none !important;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.template-widget.template-widget-region-param {
+			margin:5px !important; /* !important is bc of the css when .borders is active */
+			padding:5px !important; /* !important is bc of the css when .borders is active */
+			border:1px solid #000 !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			border-radius:5px;
+			background:#f7f7f7;
+			color:#000;
+			vertical-align:middle;
+			display:block;
+			word-break:break-all;
+		}
+		body > .droppable.borders .template-widget.template-widget-region-param:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+		
+		.template-widget.template-widget-region-param > pre {
+			margin:0 !important; /* !important is bc of the css when .borders is active */
+			padding:0 !important; /* !important is bc of the css when .borders is active */
+			border:0 !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			display:block;
+			color:inherit;
+			/*font-size:inherit;*/
+			font-size:12px;
+			font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+			overflow:auto;
+		}
+		.template-widget.template-widget-region-param > pre::-webkit-scrollbar {
+			height:7px;
+		}
+		body > .droppable.borders .template-widget.template-widget-region-param > pre:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function TemplateRegionParamWidget(ui_creator, menu_widget) {
+			var me = this;
+			var PHPWidgetObj = new PHPWidget(ui_creator, menu_widget);
+			
+			me.init = function() {
+				PHPWidgetObj.init();
+				
+				menu_widget.removeAttr("data-on-parse-template-widget-html-func");
+				
+				menu_widget.attr({
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs['region-param'].onCreateTemplateWidget",
+					"data-on-drag-stop-func": ui_creator.obj_var_name + ".menu_widgets_objs['region-param'].onDropMenuWidget",
+				});
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				var value = prompt("What is the new param name?");
+				value = value ? value : "...";
+				
+				if (!html_element)
+					html_element = document.createComment('? echo $EVC->getCMSLayer()->getCMSTemplateLayer()->getParam("' + value + '"); ?');
+				
+				PHPWidgetObj.onCreateTemplateWidget(widget, html_element);
+			};
+			
+			//This func will be used when we drop region-param widgets.
+			me.onDropMenuWidget = function(menu_widget, widget, event, ui_obj) {
+				var template_region = widget.parent().closest(".template_region");
+				
+				if (template_region[0]) {
+					widget.hide();
+					
+					ui_creator.showError("You cannot drop this widget inside of a template region.");
+					
+					setTimeout(function() {
+						ui_creator.deleteTemplateWidget(widget);
+					}, 500);
+				}
+			};
+		}
+	]]></menu_js>
+</widget>

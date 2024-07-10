@@ -1,0 +1,127 @@
+/* TOP BAR */
+.top_bar {
+	margin-bottom:10px;
+}
+.top_bar header .title {
+	max-width:calc(100% - 220px);
+}
+.top_bar header > ul {
+	right:182px;
+}
+
+/* UTIL OBJ */
+.global_vars_obj {
+	width:100%;
+	overflow:hidden;
+	margin:0 auto;
+	padding:0;
+	border:0;
+}
+body:not(.dark_theme) .global_vars_obj > .tabs.tabs_icons li#form_global_vars_tab.ui-tabs-active a {
+	background:var(--main-template-bg);
+}
+
+.global_vars_obj #code .code_menu.top_bar_menu,
+  .global_vars_obj #ui .taskflowchart .workflow_menu.top_bar_menu {
+	right:164px;
+}
+body:not(.dark_theme) .global_vars_obj #form_global_vars {
+	background:var(--main-template-bg) !important;
+}
+.global_vars_obj #form_global_vars .code_menu.top_bar_menu {
+	right:156px;
+}
+.global_vars_obj #form_global_vars .code_menu.top_bar_menu {
+	text-align:left;
+}
+
+.global_vars_obj #code textarea, 
+  .global_vars_obj #code .ace_editor,
+  .global_vars_obj #ui .taskflowchart,
+  .global_vars_obj #form_global_vars {
+	height:calc(100vh - 50px) !important;
+	box-sizing:border-box; /* bc of the ace_editor */
+}
+
+.global_vars_obj > #ui .taskflowchart .tasks_flow.drop_hover { /* .drop_hover is set in admin_menu.js */
+	box-shadow:inset 0 0 30px 0px rgba(0, 0, 0, .1);
+}
+
+/* To print the workflow */
+@media print {
+	.global_vars_obj {
+		overflow:visible !important;
+		border:0 !important;
+	}
+}
+
+.global_vars_obj > ul.tabs > li#form_global_vars_tab.ui-tabs-active {
+	background:#fff;
+}
+
+#form_global_vars {
+	min-height:230px; 
+	text-align:center; 
+	padding-top:20px; 
+	overflow:auto;
+	box-sizing:border-box;
+	background:#fff;
+}
+
+#form_global_vars .vars {
+	text-align:left; 
+	margin:0px auto;
+}
+#form_global_vars .vars .buttons .icon {
+	margin:auto;
+}
+#form_global_vars .vars .buttons .icon.add {
+	margin-left:2px;
+}
+#form_global_vars .vars .buttons .icon.delete {
+	margin-left:5px;
+}
+#form_global_vars .vars th {
+	text-align:center;
+}
+#form_global_vars .vars th.buttons {
+	min-width:40px;
+	text-align:left;
+}
+#form_global_vars .vars th.buttons .add {
+	font-size:14px;
+}
+#form_global_vars .vars td {
+	padding-bottom:5px;
+}
+#form_global_vars .vars input {
+	width:205px;
+}
+#form_global_vars .vars select {
+	width:210px;
+}
+#form_global_vars .vars .var_desc {
+	min-width:200px;
+	padding-left:10px;
+}
+
+#form_global_vars .vars label {
+	width:208px;
+	display:block;
+	font-weight:normal;
+	margin-right:5px;
+}
+#form_global_vars .vars td .var_name {
+	margin-right:5px;
+}
+#form_global_vars .vars td .search {
+	vertical-align:middle;
+}
+
+/* choose_available_template_popup */
+.choose_available_template_popup li.back_to_type,
+  .choose_available_template_popup > .content > .selected_template,
+  .choose_available_template_popup > .content > .tabs > li:nth-child(2) {
+	display:none;
+}
+

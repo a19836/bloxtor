@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Video</label>
+	<tag>video</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_node_name>video</template_node_name>
+		<create_widget_class>VideoWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property src">
+			<label class="col-md-4 col-sm-5 col-form-label">Source: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="src" />
+		</div>
+		<div class="form-group row settings-property controls">
+			<label class="col-md-4 col-sm-5 col-form-label">Controls: </label>
+			<input type="checkbox" name="controls" value="1" />
+		</div>
+		<div class="form-group row settings-property autoplay">
+			<label class="col-md-4 col-sm-5 col-form-label">Autoplay: </label>
+			<input type="checkbox" name="autoplay" value="1" />
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-video:before,
+		  body > .menu-widget.menu-widget-video.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-video {
+			border-radius:0 5px 5px 0;
+		}
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-video .options .option.toggle {
+			display:none;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-video > .settings-properties .src.with-search-icon input {
+			padding-right:20px;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-video > .settings-properties .src .search {
+			display:inline-block;
+			float:none;
+			clear:both;
+			position:absolute;
+			right:10px;
+			margin:8px 0 0;
+			background:none;
+			cursor:pointer;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		/* bc of the resize, otherwise will be very dificult to resize this element. */
+		.template-widget.template-widget-video.widget-active {
+			border:10px solid #f7f7f7 !important;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function VideoWidget(ui_creator, menu_widget) {
+			var me = this;
+			var default_src = ui_creator.getLayoutUIEditorFolderPath() + "widget/generic/video/video.webm";
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.video.parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.video.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.video.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.video.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.video.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.video.parseSettings",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				return html_element && html_element.nodeName.toLowerCase() == "video";
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var html = ui_creator.getCleanedHtmlElement(html_element);
+				var html_element_tag = MyHtmlBeautify.getTagHtml(html, 0, "");
+				
+				html = html.replace(html_element_tag[0], ""); //remove the tag, so it can be replaced by the right tag.
+				
+				var clone = ui_creator.cloneHtmlElementBeforeCleanIt(html_element);
+				clone[0].innerHTML = '';
+				
+				//parse src to convert url to vars: $project_url_prefix or $project_common_url_prefix
+				var src = clone.attr("src");
+				
+				if (src && typeof ui_creator.options.on_convert_project_url_real_values_to_php_vars_func == "function") {
+					src = ui_creator.options.on_convert_project_url_real_values_to_php_vars_func(src, html_element);
+					clone.attr("src", src);
+				}
+				
+				var clone_html = ui_creator.getCleanedHtmlElement(clone[0]);
+				var clone_tag = MyHtmlBeautify.getTagHtml(clone_html, 0, "");
+				html = clone_tag[0] + html;
+				
+				clone.remove();
+				
+				return html;
+				
+				/*DEPRECATED: bc if the auto_save is running and don't want it to mess it with my layout editor when I'm editing at the same time, otherwise it can give a bad experience to the user.
+				var widget = $(html_element);
+				
+				//parse src to convert url to vars: $project_url_prefix or $project_common_url_prefix
+				var src = widget.attr("src");
+				
+				if (src && typeof ui_creator.options.on_convert_project_url_real_values_to_php_vars_func == "function") {
+					var new_src = ui_creator.options.on_convert_project_url_real_values_to_php_vars_func(src, html_element);
+					widget.attr("src", new_src);
+				}
+				
+				var html = ui_creator.getCleanedHtmlElement(widget[0]);
+				
+				if (src)
+					widget.attr("src", src);
+				
+				return html;*/
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				if (typeof ui_creator.options.on_choose_image_url_func == "function") {
+					var icon = $('<span class="zmdi zmdi-search-in-file search"></span>');
+					icon.on("click", function() {
+						ui_creator.options.on_choose_image_url_func(this);
+					});
+					menu_settings.find(" > .settings-properties .settings-property.src").addClass("with-search-icon").append(icon);
+				}
+				
+				ui_creator.addMenuSettingsContextMenu( menu_settings.find(" > .settings-properties input") );
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element) 
+					widget.attr("src", default_src).attr("allowfullscreen", "allowfullscreen").attr("controls", "controls");
+				else {
+					var src = widget.attr("src");
+					
+					//parse src in case it contains the $project_url_prefix or $project_common_url_prefix
+					if (src && typeof ui_creator.options.on_convert_project_url_php_vars_to_real_values_func == "function") {
+						src = ui_creator.options.on_convert_project_url_php_vars_to_real_values_func(src, widget);
+						widget.attr("src", src);
+					}
+				}
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["src"] = widget.attr("src");
+				widget_settings["controls"] = widget.attr("controls") ? 1 : 0;
+				widget_settings["autoplay"] = widget.attr("autoplay") ? 1 : 0;
+				
+				//parse src to convert url to vars: $project_url_prefix or $project_common_url_prefix
+				if (widget_settings["src"] && typeof ui_creator.options.on_convert_project_url_real_values_to_php_vars_func == "function")
+					widget_settings["src"] = ui_creator.options.on_convert_project_url_real_values_to_php_vars_func(widget_settings["src"], widget);
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("controls")) {
+						if (field.is(":checked"))
+							widget.attr("controls", "controls");
+						else
+							widget.removeAttr("controls");
+					}
+					else if (sprop.hasClass("autoplay")) {
+						if (field.is(":checked"))
+							widget.attr("autoplay", "autoplay");
+						else
+							widget.removeAttr("autoplay");
+					}
+					else if (sprop.hasClass("src")) {
+						field_value = field_value.replace(/^\s+/g, "").replace(/\s+$/g, "");//trim url
+						
+						if (field_value != "") {
+							//parse src in case it contains the $project_url_prefix or $project_common_url_prefix
+							field_value = typeof ui_creator.options.on_convert_project_url_php_vars_to_real_values_func == "function" ? ui_creator.options.on_convert_project_url_php_vars_to_real_values_func(field_value, widget) : field_value;
+							
+							widget.attr("src", field_value);
+						}
+						else {
+							ui_creator.showError("Video src cannot be empty!");
+							field.val( widget.attr("src") );
+						}
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

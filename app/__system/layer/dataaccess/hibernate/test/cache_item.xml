@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<import>
+	<service type="prefix">
+		<key>Item.findById</key>
+	</service>
+	<service type="prefix">
+		<key>Item.find</key>
+	</service>
+	<service type="prefix">
+		<key>Item.findRelationships</key>
+	</service>
+	<service type="prefix">
+		<key>Item.findRelationship</key>
+	</service>
+	<service type="prefix">
+		<key>Item.select_all_by_status</key>
+	</service>
+</import>

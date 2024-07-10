@@ -1,0 +1,79 @@
+.taskflowchartmenu .task.task_createblockhtml {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_createblockhtml .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_createblockhtml .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.create_block_html_task_html {
+	width:440px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html {
+	width:100%;
+}
+
+.create_block_html_task_html .broker_method_obj {
+	width:440px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html .broker_method_obj {
+	width:100%;
+}
+.create_block_html_task_html .block_id, 
+   .create_block_html_task_html .html {
+	width:440px;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html .block_id,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html .html {
+	width:100%;
+}
+.create_block_html_task_html .block_id label,
+   .create_block_html_task_html .html label,
+   .create_block_html_task_html .broker_method_obj label {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html .block_id label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html .html label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html .broker_method_obj label {
+	width:100px;
+}
+.create_block_html_task_html .block_id input,
+   .create_block_html_task_html .html input {
+	width:230px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html .block_id input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html .html input {
+	width:calc(100% - 177px);
+}
+.create_block_html_task_html .block_id select,
+   .create_block_html_task_html .html select {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+}
+.create_block_html_task_html .broker_method_obj {
+	margin-left:0;
+}
+.create_block_html_task_html .broker_method_obj input {
+	width:213px;
+	margin-left:103px;
+}
+.create_block_html_task_html > div:not(.broker_method_obj) > .add_variable {
+	margin-left:-23px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html .broker_method_obj input {
+	width:calc(100% - 130px);
+	margin-left:102px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_block_html_task_html .broker_method_obj select {
+	width:calc(100% - 105px);
+}

@@ -1,0 +1,329 @@
+/* TOP BAR */
+.top_bar {
+	margin-bottom:10px;
+}
+.top_bar header > .title {
+	max-width:calc(100% - 170px);
+}
+.top_bar header > ul {
+	right:135px;
+}
+
+/* EDIT TEST */
+.edit_test {
+	width:100%;
+	overflow:auto;
+	margin:0;
+	padding:0;
+	border:0;
+	box-sizing:border-box;
+	position:relative;
+}
+
+.error {
+	text-align:center;
+	color:#B51E3F;
+	/*font-weight:bold;*/
+}
+
+/* EDIT TEST - SETTINGS */
+.edit_test #settings {
+	height:220px;
+	margin:0 auto;
+	padding:40px 15px 10px;
+	position:fixed;
+	left:0;
+	right:0;
+	bottom:0;
+	overflow:auto;
+	box-sizing:border-box;
+	z-index:1050;
+	color:var(--main-settings-color);
+	background:var(--main-settings-bg);
+	font-size:8pt;
+}
+.edit_test #settings:not(.resizing) {
+	transition:.2s all;
+}
+.edit_test #settings.collapsed {
+	height:25px !important;
+	padding-top:25px;
+	overflow:hidden;
+	bottom:-5px;
+}
+
+.edit_test #settings div {
+	float:none;
+	clear:left;
+}
+.edit_test #settings label {
+	width:80px;
+	padding-top:3px;
+	display:inline-block;
+	font-weight:normal;
+	font-style:normal;
+}
+.edit_test #settings input {
+	display:inline-block;
+	font-size:12px;
+}
+.edit_test #settings select {
+	display:inline-block;
+	font-size:12px;
+}
+
+.edit_test #settings .settings_header {
+	height:35px;
+	line-height:25px;
+	margin-top:-45px;
+	padding:8px 5px 5px 15px;
+	position:fixed;
+	left:0;
+	right:0;
+	box-sizing:border-box;
+	overflow:hidden;
+	cursor:ns-resize;
+	z-index:1051;
+	
+	/*font-weight:bold;*/
+	border-bottom:1px solid var(--main-settings-header-border);
+	color:var(--main-settings-color);
+	background:var(--main-settings-bg);
+	/*background: -moz-linear-gradient(top, #eee 50%, #f7f7f7 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, #eee), color-stop(100%, #f7f7f7));
+	background: -webkit-linear-gradient(top, #eee 50%, #f7f7f7 100%);
+	background: -o-linear-gradient(top, #eee 50%, #f7f7f7 100%);
+	background: -ms-linear-gradient(top, #eee 50%, #f7f7f7 100%);
+	background: linear-gradient(to bottom, #eee 50%, #f7f7f7 100%);
+	border-top:1px solid #eee;*/
+}
+.edit_test #settings.collapsed .settings_header {
+	margin-top:-30px;
+	border:0;
+	
+	/*background: -moz-linear-gradient(bottom, #eee 50%, #ffffff73 100%);
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(50%, #eee), color-stop(100%, #ffffff73));
+	background: -webkit-linear-gradient(bottom, #eee 50%, #ffffff73 100%);
+	background: -o-linear-gradient(bottom, #eee 50%, #ffffff73 100%);
+	background: -ms-linear-gradient(bottom, #eee 50%, #ffffff73 100%);
+	background: linear-gradient(to top, #eee 50%, #ffffff73 100%);*/
+}
+.edit_test #settings .settings_header::before {
+	content:"";
+	height:5px;
+	display:block;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	
+	border-top:1px solid var(--resize-bar-border);
+	border-bottom:1px solid var(--resize-bar-border);
+	background:var(--resize-bar-bg);
+	/*background:var(--resize-bar-horizontal-img) repeat-x var(--main-template-bg);*/
+	box-sizing:border-box;
+}
+.edit_test #settings .settings_header .icon {
+	width:34px;
+	height:10px;
+	position:absolute;
+	top:0;
+	left:45%;
+	left:calc(50% - 17px);
+	text-indent:-9999px;
+	cursor:pointer;
+	opacity:1;
+}
+.edit_test #settings .settings_header .icon.maximize {
+	background:url(../../img/tool_frame_top.gif) no-repeat;
+}
+.edit_test #settings .settings_header .icon.minimize {
+	background:url(../../img/tool_frame_bottom.gif) no-repeat;
+}
+.edit_test #settings .settings_header .icon::before {
+    display:none;
+}
+
+.edit_test #settings .enabled {
+	width:100%;
+}
+.edit_test #settings .enabled input {
+	margin-left:0;
+}
+
+/* GLOBAL VARIABLES FILES PATH */
+.edit_test #settings .global_variables_files_path {
+	margin-top:10px;
+} 
+.edit_test #settings .global_variables_files_path label {
+	width:165px;
+}
+.edit_test #settings .global_variables_files_path > .add {
+	vertical-align: middle;
+	font-size:14px;
+	display:none;
+}
+.edit_test #settings .global_variables_files_path table {
+	width:235px;
+	margin-top:5px;
+}
+.edit_test #settings .global_variables_files_path thead th {
+	font-size:10px;
+	border-bottom:1px solid #ccc;
+	border-right:1px solid #f5f5f5;
+	color:#666;
+}
+.edit_test #settings .global_variables_files_path tbody td {
+	border-bottom:1px solid #ccc;
+	border-right:1px solid #f5f5f5;
+	background:#fff;
+}
+.edit_test #settings .global_variables_files_path .icon_cell {
+	border:0;
+	background:unset;
+}
+.edit_test #settings .global_variables_files_path .icon_cell .icon {
+	margin:auto 5px;
+	font-size:14px;
+}
+.edit_test #settings .global_variables_files_path tbody input {
+	border:0;
+	background-color:transparent;
+	float:none;
+	clear:left;
+}
+
+.edit_test #settings .global_variables_files_path table .path {
+	width:200px;
+}
+.edit_test #settings .global_variables_files_path table .path input {
+	width:195px;
+}
+
+/* ANNOTATIONS */
+.edit_test #settings .annotations {
+	margin-top:10px;
+} 
+.edit_test #settings .annotations > .add {
+	vertical-align: middle;
+	font-size:14px;
+}
+.edit_test #settings .annotations table {
+	width:670px;
+	margin-top:5px;
+}
+.edit_test #settings .annotations thead th {
+	font-size:10px;
+	border-bottom:1px solid #ccc;
+	border-right:1px solid #f5f5f5;
+	color:#666;
+}
+.edit_test #settings .annotations tbody td {
+	border-bottom:1px solid #ccc;
+	border-right:1px solid #f5f5f5;
+	background:#fff;
+}
+.edit_test #settings .annotations .icon_cell {
+	border:0;
+	background:unset;
+}
+.edit_test #settings .annotations .icon_cell .icon {
+	margin:auto 5px;
+	font-size:14px;
+}
+.edit_test #settings .annotations tbody input, 
+  .edit_test #settings .annotations tbody select {
+	border:0;
+	background-color:transparent;
+	float:none;
+	clear:left;
+}
+
+.edit_test #settings .annotations table .path {
+	width:200px;
+}
+.edit_test #settings .annotations table .annotation_type {
+	width:80px;
+}
+.edit_test #settings .annotations table .description {
+	width:150px;
+}
+.edit_test #settings .annotations table .others {
+	width:200px;
+}
+.edit_test #settings .annotations table .path input {
+	width:195px;
+}
+.edit_test #settings .annotations table .annotation_type select {
+	width:80px;
+}
+.edit_test #settings .annotations table .description input {
+	width:145px;
+}
+.edit_test #settings .annotations table .others input {
+	width:195px;
+}
+
+/* COMMENTS */
+.edit_test #settings .comments {
+	width:100%;
+	margin-top:20px;
+}
+.edit_test #settings .comments label {
+	width:100%;
+	clear:left;
+	float:none;
+}
+.edit_test #settings .comments textarea {
+	width:100%;
+	height:60px;
+	margin-top:5px;
+}
+
+/* CODE */
+.edit_test #code > textarea,
+  .edit_test #code .ace_editor {
+	height:calc(100vh - 70px) !important;
+}
+.edit_test > #ui > .taskflowchart.with_top_bar_menu > .tasks_menu:not(.task_properties_shown):not(.connection_properties_shown), 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu > .tasks_menu_hide:not(.task_properties_shown):not(.connection_properties_shown), 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu > .tasks_flow:not(.task_properties_shown):not(.connection_properties_shown),
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .tasks_menu, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .tasks_menu_hide, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .tasks_flow, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_task_properties, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_connection_properties,
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .selected_task_properties, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .selected_connection_properties {
+	margin-bottom:35px;
+}
+.edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu.task_properties_collapsed, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu.connection_properties_collapsed, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu_hide.task_properties_collapsed, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu_hide.connection_properties_collapsed, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_flow.task_properties_collapsed, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_flow.connection_properties_collapsed {
+	margin-bottom:35px;
+}
+.edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu.task_properties_shown:not(.task_properties_collapsed), 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu.connection_properties_shown:not(.connection_properties_collapsed), 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu_hide.task_properties_shown:not(.task_properties_collapsed), 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu_hide.connection_properties_shown:not(.connection_properties_collapsed), 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_flow.task_properties_shown:not(.task_properties_collapsed), 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_flow.connection_properties_shown:not(.connection_properties_collapsed) {
+	margin-bottom:35px;
+}
+.edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .selected_task_properties.collapsed_properties, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .selected_connection_properties.collapsed_properties,
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_task_properties.collapsed_properties, 
+  .edit_test > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_connection_properties.collapsed_properties {
+	height:35px !important;
+}
+
+/* To print the workflow */
+@media print {
+	.edit_test {
+		overflow:visible !important;
+		border:0 !important;
+	}
+}

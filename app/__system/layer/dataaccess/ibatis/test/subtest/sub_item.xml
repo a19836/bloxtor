@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sql_mapping>
+	<insert id="insert_sub_item_not_registered">
+		insert into sub_item (item_id, title) values (#item_id#, '#title#')
+	</insert>  
+	
+	<insert id="insert_sub_item">
+		insert into sub_item (item_id, title) values (#item_id#, '#title#')
+	</insert>  
+
+	<select id="select_sub_item" result_class="vendor.dao.test.MySubItem">
+		select * from sub_item where id=#item_id#
+	</select>
+
+	<select id="select_sub_item_simple">
+		select * from sub_item where id=#item_id#
+	</select>
+</sql_mapping>

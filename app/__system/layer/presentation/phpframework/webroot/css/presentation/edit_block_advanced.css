@@ -1,0 +1,54 @@
+/* TOP BAR */
+.top_bar {
+	margin-bottom:10px;
+}
+.top_bar header .title {
+	max-width:calc(100% - 350px);
+}
+.top_bar.in_popup header .title {
+	max-width:calc(100% - 360px);
+}
+.top_bar header > ul {
+	right:135px;
+}
+.top_bar.in_popup header > ul { /* in case when we edit a block from the LayoutUIEditor->RightContainer */
+	right:165px;
+}
+
+/* BLOCK OBJ */
+.block_obj {
+	width:100%;
+	overflow:hidden;
+	margin:0 auto;
+	padding:0;
+	border:0;
+}
+.block_obj #code textarea, 
+  .block_obj #code .ace_editor,
+  .block_obj #ui .taskflowchart {
+	height:calc(100vh - 50px) !important;
+	box-sizing:border-box; /* bc of the ace_editor */
+}
+
+.block_obj #ui .taskflowchart .tasks_flow.drop_hover { /* .drop_hover is set in admin_menu.js */
+	box-shadow:inset 0 0 30px 0px rgba(0, 0, 0, .1);
+}
+
+.block_obj.in_popup > .tabs {
+	right:47px;
+}
+.block_obj.in_popup > .tabs li:not(.ui-tabs-active) {
+	color:var(--main-template-color);
+	background-color:var(--main-iframe-bg);
+}
+.block_obj.in_popup .top_bar_menu {
+	right:147px;
+}
+
+/* To print the workflow */
+@media print {
+	.block_obj {
+		overflow:visible !important;
+		border:0 !important;
+	}
+}

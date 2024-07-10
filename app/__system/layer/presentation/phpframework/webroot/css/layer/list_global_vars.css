@@ -1,0 +1,16 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+.top_bar header .title .add {margin:0 0 0 10px; float: none; display: inline-block; vertical-align: middle; font-size:16px; color:inherit; opacity:1;}
+
+.global_vars {min-width:500px; min-height:230px; text-align:center; margin:20px auto;}
+.global_vars .vars {text-align:left; margin:0px auto;}
+.global_vars .vars th {text-align:center; font-weight:bold;}
+.global_vars .vars input {width:205px; margin-bottom:3px; margin-right:5px; font-size:inherit;}
+.global_vars .vars .buttons {text-align:left; font-weight:bold;}
+.global_vars .save {margin:10px auto 0; display:none;}

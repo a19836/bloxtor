@@ -1,0 +1,45 @@
+.layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul {
+	overflow-x:auto;
+}
+.layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul .add,
+  .layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul .delete {
+	cursor:pointer;
+}
+.layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul .thead,
+  .layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul .tbody,
+  .layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul .tfoot {
+	margin-top:20px;
+}
+.layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul table tbody tr td.actions {
+	min-width:200px;
+	border:1px solid inherit;
+}
+.layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul table tbody tr td.actions .delete {
+	margin:0 10px;
+}
+.layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul table tbody tr td.actions input {
+	width:150px;
+	text-align:left;
+	/*background:rgba(0,0,0,0.05);
+	color:rgba(0,0,0,0.75);*/
+}
+.layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul table tbody tr td:not(.actions) {
+	min-width:150px;
+	padding:0 3px;
+	border:1px solid var(--menu-settings-input-border, #ccc);
+	background:var(--menu-settings-input-bg, #b9a5a6);
+	color:var(--menu-settings-input-color, #333);
+}
+.layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul table tbody tr td:not(.actions) input {
+	width:calc(100% - 15px);
+	border:0;
+	background:transparent;
+	color:inherit;
+	text-align:left;
+	opacity:.9;
+}
+.layout-ui-editor > .menu-settings.table-sections-menu-settings > .settings-properties > ul table tbody tr td:not(.actions) .delete {
+	width:13px;
+	margin-top:7px;
+	float:right;
+}

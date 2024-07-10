@@ -1,0 +1,296 @@
+a:1:{s:19:"PHPTemplateLanguage";a:2:{s:7:"methods";a:6:{s:15:"setCacheHandler";a:15:{s:4:"name";s:15:"setCacheHandler";s:16:"start_line_index";i:208;s:17:"start_token_index";i:55;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:22:"start_args_token_index";i:60;s:20:"end_args_token_index";i:64;s:9:"arguments";a:1:{s:31:"IUserCacheHandler $CacheHandler";N;}s:25:"start_brackets_line_index";i:208;s:26:"start_brackets_token_index";i:66;s:23:"end_brackets_line_index";i:211;s:24:"end_brackets_token_index";i:92;s:14:"end_line_index";i:211;s:15:"end_token_index";i:92;}s:15:"getCacheHandler";a:14:{s:4:"name";s:15:"getCacheHandler";s:16:"start_line_index";i:212;s:17:"start_token_index";i:94;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:22:"start_args_token_index";i:99;s:20:"end_args_token_index";i:100;s:25:"start_brackets_line_index";i:212;s:26:"start_brackets_token_index";i:102;s:23:"end_brackets_line_index";i:212;s:24:"end_brackets_token_index";i:111;s:14:"end_line_index";i:212;s:15:"end_token_index";i:111;}s:13:"parseTemplate";a:15:{s:4:"name";s:13:"parseTemplate";s:16:"start_line_index";i:214;s:17:"start_token_index";i:113;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:22:"start_args_token_index";i:118;s:20:"end_args_token_index";i:134;s:9:"arguments";a:3:{s:9:"$template";N;s:11:"$input_vars";s:5:"false";s:9:"$encoding";s:5:"false";}s:25:"start_brackets_line_index";i:214;s:26:"start_brackets_token_index";i:136;s:23:"end_brackets_line_index";i:259;s:24:"end_brackets_token_index";i:407;s:14:"end_line_index";i:259;s:15:"end_token_index";i:407;}s:15:"getTemplateCode";a:15:{s:4:"name";s:15:"getTemplateCode";s:16:"start_line_index";i:261;s:17:"start_token_index";i:409;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:22:"start_args_token_index";i:414;s:20:"end_args_token_index";i:423;s:9:"arguments";a:2:{s:9:"$template";N;s:9:"$encoding";s:5:"false";}s:25:"start_brackets_line_index";i:261;s:26:"start_brackets_token_index";i:425;s:23:"end_brackets_line_index";i:398;s:24:"end_brackets_token_index";i:1758;s:14:"end_line_index";i:398;s:15:"end_token_index";i:1758;}s:49:"prepareArgumentsWithQuotesThatAreNotReservedWords";a:20:{s:4:"name";s:49:"prepareArgumentsWithQuotesThatAreNotReservedWords";s:16:"start_line_index";i:1195;s:17:"start_token_index";i:6979;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:3:{i:0;s:91:"//This method is deprecated bc is a little bit more slow and don't allow unicode characters";i:1;s:11780:"/*private function prepareTagFuncArgs(&$tag_code, $join = " . ", $extra_delimiters = null) {
+		$arguments = array();
+		
+		if ($tag_code) {
+			//prepaer delimiters
+			$delimiters = array(
+				"." => ".",
+				"+" => "+", 
+				"-" => array("->", "-&gt;", "-"), //-> or -&gt; in case of being a $obj->prop
+				"*" => "*", 
+				"/" => "/", 
+				"%" => "%", 
+				"=" => array("===", "==", "=>", "=&gt;", "="), //=> or =&gt; in case of being an associative array
+				"!" => array("!==", "!=", "!"), 
+				"<" => array("<==", "<=", "<"),  
+				">" => array(">==", ">=", ">"), 
+				"&" => array("&&", "&gt;==", "&gt;=", "&gt;", "&lt;==", "&lt;=", "&lt;"),
+				"|" => "||",
+				"?" => "?", // if something ? do foo : else do bar
+				":" => ":", // if something ? do foo : else do bar
+			);
+			
+			$numeric_only_delimiters = array("+", "-", "*", "/", "%", ">==", ">=", ">", "<==", "<=", "<", "&gt;==", "&gt;=", "&gt;", "&lt;==", "&lt;=", "&lt;");
+			
+			//add extra delimiters to $delimiters var
+			if ($extra_delimiters) 
+				foreach ($extra_delimiters as $k => $v)
+					if (isset($delimiters[$k])) {
+						if (!is_array($delimiters[$k]))
+							$delimiters[$k] = array($delimiters[$k]);
+						
+						if (is_array($v))
+							$delimiters[$k] = array_merge($delimiters[$k], $v);
+						else
+							$delimiters[$k][] = $v;
+					}
+					else
+						$delimiters[$k] = $v;
+		
+			$delimiters_chars = array_keys($delimiters);
+		
+			//Parse code
+			$start = 0;
+			$length = strlen($tag_code);
+			$odq = $osq = false;
+			$reserved_keywords = array("new");
+			
+			for ($i = $start; $i < $length; $i++) {
+				$char = $tag_code[$i];
+				//echo "char:$char|".count($arguments)."\n";
+				
+				if ($char == '"' && !$osq && !TextSanitizer::isCharEscaped($tag_code, $i)) {
+					$c = substr($tag_code, $start, $i - $start);
+					$c = !$odq ? trim($c) : $c;
+					if (strlen($c) || $odq) { // || $odq because it could be an empty string like this: str_repalce("xx", "", $t))
+						$prev_str = $arguments[ count($arguments) - 1 ];
+						$arguments[] = !$odq && (in_array($c, $reserved_keywords) || $prev_str == "->" || $prev_str == "-&gt;") ? $c : '"' . $c . '"';
+					}
+					
+					$start = $i + 1;
+					$odq = !$odq;
+				}
+				else if ($char == "'" && !$odq && !TextSanitizer::isCharEscaped($tag_code, $i)) {
+					$c = substr($tag_code, $start, $i - $start);
+					$c = !$osq ? trim($c) : $c;
+					if (strlen($c) || $osq) { // || $osq because it could be an empty string like this: str_repalce("xx", '', $t))
+						$prev_str = $arguments[ count($arguments) - 1 ];
+						$arguments[] = !$osq && (in_array($c, $reserved_keywords) || $prev_str == "->" || $prev_str == "-&gt;") ? $c : "'" . $c . "'";
+					}
+					
+					$start = $i + 1;
+					$osq = !$osq;
+				}
+				else if (!$odq && !$osq) {
+					if (($char == " " || $char == "," || $char == '"' || $char == "'" || $char == '$') && !TextSanitizer::isCharEscaped($tag_code, $i)) { //check spaces and , (, is for the function args)
+						//echo "enter space before ($char):";print_r($arguments);
+						$c = trim(substr($tag_code, $start, $i - $start));
+						if (strlen($c)) {
+							$prev_str = $arguments[ count($arguments) - 1 ];
+							$arguments[] = in_array($c, $reserved_keywords) || $prev_str == "->" || $prev_str == "-&gt;" ? $c : self::configureArg($c, $char == "'");
+						}
+						
+						if (self::isDelimiter($char, $delimiters)) //in case of $char=="," and exists in the extra_delimiters, adds it to $arguments, so we know easily to diferenciate the multiple function arguments
+							$arguments[] = $char;
+						
+						$start = $char == '$' ? $i : $i + 1;
+						//echo "enter space after ($char):";print_r($arguments);
+					}
+					else if (in_array($char, $delimiters_chars)) { //check delimiters: conditions in if, for, elseif, echo, var...
+						//echo "enter delimiter before ($char):";print_r($arguments);
+						$delimiter = $delimiters[$char];
+						$arr = is_array($delimiter) ? $delimiter : array($delimiter);
+						$next_str = substr($tag_code, $i);
+						
+						foreach ($arr as $item) {
+							$regex = preg_replace("/([\.\+\-\*\/\%\(\)\?])/i", '\\\\$1', $item);
+							$prev_str = substr($tag_code, 0, $i + strlen($item));
+							
+							if ($item && $item == substr($next_str, 0, strlen($item))) {
+								$is_increment_pre = $is_increment_pos = false;
+								$is_operator = $item == ".";//check if is string increment/joint operator
+								
+								if ($item == "->" || $item == "-&gt;") //check if variable
+									$is_operator = substr($prev_str, 0, 1) == '$';
+								else if (preg_match('/^' . $regex . '[ \w\$"\'\(]+/iu', $next_str) && ($item == "!" || preg_match('/[ \w"\'\)]+' . $regex . '$/iu', $prev_str))) //check if a math or conditional operator //'\w' means all words with '_' and '/u' means with accents and ç too.
+									$is_operator = true;
+								else if ($item == "+" || $item == "-") { //check if is increment operator: $i++ or --$i
+									$is_increment_pre = preg_match('/^' . $regex . $regex . '\s*\$\w+/iu', $next_str); //'\w' means all words with '_' and '/u' means with accents and ç too.
+									$is_increment_pos = preg_match('/\$\w+\s*' . $regex . $regex . '$/iu', substr($tag_code, 0, $i + 2)); //'\w' means all words with '_' and '/u' means with accents and ç too.
+									$is_operator = $is_increment_pre || $is_increment_pos;
+								}
+								
+								//add previous strings
+								$c = trim(substr($tag_code, $start, $i - $start));
+								//echo "c:$c\n";
+								if (strlen($c))
+									$arguments[] = self::configureArg($c);
+								
+								//add operators
+								if ($is_increment_pre) {//++$i or --$i
+									//echo "is_increment_pre:$item\n";
+									$arguments[] = "$item$item";
+									$start = $i + 2;
+								}
+								else if ($is_increment_pos) {//$i++ or $i--
+									//echo "is_increment_pos:$item\n";
+									$arguments[ count($arguments) - 1 ] = $arguments[ count($arguments) - 1 ] . "$item$item";
+									$start = $i + 2; 
+								}
+								else {
+									$del = substr($tag_code, $i, strlen($item));
+									$del = str_replace("&lt;", "<", str_replace("&gt;", ">", $item));
+									$arguments[] = $is_operator ? $del : '"' . $del . '"';
+								
+									$start = $i + strlen($item);
+								}
+								
+								$i = $start - 1;
+								break;
+							}
+						}
+					
+						//echo "$start: enter delimiter after ($char):";print_r($arguments);
+					}
+					else if ($char == '[') { //for these cases: $arr[$_GET[0]]$arr[ $_GET[$name ] ] or $arr[ $_GET[name ]]>
+						//echo "enter [ before ($char):";print_r($arguments);
+						$p = trim(substr($tag_code, $start, $i - $start));
+				
+						if (empty($arguments) || strlen($p))
+							$previous = $p;
+						else
+							$previous = $arguments[ count($arguments) - 1 ];
+					
+						$is_var = $previous && preg_match('/^\$\{?\w/iu', trim($previous)); //'\w' means all words with '_' and '/u' means with accents and ç too.
+						//echo "previous($is_var):$previous\n";
+						
+						if ($is_var) {
+							$count = 0;
+							$sub_odq = $sub_osq = false;
+							
+							for ($j = $i + 1; $j < $length; $j++) {
+								$char = $tag_code[$j];
+								
+								if ($char == '"' && !$sub_osq && !TextSanitizer::isCharEscaped($tag_code, $j))
+									$sub_odq = !$sub_odq;
+								else if ($char == "'" && !$sub_odq && !TextSanitizer::isCharEscaped($tag_code, $j))
+									$sub_osq = !$sub_osq;
+								else if (!$sub_odq && !$sub_osq) {
+									if ($char == "[")
+										++$count;
+									else if ($char == "]") {
+										if ($count == 0) 
+											break;
+										--$count;
+									}
+								}
+							}
+							
+							$sub_tag_code = substr($tag_code, $i + 1, $j - ($i + 1));
+						 	$this->prepareTagFuncArgs($sub_tag_code);
+						 			 	
+							//convert [name] into ["name"]
+							$sub_tag_code = preg_replace_callback("/\[([\w\"' \-\+\.]+)\]/u", function ($matches) { //'\w' means all words with '_' and '/u' means with accents and ç too.
+								return "[" . (!self::isString($matches[1]) && !is_numeric($matches[1]) && substr($matches[1], 0, 1) != '$' ? '"' . trim($matches[1]) . '"' : $matches[1]) . "]";
+							  }, $sub_tag_code);
+							  
+							if (empty($arguments) || strlen($p))
+								$arguments[] = $previous . "[$sub_tag_code]";
+							else 
+								$arguments[ count($arguments) - 1 ] = $previous . "[$sub_tag_code]";
+							
+							$i = $j;
+							$start = $j + 1;
+						}
+						//echo "enter [ after ($char):";print_r($arguments);
+					}
+					else if ($char == "(") { //check if func args
+						//echo "enter ( before ($char):";print_r($arguments);
+						$p = trim(substr($tag_code, $start, $i - $start));
+				
+						if (empty($arguments) || strlen($p))
+							$previous = $p;
+						else
+							$previous = substr($arguments[ count($arguments) - 1 ], 1, -1);
+						
+						// /\w+/ == /[a-zA-Z\_]+/
+						$is_func = $previous && preg_match('/^\w+$/u', $previous) && preg_match('/[^"\']$/iu', trim(substr($tag_code, 0, $i))); //'\w' means all words with '_' and '/u' means with accents and ç too.
+						//echo "previous($is_func):$previous\n";
+						
+						if ($is_func) {
+							$count = 0;
+							$sub_odq = $sub_osq = false;
+							
+							for ($j = $i + 1; $j < $length; $j++) {
+								$char = $tag_code[$j];
+								
+								if ($char == '"' && !$sub_osq && !TextSanitizer::isCharEscaped($tag_code, $j))
+									$sub_odq = !$sub_odq;
+								else if ($char == "'" && !$sub_odq && !TextSanitizer::isCharEscaped($tag_code, $j))
+									$sub_osq = !$sub_osq;
+								else if (!$sub_odq && !$sub_osq) {
+									if ($char == "(")
+										++$count;
+									else if ($char == ")") {
+										if ($count == 0)
+											break;
+										
+										--$count;
+									}
+								}
+							}
+				
+							//echo "i:$i|j:$j|".substr($tag_code, $i, 1)."|".substr($tag_code, $j, 1)."\n";
+							//echo "tag_code:$tag_code|".($i + 1)."|".($j - ($i + 1))."\n";
+							//echo substr($tag_code, $i + 1)."!\n";
+							//echo substr($tag_code, 0, $i)."!	\n";
+							$sub_tag_code = substr($tag_code, $i + 1, $j - ($i + 1));
+							//echo "sub_tag_code:$sub_tag_code|\n";
+							$this->prepareTagFuncArgs($sub_tag_code, ", ", array("," => ","));
+							
+							if (empty($arguments) || strlen($p))
+								$arguments[] = $previous . "($sub_tag_code)";
+							else 
+								$arguments[ count($arguments) - 1 ] = $previous . "($sub_tag_code)";
+							
+							$i = $j;
+							$start = $j + 1;
+						}
+						else {
+							if (strlen($p))
+								$arguments[] = self::configureArg($p);
+						
+							$arguments[] = $char;
+							$start = $i + 1;
+							//echo "no func:$p";
+						}
+						//echo "enter ( after ($char):";print_r($arguments);
+					}
+					else if ($char == ")") {
+						$p = trim(substr($tag_code, $start, $i - $start));
+						if (strlen($p))
+							$arguments[] = self::configureArg($p);
+						//echo "p:$p\n";
+					
+						$arguments[] = $char;
+						$start = $i + 1;
+					}
+				}
+			}
+			//print_r($arguments);
+			
+			self::prepareArgumentsWithQuotesThatAreNotReservedWords($arguments, $tag_code, $start, $length, $reserved_keywords);
+			//print_r($arguments);
+			
+			self::prepareArgumentsWithNumericOperationsWithStrings($arguments, $numeric_only_delimiters);
+			//print_r($arguments);
+			
+			self::prepareArgumentsWithShortIfCode($arguments, $join, $numeric_only_delimiters);
+			//print_r($arguments);
+			
+			self::prepareArgumentsWithUnnecessaryFollowedStrings($arguments, $join_trimmed);
+			//echo "join_trimmed:$join_trimmed\n";
+			//print_r($arguments);
+			
+			self::prepareArgumentsWithNullItems($arguments);
+			//print_r($arguments);
+			
+			$tag_code = self::convertArgumentsToTagCode($arguments, $join, $delimiters, $reserved_keywords);
+		}
+		//echo "tag_code:$tag_code\n";
+		
+		self::prepareTagCodeWithLostQuote($tag_code);
+		//echo "tag_code:$tag_code\n";
+		
+		return $arguments;
+	}*/";i:2;s:97:"//check if there are args which are strings, not reserved and don't have quotes and add quotes...";}s:25:"start_comments_line_index";i:896;s:26:"start_comments_token_index";i:6973;s:23:"end_comments_line_index";i:1195;s:24:"end_comments_token_index";i:6977;s:22:"start_args_token_index";i:6986;s:20:"end_args_token_index";i:7001;s:9:"arguments";a:5:{s:11:"&$arguments";N;s:9:"$tag_code";N;s:6:"$start";N;s:7:"$length";N;s:18:"$reserved_keywords";N;}s:25:"start_brackets_line_index";i:1195;s:26:"start_brackets_token_index";i:7003;s:23:"end_brackets_line_index";i:1204;s:24:"end_brackets_token_index";i:7133;s:14:"end_line_index";i:1204;s:15:"end_token_index";i:7133;}s:27:"prepareTagCodeWithLostQuote";a:20:{s:4:"name";s:27:"prepareTagCodeWithLostQuote";s:16:"start_line_index";i:1650;s:17:"start_token_index";i:10764;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:102:"//Fix this case: <ptl:echo assd"as2sd />\ where returns: echo "assdas2sd />\"; which gives a php error";}s:25:"start_comments_line_index";i:1649;s:26:"start_comments_token_index";i:10762;s:23:"end_comments_line_index";i:1650;s:24:"end_comments_token_index";i:10762;s:22:"start_args_token_index";i:10771;s:20:"end_args_token_index";i:10774;s:9:"arguments";a:1:{s:10:"&$tag_code";N;}s:25:"start_brackets_line_index";i:1650;s:26:"start_brackets_token_index";i:10776;s:23:"end_brackets_line_index";i:1654;s:24:"end_brackets_token_index";i:10865;s:14:"end_line_index";i:1654;s:15:"end_token_index";i:10865;}}s:5:"props";a:1:{s:14:"CACHE_DIR_NAME";a:11:{s:4:"name";s:14:"CACHE_DIR_NAME";s:4:"type";s:6:"public";s:5:"value";s:6:""ptl/"";s:8:"var_type";s:6:"string";s:6:"static";b:0;s:8:"abstract";b:0;s:5:"const";b:1;s:16:"start_line_index";i:204;s:17:"start_token_index";i:41;s:14:"end_line_index";i:204;s:15:"end_token_index";i:48;}}}}

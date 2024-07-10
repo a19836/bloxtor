@@ -1,0 +1,471 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="googlebot" content="noindex, nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tourguide.js</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="py-5 text-center">
+        <h2>Checkout form</h2>
+        <p class="lead">
+          Below is an example usage of Tourguide.js' content based approach.
+          Simply add tour step descriptions directly to the HTML elements on
+          page using data-tour property. Click [Start tour] button below to
+          start the guided tour:
+        </p>
+        <p>
+          <button class="btn btn-success btn-lg btn-block" id="tourbutton">
+            Start tour
+          </button>
+        </p>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+          <h4 class="d-flex justify-content-between align-items-center mb-3" id="step_1">
+            <span class="text-muted">Your cart</span>
+            <span class="badge badge-secondary badge-pill">3</span>
+          </h4>
+          <ul
+            class="list-group mb-3"
+          >
+            <li
+              class="list-group-item d-flex justify-content-between lh-condensed"
+            >
+              <div>
+                <h6 class="my-0">Product name</h6>
+                <small class="text-muted">Brief description</small>
+              </div>
+              <span class="text-muted">$12</span>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between lh-condensed"
+            >
+              <div>
+                <h6 class="my-0">Second product</h6>
+                <small class="text-muted" id="step_2">Brief description</small>
+              </div>
+              <span class="text-muted">$8</span>
+            </li>
+            <li
+              class="list-group-item d-flex justify-content-between lh-condensed"
+            >
+              <div>
+                <h6 class="my-0">Third item</h6>
+                <small class="text-muted">Brief description</small>
+              </div>
+              <span class="text-muted">$5</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between bg-light">
+              <div class="text-success">
+                <h6 class="my-0">Promo code</h6>
+                <small>EXAMPLECODE</small>
+              </div>
+              <span class="text-success">-$5</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Total (USD)</span>
+              <strong>$20</strong>
+            </li>
+          </ul>
+
+          <form
+            class="card p-2"
+          >
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Promo code"
+              />
+              <div class="input-group-append" id="step_3">
+                <button type="submit" class="btn btn-secondary">Redeem</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-8 order-md-1">
+          <h4 class="mb-3">Billing address</h4>
+          <form class="needs-validation" novalidate="">
+            <div
+              class="row"
+            >
+              <div class="col-md-6 mb-3">
+                <label for="firstName">First name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="firstName"
+                  placeholder=""
+                  value=""
+                  required=""
+                />
+                <div class="invalid-feedback">
+                  Valid first name is required.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="lastName">Last name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastName"
+                  placeholder=""
+                  value=""
+                  required=""
+                />
+                <div class="invalid-feedback">Valid last name is required.</div>
+              </div>
+              <div class="col-12" id="step_4">
+                <p>
+                  <b>Example:</b> tour step describing the two fields abowe is
+                  added usigng the following html:
+                  <code>
+                    &lt;div class="row" data-tour="step: 3; title: Customer
+                    name; content: Example cart customer name text displays
+                    customer name description"&gt;
+                  </code>
+                </p>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="username">Username</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">@</span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  placeholder="Username"
+                  required=""
+                />
+                <div class="invalid-feedback" style="width: 100%">
+                  Your username is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email"
+                >Email <span class="text-muted">(Optional)</span></label
+              >
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="you@example.com"
+              />
+              <div class="invalid-feedback">
+                Please enter a valid email address for shipping updates.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="address">Address</label>
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                placeholder="1234 Main St"
+                required=""
+              />
+              <div class="invalid-feedback">
+                Please enter your shipping address.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="address2"
+                >Address 2 <span class="text-muted">(Optional)</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="address2"
+                placeholder="Apartment or suite"
+              />
+            </div>
+
+            <div class="row">
+              <div class="col-md-5 mb-3">
+                <label for="country">Country</label>
+                <select
+                  class="custom-select d-block w-100"
+                  id="country"
+                  required=""
+                >
+                  <option value="">Choose...</option>
+                  <option>United States</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid country.
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="state">State</label>
+                <select
+                  class="custom-select d-block w-100"
+                  id="state"
+                  required=""
+                >
+                  <option value="">Choose...</option>
+                  <option>California</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please provide a valid state.
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="zip" id="step_5">Zip</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="zip"
+                  placeholder=""
+                  required=""
+                />
+                <div class="invalid-feedback">Zip code required.</div>
+              </div>
+            </div>
+            <hr class="mb-4" />
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="same-address"
+              />
+              <label class="custom-control-label" for="same-address"
+                >Shipping address is the same as my billing address</label
+              >
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="save-info"
+              />
+              <label class="custom-control-label" for="save-info"
+                >Save this information for next time</label
+              >
+            </div>
+            <hr class="mb-4" />
+
+            <h4 class="mb-3">Payment</h4>
+
+            <div
+              class="d-block my-3"
+            >
+              <div class="custom-control custom-radio">
+                <input
+                  id="credit"
+                  name="paymentMethod"
+                  type="radio"
+                  class="custom-control-input"
+                  checked=""
+                  required=""
+                />
+                <label class="custom-control-label" for="credit"
+                  >Credit card</label
+                >
+              </div>
+              <div class="custom-control custom-radio">
+                <input
+                  id="debit"
+                  name="paymentMethod"
+                  type="radio"
+                  class="custom-control-input"
+                  required=""
+                />
+                <label class="custom-control-label" for="debit"
+                  >Debit card</label
+                >
+              </div>
+              <div class="custom-control custom-radio">
+                <input
+                  id="paypal"
+                  name="paymentMethod"
+                  type="radio"
+                  class="custom-control-input"
+                  required=""
+                />
+                <label class="custom-control-label" for="paypal">PayPal</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="cc-name">Name on card</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="cc-name"
+                  placeholder=""
+                  required=""
+                />
+                <small class="text-muted">Full name as displayed on card</small>
+                <div class="invalid-feedback">Name on card is required</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="cc-number">Credit card number</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="cc-number"
+                  placeholder=""
+                  required=""
+                />
+                <div class="invalid-feedback">
+                  Credit card number is required
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="cc-expiration">Expiration</label>
+                <input
+                  type="text"
+                  class="form-control"
+                   id="step_6"
+                  placeholder=""
+                  required=""
+                />
+                <div class="invalid-feedback">Expiration date required</div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="cc-cvv">CVV</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="cc-cvv"
+                  placeholder=""
+                  required=""
+                />
+                <div class="invalid-feedback">Security code required</div>
+              </div>
+            </div>
+            <hr class="mb-4" />
+            <button
+              class="btn btn-primary btn-lg btn-block"
+              type="submit"
+             id="step_7">
+              Continue to checkout
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="../tourguide.js"></script>
+    <script type="text/javascript">
+      /*
+       * Initialize Tourguide.js
+       */
+      var steps = [
+		  {
+		    "image": "https://cdn.docsie.io/workspace_x276s7jrJhnLKVh3n/doc_eIWkWMNchrMYpUSGw/file_zL84IvnQjMxj3wAvR/6f7ee74d-48c0-e460-4e51-b0fae3a839a3castlebytheriver2.png",
+		    "width": "320px",
+		    "title": "Introducing timelines",
+		    "placement": "bottom-right",
+		    "content": "**{username}**, we have a new way to view project progress and track status. [Learn more](https://help.docsie.io)",
+		    "overlay": false,
+		    "navigation": false,
+		    "actions": [
+			 {
+			   "id": "got_it",
+			   "label": "Got it",
+			   "action": "stop"
+			 },
+			 {
+			   "id": "learn_more",
+			   "label": "Show me",
+			   "action": "next",
+			   "primary": true
+			 }
+		    ]
+		  },
+		  {
+		    //"selector": "body>div:first-of-type>div>p:first-of-type>button",
+		    "selector": "#step_1",
+		    "title": "Testing actions",
+		    "content": "**Click** the {fontsize,16,button} to see the {fontsize,20,result}"
+		  },
+		  {
+		    //"selector": "h2",
+		    "selector": "#step_2",
+		    "video": "http://techslides.com/demos/sample-videos/small.webm",
+		    "image": "https://cdn.docsie.io/workspace_x276s7jrJhnLKVh3n/doc_eIWkWMNchrMYpUSGw/file_zL84IvnQjMxj3wAvR/6f7ee74d-48c0-e460-4e51-b0fae3a839a3castlebytheriver2.png",
+		    "width": "320px",
+		    "title": "Paragraphs & Emphasis",
+		    "content": "<p>I really like using Markdown.<br>\nAnd the next line.<br>\n<strong>This</strong> is bold text.<br>\n<em>This</em> is italic text.<br>\n<strong><em>This</em></strong> is important text.</p>"
+		  },
+		  {
+		    //"selector": "a>i>bold",
+		    "selector": "#step_3",
+		    "title": "Blockquotes & Lists",
+		    "content": "> Dorothy followed her through many of the beautiful rooms in her castle.\n> \n> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n 1. First item\n2. Second item\n3. Third item\n4. Fourth item"
+		  },
+		  {
+		    "title": "NOT a markdown",
+		    "content": "This in <b>NOT</b> a <mark>markdown</mark> string!"
+		  },
+		  {
+		    "title": "Markdown with checkmarks",
+		    "content": "# Checkmarks\n[ ] Check 1\n[ ] Check 2\n[*] Check 3"
+		  },
+		  {
+		    //"selector": "#dropdownMenuButton1",
+		    "selector": "#step_4",
+		    "title": "Test action sequence",
+		    "content": "Click this button to see the dropdown menu!",
+		    "actions": [
+			 {
+			   "label": "Click",
+			   "action": "custom"
+			 }
+		    ]
+		  },
+		  {
+		    //"selector": "body>div:first-of-type>div>div>ul>li:first-of-type>a",
+		    "selector": "#step_5",
+		    "image": "https://cdn.docsie.io/workspace_x276s7jrJhnLKVh3n/doc_eIWkWMNchrMYpUSGw/file_zL84IvnQjMxj3wAvR/6f7ee74d-48c0-e460-4e51-b0fae3a839a3castlebytheriver2.png",
+		    "height": "320px",
+		    "title": "This is the first",
+		    "content": "First item in the dropdown",
+		    "layout": "horizontal"
+		  },
+		  {
+		    //"selector": "body>div:first-of-type>div>div>ul>li:nth-of-type(2)>a",
+		    "selector": "#step_6",
+		    "image": "https://cdn.docsie.io/workspace_x276s7jrJhnLKVh3n/doc_eIWkWMNchrMYpUSGw/file_zL84IvnQjMxj3wAvR/6f7ee74d-48c0-e460-4e51-b0fae3a839a3castlebytheriver2.png",
+		    "width": "320px",
+		    "title": "This is the second",
+		    "content": "Second item in the dropdown"
+		  },
+		  {
+		    //"selector": "body>div:first-of-type>div>div>ul>li:nth-of-type(3)>a",
+		    "selector": "#step_7",
+		    "image": "https://cdn.docsie.io/workspace_x276s7jrJhnLKVh3n/doc_eIWkWMNchrMYpUSGw/file_zL84IvnQjMxj3wAvR/6f7ee74d-48c0-e460-4e51-b0fae3a839a3castlebytheriver2.png",
+		    "title": "This is the third",
+		    "content": "Third item in the dropdown!"
+		  },
+		  {
+		    "title": "Remember!!!",
+		    "content": "#### When using markdown content\n1. don't forget to set `marked` to `true` at each step.\n2. Use correct [syntax](https://www.markdownguide.org/basic-syntax/)."
+		  }
+		];
+		//console.log(steps);
+        var tourguide = new Tourguide({steps:steps});
+      function startTour() {
+      	tourguide.start();
+      }
+      // Attach the touruide start evene to the button press
+      var tourbutton = document.getElementById("tourbutton");
+      tourbutton.addEventListener("click", startTour);
+    </script>
+  </body>
+</html>

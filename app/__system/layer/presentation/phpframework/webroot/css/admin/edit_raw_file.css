@@ -1,0 +1,151 @@
+/* DROPDOWN */
+.top_bar header {
+	z-index:9999;
+}
+.top_bar header > .title {
+	max-width:calc(100% - 60px);
+}
+.top_bar .dummy_elm_to_add_auto_save_options {
+	display:none !important;
+}
+
+/* CODE AREA */
+.code_area {
+	/*position:absolute;
+	top:32px;
+	left:0;
+	right:0;
+	bottom:0;
+	overflow:auto;*/
+	padding:0;
+}
+.code_area .ace_editor, 
+  .code_area textarea {
+	height:calc(100vh - 80px);
+	width:100%;
+	border-bottom:3px inset #CCC;
+	margin:0;
+	overflow-y:auto;
+}
+.code_area.in_popup .ace_editor, 
+  .code_area.in_popup textarea {
+	height:calc(100vh - 85px);
+}
+.code_area textarea {
+	position:fixed !important; /* 2021-02-08 JP: this is very important bc is fixing the problem with scroll up, where when focused or pressed key inside editor the page scrolls to top.*/
+}
+/*.code_area .ace_scrollbar {
+    -webkit-transition: opacity .3s ease-in-out;
+       -moz-transition: opacity .3s ease-in-out;
+        -ms-transition: opacity .3s ease-in-out;
+         -o-transition: opacity .3s ease-in-out;
+            transition: opacity .3s ease-in-out;
+    opacity: 0;
+}
+.code_area .ace_editor .ace_scrollbar:hover {
+    opacity: 1;
+}*/
+.code_area .ace_editor .ace_search {
+	position:fixed; /* must be position fiuxedotherwise when we search for something the search popup will disappear. */
+	top:50px;
+}
+.code_area .ace_editor .ace_gutter {
+	background:var(--main-ace-editor-bg);
+	color:var(--main-ace-editor-color);
+}
+.code_area .ace_editor .ace_gutter .ace_gutter-active-line {
+	background:var(--main-ace-editor-active-line-number-bg);
+}
+.code_area .ace_editor .ace_layer .ace_active-line {
+	background:var(--main-ace-editor-active-line-bg);
+}
+.code_area .ace_editor .ace_search {
+	background:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+}
+.code_area .ace_editor .ace_search input[type=submit]:not(:disabled), 
+  .code_area .ace_editor .ace_search input[type=button]:not(:disabled), 
+  .code_area .ace_editor .ace_search button:not(:disabled) {
+	color:#333;
+}
+
+.error {
+	width:100%;
+	height:25px;
+	text-align:center;
+	margin:10px 0;
+	font-weight:bold;
+	color:#FF0000;
+}
+
+.confirm_save {
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	background-color:#FFF;
+	z-index:5;
+}
+.confirm_save .title {
+	margin-bottom:20px;
+}
+.confirm_save .file_code {
+	
+}
+.confirm_save .file_code .old_file_code, .confirm_save .file_code .new_file_code {
+	width:50%;
+	float:left;
+}
+.confirm_save .file_code .old_file_code label, .confirm_save .file_code .new_file_code label {
+	display:block;
+	margin-left:2%;
+	text-align:center;
+	color:#999;
+}
+.confirm_save .file_code .old_file_code pre, .confirm_save .file_code .new_file_code pre {
+	position:absolute;
+	top:80px;
+	bottom:60px;
+	width:47%;
+	overflow:auto;
+	border:1px inset #CCC;
+	background-color:#F0F0F0;
+}
+.confirm_save .file_code .old_file_code pre {
+	left:2%;
+}
+.confirm_save .file_code .new_file_code pre {
+	right:2%;
+}
+.confirm_save .file_code .old_file_code pre code, .confirm_save .file_code .new_file_code pre code {
+	overflow-x:visible;
+	overflow-y:visible;
+	overflow:visible;
+}
+/* Fixing highlight issue when a line is too big */
+.confirm_save .file_code .old_file_code pre code span, .confirm_save .file_code .new_file_code pre code span {
+	word-wrap:break-word;
+	white-space:pre-wrap;
+}
+.confirm_save .buttons {
+	position:absolute;
+	left:0;
+	right:0;
+	bottom:0;
+	text-align:center;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+.confirm_save .buttons input {
+	font-size:10px;
+}
+.confirm_save .disable_auto_scroll {
+	position:absolute;
+	left:2%;
+	bottom:0;
+	margin-bottom:10px;
+	color:#C0C0C0;
+	font-size:10px;
+	cursor:pointer;
+}

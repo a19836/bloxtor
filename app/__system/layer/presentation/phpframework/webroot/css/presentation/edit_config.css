@@ -1,0 +1,37 @@
+/* TOP BAR */
+.top_bar {
+	margin-bottom:10px;
+}
+.top_bar header .title {
+	max-width:calc(100% - 170px);
+}
+.top_bar header > ul {
+	right:135px;
+}
+
+/* CONFIG OBJ */
+.config_obj {
+	width:100%;
+	overflow:hidden;
+	margin:0 auto;
+	padding:0;
+	border:0;
+}
+.config_obj #code textarea,
+  .config_obj #code .ace_editor, 
+  .config_obj #ui .taskflowchart {
+	height:calc(100vh - 50px) !important;
+	box-sizing:border-box; /* bc of the .ace_editor */
+}
+
+.config_obj #ui .taskflowchart .tasks_flow.drop_hover { /* .drop_hover is set in admin_menu.js */
+	box-shadow:inset 0 0 30px 0px rgba(0, 0, 0, .1);
+}
+
+/* To print the workflow */
+@media print {
+	.config_obj {
+		overflow:visible !important;
+		border:0 !important;
+	}
+}

@@ -1,0 +1,15 @@
+a:1:{s:42:"\DocBlockParser\Annotation\ParamAnnotation";a:1:{s:7:"methods";a:2:{s:9:"parseArgs";a:15:{s:4:"name";s:9:"parseArgs";s:16:"start_line_index";i:11;s:17:"start_token_index";i:57;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:22:"start_args_token_index";i:62;s:20:"end_args_token_index";i:67;s:9:"arguments";a:2:{s:15:"$DocBlockParser";N;s:5:"$args";N;}s:25:"start_brackets_line_index";i:11;s:26:"start_brackets_token_index";i:69;s:23:"end_brackets_line_index";i:32;s:24:"end_brackets_token_index";i:306;s:14:"end_line_index";i:32;s:15:"end_token_index";i:306;}s:22:"checkMethodAnnotations";a:20:{s:4:"name";s:22:"checkMethodAnnotations";s:16:"start_line_index";i:49;s:17:"start_token_index";i:310;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:8:"comments";a:1:{i:0;s:288:"/*
+	for function xxx($module_id, $service_id, $data, $options = false)
+		$method_params_data = array(
+			"module_id" => "test",
+			"service_id" => "foo",
+			"data" => array(
+				...
+			),
+			"options" => array(
+				"no_cache" => true
+			),
+		);
+	
+	$method_params_data MUST BE AN ARRAY
+	*/";}s:25:"start_comments_line_index";i:34;s:26:"start_comments_token_index";i:308;s:23:"end_comments_line_index";i:48;s:24:"end_comments_token_index";i:308;s:22:"start_args_token_index";i:315;s:20:"end_args_token_index";i:321;s:9:"arguments";a:2:{s:20:"&$method_params_data";N;s:15:"$annotation_idx";N;}s:25:"start_brackets_line_index";i:49;s:26:"start_brackets_token_index";i:323;s:23:"end_brackets_line_index";i:87;s:24:"end_brackets_token_index";i:629;s:14:"end_line_index";i:87;s:15:"end_token_index";i:629;}}}}

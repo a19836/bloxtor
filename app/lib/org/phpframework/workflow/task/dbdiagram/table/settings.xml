@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+	<label>TABLE</label>
+	<tag>table</tag>
+	<files>
+		<task_properties_html>WorkFlowTaskHtml.php</task_properties_html>
+		<connection_properties_html>WorkFlowConnectionHtml.php</connection_properties_html>
+		<css>../../common/css/global.css</css>
+		<css>../common/css/global.css</css>
+		<css>css/WorkFlowTask.css</css>
+		<js>../../common/js/global.js</js>
+		<js>../common/js/global.js</js>
+		<js>js/WorkFlowTask.js</js>
+	</files>
+	<settings>
+		<connection_menu>
+			<!--show_connector_types_menu>false</show_connector_types_menu-->
+			<show_overlay_types_menu>false</show_overlay_types_menu>
+		</connection_menu>
+		<callback>
+			<on_load_task_properties>DBTableTaskPropertyObj.onLoadTaskProperties</on_load_task_properties>
+			<on_submit_task_properties>DBTableTaskPropertyObj.onSubmitTaskProperties</on_submit_task_properties>
+			<on_cancel_task_properties></on_cancel_task_properties>
+			
+			<on_load_connection_properties>DBTableTaskPropertyObj.onLoadConnectionProperties</on_load_connection_properties>
+			<on_submit_connection_properties>DBTableTaskPropertyObj.onSubmitConnectionProperties</on_submit_connection_properties>
+			<on_complete_connection_properties>DBTableTaskPropertyObj.onCompleteConnectionProperties</on_complete_connection_properties>
+			<on_cancel_connection_properties>DBTableTaskPropertyObj.onCancelConnectionProperties</on_cancel_connection_properties>
+			
+			<on_check_task_label>DBTableTaskPropertyObj.onCheckLabel</on_check_task_label>
+			<on_cancel_task_label>DBTableTaskPropertyObj.onCancelLabel</on_cancel_task_label>
+			<on_complete_task_label>DBTableTaskPropertyObj.onCompleteLabel</on_complete_task_label>
+			
+			<on_check_connection_label>isConnectionLabelValid</on_check_connection_label>
+			
+			<on_success_task_cloning>onTaskCloning</on_success_task_cloning>
+			<on_success_task_creation>DBTableTaskPropertyObj.onTaskCreation</on_success_task_creation>
+			<on_success_task_deletion>DBTableTaskPropertyObj.onTaskDeletion</on_success_task_deletion>
+			
+			<on_success_connection_drop>DBTableTaskPropertyObj.onTableConnectionDrop</on_success_connection_drop>
+			<on_success_connection_deletion>DBTableTaskPropertyObj.onSuccessConnectionDeletion</on_success_connection_deletion>
+			
+			<on_click_task>showTaskPropertiesIfExists</on_click_task>
+			<on_click_connection>showConnectionPropertiesIfExists</on_click_connection>
+		</callback>
+		<center_inner_elements>false</center_inner_elements>
+	</settings>
+</task>

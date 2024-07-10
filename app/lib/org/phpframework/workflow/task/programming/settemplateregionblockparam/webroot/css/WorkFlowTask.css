@@ -1,0 +1,80 @@
+.taskflowchartmenu .task.task_settemplateregionblockparam {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_settemplateregionblockparam .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_settemplateregionblockparam .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.set_template_region_block_param_task_html {
+	width:440px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html {
+	width:100%;
+}
+.set_template_region_block_param_task_html .region, 
+   .set_template_region_block_param_task_html .block, 
+   .set_template_region_block_param_task_html .param_name {
+	margin-bottom:5px;
+}
+.set_template_region_block_param_task_html .region, 
+   .set_template_region_block_param_task_html .block, 
+   .set_template_region_block_param_task_html .param_name, 
+   .set_template_region_block_param_task_html .param_value {
+	width:440px;
+	min-height:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .region, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .block, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .param_name, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .param_value {
+	width:100%;
+}
+.set_template_region_block_param_task_html .region label, 
+   .set_template_region_block_param_task_html .block label, 
+   .set_template_region_block_param_task_html .param_name label, 
+   .set_template_region_block_param_task_html .param_value label {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .region label, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .block label, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .param_name label, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .param_value label {
+	width:70px;
+}
+.set_template_region_block_param_task_html .region input, 
+   .set_template_region_block_param_task_html .block input, 
+   .set_template_region_block_param_task_html .param_name input, 
+   .set_template_region_block_param_task_html .param_value input {
+	width:230px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .region input, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .block input, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .param_name input, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html .param_value input {
+	width:calc(100% - 148px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_template_region_block_param_task_html.with_search .param_value input {
+	width:calc(100% - 170px);
+}
+.set_template_region_block_param_task_html .region select, 
+   .set_template_region_block_param_task_html .block select, 
+   .set_template_region_block_param_task_html .param_name select, 
+   .set_template_region_block_param_task_html .param_value select {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+}
+.set_template_region_block_param_task_html .param_value .search {
+	display:none;
+}
+.set_template_region_block_param_task_html.with_search .param_value .search {
+	display:inline-block;
+}

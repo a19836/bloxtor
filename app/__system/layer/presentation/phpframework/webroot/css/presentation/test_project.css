@@ -1,0 +1,80 @@
+html, body, #main_column {
+	height:100%;
+}
+
+.top_bar > header > ul > .toggle_settings .icon {
+	margin-top:1px;
+	font-size:16px;
+}
+
+.test_project {
+	min-height:calc(100% - 50px);
+	text-align:center;
+	background:#fff;
+	position:relative;
+}
+.test_project.hide_settings {
+	height:calc(100% - 50px);
+}
+.test_project > iframe {
+	width:100%;
+	min-height:400px;
+	padding:0;
+}
+.test_project.hide_settings > iframe {
+	height:100%;
+}
+
+.test_project form {
+	margin:20px 0 0;
+	padding-bottom:10px;
+	border-bottom:1px solid #ccc;
+	transition:ease-in-out .2s all;
+}
+.test_project.hide_settings form {
+	height:0;
+	margin:0;
+	padding:0;
+	overflow:hidden;
+	opacity:0;
+}
+.test_project form .vars {
+	width:450px;
+	margin:0 auto 20px;
+	display:inline-block;
+}
+.test_project form .vars table {
+	margin:10px 10px 0;
+}
+.test_project form .vars table th {
+	padding:5px;
+	text-align:center;
+}
+.test_project form .vars table td {
+	text-align:center;
+	border-top:1px solid #eee;
+}
+.test_project form .vars table .name,
+  .test_project form .vars table .value {
+	width:200px;
+}
+.test_project form .vars table td input {
+	width:100%;
+	background:#fff;
+	border:0;
+	font-size:inherit;
+	text-align:center;
+}
+.test_project form .vars table .actions {
+	width:20px;
+}
+.test_project form .vars table .no_vars td {
+	/*font-weight:bold;*/
+}
+.test_project form .vars table .icon {
+	margin:0 auto;
+	float:none;
+}
+.test_project form .buttons input {
+	font-size:inherit;
+}

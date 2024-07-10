@@ -1,0 +1,51 @@
+.taskflowchartmenu .task.task_definevar {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_definevar .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_definevar .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.define_var_task_html {
+	width:290px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .define_var_task_html {
+	width:100%;
+	box-sizing:border-box;
+}
+
+.define_var_task_html .name {
+	/*margin-top:15px;*/
+}
+.define_var_task_html .value {
+	margin:5px 0px 5px 0px;
+}
+.define_var_task_html .name, 
+  .define_var_task_html .value, 
+  .define_var_task_html .type {
+	width:100%;
+	min-height:20px;
+}
+.define_var_task_html .name label, 
+  .define_var_task_html .value label, 
+  .define_var_task_html .type label {
+	width:70px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .define_var_task_html .name label, 
+  .taskflowchart.fixed_side_properties .selected_task_properties .define_var_task_html .value label, 
+  .taskflowchart.fixed_side_properties .selected_task_properties .define_var_task_html .type label {
+	width:40px;
+}
+.define_var_task_html .name input, 
+  .define_var_task_html .value input {
+	width:200px;   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .define_var_task_html .name input, 
+  .taskflowchart.fixed_side_properties .selected_task_properties .define_var_task_html .value input {
+	width:calc(100% - 55px);
+}
+
+

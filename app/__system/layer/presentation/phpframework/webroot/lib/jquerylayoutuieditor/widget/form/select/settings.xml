@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Dropdown</label>
+	<tag>select</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_node_name>select</template_node_name>
+		<create_widget_class>SelectWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="form-group settings-property is-multiple">
+			<label class="col-md-4 col-sm-5 col-5 col-form-label">Is Multiple: </label>
+			<input type="checkbox" name="is-multiple" value="1" />
+		</div>
+		<div class="form-group row settings-property name">
+			<label class="col-md-4 col-sm-5 col-form-label">Name: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="name" />
+		</div>
+		<div class="form-group row dd settings-property options">
+			<label class="col-form-label">
+				<span class="zmdi zmdi-circle-o reset-option-selection" title="Clear options selection"></span>
+				Options: 
+				<span class="zmdi zmdi-plus-circle add-option" title="Add new option"></span>
+			</label>
+			<ul class="dd-list" options-index="0">
+				<div class="dd-empty empty-options">To add a new option click in the plus icon above...</div>
+			</ul>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-select:before,
+		  body > .menu-widget.menu-widget-select.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-select .options .option.toggle {
+			display:none;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options {
+			margin-top:20px;
+			margin-bottom:0;
+			max-width:none;
+			font-size:inherit;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > .col-form-label {
+			max-width:none;
+			display:block;
+			padding:0;
+			font-size:inherit;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > .col-form-label > .reset-option-selection {
+			margin-right:5px;
+			cursor:pointer;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > .col-form-label > .add-option {
+			margin:3px 0 0 10px;
+			float:right;
+			cursor:pointer;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > .dd-empty {
+			display:none;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul {
+			padding-top:0;
+			display:block;
+			width:100%;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul > .empty-options {
+			text-align:center;
+			padding-top:2.5em;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li,
+		   .settings-properties-select-options-li li {
+			min-height:30px;
+			margin:.5em 0;
+			text-align:right;
+			display:block;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li > .dd-collapse,
+		   .settings-properties-select-options-li .dd-collapse,
+		   .layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li > .dd-expand,
+		   .settings-properties-select-options-li .dd-expand {
+			width:15px;
+			height:30px;
+			line-height:30px;
+			margin:0;
+			background:none;
+			border:none;
+			color:var(--menu-settings-group-color, #b9a5a6);
+			
+			font: normal normal normal 14px/1 'Material-Design-Iconic-Font';
+			font-size: 2em;
+			text-rendering: auto;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			
+			display:none;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li.option-group:not(.dd-collapsed) > .dd-collapse,
+		   .settings-properties-select-options-li li.option-group:not(.dd-collapsed) > .dd-collapse,
+		   .layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li.option-group.dd-collapsed > .dd-expand,
+		   .settings-properties-select-options-li li.option-group.dd-collapsed > .dd-expand {
+			display:block;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li.option-group > .dd-collapse:before,
+		   .settings-properties-select-options-li li.option-group > .dd-collapse:before {
+			content:'\f2f2';
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li.option-group > .dd-expand:before,
+		   .settings-properties-select-options-li li.option-group > .dd-expand:before {
+			content:'\f2f6';
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li > .select-option,
+		   .settings-properties-select-options-li .select-option {
+			margin:0;
+			padding:5px 0;
+			float:left;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li > .select-option input,
+		   .settings-properties-select-options-li .select-option input {
+		   	margin-left:2px;
+		   	vertical-align:middle;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li > .dd-handle,
+		   .settings-properties-select-options-li .dd-handle {
+			margin:0 5px;
+			padding:9px 0;
+			border:none;
+			background:none;
+			color:var(--menu-settings-group-color, #b9a5a6);
+			cursor:move;
+			float:left;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li > .option-value,
+		   .settings-properties-select-options-li .option-value,
+		   .layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li > .option-label,
+		   .settings-properties-select-options-li .option-label,
+		   .layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li > .option-attributes,
+		   .settings-properties-select-options-li .option-attributes {
+			width:20%;
+			width:calc((100% - 70px) / 3);
+			display:inline-block;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li > .remove-option,
+		   .settings-properties-select-options-li .remove-option {
+			width:15px;
+			padding:7px 0;
+			display:inline-block;
+			cursor:pointer;
+			vertical-align:top;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li.option-group:not(.dd-collapsed),
+		   .settings-properties-select-options-li li.option-group:not(.dd-collapsed) {
+			margin-bottom:0;   
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li.option-group > .select-option,
+		   .settings-properties-select-options-li li.option-group > .select-option,
+		   .layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li.option-group > .option-value,
+		   .settings-properties-select-options-li li.option-group > .option-value {
+			display:none;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li.option-group > .option-label,
+		   .settings-properties-select-options-li li.option-group > .option-label,
+		   .layout-ui-editor > .menu-settings.menu-settings-select li.group.settings-properties > ul .options > ul li.option-group > .option-attributes,
+		   .settings-properties-select-options-li li.option-group > .option-attributes {
+			width:calc((100% - 70px) / 2);
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.template-widget.template-widget-select.widget-active {
+			border: 10px solid #f7f7f7; /* bc of the resize, otherwise will be very dificult to resize the select bc the select text takes precendent and the resize event for the select won't fire. */
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function SelectWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.select.parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.select.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.select.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.select.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.select.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.select.parseSettings",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeName.toLowerCase() == "select") {
+					html_element = $(html_element);
+					
+					//return droppable bc we want to convert the options and optgroup to widgets so we can access their properties through the layers panel.
+					return {
+						droppable: html_element,
+					};
+				}
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["is-multiple"] = widget[0].hasAttribute("multiple");
+				widget_settings["name"] = widget.attr("name");
+				widget_settings["options"] = getOptionsFromHtmlElement(widget);
+			};
+			
+			me.cleanHtml = function(html_element) {
+				return ui_creator.getCleanedHtmlElement(html_element); //call the default clean html method
+				
+				/* The code below is deprecated bc we want to convert the options and optgroup to widgets so we can access their properties through the layers panel.
+				var clone = ui_creator.cloneHtmlElementBeforeCleanIt(html_element);
+				clone[0].innerHTML = '';
+				
+				var html = ui_creator.getCleanedHtmlElement(clone[0]);
+				var options = html_element.innerHTML;
+				
+				clone.remove();
+				
+				return html.replace('</select>', options + '</select>');*/
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element) {
+					widget.css({width: "100px", height:"20px"});
+					widget.attr("data-allow-null", "1");
+				}
+				
+				widget.on("focus", function() {
+					ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+				});
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var options_elm = menu_settings.find(" > .settings-properties > ul > .options");
+				
+				//set reset option selection icon action
+				var btn_reset = options_elm.find(" > label > .reset-option-selection");
+				btn_reset.click(function() {
+					options_elm.find(".select-option input").removeAttr("checked").first().blur();
+				});
+				
+				//set add option icon action
+				var btn_add = options_elm.find(" > label > .add-option");
+				btn_add.click(function() {
+					me.addOption(this, null);
+					ui_creator.saveMenuSettingsField(this);
+				});
+				
+				//load options
+				var props = ui_creator.parseWidgetAttributesToSettings(widget);
+				if (props && props["options"]) {
+					$.each(props["options"], function (index, option) {
+						me.addOption(btn_add[0], option);
+					});
+				}
+				
+				//Set nestable
+				options_elm.nestable({
+				    dragClass: "dd-dragel settings-properties-select-options-li",
+				    onDragStart: function(main_elm, elm, position, event){
+					   	// main_elm is the main container
+						// elm is the element that was moved
+						
+					   	event.preventDefault();
+					   	event.stopPropagation();
+				    },
+				    beforeDragStop: function(main_elm, elm, dropped_elm) {
+				    		return dropped_elm.parent().is(".settings-property.options") || dropped_elm.parentsUntil(ui_creator.options.ui_selector + ", .settings-property.options").length > 0;
+				    },
+				    callback: function(main_elm, elm, event){ //its called when the move action finished
+						// main_elm is the main container
+						// elm is the element that was moved
+						
+						var items = options_elm.find(".dd-item");
+						
+						$.each(items, function(idx, item) {
+							var ul = $(item).children(".dd-list");
+							
+							if (ul.length == 0 || ul.children(".dd-item").length == 0)
+								$(item).removeClass("option-group");
+							else
+								$(item).addClass("option-group");
+						});
+						
+					   	ui_creator.saveMenuSettingsField( options_elm.children("ul")[0] );
+				    },
+				});
+				
+				ui_creator.addMenuSettingsContextMenu( menu_settings.find(".settings-properties input") );
+			};
+			
+			me.addOption = function(btn, default_values) {
+				var ul = $(btn).parent().closest(".options").children("ul, ol").first();
+				var v = "", l = "", a = "", so = false, children = null;
+				
+				if (default_values) {
+					v = default_values.hasOwnProperty("value") ? default_values.value : "";
+					l = default_values.hasOwnProperty("label") ? default_values.label : "";
+					a = default_values.hasOwnProperty("attrs_html") ? default_values.attrs_html : "";
+					so = default_values.hasOwnProperty("selected") ? default_values.selected : false;
+					children = default_values.hasOwnProperty("children") ? default_values.children : null;
+				}
+				
+				var html = $('<li class="dd-item' + (children ? ' option-group' : '') + '">'
+					+ '  <div class="select-option"><input type="radio" name="is_selected" value="1"' + (so ? ' checked' : '') + ' /></div>'
+					+ '	<div class="dd-handle"><span class="zmdi zmdi-arrows"></span></div>'
+					+ '  <div class="option-value input-group-sm"><input class="form-control" value="' + v + '" placeHolder="value" title="value" /></div>'
+					+ '  <div class="option-label input-group-sm"><input class="form-control" value="' + l + '" placeHolder="label" title="label" /></div>'
+					+ '  <div class="option-attributes input-group-sm"><input class="form-control" value="' + a + '" placeHolder="other attributes" title="other attributes" /></div>'
+					+ '	<div class="remove-option"><span class="zmdi zmdi-close-circle"></span></div>'
+					+ '</li>');
+				
+				var inputs = html.find("input");
+				inputs.blur(function(event) {
+					return ui_creator.saveMenuSettingsField(this);
+				});
+				
+				ui_creator.addMenuSettingsContextMenu(inputs);
+				
+				html.find(".remove-option").click(function() {
+					var li = $(this).parent().closest(".dd-item");
+					var parent = li.parent();
+					li.remove(); //remove current li
+					
+					if (parent.children("li").length == 0) {
+						if (parent.parent().hasClass("options")) //main ul
+							parent.children(".empty-options").show();
+						else {
+							parent.parent().removeClass("option-group"); //remove option-group class from parent li
+							parent.remove(); //remove ol
+						}
+					}
+					
+					ui_creator.saveMenuSettingsField(parent[0]);
+				});
+				
+				if (children) {
+					var children_html = $("<ol class='dd-list'></ol>");
+					
+					$.each(children, function (index, child) {
+						children_html.append( me.addOption(btn, child) );
+					});
+					
+					html.append(children_html);
+				}
+				
+				ul.children(".empty-options").hide();
+				ul.append(html);
+				
+				return html;
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					
+					var select_field = widget.children('select');
+					var sp = field.parent().closest(".settings-properties");
+					var sprop = field.parentsUntil(sp, ".settings-property").first();
+					
+					if (sprop.hasClass("is-multiple")) {
+						if (field.is(":checked"))
+							widget.attr("multiple", "multiple");
+						else 
+							widget.removeAttr("multiple");
+					}
+					else if (sprop.hasClass("name")) {
+						if (field_value != "")
+							widget.attr("name", field_value);
+						else
+							widget.removeAttr("name");
+					}
+					else if (sprop.hasClass("options")) {
+						//Preparing options
+						var ul = sprop.children("ul").first();
+						var options = getNestedOptions(ul);
+						var options_html = getOptionsHtml(options);
+						widget.html(options_html);
+						
+						ui_creator.parseElementInnerHtml(widget);
+					}
+				}
+				
+				return status;
+			};
+			
+			function getNestedOptions(ul) {
+				var options = [];
+				
+				if (ul[0]) {
+					var lis = ul.children("li");
+					
+					$.each(lis, function(idx, li) {
+						li = $(li);
+						
+						options.push({
+							selected: li.find(" > .select-option > input").is(":checked"),
+							value: li.find(" > .option-value > input").val(),
+							label: li.find(" > .option-label > input").val(),
+							attrs_html: li.find(" > .option-attributes > input").val(),
+							children: getNestedOptions( li.children("ul, ol").first() ),
+						});
+					});
+				}
+					
+				return options.length > 0 ? options : null;
+			}
+			
+			function getOptionsHtml(options) {
+				var html = '';
+					
+				if (options && options.length > 0) {
+					$.each(options, function(idx, option) {
+						var selected = option["selected"];
+						var has_v = option.hasOwnProperty("value");
+						var v = option["value"];
+						var l = option["label"];
+						var a = option["attrs_html"] ? " " + option["attrs_html"] : "";
+						var children = option["children"];
+						
+						if (children && children.length > 0)
+							html += '<optgroup label="' + l + '"' + a + '>' + getOptionsHtml(children) + '</optgroup>';
+						else
+							html += '<option' + (has_v ? ' value="' + v + '"' : '') + (selected ? ' selected' : '') + a + '>' + l + '</option>';
+					});
+				}
+				
+				return html;
+			}
+			
+			function getOptionsFromHtmlElement(elm) {
+				var options = new Array();
+				var children = elm.children("option, optgroup");
+				
+				$.each(children, function(idx, item) {
+					var j_item = $(item);
+					var node_name = item.nodeName.toLowerCase();
+					var is_optgroup = node_name == "optgroup";
+					var attrs_html = ui_creator.getCleanedHtmlElementAttributes(item, {
+						attributes_to_exclude: is_optgroup ? ["label"] : ["value", "selected"]
+					});
+					
+					if (is_optgroup)
+						options.push({
+							label: j_item.attr("label"),
+							children: getOptionsFromHtmlElement(j_item),
+							attrs_html: attrs_html
+						});
+					else 
+						options.push({
+							label: j_item.text(),
+							value: item.hasAttribute("value") ? j_item.attr("value") : j_item.text(),
+							selected: j_item.is(":selected"),
+							attrs_html: attrs_html
+						});
+				});
+				
+				return options;
+			}
+		}
+	]]></menu_js>
+</widget>

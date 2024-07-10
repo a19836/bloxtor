@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Textarea</label>
+	<tag>textarea</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_node_name>textarea</template_node_name>
+		<create_widget_class>TextareaWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property name">
+			<label class="col-md-4 col-sm-5 col-form-label">Name: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="name" />
+		</div>
+		<div class="form-group row settings-property value">
+			<label class="col-md-4 col-sm-5 col-form-label">Value: </label>
+			<textarea class="col-md-8 col-sm-7 form-control" name="value"></textarea>
+		</div>
+		<div class="form-group row settings-property place-holder">
+			<label class="col-md-4 col-sm-5 col-form-label">Place Holder: </label>
+			<textarea class="col-md-8 col-sm-7 form-control" name="place-holder"></textarea>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-textarea:before,
+		  body > .menu-widget.menu-widget-textarea.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-textarea .options .option.toggle {
+			display:none;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.template-widget.template-widget-textarea.widget-active {
+			border: 10px solid #f7f7f7; /* bc of the resize, otherwise will be very dificult to resize the textarea bc the textarea text takes precendent and the resize event for the textarea won't fire. */
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function TextareaWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.ignore_attributes = ["placeHolder"];
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.textarea.parseHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.textarea.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.textarea.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.textarea.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.textarea.parseSettings",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				return html_element && html_element.nodeName.toLowerCase() == "textarea";
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["name"] = widget.attr("name");
+				widget_settings["value"] = widget.val();
+				widget_settings["place-holder"] = widget.attr("placeHolder");
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element)
+					widget.attr("data-allow-null", "1");
+				
+				widget.keydown(function() {
+					ui_creator.getWidgetHeader().hide();
+					ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+				})
+				.on("focus", function() {
+					ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+				});
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				ui_creator.addMenuSettingsContextMenu( menu_settings.children(".settings-properties").find("input, textarea") );
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("name")) {
+						if (field_value != "")
+							widget.attr("name", field_value);
+						else
+							widget.removeAttr("name");
+					}
+					else if (sprop.hasClass("value")) {
+						if (field_value != "")
+							widget.val(field_value);
+						else
+							widget.val("");
+					}
+					else if (sprop.hasClass("place-holder")) {
+						if (field_value != "")
+							widget.attr("placeHolder", field_value);
+						else
+							widget.removeAttr("placeHolder");
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

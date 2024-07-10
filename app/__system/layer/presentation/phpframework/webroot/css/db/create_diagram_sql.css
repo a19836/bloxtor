@@ -1,0 +1,28 @@
+/* TOP BAR */
+.top_bar header {
+	z-index:9;
+}
+
+/* CREATE DIAGRAM SQL */
+.create_diagram_sql {
+}
+.create_diagram_sql .sql_text_area .ace_editor, .sql_text_area textarea {
+	min-height:400px;
+	width:100%;
+	margin:0;
+	font-size:8pt;
+}
+
+.create_diagram_sql .status_ok, .status_error {
+	width:100%;
+	height:25px;
+	text-align:center;
+	margin:10px 0 15px 0;
+	font-weight:bold;
+}
+.create_diagram_sql .status_ok {
+	color:#009900;
+}
+.create_diagram_sql .status_error {
+	color:#990000;
+}

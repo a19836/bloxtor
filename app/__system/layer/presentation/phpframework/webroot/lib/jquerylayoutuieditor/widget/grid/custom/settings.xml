@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Custom Container</label>
+	<tag>custom-container</tag>
+	<settings>
+		<resizable>1</resizable>
+		<menu_class>container custom-container</menu_class>
+		<template_class>container custom-container row</template_class>
+		<create_widget_class>CustomContainerWidget</create_widget_class>
+	</settings>
+	<menu_widget><![CDATA[
+			<input class="custom-values" placeHolder="Enter your own..." title="Enter the columns definition with space delimiter. eg: 2 6 4" />
+	]]></menu_widget>
+	<template_widget style="display:-webkit-box; display:-ms-flexbox; display:flex; -ms-flex-wrap:wrap; flex-wrap:wrap; height:100%; box-sizing:border-box;"></template_widget>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-custom-container,
+		  body > .menu-widget.menu-widget-custom-container.ui-draggable-dragging {
+			width:70px;
+			background-color:#83889E;
+			text-align:center;
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-custom-container:before,
+		  body > .menu-widget.menu-widget-custom-container.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+			left:20px;
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-custom-container > .custom-values,
+		  body > .menu-widget.menu-widget-custom-container.ui-draggable-dragging > .custom-values {
+			width:calc(100% + 2px);
+			margin:30px -2px -1px -2px;
+			font-size:6pt;
+			text-align:center;
+			box-sizing:border-box;
+			border:1px solid #83889E;
+			border-radius:0;
+			border-bottom-left-radius:2px;
+			border-bottom-right-radius:2px;
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-custom-container:hover:before {
+			box-shadow:none;
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-custom-container:hover {
+			box-shadow:0 0 10px 0px rgba(0, 0, 0, .2);
+		}
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-custom-container > .template-widget.row,
+		   body > .menu-widget.menu-widget-custom-container.ui-draggable-dragging > .template-widget.row {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-custom-container li.group.settings-properties > ul .columns table .container-col-move,
+		   .layout-ui-editor > .menu-settings.menu-settings-custom-container li.group.settings-properties > ul .columns table .container-col-icon {
+			width:20px;
+			vertical-align:middle;
+			cursor:pointer;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-custom-container .settings-properties table .container-col-icon {
+			width:20px;
+			font-size:14px;
+			text-align:center;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function CustomContainerWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs['custom-container'].parseHtml",
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs['custom-container'].onCloneMenuWidget",
+					"data-on-drag-helper-func": ui_creator.obj_var_name + ".menu_widgets_objs['custom-container'].createCustomContainer",
+					"data-on-drag-start-func": ui_creator.obj_var_name + ".menu_widgets_objs['custom-container'].checkCustomContainer",
+					"data-on-drag-stop-func": ui_creator.obj_var_name + ".menu_widgets_objs['custom-container'].onDropMenuWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs['custom-container'].parseSettings",
+				});
+				
+				//init the other part of the container
+				var obj = new CreateWidgetContainerClassObj(ui_creator, menu_widget);
+				obj.init();
+				me.obj = obj;
+				
+				//extends this obj methods to this class
+				for (var key in obj)
+					if (typeof me[key] == "undefined" && typeof obj[key] == "function")
+						me[key] = obj[key];
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && $(html_element).hasClass("row")) {
+					html_element = $(html_element);
+					var children = html_element.children();
+					
+					if (children) {
+						var t = children.length;
+						
+						for (var i = 0; i < t; i++) {
+							var child = children[i];
+							var matches = ("" + child.className).match(/(^| )col\-[^-]+\-[0-9]+( |$)/g);
+							
+							if (!matches)
+								return null;
+						}
+						
+						//get only the childNodes that are node.ELEMENT_NODE and check if they belong to another widget.
+						for (var i = 0; i < t; i++) {
+							var child = children[i];
+							
+							//checks if the child is not a template_region or another non-default widget
+							if (!ui_creator.isHtmlElementANonDefaultMenuWidget(child))
+								$(child).addClass("droppable ignore-widget"); //add class ignore-widget, so this children doesn't get converted into a widget.
+						}
+					}
+					
+					return {
+						droppable: html_element,
+					}
+				}
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["cols"] = me.getContainerColsProperties(widget);
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				var widget = me.obj.onCloneMenuWidget(widget, html_element);
+				
+				if (html_element) {
+					var children = widget.children();
+					
+					if (children) {
+						var label = "";
+						
+						for (var i = 0; i < children.length; i++) {
+							var child = children[i];
+							var matches = ("" + child.className).match(/(^| )col\-[^-]+\-[0-9]+( |$)/g);
+							
+							if (matches)
+								label += (label != "" ? ", " : "") + matches[0].match(/[0-9]+/g);
+						}
+					
+						ui_creator.updateTemplateWidgetLabel(widget, label);
+					}
+				}
+				
+				return widget;
+			};
+			
+			me.checkCustomContainer = function(widget, event, ui_obj) {
+				if ($(widget).find(".custom-values").val() == "") {
+					ui_creator.showError('Please fill the field with your values.');
+					return false;
+				}
+				
+				return true;
+			};
+			
+			me.createCustomContainer = function(widget, event, ui_obj) {
+				widget = $(widget);
+				var clone = widget.clone();
+				var cv = clone.find(".custom-values").val();
+				cv = cv ? cv.replace(/[,;]/g, " ").split(" ") : [];
+				
+				var html = '';
+				var type = '';
+				
+				for (var i = 0; i < cv.length; ++i)
+					if ($.isNumeric(cv[i]) && cv[i] > 0) {
+						var perc = 100 / 12 * parseInt(cv[i]);
+						perc = parseInt(perc * 1000000) / 1000000;
+						//console.log(perc);
+						
+						html += '<div class="droppable col-' + cv[i] + '" style="position:relative; width:100%; min-height:1px; padding:15px; -webkit-box-flex:0; -ms-flex:0 0 ' + perc + '%; flex:0 0 ' + perc + '%; max-width:' + perc + '%; box-sizing:border-box;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>';
+						type += (type ? ', ' : '') + cv[i];
+					}
+				
+				clone.find("script, style").remove();
+				
+				widget.find(".template-widget").first().attr("data-label", type).html(html);
+				
+				return clone;
+			};
+			
+			//resets the values (in the menu widget CustomContainer)
+			me.onDropMenuWidget = function(menu_widget, widget, event, ui_obj) {
+				menu_widget = $(menu_widget);
+				menu_widget.find(".custom-values").val("");
+				menu_widget.find(".template-widget").first().attr("data-label", "").html("");
+			};
+		}
+	]]></menu_js>
+</widget>

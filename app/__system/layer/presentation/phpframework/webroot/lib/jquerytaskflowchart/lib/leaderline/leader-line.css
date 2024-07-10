@@ -1,0 +1,40 @@
+body .leader-line {
+	display:inline;
+}
+/* when dragging a task in the SLA diagram, the connected lines will be added to the body, so we need to have a high z-index set */
+body > .leader-line,
+  body > .leader-line-dragged-line {
+	z-index:9;
+}
+body .leader-line:hover {
+	cursor:pointer; /* for firefox */
+}
+.leader-line-dragged-line-element-point {
+	width:0;
+	height:0;
+	position:absolute;
+	display:block;
+}
+.leader-line-overlay {
+	position:absolute;
+	display:inline;
+	white-space:nowrap;
+	/*Do not set an z-idnex here, so the z-index get set in the inner divs. Note that this div has display:inline, so we can set the z-index in the inner divs */
+}
+.leader-line-overlay > div[data-overlay-id] {
+	position:relative;
+	z-index:3;
+}
+.leader-line-end-point {
+	position:absolute;
+	display:inline;
+	z-index:4;
+}
+
+.leader-line-dragging-target-active {
+	background-color:#266ff8 !important;
+}
+.leader-line-dragging-target-hover,
+  .leader-line-dragging-body .leader-line-target:hover {
+	background-color:#f8d626 !important;
+}

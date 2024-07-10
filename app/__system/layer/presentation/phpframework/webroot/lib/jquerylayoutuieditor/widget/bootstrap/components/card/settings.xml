@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Card</label>
+	<tag>bscard</tag>
+	<settings>
+		<create_widget_class>BSCardWidget</create_widget_class>
+	</settings>
+	<files>
+		<css>../../CreateWidgetBootstrapClassObj.css</css>
+		<js>../../CreateWidgetBootstrapClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bscard:before,
+		  body > .menu-widget.menu-widget-bscard.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .myfancypopup.layout-ui-editor-bootstrap-widgets-popup.bscard > .content > ul > li img {
+			max-width:300px;
+			max-height:200px;
+			height:auto;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSCardWidget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapClassObj(ui_creator, menu_widget, "bscard");
+			obj.extend(this);
+			
+			obj.available_items = {
+				"5.3": [
+					{
+						image: '#widget_webroot_url#card_1.png',
+						name: '',
+						html: '<div class="card"><svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text></svg><div class="card-body"><h5 class="card-title">Card title</h5><p class="card-text">Some quick example text to build on the card title and make up the bulk of the card content.</p><a href="#" class="btn btn-primary">Go somewhere</a></div></div>'
+					},
+					{
+						image: '#widget_webroot_url#card_2.png',
+						name: '',
+						html: '<div class="card"><div class="card-header">Featured</div><div class="card-body"><h5 class="card-title">Card title</h5><p class="card-text">Some quick example text to build on the card title and make up the bulk of the cards content.</p><a href="#" class="btn btn-primary">Go somewhere</a></div><div class="card-footer text-body-secondary">2 days ago</div></div>'
+					},
+					{
+						image: '#widget_webroot_url#card_3.png',
+						name: '',
+						html: '<div class="card"><div class="card-body"><h5 class="card-title">Card title</h5><p class="card-text">Some quick example text to build on the card title and make up the bulk of the cards content.</p></div><ul class="list-group list-group-flush"><li class="list-group-item">An item</li><li class="list-group-item">A second item</li><li class="list-group-item">A third item</li></ul><div class="card-body"><a href="#" class="card-link">Card link</a><a href="#" class="card-link">Another link</a></div></div>'
+					},
+					{
+						image: '#widget_webroot_url#card_4.png',
+						name: '',
+						html: '<div class="card"><svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text></svg><div class="card-body"><h5 class="card-title">Card title</h5><p class="card-text">Some quick example text to build on the card title and make up the bulk of the card content.</p><p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p></div></div>'
+					},
+					{
+						image: '#widget_webroot_url#card_5.png',
+						name: '',
+						html: '<div class="card"><div class="row g-0"><div class="col-md-4"><svg class="bd-placeholder-img" width="100%" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image</text></svg></div><div class="col-md-8"><div class="card-body"><h5 class="card-title">Card title</h5><p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p><p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p></div></div></div></div>'
+					}
+				],
+			};
+		}
+	]]></menu_js>
+</widget>

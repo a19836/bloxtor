@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="routers">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="router">
+		  			<xs:complexType mixed="1">
+		  				<xs:choice minOccurs="0" maxOccurs="unbounded">
+		  					<xs:element name="to_search" type="valueType" minOccurs="0" maxOccurs="1" />
+		  					<xs:element name="to_replace" type="valueType" minOccurs="0" maxOccurs="1" />
+		  				</xs:choice>
+	  					
+	  					<xs:attribute name="to_search" type="xs:string" />
+						<xs:attribute name="to_replace" type="xs:string" />
+					</xs:complexType>
+		  		</xs:element>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="valueType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="value" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>

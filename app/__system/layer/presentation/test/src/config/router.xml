@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routers>
+	<!-- Note that the to_search and to_replace attributes gets executed every request. If you use <? instead of &lt;, the php code will only be executed once, when this .xml file gets parsed, which may work for static or constant variables... -->
+	
+	<router to_search="(.*)tests/router/([0-9]*)" to_replace="&lt;?php echo $input[0];?&gt;tests/router/?value=&lt;?php echo $input[1];?&gt;" />
+	<!--router>
+		<to_search>(.*)tests/router/([0-9]*)</to_search>
+		<to_replace>&lt;?php echo $input[0];?&gt;tests/router/?value=&lt;?php echo $input[1];?&gt;</to_replace>
+	</router-->
+	
+	<router to_search="(.*)/admin/(.*)/display/([0-9]*)" to_replace="&lt;?php echo $input[0];?&gt;/admin/item/display/&lt;?php echo $input[2].'/'.$input[1];?&gt;" />
+</routers>

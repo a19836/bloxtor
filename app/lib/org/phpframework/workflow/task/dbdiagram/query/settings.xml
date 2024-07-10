@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+	<label>QUERY</label>
+	<tag>query</tag>
+	<files>
+		<task_properties_html>WorkFlowTaskHtml.php</task_properties_html>
+		<connection_properties_html>WorkFlowConnectionHtml.php</connection_properties_html>
+		<css>../../common/css/global.css</css>
+		<css>../common/css/global.css</css>
+		<css>css/WorkFlowTask.css</css>
+		<js>../../common/js/global.js</js>
+		<js>../common/js/global.js</js>
+		<js>js/WorkFlowTask.js</js>
+	</files>
+	<settings>
+		<task_menu>
+			<show_properties_menu>false</show_properties_menu>
+		</task_menu>
+		<connection_menu>
+			<show_set_label_menu>false</show_set_label_menu>
+			<show_overlay_types_menu>false</show_overlay_types_menu>
+		</connection_menu>
+		<callback>
+			<on_load_connection_properties>DBQueryTaskPropertyObj.onLoadConnectionProperties</on_load_connection_properties>
+			<on_submit_connection_properties>DBQueryTaskPropertyObj.onSubmitConnectionProperties</on_submit_connection_properties>
+			<on_complete_connection_properties>DBQueryTaskPropertyObj.onCompleteConnectionProperties</on_complete_connection_properties>
+			<on_cancel_connection_properties>DBQueryTaskPropertyObj.onCancelConnectionProperties</on_cancel_connection_properties>
+			
+			<on_start_task_label>DBQueryTaskPropertyObj.onStartLabel</on_start_task_label>
+			<on_check_task_label>DBQueryTaskPropertyObj.onCheckLabel</on_check_task_label>
+			<on_complete_task_label>DBQueryTaskPropertyObj.onCompleteLabel</on_complete_task_label>
+			<on_cancel_task_label>DBQueryTaskPropertyObj.onCompleteLabel</on_cancel_task_label>
+			
+			<on_complete_select_start_task>DBQueryTaskPropertyObj.onCompleteSelectStartTask</on_complete_select_start_task>
+			
+			<on_success_task_creation>DBQueryTaskPropertyObj.onTaskCreation</on_success_task_creation>
+			
+			<on_success_connection_drag>DBQueryTaskPropertyObj.onSuccessConnectionDrag</on_success_connection_drag>
+			<on_success_connection_drop>DBQueryTaskPropertyObj.onSuccessConnectionDrop</on_success_connection_drop>
+			<on_success_connection_deletion>DBQueryTaskPropertyObj.onSuccessConnectionDeletion</on_success_connection_deletion>
+			
+			<on_show_task_menu>DBQueryTaskPropertyObj.onShowTaskMenu</on_show_task_menu>
+			
+			<on_click_connection>showConnectionPropertiesIfExists</on_click_connection>
+		</callback>
+		<center_inner_elements>false</center_inner_elements>
+	</settings>
+</task>

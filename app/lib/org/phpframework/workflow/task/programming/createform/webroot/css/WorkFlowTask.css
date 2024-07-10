@@ -1,0 +1,355 @@
+.taskflowchartmenu .task.task_createform {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_createform .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_createform .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.create_form_task_html {
+	width:760px;
+	margin-top:20px;
+	position:relative;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html {
+	width:100%;
+}
+.create_form_task_html > .info {
+	text-align:center;
+	margin-bottom:15px;
+}
+.create_form_task_html .form_settings, .create_form_task_html .form_input {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.create_form_task_html .form_settings label {
+	width:115px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_settings label {
+	width:100px;
+}
+.create_form_task_html .form_input label {
+	width:120px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_input label {
+	width:100px;
+}
+.create_form_task_html .form_action .search {
+	display:none;
+	float:none;
+}
+.create_form_task_html.with_search .form_action .search {
+	display:inline-block;
+}
+.create_form_task_html .form_settings input, .create_form_task_html .form_input input {
+	width:200px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_settings input, 
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_input input {
+	width:calc(100% - 175px);
+	margin:0;
+}
+.create_form_task_html .form_settings select, .create_form_task_html .form_input select {
+	display:inline-block;
+	float:none;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_settings select, 
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_input select {
+	width:60px;
+}
+.create_form_task_html .form_settings .add_variable, .create_form_task_html .form_input .add_variable {
+	margin-left:-23px;
+}
+.create_form_task_html .form_settings .search, .create_form_task_html .form_input .search {
+	margin-right:7px;
+}
+.create_form_task_html .form_containers .add {
+	
+}
+.create_form_task_html .form_containers .label_extra_attributes .add, 
+   .create_form_task_html .form_containers .input_extra_attributes .add, 
+   .create_form_task_html .form_containers .help_extra_attributes .add, 
+   .create_form_task_html .form_containers .input_options .add {
+	margin-top:0px;
+}
+
+.create_form_task_html hr {
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+/* PREPARING ARRAY SETTINGS */
+.create_form_task_html .form_settings_data .items {
+	margin-top:-25px;
+	margin-left:180px;
+	position:absolute;
+}
+.create_form_task_html .form_input_data .items {
+	margin-top:-23px;
+	margin-left:200px;
+	position:absolute;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_settings_data .items,
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_input_data .items {
+	margin-top:-24px;
+	margin-left:160px;
+}
+.create_form_task_html .form_settings_data li .items, .create_form_task_html .form_input_data li .items {
+	margin-top:0;
+	margin-left:0;
+	position:relative;
+}
+
+/* FORM CSS && JS */
+.create_form_task_html  .form_css label, 
+   .create_form_task_html  .form_js label {
+	display:block;
+	width:100%;
+}
+.create_form_task_html .form_css, 
+   .create_form_task_html .form_js {
+	width:100%;
+	margin-top:10px;
+	float:none;
+	clear:left;
+}
+.create_form_task_html .form_css textarea.editor, 
+   .create_form_task_html .form_js textarea.editor,
+   .create_form_task_html .form_css .ace_editor,
+   .create_form_task_html .form_js .ace_editor {
+	width:725px;
+	min-height:100px;
+	margin:0px;
+	border-top:1px inset #CCC;
+	background-color:#F7F7F7;
+	clear:both;
+	float:none;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_css textarea.editor, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_js textarea.editor,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_css .ace_editor,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_js .ace_editor {
+	width:100%;
+}
+.create_form_task_html .form_css textarea.task_property_field, 
+   .create_form_task_html .form_js textarea.task_property_field {
+	display:none;
+}
+
+
+/* RESULT */
+.create_form_task_html .result {
+	border:0;
+	margin-top:0;
+	padding-top:0;
+}
+
+/* FORM FIELDS */
+/*.create_form_task_html .form_containers .table_add {
+	display:none;
+}
+.create_form_task_html .form_containers .pagination .rows_per_page {
+	display:none;
+}*/
+
+/* INLINE SETTINGS */
+.create_form_task_html .with_form {
+	width:100px;
+	min-height:20px;
+	margin-top:-25px;
+	margin-left:190px;
+	margin-bottom:5px;
+	position:absolute;
+	clear:none;
+	float:left;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .with_form {
+	width:100%;
+	float:none;
+	position:static;
+	margin:0 0 5px 0;
+}
+.create_form_task_html .form_id,
+   .create_form_task_html .form_class {
+	width:340px;
+	min-height:20px;
+	margin-bottom:5px;
+	clear:none;
+	float:left;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_id,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_class {
+	width:100%;
+}
+.create_form_task_html .form_method,
+   .create_form_task_html .form_type {
+	width:390px;
+	min-height:20px;
+	margin-bottom:5px;
+	clear:none;
+	float:left;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_method,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_type {
+	width:100%;
+}
+.create_form_task_html .form_on_submit,
+   .create_form_task_html .form_action {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+	clear:left;
+	float:none;
+}
+.create_form_task_html .form_action {
+	margin-bottom:10px;
+}
+.create_form_task_html .with_form label {
+	width:150px;
+	display:none;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .with_form label {
+	width:100px;
+	display:inline-block;
+}
+.create_form_task_html .form_id label,
+   .create_form_task_html .form_class label,
+   .create_form_task_html .form_action label,
+   .create_form_task_html .form_on_submit label {
+	width:115px;
+}
+.create_form_task_html .form_method label,
+   .create_form_task_html .form_type label {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_id label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_class label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_action label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_on_submit label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_method label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_type label {
+	width:100px;
+}
+.create_form_task_html .form_id input,
+   .create_form_task_html .form_class input {
+	width:190px;
+	padding-right:20px;
+}
+.create_form_task_html .form_on_submit input,
+   .create_form_task_html .form_action input {
+	width:585px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_id input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_class input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_on_submit input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_action input {
+	width:calc(100% - 130px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html.with_search .form_action input {
+	width:calc(100% - 155px);
+}
+.create_form_task_html .form_action .add_variable {
+	margin-left:-22px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .form_action .add_variable {
+	margin-left:-18px;
+}
+
+/* PTL */
+.create_form_task_html .ptl_settings > textarea.task_property_field {
+	display:none;
+}
+.create_form_task_html .ptl_settings > .ptl_external_vars {
+	width:265px;
+	margin:5px 15px 10px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .ptl_settings > .ptl_external_vars {
+	width:100%;
+	margin-left:0;
+	margin-right:0;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_form_task_html .ptl_settings > .ptl_external_vars ul {
+	min-width:auto;
+}
+.create_form_task_html .ptl_settings .ptl_external_vars .group_add,
+  .create_form_task_html .ptl_settings .ptl_external_vars .key_type,
+  .create_form_task_html .ptl_settings .ptl_external_vars .value_type {
+	display:none;
+}
+.create_form_task_html .ptl_settings .ptl_external_vars ul,
+  .create_form_task_html .ptl_settings .ptl_external_vars .item {
+	min-width:auto;
+}
+.create_form_task_html .ptl_settings > .input_data_var_name,
+  .create_form_task_html .ptl_settings > .idx_var_name {
+	padding:10px 15px;
+	display:inline-block;
+}
+.create_form_task_html .ptl_settings > .input_data_var_name {
+	display:none; /* 20190607: I think this field it isn't necessary, bc it will only be shown in the ptl editor, which means the ptl code was already converted, so the user might not need the input_data_var_name anymore.
+	The only situation where the user can use the input_data_var_name, is to change the var input_data to something else. But he can do it via ptl code too. so this variable here doesn't make too much sense. */
+}
+.create_form_task_html .ptl_settings > .idx_var_name {
+	display:none; /* 20190607: I think this doesn't make sense bc the idx_var_name field will only be shown in the ptl editor, which means the ptl code was already converted. The idx_var_name is to be used by the HtmlFormHandler to converts the fields in ptl. If they are already converted, we don't need the idx_var_name anymore to be shown, bc it won't be used! */
+}
+.create_form_task_html .ptl_settings > .input_data_var_name {
+	margin-right:50px;
+}
+.create_form_task_html .ptl_settings > .input_data_var_name label,
+  .create_form_task_html .ptl_settings > .idx_var_name label {
+	margin-right:10px;
+}
+
+/* UI EDITOR */
+.create_form_task_html .ptl_settings > .layout-ui-editor {
+	border:1px solid #ddd;
+	z-index:9999;
+}
+.create_form_task_html .ptl_settings > .layout-ui-editor > .menu-widgets, 
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .menu-layers, 
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .menu-settings, 
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .template-widgets-options,
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .template-widgets,
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .resize-panels,
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .messages {
+	bottom:0 !important;
+}
+.create_form_task_html .ptl_settings > .layout-ui-editor > .template-source > textarea,
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .template-source > .ace_editor {
+	
+}
+.create_form_task_html .ptl_settings > .layout-ui-editor > .template-source > textarea {
+	min-height:200px;
+}
+.create_form_task_html .ptl_settings > .layout-ui-editor > .tabs {
+	background:#fff;
+	font-size:10px;
+}
+.create_form_task_html .ptl_settings > .layout-ui-editor > .options .options-left,
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .options .options-center,
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .options .options-right,
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .options .options-right-2 {
+	padding-top:7px;
+}
+.create_form_task_html .ptl_settings > .layout-ui-editor > .options .option.option-screen-width, 
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .options .option.option-screen-height,
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .options .option.option-px,
+  .create_form_task_html .ptl_settings > .layout-ui-editor > .options .option.option-x {
+	height:auto;
+	font-size:10px;
+	display:none;
+}
+.create_form_task_html .ptl_settings > .layout-ui-editor > .tabs .tab.view-page {
+	opacity:.4;
+	float:left;
+}
+
+body > .menu-widget.ui-draggable-dragging {
+	z-index:9999;
+}

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>List Item</label>
+	<tag>listitem</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_class>droppable</template_class>
+		<create_widget_class>ListItemWidget</create_widget_class>
+	</settings>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-listitem:before,
+		  body > .menu-widget.menu-widget-listitem.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function ListItemWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.listitem.parseHtml",
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.listitem.onCloneMenuWidget",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.listitem.onCreateTemplateWidget",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeName.toLowerCase() == "li") {
+					html_element = $(html_element);
+					
+					return {
+						droppable: html_element,
+					};
+				}
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) {
+					var elm = document.createElement('li');
+					return ui_creator.getNewTemplateWidgetBasedInHtmlElement(widget, elm, null);
+				}
+				
+				return ui_creator.onCloneMenuWidget(widget, html_element);
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (html_element) {
+					if (html_element.childNodes.length == 0)
+						$(html_element).append("&nbsp;"); //add speace by default, like the browsers do by default. This space will be removed on save action.
+				}
+				else {
+					widget.append("&nbsp;"); //add space by default, like the browsers do by default. This space will be removed on save action.
+					
+					widget.attr("style", "min-width:20px; min-height:20px;");
+				}
+			};
+		}
+	]]></menu_js>
+</widget>

@@ -1,0 +1,60 @@
+.taskflowchartmenu .task.task_callobjectmethod {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_callobjectmethod .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_callobjectmethod .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.call_object_method_task_html {
+	width:430px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_object_method_task_html {
+	width:100%;
+}
+
+.call_object_method_task_html .method_obj_name {
+	/*margin-top:15px;*/
+}
+.call_object_method_task_html .method_obj_name,
+   .call_object_method_task_html .method_name,
+   .call_object_method_task_html .method_static {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.call_object_method_task_html .method_obj_name label,
+   .call_object_method_task_html .method_name label,
+   .call_object_method_task_html .method_static label,
+   .call_object_method_task_html .include_file label {
+	width:115px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_object_method_task_html .method_obj_name label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_object_method_task_html .method_name label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_object_method_task_html .method_static label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_object_method_task_html .include_file label {
+	width:90px;
+}
+.call_object_method_task_html .method_obj_name input,
+   .call_object_method_task_html .method_name input {
+	width:180px;
+	padding-right:20px; 
+}
+.call_object_method_task_html .include_file input[type=text] {
+	width:calc(100% - 255px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_object_method_task_html .method_obj_name input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_object_method_task_html .method_name input {
+	width:calc(100% - 145px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_object_method_task_html .include_file input[type=text] {
+	width:calc(100% - 240px);
+}
+.call_object_method_task_html .method_name .add_variable.inline {
+	margin-left:-21px;
+}
+
+

@@ -1,0 +1,72 @@
+.taskflowchartmenu .task.task_throwexception {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_throwexception .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_throwexception .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.throw_exception_task_html {
+	width:390px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .throw_exception_task_html {
+	width:100%;
+}
+
+.throw_exception_task_html .class_name {
+	width:100%;
+	min-height:20px;
+	/*margin-top:15px;*/
+	margin-bottom:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .throw_exception_task_html .class_name {
+	margin-top:0;
+}
+.throw_exception_task_html hr {
+	float:none;
+	clear:left;
+}
+.throw_exception_task_html .exception_type {
+	margin-bottom:10px;
+	min-height:20px;
+}
+.throw_exception_task_html .result {
+	margin-top:10px;
+}
+.throw_exception_task_html .exception_var_name {
+	margin:10px 0 5px;
+	min-height:20px;
+}
+.throw_exception_task_html .exception_type label, 
+   .throw_exception_task_html .exception_var_name label,
+   .throw_exception_task_html .exception_var_type label {
+	width:120px;
+	height:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .throw_exception_task_html .exception_type label, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .throw_exception_task_html .exception_var_name label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .throw_exception_task_html .exception_var_type label {
+	width:75px;
+}
+.throw_exception_task_html .class_name label {
+	width:160px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .throw_exception_task_html .class_name label {
+	width:110px;
+}
+.throw_exception_task_html .class_name input, 
+   .throw_exception_task_html .exception_var_name input {
+	width:190px;   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .throw_exception_task_html .class_name input {
+	width:calc(100% - 145px);   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .throw_exception_task_html .exception_var_name input {
+	width:calc(100% - 90px);   
+}
+
+
+

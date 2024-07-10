@@ -1,0 +1,129 @@
+.taskflowchartmenu .task.task_upload {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_upload .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_upload .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.upload_task_html {
+	width:390px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html {
+	width:100%;
+	box-sizing:border-box;
+}
+.upload_task_html > .info {
+	text-align:center;
+	margin-bottom:15px;
+}
+.upload_task_html > .info a {
+	color:var(--link-color);
+}
+.upload_task_html .file,
+   .upload_task_html .dst_folder,
+   .upload_task_html .vldt_type {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.upload_task_html .vldt_type .array_items > .items {
+	position:absolute;
+	margin-top:-23px;
+	margin-left:170px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html .vldt_type .array_items > .items {
+	margin-left:160px;
+}
+.upload_task_html .file label,
+   .upload_task_html .dst_folder label,
+   .upload_task_html .vldt_type .main_label {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html .file label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html .dst_folder label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html .vldt_type .main_label {
+	width:90px;
+}
+.upload_task_html .file input {
+	width:190px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.upload_task_html .dst_folder input {
+	width:171px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html .file input {
+	width:calc(100% - 190px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html .dst_folder input {
+	width:calc(100% - 208px);
+}
+.upload_task_html .file select,
+   .upload_task_html .dst_folder select {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+	float:none;
+	display:inline-block;
+	margin-bottom:0;
+}
+.upload_task_html .file .add_variable,
+  .upload_task_html .dst_folder .add_variable {
+	margin-left:-23px;
+}
+.upload_task_html .dst_folder .search {
+	margin:0 5px 0 0;
+}
+.upload_task_html .vldt_type .validation_code {
+	width:190px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html .vldt_type .validation_code {
+	width:calc(100% - 190px);
+}
+.upload_task_html .vldt_type .validation_type {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+	float:none;
+	display:inline-block;
+	margin-bottom:0;
+}
+.upload_task_html .vldt_type > .add_variable {
+	margin-left:-23px;
+}
+.upload_task_html .vldt_type .validation.array_items .group_add,
+  .upload_task_html .vldt_type .validation.array_items .key,
+  .upload_task_html .vldt_type .validation.array_items .key_type {
+	display:none !important;
+}
+.upload_task_html .validation.array_items input.value {
+	width:calc(100% - 120px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html .vldt_type .validation.array_items input.value {
+	width:calc(100% - 50px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html .vldt_type .validation.array_items select.value_type {
+	right:25px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .upload_task_html .vldt_type .validation.array_items li.item:hover:before {
+	width:calc(100% - 28px);
+}
+.upload_task_html .vldt_type .info {
+	margin-top:10px;
+	margin-bottom:10px;
+}

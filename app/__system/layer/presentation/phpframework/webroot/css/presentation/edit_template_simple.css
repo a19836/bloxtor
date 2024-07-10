@@ -1,0 +1,165 @@
+/* TOP BAR */
+.top_bar {
+	margin-bottom:10px;
+}
+.top_bar header {
+	z-index:6;
+}
+.top_bar header .title {
+	max-width:calc(100% - 290px);
+}
+.top_bar li.preview .icon.view::before {
+	margin-top:1px;
+	display:block;
+}
+
+.top_bar:not(.with_advanced_options) .advanced_option {
+	display:none;
+}
+
+
+/* TEMPLATE OBJ */
+.template_obj {
+	width:100%;
+	overflow:hidden;
+	margin:0 auto;
+	padding:0;
+	border:0;
+}
+.template_obj:not(.with_advanced_options) .advanced_option {
+	display:none;
+}
+
+/* Template Preview */
+.template_obj #preview {
+	width:auto !important;
+	height:auto !important;
+	position:fixed !important;
+	top:5px !important;
+	left:5px !important;
+	right:5px !important;
+	bottom:5px !important;
+	padding:0 !important;
+}
+.template_obj #preview iframe {
+	width:100%;
+	height:100%;
+	height:calc(100% - 65px);
+	box-sizing:border-box;
+	border:none;
+}
+
+/* Code Editor - Body */
+.template_obj .code_layout_ui_editor {
+	height:calc(100vh - 86px);
+	min-height:300px;
+	padding:0 !important;
+	position:relative;
+	/*border:0;*/
+}
+.template_obj .code_layout_ui_editor .code_menu.top_bar_menu {
+	right:217px;
+}
+.template_obj .code_layout_ui_editor .code_menu.top_bar_menu li.editor_full_screen,
+  .template_obj .code_layout_ui_editor .code_menu.top_bar_menu li.sub_menu,
+  .template_obj .code_layout_ui_editor .code_menu.top_bar_menu li.save {
+	display:none;
+}
+
+/* Code Editor - Body - ELS UI */
+.template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .options-right {
+	right:91px;
+	z-index:7;
+}
+.template_obj:not(.with_advanced_options) .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .options-right {
+	display:none;
+}
+.template_obj.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .options-right {
+	right:127px;
+	color:var(--main-popup-header-color);
+}
+.template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:224px;
+	z-index:7;
+}
+.template_obj:not(.with_advanced_options) .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:111px;
+}
+.template_obj.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:260px;
+	color:var(--main-popup-header-color);
+}
+.template_obj.in_popup:not(.with_advanced_options) .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:147px;
+}
+.template_obj:not(.with_advanced_options) .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center .layout-in-desktop {
+	padding-right:18px;
+	right:-15px;
+	border-right:1px solid var(--main-context-menu-border);
+}
+.template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .options-left .option.save,
+  .template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .options-right .option.full-screen {
+	display:none !important;
+}
+.template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-properties.menu-settings-shown > .menu-settings {
+	margin-bottom:35px;
+}
+.template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-properties.menu-settings-shown > .template-widgets,
+  .template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-properties.menu-settings-shown > .menu-widgets, 
+  .template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-properties.menu-settings-shown > .menu-layers,
+  .template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-properties.menu-settings-shown > .template-widgets-options,
+  .template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-properties.menu-settings-shown > .resize-panels,
+  .template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-properties.menu-settings-shown > .layout_ui_editor_right_container {
+	margin-bottom:5px;
+}
+.template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-side-properties.menu-settings-shown > .template-widgets,
+  .template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-side-properties.menu-settings-shown > .menu-widgets, 
+  .template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-side-properties.menu-settings-shown > .menu-layers,
+  .template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-side-properties.menu-settings-shown > .template-widgets-options {
+	margin-bottom:0;
+}
+
+/* Settings */
+.template_obj .regions_blocks_includes_settings .defined_regions,
+  .template_obj .regions_blocks_includes_settings .defined_template_params {
+	display:none;
+}
+
+/*.template_obj .regions_blocks_includes_settings .update_automatically:not(.icon) {
+	width:250px;
+	position:absolute;
+	right:5px;
+	color:#777;
+	font-size:90%;
+	text-align:right;
+	opacity:.8;
+}
+.template_obj .regions_blocks_includes_settings .update_automatically:not(.icon):hover {
+	opacity:1;
+}*/
+
+.template_obj .regions_blocks_includes_settings .head textarea, 
+  .template_obj .regions_blocks_includes_settings .head .ace_editor {
+	width:100%;
+	height:200px;
+	border:0;
+	border:.5px solid #ddd;
+	margin:0;
+	box-sizing:border-box;
+}
+.template_obj .regions_blocks_includes_settings .css_files > ul li.from_body .icon,
+  .template_obj .regions_blocks_includes_settings .js_files > ul li.from_body .icon {
+	opacity:.3;
+}
+
+.template_obj .regions_blocks_includes_settings .template_params .items .item > input[type=checkbox] {
+  	/*visibility:hidden;*/
+}
+
+/* To print the workflow */
+@media print {
+	.template_obj {
+		overflow:visible !important;
+		border:0 !important;
+	}
+}

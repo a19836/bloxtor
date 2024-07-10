@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Header</label>
+	<tag>bsheader</tag>
+	<settings>
+		<create_widget_class>BSHeaderWidget</create_widget_class>
+	</settings>
+	<files>
+		<css>../../CreateWidgetBootstrapClassObj.css</css>
+		<js>../../CreateWidgetBootstrapClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bsheader:before,
+		  body > .menu-widget.menu-widget-bsheader.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .myfancypopup.layout-ui-editor-bootstrap-widgets-popup.bsheader > .content > ul > li img {
+			height:30px;
+			max-width:300px;
+		}
+		.layout-ui-editor > .myfancypopup.layout-ui-editor-bootstrap-widgets-popup.bsheader > .content > ul > li.large img {
+			height:auto;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSHeaderWidget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapClassObj(ui_creator, menu_widget, "bsheader");
+			obj.extend(this);
+			
+			obj.available_items = {
+				"5.3": [
+					{
+						image: '#widget_webroot_url#header_1.png',
+						name: '',
+						html: '<header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom"><a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"><svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg><span class="fs-4">Simple header</span></a><ul class="nav nav-pills"><li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li><li class="nav-item"><a href="#" class="nav-link">Features</a></li><li class="nav-item"><a href="#" class="nav-link">Pricing</a></li><li class="nav-item"><a href="#" class="nav-link">FAQs</a></li><li class="nav-item"><a href="#" class="nav-link">About</a></li></ul></header>',
+						title: 'Needs Bootstrap bi classes to be installed'
+					},
+					{
+						image: '#widget_webroot_url#header_2.png',
+						name: '',
+						html: '<header class="d-flex justify-content-center py-3"><ul class="nav nav-pills"><li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li><li class="nav-item"><a href="#" class="nav-link">Features</a></li><li class="nav-item"><a href="#" class="nav-link">Pricing</a></li><li class="nav-item"><a href="#" class="nav-link">FAQs</a></li><li class="nav-item"><a href="#" class="nav-link">About</a></li></ul></header>'
+					},
+					{
+						image: '#widget_webroot_url#header_3.png',
+						name: '',
+						html: '<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom"><div class="col-md-3 mb-2 mb-md-0"><a href="/" class="d-inline-flex link-body-emphasis text-decoration-none"><svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg></a></div><ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0"><li><a href="#" class="nav-link px-2 link-secondary">Home</a></li><li><a href="#" class="nav-link px-2">Features</a></li><li><a href="#" class="nav-link px-2">Pricing</a></li><li><a href="#" class="nav-link px-2">FAQs</a></li><li><a href="#" class="nav-link px-2">About</a></li></ul><div class="col-md-3 text-end"><button type="button" class="btn btn-outline-primary me-2">Login</button><button type="button" class="btn btn-primary">Sign-up</button></div></header>'
+					},
+					{
+						image: '#widget_webroot_url#header_4.png',
+						name: '',
+						html: '<header class="p-3 text-bg-dark bg-dark"><div class="container"><div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"><a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"><svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg></a><ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"><li><a href="#" class="nav-link px-2 text-secondary">Home</a></li><li><a href="#" class="nav-link px-2 text-white">Features</a></li><li><a href="#" class="nav-link px-2 text-white">Pricing</a></li><li><a href="#" class="nav-link px-2 text-white">FAQs</a></li><li><a href="#" class="nav-link px-2 text-white">About</a></li></ul><form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"><input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search"></form><div class="text-end"><button type="button" class="btn btn-outline-light me-2">Login</button><button type="button" class="btn btn-warning">Sign-up</button></div></div></div></header>',
+						title: 'Needs Bootstrap bi classes to be installed'
+					},
+					{
+						image: '#widget_webroot_url#header_5.png',
+						name: '',
+						html: '<header class="p-3 mb-3 border-bottom"><div class="container"><div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"><a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"><svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg></a><ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"><li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li><li><a href="#" class="nav-link px-2 link-body-emphasis">Inventory</a></li><li><a href="#" class="nav-link px-2 link-body-emphasis">Customers</a></li><li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li></ul><form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"><input type="search" class="form-control" placeholder="Search..." aria-label="Search"></form><div class="dropdown text-end"><a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle"></a><ul class="dropdown-menu text-small"><li><a class="dropdown-item" href="#">New project...</a></li><li><a class="dropdown-item" href="#">Settings</a></li><li><a class="dropdown-item" href="#">Profile</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="#">Sign out</a></li></ul></div></div></div></header>',
+						title: 'Needs Bootstrap bi classes to be installed'
+					},
+					{
+						image: '#widget_webroot_url#header_6.png',
+						name: '',
+						html: '<header class="py-3 mb-3 border-bottom"><div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;"><div class="dropdown"><a href="#" class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg></a><ul class="dropdown-menu text-small shadow"><li><a class="dropdown-item active" href="#" aria-current="page">Overview</a></li><li><a class="dropdown-item" href="#">Inventory</a></li><li><a class="dropdown-item" href="#">Customers</a></li><li><a class="dropdown-item" href="#">Products</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="#">Reports</a></li><li><a class="dropdown-item" href="#">Analytics</a></li></ul></div><div class="d-flex align-items-center"><form class="w-100 me-3" role="search"><input type="search" class="form-control" placeholder="Search..." aria-label="Search"></form><div class="flex-shrink-0 dropdown"><a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle"></a><ul class="dropdown-menu text-small shadow"><li><a class="dropdown-item" href="#">New project...</a></li><li><a class="dropdown-item" href="#">Settings</a></li><li><a class="dropdown-item" href="#">Profile</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="#">Sign out</a></li></ul></div></div></div></header><div class="container-fluid pb-3"><div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;"><div class="bg-body-tertiary border rounded-3"><br><br><br><br><br><br><br><br><br><br></div><div class="bg-body-tertiary border rounded-3"><br><br><br><br><br><br><br><br><br><br></div></div></div>',
+						title: 'Needs Bootstrap bi classes to be installed'
+					},
+					{
+						image: '#widget_webroot_url#header_7.png',
+						name: '',
+						html: '<nav class="py-2 bg-body-tertiary border-bottom"><div class="container d-flex flex-wrap"><ul class="nav me-auto"><li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a></li><li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Features</a></li><li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Pricing</a></li><li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">FAQs</a></li><li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">About</a></li></ul><ul class="nav"><li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Login</a></li><li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Sign up</a></li></ul></div></nav><header class="py-3 mb-4 border-bottom"><div class="container d-flex flex-wrap justify-content-center"><a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none"><svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg><span class="fs-4">Double header</span></a><form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search"><input type="search" class="form-control" placeholder="Search..." aria-label="Search"></form></div></header>',
+						title: 'Needs Bootstrap bi classes to be installed'
+					},
+					{
+						image: '#widget_webroot_url#header_8.png',
+						name: '',
+						html: '<header><div class="px-3 py-2 text-bg-dark bg-dark border-bottom"><div class="container"><div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"><a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none"><svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg></a><ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small"><li><a href="#" class="nav-link text-secondary"><svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#home"></use></svg>Home</a></li><li><a href="#" class="nav-link text-white"><svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#speedometer2"></use></svg>Dashboard</a></li><li><a href="#" class="nav-link text-white"><svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#table"></use></svg>Orders</a></li><li><a href="#" class="nav-link text-white"><svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"></use></svg>Products</a></li><li><a href="#" class="nav-link text-white"><svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#people-circle"></use></svg>Customers</a></li></ul></div></div></div><div class="px-3 py-2 border-bottom mb-3"><div class="container d-flex flex-wrap justify-content-center"><form class="col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto" role="search"><input type="search" class="form-control" placeholder="Search..." aria-label="Search"></form><div class="text-end"><button type="button" class="btn btn-light text-dark me-2">Login</button><button type="button" class="btn btn-primary">Sign-up</button></div></div></div></header>',
+						title: 'Needs Bootstrap bi classes to be installed'
+					},
+					{
+						image: '#widget_webroot_url#header_9.png',
+						name: '',
+						html: '<header class="p-3" style="background-image: linear-gradient(180deg, #e9ecef, #fff 100px, #fff);"><div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom"><a href="/" class="d-flex align-items-center link-body-emphasis text-decoration-none"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="32" class="me-2" viewBox="0 0 118 94" role="img"><title>Bootstrap</title><path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z" fill="currentColor"></path></svg><span class="fs-4">Pricing example</span></a><nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto"><a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Features</a><a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Enterprise</a><a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Support</a><a class="py-2 link-body-emphasis text-decoration-none" href="#">Pricing</a></nav></div><div class="pricing-header p-3 pb-md-4 mx-auto text-center"><h1 class="display-4 fw-normal text-body-emphasis">Pricing</h1><p class="fs-5 text-body-secondary">Quickly build an effective pricing table for your potential customers with this Bootstrap example. It’s built with default Bootstrap components and utilities with little customization.</p></div></header>',
+						class: 'large'
+					}
+				],
+			};
+		}
+	]]></menu_js>
+</widget>

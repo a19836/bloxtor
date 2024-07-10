@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<services>
+		<service id="Item" file="item_subitem.xml" obj="ItemObj" />
+		<service id="SubItem" file="item_subitem.xml" obj="SubItemObj" />
+	</services>
+</beans>

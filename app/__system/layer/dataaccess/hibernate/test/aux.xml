@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<sql_mapping>
+	<import relative="1">import_1.xml</import>
+	
+	<class name="EmployeeModel" table="item" extends="vendor.dao.test.MyEmployee">
+		<import relative="1">import_2.xml</import>
+		
+		<id column="id">
+			<generator type="increment" />
+			<!--generator type="assign" /-->
+			<!--generator type="select">select NOW() from dual</generator-->
+			<!--generator type="md5" /-->
+			<!--generator type="hidden" /-->
+		</id>
+		<id column="user_id" />
+		
+		<!--parameter_class>org.phpframework.object.php.HashMap</parameter_class-->
+		<parameter_map>
+			<parameter input_name="pk_id" output_name="id" input_type="org.phpframework.object.php.Primitive(int)" output_type="org.phpframework.object.db.DBPrimitive(int)" mandatory="1" />
+			<parameter input_name="name" output_name="title" input_type="org.phpframework.object.php.Primitive(string)" output_type="org.phpframework.object.db.DBPrimitive(varchar)" />
+			<parameter input_name="status" output_name="status" input_type="org.phpframework.object.php.Primitive(int)" output_type="org.phpframework.object.db.DBPrimitive(int)" mandatory="0" />
+		</parameter_map>
+		
+		<!--result_class>vendor.dao.test.MyItem</result_class-->
+		<result_map>
+			<result output_name="name" input_name="name" output_type="org.phpframework.object.php.MyString" input_type="org.phpframework.object.db.DBPrimitive(varchar)" mandatory="0" />
+			<result output_name="status" input_name="status" output_type="org.phpframework.object.php.Primitive(int)" input_type="org.phpframework.object.db.DBPrimitive(int)" mandatory="1" />
+		</result_map>
+		
+		<relationships>
+			<import relative="1">import_3.xml</import>
+			
+			<!--result_map id="SubItemsResultMap"-->
+			<result_map id="SubItemsResultMap" class="vendor.dao.test.Test">
+				<result output_name="Id" input_name="id" output_type="org.phpframework.object.php.Primitive(int)" input_type="org.phpframework.object.db.DBPrimitive(int)" />
+				<result output_name="itemId" input_name="item_id" output_type="org.phpframework.object.php.Primitive(int)" input_type="org.phpframework.object.db.DBPrimitive(int)" />
+				<result output_name="title" input_name="title" output_type="org.phpframework.object.php.MyString" input_type="org.phpframework.object.db.DBPrimitive(varchar)" />
+			</result_map>
+			
+			<many_to_one name="user" result_class="vendor.dao.MyUser">
+				<key pcolumn="user_id" fcolumn="id" ftable="user" />
+			</many_to_one>
+		
+			<many_to_many name="sub_items" result_map="SubItemsResultMap">
+				<!--attribute column="*" table="sub_item" />
+				<attribute column="status" table="item" /-->
+				<attribute column="*" table="item" />
+			
+				<key pcolumn="id" fcolumn="item_id" ftable="sub_item" />
+			
+				<condition column="id" table="item" operator=">" value="0" />
+			
+				<group_by column="id" table="item" />
+			
+				<limit>100</limit>
+				<start value="0" />
+			</many_to_many>
+		
+			<many_to_many name="computers" result_class="vendor.dao.MyComputer">
+				<attribute name="name" column="distinct(title)" table="computer" />
+				<attribute column="*" table="item" />
+				<attribute column="*" table="computer" />
+			
+				<key pcolumn="user_id" fcolumn="employee_id" ftable="employee_computer" join="left" /><!-- join can have the following values: inner, left, right -->
+				<key pcolumn="id" ptable="employee_computer" fcolumn="computer_id" ftable="computer" />
+				<key pcolumn="title" ptable="employee_computer">jp</key>
+				<key pcolumn="title" ptable="employee_computer" join="left">jp left</key>
+				<key fcolumn="computer_model" ftable="computer" value="hp" />
+				<key pcolumn="id" ptable="employee_computer" fcolumn="computer_id" ftable="computer" value="1" />
+				<key pcolumn="yyy" ptable="item" fcolumn="yyy" ftable="item" />
+				<key pcolumn="xxx" value="xxx" />
+				<key pcolumn="www" ptable="item" value="www" />
+				<key fcolumn="ttt" ftable="item" value="ttt" />
+			
+				<condition column="user_id" operator="!=">10</condition><!-- user_id belongs to the employee table -->
+				<condition column="type"><table value="computer" /><operator><![CDATA[<=]]></operator><value>hp</value></condition><!-- type belongs to the computer table -->
+				<condition column="xxx" table="ttt" operator="&gt;" refcolumn="yyy" reftable="www" value="10" />
+			
+				<sort column="title" table="computer" order="asc" />
+				<sort column="id" order="desc" />
+			
+				<limit>100</limit>
+				<start value="10" />
+			</many_to_many>
+		
+			<one_to_many name="payments"><!-- this relation does not have a class, so the data will be returned in a associative array. -->
+				<key pcolumn="user_id" fcolumn="employee_id" ftable="payment" />
+			</one_to_many>
+		
+			<many_to_one name="employer" result_class="vendor.dao.MyEmployer">
+				<key pcolumn="employer_id" fcolumn="user_id" ftable="employer" />
+			</many_to_one>
+		</relationships>
+		
+		<queries><!-- we can access this function directly from the model, like: $obj->insertNewObject(...) -->
+			<import relative="1">import_4.xml</import>
+			
+			<result_map id="ItemsResultMap">
+				<result output_name="name" input_name="title" output_type="org.phpframework.object.php.MyString" input_type="org.phpframework.object.db.DBPrimitive(varchar)" />
+				<result output_name="status" input_name="status" output_type="org.phpframework.object.php.Primitive(int)" input_type="org.phpframework.object.db.DBPrimitive(int)" />
+			</result_map>
+			
+			
+			<insert id="insert_new_object">
+				...
+			</insert>
+			<update id="update_me">
+				....
+			</update>
+			<delete id="delete_all">
+				....
+			</delete>
+			<select id="select_all" parameter_class="org.phpframework.object.php.HashMap">
+				select * from item where id=#id#
+			</select>
+		</queries>
+	</class>
+</sql_mapping>

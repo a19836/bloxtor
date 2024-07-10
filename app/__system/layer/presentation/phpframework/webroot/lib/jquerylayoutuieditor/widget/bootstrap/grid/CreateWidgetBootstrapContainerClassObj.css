@@ -1,0 +1,8 @@
+.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bscontainer > span:first-child,
+   body > .menu-widget.menu-widget-bscontainer.ui-draggable-dragging > span:first-child {
+	display:none;
+}
+.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bscontainer > .template-widget.row,
+   body > .menu-widget.menu-widget-bscontainer.ui-draggable-dragging > .template-widget.row {
+	display:none !important;
+}

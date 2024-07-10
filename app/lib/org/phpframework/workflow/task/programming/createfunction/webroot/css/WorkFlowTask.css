@@ -1,0 +1,56 @@
+.taskflowchartmenu .task.task_createfunction {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_createfunction .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_createfunction .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.create_function_task_html > .name,
+  .create_function_task_html > .type,
+  .create_function_task_html > .abstract,
+  .create_function_task_html > .static,
+  .create_function_task_html > .code,
+  .create_function_task_html > .arguments,
+  .create_function_task_html > .comments {
+	width:100%;
+	min-height:20px;
+	margin-top:10px;
+	margin-bottom:5px;
+}
+.create_function_task_html > .name label,
+  .create_function_task_html > .type label,
+  .create_function_task_html > .abstract label,
+  .create_function_task_html > .static label {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_function_task_html > .name label {
+	width:35px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_function_task_html > .name input {
+	width:calc(100% - 50px);
+}
+.create_function_task_html > .code label {
+	width:50px;
+}
+.create_function_task_html > .code .icon.update::before {
+	content:"\f303";
+}
+
+.create_function_task_html > .arguments > label,
+  .create_function_task_html > .comments label {
+	width:100%;
+	margin-bottom:5px;
+	display:block;
+	float:none;
+}
+.create_function_task_html > .comments textarea {
+	width:100%;
+	max-width:100%;
+	height:100px;
+	float:none;
+	box-sizing:border-box;
+}

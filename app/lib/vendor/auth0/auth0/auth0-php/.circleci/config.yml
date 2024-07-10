@@ -1,0 +1,110 @@
+version: 2.1
+
+commands:
+  prepare:
+    steps:
+      - checkout
+      - run: sudo composer self-update
+      - restore_cache:
+          keys:
+            - composer-v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.json" }}
+            - composer-v1-{{ .Environment.CIRCLE_JOB }}
+      - run: composer install -n --prefer-dist
+      - run: composer update --prefer-dist --no-interaction
+      - persist_to_workspace:
+          root: .
+          paths:
+            - composer.*
+            - .snyk
+      - save_cache:
+          key: composer-v1-{{ .Environment.CIRCLE_JOB }}-{{ checksum "composer.json" }}
+          paths:
+            - vendor
+  run-unit-tests:
+    steps:
+      - run: composer test-unit-ci
+      - store_artifacts:
+          path: build/coverage.xml
+  run-integration-tests:
+    steps:
+      - run: composer test-integration-ci
+      - store_artifacts:
+          path: build/coverage.xml
+
+jobs:
+  php_7:
+    docker:
+      - image: circleci/php:7.1
+    steps:
+      - prepare
+      - run-unit-tests
+      - run:
+          command: bash <(curl -s https://codecov.io/bash)
+          when: on_success
+  php_7_2:
+    docker:
+      - image: circleci/php:7.2
+    steps:
+      - prepare
+      - run-unit-tests
+      - run:
+          command: bash <(curl -s https://codecov.io/bash)
+          when: on_success
+  php_7_3:
+    docker:
+      - image: circleci/php:7.3
+    steps:
+      - prepare
+      - run-unit-tests
+      - run:
+          command: bash <(curl -s https://codecov.io/bash)
+          when: on_success
+  php_7_4:
+    docker:
+      - image: circleci/php:7.4
+    steps:
+      - prepare
+      - run-unit-tests
+      - run:
+          command: bash <(curl -s https://codecov.io/bash)
+          when: on_success
+  php_7_integration_tests:
+    docker:
+      - image: circleci/php:7.1
+    steps:
+      - prepare
+      - run-integration-tests
+  snyk:
+    docker:
+      - image: snyk/snyk-cli:composer
+    steps:
+      - attach_workspace:
+          at: .
+      - run: snyk test
+      - run:
+          command: |
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]
+            then
+            snyk monitor --org=auth0-sdks
+            fi
+          when: always
+
+workflows:
+  build-and-test:
+    jobs:
+      - php_7
+      - php_7_2
+      - php_7_3
+      - php_7_4
+      - snyk:
+          # Must define SNYK_TOKEN env
+          context: snyk-env
+          requires:
+            - php_7
+  integration-tests:
+    jobs:
+      - php_7_integration_tests:
+          filters:
+            branches:
+              only:
+                - master

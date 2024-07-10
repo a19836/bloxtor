@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import><?php echo $vars["business_logic_modules_common_path"]; ?>cache_handler.xml</import>
+	
+	<services>
+		<service id="TestService.getQuerySQL" module_id="test.subtest" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600"></service>
+		
+		<service id="TestService.getSQL" module_id="<?php echo $vars["current_business_logic_module_id"]; ?>" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600"></service>
+		
+		<service id="\Test\a\TestService.getSQL" module_id="<?php echo $vars["current_business_logic_module_id"]; ?>" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600"></service>
+		
+		<service id="\Test\TestService.getQuerySQL" module_id="test.subtest" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600"></service>
+	</services>
+</beans>

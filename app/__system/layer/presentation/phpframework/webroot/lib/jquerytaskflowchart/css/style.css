@@ -1,0 +1,1189 @@
+/* GENERAL */
+.taskflowchart {
+}
+
+.taskflowchart > .workflow_menu {
+	position:absolute;
+	left:0px;
+	top:0px;
+	right:0px;
+	min-height:28px; /* Note that this menu can have different heights according with the size of the window. */
+	z-index:1500;
+	/*overflow:hidden; 2020-10-15: do not add this in case the screen be too small to hide the extra menus, otherwise the sort option will not appear anymore. */
+	
+	padding: 0px;
+	border: 1px outset #999999;
+	background: #d5e3e4;
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Q1ZTNlNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0iI2NjZGVlMCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiM2M4Y2MiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-linear-gradient(top,  #d5e3e4 0%, #ccdee0 40%, #b3c8cc 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d5e3e4), color-stop(40%,#ccdee0), color-stop(100%,#b3c8cc));
+	background: -webkit-linear-gradient(top,  #d5e3e4 0%,#ccdee0 40%,#b3c8cc 100%);
+	background: -o-linear-gradient(top,  #d5e3e4 0%,#ccdee0 40%,#b3c8cc 100%);
+	background: -ms-linear-gradient(top,  #d5e3e4 0%,#ccdee0 40%,#b3c8cc 100%);
+	background: linear-gradient(to bottom,  #d5e3e4 0%,#ccdee0 40%,#b3c8cc 100%);
+	
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5e3e4', endColorstr='#b3c8cc',GradientType=0 )";
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5e3e4', endColorstr='#b3c8cc',GradientType=0 );
+}
+.taskflowchart > .workflow_menu ul.dropdown li {
+	background:none;
+	font-weight:inherit;
+}
+.taskflowchart > .workflow_menu ul.dropdown li a {
+	font-size:10px;
+}
+.taskflowchart > .workflow_menu ul.dropdown li ul {
+	background: #d5e3e4;
+}
+.taskflowchart > .workflow_menu ul.dropdown li ul li:hover {
+	background:#b3c8cc;
+}
+
+.taskflowchart > .tasks_menu {
+	position:absolute;
+	top:30px;
+	left:0px;
+	bottom:0px;
+	width:200px;
+	
+	display:block;
+	z-index:1;
+}
+.taskflowchart > .tasks_menu:not(.resizing):not(.dragging_task_menu) {
+	transition:.2s all;
+}
+.taskflowchart.reverse > .tasks_menu {
+	left:auto;
+	right:0;
+	border-right:1px solid #CCC;
+}
+.taskflowchart:not(.reverse) > .tasks_menu {
+	border-left:1px solid #CCC;
+}
+.taskflowchart > .tasks_menu.tasks_menu_hidden {
+	display:none;
+}
+.taskflowchart.fixed_properties > .tasks_menu.task_properties_shown,
+  .taskflowchart.fixed_properties > .tasks_menu.connection_properties_shown {
+	bottom:250px;
+}
+.taskflowchart.fixed_side_properties > .tasks_menu.task_properties_shown,
+  .taskflowchart.fixed_side_properties > .tasks_menu.connection_properties_shown {
+	bottom:30px;
+}
+.taskflowchart.fixed_side_properties:not(.resizable_task_properties) > .tasks_menu.task_properties_shown,
+  .taskflowchart.fixed_side_properties:not(.resizable_connection_properties) > .tasks_menu.connection_properties_shown {
+	bottom:250px;
+}
+.taskflowchart.fixed_properties > .tasks_menu.task_properties_shown.task_properties_collapsed,
+  .taskflowchart.fixed_properties > .tasks_menu.connection_properties_shown.connection_properties_collapsed {
+	bottom:30px;
+}
+
+.taskflowchart > .tasks_flow {
+	position:absolute;
+	top:30px;
+	left:205px;
+	right:0px;
+	bottom:0px;
+	
+	display:block; 
+	overflow-y:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow-y:overlay;
+	overflow-x:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow-x:overlay;
+	z-index:0;
+}
+.taskflowchart > .tasks_flow:not(.resizing) {
+	transition:.2s all;
+}
+.taskflowchart.reverse > .tasks_flow {
+	left:0;
+	right:205px;
+	border-left:1px solid #CCC;
+}
+.taskflowchart:not(.reverse) > .tasks_flow {
+	border-right:1px solid #CCC;
+}
+.taskflowchart:not(.reverse) > .tasks_flow.tasks_menu_hidden {
+	left:5px !important;
+}
+.taskflowchart.reverse > .tasks_flow.tasks_menu_hidden {
+	right:5px !important;
+}
+.taskflowchart.fixed_properties > .tasks_flow.task_properties_shown,
+  .taskflowchart.fixed_properties > .tasks_flow.connection_properties_shown {
+	bottom:250px;
+}
+.taskflowchart.fixed_properties > .tasks_flow.task_properties_shown.task_properties_collapsed,
+  .taskflowchart.fixed_properties > .tasks_flow.connection_properties_shown.connection_properties_collapsed {
+	bottom:30px;
+}
+
+.taskflowchart > .tasks_menu_hide {
+	position:absolute;
+	top:30px;
+	left:200px;
+	bottom:0px;
+	width:5px;
+	cursor:ew-resize;
+	background:url("../img/back_frame_open_close_vertical.gif") repeat-y;
+	z-index:2;
+	
+	display:block;
+}
+.taskflowchart > .tasks_menu_hide:not(.resizing) {
+	transition:.2s all;
+}
+.taskflowchart.reverse > .tasks_menu_hide {
+	left:auto;
+	right:200px;
+}
+.taskflowchart:not(.reverse) > .tasks_menu_hide.tasks_menu_hidden {
+	left:0 !important;
+}
+.taskflowchart.reverse > .tasks_menu_hide.tasks_menu_hidden {
+	right:0 !important;
+}
+.taskflowchart > .tasks_menu_hide.tasks_menu_hidden {
+	cursor:not-allowed;
+}
+.taskflowchart.fixed_properties > .tasks_menu_hide.task_properties_shown,
+  .taskflowchart.fixed_properties > .tasks_menu_hide.connection_properties_shown {
+	bottom:250px;
+}
+.taskflowchart.fixed_properties > .tasks_menu_hide.task_properties_shown.task_properties_collapsed,
+  .taskflowchart.fixed_properties > .tasks_menu_hide.connection_properties_shown.connection_properties_collapsed {
+	bottom:30px;
+}
+
+.taskflowchart > .tasks_menu_hide .button {
+	width:10px;
+	height:34px;
+	position:absolute;
+	left:0;
+	top:45%;
+	top:calc(50% - 17px);
+	cursor:pointer;
+	background-repeat:no-repeat;
+}
+.taskflowchart.reverse > .tasks_menu_hide.tasks_menu_hidden .button {
+	left:auto;
+	right:0;
+	background-position:right;
+}
+.taskflowchart:not(.reverse) > .tasks_menu_hide .button {
+	background-image:url("../img/tool_frame_left.gif");
+}
+.taskflowchart:not(.reverse) > .tasks_menu_hide.tasks_menu_hidden .button {
+	background-image:url("../img/tool_frame_right.gif");
+}
+.taskflowchart.reverse > .tasks_menu_hide .button {
+	background-image:url("../img/tool_frame_right.gif");
+}
+.taskflowchart.reverse > .tasks_menu_hide.tasks_menu_hidden .button {
+	background-image:url("../img/tool_frame_left.gif");
+}
+
+.taskflowchart .dragActive { 
+	border-style:dotted !important; 
+}
+.taskflowchart .dragHover { 
+	border-width:2px !important;
+	border-style:dotted !important; 
+}
+
+.taskflowchart path { 
+	z-index:6;
+	cursor:pointer; 
+}
+
+.taskflowchart .end_point {
+	z-index:12;
+	cursor:pointer;
+	border:0px;
+}
+
+.taskflowchart .connector { 
+	/*border:1px solid red; */
+	/*z-index:10px;*/ /* this is set through the ConnectorZIndex option */
+	/*z-index:999;*/ /*If this zindex is uncommented, then if a conector SVG is over a task, then we cannot access the task, bc it appears below the svg. */
+}
+
+.taskflowchart .connector_overlay {
+	z-index:11;
+	color:#333;
+	/*display:none;*/
+	/*background-color:#F7F7F7;*/
+}
+
+.taskflowchart > .tasks_menu .tasks_groups {
+	padding-bottom:15px;
+}
+.taskflowchart > .tasks_menu .tasks_group {
+	margin-top:15px;
+}
+.taskflowchart > .tasks_menu .tasks_group_label {
+	cursor:pointer;
+	margin:0 15px 0;
+	padding-top:15px;
+	color:#ccc;
+	opacity:.5;
+	border-top:1px dashed #ccc;
+	
+	/*border:1px outset #999999;
+	border-top:1px solid #b3c8cc;
+	background: #d5e3e4;
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Q1ZTNlNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0iI2NjZGVlMCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiM2M4Y2MiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-linear-gradient(top,  #d5e3e4 0%, #ccdee0 40%, #b3c8cc 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d5e3e4), color-stop(40%,#ccdee0), color-stop(100%,#b3c8cc));
+	background: -webkit-linear-gradient(top,  #d5e3e4 0%,#ccdee0 40%,#b3c8cc 100%);
+	background: -o-linear-gradient(top,  #d5e3e4 0%,#ccdee0 40%,#b3c8cc 100%);
+	background: -ms-linear-gradient(top,  #d5e3e4 0%,#ccdee0 40%,#b3c8cc 100%);
+	background: linear-gradient(to bottom,  #d5e3e4 0%,#ccdee0 40%,#b3c8cc 100%);
+	
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5e3e4', endColorstr='#b3c8cc',GradientType=0 )";
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5e3e4', endColorstr='#b3c8cc',GradientType=0 );*/
+}
+.taskflowchart > .tasks_menu li:nth-child(1) .tasks_group_label {
+	padding-top:0;
+	border-top:0;
+}
+.taskflowchart > .tasks_menu .tasks_group_label:hover {
+	color:#aaa;
+}
+.taskflowchart > .tasks_menu .tasks_group_label:hover:after {
+	content:"Click to collapse";
+	position:absolute;
+	right:15px;
+	display:block;
+	margin-top:-12px;
+	padding-left:5px;
+	opacity:.8;
+	font-size:80%;
+}
+.taskflowchart > .tasks_menu li.tasks_group_collapsed .tasks_group_label:hover:after {
+	content:"Click to expand";
+}
+.taskflowchart > .tasks_menu .tasks_group_tasks {
+	padding:0 8px;
+	text-align:center;
+}
+
+.taskflowchart > .tasks_menu .task {
+	width:70px;
+	height:35px;
+	line-height:35px;
+	display:inline-block;
+	overflow:hidden;
+	
+	margin:5px 5px;
+	padding: 5px 0px 5px 0px;
+	
+	font-weight:bold;
+	text-align:center;
+	color:#333;
+	font-size:0.9em;
+	
+	background-repeat:no-repeat; 
+	background-position:center center;
+	-o-background-size:100% 100%;
+	-webkit-background-size:100% 100%;
+	-moz-background-size:100% 100%;
+	background-size:100% 100%; 
+	
+	/* in IE */
+	-ms-background-size:100% 100%;
+	/*-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='100% 100%')";
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='100% 100%');*/
+	
+	z-index:3;
+	cursor:move;
+}
+.taskflowchart > .tasks_menu .task:hover {
+	opacity:0.5;
+	-ms-filter: alpha(opacity=50);
+	filter: alpha(opacity=50);
+}
+
+.taskflowchart > .tasks_flow .task {
+	position:absolute;
+	left:0px;
+	top:0px;
+	min-width:8em;
+	min-height:2em;
+	
+	padding:0.5em;
+	padding-left:0.5em;
+	padding-right:0.5em;
+	
+	color:#333;
+	text-align:left;
+	font-size:0.9em;
+	
+	background-repeat:no-repeat; 
+	background-position:center center;
+	
+	border:1px dotted #CCC;
+	-moz-border-radius:0.3em; 
+	-webkit-border-radius:0.3em;
+	border-radius:0.3em;
+	
+	box-shadow: 2px 2px 10px #aaa;
+	-o-box-shadow: 2px 2px 10px #aaa;
+	-webkit-box-shadow: 2px 2px 10px #aaa;
+	-moz-box-shadow: 2px 2px 10px #aaa;
+	
+	/* For IE */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=0)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=90)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=180)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=270)";
+	filter: progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=0),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=90),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=180),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=270);
+	 
+	z-index:11;
+	cursor:move;
+}
+
+.taskflowchart > .tasks_flow .task:not(.is_start_task):hover {
+	box-shadow: 2px 2px 15px #444;
+	-o-box-shadow: 2px 2px 15px #444;
+	-webkit-box-shadow: 2px 2px 15px #444;
+	-moz-box-shadow: 2px 2px 15px #444;
+    	opacity:0.8;
+	
+	/* For IE */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=0)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=90)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=180)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=270)",
+		alpha(opacity=80);
+	filter: progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=0),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=90),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=180),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=270),
+		alpha(opacity=80);
+}
+
+.taskflowchart .task.is_start_task:hover {
+	opacity:1;
+	
+	-ms-filter:alpha(opacity=100);
+	filter:alpha(opacity=100);
+}
+
+.taskflowchart > .tasks_flow .task:before {
+	content:" ";
+	position:absolute;
+	top:-25px;
+	left:0;
+	right:0;
+	bottom:0;
+	border:1px solid rgb(0, 0, 0, .2);
+	border-radius:5px;
+	display:none;
+	z-index:0;
+}
+.taskflowchart > .tasks_flow .task:hover:not(.dragActive):before {
+	display:block;
+}
+
+.taskflowchart > .tasks_flow .task:after {
+	content:"Click to view menu, move or link to another box";
+	position:absolute;
+	left:0;
+	bottom:-31px;
+	background:#ccc;
+	padding:5px;
+	opacity:.5;
+	border-bottom-left-radius:5px;
+	border-bottom-right-radius:5px;
+	font-size:80%;
+	white-space:nowrap;
+	display:none;
+}
+.taskflowchart > .tasks_flow .task:hover:not(.dragActive):after {
+	display:block;
+}
+
+.taskflowchart .task .start_task_overlay { 
+	display:none;
+}
+.taskflowchart .task.is_start_task .start_task_overlay { 
+	display:block;
+	position:absolute;
+	top:-20px;
+	left:-20px;
+	right:-20px;
+	bottom:-20px;
+	background-color:#000;
+	
+	border:5px solid #000;
+	-moz-border-radius:100%; 
+	-webkit-border-radius:100%;
+	border-radius:100%;
+	
+	box-shadow: 2px 2px 15px #444;
+	-o-box-shadow: 2px 2px 15px #444;
+	-webkit-box-shadow: 2px 2px 15px #444;
+	-moz-box-shadow: 2px 2px 15px #444;
+    	opacity:0.1;
+	
+	/* For IE */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=0)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=90)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=180)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=270)",
+		alpha(opacity=10);
+	filter: progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=0),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=90),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=180),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=270),
+		alpha(opacity=10);
+	
+	z-index:-10;
+}
+.taskflowchart .task.is_start_task:hover > .start_task_overlay {
+	opacity:.08;
+}
+
+.taskflowchart .task .task_info {
+	min-height:25px;
+	padding:5px 40px 5px 5px;
+	position:absolute;
+	top:auto;
+	left:0;
+	right:0;
+	bottom:100%;
+	background:rgb(0, 0, 0, .2);
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	display:none;
+}
+.taskflowchart .task:hover:not(.dragActive) > .task_info {
+	display:block;
+}
+.taskflowchart .task .task_info .task_info_tag,
+  .taskflowchart .task .task_info .task_info_label {
+	/*white-space:nowrap;
+	text-overflow:ellipsis;
+	overflow:hidden;*/
+}
+.taskflowchart .task .task_info .task_info_tag {
+	display:none;
+}
+
+.taskflowchart .task .short_actions {
+	position:absolute;
+	top:-20px;
+	right:5px;
+	color:rgb(0, 0, 0, .3);
+	display:none;
+}
+.taskflowchart .task:hover:not(.dragActive) > .short_actions {
+	display:block;
+}
+.taskflowchart .task .short_actions .move_action {
+	width:16px;
+	height:16px;
+	display:inline-block;
+	background:url(../img/move_icon.png);
+}
+.taskflowchart .task .short_actions .context_menu_action {
+	width:16px;
+	height:16px;
+	margin-left:10px;
+	display:inline-block;
+	background:url(../img/view_properties_icon.gif);
+	cursor:pointer;
+}
+
+.taskflowchart .task .full_info {
+	display:none;
+}
+
+.taskflowchart .task .info {
+	z-index:12;
+	text-align:center;
+	/*font-weight:bold;*/
+	position:relative; /* very important, otherwise when onhover the task:before will be on top of the .info element */
+	
+	width:100%;
+}
+
+.taskflowchart .task .info span {
+	cursor:text;
+}
+
+.taskflowchart .eps {
+	width:1em;
+	float:right;
+}
+.taskflowchart .ep {
+	width:1em;
+	height:1em;
+	background-color:#CCC;
+	cursor:crosshair;
+	float:left;
+	
+	border:1px solid #CCC;
+	-moz-border-radius:1em;
+	-webkit-border-radius:1em;
+	border-radius:1em;
+	
+	margin-top:2.5px;
+	margin-bottom:2.5px;
+}
+
+.taskflowchart .tasks_flow .task .task_droppable.task_droppable_over {
+	opacity:.5 !important;
+}
+
+.taskflowchart .aLabel {
+	background-color:white;
+	opacity:0.8;
+	-ms-filter: alpha(opacity=80);
+	filter: alpha(opacity=80);
+	padding:0.3em;			
+}
+
+.taskflowchart .connector_overlay_label {
+	display:block;
+	z-index:1000;
+	
+	/* very important, othewrwise the cursor caret does not appear in chrome */
+	-webkit-user-select:text;
+	-moz-user-select:text;
+}
+.taskflowchart .connector_overlay_label:hover {
+	color:#000;
+}
+.taskflowchart .connector_overlay_text_many, .taskflowchart .connector_overlay_text_one {
+	color:#000;
+	font-weight:bold;
+	width:10px;
+	height:20px;
+	margin-top:10px;
+	margin-left:10px;
+}
+.taskflowchart .connector_overlay_text_many {
+	font-size:25px;
+}
+.taskflowchart .connector_overlay_text_one {
+	font-size:15px;
+}
+
+.taskflowchart .connector_overlay_add_icon {
+	width:20px;
+	height:20px;
+	background:url('../img/add_task_icon.png') 0 0 no-repeat !important;
+	background-size:contain !important;
+	text-indent:-999px;
+	display:inline-block;
+	overflow:hidden;
+	cursor:pointer;
+}
+.taskflowchart .connector_overlay_label + .connector_overlay_add_icon {
+	margin-top:-5px !important;
+}
+.taskflowchart > .tasks_flow:not(.dragging_task) .connector_overlay_add_icon:not(.task_droppable_over) {
+	opacity:.03;
+}
+.taskflowchart > .tasks_flow:not(.dragging_task) .connector_over .connector_overlay_add_icon:not(.task_droppable_over) {
+	opacity:1;
+}
+.taskflowchart .connector_overlay_add_icon:hover {
+	opacity:1 !important;
+	z-index:1000;
+}
+.taskflowchart .connector_overlay_add_icon.task_droppable_over {
+	box-shadow:0 0 15px 5px #444;
+	border-radius:100%;
+	z-index:1000;
+}
+
+/* MENUS */
+.task_context_menu {
+	z-index:600;
+}
+.task_context_menu, .task_context_menu ul, 
+  .connection_context_menu, 
+  .connection_context_menu ul {
+	border:1px outset #d5e3e4;
+}
+.task_context_menu li, .connection_context_menu li {
+	background-color:#d5e3e4;
+}
+.task_context_menu li:hover, .connection_context_menu li:hover {
+	background: #b3c8cc;
+}
+.task_context_menu li a, 
+  .connection_context_menu li a {
+	padding-left:25px !important;
+}
+
+.task_context_menu .set_label a {
+	background:url('../img/update_icon.gif') 5px 4px no-repeat !important;
+}
+.task_context_menu .properties a {
+	background:url('../img/view_icon.gif') 4px 4px no-repeat !important;
+}
+.task_context_menu .start_task a {
+	background-color:#d5e3e4;
+}
+.task_context_menu .start_task a:hover {
+	background: #b3c8cc;
+}
+.task_context_menu .start_task.is_start_task a {
+	background:url('../img/dot.gif') 8px 8px no-repeat !important;
+}
+.task_context_menu .delete {
+	background-image:none;
+	border-top:1px solid #CCC;
+}
+.task_context_menu .delete a {
+	background:url('../img/delete_icon.gif') 4px 3px no-repeat !important;
+}
+
+.connection_context_menu .set_label a {
+	background:url('../img/view_icon.gif') 4px 4px no-repeat !important;
+}
+.connection_context_menu .properties a {
+	background:url('../img/update_icon.gif') 5px 4px no-repeat !important;
+}
+.connection_context_menu .connector_types > a, 
+  .connection_context_menu .overlay_types > a {
+	background:url('../img/sort_icon.png') 4px 3px no-repeat !important;
+}
+.connection_context_menu .connector_types ul, 
+  .connection_context_menu .overlay_types ul {
+	max-height:200px;
+	width:200px;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+.connection_context_menu .connector_types li a, 
+  .connection_context_menu .overlay_types li a {
+	background:none;
+	padding-left:20px;
+}
+.connection_context_menu .connector_types li.selected_connector a, 
+  .connection_context_menu .overlay_types li.selected_overlay a {
+	background:url('../img/dot.gif') 8px 8px no-repeat !important;
+}
+.connection_context_menu .delete {
+	background-image:none;
+	border-top:1px solid #CCC;
+}
+.connection_context_menu .delete a {
+	background:url('../img/delete_icon.gif') 4px 4px no-repeat !important;
+}
+
+/* CONNECTION ADD NEW TASK PANEL */
+.connection_add_new_task_panel {
+	min-height:100px;
+}
+.connection_add_new_task_panel .title {
+	margin-bottom:10px;
+}
+.connection_add_new_task_panel .generic_buttons {
+	position:absolute;
+	left:5px;
+	right:5px;
+	bottom:5px;
+	
+	text-align:center;
+}
+.connection_add_new_task_panel .generic_buttons input {
+	margin-left:5px !important;
+	display:inline !important;
+	float:none !important;
+	font-size:8pt;
+}
+
+/* PROPERTIES */
+.selected_task_properties, 
+  .selected_connection_properties {
+	padding:35px 15px 15px 15px;
+	box-sizing:border-box;
+}
+.selected_task_properties.maximize_properties:not(.collapsed_properties), 
+  .selected_connection_properties.maximize_properties:not(.collapsed_properties) {
+	height:auto !important;
+	max-height:none !important;
+	top:0 !important;
+	left:0 !important;
+	right:0 !important;
+	bottom:0 !important;
+	overflow:auto !important; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow:overlay !important;
+}
+.taskflowchart:not(.fixed_properties):not(.fixed_side_properties) > .selected_task_properties.maximize_properties:not(.collapsed_properties), 
+  .taskflowchart:not(.fixed_properties):not(.fixed_side_properties) > .selected_connection_properties.maximize_properties:not(.collapsed_properties) {
+	width:auto !important;
+}
+.selected_task_properties.collapsed_properties, 
+  .selected_connection_properties.collapsed_properties {
+	height:30px !important;
+	box-sizing:border-box;
+	overflow:hidden;
+	padding-top:0;
+	padding-bottom:0;
+}
+.taskflowchart:not(.fixed_properties):not(.fixed_side_properties) > .selected_task_properties,
+  .taskflowchart:not(.fixed_properties):not(.fixed_side_properties) > .selected_connection_properties {
+	min-width:150px;
+}
+.taskflowchart.fixed_properties > .selected_task_properties,
+  .taskflowchart.fixed_properties > .selected_connection_properties {
+	width:auto;
+	height:250px;
+	padding:0 0 70px;
+	position:fixed !important;
+	top:auto !important;
+	left:0 !important;
+	right:0 !important;
+	bottom:0 !important;
+	overflow:visible;
+	cursor:initial;
+	border:0;
+	border-radius:0;
+}
+.taskflowchart.fixed_side_properties > .selected_task_properties,
+  .taskflowchart.fixed_side_properties > .selected_connection_properties {
+	width:200px;
+	height:250px;
+	padding:0 0 70px;
+	position:absolute !important;
+	top:auto !important;
+	left:0px !important;
+	right:auto !important;
+	bottom:0px !important;
+	overflow:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow:overlay;
+	cursor:initial;
+	border:0;
+	border-radius:0;
+	z-index:1 !important; /* must be important bc of the myfancypopup */
+}
+.taskflowchart.reverse.fixed_side_properties > .selected_task_properties,
+  .taskflowchart.reverse.fixed_side_properties > .selected_connection_properties {
+	left:auto !important;
+	right:0 !important;
+	border-right:1px solid #CCC;
+}
+.taskflowchart:not(.reverse).fixed_side_properties > .selected_task_properties,
+  .taskflowchart:not(.reverse).fixed_side_properties > .selected_connection_properties {
+	border-left:1px solid #CCC;
+}
+.taskflowchart.fixed_side_properties > .selected_task_properties.tasks_menu_hidden,
+  .taskflowchart.fixed_side_properties > .selected_connection_properties.tasks_menu_hidden {
+	display:none !important;
+}
+.taskflowchart.fixed_properties > .selected_task_properties:not(.resizing_properties):not(.resizing),
+  .taskflowchart.fixed_properties > .selected_connection_properties:not(.resizing_properties):not(.resizing),
+  .taskflowchart.fixed_side_properties > .selected_task_properties:not(.resizing_properties):not(.resizing),
+  .taskflowchart.fixed_side_properties > .selected_connection_properties:not(.resizing_properties):not(.resizing) {
+	transition:.5s all;
+}
+.taskflowchart.fixed_properties > .selected_task_properties.maximize_properties:not(.collapsed_properties),
+  .taskflowchart.fixed_properties > .selected_connection_properties.maximize_properties:not(.collapsed_properties),
+  .taskflowchart.fixed_side_properties > .selected_task_properties.maximize_properties:not(.collapsed_properties),
+  .taskflowchart.fixed_side_properties > .selected_connection_properties.maximize_properties:not(.collapsed_properties) {
+	height:auto !important;
+	top:30px !important;
+}
+.taskflowchart.fixed_properties > .selected_task_properties.collapsed_properties,
+  .taskflowchart.fixed_properties > .selected_connection_properties.collapsed_properties,
+  .taskflowchart.fixed_side_properties > .selected_task_properties.collapsed_properties,
+  .taskflowchart.fixed_side_properties > .selected_connection_properties.collapsed_properties {
+	height:30px !important; /* if not present it will be overwrite by 250px */
+	padding:0;
+	border:0;
+	background:transparent;
+	overflow:hidden;
+}
+.taskflowchart > .selected_task_properties:before,
+  .taskflowchart > .selected_connection_properties:before {
+	content:"";
+	height:35px;
+	border-bottom:#ddd;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+}
+.taskflowchart.fixed_properties > .selected_task_properties.collapsed_properties:before,
+  .taskflowchart.fixed_properties > .selected_connection_properties.collapsed_properties:before,
+  .taskflowchart.fixed_side_properties > .selected_task_properties.collapsed_properties:before,
+  .taskflowchart.fixed_side_properties > .selected_connection_properties.collapsed_properties:before {
+	background:#f7f7f7;
+}
+
+.taskflowchart.fixed_properties > .popup_overlay,
+  .taskflowchart.fixed_side_properties > .popup_overlay  {
+	width:auto !important;
+	height:auto !important;
+	position:fixed !important;
+	right:0 !important;
+	bottom:0 !important;
+	display:none !important;
+}
+
+.taskflowchart > .selected_task_properties > .resize_properties_panel, 
+  .taskflowchart > .selected_connection_properties .resize_properties_panel {
+	height:5px;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:auto;
+	cursor:ns-resize;
+	background:url("../img/back_frame_open_close_horizontal.gif") repeat-x;
+	display:none;
+}
+.taskflowchart.fixed_properties.resizable_task_properties > .selected_task_properties > .resize_properties_panel, 
+  .taskflowchart.fixed_properties.resizable_connection_properties > .selected_connection_properties .resize_properties_panel,
+  .taskflowchart.fixed_side_properties.resizable_task_properties > .selected_task_properties > .resize_properties_panel, 
+  .taskflowchart.fixed_side_properties.resizable_connection_properties > .selected_connection_properties .resize_properties_panel {
+	display:block;
+}
+.taskflowchart > .selected_task_properties > .resize_properties_panel .button, 
+  .taskflowchart > .selected_connection_properties .resize_properties_panel .button {
+	width:34px;
+	height:10px;
+	position:absolute;
+	top:0;
+	left:45%;
+	left:calc(50% - 17px);
+	cursor:pointer;
+	background-repeat:no-repeat;
+}
+.taskflowchart > .selected_task_properties > .resize_properties_panel .button, 
+  .taskflowchart > .selected_connection_properties .resize_properties_panel .button {
+	background-image:url("../img/tool_frame_bottom.gif");
+}
+.taskflowchart > .selected_task_properties.collapsed_properties > .resize_properties_panel .button, 
+  .taskflowchart > .selected_connection_properties.collapsed_properties .resize_properties_panel .button {
+	background-image:url("../img/tool_frame_top.gif");
+}
+
+.taskflowchart > .selected_task_properties > .title, 
+  .taskflowchart > .selected_connection_properties .title {
+	width:auto;
+	min-width:auto;
+	height:20px;
+	min-height:auto;
+	line-height:20px;
+	position: absolute;
+	top:9px;
+	left:15px;
+	margin: 0;
+	text-align: left;
+	display: inline-block;
+	font-weight: normal;
+	font-size: inherit;
+}
+.taskflowchart > .selected_task_properties > .title:after, 
+  .taskflowchart > .selected_connection_properties .title:after {
+	content:":";
+}
+
+.taskflowchart > .selected_task_properties > .popup_close, 
+  .taskflowchart > .selected_connection_properties > .popup_close {
+	width:25px;
+	height:25px;
+	top:5px;
+	left:auto;
+	right:15px;
+	background-size:30px;
+	opacity:1;
+}
+
+.selected_task_properties > .maximize_minimize_icon, 
+  .selected_connection_properties > .maximize_minimize_icon {
+	display:block;
+	width:16px;
+	height:16px;
+	margin:0;
+	position: absolute;
+	top:10px;
+	right:51px;
+	cursor:pointer;
+	
+	/* Hide Text */
+	text-indent:-9999px;
+	white-space:nowrap;
+	overflow:hidden;
+}
+.selected_task_properties > .maximize_minimize_icon, 
+  .selected_connection_properties > .maximize_minimize_icon {
+	background:url("../img/maximize_icon.png") no-repeat scroll 0 0px;
+}
+.selected_task_properties.maximize_properties > .maximize_minimize_icon, 
+  .selected_connection_properties.maximize_properties > .maximize_minimize_icon {
+	background:url("../img/minimize_icon.png") no-repeat scroll 0 0px;
+}
+
+.selected_task_properties > .toggle_properties_side_icon, 
+  .selected_connection_properties > .toggle_properties_side_icon {
+	display:block;
+	width:16px;
+	height:16px;
+	margin:0 10px 0 0;
+	position: absolute;
+	top:10px;
+	right:71px;
+	cursor:pointer;
+	
+	/* Hide Text */
+	text-indent:-9999px;
+	white-space:nowrap;
+	overflow:hidden;
+}
+.selected_task_properties > .toggle_properties_side_icon, 
+  .selected_connection_properties > .toggle_properties_side_icon {
+	background:url("../img/dock_side.png") no-repeat scroll 0 0px;
+}
+.taskflowchart.fixed_side_properties > .selected_task_properties > .toggle_properties_side_icon,
+  .taskflowchart.fixed_side_properties > .selected_connection_properties > .toggle_properties_side_icon {
+	background:url("../img/dock_bottom.png") no-repeat scroll 0 0px;
+}
+.taskflowchart.fixed_properties > .selected_task_properties > .toggle_properties_side_icon,
+  .taskflowchart.fixed_properties > .selected_connection_properties > .toggle_properties_side_icon {
+	background:url("../img/dock_center.png") no-repeat scroll 0 0px;
+}
+
+.selected_task_properties > .properties_task_id, 
+  .selected_connection_properties > .properties_connection_id {
+	width:calc(100% - 210px);
+	min-width:auto;
+	height:20px;
+	line-height:20px;
+	margin:0;
+	display:inline-block;
+	position:absolute;
+	top:9px;
+	left:100px;
+	font-size:inherit;
+	color:#333;
+	text-align:left;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	overflow:hidden;
+}
+.selected_connection_properties > .properties_connection_id {
+	width:calc(100% - 250px);
+	left:140px;
+}
+.selected_task_properties > .properties_task_id:before,
+  .selected_connection_properties > .properties_connection_id:before {
+	content:"(";
+}
+.selected_task_properties > .properties_task_id:after,
+  .selected_connection_properties > .properties_connection_id:after {
+	content:")";
+}
+
+.selected_task_properties > .content, 
+  .selected_connection_properties > .content {
+	
+}
+.taskflowchart.fixed_properties > .selected_task_properties > .content, 
+  .taskflowchart.fixed_properties > .selected_connection_properties > .content,
+  .taskflowchart.fixed_side_properties > .selected_task_properties > .content, 
+  .taskflowchart.fixed_side_properties > .selected_connection_properties > .content {
+	padding:0 15px;
+	position:absolute;
+	top:35px;
+	left:0;
+	right:0;
+	bottom:70px;
+	overflow:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow:overlay;
+}
+
+.selected_task_properties > .generic_buttons, 
+  .selected_connection_properties > .generic_buttons {
+	margin-top:15px;
+	text-align:center;
+	white-space:nowrap;
+}
+.taskflowchart.fixed_properties > .selected_task_properties > .generic_buttons, 
+  .taskflowchart.fixed_properties > .selected_connection_properties > .generic_buttons,
+  .taskflowchart.fixed_side_properties > .selected_task_properties > .generic_buttons, 
+  .taskflowchart.fixed_side_properties > .selected_connection_properties > .generic_buttons {
+	margin-top:0;
+	position:absolute;
+	left:15px;
+	right:15px;
+	bottom:15px;
+}
+.taskflowchart.fixed_properties > .selected_task_properties.collapsed_properties > .generic_buttons, 
+  .taskflowchart.fixed_properties > .selected_connection_properties.collapsed_properties > .generic_buttons,
+  .taskflowchart.fixed_side_properties > .selected_task_properties.collapsed_properties > .generic_buttons, 
+  .taskflowchart.fixed_side_properties > .selected_connection_properties.collapsed_properties > .generic_buttons {
+	display:none;
+}
+.selected_task_properties > .generic_buttons input, 
+  .selected_connection_properties > .generic_buttons input {
+	margin:0 10px !important;
+	display:inline !important;
+	float:none !important;
+	font-size:8pt;
+}
+
+/* FILE UPDATE PANEL */
+.tasks_flow_update_panel_confirmation {
+	width:630px;
+	min-height:60px;
+	padding-bottom:40px;
+}
+.tasks_flow_update_panel_confirmation .title {
+	width:100%;
+	font-size:14px !important;
+	margin-bottom:0;
+}
+.tasks_flow_update_panel_confirmation .select_buttons {
+	width:100%;
+	text-align:center;
+}
+.tasks_flow_update_panel_confirmation .select_buttons a {
+	margin-right:20px;
+	cursor:pointer;
+}
+.tasks_flow_update_panel_confirmation .content {
+	width:100%;
+	max-height:200px;
+	overflow-y:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow-y:overlay;
+}
+.tasks_flow_update_panel_confirmation .buttons {
+	position:absolute;
+	left:5px;
+	right:5px;
+	bottom:5px;
+	
+	text-align:center;
+}
+.tasks_flow_update_panel_confirmation .buttons input {
+	margin-right:20px;
+	font-size:8pt;
+}
+
+.tasks_flow_update_panel_confirmation .content .updated_task {
+	position:static;
+	width:200px;
+	height:20px;
+	white-space: nowrap;
+	overflow:hidden;
+	float:left;
+}
+.tasks_flow_update_panel_confirmation .content .updated_task input {/* this covers the inputs inside of the .updated_task and .updated_connection divs*/
+	position:relative;
+}
+.tasks_flow_update_panel_confirmation .content .updated_task label {/* this covers the labels inside of the .updated_task and .updated_connection divs*/
+	margin-left:5px;
+	font-weight:normal;
+}
+
+.tasks_flow_update_panel_confirmation .content table {
+	width:600px;
+}
+.tasks_flow_update_panel_confirmation .content tr th {
+	width:50%;
+	height:30px;
+	vertical-align:top;
+	text-align:center;
+	font-size:14px !important;
+}
+.tasks_flow_update_panel_confirmation .content tr td {
+	width:50%;
+	vertical-align:top;
+	text-align:center;
+	font-size:12px !important;
+}
+.tasks_flow_update_panel_confirmation .content tr div {
+	position:static;
+	width:300px;
+	height:20px;
+	white-space: nowrap;
+	overflow:hidden;
+	margin:0 auto;
+	text-align:left;
+}
+.tasks_flow_update_panel_confirmation .content tr input {/* this covers the inputs inside of the .updated_task and .updated_connection divs*/
+	position:relative;
+}
+.tasks_flow_update_panel_confirmation .content tr label {/* this covers the labels inside of the .updated_task and .updated_connection divs*/
+	margin-left:5px;
+	font-weight:normal;
+}
+.tasks_flow_update_panel_confirmation .content tr td.new_connections {
+	border-left:1px inset #CCC;
+}
+
+/* WORKFLOW MESSAGE */
+.workflow_message {
+	position:fixed;
+	left:0;
+	right:0;
+	bottom:0px;
+	width:100%;
+	padding-top:5px;
+	color:#000;
+	font-size:12px;
+	text-align:center;
+	z-index:2000;
+}
+.workflow_message .status, .workflow_message .error {
+	min-width:100%;
+	max-width:100%;
+	min-height:20px;
+	max-height:250px;
+	line-height:20px;
+	margin:0;
+	float:none;
+	clear:right;
+	overflow-y:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow:overlay;
+}
+.workflow_message .status span, .workflow_message .error span {
+	display:block;
+	width:16px;
+	height:16px;
+	cursor:pointer;
+	
+	/* Hide Text */
+	text-indent:-9999px;
+	white-space:nowrap;
+	overflow:hidden;
+	
+	float:right;
+	margin-top:2px;
+	margin-left:5px;
+	margin-right:5px;
+	background:url("../img/close_icon.png") no-repeat scroll 0 0px;
+}
+.workflow_message .status {
+	background-color:#CCFF99;
+	background-color:rgba(204, 255, 153, .6);
+	color:#000;
+}
+.workflow_message .error {
+	background-color:#FF0000;
+	background-color:rgba(255, 0, 0, .6);
+	color:#000;
+}
+
+/* OTHERS */
+.scroll {
+	overflow-y:scroll;
+	overflow-x:hidden;
+}
+

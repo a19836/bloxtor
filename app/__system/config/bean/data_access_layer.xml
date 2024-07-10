@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import relative="1">app.xml</import>
+	
+	<bean name="DBBrokerClient" path="lib.org.phpframework.broker.client.local.LocalDBBrokerClient">
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		
+		<function name="addBeansFilePath">
+			<parameter><?php echo SYSTEM_BEAN_PATH; ?>db_layer.xml</parameter>
+		</function>
+		<function name="setBeanName">
+			<parameter>DBBrokerServer</parameter>
+		</function>
+	</bean>
+	<!--bean name="DBBrokerClient" path="lib.org.phpframework.broker.client.rest.RESTDBBrokerClient">
+		<constructor_arg>
+			<list>
+				<item name="url">http://jplpinto.localhost/__system/dbdata/</item>
+				<item name="http_auth">basic</item>
+				<item name="user_pwd">&lt;?php echo $GLOBALS['rest_user_pwd']; ?></item>
+				<item name="response_type">json</item>
+			</list>
+		</constructor_arg>
+	</bean-->
+	
+	<bean name="DBBrokerClientAux" path="lib.org.phpframework.broker.client.local.LocalDBBrokerClient">
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		
+		<function name="addBeansFilePath">
+			<parameter><?php echo SYSTEM_BEAN_PATH; ?>db_layer.xml</parameter>
+		</function>
+		<function name="setBeanName">
+			<parameter>DBBrokerServerAux</parameter>
+		</function>
+	</bean>
+</beans>

@@ -1,0 +1,313 @@
+a:1:{s:53:"\WorkFlowTask\programming\createform\WorkFlowTaskImpl";a:1:{s:7:"methods";a:3:{s:32:"createTaskPropertiesFromCodeStmt";a:20:{s:4:"name";s:32:"createTaskPropertiesFromCodeStmt";s:16:"start_line_index";i:322;s:17:"start_token_index";i:39;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:8:"comments";a:1:{i:0;s:8133:"/*
+	<?php
+	//START: task[createform][Call HtmlFormHandler::createHtmlForm()]
+	$x = HtmlFormHandler::createHtmlForm(array(
+		"with_form" => 1,
+		"form_id" => "",
+		"form_method" => "post",
+		"form_class" => "",
+		"form_type" => "",
+		"form_on_submit" => "",
+		"form_action" => "",
+		"form_containers" => array(
+			0 => array(
+				"container" => array(
+					"class" => "edit_featured_object",
+					"href" => "",
+					"target" => "",
+					"title" => "",
+					"title_position" => "auto",
+					"previous_html" => "",
+					"next_html" => "",
+					"elements" => array(
+						0 => array(
+							"field" => array(
+								"type" => "hidden",
+								"class" => "objects_group_id hidden",
+								"label" => array(
+									"value" => "",
+									"class" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => ""
+								),
+								"input" => array(
+									"name" => "objects_group_id",
+									"class" => "",
+									"value" => "#objects_group_id#",
+									"place_holder" => "",
+									"href" => "",
+									"target" => "",
+									"src" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => "",
+									"confirmation" => "",
+									"confirmation_message" => "",
+									"allow_null" => 1,
+									"validation_message" => "",
+									"validation_type" => "",
+									"validation_regex" => "",
+									"validation_func" => "",
+									"min_length" => "",
+									"max_length" => "",
+									"min_value" => "",
+									"max_value" => "",
+									"min_words" => "",
+									"max_words" => ""
+								),
+								"help" => array(
+									"value" => "",
+									"class" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => ""
+								)
+							)
+						),
+						1 => array(
+							"field" => array(
+								"type" => "hidden",
+								"class" => "hidden",
+								"label" => array(
+									"value" => "",
+									"class" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => ""
+								),
+								"input" => array(
+									"name" => "tags",
+									"class" => "",
+									"value" => "Destaques",
+									"place_holder" => "",
+									"href" => "",
+									"target" => "",
+									"src" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => "",
+									"confirmation" => "",
+									"confirmation_message" => "",
+									"allow_null" => 1,
+									"validation_message" => "",
+									"validation_type" => "",
+									"validation_regex" => "",
+									"validation_func" => "",
+									"min_length" => "",
+									"max_length" => "",
+									"min_value" => "",
+									"max_value" => "",
+									"min_words" => "",
+									"max_words" => ""
+								),
+								"help" => array(
+									"value" => "",
+									"class" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => ""
+								)
+							)
+						),
+						2 => array(
+							"field" => array(
+								"type" => "text",
+								"class" => "title",
+								"label" => array(
+									"value" => "Title: ",
+									"class" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => ""
+								),
+								"input" => array(
+									"name" => "object[title]",
+									"class" => "",
+									"value" => "#object[title]#",
+									"place_holder" => "",
+									"href" => "",
+									"target" => "",
+									"src" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => "",
+									"confirmation" => "",
+									"confirmation_message" => "",
+									"allow_null" => 1,
+									"validation_message" => "",
+									"validation_type" => "",
+									"validation_regex" => "",
+									"validation_func" => "",
+									"min_length" => "",
+									"max_length" => "",
+									"min_value" => "",
+									"max_value" => "",
+									"min_words" => "",
+									"max_words" => ""
+								),
+								"help" => array(
+									"value" => "",
+									"class" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => ""
+								)
+							)
+						),
+						3 => array(
+							"field" => array(
+								"type" => "textarea",
+								"class" => "summary",
+								"label" => array(
+									"value" => "Summary: ",
+									"class" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => ""
+								),
+								"input" => array(
+									"name" => "object[summary]",
+									"class" => "",
+									"value" => "#object[summary]#",
+									"place_holder" => "",
+									"href" => "",
+									"target" => "",
+									"src" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => "",
+									"confirmation" => "",
+									"confirmation_message" => "",
+									"allow_null" => 1,
+									"validation_message" => "",
+									"validation_type" => "",
+									"validation_regex" => "",
+									"validation_func" => "",
+									"min_length" => "",
+									"max_length" => "",
+									"min_value" => "",
+									"max_value" => "",
+									"min_words" => "",
+									"max_words" => ""
+								),
+								"help" => array(
+									"value" => "",
+									"class" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => ""
+								)
+							)
+						),
+						4 => array(
+							"field" => array(
+								"type" => "text",
+								"class" => "link",
+								"label" => array(
+									"value" => "Link:",
+									"class" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => ""
+								),
+								"input" => array(
+									"name" => "object[link]",
+									"class" => "",
+									"value" => "#object[link]#",
+									"place_holder" => "",
+									"href" => "",
+									"target" => "",
+									"src" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => "",
+									"confirmation" => "",
+									"confirmation_message" => "",
+									"allow_null" => 1,
+									"validation_message" => "",
+									"validation_type" => "",
+									"validation_regex" => "",
+									"validation_func" => "",
+									"min_length" => "",
+									"max_length" => "",
+									"min_value" => "",
+									"max_value" => "",
+									"min_words" => "",
+									"max_words" => ""
+								),
+								"help" => array(
+									"value" => "",
+									"class" => "",
+									"title" => "",
+									"title_position" => "",
+									"width" => "",
+									"height" => "",
+									"offset" => "",
+									"previous_html" => "",
+									"next_html" => " "
+								)
+							)
+						)
+					)
+				)
+			)
+		), $input);
+	?>
+	*/";}s:25:"start_comments_line_index";i:9;s:26:"start_comments_token_index";i:37;s:23:"end_comments_line_index";i:321;s:24:"end_comments_token_index";i:37;s:22:"start_args_token_index";i:44;s:20:"end_args_token_index";i:65;s:9:"arguments";a:4:{s:5:"$stmt";N;s:23:"$WorkFlowTaskCodeParser";N;s:7:"&$exits";s:4:"null";s:13:"&$inner_tasks";s:4:"null";}s:25:"start_brackets_line_index";i:322;s:26:"start_brackets_token_index";i:67;s:23:"end_brackets_line_index";i:372;s:24:"end_brackets_token_index";i:488;s:14:"end_line_index";i:372;s:15:"end_token_index";i:488;}s:15:"parseProperties";a:15:{s:4:"name";s:15:"parseProperties";s:16:"start_line_index";i:374;s:17:"start_token_index";i:490;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:22:"start_args_token_index";i:495;s:20:"end_args_token_index";i:498;s:9:"arguments";a:1:{s:6:"&$task";N;}s:25:"start_brackets_line_index";i:374;s:26:"start_brackets_token_index";i:500;s:23:"end_brackets_line_index";i:428;s:24:"end_brackets_token_index";i:1034;s:14:"end_line_index";i:428;s:15:"end_token_index";i:1034;}s:9:"printCode";a:15:{s:4:"name";s:9:"printCode";s:16:"start_line_index";i:430;s:17:"start_token_index";i:1036;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:22:"start_args_token_index";i:1041;s:20:"end_args_token_index";i:1060;s:9:"arguments";a:4:{s:6:"$tasks";N;s:13:"$stop_task_id";N;s:11:"$prefix_tab";s:2:"""";s:8:"$options";s:4:"null";}s:25:"start_brackets_line_index";i:430;s:26:"start_brackets_token_index";i:1062;s:23:"end_brackets_line_index";i:467;s:24:"end_brackets_token_index";i:1451;s:14:"end_line_index";i:467;s:15:"end_token_index";i:1451;}}}}

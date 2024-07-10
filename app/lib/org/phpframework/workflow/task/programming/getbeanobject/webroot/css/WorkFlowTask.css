@@ -1,0 +1,112 @@
+.taskflowchartmenu .task.task_getbeanobject {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_getbeanobject .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_getbeanobject .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.get_bean_object_task_html {
+	min-width:445px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_bean_object_task_html {
+	min-width:auto;
+}
+
+.get_bean_object_task_html .phpframework_obj {
+	width:445px;
+	margin:0 auto 5px auto;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_bean_object_task_html .phpframework_obj {
+	width:100%;
+}
+.get_bean_object_task_html .phpframework_obj label {
+	width:120px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_bean_object_task_html .phpframework_obj label {
+	width:90px;
+}
+.get_bean_object_task_html .phpframework_obj select {
+	width:235px;
+	margin-bottom:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_bean_object_task_html .phpframework_obj select {
+	width:calc(100% - 95px);
+}
+.get_bean_object_task_html .phpframework_obj input {
+	width:210px;
+	margin-left:125px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_bean_object_task_html .phpframework_obj input {
+	width:calc(100% - 120px);
+	margin-left:92px;
+}
+.get_bean_object_task_html .phpframework_obj .search {
+	margin-top:2px;
+}
+
+.get_bean_object_task_html .bean_name {
+	width:445px;
+	min-height:20px;
+	margin:10px auto 0 auto;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_bean_object_task_html .bean_name {
+	width:100%;
+	position:relative;
+}
+.get_bean_object_task_html .bean_name label {
+	width:120px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_bean_object_task_html .bean_name label {
+	width:90px;
+}
+.get_bean_object_task_html .bean_name .bean_name_variable {
+	width:210px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_bean_object_task_html .bean_name .bean_name_variable {
+	width:calc(100% - 120px);
+	margin-top:5px;
+	margin-left:90px;
+	margin-right:0;
+	display:block;
+}
+.get_bean_object_task_html .bean_name input.bean_name_value {
+	display:none;
+}
+.get_bean_object_task_html .bean_name select.bean_name_options {
+	width:235px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_bean_object_task_html .bean_name select.bean_name_options {
+	width:calc(100% - 95px);
+	margin-top:5px;
+	margin-left:90px;
+	margin-right:0;
+	display:block;
+}
+.get_bean_object_task_html .bean_name select[name=bean_name_type] {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:70px;
+	height:19px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_bean_object_task_html .bean_name select[name=bean_name_type] {
+	position:absolute;
+	top:-5px;
+	left:90px;
+}
+.get_bean_object_task_html > div:not(.phpframework_obj) > .add_variable {
+	margin-left:-23px;
+}
+
+
+

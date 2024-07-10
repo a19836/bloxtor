@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Figure</label>
+	<tag>bsfigure</tag>
+	<settings>
+		<create_widget_class>BSFigureWidget</create_widget_class>
+	</settings>
+	<files>
+		<css>../../CreateWidgetBootstrapClassObj.css</css>
+		<js>../../CreateWidgetBootstrapClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bsfigure:before,
+		  body > .menu-widget.menu-widget-bsfigure.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .myfancypopup.layout-ui-editor-bootstrap-widgets-popup.bsfigure > .content > ul > li img {
+			max-width:300px;
+			max-height:300px;
+			height:auto;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSFigureWidget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapClassObj(ui_creator, menu_widget, "bsfigure");
+			obj.extend(this);
+			
+			obj.available_items = {
+				"5.3": [
+					{
+						image: '#widget_webroot_url#figure_1.png',
+						name: '',
+						html: '<figure class="figure"><svg class="bd-placeholder-img figure-img img-fluid rounded" width="400" height="300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 400x300" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">400x300</text></svg><figcaption class="figure-caption">A caption for the above image.</figcaption></figure>'
+					}
+				],
+			};
+		}
+	]]></menu_js>
+</widget>

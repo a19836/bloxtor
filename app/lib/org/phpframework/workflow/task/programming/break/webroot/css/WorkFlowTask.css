@@ -1,0 +1,39 @@
+.taskflowchartmenu .task.task_break {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_break .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_break .eps .ep {
+	display:none;
+}
+.taskflowchartdiagram .task.task_break:hover:after {
+	content:"Click to view menu or move. Linking to boxes is not allowed!";
+}
+
+.break_task_html {
+	width:295px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .break_task_html {
+	width:100%;
+}
+
+.break_task_html .value {
+	width:100%;
+	min-height:20px;
+	/*margin-top:15px;*/
+	margin-bottom:5px;
+}
+.break_task_html .value label {
+	width:60px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .break_task_html .value label {
+	width:30px;
+}
+.break_task_html .value input {
+	width:200px;   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .break_task_html .value input {
+	width:calc(100% - 45px);   
+}
+

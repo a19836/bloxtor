@@ -1,0 +1,93 @@
+.taskflowchartmenu .task.task_sendemail {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_sendemail .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_sendemail .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.send_email_task_html {
+	width:390px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .send_email_task_html {
+	width:100%;
+	box-sizing:border-box;
+}
+.send_email_task_html > .info {
+	text-align:center;
+	margin-bottom:15px;
+}
+.send_email_task_html > .info a {
+	color:var(--link-color);
+}
+.send_email_task_html .method,
+   .send_email_task_html .settngs {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.send_email_task_html .settngs .array_items > .items {
+	position:absolute;
+	margin-top:-25px;
+	margin-left:120px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .send_email_task_html .settngs .array_items > .items {
+	margin-left:100px;
+}
+.send_email_task_html .method label,
+   .send_email_task_html .settngs .main_label {
+	width:50px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .send_email_task_html .method label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .send_email_task_html .settngs .main_label {
+	width:40px;
+}
+.send_email_task_html .method .info {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+.send_email_task_html .method .info .error {
+	margin-top:10px;
+	margin-bottom:10px;
+	color:#FF0000;
+	font-weight:bold;
+}
+.send_email_task_html .method .info li {
+	margin-left:20px;
+	list-style:disc;
+}
+.send_email_task_html .method .reload {
+	margin-bottom:10px;
+}
+.send_email_task_html .method select {
+	width:calc(100% - 55px);
+}
+.send_email_task_html .settngs .settings_code {
+	width:240px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .send_email_task_html .method select {
+	width:calc(100% - 45px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .send_email_task_html .settngs .settings_code {
+	width:calc(100% - 137px);
+}
+.send_email_task_html .settngs .settings_type {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+	float:none;
+	display:inline-block;
+	margin-bottom:0;
+}
+.send_email_task_html .settngs > .add_variable {
+	margin-left:-23px;
+}

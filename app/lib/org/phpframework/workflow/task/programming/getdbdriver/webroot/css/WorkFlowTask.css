@@ -1,0 +1,64 @@
+.taskflowchartmenu .task.task_getdbdriver {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_getdbdriver .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_getdbdriver .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.get_db_driver_task_html {
+	width:430px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_db_driver_task_html {
+	width:auto;
+}
+
+.get_db_driver_task_html .db_driver {
+	width:430px;
+	min-height:20px;
+	margin:0 auto;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_db_driver_task_html .db_driver {
+	width:100%;
+}
+.get_db_driver_task_html .db_driver label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_db_driver_task_html .db_driver label {
+	width:55px;
+}
+.get_db_driver_task_html .db_driver .db_driver_variable {
+	width:210px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_db_driver_task_html .db_driver .db_driver_variable {
+	width:calc(100% - 164px);
+}
+.get_db_driver_task_html .db_driver input.db_driver_value {
+	display:none;
+}
+.get_db_driver_task_html .db_driver select.db_driver_options {
+	width:235px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_db_driver_task_html .db_driver select.db_driver_options {
+	width:calc(100% - 140px);
+}
+.get_db_driver_task_html .db_driver select[name=db_driver_type] {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:70px;
+	height:19px;
+}
+.get_db_driver_task_html > div:not(.broker_method_obj) > .add_variable {
+	margin-left:-26px;
+}
+
+

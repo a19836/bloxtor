@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Pagination</label>
+	<tag>bspagination</tag>
+	<settings>
+		<create_widget_class>BSPaginationWidget</create_widget_class>
+	</settings>
+	<files>
+		<css>../../CreateWidgetBootstrapClassObj.css</css>
+		<js>../../CreateWidgetBootstrapClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bspagination:before,
+		  body > .menu-widget.menu-widget-bspagination.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSPaginationWidget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapClassObj(ui_creator, menu_widget, "bspagination");
+			obj.extend(this);
+			
+			obj.available_items = {
+				"5.3": [
+					{
+						image: '#widget_webroot_url#pagination_1.png',
+						name: '',
+						html: '<nav aria-label="Pagination example"><ul class="pagination pagination-sm"><li class="page-item"><a class="page-link" href="#">1</a></li><li class="page-item active" aria-current="page"><a class="page-link" href="#">2</a></li><li class="page-item"><a class="page-link" href="#">3</a></li></ul></nav>'
+					},
+					{
+						image: '#widget_webroot_url#pagination_2.png',
+						name: '',
+						html: '<nav aria-label="Standard pagination example"><ul class="pagination"><li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li><li class="page-item"><a class="page-link" href="#">1</a></li><li class="page-item"><a class="page-link" href="#">2</a></li><li class="page-item"><a class="page-link" href="#">3</a></li><li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li></ul></nav>'
+					},
+					{
+						image: '#widget_webroot_url#pagination_3.png',
+						name: '',
+						html: '<nav aria-label="Another pagination example"><ul class="pagination pagination-lg flex-wrap"><li class="page-item disabled"><a class="page-link">Previous</a></li><li class="page-item"><a class="page-link" href="#">1</a></li><li class="page-item active" aria-current="page"><a class="page-link" href="#">2</a></li><li class="page-item"><a class="page-link" href="#">3</a></li><li class="page-item"><a class="page-link" href="#">Next</a></li></ul></nav>'
+					}
+				],
+			};
+		}
+	]]></menu_js>
+</widget>

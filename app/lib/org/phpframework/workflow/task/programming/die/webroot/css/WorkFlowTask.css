@@ -1,0 +1,47 @@
+.taskflowchartmenu .task.task_exit {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_exit .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_exit .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+.taskflowchartdiagram .task.task_exit:hover:after {
+	content:"Click to view menu or move. Linking to boxes is not allowed!";
+}
+
+.exit_task_html {
+	width:295px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .exit_task_html {
+	width:100%;
+}
+
+.exit_task_html .value {
+	/*margin-top:15px;*/
+}
+
+.exit_task_html .value,
+   .exit_task_html .type {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.exit_task_html .value label,
+   .exit_task_html .type label {
+	width:60px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .exit_task_html .value label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .exit_task_html .type label {
+	width:30px;
+}
+.exit_task_html .value input {
+	width:200px;   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .exit_task_html .value input {
+	width:calc(100% - 45px);   
+}
+
+

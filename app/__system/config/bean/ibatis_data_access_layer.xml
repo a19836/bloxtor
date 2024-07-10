@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import><?php echo SYSTEM_BEAN_PATH; ?>data_access_layer.xml</import>
+	
+	<!-- IBATIS -->
+	<bean name="IBatisClient" path="lib.org.phpframework.sqlmap.ibatis.IBatisClient"></bean>
+	
+	<var name="ibatis_vars">
+		<list>
+			<item name="dal_path"><?php echo SYSTEM_LAYER_PATH; ?>dataaccess/ibatis/</item>
+			<item name="dal_modules_file_path"><?php echo SYSTEM_LAYER_PATH; ?>dataaccess/ibatis/modules.xml</item>
+			<item name="dal_services_file_name">services.xml</item>
+		</list>
+	</var>
+	
+	<bean name="IbatisDataAccessLayer" path="lib.org.phpframework.layer.dataaccess.IbatisDataAccessLayer">
+		<constructor_arg reference="IBatisClient" />
+		<constructor_arg reference="ibatis_vars" />
+		
+		<property name="cacheLayer" reference="IbatisDataAccessCacheLayer" />
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		
+		<function name="addBroker">
+			<parameter reference="DBBrokerClient" />
+		</function>
+		<function name="addBroker">
+			<parameter reference="DBBrokerClientAux" />
+		</function>
+	</bean>
+	
+	<bean name="IbatisDataAccessBrokerServer" path="lib.org.phpframework.broker.server.local.LocalIbatisDataAccessBrokerServer">
+		<constructor_arg reference="IbatisDataAccessLayer" />
+	</bean>
+	<!--bean name="IbatisDataAccessBrokerServer" path="lib.org.phpframework.broker.server.rest.RESTIbatisDataAccessBrokerServer">
+		<constructor_arg reference="IbatisDataAccessLayer" />
+	</bean-->
+	
+	<var name="ibatis_cache_vars">
+		<list>
+			<item name="dal_cache_file_name">cache.xml</item>
+			<item name="dal_cache_path"><?php echo LAYER_CACHE_PATH; ?>sysdataaccess/ibatis/</item>
+			<item name="dal_default_cache_ttl">600</item>
+			<item name="dal_module_cache_maximum_size"></item>
+		</list>
+	</var>
+	
+	<bean name="IbatisDataAccessCacheLayer" path="lib.org.phpframework.layer.cache.DataAccessCacheLayer">
+		<constructor_arg reference="IbatisDataAccessLayer" />
+		<constructor_arg reference="ibatis_cache_vars" />
+	</bean>
+</beans>

@@ -1,0 +1,79 @@
+/* ADMIN PANEL */
+.admin_panel {
+	padding:60px 20px 0;
+	border:0;
+	font-size:10pt;
+	font-family:inherit;
+}
+.admin_panel > .title {
+	margin:0 0 35px;
+	text-align:center;
+	font-size:21px;
+	color:var(--icon-active-color);
+	display:none;
+}
+.admin_panel > ul {
+	background:none;
+	border:0;
+	text-align:center;
+	font-size:10pt;
+}
+.admin_panel > ul li {
+	margin:0 !important;
+	background:none !important;
+	border:none !important;
+	display:inline-block;
+	float:none !important;
+	font-weight:normal;
+	cursor:pointer;
+}
+.admin_panel > ul li:not(:first-child) {
+	border-left:1px solid #DFE1ED !important;
+	border-radius:0;
+}
+.admin_panel > ul li a {
+	margin:0 5px;
+	padding:0 10px !important;
+	border-bottom:1px solid transparent !important;
+	color:#83889E !important;
+	float:none !important;
+	text-decoration:none !important;
+}
+.admin_panel > ul li.ui-state-active a {
+	font-weight:bold;
+	/*border-bottom-color:var(--icon-active-color) !important;*/
+	color:#2C2D34 !important;
+}
+
+/* PROJS */
+.projs {
+	padding:15px !important;
+}
+.projs > .choose_available_project:not(.in_sub_folder) > .top_bar {
+	display:none;
+}
+.projs > .choose_available_project.in_sub_folder > .top_bar {
+	height:auto;
+}
+.projs > .choose_available_project > .title {
+	display:none;
+}
+.projs > .choose_available_project > .selected_project {
+	margin-top:-10px;
+}
+.projs > .choose_available_project > .group {
+	margin-left:0;
+	margin-right:0;
+}
+
+/* TUTORIALS */
+.tutorials > .choose_available_tutorial {
+	
+}
+
+/* FEATURED TUTORIALS */
+.featured_tutorials {
+	margin-left:-35px;
+	margin-right:-35px;
+	margin-bottom:-35px;
+}

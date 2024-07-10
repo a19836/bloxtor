@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import><?php echo dirname($vars["dal_path"])."/"; ?>cache_handler.xml</import>
+	
+	<services>
+		<service id="select_sub_item" module_id="<?php echo $vars["current_dal_module_id"]; ?>" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600">
+			<validation_script>return is_object($output) &amp;&amp; is_a($output, "Exception") ? false : true;</validation_script>
+			<key>select_sub_item_id-&lt;?php echo is_numeric($input) ? $input : ($input['id'] ? $input['id'] : $input['item_id']);?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="insert_sub_item" cache_handler="ServiceCacheHandler" to_cache="false">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<service type="prefix">
+					<key>select_sub_item_id-</key>
+				</service>
+			</to_delete>
+		</service>
+	</services>
+</beans>

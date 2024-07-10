@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Slider</label>
+	<tag>slider</tag>
+	<settings>
+		<resizable>1</resizable>
+		<create_widget_class>SliderWidget</create_widget_class>
+	</settings>
+	<template_widget><![CDATA[
+<div class="frame">
+     <ul class="slides">
+         <li class="slide droppable">slide 1</li>
+         <li class="slide droppable">slide 2</li>
+         <li class="slide droppable">slide 3</li>
+     </ul>
+</div>
+
+<span class="prev">
+     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 501.5 501.5"><g><path fill="#2E435A" d="M302.67 90.877l55.77 55.508L254.575 250.75 358.44 355.116l-55.77 55.506L143.56 250.75z"/></g></svg>
+</span>
+<span class="next">
+     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 501.5 501.5"><g><path fill="#2E435A" d="M199.33 410.622l-55.77-55.508L247.425 250.75 143.56 146.384l55.77-55.507L358.44 250.75z"/></g></svg>
+</span>
+
+<style>
+#my-slider-elm-id.slider {   
+	width: 100%;
+	margin: 0 auto;
+	position: relative;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: -moz-none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+#my-slider-elm-id .frame {
+	width: calc(100% - 60px);
+	position: relative;
+	margin: 0 auto;
+	font-size: 0;
+	line-height: 0;
+	overflow: hidden;
+	white-space: nowrap;
+}
+#my-slider-elm-id .slides {
+	margin:0;
+	padding:0;
+	background: #2E435A;
+	color: #fff;
+}
+#my-slider-elm-id .slides:empty {
+	min-height:130px;
+}
+#my-slider-elm-id .slide {
+	width:100%;
+	min-height:130px;
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	vertical-align:middle;
+	font-size: 15px;
+	line-height: 30px;
+	background: inherit; /* background prevents overlapping of html elements from other slides */
+	/*overflow-x:hidden;*/ /* do not use overflow or it will hide the vertical content too. Use the background instead. */
+	
+	transition:all 1s ease-in-out;
+}
+
+#my-slider-elm-id .prev, 
+  #my-slider-elm-id .next {
+	position: absolute;
+	top: 50%;
+	margin-top: -25px;
+	display: block;
+	cursor: pointer;
+}
+#my-slider-elm-id .next {
+	right: 0;
+}
+#my-slider-elm-id .prev {
+	left: 0;
+}
+#my-slider-elm-id .next svg, 
+  #my-slider-elm-id .prev svg {
+	width: 25px;
+}
+</style>
+	]]></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property style">
+			<label class="col-12 col-form-label">Style: </label>
+			<textarea class="col-12 form-control"></textarea>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-slider:before,
+		  body > .menu-widget.menu-widget-slider.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-slider > .settings-properties .style textarea {
+			height:300px !important;
+			text-align:left;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function SliderWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.slider.onCloneMenuWidget",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.slider.cleanHtml",
+					"data-on-open-widget-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.slider.onOpenWidgetHeader",
+					"data-on-close-widget-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.slider.onCloseWidgetHeader",
+					"data-on-open-droppable-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.slider.onOpenDroppableHeader",
+					"data-on-close-droppable-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.slider.onCloseDroppableHeader",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.slider.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.slider.saveSettingsField",
+				});
+			};
+			
+			me.prepareJSCode = function(widget) {
+				if (!widget.children("script")[0]) {
+					var id = widget.attr("id");
+					var s = document.createElement('script');
+					s.type = 'text/javascript';
+					
+					var code = ''
++ 'if (typeof initMySlider != "function") {'
++ '	function initMySliders(selector) {'
++ '		var items = document.querySelectorAll(selector);'
++ '		for (var i = 0, len = items.length; i < len; i++) '
++ '			initMySlider(items[i]);'
++ '	}'
++ '	'
++ '	if (!Element.prototype.matches)'
++ '		Element.prototype.matches = Element.prototype.matchesSelector || Element.prototype.webkitMatchesSelector || Element.prototype.mozMatchesSelector || Element.prototype.msMatchesSelector;'
++ '	'
++ '	function filterMySliderNodesByCss(nodes, css) {'
++ ' 		var elements = [];'
++ ' 		if (nodes)'
++ ' 			for (var i = 0, len = nodes.length; i < len; i++) {'
++ ' 				var child = nodes[i];'
++ ' 				'
++ ' 				if (child && child.nodeType == Node.ELEMENT_NODE && child.matches(css))'
++ ' 					elements.push(child);'
++ ' 			}'
++ '		return elements;'
++ '	}'
++ '	'
++ '	function filterMySliderNodeByCss(nodes, css) {'
++ ' 		var elements = filterMySliderNodesByCss(nodes, css);'
++ ' 		return elements.length ? elements[0] : null;'
++ '	}'
++ '	'
++ '	function initMySlider(item) {'
++ ' 		var frame = filterMySliderNodeByCss(item.childNodes, ".frame");'
++ ' 		var slides = filterMySliderNodeByCss(frame ? frame.childNodes : null, ".slides");'
++ ' 		var prev = filterMySliderNodeByCss(item.childNodes, ".prev");'
++ ' 		var next = filterMySliderNodeByCss(item.childNodes, ".next");'
++ ' 		'
++ ' 		item.MySlider = {'
++ '  		inited : false,'
++ '  		'
++ '  		elements : {'
++ '    			frame : frame,'
++ '    			slides : slides,'
++ '	     		prev : prev,'
++ '  			next : next,'
++ '  		},'
++ '  		'
++ '  		init : function() {'
++ '  			var me = this;'
++ '  			this.reset();'
++ '  			'
++ '  			if (this.elements.prev) {'
++ '   				var cloned = this.elements.prev.cloneNode(true);'
++ '   				this.elements.prev.parentNode.replaceChild(cloned, this.elements.prev);' //to remove previous listeners we must clone the object
++ '   				this.elements.prev = cloned;'
++ '   				'
++ '   				this.elements.prev.addEventListener("click", function(ev) {'
++ '   					ev.preventDefault();'
++ '     					ev.stopPropagation();'
++ '  	    				'
++ '  	    				me.prev();'
++ '  	    			});'
++ '  			}'
++ '  			'
++ '  			if (this.elements.next){'
++ '   				var cloned = this.elements.next.cloneNode(true);'
++ '   				this.elements.next.parentNode.replaceChild(cloned, this.elements.next);' //to remove previous listeners we must clone the object
++ '   				this.elements.next = cloned;'
++ '   				'
++ '   				this.elements.next.addEventListener("click", function(ev) {'
++ '   					ev.preventDefault();'
++ '     					ev.stopPropagation();'
++ '  	    				'
++ '  	    				me.next();'
++ '  	    			});'
++ '  			}'
++ '  			'
++ '  			this.inited = true;'
++ '  		},'
++ '  		'
++ '  		reset : function() {'
++ '    			var slide_items = filterMySliderNodesByCss(this.elements.slides.childNodes, ".slide");'
++ '    			'
++ '     			for (var i = 0, len = slide_items.length; i < len; i++)'
++ '    				slide_items[i].style.marginLeft = 0;'
++ '  		},'
++ '  		'
++ '  		prev : function() {'
++ '    			var first_slide = filterMySliderNodeByCss(this.elements.slides.childNodes, ".slide:first-child");'
++ '    			var slide_width = this.elements.frame.offsetWidth;'
++ '    			'
++ '     			if (first_slide) {'
++ '    				var left = parseInt(first_slide.style.marginLeft);'
++ '   				left = isNaN(left) ? 0 : left;'
++ '    				left += slide_width;'
++ '    				left = left > 0 ? 0 : left;'
++ '    				first_slide.style.marginLeft = left + "px";'
++ '     			}'
++ '  		},'
++ '  		'
++ '  		next : function() {'
++ '	     		var slide_items = filterMySliderNodesByCss(this.elements.slides.childNodes, ".slide");'
++ '    			var first_slide = slide_items[0];'
++ '    			var slide_width = this.elements.frame.offsetWidth;'
++ '    			var total_width = slide_items.length * slide_width;'
++ '     			'
++ '     			if (first_slide) {'
++ '    				var left = parseInt(first_slide.style.marginLeft);'
++ '    				left = isNaN(left) ? 0 : left;'
++ '     				left -= slide_width;'
++ '     				left = left < (-1 * (total_width - slide_width)) ? (-1 * (total_width - slide_width)) : left;'
++ '    				first_slide.style.marginLeft = left + "px";'
++ '     			}'
++ '  		},'
++ '  		'
++ '  		first : function() {'
++ '    			var first_slide = filterMySliderNodeByCss(this.elements.slides.childNodes, ".slide:first-child");'
++ '     			'
++ '     			if (first_slide)'
++ '    				first_slide.style.marginLeft = 0;'
++ '  		},'
++ '  		'
++ '  		last : function() {'
++ '	     		var slide_items = filterMySliderNodesByCss(this.elements.slides.childNodes, ".slide");'
++ '    			var first_slide = slide_items[0];'
++ '    			var slide_width = this.elements.frame.offsetWidth;'
++ '    			var total_width = slide_items.length * slide_width;'
++ '     			'
++ '     			if (first_slide) '
++ '    				first_slide.style.marginLeft = (-1 * (total_width - slide_width)) + "px";'
++ '  		},'
++ '  	};'
++ '  	'
++ '  	item.MySlider.init();'
++ '	}'
++ '}'
++ ''
++ 'initMySliders("#' + id + '");'
++ '';
+			
+					try {
+						s.appendChild(document.createTextNode(code));
+						widget[0].appendChild(s);
+					} catch (e) {
+						s.text = code;
+						widget[0].appendChild(s);
+					}
+				}
+			}
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) {
+					var id = "slider-" + parseInt(Math.random() * 1000);
+					widget.attr("data-slider", "1").attr("id", id).addClass("slider");
+					
+					var style = widget.children("style");
+					style.html( style.html().replace(/#my-slider-elm-id/g, "#" + id) );
+					
+					me.prepareJSCode(widget);
+				}
+				
+				return widget;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				me.prepareJSCode(widget);
+				
+				return ui_creator.getCleanedHtmlElement(widget[0]);
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var textarea = menu_settings.find(".settings-properties .style textarea");
+				textarea.val( widget.children("style").html() );
+				
+				ui_creator.addMenuSettingsContextMenu(textarea);
+			};
+			
+			me.onOpenWidgetHeader = function(widget, widget_header) {
+				var options = widget_header.children(".options");
+				var option_close = options.children(".close");
+				var option_add = $('<i class="zmdi zmdi-camera-add option add-slide" title="Add Slide"></i>');
+				option_close.before(option_add);
+				
+				option_add.on("click", function() {
+					event.preventDefault();
+			  		event.stopPropagation();
+			  		
+			  		var widget = ui_creator.selected_template_widget;
+					
+					if (widget) {
+						var slides = widget.find(" > .frame > .slides");
+						var slide = $('<li class="slide droppable">new slide</li>');
+						slides.append(slide);
+						
+						widget[0].MySlider && widget[0].MySlider.last && widget[0].MySlider.last(); //go to last slider
+						
+						ui_creator.setWidgetChildDroppable(slide[0]);
+						ui_creator.refreshElementMenuLayer(widget);
+					}
+				});
+			};
+			
+			me.onCloseWidgetHeader = function(widget, widget_header) {
+				var options = widget_header.children(".options");
+				options.children(".add-slide").remove();
+			};
+			
+			me.onOpenDroppableHeader = function(droppable, droppable_header) {
+				var options = droppable_header.children(".options");
+				
+				//prepare removing option
+				var option_close = options.children(".close");
+				var option_remove = $('<i class="zmdi zmdi-delete option slide-delete" title="Delete"></i>');
+				option_close.before(option_remove);
+				
+				option_remove.on("click", function() {
+					event.preventDefault();
+			  		event.stopPropagation();
+			  		
+			  		var d = ui_creator.selected_template_droppable;
+					
+					if (d && confirm("Do you wish to delete this slide?")) {
+						d.fadeOut("slow", function() {
+							var widget = ui_creator.selected_template_widget;
+							var exists_next = d.next(".slide").length;
+							
+							ui_creator.deleteTemplateWidget(d);
+							
+							widget[0].MySlider && widget[0].MySlider.first && widget[0].MySlider.first(); //go to first slider
+							
+							ui_creator.refreshElementMenuLayer(widget);
+						});
+					}
+				});
+				
+				//prepare sorting option
+				var sl = options.children(".sort-left");
+				var sr = options.children(".sort-right");
+				
+				options.children(".sort").hide();
+				sl.hide();
+				sr.hide();
+				
+				//add slide-sort-left
+				if (droppable.prev(".slide").length > 0) {
+					var option_sort_left = $('<i class="zmdi zmdi-long-arrow-tab zmdi-hc-rotate-180 option slide-sort-left" title="Sort Left"></i>');
+					sl.before(option_sort_left);
+					
+					option_sort_left.on("click", function() {
+						var d = ui_creator.selected_template_droppable;
+						var widget = ui_creator.selected_template_widget;
+						var p = d.prev(".slide");
+						
+						sl.trigger("click");
+						
+						if (p[0])
+							d.insertBefore(p);
+						
+						if (widget[0].MySlider && widget[0].MySlider.prev) {
+							var index = d.parent().children(".slide").index(d);
+							
+							if (index > 0)
+								widget[0].MySlider.prev(); //go to previous slider
+							else
+								widget[0].MySlider.reset(); //reset slider
+						}
+						
+						ui_creator.refreshElementMenuLayer(widget);
+					});
+				}
+					
+				//add slide-sort-right
+				if (droppable.next(".slide").length > 0) {
+					var option_sort_right = $('<i class="zmdi zmdi-long-arrow-tab option slide-sort-right" title="Sort Right"></i>');
+					sr.before(option_sort_right);
+					
+					option_sort_right.on("click", function() {
+						var d = ui_creator.selected_template_droppable;
+						var widget = ui_creator.selected_template_widget;
+						var p = d.next(".slide");
+						
+						sr.trigger("click");
+						
+						if (p[0])
+							d.insertAfter(p);
+						
+						widget[0].MySlider && widget[0].MySlider.next && widget[0].MySlider.next(); //go to next slider
+						
+						ui_creator.refreshElementMenuLayer(widget);
+					});
+				}
+			};
+			
+			me.onCloseDroppableHeader = function(droppable, droppable_header) {
+				var options = droppable_header.children(".options");
+				options.children(".slide-delete, .slide-sort-left, .slide-sort-right").remove();
+				
+				options.children(".sort, .sort-left, .sort-right").show();
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("style"))  {
+						widget.children("style").html(field_value);
+						
+						me.prepareJSCode(widget);
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

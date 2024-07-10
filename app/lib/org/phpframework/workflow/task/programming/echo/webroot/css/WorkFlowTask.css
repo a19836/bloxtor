@@ -1,0 +1,44 @@
+.taskflowchartmenu .task.task_echo {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_echo .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_echo .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.echo_task_html {
+	width:295px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .echo_task_html {
+	width:100%;
+}
+
+.echo_task_html .value {
+	/*margin-top:15px;*/
+}
+
+.echo_task_html .value,
+   .echo_task_html .type {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.echo_task_html .value label,
+   .echo_task_html .type label {
+	width:60px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .echo_task_html .value label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .echo_task_html .type label {
+	width:30px;
+}
+.echo_task_html .value input {
+	width:200px;   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .echo_task_html .value input {
+	width:calc(100% - 45px);   
+}
+
+

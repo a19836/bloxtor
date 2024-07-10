@@ -1,0 +1,450 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+/* DROPDOWN */
+.top_bar {
+	margin-bottom:20px;
+}
+
+.title {
+	text-align:center;
+	margin-bottom:20px;
+}
+
+/* SELECT LAYERS - STEP 0 */
+.select_layers .db_layer, .select_layers .db_driver, .select_layers .type, .select_layers .authenticated_template, .select_layers .include_db_driver {
+	width:300px;
+	height:20px;
+	text-align:left;
+	margin:7px auto;
+	float:none;
+	clear:left;
+}
+.select_layers .include_db_driver {
+	margin-top:10px;
+	padding-left:110px;
+	box-sizing:border-box;
+}
+.select_layers .db_layer label, .select_layers .db_driver label, .select_layers .type label, .select_layers .authenticated_template label {
+	width:100px;
+	margin-right:10px;
+	display:block;
+	float:left;
+	font-weight:normal;
+	font-style:normal;
+}
+.select_layers .include_db_driver label {
+	font-weight:normal;
+}
+.select_layers .db_layer select, .select_layers .db_driver select, .select_layers .type select, .select_layers .authenticated_template select {
+	width:180px;
+	font-size:inherit;
+}
+.select_layers .error {
+	text-align:center;
+	margin-top:20px;
+	color:#B51E3F;
+}
+
+/* SELECT TABLES - STEP 1 */
+.select_buttons {
+	float:none;
+	clear:left;
+	width:100%;
+	text-align:center;
+	margin-top:5px;
+}
+.select_buttons a {
+	margin-right:10px;
+	cursor:pointer;
+}
+.select_tables .tables {
+	width:100%;
+	margin:10px 30px 10px 30px;
+	float:none;
+	clear:left;
+}
+.select_tables .tables .table {
+	width:200px;
+	min-height:20px;
+	float:left;
+}
+.select_tables .tables .table input {
+
+}
+.select_tables .tables .table label {
+	margin-left:5px;
+	font-size:10px;
+	font-weight:normal;
+	cursor:pointer;
+}
+.select_tables .error {
+	text-align:center;
+	margin-top:20px;
+	color:#B51E3F;
+}
+.select_tables .options {
+	margin:0 auto;
+	padding-top:20px;
+	width:350px;
+	clear:left;
+	float:none;
+}
+.select_tables .overwrite, 
+   .select_tables .with_items_list_ui, 
+   .select_tables .with_view_item_ui, 
+   .select_tables .with_insert_item_form_ui, 
+   .select_tables .with_update_item_form_ui, 
+   .select_tables .with_fks_ui {
+	float:none;
+	clear:left;
+	width:100%;
+}
+.select_tables .overwrite input, 
+   .select_tables .with_items_list_ui input, 
+   .select_tables .with_view_item_ui input, 
+   .select_tables .with_insert_item_form_ui input, 
+   .select_tables .with_update_item_form_ui input,
+   .select_tables .with_fks_ui input {
+	
+}
+.select_tables .overwrite label, 
+   .select_tables .with_items_list_ui label, 
+   .select_tables .with_view_item_ui label, 
+   .select_tables .with_insert_item_form_ui label, 
+   .select_tables .with_update_item_form_ui label,  
+   .select_tables .with_fks_ui label {
+	font-size:9px;
+	font-weight:normal;
+}
+.select_tables .brokers {
+	margin:20px;
+	padding:20px;
+	text-align:center;
+	background:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+	border-radius:5px;
+}
+.select_tables .brokers .info {
+	display:block;
+}
+.select_tables .brokers table {
+	margin:10px auto;
+}
+.select_tables .brokers table td,
+   .select_tables .brokers table th {
+	padding:0 5px;
+	text-align:center;
+}
+.select_tables .brokers table td.name {
+	text-align:left;
+}
+.select_tables .brokers table td.path input {
+	width:250px;
+	font-size:inherit;
+	background-color:#fff;
+}
+
+.select_tables .users_permissions {
+	margin:20px;
+	padding:20px;
+	text-align:center;
+	background:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+	border-radius:5px;
+}
+.select_tables .users_permissions .info {
+	display:block;
+}
+.select_tables .users_permissions input,
+  .select_tables .users_permissions select {
+	font-size:inherit;
+}
+.select_tables .users_permissions table {
+	margin:10px auto;
+}
+.select_tables .users_permissions table td,
+   .select_tables .users_permissions table th {
+	padding:0 5px;
+	text-align:center;
+}
+.select_tables .users_permissions table td.delete,
+   .select_tables .users_permissions table th.delete {
+	background:none;
+}
+.select_tables .users_permissions table td.name {
+	text-align:left;
+}
+.select_tables .users_permissions table td.path input {
+	width:250px;
+	font-size:80%;
+}
+.select_tables .users_permissions > .users_management_admin_panel_popup {
+	width:90vw;
+	height:90vh;
+	position:fixed;
+	left:5%;
+	top:5%;
+	z-index:2005 !important; /* Must be !important bc for some reason when the myfancypopup calculates the z-index, is giving a z-index smaller than main popup close button... */
+	box-sizing:border-box;
+}
+.select_tables .users_permissions > .users_management_admin_panel_popup > iframe {
+	width:100% !important;
+	height:100% !important;
+	/* !important is very important otherwise the myfancypopp will overwrite this values */
+}
+.select_tables .users_permissions > .popup_overlay {
+	width:auto !important;
+	height:auto !important;
+	position:fixed !important;
+	z-index:1 !important;
+}
+
+.select_tables .users_permissions > .list_and_edit_users,
+  .select_tables .users_permissions > .non_authenticated_template {
+	margin-top:20px;
+}
+.select_tables .users_permissions > .list_and_edit_users label,
+  .select_tables .users_permissions > .non_authenticated_template label {
+	font-weight:normal;
+	font-style:normal;
+}
+
+/* TABLES SETTINGS - STEP 2 */
+.main_error {
+	width:100%;
+	margin:10px;
+	color:#B51E3F;
+	text-align:center;
+	font-weight:bold;
+}
+.tables_settings .error {
+	display:none;
+	margin:10px;
+	padding:5px 10px;
+	border:1px inset #CCC;
+	background-color:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+}
+.tables_settings .error label {
+	color:#999;
+}
+.tables_settings .error ul, .tables_settings .error ul li {
+	list-style:outside square !important;
+	color:#990000;
+	margin:0 10px;
+}
+.tables_settings .error ul li.info {
+	color:#000099;
+}
+.tables_settings .stas_form {
+	display:none;
+}
+
+.table_group {
+	width:100%;
+	clear:both;
+	float:none;
+}
+.table_group .table_header {
+	text-align:left;
+	padding:5px;
+	clear:both;
+	float:none;
+	background:#eee;
+	background:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+	border-bottom:1px solid #aaa;
+}
+.table_group .table_header label {
+	font-weight:normal;
+	font-style:normal;
+}
+.table_group .table_header .icon {
+	float:right;
+	margin:0 0 0 5px;
+}
+.table_group .table_panel {
+	display:none;
+	text-align:left;
+	clear:both;
+	float:none;
+	padding:5px;
+}
+.table_ui_panel label {
+	font-style:normal;
+	font-weight:normal;
+	font-size:inherit;
+}
+.table_ui_panel input, 
+   .table_ui_panel select, 
+   .table_ui_panel textarea {
+	font-size:inherit;
+}
+
+/* TABLE UI */
+.table_group .table_panel .table_ui {
+	clear:left:
+	float:none;
+	margin-left:5px;
+	margin-right:5px;
+}
+.table_group .table_panel .table_ui.relationships_count {
+	margin-bottom:10px;
+}
+.table_group .table_panel .table_ui .table_ui_panel {
+	padding:5px;
+	display:none;
+	border:1px solid #D7D7D7;
+	
+	/* The global.css from the programming tasks has the position fixed, so we need to overwrite it. */
+	position:relative !important;
+	left:auto !important;
+	top:auto !important;
+	right:auto !important;
+	bottom:auto !important;
+	max-width:none !important;
+	max-height:none !important;
+	overflow:visible !important;
+}
+.table_group .table_panel .table_ui .table_ui_panel .task_properties .params,
+  .table_group .table_panel .table_ui .table_ui_panel .task_properties .opts {
+	margin:0 0 5px 0;
+}
+
+/* TABLES SETTINGS - STEP 2 - BROKERS LAYER TYPE */
+.table_group .table_panel .brokers_layer_type {
+	width:500px;
+	height:20px;
+	float:none;
+	clear:both;
+	margin-left:auto;
+	margin-right:auto;
+}
+.table_group .table_panel .brokers_layer_type label {
+	display:block;
+	float:left;
+	width:130px;
+	height:20px;
+	margin-bottom:5px;
+}
+
+/* TABLES SETTINGS - STEP 2 - CALL BUSINESS LOGIC TASK HTML */
+.table_group .table_panel .call_business_logic_task_html {
+	display:none;
+	width:500px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.table_group .table_panel .call_business_logic_task_html .get_automatically, 
+   .table_group .table_panel .call_business_logic_task_html .broker_method_obj,
+   .table_group .table_panel .call_business_logic_task_html .module_id, 
+   .table_group .table_panel .call_business_logic_task_html .service_id {
+	margin-left:0;
+}
+.table_group .table_panel .call_business_logic_task_html .result,
+   .table_group .table_panel .call_business_logic_task_html .task_property_exit {
+	display:none;
+}
+
+/* TABLES SETTINGS - STEP 2 - CALL IBATIS QUERY TASK HTML */
+.table_group .table_panel .call_ibatis_query_task_html {
+	display:none;
+	width:500px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.table_group .table_panel .call_ibatis_query_task_html .get_automatically,
+   .table_group .table_panel .call_ibatis_query_task_html .broker_method_obj,
+   .table_group .table_panel .call_ibatis_query_task_html .module_id, 
+   .table_group .table_panel .call_ibatis_query_task_html .service_type, 
+   .table_group .table_panel .call_ibatis_query_task_html .service_id {
+	margin-left:0;
+}
+.table_group .table_panel .call_ibatis_query_task_html .query_type,
+   .table_group .table_panel .call_ibatis_query_task_html .result,
+   .table_group .table_panel .call_ibatis_query_task_html .task_property_exit {
+	display:none;
+}
+
+/* TABLES SETTINGS - STEP 2 - CALL HIBERNATE METHOD TASK HTML */
+.table_group .table_panel .call_hibernate_method_task_html {
+	display:none;
+	width:500px;
+	margin-top:15px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.table_group .table_panel .table_ui .table_ui_panel .task_properties .module_id,
+  .table_group .table_panel .table_ui .table_ui_panel .task_properties .service_id,
+  .table_group .table_panel .table_ui .table_ui_panel .task_properties .service_method {
+	margin:0 0 5px 0;
+}
+.table_group .table_panel .call_hibernate_method_task_html .get_automatically {
+	margin:0 0 5px;
+}
+.table_group .table_panel .call_hibernate_method_task_html .broker_method_obj {
+	margin-left:0;
+}
+.table_group .table_panel .call_hibernate_method_task_html .result,
+   .table_group .table_panel .call_hibernate_method_task_html .task_property_exit {
+	display:none;
+}
+.table_group .table_panel .table_ui .table_ui_panel .task_properties .sma_options .sma_options {
+	padding:0;
+}
+
+/* TABLES SETTINGS - STEP 2 - GET QUERY DATA TASK HTML & SET QUERY DATA TASK HTML */
+.table_group .table_panel .get_query_data_task_html,
+   .table_group .table_panel .set_query_data_task_html {
+	display:none;
+	width:500px;
+	margin-top:20px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.table_group .table_panel .get_query_data_task_html .broker_method_obj,
+   .table_group .table_panel .set_query_data_task_html .broker_method_obj {
+	margin-left:0;
+}
+.table_group .table_panel .get_query_data_task_html .result,
+   .table_group .table_panel .set_query_data_task_html .result,
+   .table_group .table_panel .get_query_data_task_html .task_property_exit,
+   .table_group .table_panel .set_query_data_task_html .task_property_exit {
+	display:none;
+}
+.table_group .table_panel .get_query_data_task_html .opts .info,
+   .table_group .table_panel .set_query_data_task_html .opts .info {
+	margin-bottom:0;
+	font-size:80%;
+	text-align:right;
+}
+
+/* STEP 3 */
+.statuses table {
+	width:750px;
+	margin:20px auto;
+}
+.statuses th {
+	color:#999;
+	font-size:10px;
+}
+.statuses td {
+	color:#999;
+}
+.statuses td.table_name, .statuses td.status {
+	font-weight:bold;
+	text-align:center;
+}
+.statuses td.status_ok {
+	color:#009900;
+}
+.statuses td.status_error {
+	color:#990000;
+}
+

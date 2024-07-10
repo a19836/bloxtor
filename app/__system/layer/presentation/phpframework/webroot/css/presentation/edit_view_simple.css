@@ -1,0 +1,19 @@
+/* Code Editor - Body - ELS UI */
+.view_obj.template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .options-right {
+	right:61px;
+}
+.view_obj.template_obj.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .options-right {
+	right:97px;
+}
+.view_obj.template_obj .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:194px;
+}
+.view_obj.template_obj:not(.with_advanced_options) .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:81px;
+}
+.view_obj.template_obj.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:230px;
+}
+.view_obj.template_obj.in_popup:not(.with_advanced_options) .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	right:117px;
+}

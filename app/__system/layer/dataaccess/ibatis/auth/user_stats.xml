@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sql_mapping>
+	<insert id="insert_user_stats">
+		insert into sysauth_user_stats (name, value, created_date, modified_date) values ('#name#', '#value#', '#created_date#', '#modified_date#')
+	</insert>
+	
+	<update id="update_user_stats">
+		update sysauth_user_stats set value='#value#', modified_date='#modified_date#' where name='#name#'
+	</update>
+	
+	<select id="get_user_stats">
+		select * from sysauth_user_stats where name='#name#'
+	</select>
+	
+	<select id="get_all_user_statss">
+		select * from sysauth_user_stats
+	</select>
+</sql_mapping>

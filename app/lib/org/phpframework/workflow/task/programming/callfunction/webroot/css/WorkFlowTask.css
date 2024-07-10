@@ -1,0 +1,51 @@
+.taskflowchartmenu .task.task_callfunction {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_callfunction .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_callfunction .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.call_function_task_html {
+	width:430px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_function_task_html {
+	width:100%;
+}
+
+.call_function_task_html .func_name {
+	width:100%;
+	min-height:20px;
+	/*margin-top:15px;*/
+	margin-bottom:5px;
+}
+.call_function_task_html .func_name label,
+  .call_function_task_html .include_file label {
+	width:115px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_function_task_html .func_name label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .call_function_task_html .include_file label {
+	width:95px;
+}
+.call_function_task_html .func_name input {
+	width:180px;  
+	padding-right:20px; 
+}
+.call_function_task_html .include_file input[type=text] {
+	width:calc(100% - 255px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_function_task_html .func_name input {
+	width:calc(100% - 150px);  
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_function_task_html .include_file input[type=text] {
+	width:calc(100% - 235px);  
+}
+.call_function_task_html .func_name .search {
+	
+}
+.call_function_task_html .func_name .add_variable.inline {
+	margin-left:-21px;
+}

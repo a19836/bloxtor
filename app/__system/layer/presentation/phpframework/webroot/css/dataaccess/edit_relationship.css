@@ -1,0 +1,134 @@
+/* TOP BAR */
+.edit_relationship > .top_bar header > .title {
+	max-width:calc(100% - 60px);
+}
+.edit_relationship > .top_bar .title .query_type {
+	width:145px;
+	display:inline-block;
+}
+.edit_relationship > .top_bar .title .query_name {
+	width:225px;
+	display:inline-block;
+}
+.edit_relationship > .top_bar li.auto_convert_activation {
+	display:none !important;
+}
+
+/* RELATIONSHIP */
+.edit_relationship .data_access_obj {
+	
+}
+.edit_relationship .data_access_obj.with_parameter_and_result_fields {
+	
+}
+.edit_relationship .relationship {
+	margin:0;
+	padding:0;
+	border:0;
+	display:none;
+}
+.edit_relationship .relationship .header_buttons {
+	display:none;
+}
+.edit_relationship .relationship .rel_type {
+	width:140px;
+	margin:0;
+	position:fixed;
+	top:14px;
+	left:50px;
+	z-index:1503;
+}
+/*.in_popup .edit_relationship .relationship .rel_type {
+	top:16px;
+	left:43px;
+}*/
+.edit_relationship .relationship .rel_type label {
+	display:none;
+}
+.edit_relationship .relationship .rel_type select {
+	width:135px;
+	border:1px solid #ccc;
+	color:var(--main-iframe-color);
+	background:var(--main-iframe-bg);
+}
+.in_popup .edit_relationship .relationship .rel_type select {
+	background:var(--main-popup-header-bg);
+	color:var(--main-popup-header-color);
+}
+.edit_relationship .relationship .rel_name {
+	width:220px;
+	margin:0;
+	position:fixed;
+	top:14px;
+	left:285px;
+	z-index:1503;
+}
+/*.in_popup .edit_relationship .relationship .rel_name {
+	top:16px;
+	left:240px;
+}*/
+.edit_relationship .relationship .rel_name label {
+	display:none;
+}
+.edit_relationship .relationship .rel_name input {
+	width:210px;
+	border:1px solid #ccc;
+	color:var(--main-iframe-color);
+	background:transparent;
+}
+.in_popup .edit_relationship .relationship .rel_name input {
+	background:var(--main-popup-header-bg);
+	color:var(--main-popup-header-color);
+}
+
+/* RELATIONSHIP - QUERY */
+.edit_relationship .relationship .query {
+	margin-top:0;
+	padding:0;
+	border:0;
+	background:transparent;
+}
+.edit_relationship .data_access_obj.with_parameter_and_result_fields .relationship .query {
+	margin-top:20px;
+	border-top:1px solid #000;
+	border-radius:0;
+}
+.edit_relationship .data_access_obj.with_parameter_and_result_fields .relationship .query > .ui-widget-content {
+	/*border-top:1px solid #000;*/
+}
+.edit_relationship .relationship .query table {
+	margin-left:auto;
+	margin-right:auto;
+	border:0;
+}
+.edit_relationship .relationship .query .query_settings {
+	height:calc(100vh - 135px);
+	box-sizing:border-box;
+	padding-top:10px;
+	border-radius:0;
+	border-top:0;
+}
+.edit_relationship .relationship .query .query_settings .query_settings_tab {
+	height:calc(100vh - 180px);
+	min-height:100px;
+	padding-bottom:20px;
+	box-sizing:border-box;
+	overflow:auto;
+}
+.edit_relationship .relationship .query .query_settings .advanced_query_settings {
+	margin-top:auto;
+	bottom:10px;
+}
+.edit_relationship .relationship .query .query_settings > .query_settings_tabs {
+	border-top-left-radius:0;
+	border-top-right-radius:0;
+}
+.edit_relationship .relationship .sub_limit_start {
+	height:auto;
+	margin-top:0;
+	padding-top:35px;
+	overflow:visible;
+}
+.edit_relationship .relationship .limit_start .limit label, .relationship .limit_start .start label {
+	font-weight:normal;
+}

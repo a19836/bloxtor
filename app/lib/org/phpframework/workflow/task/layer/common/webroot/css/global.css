@@ -1,0 +1,321 @@
+/*.taskflowchartdiagram ._jsPlumb_connector path { 
+	stroke-width:2px; 
+}*/
+.taskflowchartdiagram .end_point {
+	opacity:0;
+}
+.taskflowchartdiagram .connector:hover {
+	z-index:11 !important; /* show connection over the tasks, instead of show it behind them */
+}
+
+/* Menu Task */
+.taskflowchartmenu .tasks_group:first-child {
+	margin-top:0 !important;
+}
+.taskflowchartmenu .task,
+  .taskflowchart > .tasks_menu .task {
+	width:90px;
+	height:60px;
+	margin:15px 15px 0;
+	
+	background-color:#4070FF;
+	background-size:22px 26px; 
+	background-position:center 15px; 
+	
+	border-radius:5px;
+	border:0;
+	box-shadow:none;
+}
+.taskflowchartmenu .task span {
+	line-height:normal;
+	margin-top:40px;
+	display:block;
+	color:#FFF;
+	font-size:11px;
+}
+
+/* Flow Task */
+.taskflowchartdiagram .task.layer_task {
+	width:90px !important;
+	height:auto !important;
+	min-height:60px !important;
+	
+	background-color:#4070FF;
+	background-size:22px 26px; 
+	background-position:center 15px; 
+	
+	border-radius:5px;
+	border:0 !important;
+}
+.taskflowchartdiagram .task.layer_task:hover {
+	opacity:1 !important;
+	z-index:9999;
+}
+.taskflowchartdiagram .task.layer_task:not(.active) {
+	opacity:.3 !important;
+}
+.taskflowchartdiagram .task.layer_task:hover:before,
+  .taskflowchartdiagram .task.layer_task .task_info {
+	display:none !important;
+}
+.taskflowchartdiagram .task.layer_task:hover:after {
+	bottom:-20px !important;
+	left:-5px !important;
+	background:none !important;
+	
+	display:none !important; /* This causes too much noise and the framework should be as simple as possible. */
+}
+.taskflowchartdiagram .task.layer_task .info {
+	width:100% !important;
+	line-height:normal;
+	margin-top:40px !important;
+	display:block;
+	color:#FFF;
+	font-size:11px;
+	font-weight:bold;
+}
+.taskflowchartdiagram .task.layer_task .short_actions {
+	padding:10px;
+	top:-30px;
+	left:-5px;
+	right:auto;
+}
+.taskflowchartdiagram .task.layer_task .eps {
+	width:100%;
+	height:100%;
+	margin:0 !important;
+	position:absolute;
+	top:0;
+	left:0;
+}
+.taskflowchartdiagram .task.layer_task .ep {
+	width:100%;
+	height:100%;
+	margin:0;
+	border-radius:0;
+	background-color:transparent !important;
+	border-color:transparent !important;
+}
+
+/* Contextmenu */
+.task_context_menu .activate_task a,
+  .task_context_menu .activate_task a:hover {
+	background:url("../img/enable_icon.png") 4px 4px no-repeat;
+}
+.task_context_menu .activate_task a.active,
+  .task_context_menu .activate_task a.active:hover {
+	background:url("../img/disable_icon.png") 4px 4px no-repeat;
+}
+
+/* Task/Connection Properties */
+
+.selected_task_properties, 
+  .selected_connection_properties {
+	height:auto !important; /* important must be here and height must be auto bc if we change the connection properties to REST and add multiple options the popup height will be increased and must get updated accordingly */
+}
+.selected_task_properties > .maximize_minimize_icon, 
+  .selected_connection_properties > .maximize_minimize_icon,
+  .selected_task_properties > .toggle_properties_side_icon, 
+  .selected_connection_properties > .toggle_properties_side_icon {
+	display:none !important;
+}
+.selected_task_properties input,
+  .selected_task_properties select,
+  .selected_task_properties textarea,
+  .selected_connection_properties input,
+  .selected_connection_properties select,
+  .selected_connection_properties textarea {
+	font-size:inherit;
+}
+
+/* TASK BROKER SERVERS PROPERTIES */
+
+.selected_task_properties .layer_rest_server_html,
+  .selected_task_properties .layer_soap_server_html {
+	width:530px;
+	margin:0;
+	padding:10px;
+	border:1px solid #ddd;
+}
+
+.selected_task_properties .layer_rest_server_html > label,
+  .selected_task_properties .layer_soap_server_html > label {
+	width:190px;
+	display:inline-block;
+}
+.selected_task_properties .layer_rest_server_html > div,
+  .selected_task_properties .layer_soap_server_html > div {
+	margin:10px;
+	display:none;
+}
+.selected_task_properties .layer_rest_server_html > div:first-child,
+  .selected_task_properties .layer_soap_server_html > div:first-child {
+	margin-top:20px;
+}
+.selected_task_properties .layer_rest_server_html > div > label,
+  .selected_task_properties .layer_soap_server_html > div > label {
+	width:240px;
+	display:inline-block;
+}
+.selected_task_properties .layer_rest_server_html > div > input,
+  .selected_task_properties .layer_rest_server_html > div > select,
+  .selected_task_properties .layer_soap_server_html > div > input,
+  .selected_task_properties .layer_soap_server_html > div > select {
+	width:250px;
+	margin-left:5px;
+	box-sizing: border-box;
+	font-size:inherit;
+}
+.selected_task_properties .layer_rest_server_html > div.with_toggle_icon > input,
+  .selected_task_properties .layer_rest_server_html > div.with_toggle_icon > select,
+  .selected_task_properties .layer_soap_server_html > div.with_toggle_icon > input,
+  .selected_task_properties .layer_soap_server_html > div.with_toggle_icon > select {
+	width:225px;
+}
+.selected_task_properties .layer_rest_server_html > div > .info,
+  .selected_task_properties .layer_soap_server_html > div > .info {
+	font-size:80%;
+}
+.selected_task_properties .layer_rest_server_html > div > .toggle_password::before,
+  .selected_task_properties .layer_soap_server_html > div > .toggle_password::before {
+	content:"\f074";
+}
+
+.selected_task_properties .layer_rest_server_html .other_settings,
+  .selected_task_properties .layer_soap_server_html .other_settings,
+  .selected_task_properties .layer_rest_server_html .global_variables,
+  .selected_task_properties .layer_soap_server_html .global_variables {
+	margin-top:20px;
+	display:none;
+}
+.selected_task_properties .layer_rest_server_html .other_settings table,
+  .selected_task_properties .layer_soap_server_html .other_settings table,
+  .selected_task_properties .layer_rest_server_html .global_variables table,
+  .selected_task_properties .layer_soap_server_html .global_variables table {
+	width:100%;
+}
+.selected_task_properties .layer_rest_server_html .other_settings table tr td,
+  .selected_task_properties .layer_soap_server_html .other_settings table tr td,
+  .selected_task_properties .layer_rest_server_html .global_variables table tr td,
+  .selected_task_properties .layer_soap_server_html .global_variables table tr td {
+	padding-bottom:5px;
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+}
+.selected_task_properties .layer_rest_server_html .other_settings .setting_name,
+  .selected_task_properties .layer_soap_server_html .other_settings .setting_name,
+  .selected_task_properties .layer_rest_server_html .global_variables .var_name,
+  .selected_task_properties .layer_soap_server_html .global_variables .var_name {
+	width:230px;
+}
+.selected_task_properties .layer_rest_server_html .other_settings .setting_value,
+  .selected_task_properties .layer_soap_server_html .other_settings .setting_value,
+  .selected_task_properties .layer_rest_server_html .global_variables .var_value,
+  .selected_task_properties .layer_soap_server_html .global_variables .var_value {
+	width:250px;
+}
+.selected_task_properties .layer_rest_server_html .other_settings .table_attr_icons,
+  .selected_task_properties .layer_soap_server_html .other_settings .table_attr_icons,
+  .selected_task_properties .layer_rest_server_html .global_variables .table_attr_icons,
+  .selected_task_properties .layer_soap_server_html .global_variables .table_attr_icons {
+	width:50px;
+	border:0;
+	text-align:center;
+}
+.selected_task_properties .layer_rest_server_html .other_settings input,
+  .selected_task_properties .layer_rest_server_html .other_settings select,
+  .selected_task_properties .layer_soap_server_html .other_settings input,
+  .selected_task_properties .layer_soap_server_html .other_settings select,
+  .selected_task_properties .layer_rest_server_html .global_variables input,
+  .selected_task_properties .layer_rest_server_html .global_variables select,
+  .selected_task_properties .layer_soap_server_html .global_variables input,
+  .selected_task_properties .layer_soap_server_html .global_variables select {
+	width:100%;
+	box-sizing:border-box;
+	border:0;
+}
+
+/* CONNECTION PROPERTIES */
+
+.selected_connection_properties .layer_connection_html {
+	width:530px;
+}
+
+.selected_connection_properties .layer_connection_html .connection_type label,
+  .selected_connection_properties .layer_connection_html .connection_response_type label {
+	margin-right:5px;
+}
+.selected_connection_properties .layer_connection_html .connection_response_type {
+	margin-top:20px;
+	display:none;
+}
+
+.selected_connection_properties .layer_connection_html .connection_settings {
+	margin-top:20px;
+	display:none;
+}
+.selected_connection_properties .layer_connection_html .connection_settings table {
+	width:100%;
+}
+.selected_connection_properties .layer_connection_html .connection_settings table td {
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+}
+.selected_connection_properties .layer_connection_html .connection_settings .setting_name {
+	width:230px;
+}
+.selected_connection_properties .layer_connection_html .connection_settings .setting_value {
+	width:250px;
+}
+.selected_connection_properties .layer_connection_html .connection_settings .table_attr_icons {
+	width:50px;
+	border:0;
+	text-align:center;
+}
+.selected_connection_properties .layer_connection_html .connection_settings input,
+  .selected_connection_properties .layer_connection_html .connection_settings select {
+	width:100%;
+	box-sizing:border-box;
+	border:0;
+	background:transparent;
+}
+
+.selected_connection_properties .layer_connection_html .connection_global_variables_name {
+	margin-top:20px;
+	margin-bottom:20px;
+	display:none;
+}
+.selected_connection_properties .layer_connection_html .connection_global_variables_name table {
+	width:auto;
+	margin:0 auto;
+}
+.selected_connection_properties .layer_connection_html .connection_global_variables_name table td {
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+}
+.selected_connection_properties .layer_connection_html .connection_global_variables_name .var_name {
+	width:250px;
+	text-align:center;
+}
+.selected_connection_properties .layer_connection_html .connection_global_variables_name .table_attr_icons {
+	width:25px;
+	border:0;
+	text-align:center;
+}
+.selected_connection_properties .layer_connection_html .connection_global_variables_name input {
+	width:100%;
+	text-align:center;
+	box-sizing:border-box;
+	border:0;
+}
+
+.selected_connection_properties .layer_connection_html .connection_global_variables_name .info {
+	margin-bottom:10px;
+}
+
+/* GENERIC BUTTONS */
+
+.selected_task_properties .generic_buttons, 
+  .selected_connection_properties .generic_buttons {
+	bottom:10px;
+}

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import relative="1">app.xml</import>
+	
+	<!-- DRIVER -->
+	<var name="mysql_db_options">
+		<list>
+			<item name="extension">&lt;?php echo $GLOBALS['mysql_db_extension']; ?></item>
+			<item name="host">&lt;?php echo $GLOBALS['mysql_db_host']; ?></item>
+			<item name="db_name">&lt;?php echo $GLOBALS['mysql_db_name']; ?></item>
+			<item name="username">&lt;?php echo $GLOBALS['mysql_db_username']; ?></item>
+			<item name="password">&lt;?php echo $GLOBALS['mysql_db_password']; ?></item>
+			<item name="port">&lt;?php echo $GLOBALS['mysql_db_port']; ?></item>
+			<item name="persistent">&lt;?php echo $GLOBALS['mysql_db_persistent']; ?></item>
+			<item name="new_link">&lt;?php echo $GLOBALS['mysql_db_new_link']; ?></item>
+			<item name="encoding">&lt;?php echo $GLOBALS['mysql_db_encoding']; ?></item>
+			<item name="odbc_data_source">&lt;?php echo $GLOBALS['mysql_db_odbc_data_source']; ?></item>
+			<item name="odbc_driver">&lt;?php echo $GLOBALS['mysql_db_odbc_driver']; ?></item>
+			<item name="extra_dsn">&lt;?php echo $GLOBALS['mysql_db_extra_dsn']; ?></item>
+		</list>
+	</var>
+	<bean name="MySqlDB" path="lib.org.phpframework.db.driver.MySqlDB" bean_group="dbdriver">
+		<function name="setOptions">
+			<parameter reference="mysql_db_options" />
+		</function>
+	</bean>
+	
+	<var name="postgres_db_options">
+		<list>
+			<item name="extension">&lt;?php echo $GLOBALS['pg_db_extension']; ?></item>
+			<item name="host">&lt;?php echo $GLOBALS['pg_db_host']; ?></item>
+			<item name="db_name">&lt;?php echo $GLOBALS['pg_db_name']; ?></item>
+			<item name="username">&lt;?php echo $GLOBALS['pg_db_username']; ?></item>
+			<item name="password">&lt;?php echo $GLOBALS['pg_db_password']; ?></item>
+			<item name="port">&lt;?php echo $GLOBALS['pg_db_port']; ?></item>
+			<item name="persistent">&lt;?php echo $GLOBALS['pg_db_persistent']; ?></item>
+			<item name="new_link">&lt;?php echo $GLOBALS['pg_db_new_link']; ?></item>
+			<item name="encoding">&lt;?php echo $GLOBALS['pg_db_encoding']; ?></item>
+			<item name="odbc_data_source">&lt;?php echo $GLOBALS['pg_db_odbc_data_source']; ?></item>
+			<item name="odbc_driver">&lt;?php echo $GLOBALS['pg_db_odbc_driver']; ?></item>
+			<item name="extra_dsn">&lt;?php echo $GLOBALS['pg_db_extra_dsn']; ?></item>
+		</list>
+	</var>
+	<bean name="PostgresDB" path="lib.org.phpframework.db.driver.PostgresDB" bean_group="dbdriver">
+		<function name="setOptions">
+			<parameter reference="postgres_db_options" />
+		</function>
+	</bean>
+	
+	<var name="mssql_db_options">
+		<list>
+			<item name="extension">&lt;?php echo $GLOBALS['mssql_db_extension']; ?></item>
+			<item name="host">&lt;?php echo $GLOBALS['mssql_db_host']; ?></item>
+			<item name="db_name">&lt;?php echo $GLOBALS['mssql_db_name']; ?></item>
+			<item name="username">&lt;?php echo $GLOBALS['mssql_db_username']; ?></item>
+			<item name="password">&lt;?php echo $GLOBALS['mssql_db_password']; ?></item>
+			<item name="port">&lt;?php echo $GLOBALS['mssql_db_port']; ?></item>
+			<item name="persistent">&lt;?php echo $GLOBALS['mssql_db_persistent']; ?></item>
+			<item name="new_link">&lt;?php echo $GLOBALS['mssql_db_new_link']; ?></item>
+			<item name="encoding">&lt;?php echo $GLOBALS['mssql_db_encoding']; ?></item>
+			<item name="odbc_data_source">&lt;?php echo $GLOBALS['mssql_db_odbc_data_source']; ?></item>
+			<item name="odbc_driver">&lt;?php echo $GLOBALS['mssql_db_odbc_driver']; ?></item>
+			<item name="extra_dsn">&lt;?php echo $GLOBALS['mssql_db_extra_dsn']; ?></item>
+		</list>
+	</var>
+	<bean name="MSSqlDB" path="lib.org.phpframework.db.driver.MSSqlDB" bean_group="dbdriver">
+		<function name="setOptions">
+			<parameter reference="mssql_db_options" />
+		</function>
+	</bean>
+</beans>

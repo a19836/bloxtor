@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<import>
+	<import relative="1">cache_item.xml</import>
+	
+	<service type="prefix">
+		<key>SubItem.findById</key>
+	</service>
+	<service type="prefix">
+		<key>SubItem.find</key>
+	</service>
+	<service type="prefix">
+		<key>SubItem.findRelationships</key>
+	</service>
+	<service type="prefix">
+		<key>SubItem.findRelationship</key>
+	</service>
+	<service type="prefix">
+		<key>SubItem.select_all_by_item</key>
+	</service>
+</import>

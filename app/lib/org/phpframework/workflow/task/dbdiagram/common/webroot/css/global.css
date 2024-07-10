@@ -1,0 +1,63 @@
+.taskflowchartdiagram .end_point {
+	opacity:0;
+}
+
+/* Task */
+.taskflowchartdiagram .task:hover:before,
+  .taskflowchartdiagram .task .task_info {
+	display:none !important;
+}
+.taskflowchartdiagram .task:hover:after {
+	bottom:-25px !important;
+	left:-5px !important;
+	background:none !important;
+	
+	display:none !important; /* This causes noise in the diagram. The diagrams should be as simple as possible, so we should reduce the noise. */
+}
+.taskflowchartdiagram .task:hover .short_actions {
+	padding:10px;
+	top:-30px;
+	right:-5px;
+}
+
+/*.selected_task_properties.fixed_properties, 
+  .selected_connection_properties.fixed_properties,
+  .selected_task_properties.fixed_side_properties, 
+  .selected_connection_properties.fixed_side_properties {
+	width:auto;
+	height:auto;
+	padding-bottom:10px;
+	box-sizing:border-box;
+	
+	position:fixed;
+	left:0px !important;
+	top:auto !important;
+	bottom:0px !important;
+	right:0px !important;
+	border-radius:0;
+	overflow:auto;
+}
+.taskflowchart:not(.fixed_properties):not(.fixed_side_properties) .selected_task_properties, 
+.taskflowchart:not(.fixed_properties):not(.fixed_side_properties) .selected_connection_properties {
+	max-height:70%;
+	max-height:calc(100% - 40px);
+}*/
+.selected_task_properties > .popup_close, .selected_connection_properties > .popup_close {
+	/*top:0;
+	left:0;
+	right:auto;*/
+	opacity:.1;
+}
+.selected_task_properties > .popup_close:hover, .selected_connection_properties > .popup_close:hover {
+	opacity:1;
+}
+.selected_task_properties .properties_task_id, 
+  .selected_connection_properties .properties_connection_id {
+	display:none !important;
+}
+.taskflowchart.fixed_properties .selected_task_properties .properties_task_id, 
+  .taskflowchart.fixed_properties .selected_connection_properties .properties_task_id,
+  .taskflowchart.fixed_side_properties .selected_task_properties .properties_task_id, 
+  .taskflowchart.fixed_side_properties .selected_connection_properties .properties_task_id {
+	width:auto;
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Tolltip</label>
+	<tag>bstooltip</tag>
+	<settings>
+		<create_widget_class>BSTolltipWidget</create_widget_class>
+	</settings>
+	<files>
+		<css>../../CreateWidgetBootstrapClassObj.css</css>
+		<js>../../CreateWidgetBootstrapClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bstooltip:before,
+		  body > .menu-widget.menu-widget-bstooltip.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSTolltipWidget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapClassObj(ui_creator, menu_widget, "bstooltip");
+			obj.extend(this);
+			
+			obj.available_items = {
+				"5.3": [
+					{
+						image: '#widget_webroot_url#tooltip_1.png',
+						name: '',
+						html: '<button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Tooltip on top" title="Tooltip on top">Tooltip on top</button>'
+					},
+					{
+						image: '#widget_webroot_url#tooltip_2.png',
+						name: '',
+						html: '<button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Tooltip on end" title="Tooltip on end">Tooltip on end</button>'
+					},
+					{
+						image: '#widget_webroot_url#tooltip_3.png',
+						name: '',
+						html: '<button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Tooltip on bottom" title="Tooltip on bottom">Tooltip on bottom</button>'
+					},
+					{
+						image: '#widget_webroot_url#tooltip_4.png',
+						name: '',
+						html: '<button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Tooltip on start" title="Tooltip on start">Tooltip on start</button>'
+					},
+					{
+						image: '#widget_webroot_url#tooltip_5.png',
+						name: '',
+						html: '<button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-html="true" data-bs-original-title="<em>Tooltip</em> <u>with</u> <b>HTML</b>" title="<em>Tooltip</em> <u>with</u> <b>HTML</b>">Tooltip with HTML</button>'
+					}
+				],
+			};
+		}
+	]]></menu_js>
+</widget>

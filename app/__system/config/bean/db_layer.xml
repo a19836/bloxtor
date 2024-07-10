@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import relative="1">app.xml</import>
+	<import relative="1">db_driver.xml</import>
+	
+	<!-- DB -->
+	<var name="dbl_vars">
+		<list>
+			<item name="dbl_path"><?php echo SYSTEM_LAYER_PATH; ?>dbdata/</item>
+		</list>
+	</var>
+	
+	<bean name="DBLayer" path="lib.org.phpframework.layer.db.DBLayer">
+		<constructor_arg reference="dbl_vars" />
+		
+		<property name="cacheLayer" reference="DBCacheLayer" />
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		
+		<function name="addBroker">
+			<parameter index="2" value="mysql" />
+			<parameter index="1" reference="MySqlDB" />
+		</function>
+		<function name="addBroker">
+			<parameter reference="PostgresDB" />
+			<parameter value="pg" />
+		</function>
+		<function name="addBroker">
+			<parameter reference="MSSqlDB" />
+			<parameter value="mssql" />
+		</function>
+		
+		<!-- If the setDefaultBrokerName function is omitted, the default broker is the first one -->
+		<function name="setDefaultBrokerName">
+			<parameter value="&lt;?php echo $GLOBALS['default_db_driver']; ?>" />
+		</function>
+	</bean>
+	
+	<bean name="DBBrokerServer" path="lib.org.phpframework.broker.server.local.LocalDBBrokerServer">
+		<constructor_arg reference="DBLayer" />
+	</bean>
+	<!--bean name="DBBrokerServer" path="lib.org.phpframework.broker.server.rest.RESTDBBrokerServer">
+		<constructor_arg reference="DBLayer" />
+	</bean-->
+	
+	<var name="dbl_cache_vars">
+		<list>
+			<item name="dbl_cache_file_name">cache.xml</item>
+			<item name="dbl_cache_path"><?php echo LAYER_CACHE_PATH; ?>sysdbdata/</item>
+			<item name="dbl_default_cache_ttl">600</item>
+			<item name="dbl_module_cache_maximum_size"></item>
+		</list>
+	</var>
+	
+	<bean name="DBCacheLayer" path="lib.org.phpframework.layer.cache.DBCacheLayer">
+		<constructor_arg reference="DBLayer" />
+		<constructor_arg reference="dbl_cache_vars" />
+	</bean>
+	
+	<!-- DB AUX -->
+	<bean name="DBLayerAux" path="lib.org.phpframework.layer.db.DBLayer">
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		
+		<function name="addBroker">
+			<parameter reference="PostgresDB" />
+			<parameter value="pg" />
+		</function>
+	</bean>
+	
+	<bean name="DBBrokerServerAux" path="lib.org.phpframework.broker.server.local.LocalDBBrokerServer">
+		<constructor_arg reference="DBLayerAux" />
+	</bean>
+</beans>

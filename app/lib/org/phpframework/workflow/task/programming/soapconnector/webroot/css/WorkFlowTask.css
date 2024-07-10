@@ -1,0 +1,333 @@
+.taskflowchartmenu .task.task_soapconnector {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_soapconnector .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_soapconnector .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.soap_connector_task_html {
+	min-width:500px;
+}
+.soap_connector_task_html > .info {
+	text-align:center;
+	margin-bottom:15px;
+}
+.soap_connector_task_html > .info a {
+	color:var(--link-color);
+}
+.soap_connector_task_html .data,
+  .soap_connector_task_html > .type,
+  .soap_connector_task_html .wsdl_url,
+  .soap_connector_task_html .client_options,
+  .soap_connector_task_html .client_headers,
+  .soap_connector_task_html .remote_function_name,
+  .soap_connector_task_html .remote_function_arguments,
+  .soap_connector_task_html .client_headers > ul > li > div,
+  .soap_connector_task_html .result_type {
+  	min-height:20px;
+   	margin-top:10px;
+	margin-bottom:5px;
+   	float:none;
+   	clear:both;
+}
+.soap_connector_task_html > .data {
+	margin-top:0;
+}
+.soap_connector_task_html .remote_function_name {
+   	margin-top:20px;
+	padding-top:20px;
+	border-top:1px solid #ddd;
+	position:relative;
+}
+.soap_connector_task_html .remote_function_arguments {
+	position:relative;
+}
+.soap_connector_task_html .data > .add_variable,
+  .soap_connector_task_html > .type > .add_variable,
+  .soap_connector_task_html .wsdl_url > .add_variable,
+  .soap_connector_task_html .client_options > .add_variable,
+  .soap_connector_task_html .client_headers > .add_variable,
+  .soap_connector_task_html .remote_function_name > .add_variable,
+  .soap_connector_task_html .remote_function_arguments > .add_variable {
+	margin-left:-23px;
+}
+
+.soap_connector_task_html .data > label,
+  .soap_connector_task_html > .type > label,
+  .soap_connector_task_html .wsdl_url > label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .data > label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html > .type > label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .wsdl_url > label {
+	width:40px;
+}
+.soap_connector_task_html .remote_function_name > label,
+  .soap_connector_task_html .remote_function_arguments > label {
+	width:170px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .remote_function_name > label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .remote_function_arguments > label {
+	width:115px;
+}
+.soap_connector_task_html .data > input,
+  .soap_connector_task_html > .type > input,
+  .soap_connector_task_html .wsdl_url > input,
+  .soap_connector_task_html .client_options > input,
+  .soap_connector_task_html .client_headers > input,
+  .soap_connector_task_html .remote_function_name > input,
+  .soap_connector_task_html .remote_function_arguments > input {
+	width:210px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .data > input,
+  .taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html > .type > input,
+  .taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .wsdl_url > input {
+	width:calc(100% - 140px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html.with_search .wsdl_url > input {
+	width:calc(100% - 160px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_headers > input,
+  .taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_options > input {
+	width:calc(100% - 170px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .remote_function_name > input,
+  .taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .remote_function_arguments > input {
+	width:calc(100% - 27px);
+	margin-top:5px;
+	display:block;
+}
+.soap_connector_task_html > .type > select.type_options {
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html > .type > select.type_options {
+	width:calc(100% - 115px);
+}
+.soap_connector_task_html .data > select,
+  .soap_connector_task_html > .type > select.type_type,
+  .soap_connector_task_html .wsdl_url > select,
+  .soap_connector_task_html .client_options > select,
+  .soap_connector_task_html .client_headers > select,
+  .soap_connector_task_html .remote_function_name > select,
+  .soap_connector_task_html .remote_function_arguments > select,
+  .soap_connector_task_html .client_headers > ul > li > div > select,
+  .soap_connector_task_html .result_type select[name=result_type_type] {
+	width:60px;
+	height:19px;
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	float:none;
+	display:inline-block;
+	margin-bottom:0;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .remote_function_name > select {
+	position:absolute;
+	top:15px;
+	left:115px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .remote_function_arguments > select {
+	position:absolute;
+	top:-4px;
+	left:115px;
+}
+.soap_connector_task_html .remote_function_arguments > .remote_function_args.array_items > .items {
+	float:left;
+	margin-top:-21px;
+	margin-left:240px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .remote_function_arguments > .remote_function_args.array_items > .items {
+	margin-top:-16px;
+	margin-left:180px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .remote_function_arguments > .remote_function_args.array_items > .items > .group_add {
+	margin-left:0;
+}
+
+.soap_connector_task_html .client_options {
+   	margin-top:20px;
+}
+.soap_connector_task_html .client_options > label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_options > label {
+	width:70px;
+}
+.soap_connector_task_html .client_options table {
+	float:none;
+	clear:both;
+   	margin-top:5px;
+}
+.soap_connector_task_html .client_options table .name,
+  .soap_connector_task_html .client_options table .value {
+	width:150px;
+}
+.soap_connector_task_html .client_options table .var_type {
+	width:70px;
+}
+.soap_connector_task_html .client_options table .name input,
+  .soap_connector_task_html .client_options table .value input {
+	width:100%;
+	height:20px;
+	box-sizing:border-box;
+	border:1px solid #ddd;
+}
+.soap_connector_task_html .client_options table .var_type select {
+	width:100%;
+	height:20px;
+	box-sizing:border-box;
+	border:0;
+	background:transparent;
+}
+.soap_connector_task_html .client_options table .name input,
+  .soap_connector_task_html .client_options table .value input {
+	padding-right:20px;
+}
+.soap_connector_task_html .client_options table .var_type select {
+	font-size:9px;
+}
+.soap_connector_task_html .client_options table .icon_cell {
+	width:20px;
+}
+
+.soap_connector_task_html .client_headers {
+   	margin-top:20px;
+}
+.soap_connector_task_html .client_headers > label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_headers > label {
+	width:70px;
+}
+.soap_connector_task_html .client_headers > .icon.add {
+	margin-left:10px;
+	float:none;
+	display:inline-block;
+	vertical-align:middle;
+}
+.soap_connector_task_html .client_headers > ul {
+	float:none;
+	clear:both;
+   	margin-top:5px;
+}
+.soap_connector_task_html .client_headers > ul > li {
+	margin:10px 0;
+	padding:10px;
+	background-color:#eee;
+	border:1px solid #ddd;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_headers > ul > li {
+	padding:5px 5px 5px 10px;
+}
+.soap_connector_task_html .client_headers > ul > li > .icon.delete {
+	float:right;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_headers > ul > li > .icon.delete {
+	margin:-2px -5px 5px 0;
+}
+.soap_connector_task_html .client_headers > ul > li > div {
+	min-height:20px;
+}
+.soap_connector_task_html .client_headers > ul > li > div > label {
+	width:130px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_headers > ul > li > div > label {
+	width:60px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_headers > ul > li > div.client_header_must_understand > label {
+	width:auto;
+}
+.soap_connector_task_html .client_headers > ul > li > div > select {
+	width:60px;
+	height:19px;
+	background-color:transparent;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+}
+.soap_connector_task_html .client_headers > ul > li > div > input[type=text] {
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_headers > ul > li > div > input[type=text] {
+	width:calc(100% - 155px);
+}
+.soap_connector_task_html .client_headers > ul > li > div.client_header_must_understand > input[type=text] {
+	display:none;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_headers > ul > li > div.client_header_must_understand > input[type=text] {
+	width:calc(100% - 175px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .client_headers > ul > li > div.client_header_must_understand > select {
+	margin-right:5px;
+	float:right;
+}
+.soap_connector_task_html .client_headers > ul > li > div.client_header_parameters > .parameters.array_items > .items {
+	float:left;
+	margin-top:-25px;
+	margin-left:200px;
+}
+
+.soap_connector_task_html .result_type {
+	width:100%;
+	height:auto;
+	margin-top:20px;
+	margin-bottom:5px;
+	padding-top:20px;
+	border-top:1px solid #ddd;
+}
+.soap_connector_task_html .result_type label,
+  .soap_connector_task_html .result_type select,
+  .soap_connector_task_html .result_type input {
+	margin-right:5px;
+}
+.soap_connector_task_html .result_type select[name=result_type],
+  .soap_connector_task_html .result_type input {
+  	width:130px;
+  	height:21px;
+  	line-height:21px;
+  	box-sizing:border-box;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .result_type select[name=result_type],
+  .taskflowchart.fixed_side_properties .selected_task_properties .soap_connector_task_html .result_type input {
+	width:calc(100% - 135px);
+}
+.soap_connector_task_html .result_type input {
+	padding-right:20px;
+}
+.soap_connector_task_html .result_type select[name=result_type_type] {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:21px;
+}
+.soap_connector_task_html .result_type .add_variable {
+	margin-left:-26px;
+}
+.soap_connector_task_html .result_type .info {
+	padding-top:10px;
+	font-size:90%;
+}
+.soap_connector_task_html .result_type .info li {
+	margin-left:20px;
+	list-style-type:disc;
+}
+.soap_connector_task_html .wsdl_url .search {
+	float:none;
+	display:none;
+	vertical-align:middle;
+}
+.soap_connector_task_html.with_search .wsdl_url .search {
+	display:inline-block;
+}

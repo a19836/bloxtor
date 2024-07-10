@@ -1,0 +1,207 @@
+.taskflowchartmenu .task.task_loop {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_loop .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_loop .eps:hover:after {
+	content:"Drag the small circles to link to another box";
+}
+.taskflowchartdiagram .task.task_loop .ep {
+	width:30px;
+	height:auto;
+	position:absolute;
+	top:0;
+	bottom:0;
+	display:inline-block;
+	border:0;
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+.taskflowchartdiagram .task.task_loop .ep[connection_exit_id=start_exit] {
+	left:-28px;
+	right:auto;
+	text-align:left;
+}
+.taskflowchartdiagram .task.task_loop .ep[connection_exit_id=default_exit] {
+	left:auto;
+	right:-28px;
+	text-align:right;
+}
+.taskflowchartdiagram .task.task_loop .ep span {
+	width:30px;
+	min-width:auto;
+	max-width:none;
+	height:30px;
+	line-height:30px;
+	margin:2px 0 0;
+	padding:0;
+	display:inline-block !important;
+	position:relative;
+	top:0;
+	left:0;
+	border:0;
+	border-radius:100%;
+	font-weight:bold;
+	font-size:90%;
+	white-space:nowrap;
+	overflow:hidden;
+	box-sizing:border-box;
+	text-align:center;
+}
+.taskflowchartdiagram .task.task_loop .ep[connection_exit_id=start_exit] span {
+	background:#31498f;
+}
+.taskflowchartdiagram .task.task_loop .ep[connection_exit_id=default_exit] span {
+	background:#2C2D34;
+}
+.taskflowchartdiagram .task.task_loop .ep span:before {
+	display:block;
+	color:#fff;
+}
+.taskflowchartdiagram .task.task_loop .ep[connection_exit_id=start_exit] span:before {
+	content:"Start";
+}
+.taskflowchartdiagram .task.task_loop .ep[connection_exit_id=default_exit] span:before {
+	content:"End";
+}
+
+.loop_task_html {
+	min-width:665px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html {
+	min-width:auto;
+}
+
+.loop_task_html .init_counters {
+	width:100%;
+}
+.loop_task_html .test_counters, .loop_task_html .increment_counters {
+	width:100%;
+	padding-top:10px;
+}
+.loop_task_html .other_settings {
+	width:100%;
+	padding-top:20px;
+}
+
+.loop_task_html .init_counters .fields, .loop_task_html .test_counters .conditions, .loop_task_html .increment_counters .fields {
+	padding-top:5px;
+}
+.loop_task_html .init_counters .fields ul, .loop_task_html .increment_counters .fields ul {
+	float:none;
+	clear:left;
+	
+	border:1px solid #CCC;
+	padding:5px 5px 0px 5px;
+	margin:0;
+}
+.loop_task_html .init_counters .fields ul {
+	width:440px;
+}
+.loop_task_html .increment_counters .fields ul {
+	width:360px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .init_counters .fields ul,
+  .taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .increment_counters .fields ul {
+	width:100%;
+	box-sizing:border-box;
+}
+.loop_task_html .init_counters .fields li, .loop_task_html .increment_counters .fields li {
+	float:none;
+	clear:left;
+	min-height:20px;
+	margin-bottom:5px;
+}
+
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .init_counters .fields li.variable,
+  .taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .increment_counters .fields li.variable {
+	position:relative;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .init_counters .fields li.variable:hover:before {
+	content:" ";
+	width:calc(100% - 86px);
+	height:24px;
+	position:absolute;
+	top:calc(100% - 2px);
+	left:55px;
+	clear:both;
+	background:#f7f7f7;
+	border:1px solid #ddd;
+}
+.loop_task_html .init_counters .fields li.variable label.var_name, .loop_task_html .increment_counters .fields li.variable label.var_name {
+	width:80px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .init_counters .fields li.variable label.var_name, 
+  .taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .increment_counters .fields li.variable label.var_name {
+	width:55px;
+}
+.loop_task_html .init_counters .fields li.variable input, .loop_task_html .increment_counters .fields li.variable input {
+	width:100px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .init_counters .fields li.variable input {
+	width:calc(50% - 70px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .increment_counters .fields li.variable input {
+	width:calc(50% - 100px);
+}
+.loop_task_html .init_counters .fields li.variable label.var_value, .loop_task_html .increment_counters .fields li.variable label.inc_type {
+	width:50px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .init_counters .fields li.variable label.var_value, 
+  .taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .increment_counters .fields li.variable label.inc_type {
+	width:35px;
+}
+.loop_task_html .init_counters .fields li.variable select {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+}
+.loop_task_html .increment_counters .fields li.variable select {
+	width:75px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .init_counters .fields li.variable select {
+	display:none;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .init_counters .fields li.variable:hover select {
+	position:absolute;
+	top:calc(100% + 2px);
+	right:33px;
+	display:block;
+}
+.loop_task_html .init_counters .fields li.code label, .loop_task_html .increment_counters .fields li.code label {
+	width:80px;
+}
+.loop_task_html .init_counters .fields li.code input {
+	width:328px;
+}
+.loop_task_html .increment_counters .fields li.code input {
+	width:230px;
+	margin-right:5px;
+}
+
+.loop_task_html .other_settings .execute_first_iteration {
+	margin-left:10px;
+}
+.loop_task_html .other_settings .execute_first_iteration label {
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .loop_task_html .other_settings .execute_first_iteration label {
+	width:auto;
+}
+
+.loop_task_html .variable_add::before {
+	content:"\f271";
+}
+.loop_task_html .code_add::before {
+	content:"\f0fe";
+	font-size:16px;
+}
+
+

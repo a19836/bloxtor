@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import><?php echo $vars["presentation_common_path"] . $vars["presentation_caches_path"] . "cache_handler.xml"; ?></import>
+	
+	<services>
+		<!-- $input is the URL PATH in array format -->
+		
+		<!-- /?lang=en -->
+		<service id="" cache_handler="ServiceCacheHandler" to_cache="true">
+			<key>index_&lt;?php echo $_GET["lang"] ? $_GET["lang"] : $_COOKIE["lang"];?&gt;</key>
+		</service>
+		
+		<!-- /tests/presentation?value=3, where 'tests' is the controller and 'presentation' is the page -->
+		<service id="tests/presentation" cache_handler="ServiceCacheHandler" to_cache="true">
+			<validation_script>return $input[0] == "presentation";</validation_script>
+			<key>tests_&lt;?php echo $input[0];?&gt;_value-&lt;?php echo $_GET["value"];?&gt;</key>
+		</service>
+		
+		<!-- Another example: /module/article/properties?article_id=3, where 'module' is the controller and 'article/properties' is the page -->
+		<!--service id="module/article/properties" cache_handler="ServiceCacheHandler" to_cache="true">
+			<validation_script>return $input[0] == "article";</validation_script>
+			<key>tests_&lt;?php echo "module_article_".$input[1];?&gt;_id-&lt;?php echo $_GET["article_id"];?&gt;</key>
+		</service-->
+		
+		<!-- /pages/admin/stories/display/123?name=joao -->
+		<service id="pages/admin/" cache_handler="ServiceCacheHandler" to_cache="true" id_type="prefix">
+			<key><![CDATA[pages&lt;?php
+				$t = $input ? count($input) : 0; 
+				for($i = 0; $i < $t; $i++) {
+					echo "_".$input[$i];
+				}
+			?&gt;_name-&lt;?php echo $_GET["name"];?&gt;]]></key>
+		</service>
+		
+		<!-- /private/advertisement/advertisement_comments?advertisement_id=17 -->
+		<!--service id="private/advertisement/advertisement_comments" cache_handler="ServiceCacheHandler" to_cache="true">
+			<validation_script>return !$_POST &amp;&amp; $_GET["advertisement_id"] > 0;</validation_script>
+			<key>page_advertisement_comments_&lt;?php echo $_GET["advertisement_id"];?&gt;</key>
+		</service-->
+		
+		<!-- /private/advertisement/add_advertisement_comment?advertisement_id=17 -->
+		<!--service id="private/advertisement/add_advertisement_comment" cache_handler="ServiceCacheHandler" to_cache="false">
+			<to_delete>
+				<service>
+					<key>page_advertisement_comments_&lt;?php echo $_GET["advertisement_id"];?&gt;</key>
+				</service>
+			</to_delete>
+		</service-->
+	</services>
+</beans>

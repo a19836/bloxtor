@@ -1,0 +1,24 @@
+/* WORDPRESS */
+.manage_wordpress {
+	min-width:400px;
+}
+.manage_wordpress .project,
+  .manage_wordpress .db_driver {
+	margin-bottom:20px;
+}
+.manage_wordpress label {
+	width:180px;
+	display:inline-block;
+	font-weight:normal;
+}
+.manage_wordpress select {
+	width:calc(100% - 190px);
+    font-size:inherit;
+}
+.manage_wordpress .buttons {
+	text-align:center;
+}
+.manage_wordpress .buttons input {
+	margin:10px;
+	font-size:inherit;
+}

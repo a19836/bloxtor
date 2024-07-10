@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import><?php echo SYSTEM_BEAN_PATH; ?>data_access_layer.xml</import>
+	
+	<!-- HIBERNATE -->
+	<bean name="HibernateClient" path="lib.org.phpframework.sqlmap.hibernate.HibernateClient"></bean>
+	
+	<var name="hibernate_vars">
+		<list>
+			<item name="dal_path"><?php echo SYSTEM_LAYER_PATH; ?>dataaccess/hibernate/</item>
+			<item name="dal_modules_file_path"><?php echo SYSTEM_LAYER_PATH; ?>dataaccess/hibernate/modules.xml</item>
+			<item name="dal_services_file_name">services.xml</item>
+		</list>
+	</var>
+	
+	<bean name="HibernateDataAccessLayer" path="lib.org.phpframework.layer.dataaccess.HibernateDataAccessLayer">
+		<constructor_arg reference="HibernateClient" /> 
+		<constructor_arg reference="hibernate_vars" />
+		
+		<property name="cacheLayer" reference="HibernateDataAccessCacheLayer" />
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		
+		<function name="addBroker">
+			<parameter reference="DBBrokerClient" />
+		</function>
+		<function name="addBroker">
+			<parameter reference="DBBrokerClientAux" />
+		</function>
+	</bean>
+	
+	<bean name="HibernateDataAccessBrokerServer" path="lib.org.phpframework.broker.server.local.LocalHibernateDataAccessBrokerServer">
+		<constructor_arg reference="HibernateDataAccessLayer" />
+	</bean>
+	
+	<var name="hibernate_cache_vars">
+		<list>
+			<item name="dal_cache_file_name">cache.xml</item>
+			<item name="dal_cache_path"><?php echo LAYER_CACHE_PATH; ?>sysdataaccess/hibernate/</item>
+			<item name="dal_default_cache_ttl">600</item>
+			<item name="dal_module_cache_maximum_size"></item>
+		</list>
+	</var>
+	
+	<bean name="HibernateDataAccessCacheLayer" path="lib.org.phpframework.layer.cache.DataAccessCacheLayer">
+		<constructor_arg reference="HibernateDataAccessLayer" />
+		<constructor_arg reference="hibernate_cache_vars" />
+	</bean>
+</beans>

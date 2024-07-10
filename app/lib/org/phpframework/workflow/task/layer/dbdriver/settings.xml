@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+	<label>DB Driver</label>
+	<tag>dbdriver</tag>
+	<files>
+		<task_properties_html>WorkFlowTaskHtml.php</task_properties_html>
+		<css>../../common/css/global.css</css>
+		<css>../common/css/global.css</css>
+		<css>css/WorkFlowTask.css</css>
+		<js>../../common/js/global.js</js>
+		<js>../common/js/global.js</js>
+		<js>js/WorkFlowTask.js</js>
+	</files>
+	<settings>
+		<task_menu>
+			<show_start_task_menu>false</show_start_task_menu>
+		</task_menu>
+		<connection_menu>
+			<show_set_label_menu>false</show_set_label_menu>
+			<show_properties_menu>false</show_properties_menu>
+			<show_overlay_types_menu>false</show_overlay_types_menu>
+		</connection_menu>
+		<callback>
+			<on_load_task_properties>DBDriverTaskPropertyObj.onLoadTaskProperties</on_load_task_properties>
+			<on_submit_task_properties>DBDriverTaskPropertyObj.onSubmitTaskProperties</on_submit_task_properties>
+			<on_complete_task_properties>onCompleteLayerTaskProperties</on_complete_task_properties>
+			<on_cancel_task_properties></on_cancel_task_properties>
+			
+			<on_check_task_label>DBDriverTaskPropertyObj.onCheckLabel</on_check_task_label>
+			<on_cancel_task_label>DBDriverTaskPropertyObj.onCancelLabel</on_cancel_task_label>
+			
+			<on_success_task_cloning>DBDriverTaskPropertyObj.onTaskCloning</on_success_task_cloning>
+			<on_success_task_creation>onLayerTaskCreation</on_success_task_creation>
+			<on_success_connection_drop>onLayerConnectionDrop</on_success_connection_drop>
+			
+			<on_show_task_menu>onShowLayerTaskMenu</on_show_task_menu>
+			
+			<!--on_click_task>showTaskPropertiesIfExists</on_click_task-->
+		</callback>
+	</settings>
+</task>

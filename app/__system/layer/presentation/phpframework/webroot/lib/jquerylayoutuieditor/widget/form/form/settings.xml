@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Form</label>
+	<tag>form</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_class>droppable</template_class>
+		<template_node_name>form</template_node_name>
+		<create_widget_class>FormWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property method">
+			<label class="col-md-4 col-sm-5 col-form-label">Method: </label>
+			<select class="col-md-8 col-sm-7 form-control" name="method">
+				<option></option>
+				<option>GET</option>
+				<option>POST</option>
+			</select>
+		</div>
+		<div class="form-group row settings-property action">
+			<label class="col-md-4 col-sm-5 col-form-label">Action: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="action" />
+		</div>
+		<div class="form-group row settings-property enctype">
+			<label class="col-md-4 col-sm-5 col-form-label">Enctype: </label>
+			<select class="col-md-8 col-sm-7 form-control" name="enctype">
+				<option></option>
+				<option value="multipart/form-data">With Files Upload</option>
+			</select>
+		</div>
+		<div class="form-group row settings-property onsubmit" title="return (typeof MyJSLib == 'undefined' || MyJSLib.FormHandler.formCheck(this));">
+			<label class="col-md-4 col-sm-5 col-form-label">onSubmit: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="onsubmit" />
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-form:before,
+		  body > .menu-widget.menu-widget-form.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-form > .settings-properties .action.with-search-icon input {
+			padding-right:20px;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-form > .settings-properties .action .search {
+			display:inline-block;
+			float:none;
+			clear:both;
+			position:absolute;
+			right:10px;
+			margin:8px 0 0;
+			background:none;
+			cursor:pointer;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function FormWidget(ui_creator, menu_widget) {
+			var me = this;
+			var default_method_options = ["GET", "POST"];
+			var default_enctype_options = ["multipart/form-data"];
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.form.parseHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.form.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.form.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.form.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.form.parseSettings",
+				});
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var menu_settings_properties = menu_settings.children(".settings-properties");
+				
+				//prepare search icon in action field
+				if (typeof ui_creator.options.on_choose_page_url_func == "function") {
+					var icon = $('<span class="zmdi zmdi-search-in-file search"></span>');
+					icon.on("click", function() {
+						ui_creator.options.on_choose_page_url_func(this);
+					});
+					menu_settings_properties.find(".settings-property.action").addClass("with-search-icon").append(icon);
+				}
+				
+				//prepare method options
+				var html = '<option></option>';
+				var selected_value = widget.attr("method");
+				
+				$.each(default_method_options, function(idx, option) {
+					html += '<option>' + option + '</option>';
+				});
+				
+				if (selected_value && $.inArray(("" + selected_value).toUpperCase(), default_method_options) == -1)
+					html += '<option value="' + selected_value + '">' + selected_value + ' - NON DEFAULT</option>';
+				
+				menu_settings_properties.find(".method select").html(html);
+				
+				//prepare enctype options
+				var html = '<option></option>';
+				var selected_value = widget.attr("enctype");
+				
+				$.each(default_enctype_options, function(idx, option) {
+					html += '<option>' + option + '</option>';
+				});
+				
+				if (selected_value && $.inArray(("" + selected_value).toLowerCase(), default_enctype_options) == -1)
+					html += '<option value="' + selected_value + '">' + selected_value + ' - NON DEFAULT</option>';
+				
+				menu_settings_properties.find(".enctype select").html(html);
+				
+				ui_creator.addMenuSettingsContextMenu( menu_settings_properties.find("input, select") );
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["method"] = widget.attr("method");
+				widget_settings["action"] = widget.attr("action");
+				widget_settings["enctype"] = widget.attr("enctype");
+				widget_settings["onsubmit"] = widget.attr("onSubmit");
+				
+				if (widget_settings["method"])
+					widget_settings["method"] = ("" + widget_settings["method"]).toUpperCase();
+				
+				if (widget_settings["enctype"])
+					widget_settings["enctype"] = ("" + widget_settings["enctype"]).toLowerCase();
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeName.toLowerCase() == "form") {
+					html_element = $(html_element);
+					
+					return {
+						droppable: html_element,
+					};
+				}
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element) {
+					widget.css({"min-height": "50px"});
+					
+					//This is because of the data-widget-popup-add popups (in the LayoutUIEditorWidgetResource) that hide by default all inputs, if don't have the "show-add-fields" class.
+					if (widget.parent().closest(".data-widget-popup-add").length > 0)
+						widget.addClass("show-add-fields");
+				}
+				
+				//avoid the form to be submited when the user is editing the layout
+				widget[0].addEventListener("submit", function(ev) {
+					ev.preventDefault();
+					ev.stopPropagation();
+					
+					return false;
+				});
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("method")) {
+						if (field_value != "") 
+							widget.attr("method", field_value);
+						else 
+							widget.removeAttr("method");
+					}
+					else if (sprop.hasClass("action")) {
+						if (field_value != "")
+							widget.attr("action", field_value);
+						else
+							widget.removeAttr("action");
+					}
+					else if (sprop.hasClass("enctype")) {
+						if (field_value != "")
+							widget.attr("enctype", field_value);
+						else
+							widget.removeAttr("enctype");
+					}
+					else if (sprop.hasClass("onsubmit")) {
+						if (field_value != "")
+							widget.attr("onSubmit", field_value);
+						else
+							widget.removeAttr("onSubmit");
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tasks>
+	<container>
+		<id><![CDATA[layer_presentations]]></id>
+		<width>600</width>
+		<height>150</height>
+		<left>1</left>
+		<top>0</top>
+	</container>
+	<container>
+		<id><![CDATA[layer_bls]]></id>
+		<width>600</width>
+		<height>150</height>
+		<left>1</left>
+		<top>150</top>
+	</container>
+	<container>
+		<id><![CDATA[layer_dals]]></id>
+		<width>600</width>
+		<height>150</height>
+		<left>1</left>
+		<top>300</top>
+	</container>
+	<container>
+		<id><![CDATA[layer_dbs]]></id>
+		<width>600</width>
+		<height>150</height>
+		<left>1</left>
+		<top>450</top>
+	</container>
+	<container>
+		<id><![CDATA[layer_drivers]]></id>
+		<width>600</width>
+		<height>150</height>
+		<left>1</left>
+		<top>600</top>
+	</container>
+	<task>
+		<label><![CDATA[soa]]></label>
+		<id><![CDATA[task_9a89b3f5_313]]></id>
+		<type><![CDATA[9a89b3f5]]></type>
+		<tag><![CDATA[businesslogic]]></tag>
+		<offset_left>260</offset_left>
+		<offset_top>177</offset_top>
+		<properties>
+			<exits>
+				<layer_exit>
+					<color><![CDATA[#31498f]]></color>
+					<type><![CDATA[Straight]]></type>
+					<overlay><![CDATA[Forward Arrow]]></overlay>
+				</layer_exit>
+			</exits>
+			<active>1</active>
+		</properties>
+	</task>
+	<task start="1">
+		<label><![CDATA[presentation]]></label>
+		<id><![CDATA[task_7cf9ccfb_844]]></id>
+		<type><![CDATA[7cf9ccfb]]></type>
+		<tag><![CDATA[presentation]]></tag>
+		<offset_left>244</offset_left>
+		<offset_top>21</offset_top>
+		<properties>
+			<exits>
+				<layer_exit>
+					<color><![CDATA[#31498f]]></color>
+					<type><![CDATA[Straight]]></type>
+					<overlay><![CDATA[Forward Arrow]]></overlay>
+				</layer_exit>
+			</exits>
+			<active>1</active>
+		</properties>
+		<exits>
+			<layer_exit>
+				<task_id><![CDATA[task_9a89b3f5_313]]></task_id>
+				<label><![CDATA[]]></label>
+				<type><![CDATA[Straight]]></type>
+				<overlay><![CDATA[Forward Arrow]]></overlay>
+			</layer_exit>
+		</exits>
+	</task>
+</tasks>

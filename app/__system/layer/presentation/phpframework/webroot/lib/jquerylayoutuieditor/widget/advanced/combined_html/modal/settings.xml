@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Modal</label>
+	<tag>modal</tag>
+	<settings>
+		<resizable>1</resizable>
+		<create_widget_class>ModalWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+	]]></template_widget>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-modal:before,
+		  body > .menu-widget.menu-widget-modal.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function ModalWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.modal.onCloneMenuWidget",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.modal.onCreateTemplateWidget",
+				});
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) 
+					widget.addClass("modal").attr("tabindex", "-1").attr("role", "dialog");
+
+				return widget;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				ui_creator.recreateWidget(widget);
+			};
+		}
+	]]></menu_js>
+</widget>

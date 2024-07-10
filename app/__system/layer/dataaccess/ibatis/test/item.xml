@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sql_mapping>
+	<import relative="1">maps.xml</import>
+	
+	<insert id="insert_item">
+		insert into item (title) values ('#title#')
+	</insert> 
+
+	<insert id="insert_item_not_registered">
+		insert into item (title) values ('#title#')
+	</insert> 
+
+	<update id="update_item">
+		update item set title='#title#' where id=#id#
+	</update> 
+
+	<update id="update_all_items">
+		update item set status='#status#'
+	</update> 
+
+	<delete id="delete_item">
+		delete from item where id=#id#
+	</delete> 
+
+	<select id="select_item" result_class="vendor.dao.test.ItemTest">
+		select * from item where id=#item_id#
+	</select>
+
+	<select id="select_item_simple">
+		select * from item where id=#item_id#
+	</select>
+
+	<select id="select_items" parameter_map="selectItemsParameterMap" result_map="selectItemsResultMap">
+		SET @type='<?= '#TYPE#' ?>';
+		SET @rownum=#ROW_NUM#;
+		select @rownum:=@rownum+1 rownum, @type `type`, i.* from item i order by id desc;
+	</select> 
+	
+	<!--
+	CREATE PROCEDURE sp_in(IN p VARCHAR(10)) SET @x = P;
+	CALL sp_in('Molo');
+	SELECT @x;
+	-->
+	<procedure id="procedure_items" parameter_map="selectItemsParameterMapWithClass">
+		CALL sp_in('#DESCRIPTION#');
+		SELECT @x `name`, i.* from item i;
+	</procedure> 
+	
+	<procedure id="procedure_items_class" parameter_class="vendor.dao.test.ItemTest">
+		CALL sp_in('#BLABLABLA#');
+		SELECT @x;
+	</procedure> 
+</sql_mapping>

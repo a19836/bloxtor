@@ -1,0 +1,94 @@
+.featured_tutorials {
+	margin:100px 0 0;
+	padding:40px;
+	border-top:1px solid #ddd;
+	background-color:#2C2D34;
+	text-align:center;
+}
+.featured_tutorials:before {
+	content:"";
+	height:60px;
+	margin:-100px 0 0;
+	display:block;
+	position:absolute;
+	left:0;
+	right:0;
+	background:linear-gradient(180deg, #FFF 0%, #CCC 70%, #2C2D34 100%);
+}
+
+/* HEADER */
+.featured_tutorials .featured_header {
+	margin-bottom:40px;
+	color:white;
+	text-align:left;
+}
+.featured_tutorials .featured_header .featured_header_tip {
+	margin-bottom:20px;
+	text-transform:uppercase;
+	opacity:.5;
+	font-weight:bold;
+}
+.featured_tutorials .featured_header .featured_header_title {
+	margin-bottom:20px;
+	font-size:20pt;
+	font-weight:bold;
+}
+.featured_tutorials .featured_header .featured_header_sub_title {
+	margin-bottom:20px;
+	font-size:15pt;
+	font-weight:bold;
+}
+
+/* TUTORIAL */
+.featured_tutorials .featured_tutorial {
+	width:300px;
+	min-height:345px;
+	margin:30px;
+	padding:20px;
+	background-color:white;
+	border-radius:3px;
+	box-shadow:0px 0px 20px 5px #555;
+	display:inline-block;
+	vertical-align:top;
+	text-align:left;
+	box-sizing:border-box;
+}
+.featured_tutorials .featured_tutorial iframe {
+	width:300px;
+	height:190px;
+	margin:-20px -20px 20px -20px;
+	padding:0;
+	border:0;
+	border-top-left-radius:3px;
+	border-top-right-radius:3px;
+	box-sizing:border-box;
+}
+.featured_tutorials .featured_tutorial .tutorial_title {
+	min-height:45px;
+	color:#2C2D34;
+	font-size:11pt;
+	font-weight:bold;
+}
+.featured_tutorials .featured_tutorial .tutorial_title .icon {
+	margin-right:5px;
+	color:var(--link-color);
+}
+.featured_tutorials .featured_tutorial .tutorial_description {
+	margin-top:10px;
+	color:#585B69;
+}
+
+/* BUTTONS */
+.featured_tutorials .featured_buttons {
+	margin:20px 20px 0;
+}
+.featured_tutorials .featured_buttons button {
+	margin:20px 20px;
+	font-family:var(--main-font-family);
+	font-size:10pt;
+	background-color:#FC3C44;
+	border-color:#FC3C44;
+}
+.featured_tutorials .featured_buttons button:hover {
+	background-color:#FC3C44cc;
+}

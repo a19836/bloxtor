@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Tabs</label>
+	<tag>tabs</tag>
+	<settings>
+		<resizable>1</resizable>
+		<create_widget_class>TabsWidget</create_widget_class>
+	</settings>
+	<template_widget><![CDATA[
+<nav data-tab-container="1" class="tab-container">
+	<a href="#tab1" data-tab="1" class="tab">Tab 1</a>
+	<a href="#tab2" data-tab="1" class="tab">Tab 2</a>
+	<a href="#tab3" data-tab="1" class="tab">Tab 3</a>
+</nav>
+<div id="tab1" data-tab-content="1" class="tab-content droppable">
+	<div>Tab 1 Content</div>
+</div>
+<div id="tab2" data-tab-content="1" class="tab-content droppable">
+	<div>Tab 2 Content</div>
+</div>
+<div id="tab3" data-tab-content="1" class="tab-content droppable">
+	<div>Tab 3 Content</div>
+</div>
+
+<style>
+.tab {
+	text-decoration:none;
+	color:inherit;
+	padding:7px 14px;
+	transition:opacity 0.3s;
+	display:inline-block;
+	border-radius:3px;
+	margin-right:10px;
+}
+.tab-container {
+	text-align:center;
+	background: rgba(255,255,255,1);
+	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
+	background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
+}
+.tab-container:empty {
+	width:100%;
+	min-width:50px;
+	min-height:50px;
+}
+.tab {
+	opacity:.7;
+}
+.tab.tab-active {
+	opacity:1;
+	background-color:#fff;
+	color:#555;
+	border:1px solid #ddd;
+	border-bottom:0;
+	border-bottom-left-radius:0;
+	border-bottom-right-radius:0;
+}
+.tab-content {
+	padding:1rem;
+	min-height:100px;
+	border-top:1px solid #ccc;
+	animation:fadeEffect 1s;
+	text-align:center;
+}
+</style>
+	]]></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property style">
+			<label class="col-12 col-form-label">Style: </label>
+			<textarea class="col-12 form-control"></textarea>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-tabs:before,
+		  body > .menu-widget.menu-widget-tabs.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-tabs > .settings-properties .style textarea {
+			height:300px !important;
+			text-align:left;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function TabsWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.tabs.onCloneMenuWidget",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.tabs.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.tabs.onCreateTemplateWidget",
+					"data-on-open-widget-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.tabs.onOpenWidgetHeader",
+					"data-on-close-widget-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.tabs.onCloseWidgetHeader",
+					"data-on-open-droppable-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.tabs.onOpenDroppableHeader",
+					"data-on-close-droppable-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.tabs.onCloseDroppableHeader",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.tabs.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.tabs.saveSettingsField",
+				});
+			};
+			
+			me.prepareJSCode = function(widget) {
+				if (!widget.children("script")[0]) {
+					var id = widget.attr("id");
+					var s = document.createElement('script');
+					s.type = 'text/javascript';
+					
+					var code = ''
++ 'if (!Element.prototype.matches)'
++ '		Element.prototype.matches = Element.prototype.matchesSelector || Element.prototype.webkitMatchesSelector || Element.prototype.mozMatchesSelector || Element.prototype.msMatchesSelector;'
++ '	'
++ 'if (!Element.prototype.closest) '
++ '	Element.prototype.closest = function (css) {'
++ '		var node = this;'
++ '		while (node) {'
++ '			if (node.matches(css)) return node;'
++ '			else node = node.parentElement;'
++ '		}'
++ '		return null;'
++ '	};'
++ '	'
++ 'if (typeof filterMyTabNodesByCss != "function")'
++ '	function filterMyTabNodesByCss(nodes, css) {'
++ ' 		var elements = [];'
++ ' 		if (nodes)'
++ ' 			for (var i = 0, len = nodes.length; i < len; i++) {'
++ ' 				var child = nodes[i];'
++ ' 				'
++ ' 				if (child && child.nodeType == Node.ELEMENT_NODE && child.matches(css))'
++ ' 					elements.push(child);'
++ ' 			}'
++ '		return elements;'
++ '	}'
++ '	'
++ 'if (typeof filterMyTabNodeByCss != "function")'
++ '	function filterMyTabNodeByCss(nodes, css) {'
++ ' 		var elements = filterMyTabNodesByCss(nodes, css);'
++ ' 		return elements.length ? elements[0] : null;'
++ '	}'
++ '	'
++ 'if (typeof openMyTab != "function")'
++ '	function openMyTab(curr_tab) {'
++ '		if (curr_tab) {'
++ '			var main_elm = curr_tab.parentNode.closest("[data-tabs]");'
++ '			var dtc = filterMyTabNodeByCss(main_elm.childNodes, "[data-tab-container]");'
++ '			var tabs = filterMyTabNodesByCss(dtc ? dtc.childNodes : null, "[data-tab]") || [];'
++ '       	for (var i = 0, len = tabs.length; i < len; i++) {'
++ '          	var tab = tabs[i];'
++ '          	tab.className = tab.className.replace("tab-active","").trim();'
++ '       	}'
++ '      	 	var tabs_content = filterMyTabNodesByCss(main_elm.childNodes, "[data-tab-content]") || [];'
++ '      		for (var i = 0, len = tabs_content.length; i < len; i++)'
++ '       		tabs_content[i].style.display = "none";'
++ '       	curr_tab.className += " tab-active";'
++ '       	var tab_content_selector = curr_tab.getAttribute("href");'
++ '       	var tab_content = filterMyTabNodeByCss(main_elm.childNodes, tab_content_selector);'
++ '       	tab_content && (tab_content.style.display = "")'
++ '		}'
++ '	}'
++ 'if (typeof initMyTab != "function")'
++ '	function initMyTab(curr_tab) {'
++ '		curr_tab.addEventListener("click",function(ev){'
++ '        	ev.preventDefault();'
++ '        	openMyTab(this);'
++ '        	return false;'
++ '		});'
++ '	}'
++ 'if (typeof initMyTabs != "function")'
++ '	function initMyTabs(selector) {'
++ '		var items = document.querySelectorAll(selector);'
++ '  	for (var i = 0, len = items.length; i < len; i++) {'
++ '    		var main_elm = items[i];'
++ '			var dtc = filterMyTabNodeByCss(main_elm.childNodes, "[data-tab-container]");'
++ '      		var active_tab = filterMyTabNodeByCss(dtc.childNodes, ".tab-active[data-tab]");'
++ '      		active_tab = active_tab || filterMyTabNodeByCss(dtc.childNodes, "[data-tab]");'
++ '      		active_tab && openMyTab(active_tab);'
++ '      		'
++ '      		var tabs = filterMyTabNodesByCss(dtc.childNodes, "[data-tab]") || [];'
++ '      		for(j = 0, len2 = tabs.length; j < len2; j++)'
++ '          		initMyTab( tabs[j] );'
++ '  	}'
++ '  }'
++ 'initMyTabs("#' + id + '")';
+			
+					try {
+						s.appendChild(document.createTextNode(code));
+						widget[0].appendChild(s);
+					} catch (e) {
+						s.text = code;
+						widget[0].appendChild(s);
+					}
+				}
+			}
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) {
+					var id = "tabs-" + parseInt(Math.random() * 1000);
+					widget.attr("data-tabs", "1").attr("id", id);
+					
+					me.prepareJSCode(widget);
+				}
+				
+				return widget;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				me.prepareJSCode(widget);
+				
+				return ui_creator.getCleanedHtmlElement(widget[0]);
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				//prepare editable box
+				var nav = widget.children("nav");
+				nav.attr("contenteditable", "false");
+				nav.children("a").attr("contenteditable", "true");
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var textarea = menu_settings.find(".settings-properties .style textarea");
+				textarea.val( widget.children("style").html() );
+				
+				ui_creator.addMenuSettingsContextMenu(textarea);
+			};
+			
+			me.onOpenWidgetHeader = function(widget, widget_header) {
+				var options = widget_header.children(".options");
+				var option_close = options.children(".close");
+				var option_add = $('<i class="zmdi zmdi-camera-add option add-tab" title="Add Tab"></i>');
+				option_close.before(option_add);
+				
+				option_add.on("click", function() {
+					event.preventDefault();
+			  		event.stopPropagation();
+			  		
+			  		var widget = ui_creator.selected_template_widget;
+					
+					if (widget) {
+						var tabs = widget.find(" > [data-tab-container]");
+						var index = 1;
+						
+						while (tabs.children("[href='#tab" + index + "']").length > 0)
+							index++;
+						
+						var tab = $('<a href="#tab' + index + '" data-tab="1" class="tab">Tab ' + index + '</a>');
+						tabs.append(tab);
+						
+						var tab_content = $('<div id="tab' + index + '" data-tab-content="1" class="tab-content droppable"><div>Tab ' + index + ' Content</div></div>');
+						var last_tab_content = widget.children("[data-tab-content]").last();
+						if (last_tab_content[0])
+							last_tab_content.after(tab_content);
+						else
+							tabs.after(tab_content);
+						
+						//set event click in new tab
+						var doc = widget[0].ownerDocument;
+						var win = doc.defaultView || doc.parentWindow;
+						win.initMyTab(tab[0]); 
+						win.openMyTab(tab[0]);
+						
+						ui_creator.setWidgetChildDroppable(tab_content[0]);
+						ui_creator.refreshElementMenuLayer(widget);
+					}
+				});
+			};
+			
+			me.onCloseWidgetHeader = function(widget, widget_header) {
+				var options = widget_header.children(".options");
+				options.children(".add-tab").remove();
+			};
+			
+			me.onOpenDroppableHeader = function(droppable, droppable_header) {
+				var options = droppable_header.children(".options");
+				
+				//prepare removing option
+				var option_close = options.children(".close");
+				var option_remove = $('<i class="zmdi zmdi-delete option tab-delete" title="Delete"></i>');
+				option_close.before(option_remove);
+				
+				option_remove.on("click", function() {
+					event.preventDefault();
+			  		event.stopPropagation();
+			  		
+			  		var d = ui_creator.selected_template_droppable;
+					
+					if (d && confirm("Do you wish to delete this tab?")) {
+						var widget = ui_creator.selected_template_widget;
+						var tab = widget.find(" > [data-tab-container] > [data-tab][href='#" + d.attr("id") + "']");
+						
+						tab.fadeOut("slow", function() {
+							tab.remove();
+							
+							d.fadeOut("slow", function() {
+								ui_creator.deleteTemplateWidget(d);
+								ui_creator.refreshElementMenuLayer(widget);
+								
+								//set event click in new tab
+								var doc = widget[0].ownerDocument;
+								var win = doc.defaultView || doc.parentWindow;
+								win.openMyTab(widget.find(" > [data-tab-container] > [data-tab]").first()[0]);
+							});
+						});
+					}
+				});
+				
+				//prepare sorting option
+				var sl = options.children(".sort-left");
+				var sr = options.children(".sort-right");
+				
+				options.children(".sort").hide();
+				sl.hide();
+				sr.hide();
+				
+				//add tab-sort-left
+				if (droppable.prev("[data-tab-content]").length > 0) {
+					var option_sort_left = $('<i class="zmdi zmdi-long-arrow-tab zmdi-hc-rotate-180 option tab-sort-left" title="Sort Left"></i>');
+					sl.before(option_sort_left);
+					
+					option_sort_left.on("click", function() {
+						var d = ui_creator.selected_template_droppable;
+						var widget = ui_creator.selected_template_widget;
+						var tab = widget.find(" > [data-tab-container] > [data-tab][href='#" + d.attr("id") + "']");
+						var p = tab.prev("[data-tab]");
+						
+						sl.trigger("click");
+						
+						if (p[0])
+							tab.insertBefore(p);
+						
+						ui_creator.refreshElementMenuLayer(widget);
+					});
+				}
+					
+				//add tab-sort-right
+				if (droppable.next("[data-tab-content]").length > 0) {
+					var option_sort_right = $('<i class="zmdi zmdi-long-arrow-tab option tab-sort-right" title="Sort Right"></i>');
+					sr.before(option_sort_right);
+					
+					option_sort_right.on("click", function() {
+						var d = ui_creator.selected_template_droppable;
+						var widget = ui_creator.selected_template_widget;
+						var tab = widget.find(" > [data-tab-container] > [data-tab][href='#" + d.attr("id") + "']");
+						var p = tab.next("[data-tab]");
+						
+						sr.trigger("click");
+						
+						if (p[0])
+							tab.insertAfter(p);
+						
+						ui_creator.refreshElementMenuLayer(widget);
+					});
+				}
+			};
+			
+			me.onCloseDroppableHeader = function(droppable, droppable_header) {
+				var options = droppable_header.children(".options");
+				options.children(".tab-delete, .tab-sort-left, .tab-sort-right").remove();
+				
+				options.children(".sort, .sort-left, .sort-right").show();
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("style"))  {
+						widget.children("style").html(field_value);
+						
+						me.prepareJSCode(widget);
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

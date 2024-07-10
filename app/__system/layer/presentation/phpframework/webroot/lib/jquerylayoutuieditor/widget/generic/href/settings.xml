@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Link</label>
+	<tag>href</tag>
+	<settings>
+		<template_class>droppable</template_class>
+		<template_node_name>a</template_node_name>
+		<create_widget_class>HrefWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property href">
+			<label class="col-md-4 col-sm-5 col-form-label">Url: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="href" />
+		</div>
+		<div class="form-group row settings-property target">
+			<label class="col-md-4 col-sm-5 col-form-label">Target: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="target" />
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-href:before,
+		  body > .menu-widget.menu-widget-href.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-href {
+			border-radius:0 5px 5px 0;
+		}
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-href .options .option.toggle {
+			display:none;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-href > .settings-properties .href.with-search-icon input {
+			padding-right:20px;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-href > .settings-properties .href .search {
+			display:inline-block;
+			float:none;
+			clear:both;
+			position:absolute;
+			right:10px;
+			margin:8px 0 0;
+			background:none;
+			cursor:pointer;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function HrefWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.href.parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.href.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.href.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.href.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.href.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.href.parseSettings",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeName.toLowerCase() == "a")
+					return {
+						droppable: $(html_element),
+					};
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var html = ui_creator.getCleanedHtmlElement(html_element);
+				var html_element_tag = MyHtmlBeautify.getTagHtml(html, 0, "");
+				
+				html = html.replace(html_element_tag[0], ""); //remove the tag, so it can be replaced by the right tag.
+				
+				var clone = ui_creator.cloneHtmlElementBeforeCleanIt(html_element);
+				clone[0].innerHTML = '';
+				
+				//parse href to convert url to vars: $project_url_prefix or $project_common_url_prefix
+				var href = clone.attr("href");
+				
+				if (href && typeof ui_creator.options.on_convert_project_url_real_values_to_php_vars_func == "function") {
+					href = ui_creator.options.on_convert_project_url_real_values_to_php_vars_func(href, html_element);
+					clone.attr("href", href);
+				}
+				
+				var clone_html = ui_creator.getCleanedHtmlElement(clone[0]);
+				var clone_tag = MyHtmlBeautify.getTagHtml(clone_html, 0, "");
+				html = clone_tag[0] + html;
+				
+				clone.remove();
+				
+				return html;
+				
+				/*DEPRECATED: bc if the auto_save is running and don't want it to mess it with my layout editor when I'm editing at the same time, otherwise it can give a bad experience to the user.
+				var widget = $(html_element);
+				
+				//parse href to convert url to vars: $project_url_prefix or $project_common_url_prefix
+				var href = widget.attr("href");
+				
+				if (href && typeof ui_creator.options.on_convert_project_url_real_values_to_php_vars_func == "function") {
+					var new_href = ui_creator.options.on_convert_project_url_real_values_to_php_vars_func(href, html_element);
+					widget.attr("href", new_href);
+				}
+				
+				var html = ui_creator.getCleanedHtmlElement(widget[0]);
+				
+				if (href)
+					widget.attr("href", href);
+				
+				return html;*/
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				if (typeof ui_creator.options.on_choose_page_url_func == "function") {
+					var icon = $('<span class="zmdi zmdi-search-in-file search"></span>');
+					icon.on("click", function() {
+						ui_creator.options.on_choose_page_url_func(this);
+					});
+					menu_settings.find(" > .settings-properties .settings-property.href").addClass("with-search-icon").append(icon);
+				}
+				
+				ui_creator.addMenuSettingsContextMenu( menu_settings.find(" > .settings-properties input") );
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["href"] = widget.attr("href");
+				widget_settings["target"] = widget.attr("target");
+				
+				//parse href to convert url to vars: $project_url_prefix or $project_common_url_prefix
+				if (widget_settings["href"] && typeof ui_creator.options.on_convert_project_url_real_values_to_php_vars_func == "function")
+					widget_settings["href"] = ui_creator.options.on_convert_project_url_real_values_to_php_vars_func(widget_settings["href"], widget);
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element) {
+					//check if exists first bc when we change the node names of the widgets.
+					
+					if (!widget[0].hasAttribute("href"))
+						widget.attr("href", "#");
+					
+					if (widget.contents().length == 0) //very important, otherwise everytime we change a div to a link, it will add this text.
+						widget.append("link text");
+				}
+				else {
+					var href = widget.attr("href");
+					
+					//parse href in case it contains the $project_url_prefix or $project_common_url_prefix
+					if (href && typeof ui_creator.options.on_convert_project_url_php_vars_to_real_values_func == "function") {
+						href = ui_creator.options.on_convert_project_url_php_vars_to_real_values_func(href, widget);
+						widget.attr("href", href);
+					}
+				}
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("href")) {
+						if (field_value != "") {
+							//parse href in case it contains the $project_url_prefix or $project_common_url_prefix
+							field_value = typeof ui_creator.options.on_convert_project_url_php_vars_to_real_values_func == "function" ? ui_creator.options.on_convert_project_url_php_vars_to_real_values_func(field_value, widget) : field_value;
+							
+							widget.attr("href", field_value);
+						}
+						else 
+							widget.removeAttr("href");
+					}
+					else if (sprop.hasClass("target")) {
+						if (field_value != "")
+							widget.attr("target", field_value);
+						else
+							widget.removeAttr("target");
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

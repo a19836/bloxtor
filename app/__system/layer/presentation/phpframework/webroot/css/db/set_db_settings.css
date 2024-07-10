@@ -1,0 +1,19 @@
+/* DB SETTINGS */
+.db_settings {width:100%; min-height:300px; text-align:left;}
+.db_settings .with_top_bar_section {overflow:auto;}
+.db_settings .form_fields {width:400px; margin:0 auto;}
+.db_settings .form_field {float:none; clear:left; min-height:20px; line-height:20px; margin-bottom:3px;}
+.db_settings .form_field label {width:150px; text-align:left; display:inline-block;}
+.db_settings .form_field input:not([type=checkbox]) {width:220px; font-size:12px;} 
+.db_settings .form_field select {width:228px; font-size:12px;}
+.db_settings .form_field span {display:block; width:365px; margin:0 0 10px 0; text-align:right;}
+.db_settings .form_field.show_advanced_db_options span { float:right; }
+.db_settings .form_field .toggle_password {
+	width:16px;
+	height:16px;
+	display:inline-block;
+	vertical-align:middle;
+	margin:auto 0 auto 5px;
+	cursor:pointer;
+}
+.db_settings .buttons {display:none;}

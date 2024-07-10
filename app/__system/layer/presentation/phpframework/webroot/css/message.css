@@ -1,0 +1,65 @@
+#status_message,
+  #error_message {
+	position:fixed;
+	top:40px;
+	left:10%;
+	width:80vw;
+	min-height:105px !important;
+	max-height:80vh;
+	padding:0 15px 15px;
+	box-sizing:border-box;
+	overflow-x:hidden;
+	overflow-y:auto;
+	box-shadow:0 0 5px -2px #83889E;
+	border-radius:3px;
+	background:#FFF;
+	color:#2C2D34;
+	font-size:13px;
+	text-align:center;
+	
+	z-index:2000;
+}
+#status_message::before,
+  #error_message::before {
+	display:block;
+	margin:0 -15px 15px;
+	padding:15px;
+	color:#FFF;
+	font-weight:bold;
+	text-align:left;
+}
+#status_message::before {
+	content:"Info";
+	background:#198754;
+}
+#error_message::before {
+	content:"Error";
+	background:#dc3545;
+}
+#status_message span.close_message, 
+  #error_message span.close_message {
+	width:20px;
+	height:20px;
+	margin-right:0;
+	position:absolute;
+	top:15px;
+	right:15px;
+	display:inline-block;
+	text-indent:0;
+	background:none;
+	color:#FFF;
+	font-size:20px;
+	overflow:hidden;
+	cursor:pointer;
+}
+#status_message span.close_message::before, 
+  #error_message span.close_message::before {
+	width:15px;
+	display:inline-block;
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	/*content:"\f057";*/
+	content:"\f00d";
+	margin-right:20px;
+}

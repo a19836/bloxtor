@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sql_mapping>
+	<insert id="insert_layout_type_permission">
+		insert into sysauth_layout_type_permission (layout_type_id, permission_id, object_type_id, object_id, created_date, modified_date) values (#layout_type_id#, #permission_id#, #object_type_id#, '#object_id#', '#created_date#', '#modified_date#')
+	</insert>
+	
+	<update id="update_layout_type_permission_object_id">
+		update sysauth_layout_type_permission set object_id='#new_object_id#', modified_date='#modified_date#' where layout_type_id=#layout_type_id# and permission_id=#permission_id# and object_type_id=#object_type_id# and object_id=#old_object_id#
+	</update>
+	
+	<delete id="delete_layout_type_permission">
+		delete from sysauth_layout_type_permission where layout_type_id=#layout_type_id# and permission_id=#permission_id# and object_type_id=#object_type_id# and object_id='#object_id#'
+	</delete>
+	
+	<delete id="delete_layout_type_permissions_by_conditions">
+		delete from sysauth_layout_type_permission where #conditions#
+	</delete>
+	
+	<delete id="delete_all_layout_type_permissions">
+		delete from sysauth_layout_type_permission
+	</delete>
+	
+	<select id="get_layout_type_permission">
+		select * from sysauth_layout_type_permission where layout_type_id=#layout_type_id# and permission_id=#permission_id# and object_type_id=#object_type_id# and object_id='#object_id#'
+	</select>
+	
+	<select id="get_all_layout_type_permissions">
+		select * from sysauth_layout_type_permission
+	</select>
+	
+	<select id="get_layout_type_permissions_by_conditions">
+		select * from sysauth_layout_type_permission where #conditions#
+	</select>
+</sql_mapping>

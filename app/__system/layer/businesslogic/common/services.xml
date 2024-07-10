@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<bean name="CommonService" namespace="__system\businesslogic" path="CommonService" path_prefix="<?php echo $vars["business_logic_modules_common_path"];?>" extension="php">
+		<property name="PHPFrameWorkObjName"><?php echo $vars["phpframework_obj_name"] ? $vars["phpframework_obj_name"] : $objs["phpframework_obj_name"]; ?></property>
+		<property name="businessLogicLayer" reference="BusinessLogicLayer" />
+		<property name="userCacheHandler" reference="UserCacheHandler" />
+	</bean>
+</beans>

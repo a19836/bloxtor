@@ -1,0 +1,183 @@
+/* TABLE .function_args */
+.selected_task_properties table.function_args {
+	min-width:400px;
+	width:100%;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties table.function_args {
+	min-width:auto;
+}
+.selected_task_properties table.function_args input {
+    width:100%;
+    height:auto;
+    box-sizing:border-box;
+    border:1px solid #ddd;
+    float:none;
+}
+.selected_task_properties table.function_args select {
+	width:100%;
+	border:0;
+	background:transparent;
+	color:#999;
+}
+.selected_task_properties table.function_args .name,
+  .selected_task_properties table.function_args .value {
+	width:150px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties table.function_args .name,
+  .taskflowchart.fixed_side_properties .selected_task_properties table.function_args .value {
+	width:unset;
+}
+.selected_task_properties table.function_args .var_type {
+	width:70px;
+}
+.selected_task_properties table.function_args .icon_cell {
+	width:25px;
+}
+.selected_task_properties table.function_args .icon_cell .icon {
+	margin:auto 0 auto 5px;
+}
+
+/* EDIT CODE PROPERTIES */
+.selected_task_properties .function_code {
+	display:none;
+}
+
+/* EDIT CODE POPUP */
+.taskflowchart .edit_function_code {
+	width:calc(100vw - 20px);
+	height:calc(100vh - 20px);
+	position:fixed !important;
+	top:10px !important;
+	left:10px !important;
+	box-sizing:border-box;
+}
+.taskflowchart .edit_function_code > .message {
+	position:absolute;
+	left:20px;
+	margin-top:-2.2em;
+	display:none;
+}
+
+.taskflowchart .edit_function_code > #code,
+  .taskflowchart .edit_function_code > #ui {
+	height:80%;
+	height:calc(100% - 80px);
+	padding:0;
+}
+.taskflowchart .edit_function_code > #code .code_menu.top_bar_menu,
+  .taskflowchart .edit_function_code > #ui .taskflowchart .workflow_menu.top_bar_menu {
+	right:120px;
+	top:25px;
+}
+.taskflowchart .edit_function_code > #code .code_menu.top_bar_menu li,
+  .taskflowchart .edit_function_code > #ui .taskflowchart .workflow_menu.top_bar_menu li {
+	
+}
+.taskflowchart .edit_function_code > #code .code_menu.top_bar_menu > ul > li > a,
+  .taskflowchart .edit_function_code > #ui .taskflowchart .workflow_menu.top_bar_menu > ul > li > a {
+	
+}
+.taskflowchart .edit_function_code > #code .code_menu.top_bar_menu > ul > li > a .icon,
+  .taskflowchart .edit_function_code > #ui .taskflowchart .workflow_menu.top_bar_menu > ul > li > a .icon {
+	
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart .workflow_menu .sort_tasks:hover > ul {
+	min-width:120px;
+}
+.taskflowchart .edit_function_code > #code textarea, 
+  .taskflowchart .edit_function_code > #code .ace_editor {
+	width:100%;
+	height:100% !important;
+	border:0;
+	border-top:1px inset #CCC;
+	border-bottom:3px inset #CCC;
+	margin:0;
+}
+.taskflowchart .edit_function_code > .button {
+	margin-top:15px;
+	text-align:center;
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart {
+	width:100%;
+	height:100% !important; /* bc of the myfancypopup that changes the height of the popup. */
+	position:relative;
+	overflow:hidden;
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart > .workflow_menu {
+	top:0;
+	display:block;
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart > .tasks_menu {
+	top:0; /* cannot be !important othewise the .scroll class (when dragging menu tasks) won't work. */
+	bottom:0; /* cannot be !important othewise the resize based in the fixed_side_properties won't work. */
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart > .tasks_menu_hide,
+  .taskflowchart .edit_function_code > #ui .taskflowchart > .tasks_flow {
+	top:0 !important;
+	bottom:0 !important;
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart > .workflow_message {
+	max-height:calc(100% - 30px);
+	position:fixed !important;
+	left:0 !important;
+	right:0 !important;
+	bottom:0 !important;
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart > .workflow_message > .status,
+  .taskflowchart .edit_function_code > #ui .taskflowchart > .workflow_message > .error {
+	width:100% !important;
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart > .selected_task_properties,
+  .taskflowchart .edit_function_code > #ui .taskflowchart > .selected_connection_properties {
+	border-right:1px solid #eee;
+	border-bottom:1px solid #eee;
+	box-sizing:border-box;
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart:not(.fixed_properties):not(.fixed_side_properties) > .selected_task_properties,
+  .taskflowchart .edit_function_code > #ui .taskflowchart:not(.fixed_properties):not(.fixed_side_properties) > .selected_connection_properties {
+	max-height:100%;
+	overflow:auto;
+}
+/* remove edit button in the function and class task, otherwise the user can call the FunctionUtilObj.editMethodCode again, which will break.*/
+.taskflowchart .edit_function_code > #ui .taskflowchart > .selected_task_properties .create_function_task_html > .code > .icon,
+  .taskflowchart .edit_function_code > #ui .taskflowchart > .selected_task_properties .create_class_task_html > .methods li > .update {
+	display:none !important;
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart > .selected_task_properties .create_function_task_html > .code > textarea {
+	width:100%;
+	height:100px;
+	margin-bottom:10px;
+	display:block;
+	box-sizing:border-box;
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart > .selected_task_properties .create_class_task_html > .methods li > .function_code {
+	width:100%;
+	height:100px;
+	margin-bottom:10px;
+	display:block;
+	box-sizing:border-box;
+}
+.taskflowchart .create_class_task_html > .methods li > .function_code_label {
+	display:none;
+}
+.taskflowchart .edit_function_code > #ui .taskflowchart > .selected_task_properties .create_class_task_html > .methods li > .function_code_label {
+	margin-top:10px;
+	display:block;
+}
+
+.taskflowchart > .popup_overlay.edit_function_popup {
+	position:fixed;
+	width:100% !important;
+	height:100% !important;
+}
+.taskflowchart.fixed_properties > .popup_overlay.edit_function_popup,
+  .taskflowchart:not(.fixed_properties) > .popup_overlay.edit_function_popup,
+  .taskflowchart.fixed_side_properties > .popup_overlay.edit_function_popup,
+  .taskflowchart:not(.fixed_side_properties) > .popup_overlay.edit_function_popup {
+	display:block !important;
+}
+.taskflowchart > .popup_loading.edit_function_popup {
+	position:fixed;
+	left:50% !important;
+	top:50% !important;
+}

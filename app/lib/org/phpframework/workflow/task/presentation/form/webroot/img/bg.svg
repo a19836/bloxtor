@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 448 512"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="bg.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="670"
+     id="namedview6"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     showborder="false"
+     inkscape:zoom="0.4609375"
+     inkscape:cx="-126.33242"
+     inkscape:cy="227.96065"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+  <path
+     d="m 448,75.2 v 361.7 c 0,24.3 -19,43.2 -43.2,43.2 H 43.2 C 19.3,480 0,461.4 0,436.8 V 75.2 C 0,51.1 18.8,32 43.2,32 h 361.7 c 24,0 43.1,18.8 43.1,43.2 z M 410.7,436.8 V 75.2 c 0,-3 -2.6,-5.8 -5.8,-5.8 h -9.3 L 290.66922,69.597985 232.8,69.4 171.47797,68.067797 52.5,69.3 h -9.3 c -3.2,0 -5.8,2.8 -5.8,5.8 v 361.7 c 0,3 2.6,5.8 5.8,5.8 h 361.7 c 3.2,0.1 5.8,-2.7 5.8,-5.8 z M 150.2,186 v 37 H 76.7 v -37 z m 0,74.4 v 37.3 H 76.7 V 260.4 Z M 150.45254,56.69322 215.3,69.4 H 96.8 Z M 371.3,186 v 37 h -196 v -37 z m 0,74.4 v 37.3 h -196 V 260.4 Z M 290.66922,69.597985 351.2,69.4 H 232.8 Z M 371.3,335 v 37.3 H 271.9 V 335 Z"
+     id="path2"
+     style="fill:#4070ff;fill-opacity:1"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ssscsssssssscccccsssscsccccccccccccccccccccccccccccccccc" />
+</svg>

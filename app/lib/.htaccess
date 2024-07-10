@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+   
+   RewriteRule (.*) ../__system/layer/presentation/phpframework/error?file=$1 [L,NC]
+</IfModule>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sql_mapping>
+	<insert id="insert_user_type_permission">
+		insert into sysauth_user_type_permission (user_type_id, permission_id, object_type_id, object_id, created_date, modified_date) values (#user_type_id#, #permission_id#, #object_type_id#, '#object_id#', '#created_date#', '#modified_date#')
+	</insert>
+	
+	<delete id="delete_user_type_permission">
+		delete from sysauth_user_type_permission where user_type_id=#user_type_id# and permission_id=#permission_id# and object_type_id=#object_type_id# and object_id='#object_id#'
+	</delete>
+	
+	<delete id="delete_user_type_permissions_by_conditions">
+		delete from sysauth_user_type_permission where #conditions#
+	</delete>
+	
+	<delete id="delete_all_user_type_permissions">
+		delete from sysauth_user_type_permission
+	</delete>
+	
+	<select id="get_user_type_permission">
+		select * from sysauth_user_type_permission where user_type_id=#user_type_id# and permission_id=#permission_id# and object_type_id=#object_type_id# and object_id='#object_id#'
+	</select>
+	
+	<select id="get_all_user_type_permissions">
+		select * from sysauth_user_type_permission
+	</select>
+	
+	<select id="get_user_type_permissions_by_conditions">
+		select * from sysauth_user_type_permission where #conditions#
+	</select>
+</sql_mapping>

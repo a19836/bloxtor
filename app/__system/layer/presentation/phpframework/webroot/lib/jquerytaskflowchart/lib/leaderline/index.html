@@ -1,0 +1,359 @@
+<!--http://jplpinto.localhost/__system/common/vendor/jquerytaskflowchart/lib/leaderline/ -->
+
+<script src="../../../jquery/js/jquery-1.8.1.min.js"></script>
+<script src="../../../jqueryui/js/jquery-ui-1.11.4.min.js"></script>
+
+<link rel="stylesheet" href="leader-line.css" type="text/css" charset="utf-8" />
+<script src="leader-line.js"></script>
+<script src="LeaderLineFlowHandler.js"></script>
+
+<style>
+body {
+	margin:0;
+}
+.main_container {
+	min-height: 100vh;
+	background-color:#eee;
+}
+.menu_bar {
+	position:absolute;
+	top:10px;
+	right:10px;
+	z-index:1;
+}
+.flow {
+	position:absolute;
+	top:50px;
+	left:50px;
+	right:50px;
+	bottom:50px;
+	background-color:#ddd;
+	border:1px solid #ccc;
+	display: block;
+	overflow-x: auto;
+	overflow-x: overlay;
+	overflow-y: auto;
+	overflow-y: overlay;
+}
+.task {
+	width:100px;
+	height:100px;
+	position:absolute;
+	z-index:3;
+}
+#task_1 {
+	top:10px;
+	left:10px;
+	background-color:yellow;
+}
+#task_2 {
+	top:10px;
+	left:200px;
+	background-color:blue;
+}
+#task_background {
+	top:200px;
+	left:150px;
+	background-color:gray;
+	z-index:-1;
+}
+#task_3 {
+	top:200px;
+	left:150px;
+	background-color:purple;
+}
+#task_scroll {
+	top:700px;
+	left:700px;
+	background-color:green;
+}
+.eps {
+	width:100%;
+	height:100%;
+	padding:20px 0;
+	box-sizing:border-box;
+	text-align:center;
+}
+.ep {
+	width:20px;
+	height:20px;
+	margin:10px;
+	display:inline-block;
+	border-radius:100%;
+	background-color:gray;
+}
+#ep_1_1 {
+	background-color:#00cc00;
+}
+#ep_1_2 {
+	background-color:blue;
+}
+#ep_2_1 {
+	background-color:red;
+}
+#ep_3_1 {
+	background-color:orange;
+}
+
+.connect-mode .ep {
+  background-color: #f0c6ef !important;
+}
+
+.connect-mode .task {
+  background-color: #266ff8 !important;
+}
+
+.connect-mode .leader-line-dragging-target-hover,
+  .connect-mode .task:hover {
+	background-color: #f8d626 !important;
+}
+</style>
+
+<div class="main_container">
+	<div class="taskflowchart">
+		<div class="menu_bar">
+			<input type="range" min="0.5" max="1.5" step=".02" value="1">
+			<span>1</span>
+		</div>
+		<div class="flow">
+			<div id="task_1" class="task">
+				<div class="eps">
+					<div id="ep_1_1" class="ep"></div>
+					<div id="ep_1_2" class="ep"></div>
+				</div>
+			</div>
+			<div id="task_2" class="task">
+				<div class="eps">
+					<div id="ep_2_1" class="ep"></div>
+				</div>
+			</div>
+			<div id="task_background" class="task"></div>
+			<div id="task_3" class="task">
+				<div class="eps">
+					<div id="ep_3_1" class="ep"></div>
+					<div id="ep_3_2" class="ep"></div>
+				</div>
+			</div>
+			<div id="task_scroll" class="task"></div>
+		</div>
+	</div>
+</div>
+
+<script>
+FlowHandlerObj.importDefaults({
+	//startPlug: "diamond",
+	endPlug: "arrow3",
+	path: "grid",
+	/*dash: {
+		animation: true
+	},*/
+	//startLabel: '*',
+	//middleLabel: 'Some label here',
+	//endLabel: '1',
+	startPointSVG: FlowHandlerObj.Defaults["startPointSVG"],
+	endPointSVG: FlowHandlerObj.Defaults["endPointSVG"],
+	//color: 'red', 
+	//hoverColor: "gray",
+	size: 2, //line size
+	endPlugSize: 3,
+	/*paintStyle: { //paint style for endpoints and line if connectorStyle is not defined
+		strokeStyle: "brown", 
+		fillStyle: "yellow", 
+		lineWidth: 1.5,
+	},
+	hoverPaintStyle: {
+		fillStyle:"green",
+		strokeStyle: "orange",
+		lineWidth: 7,
+	},*/
+	
+	ConnectorZIndex: 10,
+	connect_from_target: false,//true,
+	on_connection_body_class: "connect-mode",
+	//on_connection_body_class: "leader-line-dragging-body",
+});
+FlowHandlerObj.bind("contextmenu", function(line, e) {console.log("contextmenu");});
+FlowHandlerObj.bind("click", function(line, e) {console.log("click");});
+FlowHandlerObj.bind("dblclick", function(line, e) {console.log("dblclick");});
+FlowHandlerObj.bind("connection", function(line, e) {
+	console.log("connection");
+	
+	if (!line.isSource && !line.isTarget) {
+		if (line.sourceId == "task_2") {
+			line.removeAllOverlays();
+			
+			var overlay = [
+				["Label", { 
+					id: "other_label",
+					label: "some other text", 
+					position: "start",
+					cssClass: "some_overlay_class",
+					style: "color:gray; font-size:10px; margin-top:-15px;",
+				}],
+				["Label", { 
+					label: "middle label", 
+					position: "middle",
+				}],
+				["Label", { 
+					label: "end label", 
+					position: "end",
+				}],
+				["Diamond", { 
+					position: "start",
+				}],
+				["Arrow", { 
+					position: "end",
+				}],
+			];
+			
+			line.addOverlay(overlay);
+		}
+		
+		if (line.middleLabelCanvas)
+			FlowHandlerObj.replaceLineLabel(line.middleLabelCanvas, "middle", 'asdas sdf sd'); 
+		else
+			FlowHandlerObj.addLineLabel(line, "middle", 'asdas sdf sd'); 
+		
+		FlowHandlerObj.addLineLabelInDefaultOverlay(line.middleLabelCanvas, "middle", '<input type=radio />');
+	}
+});
+FlowHandlerObj.bind("connectionDragStart", function(line, e) {console.log("connectionDragStart");});
+FlowHandlerObj.bind("connectionDrag", function(line, e) {console.log("connectionDrag");});
+FlowHandlerObj.bind("connectionDragEnd", function(line, e) {console.log("connectionDragEnd");});
+FlowHandlerObj.bind("connectionDragStop", function(line, e) {console.log("connectionDragStop");});
+FlowHandlerObj.bind("connectionDetached", function(line, e) {console.log("connectionDetached");});
+FlowHandlerObj.bind("beforeDrop", function(line, e) {console.log("beforeDrop"); return true;});
+FlowHandlerObj.bind("beforeDetach", function(line, e) {console.log("beforeDetach"); return true;});
+FlowHandlerObj.bind("ready", onReady);
+
+var container = null;
+
+function onReady() {
+	console.log("ready");
+	
+	var flow = document.querySelector(".flow");
+	var tasks = document.querySelectorAll(".task");
+	var eps = document.querySelectorAll(".ep");
+	var zoom = 0.6;
+	
+	container = flow;
+	//container = document.querySelector(".main_container");
+
+	for (var i = 0; i < eps.length; i++) {
+		var ep = eps[i];
+		var color = $(ep).css("background-color");
+		
+		FlowHandlerObj.makeSource(ep, {
+			paintStyle: { //paint style for endpoints and line if connectorStyle is not defined
+				strokeStyle: color ? color : "brown", 
+				fillStyle: color ? color : "yellow", 
+			},
+			hoverPaintStyle: { //hover paint style for endpoints and line
+				//strokeStyle:"purple", 
+				fillStyle:"purple",
+				lineWidth: 3
+			},
+			endPlugSize: 3,
+			//connectorStyle: { strokeStyle: "red", lineWidth: 1.5 }, //paint style for line
+			connectorOverlays: [
+				["Label", {
+					id: "my_start_label",
+					label: "start text via connector overlay from makeSource", 
+					cssClass: "some_overlay_class",
+					style: "font-size:12px; height:25px;",
+					position: "start",
+				}],
+				["Arrow", { 
+					id: "other_arrow",
+					position: "end",
+				}],
+			],
+			container: container,
+			//anchor: "RIGHT",
+		});
+	}
+
+	for (var i = 0; i < tasks.length; i++) {
+		var task = tasks[i];
+		var color = $(task).css("background-color");
+		
+		FlowHandlerObj.makeTarget(tasks[i], {
+			dropOptions: { 
+				hoverClass:"dragHover",
+				activeClass:"dragActive",
+				greedy: true, //greedy is very important to be true, otherwise if the target is a task inside of another task (this is, is a inner task), the source task will be connected to this task and to its' parents too. With greedy=true this doesn't happen and the source task is only connected to this target task.
+				over: function(event, ui) {
+					console.log("over drop elm");
+				},
+				out: function(event, ui) {
+					console.log("out drop elm");
+				},
+				drop: function(event, ui) {
+					console.log("drop elm");
+				},
+			},
+			paintStyle: { 
+				fillStyle: color ? color : "green", 
+			},
+			hoverPaintStyle: { //hover paint style for endpoints and line
+				fillStyle:"cyan",
+			},
+			container: container,
+			//anchor: "LEFT",
+		});
+		FlowHandlerObj.draggable(tasks[i], {containment: flow});
+	}
+	
+	var slider = document.querySelector("input");
+	var slider_info = document.querySelector("span");
+	
+	slider.value = zoom;
+	slider_info.innerHTML = zoom;
+	setZoom(zoom);
+	
+	slider.addEventListener('input', function(e) {
+		setZoom(this.value);
+		slider_info.innerHTML = this.value;
+		return false;
+	});
+	
+	FlowHandlerObj.connect({
+		source: "task_1",
+		target: "task_2",
+	});
+}
+
+function setZoom(zoom) {
+	FlowHandlerObj.setZoom(zoom);
+	
+	if (zoom != 1) {
+		var j_container = $(container);
+		var width = j_container.width();
+		var height = j_container.height();
+		
+		if (container.hasAttribute("data-width"))
+			width = j_container.attr("data-width");
+		else
+			j_container.attr("data-width", width);
+		
+		if (container.hasAttribute("data-height"))
+			height = j_container.attr("data-height");
+		else
+			j_container.attr("data-height", height);
+		
+		j_container.css({
+			"transform": "scale("+zoom+", "+zoom+")",
+			"transform-origin": "0px 0px",
+			width: parseInt(width / zoom) + "px",
+			height: parseInt(height / zoom) + "px",
+		});
+	}
+	else
+		$(container).css({
+			"transform": "",
+			"transform-origin": "",
+			width: "",
+			height: "",
+		});
+}
+</script>

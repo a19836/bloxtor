@@ -1,0 +1,98 @@
+a:1:{s:17:"HtmlStringHandler";a:2:{s:7:"methods";a:6:{s:26:"convertElementsArrayToHtml";a:20:{s:4:"name";s:26:"convertElementsArrayToHtml";s:16:"start_line_index";i:17;s:17:"start_token_index";i:162;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:237:"/*
+	 * This method will be used by the $elements returned from the self::convertHtmlToElementsArray method.
+	 * Basically passing an elements array as the first argument, this method creates the correspondent html for that array.
+	 */";}s:25:"start_comments_line_index";i:13;s:26:"start_comments_token_index";i:160;s:23:"end_comments_line_index";i:16;s:24:"end_comments_token_index";i:160;s:22:"start_args_token_index";i:169;s:20:"end_args_token_index";i:192;s:9:"arguments";a:2:{s:9:"$elements";N;s:8:"$options";s:58:"array("trim" => false, "auto_close_missing_tags" => false)";}s:25:"start_brackets_line_index";i:17;s:26:"start_brackets_token_index";i:194;s:23:"end_brackets_line_index";i:50;s:24:"end_brackets_token_index";i:530;s:14:"end_line_index";i:50;s:15:"end_token_index";i:530;}s:26:"joinElementsArrayTextNodes";a:15:{s:4:"name";s:26:"joinElementsArrayTextNodes";s:16:"start_line_index";i:52;s:17:"start_token_index";i:532;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:539;s:20:"end_args_token_index";i:541;s:9:"arguments";a:1:{s:9:"$elements";N;}s:25:"start_brackets_line_index";i:52;s:26:"start_brackets_token_index";i:543;s:23:"end_brackets_line_index";i:80;s:24:"end_brackets_token_index";i:793;s:14:"end_line_index";i:80;s:15:"end_token_index";i:793;}s:26:"convertHtmlToElementsArray";a:20:{s:4:"name";s:26:"convertHtmlToElementsArray";s:16:"start_line_index";i:163;s:17:"start_token_index";i:797;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:2518:"/*
+	 * convert a html string into an array of elements
+	 * 
+	 * Use this method carefully bc of the missing closing tags, this is, if there is any open tag that doesn't have its closing tag, there will be some cases where we will not closing it automatically correctly or making all the next elements as inner elements.
+	 * This is, if a tag is not closed properly, one of the behaviours of the browsers and the DomDocument php class (according with the test that I did!), is to automatically close this tag without any inner html. Another behaviour would be to get the html until the end, depending of the tag type and the doctype... 
+	 * Basically we try to replicate the Browsers behaviour, but couldn't do it for all cases, bc this process is very complicated, so USE THIS METHOD CAREFULLY!
+	 *
+	 * To test this method, execute the following code:
+		$html = '
+		<section>
+			s1
+			<article>
+				a1
+				<span>Some span bla</span>
+				a2
+				<i class="icon add">Add</i>
+				a3
+				
+				<script>
+					var foo = "</article>";
+				</script>
+				
+			</article>
+			
+			<script>
+				var foo = "<article><div>";
+			</script>
+			
+			s2
+			<div>
+				d1
+				<header>
+					<input name="first_name" />
+				<!--header-->
+				d2 - Note that the header tag will be closed after this text and not before, as it shows in the comment! This is on purpose!
+			</div>
+			s3
+			<ul>
+				<li>li1</li>
+				<li>li2<!--li-->
+				
+				<style>
+					.foo {
+						content: "</li><li>";
+					}
+				</style>
+				
+				<li>li3</li>
+			</ul>
+			<dl>
+				<dt>Coffee</dt>
+				<dd>Black hot drink<!--dd-->
+				<dt>Milk<!--dt-->
+				<dd>White cold drink</dd>
+			</dl>
+			<!--strong-->Bold text</strong>
+		</section> ';
+		
+		$elements = HtmlStringHandler::convertHtmlToElementsArray($html);
+		$new_html = HtmlStringHandler::convertElementsArrayToHtml($elements);
+		echo "<pre>";print_r($elements);echo "\nNew html:$new_html";die();
+	 *
+	 * 
+	 * or the code:
+		$html = '
+		</div>
+	</div>
+	<article>asds</article>
+</section>
+</body>';
+		
+		$elements = HtmlStringHandler::convertHtmlToElementsArray($html);
+		$elements = HtmlStringHandler::joinElementsArrayTextNodes($elements);
+		
+		foreach ($elements as $idx => $element)
+			if (is_array($element) && $element["nodeType"] == 1) //1 == is Element node
+				unset($elements[$idx]);
+		
+		$new_html = HtmlStringHandler::convertElementsArrayToHtml($elements);
+		echo "<pre>";print_r($elements);echo "\nNew html:$new_html";die();
+	 */";}s:25:"start_comments_line_index";i:82;s:26:"start_comments_token_index";i:795;s:23:"end_comments_line_index";i:162;s:24:"end_comments_token_index";i:795;s:22:"start_args_token_index";i:804;s:20:"end_args_token_index";i:827;s:9:"arguments";a:2:{s:5:"$html";N;s:8:"$options";s:61:"array("force_no_closing_tag_to_end" => true, "trim" => false)";}s:25:"start_brackets_line_index";i:163;s:26:"start_brackets_token_index";i:829;s:23:"end_brackets_line_index";i:373;s:24:"end_brackets_token_index";i:2372;s:14:"end_line_index";i:373;s:15:"end_token_index";i:2372;}s:20:"getHtmlTagAttributes";a:20:{s:4:"name";s:20:"getHtmlTagAttributes";s:16:"start_line_index";i:376;s:17:"start_token_index";i:2376;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:188:"//I can use the php DomDocument class, bc even if the Html is incomplete and not have closed tags, it doesn't matter, bc we only want to parse the html correspondent to the tag attributes.";}s:25:"start_comments_line_index";i:375;s:26:"start_comments_token_index";i:2374;s:23:"end_comments_line_index";i:376;s:24:"end_comments_token_index";i:2374;s:22:"start_args_token_index";i:2383;s:20:"end_args_token_index";i:2385;s:9:"arguments";a:1:{s:5:"$html";N;}s:25:"start_brackets_line_index";i:376;s:26:"start_brackets_token_index";i:2387;s:23:"end_brackets_line_index";i:400;s:24:"end_brackets_token_index";i:2553;s:14:"end_line_index";i:400;s:15:"end_token_index";i:2553;}s:29:"containsHtmlTagAttributeValue";a:15:{s:4:"name";s:29:"containsHtmlTagAttributeValue";s:16:"start_line_index";i:402;s:17:"start_token_index";i:2555;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:2562;s:20:"end_args_token_index";i:2577;s:9:"arguments";a:4:{s:5:"$html";N;s:10:"$attr_name";N;s:11:"$attr_value";N;s:15:"$case_sensitive";s:5:"false";}s:25:"start_brackets_line_index";i:402;s:26:"start_brackets_token_index";i:2579;s:23:"end_brackets_line_index";i:410;s:24:"end_brackets_token_index";i:2670;s:14:"end_line_index";i:410;s:15:"end_token_index";i:2670;}s:11:"getHtmlTags";a:20:{s:4:"name";s:11:"getHtmlTags";s:16:"start_line_index";i:428;s:17:"start_token_index";i:2676;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:2:{i:0;s:339:"/*
+	 * A good example to test this method is with the $html equals to:
+	 	$html = '<title>A
+			<title>B
+				<title>C</title>
+				<title>D</title>
+			W</title>
+			Z
+			<title>JPLPITO</title>
+		</title>
+		<title>JP</title>';
+		
+		$tags = HtmlStringHandler::getHtmlTags($html, "title");
+		echo "<pre>";print_r($tags);die();
+	 */";i:1;s:186:"//Do NOT use the php DomDocument class, bc the Html may be incomplete and not have closed tags. If I use the DomDocument class it will close the missing html tags. And I don't want this!";}s:25:"start_comments_line_index";i:412;s:26:"start_comments_token_index";i:2672;s:23:"end_comments_line_index";i:428;s:24:"end_comments_token_index";i:2674;s:22:"start_args_token_index";i:2683;s:20:"end_args_token_index";i:2695;s:9:"arguments";a:3:{s:5:"$html";N;s:9:"$tag_name";N;s:28:"$force_no_closing_tag_to_end";s:5:"false";}s:25:"start_brackets_line_index";i:428;s:26:"start_brackets_token_index";i:2697;s:23:"end_brackets_line_index";i:492;s:24:"end_brackets_token_index";i:3130;s:14:"end_line_index";i:492;s:15:"end_token_index";i:3130;}}s:5:"props";a:3:{s:16:"single_tags_name";a:16:{s:4:"name";s:16:"single_tags_name";s:4:"type";s:6:"public";s:5:"value";s:202:"array("area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr", "command", "keygen", "menuitem", "frame", "iframe", "basefont", "bgsound", "isindex")";s:8:"var_type";s:0:"";s:6:"static";b:1;s:8:"abstract";b:0;s:5:"const";b:0;s:16:"start_line_index";i:7;s:17:"start_token_index";i:17;s:14:"end_line_index";i:7;s:15:"end_token_index";i:92;s:8:"comments";a:1:{i:0;s:68:"//This vars are used in the self::convertHtmlToElementsArray method.";}s:25:"start_comments_line_index";i:6;s:26:"start_comments_token_index";i:15;s:23:"end_comments_line_index";i:7;s:24:"end_comments_token_index";i:15;}s:28:"auto_close_siblings_tag_name";a:11:{s:4:"name";s:28:"auto_close_siblings_tag_name";s:4:"type";s:6:"public";s:5:"value";s:80:"array("li" => array("li"), "dd" => array("dd", "dt"), "dt" => array("dd", "dt"))";s:8:"var_type";s:0:"";s:6:"static";b:1;s:8:"abstract";b:0;s:5:"const";b:0;s:16:"start_line_index";i:9;s:17:"start_token_index";i:94;s:14:"end_line_index";i:9;s:15:"end_token_index";i:139;}s:12:"tags_to_jump";a:16:{s:4:"name";s:12:"tags_to_jump";s:4:"type";s:6:"public";s:5:"value";s:24:"array("style", "script")";s:8:"var_type";s:0:"";s:6:"static";b:1;s:8:"abstract";b:0;s:5:"const";b:0;s:16:"start_line_index";i:11;s:17:"start_token_index";i:143;s:14:"end_line_index";i:11;s:15:"end_token_index";i:158;s:8:"comments";a:1:{i:0;s:41:"//TODO: add other tags where this happens";}s:25:"start_comments_line_index";i:9;s:26:"start_comments_token_index";i:141;s:23:"end_comments_line_index";i:10;s:24:"end_comments_token_index";i:141;}}}}

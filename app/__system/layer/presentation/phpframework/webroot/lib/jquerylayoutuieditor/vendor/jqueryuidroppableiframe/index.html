@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Index</title>
+
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" crossorigin="anonymous">
+	
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+		 <script src="js/html5_ie8/html5shiv.min.js"></script>
+		 <script src="js/html5_ie8/respond.min.js"></script>
+	<![endif]-->
+    
+    	<!-- JQuery -->
+	<script language="javascript" type="text/javascript" src="../../../jquery/js/jquery-1.8.1.min.js"></script>
+	<script language="javascript" type="text/javascript" src="../../../jqueryui/js/jquery-ui-1.11.4.min.js"></script>
+	
+	<!-- To work on mobile devices with touch -->
+	<script language="javascript" type="text/javascript" src="../../../jqueryuitouchpunch/jquery.ui.touch-punch.min.js"></script>
+    
+    	<!-- Iframe droppable fix -->
+    	<script type="text/javascript" src="js/jquery-ui-droppable-iframe-fix.js"></script>
+    
+    	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    	<script src="js/ie10-viewport-bug-workaround.js"></script>
+    	
+    	<style type="text/css">
+        .draggable{
+        		border: 1px solid black; 
+        		width: 100px; 
+        		height: 50px;
+        }
+        
+        ul, li {
+        	list-style-type:none;
+        	padding:0;
+        }
+    	</style>
+    	<script type="text/javascript">
+	    $(function() {
+	    		//console.log($.ui.ddmanager.droppables); return;
+	    
+	    		$("iframe").load(function() {
+				var ifr = $(this);
+	    			
+				var changed = resetJqueryUIDDManagerDroppables(); //this is very important otherwise when the iframe gets moved or refreshed, the window will continue have the old droppables elements whcih will give javascript errors.
+				//console.log($.ui.ddmanager.droppables);
+				
+				//If iframe gets html loaded again, resetJqueryUIDDManagerDroppables should return true, which means we should execute the following code
+				if (changed) {
+					//unload function for each iframe
+					$(ifr[0].contentWindow).unload(function () {
+						 //console.log("unload and save body html");
+						 var body_html = ifr.contents().find("body").html();
+						 ifr.data("previous_body", body_html);
+					});
+					
+					//console.log("load previous body html");
+					var previous_body = ifr.data("previous_body");
+					ifr.contents().find("body").html(previous_body);
+					
+					ifr.contents().find("body").find(".iframe-draggable").draggable({
+						opacity: 0.60,
+						helper: "clone",
+						revert: "invalid",
+				   	});
+		    		}
+	    			
+	    			var iframe_contents = ifr.contents();
+				//console.log("LOAD");
+				
+				var opts = {
+				      //accept: '*',
+				      greedy: true,
+				      hoverClass: "ui-droppable-hover",
+				      activeClass: "ui-droppable-active",
+				      tolerance: "pointer",
+				      drop: function(event, ui) {
+				          //console.log("DROP");
+				          
+				          var item = null;
+				          
+				          if (ui.draggable.hasClass("iframe-draggable"))
+				          	item = ui.draggable;
+				          else
+					          item = $('<div class="iframe-draggable">Dropped Drag me<div class="droppable"></div></div>');
+					     
+				          $(this).append(item);
+				          
+				          item.draggable({
+							opacity: 0.60,
+							helper: "clone",
+							revert: "invalid",
+					   	})
+					   	.find(".droppable").droppable(opts);
+				      }
+				};
+				iframe_contents.find('.droppable').droppable(opts);
+		   	})
+		   	.each(function(idx, iframe) {
+			   	$(iframe.contentWindow).unload(function () {
+					 //console.log("unload and save body html");
+			   		 var ifr = $(iframe);
+					 var body_html = ifr.contents().find("body").html();
+					 ifr.data("previous_body", body_html);
+				});
+			});
+
+		   	$('.draggable').draggable({
+				iframeFix: true,
+				iframeScroll:true,
+				scroll: true,
+				scrollSensitivity:20,
+				
+				opacity: 0.35,
+				helper: "clone",
+				revert: "invalid"
+		   	});
+	    });
+	    
+	 	function moveUp(elm) {
+			var item = $(elm).parent().closest("li");
+			
+			if (item.prev()[0] && !item.prev().is("li"))
+				item.parent()[0].insertBefore(item[0], item.prev()[0]);
+		}
+
+		function moveDown(elm) {
+			var item = $(elm).parent().closest("li");
+			
+			if (item.next()[0])
+				item.parent()[0].insertBefore(item.next()[0], item[0]);
+		}
+    	</script>
+</head>
+
+<body>
+    <div class="container">
+      <div class="row">
+        <h2 class="text-center">Use your droppable zones inside iframe!</h2>
+        <p>As you know <a href="https://jqueryui.com/">jquery-ui</a> does not maintaining use droppable zones inside iframe. Use <a href="">jquery-ui-droppable-iframe</a> to fix this!</p>
+        
+        <div class="well">
+		   <p>Plugin features</p>
+		   <ul>
+		       <li>Fix droppable position inside iframe</li>
+		       <li>You can use iframe scroll, while you are dragging</li>
+		       <li>After scroll droppable position works perfect</li> 
+		       <li>Works even in IE and Edge</li>
+		       <li>You can use native <code>scrollSensitivity</code> and <code>scrollSpeed</code> params</li>
+		   </ul>
+        </div>
+      
+        <ul class="test">
+        	<li>
+		   <h2 class="text-center">Try it now</h2>
+		   <h6 class="text-center">
+		   	<a class="move-up" onClick="moveUp(this)">move up</a> | 
+		   	<a class="move-down" onClick="moveDown(this)">move down</a>
+		   </h6>
+		   <div class="draggable">Drag me</div><br><br>
+		   <iframe id="testframe" src="iframe.html" frameborder="0" style="width:100%; height:400px; border:1px solid #e7e7e7; margin-bottom:50px;"></iframe>
+		</li>
+		
+        	<li>
+		   <h2 class="text-center">IFRAME ABSOLUTE<br>Try it now</h2>
+		   <h6 class="text-center">
+		   	<a class="move-up" onClick="moveUp(this)">move up</a> | 
+		   	<a class="move-down" onClick="moveDown(this)">move down</a>
+		   </h6>
+		   <div class="draggable">Drag me</div><br><br>
+		   <iframe id="testframe" src="iframe.html" frameborder="0" style="width:100%; height:400px; border:1px solid #e7e7e7; margin-bottom:50px; position:absolute; left: 100px;"></iframe>
+		</li>
+        </ul>
+        
+      </div>
+    </div>
+    
+  </body>
+</html>

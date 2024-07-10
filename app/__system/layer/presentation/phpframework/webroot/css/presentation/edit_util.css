@@ -1,0 +1,34 @@
+/* TOP BAR */
+.top_bar {
+	margin-bottom:10px;
+}
+.top_bar header .title {
+	max-width:calc(100% - 120px);
+}
+
+/* UTIL OBJ */
+.util_obj {
+	width:100%;
+	overflow:hidden;
+	margin:0 auto;
+	padding:0;
+	border:0;
+}
+.util_obj #code textarea, 
+  .util_obj #code .ace_editor,
+  .util_obj #ui .taskflowchart {
+	height:calc(100vh - 50px) !important;
+	box-sizing:border-box; /* bc of the ace_editor */
+}
+
+.util_obj #ui .taskflowchart .tasks_flow.drop_hover { /* .drop_hover is set in admin_menu.js */
+	box-shadow:inset 0 0 30px 0px rgba(0, 0, 0, .1);
+}
+
+/* To print the workflow */
+@media print {
+	.util_obj {
+		overflow:visible !important;
+		border:0 !important;
+	}
+}

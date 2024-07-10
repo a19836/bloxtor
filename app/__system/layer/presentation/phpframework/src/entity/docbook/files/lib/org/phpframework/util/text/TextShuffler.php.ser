@@ -1,0 +1,96 @@
+a:1:{s:12:"TextShuffler";a:1:{s:7:"methods";a:14:{s:7:"shuffle";a:15:{s:4:"name";s:7:"shuffle";s:16:"start_line_index";i:8;s:17:"start_token_index";i:17;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:24;s:20:"end_args_token_index";i:40;s:9:"arguments";a:3:{s:7:"$string";N;s:5:"$type";s:1:"1";s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:8;s:26:"start_brackets_token_index";i:42;s:23:"end_brackets_line_index";i:21;s:24:"end_brackets_token_index";i:139;s:14:"end_line_index";i:21;s:15:"end_token_index";i:139;}s:9:"unshuffle";a:15:{s:4:"name";s:9:"unshuffle";s:16:"start_line_index";i:23;s:17:"start_token_index";i:141;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:148;s:20:"end_args_token_index";i:164;s:9:"arguments";a:3:{s:7:"$string";N;s:5:"$type";s:1:"1";s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:23;s:26:"start_brackets_token_index";i:166;s:23:"end_brackets_line_index";i:36;s:24:"end_brackets_token_index";i:263;s:14:"end_line_index";i:36;s:15:"end_token_index";i:263;}s:11:"autoShuffle";a:20:{s:4:"name";s:11:"autoShuffle";s:16:"start_line_index";i:40;s:17:"start_token_index";i:269;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:2:{i:0;s:200:"//IMPORTANT: DO NOT change this code, because it's being used by the UserUtil and is saving encoded strings to the DB. If you change this code, then the old DB saved string won't be decoded correctly.";i:1;s:104:"//Note: if disable_email == 1, treat string as a normal string, otherwise only encode substring before @";}s:25:"start_comments_line_index";i:38;s:26:"start_comments_token_index";i:265;s:23:"end_comments_line_index";i:40;s:24:"end_comments_token_index";i:267;s:22:"start_args_token_index";i:276;s:20:"end_args_token_index";i:285;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:40;s:26:"start_brackets_token_index";i:287;s:23:"end_brackets_line_index";i:80;s:24:"end_brackets_token_index";i:619;s:14:"end_line_index";i:80;s:15:"end_token_index";i:619;}s:13:"autoUnshuffle";a:20:{s:4:"name";s:13:"autoUnshuffle";s:16:"start_line_index";i:84;s:17:"start_token_index";i:625;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:2:{i:0;s:200:"//IMPORTANT: DO NOT change this code, because it's being used by the UserUtil and is saving encoded strings to the DB. If you change this code, then the old DB saved string won't be decoded correctly.";i:1;s:104:"//Note: if disable_email == 1, treat string as a normal string, otherwise only decode substring before @";}s:25:"start_comments_line_index";i:82;s:26:"start_comments_token_index";i:621;s:23:"end_comments_line_index";i:84;s:24:"end_comments_token_index";i:623;s:22:"start_args_token_index";i:632;s:20:"end_args_token_index";i:641;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:84;s:26:"start_brackets_token_index";i:643;s:23:"end_brackets_line_index";i:124;s:24:"end_brackets_token_index";i:975;s:14:"end_line_index";i:124;s:15:"end_token_index";i:975;}s:8:"shuffle1";a:20:{s:4:"name";s:8:"shuffle1";s:16:"start_line_index";i:128;s:17:"start_token_index";i:981;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:2:{i:0;s:406:"//Splits string in half and create a new one with the 2nd half and then the 1st half. But for the 2nd half, splits it in chunks of 2 chars in a descending loop and create a new string prepending the next chunk to the previous one. And for the 1st half, splits it in chunks of 3 chars in a ascending loop and create a new string with [+1] [+2] [0] but each previous chunk will be appended to the next chunk.";i:1;s:54:"//To understand this better, suffle 'est123@gmail.com'";}s:25:"start_comments_line_index";i:126;s:26:"start_comments_token_index";i:977;s:23:"end_comments_line_index";i:128;s:24:"end_comments_token_index";i:979;s:22:"start_args_token_index";i:988;s:20:"end_args_token_index";i:997;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:128;s:26:"start_brackets_token_index";i:999;s:23:"end_brackets_line_index";i:150;s:24:"end_brackets_token_index";i:1279;s:14:"end_line_index";i:150;s:15:"end_token_index";i:1279;}s:10:"unshuffle1";a:20:{s:4:"name";s:10:"unshuffle1";s:16:"start_line_index";i:177;s:17:"start_token_index";i:1289;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:4:{i:0;s:256:"//2020-09-14: I should avoid use loops with mb_substr function, bc is much more slow than the substr function. But bc this loop is short, it's OK! However if I decide to use this method with long values in the $string var, I may need to change this code...";i:1;s:572:"/*public static function shuffle1($string, $options = false) {
+		$str = "";
+		$t = mb_strlen($string);
+		
+		if ($t) {
+			$middle = ceil($t / 2);
+			$f = mb_substr($string, 0, $middle);
+			$s = mb_substr($string, $middle);
+			$t = mb_strlen($s);
+			
+			$aux = "";
+			for ($i = $t - 1; $i >= 0; $i -= 2)
+				$aux .= ($i - 1 >= 0 ? mb_substr($s, $i - 1, 1) : "") . mb_substr($s, $i, 1);
+			
+			for ($i = 0; $i < $middle; $i += 3)
+				$str = mb_substr($f, $i + 1, 1) . mb_substr($f, $i + 2, 1) . mb_substr($f, $i, 1) . $str;
+		
+			$str = $aux . $str;
+		}
+	
+		return $str;
+	}*/";i:2;s:363:"//Splits string in half (counting from the last char) and create a new one with the 2nd half and then the 1st half. But for the first half splits it in chunks of 3 chars in a loop on a descending order and create a new string [0] [-2] [-1]. And for the 2nd half splits it in chunks of 2 chars and create a new string prepending the next chunk to the previous one.";i:3;s:96:"//To understand this better, unsuffle 'om.cilmag@231ste' which corresponds to 'est123@gmail.com'";}s:25:"start_comments_line_index";i:151;s:26:"start_comments_token_index";i:1281;s:23:"end_comments_line_index";i:177;s:24:"end_comments_token_index";i:1287;s:22:"start_args_token_index";i:1296;s:20:"end_args_token_index";i:1305;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:177;s:26:"start_brackets_token_index";i:1307;s:23:"end_brackets_line_index";i:199;s:24:"end_brackets_token_index";i:1591;s:14:"end_line_index";i:199;s:15:"end_token_index";i:1591;}s:8:"shuffle2";a:20:{s:4:"name";s:8:"shuffle2";s:16:"start_line_index";i:226;s:17:"start_token_index";i:1601;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:4:{i:0;s:256:"//2020-09-14: I should avoid use loops with mb_substr function, bc is much more slow than the substr function. But bc this loop is short, it's OK! However if I decide to use this method with long values in the $string var, I may need to change this code...";i:1;s:596:"/*public static function unshuffle1($string, $options = false) {
+		$str = "";
+		$t = mb_strlen($string);
+		
+		if ($t) {
+			$middle = ceil($t / 2);
+			$f = mb_substr($string, -$middle);
+			$s = mb_substr($string, 0, $t - $middle);
+			$t = mb_strlen($s);
+		
+			for ($i = $middle - 1; $i >= 0; $i -= 3)
+				$str .= mb_substr($f, $i, 1) . ($i - 2 >= 0 ? mb_substr($f, $i - 2, 1) : "") . ($i - 1 >= 0 ? mb_substr($f, $i - 1, 1) : "");
+		
+			$aux = "";
+			for ($i = 0; $i < $t; $i += 2)			
+				$aux = mb_substr($s, $i, 1) . mb_substr($s, $i + 1, 1) . $aux;
+		
+			$str .= $aux;
+		}
+	
+		return $str;
+	}*/";i:2;s:163:"//Splits the string in chunks of 3 starting from the last char in a descending loop. For each chunk create a string with [-1] [-2] [0] and then add the next chunk.";i:3;s:55:"//To understand this better, suffle 'est1234@gmail.com'";}s:25:"start_comments_line_index";i:200;s:26:"start_comments_token_index";i:1593;s:23:"end_comments_line_index";i:226;s:24:"end_comments_token_index";i:1599;s:22:"start_args_token_index";i:1608;s:20:"end_args_token_index";i:1617;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:226;s:26:"start_brackets_token_index";i:1619;s:23:"end_brackets_line_index";i:235;s:24:"end_brackets_token_index";i:1751;s:14:"end_line_index";i:235;s:15:"end_token_index";i:1751;}s:10:"unshuffle2";a:20:{s:4:"name";s:10:"unshuffle2";s:16:"start_line_index";i:250;s:17:"start_token_index";i:1761;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:4:{i:0;s:256:"//2020-09-14: I should avoid use loops with mb_substr function, bc is much more slow than the substr function. But bc this loop is short, it's OK! However if I decide to use this method with long values in the $string var, I may need to change this code...";i:1;s:568:"/*public static function shuffle2($string, $options = false) {
+		$str = "";
+		$t = mb_strlen($string);
+	
+		//2020-09-14: I should avoid use loops with mb_substr function, bc is much more slow than the substr function. But bc this loop is short, it's OK! However if I decide to use this method with long values in the $string var, I may need to change this code...
+		for ($i = $t - 1; $i >= 0; $i -= 3)
+			$str .= ($i - 1 >= 0 ? mb_substr($string, $i - 1, 1) : "") . ($i - 2 >= 0 ? mb_substr($string, $i - 2, 1) : "") . mb_substr($string, $i, 1);
+		
+		return $str;
+	}*/";i:2;s:247:"//Splits the string in chunks of 3 starting from the first char in a ascending loop. For each chunk create a string with [+1] [0] [+2] and then pre-add the next chunk. However if the last chunk doesn't have 3 chars, just return the chunk as it is.";i:3;s:98:"//To understand this better, unsuffle 'ocmli.mga43@1t2es' which corresponds to 'est1234@gmail.com'";}s:25:"start_comments_line_index";i:236;s:26:"start_comments_token_index";i:1753;s:23:"end_comments_line_index";i:250;s:24:"end_comments_token_index";i:1759;s:22:"start_args_token_index";i:1768;s:20:"end_args_token_index";i:1777;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:250;s:26:"start_brackets_token_index";i:1779;s:23:"end_brackets_line_index";i:263;s:24:"end_brackets_token_index";i:1945;s:14:"end_line_index";i:263;s:15:"end_token_index";i:1945;}s:8:"shuffle3";a:20:{s:4:"name";s:8:"shuffle3";s:16:"start_line_index";i:281;s:17:"start_token_index";i:1955;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:4:{i:0;s:256:"//2020-09-14: I should avoid use loops with mb_substr function, bc is much more slow than the substr function. But bc this loop is short, it's OK! However if I decide to use this method with long values in the $string var, I may need to change this code...";i:1;s:348:"/*public static function unshuffle2($string, $options = false) {
+		$str = "";
+		$t = mb_strlen($string);
+	
+		for ($i = 0; $i < $t; $i += 3) {
+			if ($i + 3 <= $t)
+				$str = mb_substr($string, $i + 1, 1) . mb_substr($string, $i, 1) . mb_substr($string, $i + 2, 1) . $str;
+			else
+				$str = mb_substr($string, $i) . $str;
+		}
+		
+		return $str;
+	}*/";i:2;s:78:"//Splits string in chunks of 2 characters and for each chunk flips both chars.";i:3;s:55:"//To understand this better, suffle 'est1234@gmail.com'";}s:25:"start_comments_line_index";i:264;s:26:"start_comments_token_index";i:1947;s:23:"end_comments_line_index";i:281;s:24:"end_comments_token_index";i:1953;s:22:"start_args_token_index";i:1962;s:20:"end_args_token_index";i:1971;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:281;s:26:"start_brackets_token_index";i:1973;s:23:"end_brackets_line_index";i:290;s:24:"end_brackets_token_index";i:2072;s:14:"end_line_index";i:290;s:15:"end_token_index";i:2072;}s:10:"unshuffle3";a:20:{s:4:"name";s:10:"unshuffle3";s:16:"start_line_index";i:304;s:17:"start_token_index";i:2082;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:4:{i:0;s:256:"//2020-09-14: I should avoid use loops with mb_substr function, bc is much more slow than the substr function. But bc this loop is short, it's OK! However if I decide to use this method with long values in the $string var, I may need to change this code...";i:1;s:230:"/*public static function shuffle3($string, $options = false) {
+		$str = "";
+		$t = mb_strlen($string);
+	
+		for ($i = 0; $i < $t; $i += 2)
+			$str .= mb_substr($string, $i + 1, 1) . mb_substr($string, $i, 1);
+		
+		return $str;
+	}*/";i:2;s:28:"//Call it again to unshuffle";i:3;s:98:"//To understand this better, unsuffle 'se1t32@4mgia.locm' which corresponds to 'est1234@gmail.com'";}s:25:"start_comments_line_index";i:291;s:26:"start_comments_token_index";i:2074;s:23:"end_comments_line_index";i:304;s:24:"end_comments_token_index";i:2080;s:22:"start_args_token_index";i:2089;s:20:"end_args_token_index";i:2098;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:304;s:26:"start_brackets_token_index";i:2100;s:23:"end_brackets_line_index";i:306;s:24:"end_brackets_token_index";i:2115;s:14:"end_line_index";i:306;s:15:"end_token_index";i:2115;}s:8:"shuffle4";a:20:{s:4:"name";s:8:"shuffle4";s:16:"start_line_index";i:309;s:17:"start_token_index";i:2119;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:9:"//Reverse";}s:25:"start_comments_line_index";i:308;s:26:"start_comments_token_index";i:2117;s:23:"end_comments_line_index";i:309;s:24:"end_comments_token_index";i:2117;s:22:"start_args_token_index";i:2126;s:20:"end_args_token_index";i:2135;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:309;s:26:"start_brackets_token_index";i:2137;s:23:"end_brackets_line_index";i:318;s:24:"end_brackets_token_index";i:2208;s:14:"end_line_index";i:318;s:15:"end_token_index";i:2208;}s:10:"unshuffle4";a:20:{s:4:"name";s:10:"unshuffle4";s:16:"start_line_index";i:331;s:17:"start_token_index";i:2216;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:3:{i:0;s:256:"//2020-09-14: I should avoid use loops with mb_substr function, bc is much more slow than the substr function. But bc this loop is short, it's OK! However if I decide to use this method with long values in the $string var, I may need to change this code...";i:1;s:201:"/*public static function shuffle4($string, $options = false) {
+		$str = "";
+		$t = mb_strlen($string);
+		
+		for ($i = $t - 1; $i >= 0; $i--)
+			$str .= mb_substr($string, $i, 1);
+		
+		return $str;
+	}*/";i:2;s:15:"//Reverse again";}s:25:"start_comments_line_index";i:319;s:26:"start_comments_token_index";i:2210;s:23:"end_comments_line_index";i:331;s:24:"end_comments_token_index";i:2214;s:22:"start_args_token_index";i:2223;s:20:"end_args_token_index";i:2232;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:331;s:26:"start_brackets_token_index";i:2234;s:23:"end_brackets_line_index";i:333;s:24:"end_brackets_token_index";i:2249;s:14:"end_line_index";i:333;s:15:"end_token_index";i:2249;}s:8:"shuffle5";a:20:{s:4:"name";s:8:"shuffle5";s:16:"start_line_index";i:336;s:17:"start_token_index";i:2253;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:39:"//Splits in half and reverse first half";}s:25:"start_comments_line_index";i:335;s:26:"start_comments_token_index";i:2251;s:23:"end_comments_line_index";i:336;s:24:"end_comments_token_index";i:2251;s:22:"start_args_token_index";i:2260;s:20:"end_args_token_index";i:2269;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:336;s:26:"start_brackets_token_index";i:2271;s:23:"end_brackets_line_index";i:353;s:24:"end_brackets_token_index";i:2408;s:14:"end_line_index";i:353;s:15:"end_token_index";i:2408;}s:10:"unshuffle5";a:20:{s:4:"name";s:10:"unshuffle5";s:16:"start_line_index";i:374;s:17:"start_token_index";i:2416;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:3:{i:0;s:256:"//2020-09-14: I should avoid use loops with mb_substr function, bc is much more slow than the substr function. But bc this loop is short, it's OK! However if I decide to use this method with long values in the $string var, I may need to change this code...";i:1;s:345:"/*public static function shuffle5($string, $options = false) {
+		$str = "";
+		$t = mb_strlen($string);
+		
+		if ($t) {
+			$middle = ceil($t / 2);
+			$f = mb_substr($string, 0, $middle);
+			$s = mb_substr($string, $middle);
+			
+			for ($i = $middle - 1; $i >= 0; $i--)
+				$str .= mb_substr($f, $i, 1);
+			
+			$str .= $s;
+		}
+	
+		return $str;
+	}*/";i:2;s:39:"//Splits in half and reverse first half";}s:25:"start_comments_line_index";i:354;s:26:"start_comments_token_index";i:2410;s:23:"end_comments_line_index";i:374;s:24:"end_comments_token_index";i:2414;s:22:"start_args_token_index";i:2423;s:20:"end_args_token_index";i:2432;s:9:"arguments";a:2:{s:7:"$string";N;s:8:"$options";s:5:"false";}s:25:"start_brackets_line_index";i:374;s:26:"start_brackets_token_index";i:2434;s:23:"end_brackets_line_index";i:376;s:24:"end_brackets_token_index";i:2449;s:14:"end_line_index";i:376;s:15:"end_token_index";i:2449;}}}}

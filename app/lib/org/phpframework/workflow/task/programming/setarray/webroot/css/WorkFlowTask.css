@@ -1,0 +1,18 @@
+.taskflowchartmenu .task.task_setarray {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_setarray .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_setarray .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.set_array_task_html {
+	min-width:420px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_array_task_html {
+	min-width:auto;
+}
+

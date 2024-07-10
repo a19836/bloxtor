@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<services>
+		<service id="insert_item" file="item.xml" query="insert_item" />
+		<service id="update_item" file="item.xml" query="update_item" />
+		<service id="delete_item" file="item.xml" query="delete_item" />
+		<service id="select_item" file="item.xml" query="select_item" />
+		<service id="select_item_simple" file="item.xml" query="select_item_simple" />
+		<service id="select_items" file="item.xml" query="select_items" />
+		<service id="procedure_items" file="item.xml" query="procedure_items" />
+		<service id="procedure_items_class" file="item.xml" query="procedure_items_class" />
+	</services>
+</beans>

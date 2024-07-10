@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<var name="phpframework_obj_name">PHPFrameWork</var>
+	
+	<!-- MESSAGE -->
+	<var name="message_vars">
+		<list>
+			<item name="messages_path"><?php echo CMS_PATH; ?>other/data/messages/</item>
+			<item name="messages_modules_file_path"><?php echo CMS_PATH; ?>other/data/messages/modules.xml</item>
+			<item name="messages_cache_path"><?php echo LAYER_CACHE_PATH; ?>sysmessages/</item>
+			<item name="messages_module_cache_maximum_size"></item>
+			<item name="messages_default_cache_ttl"><?php echo 365 * 24 * 60 * 60; ?></item>
+			<item name="messages_default_cache_type">php</item>
+		</list>
+	</var>
+	
+	<bean name="MessageHandler" path="lib.org.phpframework.message.MessageHandler">
+		<constructor_arg reference="message_vars" />
+	</bean>
+	
+	<bean name="UserCacheHandler" path="org.phpframework.cache.user.filesystem.FileSystemUserCacheHandler" path_prefix="<?php echo LIB_PATH;?>">
+		<property name="rootPath"><?php echo CACHE_PATH; ?>sysusercache/</property>
+	</bean>
+	
+	<!-- LOG -->
+	<!-- Only change the LOG_HANDLER if you want to have your own class. But your own class must be an extend of the org.phpframework.log.LogHandler or must implements the interface org.phpframework.log.ILogHandler -->
+	<!--bean name="LogHandler" path="org.phpframework.log.LogHandler" path_prefix="<?php echo LIB_PATH;?>"></bean-->
+	
+	<var name="log_vars">
+		<list>
+			<item name="log_level">&lt;?php echo $GLOBALS["log_level"]; ?&gt;</item>
+			<item name="log_echo_active">&lt;?php echo $GLOBALS["log_echo_active"]; ?&gt;</item>
+			<item name="log_file_path">&lt;?php echo $GLOBALS["log_file_path"]; ?&gt;</item>
+			<item name="log_css"><![CDATA[
+				body {
+					overflow:overlay;
+					background-color:#F0F1F5;
+					font-family:verdana,arial,courier;
+					font-size:11px;
+				}
+				.log_handler {
+					font-style:italic;
+					
+					color:#83889E;
+					/*background-color:#F8F9FC;
+					border:1px outset #BFC4DB;
+					border-radius:5px;*/
+					margin:10px;
+					padding:5px;
+				}
+				
+				.log_handler .message {
+					color:#333;
+					position:relative;
+				}
+				.log_handler .message .exception {
+					color:#FF0000;
+				}
+				.log_handler .message .error {
+					color:#990000;
+				}
+				.log_handler .message .info {
+					color:#000099;
+				}
+				.log_handler .message .debug {
+					color:#009999;
+				}
+				.log_handler .message .message {
+					color:#009900;
+				}
+				.log_handler .message .toggle_trace {
+					margin-right:10px;
+					display:inline-block;
+					font-style:normal;
+					font-weight:bold;
+					cursor:pointer;
+				}
+				.log_handler .message p {
+					margin:0;
+					padding:0;
+				}
+				.log_handler .trace {
+					margin-top:15px;
+					font-size:10px;
+				}
+				.log_handler .trace.hidden {
+					display:none;
+				}
+				.log_handler .trace .exception {
+					white-space:nowrap;
+				}
+			]]></item>
+		</list>
+	</var>
+</beans>

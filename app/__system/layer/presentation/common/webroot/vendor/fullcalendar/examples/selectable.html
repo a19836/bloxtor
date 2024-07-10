@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<script src='../dist/index.global.min.js'></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      headerToolbar: {
+        left: 'prevYear,prev,next,nextYear',
+        center: 'title',
+        right: 'today addEventButton'
+        //right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        //right: 'addEventButton'
+      },
+      footerToolbar: {
+    	   left: 'multiMonthYear,dayGridMonth,dayGridWeek,dayGridDay timeGridWeek,timeGridDay',
+    	   center: '',
+    	   right: 'listYear,listMonth,listWeek,listDay'
+    	 },
+      //timeZone: 'Europe/Lisbon', //'UTC' or 'America/New_York' or 'Europe/Lisbon'
+      timeZone: 'local',
+      locale: 'pt',
+      initialView: 'dayGridMonth',
+      initialDate: '2023-01-12',
+      height: 'calc(100vh - 20px)', //auto or 100% or any other css value. set height to all window without scroll
+      navLinks: true, //can click day/week names to navigate views. Days in the dayGridMonth become clickable links to timeGridWeek and timeGridDay
+      selectable: true,
+      selectMirror: true, //Whether to draw a “placeholder” event while the user is dragging.
+      nowIndicator: true,
+      editable: true,
+      dayMaxEvents: true, // allow "more" link when too many events
+      allDaySlot: true, //false to remove the all-day row from the calendar
+      //multiMonthMaxColumns: 1, // guarantee single column
+      //showNonCurrentDates: true,
+      //fixedWeekCount: false,
+      //weekends: false,
+      //eventColor: '#ff0000', //default events color
+      slotDuration: '00:20:00', //20 minutes. This is how the time will be divided in the grids. to view this better go to the dayGridWeek or dayGridDay
+      slotMinTime: '6:00', //Determines the first time slot that will be displayed for each day.
+      slotMaxTime: '20:00', //Determines the last time slot that will be displayed for each day.
+     
+      //Emphasizes certain time slots on the calendar.
+      businessHours: {
+    		daysOfWeek: [1, 2, 3, 4, 5], //days of week. an array of zero-based day of week integers (0=Sunday)
+    		startTime: '10:00', // a start time (10:00 in this example)
+    		endTime: '18:00', // an end time (18:00 in this example)
+    	 },
+    	 
+    	 //Show week numbers in the left of the calendar (in the dayGridMonth)
+      weekNumbers: true,
+      weekNumbersWithinDays: true,
+      weekNumberCalculation: 'ISO',
+      
+      // customize the button names,
+      // otherwise they'd all just say "list"
+      views: {
+        multiMonthYear: { buttonText: 'grid year' },
+        dayGridMonth: { 
+           buttonText: 'grid month',
+           eventTimeFormat: { hour: 'numeric', minute: '2-digit', meridiem: false },
+           displayEventTime: true,
+           displayEventEnd: true,
+        },
+        dayGridWeek: { 
+           buttonText: 'grid week',
+           eventTimeFormat: { hour: 'numeric', minute: '2-digit', meridiem: false },
+           displayEventTime: true,
+           displayEventEnd: true,
+        },
+        dayGridDay: {
+           buttonText: 'grid day',
+           eventTimeFormat: { hour: 'numeric', minute: '2-digit', meridiem: false },
+           displayEventTime: true,
+           displayEventEnd: true,
+        },
+        timeGridWeek: { buttonText: 'time week' },
+        timeGridDay: { buttonText: 'time day' },
+        listDay: { buttonText: 'list day' },
+        listWeek: { buttonText: 'list week' },
+        listMonth: { buttonText: 'list month' },
+        listYear: { buttonText: 'list year' }
+      },
+      
+      //callback function of button to add new event
+      customButtons: {
+     	addEventButton: {
+    			text: 'some button',
+    			click: function() {
+    			    alert("TODO");
+    			}
+    		},
+	 },
+	 
+      select: function(arg) {
+        console.log("on add event");
+        var title = prompt('Event Title:');
+        if (title) {
+          calendar.addEvent({
+            title: title,
+            start: arg.start,
+            end: arg.end,
+            allDay: arg.allDay
+          });
+      	
+      	//LayoutUIEditorWidgetResource call add event resource
+        }
+        calendar.unselect();
+      },
+      eventClick: function(arg) {
+        console.log("on click event:"+arg.event.groupId+":"+arg.event.title);
+        
+        if (confirm('Are you sure you want to delete this event?')) {
+          arg.event.remove();
+        }
+      	
+      	//LayoutUIEditorWidgetResource call open popup for event
+      },
+      eventResize: function(arg) {
+      	console.log("on resize event:"+arg.event.groupId+":"+arg.event.title);
+      	
+      	//LayoutUIEditorWidgetResource call update event resource
+      },
+      eventDrop: function(arg) {
+      	console.log("on move event:"+arg.event.groupId+":"+arg.event.title);
+      	
+      	//LayoutUIEditorWidgetResource call update event resource
+      },
+      eventDidMount: function(arg) { //on add event
+      	console.log("on add event:"+arg.event.groupId+":"+arg.event.title);
+      },
+      eventWillUnmount: function(arg) { //on delete event
+      	console.log("on delete event:"+arg.event.groupId+":"+arg.event.title);
+      	
+      	//LayoutUIEditorWidgetResource call remove event resource
+      },
+      eventMouseEnter: function(arg) {
+      	console.log("on mouse hover event:"+arg.event.groupId+":"+arg.event.title);
+      },
+      eventMouseLeave: function(arg) {
+      	console.log("on mouse out event:"+arg.event.groupId+":"+arg.event.title);
+      },
+     
+      loading: function(bool) {
+    	 	console.log("on loading:"+bool);
+      },
+     
+      windowResize: function(view) {
+     	console.log("on window resize:"+view);
+      },
+      
+      //default events to be drawn in the calendar
+      eventSources: [
+       // appointments events source
+       {
+           //Note: Do not add the has_employees_schedule_theme to this function bc it won't work, bc the events are only loaded with there not in cache anymore. Which means that if we click in the resourceTimeGridDay and then the dayGridMonth and then resourceTimeGridDay again. All the events for the current month will not be loaded anymore, bc the dayGridMonth already loaded them. This means that the events must be requested always with the emplyees schedules, and then the system should only show them if the view is resourceTimeGridDay. This is done through the eventsRender handler.
+           events: function(info, successCallback, failureCallback) {
+               var start = info.startStr;
+               var end = info.endStr;
+    	 		console.log("eventSources:"+start +" => "+end);
+               
+               //LayoutUIEditorWidgetResource call load event resources
+               
+               //var url = get_events_url;
+               //url = url.replace(/(start|end)=[^&]*/gi, "");
+               /*url += (url.indexOf("?") != -1 ? "&" : "?") + 'start=' + start + '&end=' + end;
+               url += "&time=" + (new Date()).getTime(); //bc of browser cache
+               url = url.replace(/[&]+/g, "&");
+               
+               $.ajax({
+                   type: "GET",
+                   url: url,
+                   dataType: "json",
+                   success: function(data, textStatus, jqXHR ) {
+                       successCallback(data);
+                   },
+                   error: function(jqXHR, textStatus, errorThrown) {
+                       failureCallback(errorThrown);
+                       
+                       var msg = jqXHR.responseText ? "<br/>" + jqXHR.responseText : "";
+                       showCalendarErrorMessage("<ptl:echo translateProjectText(\$EVC, 'Error trying to load appointments...')/>" + msg);
+                   }
+               });*/
+               
+               var data = [
+			   {
+				title: 'All Day Event 2',
+				start: '2023-01-01'
+			   },
+			   {
+				title: 'Long Event 2',
+				start: '2023-01-07',
+				end: '2023-01-10'
+			   },
+			   {
+				groupId: 999,
+				title: 'Repeating Event 2',
+				start: '2023-01-09T16:00:00'
+			   },
+			];
+               successCallback(data);
+           },
+           //color: '#20a8d8',
+           //textColor: 'black'
+       },
+     ],
+      
+      events: [
+        {
+		 groupId: 'testGroupId',
+           title: 'Not Available Schedule',
+		 start: '2023-01-10T10:00:00',
+		 end: '2023-01-10T16:00:00',
+		 display: 'background',
+		 color:"#ff0000"
+	    },
+        /*{
+		 groupId: 'testGroupId',
+		 start: '2023-01-12T10:00:00',
+		 end: '2023-01-12T16:00:00',
+		 display: 'inverse-background',
+		 color:"#ff0000"
+	    },*/
+        {
+          title: 'All Day Event',
+          start: '2023-01-01'
+        },
+        {
+          title: 'Long Event',
+          start: '2023-01-07',
+          end: '2023-01-10'
+        },
+        {
+          groupId: 999,
+          title: 'Repeating Event',
+          start: '2023-01-09T16:00:00'
+        },
+        {
+          groupId: 999,
+          title: 'Repeating Event',
+          start: '2023-01-16T16:00:00'
+        },
+        {
+          title: 'Conference',
+          start: '2023-01-11',
+          end: '2023-01-13'
+        },
+        {
+          title: 'Meeting',
+          start: '2023-01-12T10:30:00',
+          end: '2023-01-12T12:30:00'
+        },
+        {
+          title: 'Lunch',
+          start: '2023-01-12T12:00:00'
+        },
+        {
+          title: 'Meeting',
+          start: '2023-01-12T14:30:00'
+        },
+        {
+          title: 'Happy Hour',
+          start: '2023-01-12T17:30:00'
+        },
+        {
+          title: 'Dinner',
+          start: '2023-01-12T20:00:00'
+        },
+        {
+          title: 'Birthday Party',
+          start: '2023-01-13T07:00:00'
+        },
+        {
+          title: 'Click for Google',
+          url: 'http://google.com/',
+          start: '2023-01-28'
+        }
+      ]
+    });
+
+    calendar.render();
+  });
+
+</script>
+<style>
+
+  body {
+    /*margin: 40px 10px;*/
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+</style>
+</head>
+<body>
+
+  <div id='calendar'></div>
+
+</body>
+</html>

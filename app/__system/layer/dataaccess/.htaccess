@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+   
+   RewriteRule ^$ ibatis/ [L,NC]
+   
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteRule (.*) ibatis/$1 [L,NC]
+</IfModule>

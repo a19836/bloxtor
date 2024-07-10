@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Table Row</label>
+	<tag>table-row</tag>
+	<settings>
+		<template_class>droppable</template_class>
+		<create_widget_class>TableRowWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-table-row:before,
+		  body > .menu-widget.menu-widget-table-row.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function TableRowWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-row'].parseHtml",
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-row'].onCloneMenuWidget",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-row'].onCreateTemplateWidget",
+					"data-on-open-widget-header-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-row'].onOpenWidgetHeader",
+					"data-on-close-widget-header-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-row'].onCloseWidgetHeader",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-row'].onOpenWidgetSettings",
+					"data-on-close-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs['table-row'].onCloseWidgetSettings",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeName.toLowerCase() == "tr") {
+					html_element = $(html_element);
+					
+					return {
+						droppable: html_element,
+					};
+				}
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) {
+					var elm = document.createElement('tr');
+					return ui_creator.getNewTemplateWidgetBasedInHtmlElement(widget, elm, null);
+				}
+				
+				return ui_creator.onCloneMenuWidget(widget, html_element);
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element) {
+					var p = widget.parent();
+					var pnn = p[0].nodeName.toLowerCase();
+					
+					if (pnn != "table" && pnn != "thead" && pnn != "tbody" && pnn != "tfoot") {
+						var parent = p.closest('tbody, thead, tfoot');
+						
+						if (parent[0]) {
+							var tr = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-row", parent, null);
+							tr.append(widget);
+							return;
+						}
+						
+						var parent = p.closest('table');
+						
+						if (parent[0]) {
+							var tbody = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-body", parent, null);
+							var tr = ui_creator.createTemplateWidgetFromMenuWidgetTag("table-row", tbody, null);
+							tr.append(widget);
+							return;
+						}
+						
+						widget.remove();
+						ui_creator.showError("This item can only be dropped into Table elements!");
+					}
+				}
+			};
+			
+			me.onOpenWidgetHeader = function(widget, widget_header) {
+				widget_header.find(" > .options > .add-tr-child").remove();
+				var add = $('<i class="zmdi zmdi-plus-circle option add-tr-child" title="Add Th/Td"></i>');
+				
+				add.click(function(event) {
+					addChild(widget);
+				});
+				
+				add.insertBefore( widget_header.find(" > .options > .close") );
+			};
+			
+			me.onCloseWidgetHeader = function(widget, widget_header) {
+				widget_header.find(" > .options > .add-tr-child").remove();
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				menu_settings.find(".settings-actions  > ul > li > button.add-tr-child").remove();
+				
+				var add = $('<button class="btn add-tr-child">Add Th/Td <i class="zmdi zmdi-plus-circle"></i></button>');
+				
+				add.click(function(event) {
+					addChild(widget);
+				});
+				
+				menu_settings.find(".settings-actions > ul > li").append(add);
+			};
+			
+			me.onCloseWidgetSettings = function(widget, menu_settings) {
+				menu_settings.find(".settings-actions  > ul > li > button.add-tr-child").remove();
+			};
+			
+			function addChild(widget) {
+				var type = prompt("Please write the type of child that you wish to add? (available options: th/td)", "td");
+				var available_options = ["th", "td"];
+				
+				if (!type || type == "" || available_options.indexOf(type.toLowerCase()) == -1)
+					ui_creator.showError("You must enter 1 of the following options: th/td");
+				else {
+					type = type.toLowerCase();
+					
+					ui_creator.createTemplateWidgetFromMenuWidgetTag("table-column" + (type == "th" ? "-head" : ""), widget, null);
+				}
+			}
+		}
+	]]></menu_js>
+</widget>

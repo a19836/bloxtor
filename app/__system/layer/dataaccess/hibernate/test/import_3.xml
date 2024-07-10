@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<import>
+	<result_map id="SubItemsResultMap2">
+		<result output_name="Id" input_name="id" output_type="org.phpframework.object.php.Primitive(int)" input_type="org.phpframework.object.db.DBPrimitive(int)" />
+		<result output_name="itemId" input_name="item_id" output_type="org.phpframework.object.php.Primitive(int)" input_type="org.phpframework.object.db.DBPrimitive(int)" />
+		<result output_name="title" input_name="title" output_type="org.phpframework.object.php.MyString" input_type="org.phpframework.object.db.DBPrimitive(varchar)" />
+	</result_map>
+</import>

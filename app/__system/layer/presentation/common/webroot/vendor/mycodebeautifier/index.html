@@ -1,0 +1,141 @@
+<html>
+<head>
+	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+	<script src="js/MyCodeBeautifier.js"></script>
+</head>
+<body>
+	<textarea class="textarea1" rows=20 cols=150>
+<?php
+foo();
+$obj->bar();
+$obj = $this->getBusinessLogicLayer()->getBroker("iorm")->getData("select * from items", array("NO_CACHE" => true, "DB_DRIVER" => "MYSQL"));
+$obj = $this->getBusinessLogicLayer()->getBroker("horm")->setData($sql);
+$obj = $this->getBusinessLogicLayer()->getBroker(2)->callObject($module, $service, $options);
+
+$result=$this->getBroker($options)->callQuery($module,$type,$service,$parameters, $options);$this->getBroker()->callBusinessLogic("test.foo.bar", "ServiceObj.serviceMethod", array("name"=>"joao", "age" => 33), array("NO_CACHE" => true, "DB_DRIVER" => "MYSQL"));
+//START: task[setarray][Set Array]
+$arr = array(
+2=>1,
+$x,
+foo(),
+"s" => array(
+1,
+2 => 3,
+"a"
+)
+);
+
+//START: task[trycatchexception][Try Catch Exception]
+try {
+//START: task[createclassobject][Create Exception obj]
+$e = new Exception("Exception message");
+}
+catch (Exception $e) {
+//START: task[throwexception][Throw Exception]
+throw $e;
+}
+
+//START: task[setvar][Set Var]
+$x = 0;
+
+//START: task[includefile][Include File]
+
+//START: task[setvar][Set Var]
+$x = "as";
+
+//START: task[loop][Loop]
+for ($i = 0; $i < count($arr); $i++) {
+//START: task[switch][Switch]
+switch($x) {
+case "as": 
+//START: task[createclassobject][Create Bar obj]
+$this->x = new Bar("kj", $x, 123);
+
+//START: task[switch][Switch]
+switch(!$y) {
+case 1: 
+case 2: 
+//START: task[setvar][Set Var]
+$y = 2;
+break;
+case 3:
+}
+break;
+case "null": 
+return ;
+default: 
+//START: task[definevar][Define Var]
+define("as", $x);
+    }
+
+//START: task[loop][Loop]
+while (true) {
+//START: task[if][If]
+if ($i > 10) {
+//START: task[break][Break]
+break;
+}
+else {
+
+}
+
+//START: task[code][Code: $i++;...]
+$i++;
+}
+}
+
+//START: task[if][If]
+if (($x>"1"&&$x !==$t)&&(("a">= "a"||"1"<="1") || ("b"==="b"&&$x!="2"))) {
+//START: task[setdate][Set Date]
+self::$t = date("Y-d-m");
+
+//START: task[setobjectproperty][Set Object Property]
+$this->y = 1;
+
+//START: task[callobjectmethod][Call self::prepareSearch()]
+$this->x = self::prepareSearch($data);
+}
+elseif ($x == null) {
+//START: task[return][Return]
+return ;
+}
+else {
+//START: task[callfunction][Call foo()]
+$t = foo("hello", 1, true);
+
+//START: task[callobjectmethod][Call self::prepareSorting()]
+self::prepareSorting($data);
+}
+
+//START: task[callobjectmethod][Call self::preparePaging()]
+self::preparePaging($data);
+
+/*
+	elseif ($x == null) {
+	//START: task[return][Return]
+	return ;
+	}
+	else {
+	//START: task[callfunction][Call foo()]
+	$t = foo("hello", 1, true);
+
+	//START: task[callobjectmethod][Call self::prepareSorting()]
+	self::prepareSorting($data);
+	}
+
+	//START: task[callobjectmethod][Call self::preparePaging()]
+	self::preparePaging($data);
+*/
+
+//START: task[return][Return]
+return $this->getBroker()->callSelect('test.service', 'get_price_types', $data);
+?>
+	</textarea>
+	<textarea class="textarea2" rows=20 cols=150></textarea>
+<script>
+var code = $(".textarea1").val();
+var new_code = CodeBeautifier.prettyPrint(code);
+$(".textarea2").val(new_code);
+</script>
+</body>
+</html>

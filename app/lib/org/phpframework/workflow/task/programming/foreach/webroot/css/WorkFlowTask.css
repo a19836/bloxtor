@@ -1,0 +1,107 @@
+.taskflowchartmenu .task.task_foreach {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_foreach .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_foreach .eps:hover:after {
+	content:"Drag the small circles to link to another box";
+}
+.taskflowchartdiagram .task.task_foreach .ep {
+	width:30px;
+	height:auto;
+	position:absolute;
+	top:0;
+	bottom:0;
+	display:inline-block;
+	border:0;
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+.taskflowchartdiagram .task.task_foreach .ep[connection_exit_id=start_exit] {
+	left:-28px;
+	right:auto;
+	text-align:left;
+}
+.taskflowchartdiagram .task.task_foreach .ep[connection_exit_id=default_exit] {
+	left:auto;
+	right:-28px;
+	text-align:right;
+}
+.taskflowchartdiagram .task.task_foreach .ep span {
+	width:30px;
+	min-width:auto;
+	max-width:none;
+	height:30px;
+	line-height:30px;
+	margin:2px 0 0;
+	padding:0;
+	display:inline-block !important;
+	position:relative;
+	top:0;
+	left:0;
+	border:0;
+	border-radius:100%;
+	font-weight:bold;
+	font-size:90%;
+	white-space:nowrap;
+	overflow:hidden;
+	box-sizing:border-box;
+	text-align:center;
+}
+.taskflowchartdiagram .task.task_foreach .ep[connection_exit_id=start_exit] span {
+	background:#31498f;
+}
+.taskflowchartdiagram .task.task_foreach .ep[connection_exit_id=default_exit] span {
+	background:#2C2D34;
+}
+.taskflowchartdiagram .task.task_foreach .ep span:before {
+	display:block;
+	color:#fff;
+}
+.taskflowchartdiagram .task.task_foreach .ep[connection_exit_id=start_exit] span:before {
+	content:"Start";
+}
+.taskflowchartdiagram .task.task_foreach .ep[connection_exit_id=default_exit] span:before {
+	content:"End";
+}
+
+.foreach_task_html {
+	width:360px;
+	min-width:350px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .foreach_task_html {
+	width:100%;
+	min-width:auto;
+}
+
+.foreach_task_html .obj {
+	/*margin-top:15px;*/
+}
+.foreach_task_html .obj,
+   .foreach_task_html .key,
+   .foreach_task_html .value {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.foreach_task_html .obj label,
+   .foreach_task_html .key label,
+   .foreach_task_html .value label {
+	width:140px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .foreach_task_html .obj label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .foreach_task_html .key label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .foreach_task_html .value label {
+	width:90px;
+}
+.foreach_task_html .obj input,
+   .foreach_task_html .key input,
+   .foreach_task_html .value input {
+	width:200px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .foreach_task_html .obj input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .foreach_task_html .key input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .foreach_task_html .value input {
+	width:calc(100% - 110px);
+}

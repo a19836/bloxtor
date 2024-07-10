@@ -1,0 +1,434 @@
+.mycontextmenu {
+	max-height:100vh;
+	max-height:calc(100vh - 50px);
+	padding:10px 0;
+	background-color:var(--main-context-menu-bg, #f7f7f7); 
+	color:var(--main-context-menu-color, #999); 
+	border:1px solid var(--main-context-menu-border, #ccc);
+	border-radius:3px;
+	box-shadow:none;
+	font-family:inherit;
+	overflow:auto;
+}
+
+/* triangle */
+.mycontextmenu.with_top_left_triangle:before,
+  .mycontextmenu.with_top_center_triangle:before,
+  .mycontextmenu.with_top_right_triangle:before,
+  .mycontextmenu.with_left_top_triangle:before,
+  .mycontextmenu.with_left_center_triangle:before,
+  .mycontextmenu.with_left_middle_triangle:before,
+  .mycontextmenu.with_left_bottom_triangle:before,
+  .mycontextmenu.with_right_top_triangle:before,
+  .mycontextmenu.with_right_center_triangle:before,
+  .mycontextmenu.with_right_middle_triangle:before,
+  .mycontextmenu.with_right_bottom_triangle:before,
+  .mycontextmenu.with_bottom_left_triangle:before,
+  .mycontextmenu.with_bottom_center_triangle:before,
+  .mycontextmenu.with_bottom_right_triangle:before {
+	content:" ";
+	width:0;
+	height:0;
+	position:absolute;
+	border-top:8px solid transparent;
+	border-right:8px solid transparent;
+	border-bottom:8px solid transparent;
+	border-left:8px solid transparent;
+	display:none;
+}
+.mycontextmenu.with_top_left_triangle:before,
+  .mycontextmenu.with_top_center_triangle:before,
+  .mycontextmenu.with_top_right_triangle:before {
+	border-bottom-color:var(--main-context-menu-triangle-border);
+}
+.mycontextmenu.with_left_top_triangle:before,
+  .mycontextmenu.with_left_center_triangle:before,
+  .mycontextmenu.with_left_middle_triangle:before,
+  .mycontextmenu.with_left_bottom_triangle:before {
+	border-right-color:var(--main-context-menu-triangle-border);
+}
+.mycontextmenu.with_right_top_triangle:before,
+  .mycontextmenu.with_right_center_triangle:before,
+  .mycontextmenu.with_right_middle_triangle:before,
+  .mycontextmenu.with_right_bottom_triangle:before {
+	border-left-color:var(--main-context-menu-triangle-border);
+}
+.mycontextmenu.with_bottom_left_triangle:before,
+  .mycontextmenu.with_bottom_center_triangle:before,
+  .mycontextmenu.with_bottom_right_triangle:before {
+	border-top-color:var(--main-context-menu-triangle-border);
+}
+.mycontextmenu.with_top_left_triangle:after,
+  .mycontextmenu.with_top_center_triangle:after,
+  .mycontextmenu.with_top_right_triangle:after,
+  .mycontextmenu.with_left_top_triangle:after,
+  .mycontextmenu.with_left_center_triangle:after,
+  .mycontextmenu.with_left_middle_triangle:after,
+  .mycontextmenu.with_left_bottom_triangle:after,
+  .mycontextmenu.with_right_top_triangle:after,
+  .mycontextmenu.with_right_center_triangle:after,
+  .mycontextmenu.with_right_middle_triangle:after,
+  .mycontextmenu.with_right_bottom_triangle:after,
+  .mycontextmenu.with_bottom_left_triangle:after,
+  .mycontextmenu.with_bottom_center_triangle:after,
+  .mycontextmenu.with_bottom_right_triangle:after {
+	content:" ";
+	height:0;
+	width:0;
+	position:absolute;
+	border-top:7px solid transparent;
+	border-right:7px solid transparent;
+	border-bottom:7px solid transparent;
+	border-left:7px solid transparent;
+	display:none;
+}
+.mycontextmenu.with_top_left_triangle:after,
+  .mycontextmenu.with_top_center_triangle:after,
+  .mycontextmenu.with_top_right_triangle:after {
+	border-bottom-color:var(--main-context-menu-bg);
+}
+.mycontextmenu.with_left_top_triangle:after,
+  .mycontextmenu.with_left_center_triangle:after,
+  .mycontextmenu.with_left_middle_triangle:after,
+  .mycontextmenu.with_left_bottom_triangle:after {
+	border-right-color:var(--main-context-menu-bg);
+}
+.mycontextmenu.with_right_top_triangle:after,
+  .mycontextmenu.with_right_center_triangle:after,
+  .mycontextmenu.with_right_middle_triangle:after,
+  .mycontextmenu.with_right_bottom_triangle:after {
+	border-left-color:var(--main-context-menu-bg);
+}
+.mycontextmenu.with_bottom_left_triangle:after,
+  .mycontextmenu.with_bottom_center_triangle:after,
+  .mycontextmenu.with_bottom_right_triangle:after {
+	border-top-color:var(--main-context-menu-bg);
+}
+
+/* triangle - top */
+.mycontextmenu.with_top_left_triangle:before {
+	top:-15px;
+	left:15px;
+}
+.mycontextmenu.with_top_left_triangle:after {
+	top:-13px;
+	left:16px;
+}
+.mycontextmenu.with_top_center_triangle:before {
+	top:-15px;
+	right:calc(50% - 7px);
+}
+.mycontextmenu.with_top_center_triangle:after {
+	top:-13px;
+	right:calc(50% - 6px);
+}
+.mycontextmenu.with_top_right_triangle:before {
+	top:-15px;
+	right:15px;
+}
+.mycontextmenu.with_top_right_triangle:after {
+	top:-13px;
+	right:16px;
+}
+
+/* triangle - left */
+.mycontextmenu.with_left_top_triangle:before {
+	top:13px;
+	left:-16px;
+}
+.mycontextmenu.with_left_top_triangle:after {
+	top:14px;
+	left:-14px;
+}
+.mycontextmenu.with_left_center_triangle:before,
+  .mycontextmenu.with_left_middle_triangle:before {
+	top:calc(50% - 8px);
+	left:-16px;
+}
+.mycontextmenu.with_left_center_triangle:after,
+  .mycontextmenu.with_left_middle_triangle:after {
+	top:calc(50% - 7px);
+	left:-14px;
+}
+.mycontextmenu.with_left_bottom_triangle:before {
+	bottom:13px;
+	left:-16px;
+}
+.mycontextmenu.with_left_bottom_triangle:after {
+	bottom:14px;
+	left:-14px;
+}
+
+/* triangle - right */
+.mycontextmenu.with_right_top_triangle:before {
+	top:13px;
+	right:-16px;
+}
+.mycontextmenu.with_right_top_triangle:after {
+	top:14px;
+	right:-14px;
+}
+.mycontextmenu.with_right_center_triangle:before,
+  .mycontextmenu.with_right_middle_triangle:before {
+	top:calc(50% - 8px);
+	right:-16px;
+}
+.mycontextmenu.with_right_center_triangle:after,
+  .mycontextmenu.with_right_middle_triangle:after {
+	top:calc(50% - 7px);
+	right:-14px;
+}
+.mycontextmenu.with_right_bottom_triangle:before {
+	bottom:13px;
+	right:-16px;
+}
+.mycontextmenu.with_right_bottom_triangle:after {
+	bottom:14px;
+	right:-14px;
+}
+
+/* triangle - bottom */
+.mycontextmenu.with_bottom_left_triangle:before {
+	bottom:-15px;
+	left:15px;
+}
+.mycontextmenu.with_bottom_left_triangle:after {
+	bottom:-13px;
+	left:16px;
+}
+.mycontextmenu.with_bottom_center_triangle:before {
+	bottom:-15px;
+	right:calc(50% - 7px);
+}
+.mycontextmenu.with_bottom_center_triangle:after {
+	bottom:-13px;
+	right:calc(50% - 6px);
+}
+.mycontextmenu.with_bottom_right_triangle:before {
+	bottom:-15px;
+	right:15px;
+}
+.mycontextmenu.with_bottom_right_triangle:after {
+	bottom:-13px;
+	right:16px;
+}
+
+/* lis */
+.mycontextmenu li {background-color:var(--main-context-menu-bg, #f7f7f7); font-size:0;} /* font-size:0: must set the font-size to 0, bc the child "a" is a display inline-block which means that all spaces between the html tags (inside of the LI), will be seen in the browser and show a weird spacing. So we need to set this spaces to 0 and set back the font-size in the child "a" and "::before" */
+.mycontextmenu li:not(.line_break):hover {background-color:var(--main-context-menu-hover-bg, #f7f7f7); color:var(--main-context-menu-hover-color);}
+.mycontextmenu li a {min-width:auto; margin-left:0; padding:4px 15px 4px 40px; cursor:pointer; background-color:var(--main-context-menu-bg, #f7f7f7); color:var(--main-context-menu-color, #999); display:block; font-size:10pt;}
+.mycontextmenu li:not(.line_break):hover a, .mycontextmenu li:not(.line_break) a:hover {text-decoration:none; background-color:var(--main-context-menu-hover-bg, #f7f7f7); color:var(--main-context-menu-hover-color);}
+.mycontextmenu .line_break {margin:0; padding:10px 0;}
+.mycontextmenu .line_break::before {content:""; width:100%; height:0; margin:0; padding:0; border-top:1px solid var(--main-context-menu-border, #ccc); display:block;}
+
+.mycontextmenu li:not(.line_break)::before {
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	font-size:14px;
+	
+	width:15px;
+	margin-top:8px;
+	margin-left:15px;
+	display:inline-block;
+	color:inherit;
+	position:absolute;
+}
+.mycontextmenu li:not(.line_break)::after {
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	font-size:6pt;
+	
+	display:inline-block;
+	color:var(--icon-hover-color);
+	position:absolute;
+	left:17px;
+	top:10px;
+}
+
+/* lis - icons */
+.mycontextmenu .edit::before {content:"\f303";}
+.mycontextmenu .edit_new::before {content:"\f303";}
+.mycontextmenu .edit_new::after {content:"\2b";}
+.mycontextmenu .properties::before {content:"\f022";}
+.mycontextmenu .create_folder::before {content:"\f65e";}
+.mycontextmenu .create_file::before {content:"\f477";}
+.mycontextmenu .upload::before {content:"\f093";}
+.mycontextmenu .download::before {content:"\f019";}
+.mycontextmenu .remove::before {content:"\f1f8";}
+.mycontextmenu .rename::before {content:"\f5b7";}
+.mycontextmenu .refresh::before {content:"\f2f1";}
+.mycontextmenu .toggle_all_children::before {content:"\f06e";}
+.mycontextmenu .copy::before {content:"\f0c5";}
+.mycontextmenu .cut::before {content:"\f0c4";}
+.mycontextmenu .paste::before {content:"\f0ea";}
+.mycontextmenu .zip::before {content:"\f1c6";}
+.mycontextmenu .unzip::before {content:"\f1c6"; font:var(--fa-font-regular) !important; font-size:9pt !important;}
+.mycontextmenu .diff_file::before {content:"\f53e";}
+.mycontextmenu .add_auto_table::before {content:"\f0db";}
+.mycontextmenu .add_manual_table::before {content:"\f0db";}
+.mycontextmenu .add_attribute::before {content:"\f00b";}
+.mycontextmenu .db_dump::before {content:"\f093";}
+.mycontextmenu .import_data::before {content:"\f56f";}
+.mycontextmenu .export_data::before {content:"\f56e";}
+.mycontextmenu .execute_sql::before {content:"\f04b";}
+.mycontextmenu .manage_records::before {content:"\f00b"; color:#999;}
+.mycontextmenu .manage_records::after {content:"\f303";}
+.mycontextmenu .edit_diagram::before {content:"\f0e8";}
+.mycontextmenu .create_diagram_sql::before {content:"\f121"; color:#999;}
+.mycontextmenu .create_diagram_sql::after {content:"\f0e8";}
+.mycontextmenu .create_sql::before {content:"\f121"; color:#999;}
+.mycontextmenu .create_sql::after {content:"\f0e8";}
+.mycontextmenu .obj::before {content:"\f1c0"; color:#999;}
+.mycontextmenu .obj::after {content:"\f1b2"; color:#555;}
+.mycontextmenu .create_automatically::before {content:"\f079";}
+.mycontextmenu .create_uis_diagram::before {content:"\f079";}
+.mycontextmenu .manage_includes::before {content:"\f5ee";}
+.mycontextmenu .edit_raw_file::before {content:"\f121"; color:#999;}
+.mycontextmenu .edit_raw_file::after {content:"\f303";}
+.mycontextmenu .edit_raw_file_new::before {content:"\f121"; color:#999;}
+.mycontextmenu .edit_raw_file_new::after {content:"\f303";}
+.mycontextmenu .query::before {content:"\f1c0"; color:#999;}
+.mycontextmenu .query::after {content:"\f121"; color:#333;}
+.mycontextmenu .relationship::before {content:"\f1c0"; color:#999;}
+.mycontextmenu .relationship::after {content:"\f1e0"; color:#333;}
+.mycontextmenu .result_map::before {content:"\f1c0"; color:#999;}
+.mycontextmenu .result_map::after {content:"\f279";}
+.mycontextmenu .parameter_map::before {content:"\f1c0"; color:#999;}
+.mycontextmenu .parameter_map::after {content:"\f279";}
+.mycontextmenu .service_obj::before {content:"\f468";}
+.mycontextmenu .service_method::before {content:"\e13b"; -webkit-transform:scaleY(-1); transform:scaleY(-1);}
+.mycontextmenu .service_function::before {content:"\e13b"; -webkit-transform:scaleY(-1); transform:scaleY(-1);}
+.mycontextmenu .hbnt_obj::before {content:"\f0fd"; color:#999;}
+.mycontextmenu .hbnt_obj::after {content:"\f304";}
+.mycontextmenu .objt_obj::before {content:"\f174"; color:#999; font:var(--fa-font-brands) !important; font-size:10pt !important;}
+.mycontextmenu .objt_obj::after {content:"\f304";}
+.mycontextmenu .edit_project_global_variables::before {content:"\f0ac"; color:#999;}
+.mycontextmenu .edit_project_global_variables::after {content:"\f304";}
+.mycontextmenu .edit_config::before {content:"\f013"; color:#999;}
+.mycontextmenu .edit_config::after {content:"\f304";}
+.mycontextmenu .edit_init::before {content:"\f573";}
+.mycontextmenu .manage_users::before {content:"\f0c0";}
+.mycontextmenu .manage_references::before {content:"\f572";}
+.mycontextmenu .show_project_details::before {content:"\f06e";}
+.mycontextmenu .open_file::before {content:"\f06e";}
+.mycontextmenu .view_project::before {content:"\f06e";}
+.mycontextmenu .test_project::before {content:"\f06e";}
+.mycontextmenu .add_project::before {content:"\f65e";}
+.mycontextmenu .manage_modules::before {content:"\f61f";}
+.mycontextmenu .manage_wordpress::before {content:"\f19a"; font:var(--fa-font-brands) !important; font-size:10pt !important;}
+.mycontextmenu .install_program::before {content:"\f51f";}
+.mycontextmenu .install_template::before {content:"\f13b"; font:var(--fa-font-brands) !important; font-size:10pt !important;}
+.mycontextmenu .convert_template::before {content:"\f13b"; font:var(--fa-font-brands) !important; font-size:10pt !important;}
+.mycontextmenu .test_unit_obj::before {content:"\f0ae"; color:#aaa;}
+.mycontextmenu .test_unit_obj::after {content:"\2b"; margin-left:7px;}
+.mycontextmenu .manage_test_units::before {content:"\f0ae";}
+.mycontextmenu .class_obj::before {content:"\f1c9";}
+.mycontextmenu .class_method::before {content:"\e13b"; -webkit-transform:scaleY(-1); transform:scaleY(-1);}
+.mycontextmenu .class_function::before {content:"\e13b"; -webkit-transform:scaleY(-1); transform:scaleY(-1);}
+.mycontextmenu .manage_docbook::before {content:"\f02d"; text-indent: 2px;}
+.mycontextmenu .view_docbook::before {content:"\f02d"; text-indent: 2px;}
+.mycontextmenu .view_code::before {content:"\f121";}
+.mycontextmenu .primary_key.checked::before {content:"\f00c";}
+.mycontextmenu .null.checked::before {content:"\f00c";}
+
+.mycontextmenu .type a {cursor:default;}
+.mycontextmenu .type a select {cursor:pointer; font:inherit; color:inherit; background:inherit; margin-left:-5px;} /* in case of db table attributes select available_types */
+.mycontextmenu .type a select:focus { background-color:white; color:black; }
+.mycontextmenu .type a input { width:35px; font:inherit; color:inherit; background:inherit; text-align:center; }
+.mycontextmenu .type a input::placeholder { color:inherit; }
+.mycontextmenu .type a input[disabled] { opacity:.3; cursor:not-allowed; }
+
+/* Popups */
+.choose_available_tool_popup,
+  .choose_available_project_popup,
+  .choose_available_tutorial_popup,
+  .go_to_popup,
+  .log_console_popup,
+  .choose_online_tutorials_popup {
+	top:10px;
+	left:10px;
+	right:10px;
+	bottom:10px;
+}
+.choose_available_tutorial_popup {
+	max-width:650px;
+}
+.edit_project_details_popup,
+  .add_entity_popup {
+	top:auto;
+	left:auto;
+	right:auto;
+	bottom:auto;
+	width:535px;
+	height:375px;
+}
+.edit_project_details_popup.big,
+  .add_entity_popup.big {
+	position:fixed;
+	top:10px !important;
+	left:10px !important;
+	right:10px !important;
+	bottom:10px !important;
+	width:auto;
+	height:auto;
+}
+.execute_sql_popup {
+	top:auto;
+	left:auto;
+	right:auto;
+	bottom:auto;
+	width:535px;
+	width:calc(100vw - 40px);
+	height:250px;
+	z-index:99998 !important;
+}
+.popup_overlay.execute_sql {
+	z-index:99997 !important;
+}
+.choose_available_tool_popup iframe,
+  .choose_available_project_popup iframe,
+  .choose_available_tutorial_popup iframe,
+  .edit_project_details_popup iframe,
+  .add_entity_popup iframe,
+  .execute_sql_popup iframe,
+  .go_to_popup iframe,
+  .log_console_popup iframe {
+	width:100%;
+	height:100%;
+}
+.choose_online_tutorials_popup iframe {
+	width:100%;
+	height:calc(100% - 50px);
+}
+
+.choose_db_table_task_options_popup {
+	top:auto;
+	left:auto;
+	right:auto;
+	bottom:auto;
+	width:230px;
+}
+.choose_db_table_task_options_popup .method_name {
+	padding:20px 20px 0;
+}
+.choose_db_table_task_options_popup .method_name label {
+	width:80px;
+	display:inline-block;
+}
+.choose_db_table_task_options_popup .button {
+	padding:20px;
+	text-align:center;
+}
+.choose_db_table_task_options_popup select,
+  .choose_db_table_task_options_popup input {
+	font-size:inherit;
+}
+
+
+/* selected_menu_properties */
+#selected_menu_properties > .content {
+	line-height:25px;
+	padding:15px;
+}

@@ -1,0 +1,136 @@
+/* TOP BAR */
+.edit_hbn_obj .top_bar header {
+	z-index:1501;
+}
+.top_bar header > .title {
+	max-width:calc(100% - 60px);
+}
+.edit_hbn_obj .top_bar header > .title .query_name {
+	width:125px;
+	display:inline-block;
+}
+
+/* RELATIONSHIP */
+.edit_hbn_obj .data_access_obj {
+	/*min-width:640px;*/
+	box-sizing:border-box;
+	font-size:10pt;
+	overflow:auto;
+}
+.edit_hbn_obj .data_access_obj > .name {
+	width:120px;
+	margin:0;
+	position:fixed;
+	top:14px;
+	left:165px;
+	z-index:1502;
+}
+/*.in_popup .edit_hbn_obj .data_access_obj > .name {
+	top:16px;
+	left:176px;
+}*/
+.edit_hbn_obj .data_access_obj > .name label {
+	display:none;
+}
+.edit_hbn_obj .data_access_obj > .name input {
+	width:110px;
+	border:1px solid #ccc;
+	color:var(--main-iframe-color);
+	background:transparent;
+}
+.in_popup .edit_hbn_obj .data_access_obj > .name input {
+	background:var(--main-popup-header-bg);
+	color:var(--main-popup-header-color);
+}
+.in_popup .edit_hbn_obj .data_access_obj > .name input::placeholder {
+	color:var(--main-popup-header-color);
+}
+.edit_hbn_obj .data_access_obj #tabs {
+	min-width:640px;
+	margin-top:40px;
+	border:0;
+	font-size:inherit;
+	display:none;
+}
+.edit_hbn_obj .advanced_settings, 
+  .edit_hbn_obj .simple_settings {
+	display:none;
+}
+
+/* MAIN ATTRIBUTES */
+.data_access_obj .name, .data_access_obj .table, .data_access_obj .extends {
+	width:100%;
+	margin-bottom:3px;
+	float:none;
+	clear:left;
+}
+.data_access_obj .name label, .data_access_obj .table label, .data_access_obj .extends label {
+	width:100px;
+}
+.data_access_obj .name input, .data_access_obj .table input {
+	width:155px;
+}
+.data_access_obj .extends select {
+	width:270px;
+}
+.data_access_obj .extends .search {
+	margin-top:2px;
+}
+.data_access_obj .table .searchh {
+	margin-top:2px;
+}
+
+/* IDS */
+.data_access_obj .ids {
+	margin-top:20px;
+}
+.data_access_obj .ids label {
+	margin-bottom:10px;
+}
+.data_access_obj .ids .add,
+  .data_access_obj .ids .update_automatically {
+	margin-left:5px;
+}
+.data_access_obj .id {
+	margin-top:3px;
+}
+.data_access_obj .ids .id {
+	min-width:580px;
+	margin-left:20px;
+}
+.data_access_obj .ids .id label.attr_name {
+	margin-bottom:0px;
+	width:120px;
+}
+.data_access_obj .ids .id input.attr_name {
+	width:155px;
+}
+.data_access_obj .ids .id label.generator {
+	width:120px;
+	margin:0px 0px 0px 30px;
+}
+.data_access_obj .ids .id select.generator {
+	margin:0;
+}
+.data_access_obj .ids .id .delete {
+	margin-left:5px;
+}
+
+/* RELATIONSHIPS */
+.hbn_obj_relationships .relationship .query .query_tabs {
+	display:none;
+}
+.hbn_obj_relationships .relationship .query .query_insert,
+   .hbn_obj_relationships .relationship .query .query_update,
+   .hbn_obj_relationships .relationship .query .query_delete {
+	display:none;
+}
+.hbn_obj_relationships .relationship .query .query_ui {
+	display:none;
+}
+.hbn_obj_relationships .relationship .query .query_settings,
+  .hbn_obj_queries .relationship .query .query_settings {
+	padding-top:20px;
+	border-top:1px solid #eee;
+	display:block;
+}

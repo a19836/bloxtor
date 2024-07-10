@@ -1,0 +1,73 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+/* TOP BAR */
+.top_bar {
+	margin-bottom:15px;
+}
+
+/* FEEDBACK */
+.feedback {
+	padding:0 20px 20px;
+}
+.feedback > .title {
+	margin-bottom:20px;
+	text-align:center;
+}
+.feedback > .loading {
+	height:20px;
+	position:fixed;
+	top:50%;
+	left:50%;
+	display:none;
+}
+.feedback > form {
+	max-width:400px;
+	margin:0 auto;
+}
+.feedback > form > div {
+	margin-bottom:10px;
+}
+.feedback > form label {
+	width:60px;
+	display:inline-block;
+}
+.feedback > form .message label,
+  .feedback > form .attachments label {
+	width:auto;
+	display:block;
+}
+.feedback > form input:not([type=submit]) {
+	width:calc(100% - 70px);
+	font-size:inherit;
+	box-sizing:border-box;
+}
+.feedback > form textarea {
+	width:calc(100% - 7px);
+	box-sizing:border-box;
+	font-size:inherit;
+}
+.feedback > form .mandatory {
+	color:red;
+}
+.feedback > form .attachments {
+	margin-top:20px;
+}
+.feedback > form .attachments ul li {
+	margin-top:10px;
+}
+.feedback > form .attachments ul li.empty {
+	opacity:.7;
+}
+.feedback > form .attachments ul li input {
+	width:calc(100% - 10px);
+}
+.feedback > form .buttons {
+	margin-top:20px;
+	text-align:center;
+}

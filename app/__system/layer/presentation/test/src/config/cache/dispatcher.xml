@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urls>
+	<!-- headers="Cache-Control:max-age=86400, public" => DO NOT ADD THE CACHE CONTROL HEADERS otherwise the browsers will ignore the cookies with the new language -->
+	
+	<url>foo</url>
+	<url method="post">foo</url>
+	<url method="get" ttl="3600">(.*)foo/bar(.*)</url>
+	
+	<!-- Note that the suffix_key attribute gets executed every request. If you use <? instead of &lt;, the php code will only be executed once, when this .xml file gets parsed, which may work for static or constant variables... -->
+	<!--url method="get" ttl="600" suffix_key="&lt;?= $_SERVER['HTTP_HOST'] . ($_SERVER['HTTPS'] ? '-secure' : '') . '-lang_' . ($_GET['lang'] ? $_GET['lang'] : $_COOKIE['lang']) ?>"></url-->
+	<!--url method="get" ttl="3600" suffix_key="bla_&lt;?= $_COOKIE['lang'] ?>">(.*)pages/admin/stories/display/(.*)</url-->
+	<!--url method="get" ttl="3600" suffix_key="&lt;?= $_GET['lang'] ? $_GET['lang'] : $_GET['lang2'] ?>">(|about|demo|map|our_cms|pricing)(\?.*)?</url-->
+</urls>

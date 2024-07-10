@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="sql_mapping" type="sqlMappingType" />
+	
+	<xs:complexType name="sqlMappingType">
+		<xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="class">
+				<xs:complexType>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="id">
+							<xs:complexType mixed="true">
+								<xs:choice minOccurs="0" maxOccurs="1">
+									<xs:element name="generator">
+										<xs:complexType mixed="true">
+											<xs:choice minOccurs="0" maxOccurs="1">
+												<xs:element name="type" type="valueIdGeneratorType" minOccurs="0" maxOccurs="1" />
+											</xs:choice>
+											
+											<xs:attribute name="type" type="idGeneratorType" />
+										</xs:complexType>
+									</xs:element>
+									
+									<xs:element name="column" type="valueType" minOccurs="0" maxOccurs="1" />
+								</xs:choice>
+								
+								<xs:attribute name="column" type="xs:string" />
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="parameter_class" type="valueType" minOccurs="0" maxOccurs="1" />
+						
+						<xs:element name="parameter_map" type="parameterMapType" minOccurs="0" maxOccurs="1" />
+						
+						<xs:element name="result_class" type="valueType" minOccurs="0" maxOccurs="1" />
+						
+						<xs:element name="result_map" type="resultMapType" minOccurs="0" maxOccurs="1" />
+						
+						<xs:element name="relationships" minOccurs="0" maxOccurs="1">
+							<xs:complexType>
+								<xs:choice minOccurs="0" maxOccurs="unbounded">
+									<xs:element name="result_map" type="resultMapType" />
+									<xs:element name="many_to_one" type="relationshipType" />
+									<xs:element name="many_to_many" type="relationshipType" />
+									<xs:element name="one_to_many" type="relationshipType" />
+									<xs:element name="one_to_one" type="relationshipType" />
+								</xs:choice>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="queries" type="ibatisType" minOccurs="0" maxOccurs="1" />
+						
+						<xs:element name="name" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="table" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="extends" type="valueType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+					
+					<xs:attribute name="name" type="xs:string" />
+					<xs:attribute name="table" type="xs:string" />
+					<xs:attribute name="extends" type="xs:string" />
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="ibatisType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+	  		<xs:element name="insert" type="queryType" />
+		
+	  		<xs:element name="update" type="queryType" />
+		
+	  		<xs:element name="delete" type="queryType" />
+		
+	  		<xs:element name="select" type="queryType" />
+		
+	  		<xs:element name="procedure" type="queryType" />
+		
+	  		<xs:element name="parameter_map" type="parameterMapType" />
+		
+	  		<xs:element name="result_map" type="resultMapType" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="queryType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="id" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="parameter_class" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="parameter_map" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="result_class" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="result_map" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="hard_coded_ai_pk" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="auto_add_slashes" type="valueType" minOccurs="0" maxOccurs="1" />
+		</xs:choice>
+		
+		<xs:attribute name="id" type="xs:string" />
+		<xs:attribute name="parameter_class" type="xs:string" />
+		<xs:attribute name="parameter_map" type="xs:string" />
+		<xs:attribute name="result_class" type="xs:string" />
+		<xs:attribute name="result_map" type="xs:string" />
+		<xs:attribute name="hard_coded_ai_pk" type="xs:string" />
+		<xs:attribute name="auto_add_slashes" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="parameterMapType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="parameter" minOccurs="1">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="input_name" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="input_type" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="output_name" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="output_type" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="mandatory" type="valueBooleanType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+					
+					<xs:attribute name="input_name" type="xs:string" />
+					<xs:attribute name="input_type" type="xs:string" />
+					<xs:attribute name="output_name" type="xs:string" />
+					<xs:attribute name="output_type" type="xs:string" />
+					<xs:attribute name="mandatory" type="xs:boolean" />
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="id" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="class" type="valueType" minOccurs="0" maxOccurs="1" />
+		</xs:choice>
+		
+		<xs:attribute name="id" type="xs:string" />
+		<xs:attribute name="class" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="resultMapType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="result" minOccurs="1">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="input_name" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="input_type" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="output_name" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="output_type" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="mandatory" type="valueBooleanType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+					
+					<xs:attribute name="input_name" type="xs:string" />
+					<xs:attribute name="input_type" type="xs:string" />
+					<xs:attribute name="output_name" type="xs:string" />
+					<xs:attribute name="output_type" type="xs:string" />
+					<xs:attribute name="mandatory" type="xs:boolean" />
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="id" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="class" type="valueType" minOccurs="0" maxOccurs="1" />
+		</xs:choice>
+		
+		<xs:attribute name="id" type="xs:string" />
+		<xs:attribute name="class" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="relationshipType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="attribute">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="name" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="column" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="table" type="valueType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+	  				
+	  				<xs:attribute name="name" type="xs:string" />
+	  				<xs:attribute name="column" type="xs:string" />
+	  				<xs:attribute name="table" type="xs:string" />
+	  			</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="key">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="pcolumn" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="ptable" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="fcolumn" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="ftable" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="join" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="value" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="operator" type="valueType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+	  				
+	  				<xs:attribute name="pcolumn" type="xs:string" />
+	  				<xs:attribute name="ptable" type="xs:string" />
+	  				<xs:attribute name="fcolumn" type="xs:string" />
+	  				<xs:attribute name="ftable" type="xs:string" />
+	  				<xs:attribute name="join" type="xs:string" />
+	  				<xs:attribute name="value" type="xs:string" />
+	  				<xs:attribute name="operator" type="xs:string" />
+	  			</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="condition">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="column" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="operator" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="table" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="value" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="refcolumn" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="reftable" type="valueType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+	  				
+	  				<xs:attribute name="column" type="xs:string" />
+	  				<xs:attribute name="operator" type="xs:string" />
+	  				<xs:attribute name="table" type="xs:string" />
+	  				<xs:attribute name="value" type="xs:string" />
+	  				<xs:attribute name="refcolumn" type="xs:string" />
+	  				<xs:attribute name="reftable" type="xs:string" />
+	  			</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="group_by">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="column" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="table" type="valueType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+	  				
+	  				<xs:attribute name="column" type="xs:string" />
+	  				<xs:attribute name="table" type="xs:string" />
+	  			</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="sort">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="column" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="table" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="order" type="valueType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+	  				
+	  				<xs:attribute name="column" type="xs:string" />
+	  				<xs:attribute name="table" type="xs:string" />
+	  				<xs:attribute name="order" type="xs:string" />
+	  			</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="limit">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="1">
+						<xs:element name="value" type="valueIntegerType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+	  				
+	  				<xs:attribute name="value" type="xs:integer" />
+	  			</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="start">
+				<xs:complexType mixed="true">
+					<xs:choice minOccurs="0" maxOccurs="1">
+						<xs:element name="value" type="valueIntegerType" minOccurs="0" maxOccurs="1" />
+					</xs:choice>
+	  				
+	  				<xs:attribute name="value" type="xs:integer" />
+	  			</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="name" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="result_class" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="result_map" type="valueType" minOccurs="0" maxOccurs="1" />
+		</xs:choice>
+		
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="result_class" type="xs:string" />
+		<xs:attribute name="result_map" type="xs:string" />
+	</xs:complexType>
+	
+	<xs:complexType name="valueType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="value" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="valueBooleanType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="xs:boolean">
+				<xs:attribute name="value" type="xs:boolean" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="valueIntegerType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="xs:integer">
+				<xs:attribute name="value" type="xs:integer" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="valueIdGeneratorType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="idGeneratorType">
+				<xs:attribute name="value" type="idGeneratorType" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="idGeneratorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value=""/>
+			<xs:enumeration value="hidden"/>
+			<xs:enumeration value="assign"/>
+			<xs:enumeration value="increment"/>
+			<xs:enumeration value="select"/>
+			<xs:enumeration value="procedure"/>
+			<xs:enumeration value="md5"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

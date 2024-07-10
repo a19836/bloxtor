@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<!-- This is only to show that is possible to call the DATA ACCESS LAYER from the PRESENTATION LAYER -->
+	
+	<import relative="1">ibatis_data_access_layer.xml</import>
+	
+	<function name="addBroker" reference="PresentationLayer">
+		<parameter reference="IbatisDataAccessBrokerServer" />
+		<parameter value="ibatis" />
+	</function>
+</beans>

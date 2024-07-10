@@ -1,0 +1,3 @@
+<?php
+$EVC->setTemplate("json");
+?>

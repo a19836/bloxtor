@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Style</label>
+	<tag>style</tag>
+	<settings>
+		<create_widget_class>StyleWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[
+		<pre class="style-content"></pre>
+	]]></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property content">
+			<label class="col-md-12 col-form-label">Style: <a class="pretty_print">Pretty Print Code</a></label>
+			<textarea class="col-md-12 form-control" name="content" rows="10"></textarea>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-style:before,
+		  body > .menu-widget.menu-widget-style.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-style li.group.settings-properties > ul .settings-property.content .form-control {
+			text-align:left;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-style li.group.settings-widget,
+		  .layout-ui-editor > .menu-settings.menu-settings-style li.group.settings-general,
+		  .layout-ui-editor > .menu-settings.menu-settings-style li.group.settings-dimension,
+		  .layout-ui-editor > .menu-settings.menu-settings-style li.group.settings-typography,
+		  .layout-ui-editor > .menu-settings.menu-settings-style li.group.settings-decorations,
+		  .layout-ui-editor > .menu-settings.menu-settings-style li.group.settings-events,
+		  .layout-ui-editor > .menu-settings.menu-settings-style li.group.settings-others,
+		  .layout-ui-editor > .menu-settings.menu-settings-style li.settings-tabs > ul > li.settings-tab-widget,
+		  .layout-ui-editor > .menu-settings.menu-settings-style li.settings-tabs > ul > li.settings-tab-style,
+		  .layout-ui-editor > .menu-settings.menu-settings-style li.settings-tabs > ul > li.settings-tab-events {
+			display:none;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-style > .settings-properties .content .pretty_print {
+			float:right;
+			cursor:pointer;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-style > .settings-properties .content .ace_editor {
+			width:100%;
+			height:200px;
+			border:1px solid var(--menu-settings-input-border, transparent);
+		}
+		
+		.layout-ui-editor > .menu-layers .group.group-style > ul {
+			display:none !important;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.template-widget.template-widget-style {
+			min-width:1em;
+			min-height:1em;
+			height:auto;
+			margin:5px !important; /* !important is bc of the css when .borders is active */
+			padding:5px !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			display:block;
+			background:#c0c0c0;
+			color:#666;
+			border-radius:5px;
+			border:1px outset #bbb !important; /* !important is bc of the css when .borders is active */
+			word-break:break-all;
+			text-align:left;
+		}
+		body > .droppable.borders .template-widget.template-widget-style:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+		
+		.template-widget.template-widget-style > .style-content {
+			margin:0 !important; /* !important is bc of the css when .borders is active */
+			padding:0 !important; /* !important is bc of the css when .borders is active */
+			border:0 !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			display:block;
+			color:inherit;
+			font-size:12px;
+			font-family:inherit;
+			overflow:auto;
+			word-break:break-all;
+		}
+		.template-widget.template-widget-style > .style-content::-webkit-scrollbar {
+			height:7px;
+		}
+		.template-widget.template-widget-style > .style-content:empty:before {
+			content:"some css style...";
+		}
+		body > .droppable.borders .template-widget.template-widget-style > .style-content:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function StyleWidget(ui_creator, menu_widget) {
+			var me = this;
+			var update_menu_settings_timeout_id = null;
+			
+			me.ignore_attributes = ["contenteditable"];
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.style.parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.style.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.style.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.style.onOpenWidgetSettings",
+					"data-on-close-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.style.onCloseWidgetSettings",
+					"data-on-resize-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.style.onResizeWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.style.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.style.parseSettings",
+				});
+				
+				menu_widget.removeAttr("data-on-clone-menu-widget-func");
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (!html_element)
+					return false;
+				
+				var node_name = html_element.nodeName.toLowerCase();
+				
+				//if html_element is a style node.
+				if (node_name == "style")
+					return true;
+				
+				//Otherwise if html_element was previously a template-widget-style node.
+				//Note that if we call the recreateWidgetChildren or convertHtmlElementToWidget methods for this widget.parent(), when the html_element is already a widget (created previously), we need to be prepared to parse it and re-convert this html_element (which is already a widget) into a new widget. So we need to detect this cases with the following code:
+				if (me.isRecreateWidget(html_element))
+					return true;
+				
+				return false;
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["content"] = widget.children("style").html();
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				var code = widget.children(".style-content").html();
+				
+				code = getCleanedHtmlCode(code);
+				
+				var html = '<style>' + code + '</style>';
+				
+				if (ui_creator.options.beautify)
+					html = MyHtmlBeautify.beautify(html); //beautify code
+				
+				return html;
+				
+				//var style = $(html_element).children("style");
+				//return ui_creator.getCleanedHtmlElement( style[0] );
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				var style_content = widget.children(".style-content");
+				
+				if (html_element) {
+					var is_recreate = me.isRecreateWidget(html_element);
+					var node_name = html_element.nodeName.toLowerCase();
+					var j_html_element = $(html_element);
+					var code = "";
+					
+					//if html_element was previously a template-widget-style node.
+					//Note that if we call the recreateWidgetChildren or convertHtmlElementToWidget methods for this widget.parent(), when the html_element is already a widget (created previously), we need to be prepared to parse it and re-convert this html_element (which is already a widget) into a new widget. So we need to detect this cases with the following code:
+					if (is_recreate) {
+						var code = j_html_element.children(".style-content").html();
+						
+						//append the style node to the widget so then we can remove the j_html_element
+						var style = j_html_element.children("style");
+						widget.append(style);
+						j_html_element.remove();
+						
+						//set the new html_element to the style node
+						html_element = style[0];
+						
+						//check if properties are open for the old widget and if yes, open the properties for the new widget
+						ui_creator.reloadOpenMenuSettingsIfOpenedWithOldWidget(j_html_element, widget, 1000);
+					}
+					else {
+						code = $(html_element).html();
+						
+						if (code && code != "") {
+							var css_code = code;
+							
+							//prepare prefix tabs by removing the tabs that don't matter
+							var m = code.match(/^\r?\n(\s+)/);
+							
+							if (m && m[1]) {
+								var prefix = m[1];
+								var regex = new RegExp("(\r?\n)" + prefix, "g");
+								code = code.replace(regex, "$1");
+								
+								widget.data("prefix", prefix);
+							}
+							
+							//remove first and last white spaces - trim code
+							code = code.replace(/^\s+/g, "").replace(/\s+$/g, "");
+							
+							//prepare code
+							code = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>").replace(/\t/g, "&emsp;").replace(/ /g, "&nbsp;");
+							
+							//replace \u2003 which is a weird white space char that is created when we call 'pre.html()' function and it converts the \t to this char.
+							code = code.replace(/\u2003/g, "\t");
+							
+							//convert url vars to real urls in css_code in html_element, this is, parse css_code in case it contains the $project_url_prefix or $project_common_url_prefix
+							if (typeof ui_creator.options.on_convert_project_url_php_vars_to_real_values_func == "function") {
+								var new_css_code = ui_creator.options.on_convert_project_url_php_vars_to_real_values_func(css_code, widget);
+								
+								if (css_code != new_css_code)
+									$(html_element).html(new_css_code);
+							}
+						}
+					}
+					
+					style_content.html(code);
+				}
+				
+				if (html_element)
+					widget.append(html_element);
+				else
+					widget.append( document.createElement("style") );
+				
+				//prepare .style-content editable
+				widget.attr("contenteditable", "false");
+				var style = widget.children("style");
+				
+				style_content.attr("contenteditable", "true")
+					.keydown(function(e) {
+						e.stopPropagation(); //otherwise if the user press ctrl+v to paste a string, it will call the ui_creator.TextSelection.options.on_create_node function which then will convert this widget into a normal html block widget, which will mess the layout.
+						
+						//avoids enter key to create unespected html elements. Only shift+enter keys are allowed.
+						var is_shift = window.event ? window.event.shiftKey : e.shiftKey;
+						
+						if (e.keyCode === 13 && !is_shift) {
+							ui_creator.showError("Please use Shift-enter keys instead...");
+							return false;
+						}
+					})
+					.keyup(function(e) {
+						var code = style_content.html();
+						code = getCleanedHtmlCode(code);
+						
+						style.html(code);
+						
+						if (update_menu_settings_timeout_id)
+							clearTimeout(update_menu_settings_timeout_id);
+						
+						update_menu_settings_timeout_id = setTimeout(function() {
+							ui_creator.reloadMenuSettingsIfOpened(widget);
+						}, 700);
+					})
+					.mouseup(function(e) {
+						//prevents that the TextSelection open the inline menu
+						e.preventDefault();
+						e.stopPropagation();
+						
+						ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+					})
+					.blur(function(e) {
+						if (typeof ui_creator.options.on_template_widgets_layout_changed_func == "function")
+							ui_creator.options.on_template_widgets_layout_changed_func(null);
+					});
+				
+				//only allows paste with text, discarding the html. Html is not allowed here.
+				ui_creator.setPasteCallbackForOnlyText(style_content);
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var settings_properties = menu_settings.children(".settings-properties");
+				
+				//ui_creator.addMenuSettingsContextMenu( settings_properties.find("textarea") );
+				
+				settings_properties.find(".settings-property.content .pretty_print").on("click", function(ev) {
+					var p = $(this).parent().closest(".settings-property.content");
+					var editor = p.data("editor");
+					var code = editor ? editor.getValue() : p.children("textarea").val();
+					
+					code = MyHtmlBeautify.beautify('<' + 'style>' + code + '</' + 'style>');
+					code = code.substr(('<' + 'style>').length);
+					code = code.substr(0, code.length - ('</' + 'style>').length);
+					
+					if (editor) {
+						editor.setValue(code, -1);
+						editor.focus();
+					}
+					else
+						p.children("textarea").val(code).focus();
+				});
+				
+				//convert content textarea to editor, but only after the code be loaded into the textarea. That why the createEditor method must be inside of the settimeout.
+				setTimeout(function() {
+					me.createEditor(widget, settings_properties.find(".settings-property.content textarea")[0]);
+				}, 300);
+			};
+			
+			me.onCloseWidgetSettings = function(widget, menu_settings) {
+				var editor = menu_settings.find(".settings-properties .settings-property.content").data("editor");
+				
+				if (editor) {
+					editor.destroy();
+					editor.container.remove();
+				}
+			};
+			
+			me.onResizeWidgetSettings = function(widget, menu_settings) {
+				if (ui_creator.isMenuSettingsOpened() && ui_creator.isMenuSettingsVisible()) {
+					var editor = menu_settings.find(".settings-properties .settings-property.content").data("editor");
+					
+					if (editor) 
+						editor.resize();
+				}
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("content")) {
+						var content = widget.children(".style-content");
+						var style = widget.children("style");
+						var editor = sprop.data("editor");
+						
+						if (editor)
+							field_value = editor.getValue();
+						
+						if (field_value != "") {
+							content.html( ("" + field_value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>").replace(/\t/g, "&emsp;").replace(/ /g, "&nbsp;") );
+							style.html(field_value);
+						}
+						else { 
+							content.html("");
+							style.html("");
+						}
+						
+						if (editor)
+							ui_creator.saveMenuSettingsField(sprop);
+					}
+				}
+				
+				return status;
+			};
+			
+			me.createEditor = function(widget, textarea) {
+				if (ace) {
+					var parent = $(textarea).parent();
+					var editor = parent.data("editor");
+					
+					if (!editor) {
+						ace.require("ace/ext/language_tools");
+						var editor = ace.edit(textarea);
+						editor.setTheme("ace/theme/chrome");
+						editor.session.setMode("ace/mode/css");
+						editor.setAutoScrollEditorIntoView(true);
+						editor.setOption("minLines", 5);
+						editor.setOptions({
+							enableBasicAutocompletion: true,
+							enableSnippets: true,
+							enableLiveAutocompletion: false,
+						});
+						editor.setOption("wrap", true);
+						
+						var save = function() {
+							me.saveSettingsField(parent.parent().find(".settings-property.content").children()[0], widget, true);
+						};
+						
+						editor.commands.addCommand({
+							name: "saveFile",
+							bindKey: {
+								win: "Ctrl-S",
+								mac: "Command-S",
+								sender: "editor|cli"
+							},
+							exec: function(env, args, request) {
+								save();
+							},
+						});
+						
+						var on_change_timeout_id = null;
+						
+						//add on change event to disable auto save and convert when user is writing code.
+						editor.on("change", function(data, ed) {
+							if (on_change_timeout_id) {
+								clearTimeout(on_change_timeout_id);
+							}
+							
+							on_change_timeout_id = setTimeout(function() {
+								save();
+							}, 5000);
+						});
+						editor.on("blur", function(data, ed) {
+							if (on_change_timeout_id) {
+								clearTimeout(on_change_timeout_id);
+								
+								save();
+							}
+						});
+						
+						parent.find("textarea.ace_text-input").removeClass("ace_text-input"); //fixing problem with scroll up, where when focused or pressed key inside editor the page scrolls to top.
+						/* If still this scrolling problem persists, please adds the following css:
+						.some_class textarea {
+							position:fixed !important;
+						}*/
+						
+						parent.data("editor", editor);
+					}
+						
+					return editor;
+				}
+			};
+			
+			function getCleanedHtmlCode(code) {
+				code = code.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n").replace(/&emsp;/g, "\t").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+				
+				/* DEPRECATED bc the code below will remove all end lines and then execute the MyHtmlBeautify.beautify
+				//add first and last end line removed from trim code above
+				if (code)
+					code = code.replace(/^([^\n])/, "\n$1").replace(/([^\n])$/, "$1\n");
+				
+				//prepare prefix tabs by adding them
+				var prefix = widget.data("prefix");
+				
+				if (prefix)
+					code = code.replace(/\n/g, "\n" + prefix);
+				*/
+				
+				//replace \u2003 which is a weird white space char that is created when we call 'pre.html()' function and it converts the \t to this char.
+				code = code.replace(/\u2003/g, "\t"); 
+				
+				//remove the weird chars from code, this is, in the php editor appears some red dots in the code, which means there some weird chars in the code.
+				var eol_control_var = "#" + (Math.random() * 10000000) + "__SYSTEM_EOL_" + (Math.random() * 10000000) + "#";
+				code = code.replace(/\n/g, eol_control_var);
+				
+				code = code.replace(/[^\x20-\x7E]/g, ''); //This will remove the end_lines too but I save them through the eol_control_var and then the MyHtmlBeautify.beautify will add them again
+				
+				var regex = new RegExp(eol_control_var, "g");
+				code = code.replace(regex, "\n");
+				
+				return code;
+			}
+			
+			me.isRecreateWidget = function(html_element) {
+				if (html_element) {
+					var node_name = html_element.nodeName.toLowerCase();
+					var j_html_element = $(html_element);
+					
+					if (node_name == "div" && j_html_element.hasClass("template-widget-style") && j_html_element.data("data-tag") == "style")
+						return true;
+					else if (node_name == "div" && j_html_element.children("pre.style-content").length == 1 && j_html_element.children().not("style").length == 1)
+						return true;
+				}
+				
+				return false;
+			};
+		}
+	]]></menu_js>
+</widget>

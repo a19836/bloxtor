@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Check Box</label>
+	<tag>checkbox</tag>
+	<settings>
+		<template_node_name>input</template_node_name>
+		<create_widget_class>CheckBoxWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="form-group settings-property is-checked">
+			<label class="col-md-4 col-sm-5 col-5 col-form-label">Is Checked: </label>
+			<input type="checkbox" name="is-checked" value="1" />
+		</div>
+		<div class="form-group row settings-property name">
+			<label class="col-md-4 col-sm-5 col-form-label">Name: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="name" />
+		</div>
+		<div class="form-group row settings-property value">
+			<label class="col-md-4 col-sm-5 col-form-label">Value: </label>
+			<input name="enabled" type="checkbox" value="1" title="Enable or disable value attribute" />
+			<input class="col-md-8 col-sm-7 form-control" name="value" />
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-checkbox:before,
+		  body > .menu-widget.menu-widget-checkbox.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-checkbox {
+			border-radius:0 5px 5px 0;
+		}
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-checkbox > label,
+		  .layout-ui-editor > .template-widgets .widget-header.widget-header-checkbox .options .option.toggle {
+			display:none;
+		}
+		
+		.layout-ui-editor.fixed-side-properties > .menu-settings.menu-settings-checkbox > .settings-properties .settings-property.value > input[name=enabled] {
+			margin-right:-17px;
+			z-index:1;
+		}
+		.layout-ui-editor.fixed-side-properties > .menu-settings.menu-settings-checkbox > .settings-properties .settings-property.value > input[name=value] {
+			padding-left:20px;
+		}
+		.layout-ui-editor.fixed-side-properties > .menu-settings.menu-settings-checkbox > .settings-properties .settings-property.value > input[name=value][disabled] {
+			opacity:.5;
+			cursor:not-allowed;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function CheckBoxWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.ignore_attributes = ["type", "checked"];
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.checkbox.parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.checkbox.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.checkbox.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.checkbox.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.checkbox.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.checkbox.parseSettings",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				return html_element && html_element.nodeName.toLowerCase() == "input" && ("" + html_element.getAttribute("type")).toLowerCase() == "checkbox";
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["is-checked"] = widget[0].hasAttribute("checked") ? 1 : 0;
+				widget_settings["name"] = widget.attr("name");
+				widget_settings["value"] = widget.attr("value");
+				widget_settings["enabled"] = widget[0].hasAttribute("value");
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var html = ui_creator.getCleanedHtmlElement(html_element); //getCleanedHtmlElement adds the 'value=""' by default and the Browser adds 'value="on"' by default. 
+				
+				//remove value on purpose
+				if (!html_element.hasAttribute("value"))
+					html = html.replace(' value=""', "").replace(' value="on"', ""); //space is very important otherise it will replace the data-widget-resource-value attribute
+				
+				return html;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element)
+					widget.attr("data-allow-null", "1");
+				
+				widget[0].type = "checkbox";
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var settings_properties = menu_settings.children(".settings-properties");
+				
+				ui_creator.addMenuSettingsContextMenu( settings_properties.find("input:not([name=enabled])") );
+				
+				//add on change event to checkbox
+				var input = settings_properties.find(".settings-property.value input[name=enabled]");
+				input.attr("onChange", ui_creator.obj_var_name + ".menu_widgets_objs.checkbox.onChangeMenuSettingsPropertiesValueEnabled(this)");
+				
+				setTimeout(function() {
+					me.onChangeMenuSettingsPropertiesValueEnabled(input[0]);
+				}, 300);
+			};
+			
+			me.onChangeMenuSettingsPropertiesValueEnabled = function(elm) {
+				elm = $(elm);
+				var input = elm.parent().children("input[name=value]");
+				
+				if (elm.is(":checked"))
+					input.removeAttr("disabled");
+				else
+					input.val("").attr("disabled", "");
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("is-checked")) {
+						if (field.is(":checked")) {
+							widget.attr("checked", "checked").prop("checked", true);
+							//widget.addClass("checked");
+						}
+						else {
+							widget.removeAttr("checked").prop("checked", false);
+							//widget.removeClass("checked");
+						}
+					}
+					else if (sprop.hasClass("name")) {
+						if (field_value != "")
+							widget.attr("name", field_value);
+						else
+							widget.removeAttr("name");
+					}
+					else if (sprop.hasClass("value")) {
+						field_value = sprop.children("input[name=value]").val();
+						var is_enabled = sprop.children("input[name=enabled]").is(":checked");
+						
+						if (is_enabled) {
+							if (field_value != "")
+								widget.attr("value", field_value);
+							else
+								widget.attr("value", "");
+						}
+						else
+							widget.removeAttr("value");
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

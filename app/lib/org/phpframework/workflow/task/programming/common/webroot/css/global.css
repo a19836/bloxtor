@@ -1,0 +1,555 @@
+.taskflowchartdiagram .icon.search_page::after,
+  .selected_task_properties .icon.search_page::after,
+  .selected_connection_properties .icon.search_page::after {
+	font-size:10px;
+}
+.selected_task_properties .icon.edit_source {
+	margin:0;
+	float:right;
+}
+
+/* START - FIX PROPERTIES TO BOTTOM */
+/*.taskflowchart:not(.fixed_properties):not(.fixed_side_properties) .selected_task_properties:not(.maximize_properties) {
+	width:auto;
+	height:auto;
+	max-height:70%;
+	max-height:calc(100% - 170px);
+	padding-bottom:10px;
+	box-sizing:border-box;
+	
+	position:fixed;
+	left:259px !important;
+	top:auto !important;
+	bottom:0 !important;
+	right:10px !important;
+	border-radius:0;
+	overflow:auto;
+}
+.taskflowchart:not(.fixed_properties):not(.fixed_side_properties).reverse .selected_task_properties:not(.maximize_properties) {
+	left:0 !important;
+	right:0 !important;
+}
+.taskflowchart:not(.fixed_properties):not(.fixed_side_properties):not(.reverse) .selected_task_properties.tasks_menu_hidden {
+	left:5px !important;
+}
+.taskflowchart:not(.fixed_properties):not(.fixed_side_properties).reverse .selected_task_properties.tasks_menu_hidden {
+	right:5px !important;
+}*/
+.taskflowchart:not(.fixed_properties):not(.fixed_side_properties) .popup_overlay {
+	height:auto !important;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties > .content {
+	padding:5px 5px 5px 7px;
+}
+.selected_task_properties > .content > div {
+	margin:0 auto;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties > .content > div {
+	font-size:9px;
+	margin:0;
+}
+.selected_task_properties > .popup_close {
+	top:0;
+	left:0;
+	right:auto;
+	opacity:.1;
+}
+.selected_task_properties > .popup_close:hover {
+	opacity:1;
+}
+/* END - FIX PROPERTIES TO BOTTOM */
+
+/* TASK PROPERTIES */
+.selected_task_properties div {
+	float:none;
+	clear:left;
+}
+.selected_task_properties label, .selected_task_properties input, .selected_task_properties textarea, .selected_task_properties select {
+	display:inline-block;
+}
+.selected_task_properties label {
+	
+}
+.selected_task_properties input {
+	margin-left:0px;
+}
+.selected_task_properties select {
+	
+}
+
+.selected_task_properties > .properties_task_id:before,
+  .selected_connection_properties > .properties_connection_id:before {
+	display:none;
+}
+.selected_task_properties > .properties_task_id:after,
+  .selected_connection_properties > .properties_connection_id:after {
+	display:none;
+}
+.selected_task_properties > .properties_task_id input, 
+  .selected_connection_properties > .properties_connection_id input {
+	width:100%;
+	height:20px;
+	text-align:left;
+	border:1px solid #ccc;
+	border:0;
+	background:transparent;
+	background-color:#FFF;
+	font-size:12px;
+	font-style:italic;
+	box-sizing:border-box;
+}
+
+.selected_task_properties .clear {
+	float:none;
+	clear:left;
+}
+
+/* TASK PROPERTIES - INCLUDE FILE */
+.selected_task_properties .include_file {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+	white-space:nowrap;
+}
+.selected_task_properties .include_file label {
+	width:75px;
+}
+.selected_task_properties .include_file input[type=text] {
+	width:calc(100% - 230px);
+	min-width:50px;
+	padding-right:20px;
+}
+.selected_task_properties .include_file select {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+	float:none;
+	display:inline-block;
+	margin-right:5px;
+	margin-bottom:0;
+}
+
+/* TASK PROPERTIES - RESULT */
+.selected_task_properties .result {
+	width:390px;
+	margin:15px auto 0;
+	border-top:1px solid #000;
+	padding:10px 5px 5px 5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result {
+	width:100%;
+	box-sizing:border-box;
+}
+.selected_task_properties .result .result_var_type {
+	width:100%;
+	min-height:20px;
+}
+.selected_task_properties .result .result_var_type label {
+	width:265px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result .result_var_type label {
+	width:100%;
+}
+.selected_task_properties .result .result_var_type select {
+	text-align:center;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result .result_var_type select {
+	width:100%;
+	text-align:left;
+}
+
+.selected_task_properties .result .type_variable {
+	width:365px;
+	border:1px solid #CCC;
+	padding:5px 5px;
+	display:none;
+	margin-top:10px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result .type_variable {
+	width:100%;
+	box-sizing:border-box;
+}
+.selected_task_properties .result .type_variable .result_var_name,
+   .selected_task_properties .result .type_variable .result_var_assignment {
+	width:100%;
+	min-height:20px;
+	margin-top:5px;
+}
+.selected_task_properties .result .type_variable label {
+	width:130px;
+	margin-bottom:4px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result .type_variable label {
+	width:80px;
+}
+.selected_task_properties .result .type_variable .result_var_name input {
+	width:180px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result .type_variable .result_var_name input {
+	width:calc(100% - 110px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result .type_variable .result_var_assignment select { 
+	width:calc(100% - 85px);
+}
+
+.selected_task_properties .result .type_obj_prop {
+	width:365px;
+	border:1px solid #CCC;
+	margin-top:10px;
+	padding:5px 5px;
+	display:none;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result .type_obj_prop {
+	width:100%;
+	box-sizing:border-box;
+}
+.selected_task_properties .result .type_obj_prop .result_obj_name,
+   .selected_task_properties .result .type_obj_prop .result_prop_name, 
+   .selected_task_properties .result .type_obj_prop .result_static, 
+   .selected_task_properties .result .type_obj_prop .result_prop_assignment {
+	width:100%;
+	min-height:20px;
+	margin-top:5px;
+}
+.selected_task_properties .result .type_obj_prop .result_obj_name label,
+   .selected_task_properties .result .type_obj_prop .result_prop_name label, 
+   .selected_task_properties .result .type_obj_prop .result_static label, 
+   .selected_task_properties .result .type_obj_prop .result_prop_assignment label {
+	width:130px;
+	margin-bottom:4px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result .type_obj_prop .result_obj_name label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .result .type_obj_prop .result_prop_name label, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .result .type_obj_prop .result_static label, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .result .type_obj_prop .result_prop_assignment label {
+	width:85px;
+}
+.selected_task_properties .result .type_obj_prop .result_obj_name input,
+   .selected_task_properties .result .type_obj_prop .result_prop_name input { 
+	width:180px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result .type_obj_prop .result_obj_name input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .result .type_obj_prop .result_prop_name input { 
+	width:calc(100% - 135px);
+}
+.selected_task_properties .result .type_obj_prop .result_prop_name .add_variable.inline {
+	margin-left:-21px;
+}
+.selected_task_properties .result .type_obj_prop .result_prop_name .search {
+	float:none;
+	display:inline-block;
+	vertical-align:middle;
+	margin:0;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .result .type_obj_prop .result_prop_assignment select { 
+	width:calc(100% - 90px);
+}
+
+/* TASK PROPERTIES - ARGS */
+.selected_task_properties .args {
+	min-width:270px;
+	margin:0 auto;
+	padding-top:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .args {
+	width:100% !important;
+	min-width:auto;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .args table {
+	width:100%;
+}
+.selected_task_properties .args td {
+	border-top:1px solid #ccc;
+	border-right:1px solid #eee;
+}
+.selected_task_properties .args th {
+	font-size:10px;
+	text-transform:capitalize;
+}
+.selected_task_properties .table_arg_empty td {
+	font-size:10px;
+	color:#999;
+	font-style:italic;
+	text-align:center;
+}
+.selected_task_properties .args .table_arg_name, 
+  .selected_task_properties .args .table_arg_name div {
+	max-width:100px;
+	border:0;
+	padding-right:5px;
+	color:#999;
+	font-size:9px;
+	overflow:hidden;
+	text-align:right;
+}
+.selected_task_properties .args .table_arg_value {
+	width:175px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .args .table_arg_value {
+	width:auto;
+}
+.selected_task_properties .args .table_arg_value input {
+	width:calc(100% - 20px);
+	background-color:#FFF;
+	border:0;
+}
+.selected_task_properties .args .table_arg_value .add_variable.inline {
+	margin-left:0;
+}
+.selected_task_properties .args .table_arg_type {
+	width:80px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .args .table_arg_type {
+	width:50px;
+}
+.selected_task_properties .args td.table_arg_type {
+	border-right:0px;
+}
+.selected_task_properties .args .table_arg_type select {
+	width:100%;
+	background-color:#FFF;
+	border:0;
+}
+.selected_task_properties .args .table_arg_remove {
+	width:20px;
+}
+.selected_task_properties .args td.table_arg_remove {
+	border:0;
+}
+
+/* TASK PROPERTIES - ADD VARIABLE */
+.selected_task_properties .add_variable.inline {
+	margin-top:2px;
+	margin-left:-18px;
+	position:absolute;
+	float:none;
+	clear:both;
+}
+.selected_task_properties .add_variable.inline-area {
+	margin-top:0;
+	margin-left:-18px;
+}
+
+
+/* MENU TASKS */
+.taskflowchartmenu .task,
+  .taskflowchart > .tasks_menu .task {
+	width:40px;
+	margin:15px 22px 30px;
+	padding:0;
+	overflow:visible;
+	background-size:contain;
+	background-image:url('../img/user_generated_task_bg.svg');
+	box-sizing:border-box;
+	opacity:.5;
+}
+.taskflowchartmenu .task:hover,
+  .taskflowchart > .tasks_menu .task:hover {
+	opacity:.3;
+}
+.taskflowchartmenu .task span {
+	width:70px;
+	max-height:26px;
+	line-height:13px;
+	margin-left:-15px;
+	margin-right:-15px;
+	display:block;
+	position:absolute;
+	left:0;
+	top:40px;
+	color:#83889E;
+	font-size:10px;
+	font-weight:normal;
+	text-align:center;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+/* FLOW TASKS */
+.taskflowchartdiagram .connector_overlay_add_icon {
+	background:url('../img/add_middle_task.svg') center center no-repeat !important;
+}
+.taskflowchartdiagram .connector_overlay_add_icon.task_droppable_over {
+	background-size:30px 30px !important;
+}
+.taskflowchartdiagram .task.logic_task {
+	width:70px !important;
+	height:auto !important;
+	min-height:50px !important;
+	padding:0 !important;
+	box-sizing:border-box;
+	border:0 !important;
+	box-shadow:none !important;
+}
+.taskflowchartdiagram .task.logic_task:hover {
+	opacity:1 !important;
+	z-index:9999;
+}
+.taskflowchartdiagram .task.logic_task:before {
+	width:180px;
+	left:-50% !important;
+	left:calc(-50% - 5px) !important;
+	right:auto !important;
+	bottom:-15px !important;
+	border-radius:2px;
+	border-color:#DFE1ED !important;
+	box-shadow:3px 3px 4px rgba(0, 0, 0, 0.05);
+	/*background:#fff;*/
+}
+.taskflowchartdiagram .task.logic_task.is_start_task:not(:hover):not(.dragActive):before {
+	display:block;
+}
+.taskflowchartdiagram .task.logic_task:hover:after {
+	background:none !important;
+	left:-50% !important;
+	left:calc(-50% - 5px) !important;
+	bottom:-36px !important;
+	
+	display:none !important; /* reduce noise in UI */
+}
+.taskflowchartdiagram .task.logic_task.is_start_task .start_task_overlay {
+	display:none;
+}
+.taskflowchartdiagram .task.logic_task .task_info {
+	width:182px; /*bc box-sizing is border-box, we need to add the borderleft and right widths. */
+	padding-left:10px;
+	left:-50%;
+	left:calc(-50% - 5px);
+	background:#426efa;
+	color:#fff;
+	box-sizing:border-box;
+	border-top-left-radius:2px;
+	border-top-right-radius:2px;
+}
+.taskflowchartdiagram .task.logic_task.is_start_task:not(:hover):not(.dragActive) .task_info {
+	display:block;
+	background:#83889E;
+}
+.taskflowchartdiagram .task.logic_task.is_start_task:not(:hover):not(.dragActive) .task_info:before {
+	content:"Start Task";
+	line-height:15px;
+	font-size:10px;
+}
+.taskflowchart .task.logic_task .task_info .task_info_tag, 
+  .taskflowchart .task.logic_task .task_info .task_info_label {
+	line-height:15px;
+	font-size:10px;
+}
+.taskflowchart .task.logic_task.is_start_task:not(:hover):not(.dragActive) .task_info .task_info_tag, 
+  .taskflowchart .task.logic_task.is_start_task:not(:hover):not(.dragActive) .task_info .task_info_label {
+	display:none;
+}
+.taskflowchartdiagram .task.logic_task .info {
+	width:180px;
+	min-height:20px;
+	line-height:15px;
+	margin-top:10px;
+	margin-left:-50%;
+	margin-left:calc(-50% - 5px);
+	padding-left:5px;
+	padding-right:5px;
+	box-sizing:border-box;
+	font-size:11px;
+}
+.taskflowchartdiagram .task.logic_task:hover:not(.ui-draggable-dragging):not(.dragActive) > .info {
+	width:auto;
+	min-width:180px;
+	text-overflow:unset;
+	overflow:visible;
+}
+.taskflowchartdiagram .task.logic_task .info span {
+	color:#426efa;
+	word-break:break-all;
+}
+.taskflowchartdiagram .task.logic_task:hover:not(.ui-draggable-dragging):not(.dragActive) > .info span {
+	color:#585B69;
+}
+.taskflowchartdiagram .task.logic_task:hover:not(.is_start_task):not(.ui-draggable-dragging):not(.dragActive) > .info span {
+	background:#fff;
+}
+.taskflowchartdiagram .task.logic_task .short_actions {
+	top:-20px;
+	right:-45px;
+	color:#fff;
+}
+.taskflowchartdiagram .task.logic_task .short_actions .move_action {
+	display:none;
+}
+.taskflowchartdiagram .task.logic_task .eps {
+	width:40px;
+	height:35px;
+	min-height:20px;
+	/*margin:10px auto 0;*/
+	margin:0 auto;
+	position:relative;
+	/*position:absolute;
+	top:23px !important;
+	bottom:0;
+	left:0;
+	right:0;*/
+	background-image:url('../img/user_generated_task_bg_hover.svg');
+	background-repeat:no-repeat;
+	background-position:center bottom;
+	background-size:100% 100%;
+	float:none;
+}
+.taskflowchartdiagram .task.logic_task .eps:hover:after {
+	width:175px;
+	content:"Drag the icon to link to another box";
+	position:absolute;
+	bottom:-15px;
+	left:-50%;
+	left:calc(-50% - 5px);
+	font-size:80%;
+	color:#999;
+	text-align:center;
+	
+	display:none; /* reduce noise in UI */
+}
+.taskflowchartdiagram .task.logic_task.dragActive .eps {
+	box-shadow:0px 0px 20px 5px #ccc !important;
+}
+.taskflowchartdiagram .task.logic_task.dragHover .eps {
+	box-shadow:0px 0px 20px 5px #aaa !important;
+}
+.taskflowchartdiagram .task.logic_task .ep {
+	width:100%;
+	height:100%;
+	margin:0;
+	border:0;
+	border-radius:0;
+	/* Cannot add this here bc the switch uses the border-color and background-color set auytomatically in each ep. This means, that this code MUST be inside of each task.
+	border-color:transparent !important;
+	background-color:transparent !important;*/
+}
+.taskflowchartdiagram .task.logic_task .ep span {
+	min-width:190px;
+	max-width:300px;
+	padding:3px 5px;
+	position:absolute;
+	top:calc(100% + 5px);
+	left:-75px;
+	box-sizing:border-box;
+	border:1px solid #fff;
+	border-radius:5px;
+	background:#426efa;
+	color:#fff;
+	font-size:9px;
+	font-family:verdana,courier,arial;
+	font-family:var(--main-font-family);
+	white-space:nowrap;
+	pointer-events:none;
+	z-index:1;
+}
+.taskflowchartdiagram .task.logic_task:not(.show_code) .ep span {
+	display:none;
+}
+.taskflowchartdiagram .task.logic_task.show_code:hover:after {
+	display:none;
+}

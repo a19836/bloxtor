@@ -1,0 +1,230 @@
+.taskflowchartmenu .task.task_callhibernatemethod {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_callhibernatemethod .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_callhibernatemethod .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.call_hibernate_method_task_html {
+	width:430px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html {
+	width:auto;
+}
+.call_hibernate_method_task_html .get_automatically,
+   .call_hibernate_method_task_html .module_id,
+   .call_hibernate_method_task_html .service_id,
+   .call_hibernate_method_task_html .service_method,
+   .call_hibernate_method_task_html .service_method_args {
+	width:430px;
+	min-height:20px;
+	margin:0 auto;
+}
+.call_hibernate_method_task_html .get_automatically,
+   .call_hibernate_method_task_html .module_id,
+   .call_hibernate_method_task_html .service_id,
+   .call_hibernate_method_task_html .service_method,
+   .call_hibernate_method_task_html .service_method_args {
+	width:100%;
+}
+.call_hibernate_method_task_html .service_method_args {
+	height:auto;
+}
+.call_hibernate_method_task_html .module_id, 
+  .call_hibernate_method_task_html .service_id, 
+  .call_hibernate_method_task_html .service_method, 
+  .call_hibernate_method_task_html .service_method_args,
+  .call_hibernate_method_task_html .opts {
+	margin-bottom:5px;
+}
+.call_hibernate_method_task_html .get_automatically {
+	/*margin-top:15px;*/
+	margin-bottom:5px;
+}
+.call_hibernate_method_task_html .get_automatically label {
+	width:230px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .get_automatically label {
+	width:170px;
+}
+.call_hibernate_method_task_html .get_automatically .icon {
+	width:23px;
+	height:23px;
+}
+.call_hibernate_method_task_html .get_automatically .icon::before {
+	content:"\f022";
+}
+.call_hibernate_method_task_html .get_automatically .icon::after {
+	content:"\f079";
+}
+.call_hibernate_method_task_html .get_automatically .icon:hover::after {
+	color:#000;
+}
+.call_hibernate_method_task_html .module_id label,
+   .call_hibernate_method_task_html .service_id label,
+   .call_hibernate_method_task_html .service_method label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .module_id label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_id label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .opts .main_label {
+	width:65px;
+}
+.call_hibernate_method_task_html .module_id input,
+   .call_hibernate_method_task_html .service_id input,
+   .call_hibernate_method_task_html .service_method input {
+	width:210px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .module_id input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_id input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .opts .options_code {
+	width:calc(100% - 164px);
+}
+.call_hibernate_method_task_html .service_method select.service_method_string {
+	width:235px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method select.service_method_string {
+	width:calc(100% - 140px);
+}
+.call_hibernate_method_task_html .module_id select,
+   .call_hibernate_method_task_html .service_id select,
+   .call_hibernate_method_task_html .service_method select.service_method_type,
+   .call_hibernate_method_task_html .service_method_args select.service_method_arg_type,
+  .call_hibernate_method_task_html .opts .options_type {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+	float:none;
+	display:inline-block;
+	margin-bottom:0;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .opts > .options > .items {
+	margin-left:125px;
+}
+.call_hibernate_method_task_html .service_method_args .sma_sql .service_method_arg_type {
+	margin-bottom:5px;
+}
+
+.call_hibernate_method_task_html .service_method_args .sma_query_type,
+   .call_hibernate_method_task_html .service_method_args .sma_query_id,
+   .call_hibernate_method_task_html .service_method_args .sma_function_name,
+   .call_hibernate_method_task_html .service_method_args .sma_data,
+   .call_hibernate_method_task_html .service_method_args .sma_statuses,
+   .call_hibernate_method_task_html .service_method_args .sma_ids,
+   .call_hibernate_method_task_html .service_method_args .sma_rel_name,
+   .call_hibernate_method_task_html .service_method_args .sma_parent_ids,
+   .call_hibernate_method_task_html .service_method_args .sma_sql,
+   .call_hibernate_method_task_html .service_method_args .sma_options {
+	padding-left:10px;
+	margin-bottom:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_query_type,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_query_id,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_function_name,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_data,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_statuses,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_ids,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_rel_name,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_parent_ids,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_sql,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_options {
+	white-space:nowrap;
+}
+.call_hibernate_method_task_html .service_method_args label.service_method_arg_label {
+	width:130px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args label.service_method_arg_label {
+	width:90px;
+}
+.call_hibernate_method_task_html .service_method_args input.service_method_arg_code {
+	width:180px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args input.service_method_arg_code {
+	width:calc(100% - 190px);
+}
+.call_hibernate_method_task_html .service_method_args .service_method_args_main_label {
+	width:100%;
+	height:20px;
+}
+.call_hibernate_method_task_html .service_method_args .sma_query_type input,
+   .call_hibernate_method_task_html .service_method_args .sma_statuses select,
+   .call_hibernate_method_task_html .service_method_args .sma_ids select {
+	display:none;
+}
+
+
+.call_hibernate_method_task_html .service_method_args .sma_query_type select.sma_query_type_string {
+	width:205px;
+	margin-right:5px;
+}
+
+.call_hibernate_method_task_html .service_method_args .sma_data,
+   .call_hibernate_method_task_html .service_method_args .sma_parent_ids {
+   	min-width:400px;
+   	min-height:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_data,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_parent_ids {
+   	min-width:auto;
+}
+.call_hibernate_method_task_html .service_method_args .array_items .items {
+	position:absolute;
+	margin-top:-24px;
+	margin-left:190px;
+}
+.call_hibernate_method_task_html .service_method_args .array_items ul .items {
+	position:static;
+	margin-top:0;
+	margin-left:0;
+}
+
+.call_hibernate_method_task_html .service_method_args .sma_sql {
+	width:410px;
+	min-height:20px;
+}
+.call_hibernate_method_task_html .service_method_args .sma_sql textarea.task_property_field {
+	display:none;
+}
+.call_hibernate_method_task_html .service_method_args .sma_sql textarea.sql_editor, 
+   .call_hibernate_method_task_html .service_method_args .sma_sql .ace_editor {
+	width:405px;
+	height:100px;
+	float:none;
+	clear:left;
+	margin-bottom:5px;
+	background-color:#FFF;
+	border:1px inset #CCC;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_sql textarea.sql_editor, 
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_method_task_html .service_method_args .sma_sql .ace_editor {
+	width:100%;
+	box-sizing:border-box;
+}
+.call_hibernate_method_task_html .service_method_args .sma_options .sma_options .item .search {
+	margin-left:-25px;
+	margin-top:2px;
+}
+.call_hibernate_method_task_html > div:not(.broker_method_obj) > .add_variable,
+   .call_hibernate_method_task_html > .service_method_args > div > .add_variable {
+	margin-left:-26px;
+}
+.call_hibernate_method_task_html > .service_method_args .sma_ids > .add_variable,
+  .call_hibernate_method_task_html > .service_method_args .sma_statuses > .add_variable {
+	margin-left:-22px;
+}
+

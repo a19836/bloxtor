@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Bread crumbs</label>
+	<tag>bsbreadcrumbs</tag>
+	<settings>
+		<create_widget_class>BSBreadcrumbsWidget</create_widget_class>
+	</settings>
+	<files>
+		<css>../../CreateWidgetBootstrapClassObj.css</css>
+		<js>../../CreateWidgetBootstrapClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bsbreadcrumbs:before,
+		  body > .menu-widget.menu-widget-bsbreadcrumbs.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .myfancypopup.layout-ui-editor-bootstrap-widgets-popup.bsbreadcrumbs > .content > ul > li img {
+			max-width:300px;
+			height:auto;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSBreadcrumbsWidget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapClassObj(ui_creator, menu_widget, "bsbreadcrumbs");
+			obj.extend(this);
+			
+			obj.available_items = {
+				"5.3": [
+					{
+						image: '#widget_webroot_url#breadcrumbs_1.png',
+						name: '',
+						html: '<nav aria-label="breadcrumb"><ol class="breadcrumb p-3 bg-body-tertiary rounded-3"><li class="breadcrumb-item"><a href="#">Home</a></li><li class="breadcrumb-item"><a href="#">Library</a></li><li class="breadcrumb-item active" aria-current="page">Data</li></ol></nav>'
+					},
+					{
+						image: '#widget_webroot_url#breadcrumbs_2.png',
+						name: '',
+						html: '<nav aria-label="breadcrumb"><ol class="breadcrumb p-3 bg-body-tertiary rounded-3"><li class="breadcrumb-item"><a class="link-body-emphasis" href="#"><svg class="bi" width="16" height="16"><use xlink:href="#house-door-fill"></use></svg><span class="visually-hidden">Home</span></a></li><li class="breadcrumb-item"><a class="link-body-emphasis fw-semibold text-decoration-none" href="#">Library</a></li><li class="breadcrumb-item active" aria-current="page">Data</li></ol></nav>'
+					},
+					{
+						image: '#widget_webroot_url#breadcrumbs_3.png',
+						name: '',
+						html: '<nav aria-label="breadcrumb"><ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3"><li class="breadcrumb-item"><a class="link-body-emphasis" href="#"><svg class="bi" width="16" height="16"><use xlink:href="#house-door-fill"></use></svg><span class="visually-hidden">Home</span></a></li><li class="breadcrumb-item"><a class="link-body-emphasis fw-semibold text-decoration-none" href="#">Library</a></li><li class="breadcrumb-item active" aria-current="page">Data</li></ol></nav>'
+					},
+					{
+						image: '#widget_webroot_url#breadcrumbs_4.png',
+						name: '',
+						html: '<nav aria-label="breadcrumb"><ol class="breadcrumb breadcrumb-custom overflow-hidden text-center bg-body-tertiary border rounded-3"><li class="breadcrumb-item"><a class="link-body-emphasis fw-semibold text-decoration-none" href="#"><svg class="bi" width="16" height="16"><use xlink:href="#house-door-fill"></use></svg>Home</a></li><li class="breadcrumb-item"><a class="link-body-emphasis fw-semibold text-decoration-none" href="#">Library</a></li><li class="breadcrumb-item active" aria-current="page">Data</li></ol></nav>'
+					}
+				],
+			};
+		}
+	]]></menu_js>
+</widget>

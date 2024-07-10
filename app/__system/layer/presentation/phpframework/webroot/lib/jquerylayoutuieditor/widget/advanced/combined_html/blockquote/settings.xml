@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Block Quote</label>
+	<tag>blockquote</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_node_name>blockquote</template_node_name>
+		<create_widget_class>BlockQuoteWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore ipsum dolor sit
+<style>
+.quote {
+  color:#777;
+  font-weight:300;
+  padding:10px;
+  box-shadow:-5px 0 0 0 #ccc;
+  font-style:italic;
+  margin:20px 30px;
+}
+</style>
+	]]></template_widget>
+	<properties><![CDATA[
+		<div class="style">
+			<label>Style:</label>
+			<textarea></textarea>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-blockquote:before,
+		  body > .menu-widget.menu-widget-blockquote.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-blockquote {
+			border-radius:0 5px 5px 0;
+		}
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-blockquote .options .option.toggle {
+			display:none;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-blockquote > .settings-properties .style textarea {
+			text-align:left;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BlockQuoteWidget(ui_creator, menu_widget) {
+			var me = this;
+			var default_style = '';
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.blockquote.onCloneMenuWidget",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.blockquote.cleanHtml",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.blockquote.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.blockquote.saveSettingsField",
+				});
+				
+				default_style = menu_widget.find(" > .template-widget > style").html();
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) 
+					widget.addClass("quote");
+
+				return widget;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				var style = widget.children("style");
+				
+				if (!style[0]) {
+					style = $('<style>' + default_style + '</style>');
+					widget.append(style);
+				}
+				
+				return ui_creator.getCleanedHtmlElement(widget[0]);
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var style = widget.children("style");
+				
+				if (!style[0]) {
+					style = $('<style>' + default_style + '</style>');
+					widget.append(style);
+				}
+				
+				var textarea = menu_settings.find(".settings-properties .style textarea");
+				textarea.val( style.html() );
+				ui_creator.addMenuSettingsContextMenu(textarea);
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("style")) {
+						var style = widget.children("style");
+						
+						if (!style[0]) {
+							style = $('<style></style>');
+							widget.append(style);
+						}
+						
+						style.html(field_value);
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

@@ -1,0 +1,72 @@
+/* TOP BAR */
+.top_bar header > .title {
+	max-width:calc(100% - 60px);
+}
+.edit_map > .top_bar .title .map_name {
+	width:175px;
+	display:inline-block;
+}
+
+/* RELATIONSHIP */
+.edit_map .data_access_obj {
+	overflow:auto;
+}
+.edit_map .map {
+	margin:0 !important;
+	padding:0 !important;
+	border:0 !important;
+}
+.edit_map .data_access_obj > .relationships > .parameters_maps > .parameters,
+  .edit_map .data_access_obj > .relationships > .parameters_maps > .parameters,
+  .edit_map .data_access_obj > .relationships > .results_maps > .results,
+  .edit_map .data_access_obj > .relationships > .results_maps > .results {
+	margin:0 auto !important;
+}
+.data_access_obj .relationships .results_maps .map, 
+  .data_access_obj .relationships .parameters_maps .map {
+	width:645px;
+}
+.edit_map .data_access_obj > .relationships > .parameters_maps > .parameters > .map > label,
+  .edit_map .data_access_obj > .relationships > .parameters_maps > .parameters > .map > .icon.update_automatically,
+  .edit_map .data_access_obj > .relationships > .results_maps > .results > .map > label,
+  .edit_map .data_access_obj > .relationships > .results_maps > .results > .map > .icon.update_automatically {
+	display:none;
+}
+.edit_map .map .map_id {
+	width:170px;
+	margin:0;
+	position:fixed;
+	top:14px;
+	left:160px;
+	z-index:2;
+}/*
+.in_popup .edit_map .map .map_id {
+	top:16px;
+	left:140px;
+}*/
+.edit_map .results_maps.map .map_id {
+	left:130px;
+}
+.edit_map .map .map_id label {
+	display:none;
+}
+.edit_map .map .map_id input {
+	width:160px;
+	border:1px solid #ccc;
+	color:var(--main-iframe-color);
+	background:transparent;
+}
+.in_popup .edit_map .map .map_id input {
+	background:var(--main-popup-header-bg);
+	color:var(--main-popup-header-color);
+}
+.edit_map .data_access_obj .relationships .map .map_class {
+	margin-left:10px;
+}
+.data_access_obj .relationships .map .map_class label {
+	font-weight:normal;
+	line-height:20px;
+}
+.edit_map .data_access_obj.with_map_fields .relationships .map table {
+	margin-top:20px;
+}

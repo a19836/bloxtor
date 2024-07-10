@@ -1,0 +1,241 @@
+/* START: TASK */
+.task.task_menu.task_query {
+	min-width:7em !important;
+	min-height:2em !important;
+	
+	border:0px;
+	-moz-border-radius:0.5em !important; 
+	-webkit-border-radius:0.5em !important;
+	border-radius:0.5em !important;
+}
+
+/*.taskflowchartdiagram ._jsPlumb_connector path { 
+	stroke-width:3px; 
+}*/
+.taskflowchartdiagram .task.task_query {
+	width:200px !important;
+	height:auto !important;
+	margin:0;
+	padding:5px 0 10px;
+	border-radius:2px;
+	border-color:transparent !important;
+	background-color:transparent;
+	box-sizing:border-box;
+	box-shadow:none;
+	opacity:.9 !important;
+}
+.taskflowchartdiagram .task.task_query:hover {
+	opacity:1 !important;
+	z-index:12;
+}
+.taskflowchartdiagram .task.task_query:hover {
+	box-shadow:none !important;
+}
+.taskflowchartdiagram .task.task_query .info {
+	width:100%;
+	min-height:25px;
+	padding:5px 10px;
+	border:1px solid #4070FF !important;
+	background:#4070FF;
+	color:#fff;
+	border-top-left-radius:2px;
+	border-top-right-radius:2px;
+	text-align:left;
+	box-sizing:border-box;
+	box-shadow:0px -1px 5px #ccc;
+}
+.taskflowchartdiagram .task.task_query .info span {
+	cursor:move;
+}
+.taskflowchartdiagram .task.task_query .info .icon {
+	margin:0 !important;
+	color:inherit;
+}
+.taskflowchartdiagram .task.task_query:hover .short_actions {
+	top:-20px;
+	padding-bottom:5px;
+}
+.taskflowchartdiagram .task.task_query .eps {
+	position:relative;
+	width:100%;
+	min-height:25px;
+	margin:0;
+	padding:0;
+	border:1px solid #4070FF !important;
+	background:#fff;
+	box-sizing:border-box;
+	box-shadow:0px 0px 5px #ccc;
+}
+.taskflowchartdiagram .task.task_query .ep {
+	width:25px;
+	height:25px;
+	border:1px solid #4070FF !important;
+	border-radius:100%;
+	background:#4070FF !important;
+	position:absolute;
+	left:88px;
+	bottom:-15px;
+	z-index:1;
+}
+.taskflowchartdiagram .task.task_query .table_attrs {
+	width:100%;
+	margin:0;
+	padding:0;
+	border:0;
+}
+.taskflowchartdiagram .task.task_query .table_attrs .table_attr td {
+	margin:0;
+	padding:2px 5px;
+	border-right:1px solid #4070FF;
+	border-bottom:1px solid #4070FF;
+	font-size:8px;
+	box-sizing:border-box;
+}
+.taskflowchartdiagram .task.task_query .table_attrs .table_attr:last-child td {
+	border-bottom:0;
+}
+.taskflowchartdiagram .task.task_query .table_attrs .table_attr td:last-child {
+	border-right:0;
+}
+.taskflowchartdiagram .task.task_query .table_attrs .table_attr td.check {
+	min-width:30px;
+	max-width:30px;
+	text-align:center;
+}
+.taskflowchartdiagram .task.task_query .table_attrs .table_attr td.check input {
+	margin:0;
+}
+.taskflowchartdiagram .task.task_query .table_attrs .table_attr td.name {
+	width:100%;
+	border-right-color:#f7f7f7;
+	text-align:left;
+	vertical-align:bottom;
+}
+
+/* START: SELECTED CONNECTION PROPERTIES */
+.selected_connection_properties {
+	width:auto;
+	height:auto;
+	min-height:160px !important;
+	max-height:70%;
+	max-height:calc(100% - 40px);
+	padding-bottom:10px;
+	box-sizing:border-box;
+	
+	position:fixed;
+	left:0px !important;
+	top:auto !important;
+	bottom:0px !important;
+	right:0px !important;
+	border-radius:0;
+	overflow:auto;
+}
+.selected_connection_properties .title, 
+  .selected_connection_properties .properties_connection_id, 
+  .selected_connection_properties .toggle_properties_side_icon {
+	display:none !important;
+}
+.taskflowchart:not(.fixed_properties):not(.fixed_side_properties) .selected_connection_properties > .maximize_minimize_icon {
+	display:none;
+}
+.selected_connection_properties .db_table_connection_html {
+	margin:15px auto 0;
+	font-size:12px;
+}
+.taskflowchart:not(.fixed_side_properties) > .selected_connection_properties .db_table_connection_html {
+	min-width:585px;
+}
+.selected_connection_properties .db_table_connection_html .header {
+	width:210px;
+	height:20px;
+	margin:0 auto 20px auto;
+	float:none;
+	clear:left;
+	text-align:center;
+}
+.selected_connection_properties .db_table_connection_html .header label {
+	line-height:20px;
+	vertical-align:middle;
+}
+.selected_connection_properties .db_table_connection_html .header select {
+	width:65px;
+	border:1px solid #ddd;
+	background:transparent;
+}
+.selected_connection_properties .db_table_connection_html .header .source_table,
+   .selected_connection_properties .db_table_connection_html .header .target_table {
+	display:none;
+}
+.selected_connection_properties .db_table_connection_html table {
+	width:550px;
+	max-height:140px;
+	margin:0px auto !important;
+	float:none;
+	clear:left;
+	border:0 !important;
+	
+	overflow-y:auto;
+	overflow-x:hidden;
+	z-index:10;
+	display:block;
+}
+.selected_connection_properties .db_table_connection_html thead th {
+	font-size:10px !important;
+	margin-right:0px;
+	height:18px;
+	line-height:18px;
+	text-transform:lowercase;
+	color:#999;
+}
+.selected_connection_properties .db_table_connection_html .table_attr_icons {
+	width:16px !important;
+	padding-left:5px;
+	text-align:center;
+	border:0;
+}
+
+.selected_connection_properties .db_table_connection_html table .source_column,
+   .selected_connection_properties .db_table_connection_html table .target_column {.selected_connection_properties .db_table_connection_html tbody td select, .selected_connection_properties .db_table_connection_html tbody td input
+	width:150px;
+}
+.selected_connection_properties .db_table_connection_html table .operator {
+	width:60px;
+}
+.selected_connection_properties .db_table_connection_html table .column_value {
+	width:135px;
+}
+
+.selected_connection_properties .db_table_connection_html tbody td {
+	text-align:center;
+	height:20px;
+	margin-right:0px;
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+}
+.selected_connection_properties .db_table_connection_html tbody td select, 
+   .selected_connection_properties .db_table_connection_html tbody td input {
+	height:20px;
+	text-align:left;
+	font-size:12px !important;
+	margin:0 auto;
+	border:0;
+	background-color:transparent;
+}
+.selected_connection_properties .db_table_connection_html tbody td select {
+	width:150px;
+}
+.selected_connection_properties .db_table_connection_html tbody td.operator select {
+	width:60px;
+	text-align:center;
+	font-size:11px !important;
+}
+.selected_connection_properties .db_table_connection_html tbody td input {
+	width:135px;
+}
+.selected_connection_properties .db_table_connection_html .delete_connection_button {
+	margin-top:40px;
+	text-align:center;
+}
+.selected_connection_properties .db_table_connection_html .delete_connection_button button {
+	font-size:inherit;
+}

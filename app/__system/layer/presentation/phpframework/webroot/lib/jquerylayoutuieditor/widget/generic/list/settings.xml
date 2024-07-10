@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>List</label>
+	<tag>list</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_class>container droppable</template_class>
+		<template_node_name>ul</template_node_name>
+		<create_widget_class>ListWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<!--template_widget><![CDATA[
+		<li class="droppable">Li 1</li>
+		<li class="droppable">Li 2</li>
+		<li class="droppable">Li 3</li>
+	]]></template_widget-->
+	<properties><![CDATA[
+		<div class="form-group settings-property is-ordered">
+			<label class="col-md-4 col-sm-5 col-5 col-form-label">Is Order: </label>
+			<input type="checkbox" name="is-ordered" value="1" />
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-list:before,
+		  body > .menu-widget.menu-widget-list.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets > .droppable-header.droppable-header-list {
+			margin-top:-1rem;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-list .settings-properties table .container-col-icon {
+			width:20px;
+			font-size:14px;
+			text-align:center;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.main-droppable.borders .template-widget.template-widget-list > li.droppable:not(.template-widget) {
+			border:var(--html-element-border);
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function ListWidget(ui_creator, menu_widget) {
+			var me = this;
+			var default_column_node_name = "li";
+			
+			me.init = function() {
+				//init the other part of the container
+				var obj = new CreateWidgetContainerClassObj(ui_creator, menu_widget);
+				obj.options.default_column_class = "";
+				obj.options.default_column_class_prefix = "";
+				obj.options.default_column_node_name = default_column_node_name;
+				obj.options.is_reset_columns_allowed = true;
+				obj.options.filter_columns_selector = default_column_node_name;
+				obj.options.add_container_col_default_values = {
+					attrs: 'style="min-width:20px; min-height:20px;"'
+				};
+				obj.init();
+				
+				//extends this obj methods to this class
+				for (var key in obj)
+					if (typeof me[key] == "undefined" && typeof obj[key] == "function")
+						me[key] = obj[key];
+				
+				menu_widget.attr({
+						"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.list.parseHtml",
+						"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.list.onCloneMenuWidget",
+						"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.list.onCreateTemplateWidget",
+						"data-on-open-droppable-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.list.onOpenDroppableHeader",
+						"data-on-close-droppable-header-func": ui_creator.obj_var_name + ".menu_widgets_objs.list.onCloseDroppableHeader",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.list.onOpenWidgetSettings",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.list.parseSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.list.saveSettingsField",
+				});
+				
+				menu_widget.removeAttr("data-on-clean-template-widget-html-func");
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && (html_element.nodeName.toLowerCase() == "ul" || html_element.nodeName.toLowerCase() == "ol")) {
+					html_element = $(html_element);
+					
+					//DEPRECATED so the children can be converted to widgets
+					//get only the childNodes that are node.ELEMENT_NODE and check if they belong to another widget.
+					/*var children = html_element.children(default_column_node_name);
+					var t = children.length;
+					
+					for (var i = 0; i < t; i++) {
+						var child = children[i];
+						
+						//checks if the child is not a template_region or another non-default widget
+						if (!ui_creator.isHtmlElementANonDefaultMenuWidget(child))
+							$(child).addClass("droppable ignore-widget"); //add class ignore-widget, so this children doesn't get converted into a widget.
+					}*/
+					
+					return {
+						droppable: html_element,
+					}
+				}
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["is-ordered"] = widget[0].nodeName.toUpperCase() == "OL" ? 1 : 0;
+				widget_settings["cols"] = me.getContainerColsProperties(widget);
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				widget = ui_creator.getNewTemplateWidgetBasedInHtmlElement(widget, html_element, null);
+				var node_name = html_element ? html_element.nodeName.toUpperCase() : "UL";
+				
+				ui_creator.updateTemplateWidgetLabel(widget, node_name);
+				
+				/*No need anymore bc now, we add some default children below in the onCreateTemplateWidget
+				widget.children().each(function(id, child) {
+					ui_creator.updateTemplateWidgetLabel($(child), default_column_node_name.toUpperCase() );
+				});*/
+				
+				return widget;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element) {
+					//create some default children, but as normal template-widgets
+					widget.html('<li style="min-width:20px; min-height:20px;">Li 1</li><li style="min-width:20px; min-height:20px;">Li 2</li><li style="min-width:20px; min-height:20px;">Li 3</li>');
+					
+					ui_creator.convertHtmlElementToWidget( widget.children() );
+				}
+			};
+			
+			me.onOpenDroppableHeader = function(droppable, droppable_header) {
+				var options = droppable_header.children(".options");
+				
+				var label = droppable_header.children("label");
+				label.attr("data-label-bkp", label.html());
+				label.html( default_column_node_name.toUpperCase() );
+				
+				options.children(".sort").addClass("zmdi-hc-rotate-90");
+				options.children(".sort-left").removeClass("zmdi-hc-rotate-180").addClass("zmdi-hc-rotate-270");
+				options.children(".sort-right").addClass("zmdi-hc-rotate-90");
+			};
+			
+			me.onCloseDroppableHeader = function(droppable, droppable_header) {
+				var options = droppable_header.children(".options");
+				
+				var label = droppable_header.children("label");
+				label.html( label.attr("data-label-bkp") );
+				label.removeAttr("data-label-bkp");
+				
+				options.children(".sort").removeClass("zmdi-hc-rotate-90");
+				options.children(".sort-left").addClass("zmdi-hc-rotate-180").removeClass("zmdi-hc-rotate-270");
+				options.children(".sort-right").removeClass("zmdi-hc-rotate-90");
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				ui_creator.addMenuSettingsContextMenu( menu_settings.find(" > .settings-properties input") );
+				
+				me.prepareContainerSettings(widget, menu_settings);
+			};
+
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var sp = field.parent().closest(".settings-properties");
+					var sprop = field.parentsUntil(sp, ".settings-property").first();
+					
+					if (sprop.hasClass("is-ordered")) {
+						var node_name = widget[0].nodeName.toLowerCase();
+						var type = field.is(":checked") ? "OL" : "UL";
+						
+						widget = ui_creator.changeWidgetNodeName(widget, type);
+						ui_creator.updateTemplateWidgetLabel(widget, type);
+					}
+					else if (sprop.hasClass("columns")) {
+						var curr_length = widget.children(default_column_node_name).length;
+						
+						me.saveContainerSettingsField(field, widget, status, {
+							droppable_inner_html: '&nbsp;',
+							init_new_droppable: false
+						});
+						
+						//check if there is a new child and if it is, convert child to widget
+						var children = widget.children(default_column_node_name);
+						var new_length = children.length;
+						
+						if (curr_length < new_length) {
+							var new_child = children.last();
+							new_child.removeClass("droppable"); //remove droppable class added by default by the saveContainerSettingsField method
+							//convert child to real widget
+							var widget_tag = ui_creator.getMenuWidgets().find(".menu-widget-listitem").length > 0 ? "listitem" : "html-tag";
+							ui_creator.createTemplateWidgetFromMenuWidgetTag(widget_tag, widget, new_child[0]);
+						}
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

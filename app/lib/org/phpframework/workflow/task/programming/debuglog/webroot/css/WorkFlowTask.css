@@ -1,0 +1,55 @@
+.taskflowchartmenu .task.task_debuglog {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_debuglog .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_debuglog .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.debug_log_task_html {
+	width:390px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .debug_log_task_html {
+	width:100%;
+}
+
+.debug_log_task_html .message,
+  .debug_log_task_html .log_type {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.debug_log_task_html .message label,
+  .debug_log_task_html .log_type label {
+	width:50px;
+}
+.debug_log_task_html .message input,
+  .debug_log_task_html .log_type input {
+	width:calc(100% - 130px);
+}
+.debug_log_task_html .log_type select.log_type_options {
+	width:calc(100% - 122px);  
+	text-align:left;
+}
+.debug_log_task_html .message select,
+   .debug_log_task_html .log_type select {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+	float:none;
+	display:inline-block;
+	margin-bottom:0;
+}
+.debug_log_task_html .message .add_variable,
+  .debug_log_task_html .log_type .add_variable {
+	margin-left:-23px;
+}
+
+

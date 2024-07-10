@@ -1,0 +1,136 @@
+/* popup */
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup {
+	height:90%;
+	min-width:400px;
+	max-width:100vw;
+	min-height:400px;
+	max-height:100vh;
+	padding-bottom:60px;
+	font-size:12px;
+	box-sizing:border-box;
+}
+
+/* popup - clone */
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup.clone > .title {
+	height:50px;
+	margin:0;
+	padding:15px;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	text-align:left;
+	background:var(--add-widget-popup-bg);
+	color:var(--add-widget-popup-color);
+	box-sizing:border-box;
+}
+
+/* popup - content */
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content {
+	position:absolute;
+	top:50px;
+	left:0;
+	right:0;
+	bottom:70px;
+	border:0;
+	border-radius:0;
+	font-size:inherit;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup.clone > .content {
+	background:#fff;
+	font-size:inherit;
+}
+
+/* popup - content - info */
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > .info {
+	padding:15px;
+	opacity:.8;
+}
+
+/* popup - content - tabs */
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul.tabs {
+	padding-left:15px;
+	padding-right:15px;
+	font-size:inherit;
+}
+
+/* popup - content - items */
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul:not(.tabs) {
+	padding:0;
+	position:absolute;
+	top:75px;
+	left:0;
+	right:0;
+	bottom:0;
+	overflow:auto;
+	overflow:overlay;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup:not(.multiple_versions) > .content > ul:not(.tabs) {
+	top:55px;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul:not(.tabs) > .items-empty {
+	margin-top:20px;
+	opacity:.8;
+	text-align:center;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul:not(.tabs) > li {
+	list-style:none;
+	cursor:pointer;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul:not(.tabs) > li:hover {
+	background:rgba(100, 100, 100, .1);
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul:not(.tabs) > li.highlight:not(:hover) {
+	background:rgba(200, 200, 200, .1);
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul:not(.tabs) > li.selected:not(:hover) {
+	background:rgba(0, 0, 0, .1);
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul:not(.tabs) > li:not(.items-empty) {
+	margin:20px;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul:not(.tabs) > li input {
+	margin:0 20px 0 0;
+	cursor:pointer;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul:not(.tabs) > li .name {
+	line-height:30px;
+	float:right;
+	opacity:.7;
+	cursor:pointer;
+	font-size:80%;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul > li img {
+	height:30px;
+	vertical-align:middle;
+	margin-right:20px;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul > li.small img {
+	height:20px;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .content > ul > li.large img {
+	height:40px;
+}
+
+/* popup - buttons */
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .buttons {
+	height:70px;
+	padding:20px;
+	text-align:center;
+	position:absolute;
+	left:0;
+	right:0;
+	bottom:0;
+	box-sizing:border-box;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup.clone > .buttons {
+	background:#fff;
+}
+.layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .buttons > button {
+	padding:0.375rem 0.75rem;
+	border:1px solid var(--add-widget-popup-button-border, #796669);
+	border-radius: 0.25rem;
+	background:var(--add-widget-popup-button-bg, #ab7a90);
+	color:var(--add-widget-popup-button-color, #463a3c);
+	cursor:pointer;
+}

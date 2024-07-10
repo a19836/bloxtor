@@ -1,0 +1,146 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+input, 
+  textarea, 
+  select {
+	font-size:inherit;
+}
+
+/* DROPDOWN */
+.top_bar {
+	margin-bottom:20px;
+}
+
+.title {
+	text-align:center;
+	margin-bottom:20px;
+}
+
+/* SELECT BROKERS */
+.select_brokers .db_broker, .select_brokers .db_driver, .select_brokers .type {
+	width:270px;
+	height:20px;
+	text-align:left;
+	margin:7px auto;
+	float:none;
+	clear:left;
+}
+.select_brokers .db_broker.single_broker {
+	display:none;
+}
+.select_brokers .db_broker label, .select_brokers .db_driver label, .select_brokers .type label {
+	width:100px;
+	margin-right:10px;
+	display:block;
+	float:left;
+	font-weight:normal;
+	font-style:normal;
+}
+
+.select_brokers .db_broker select, .select_brokers .db_driver select, .select_brokers .type select {
+	width:155px;
+}
+.select_brokers .error {
+	text-align:center;
+	margin-top:20px;
+	color:#B51E3F;
+}
+
+/* SELECT TABLES */
+.select_tables .select_buttons {
+	text-align:center;
+}
+.select_tables .select_buttons a {
+	margin:0 5px;
+	cursor:pointer;
+}
+.select_tables .tables {
+	width:100%;
+	margin:10px 30px 10px 30px;
+	float:none;
+	clear:left;
+}
+.select_tables .tables .table {
+	width:200px;
+	min-height:20px;
+	margin:0 10px 10px 0;
+	float:left;
+	overflow-wrap:break-word;
+}
+.select_tables .tables .table input {
+
+}
+.select_tables .tables .table label {
+	margin-left:5px;
+	font-size:10px;
+	font-weight:normal;
+	cursor:pointer;
+}
+.select_tables .error {
+	text-align:center;
+	margin-top:20px;
+	color:#B51E3F;
+}
+
+.options {
+	margin:0 auto 20px;
+	padding-top:20px;
+	width:370px;
+	clear:left;
+	float:none;
+}
+.overwrite, .with_maps {
+	float:none;
+	clear:left;
+	width:100%;
+}
+.overwrite input, .with_maps input {
+	
+}
+.overwrite label, .with_maps label {
+	font-size:9px;
+	font-weight:normal;
+}
+
+/* SELECT STATUSES */
+.statuses {
+	width:100%;
+}
+.statuses table {
+	display:block;
+	width:550px;
+	margin:20px auto;
+}
+.statuses td {
+	padding:0px 5px 0px 5px;
+}
+.statuses .name {
+	width:200px;
+}
+.statuses .path {
+	width:250px;
+}
+.statuses .status {
+	width:100px;
+	text-align:center;
+}
+.statuses td.status {
+	font-weight:bold;
+}
+.statuses .status_ok {
+	color:#00AA00;
+}
+.statuses .status_error {
+	color:#FF0000;
+}
+.statuses .desc {
+	width:100%;
+	color:#000;
+	text-align:center;
+}

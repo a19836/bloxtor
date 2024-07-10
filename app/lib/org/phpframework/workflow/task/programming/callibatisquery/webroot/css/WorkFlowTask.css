@@ -1,0 +1,162 @@
+.taskflowchartmenu .task.task_callibatisquery {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_callibatisquery .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_callibatisquery .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.call_ibatis_query_task_html {
+	width:430px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html {
+	width:auto;
+}
+
+.call_ibatis_query_task_html .get_automatically,
+   .call_ibatis_query_task_html .query_type,
+   .call_ibatis_query_task_html .module_id,
+   .call_ibatis_query_task_html .service_type,
+   .call_ibatis_query_task_html .service_id {
+	width:430px;
+	min-height:20px;
+	margin:0 auto;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .get_automatically,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .query_type,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .module_id,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .service_type,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .service_id {
+	width:100%;
+}
+.call_ibatis_query_task_html .module_id, 
+  .call_ibatis_query_task_html .service_type, 
+  .call_ibatis_query_task_html .service_id, 
+  .call_ibatis_query_task_html .params,
+  .call_ibatis_query_task_html .opts {
+	margin-bottom:5px;
+}
+.call_ibatis_query_task_html .get_automatically {
+	/*margin-top:15px;*/
+	margin-bottom:5px;
+}
+.call_ibatis_query_task_html .query_type {
+	margin-top:15px;
+}
+.call_ibatis_query_task_html .params {
+   	width:430px;
+   	min-height:20px;
+	margin:0 auto 5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .params {
+   	width:100%;
+}
+.call_ibatis_query_task_html .params .array_items .items {
+	position:absolute;
+	margin-top:-25px;
+	margin-left:175px;
+}
+.call_ibatis_query_task_html .params .array_items ul .items {
+	position:static;
+	margin-top:0;
+	margin-left:0;
+}
+
+.call_ibatis_query_task_html .get_automatically label {
+	width:200px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .get_automatically label {
+	width:135px;
+}
+.call_ibatis_query_task_html .get_automatically .icon {
+	width:23px;
+	height:23px;
+}
+.call_ibatis_query_task_html .get_automatically .icon::before {
+	content:"\f022";
+}
+.call_ibatis_query_task_html .get_automatically .icon::after {
+	content:"\f079";
+}
+.call_ibatis_query_task_html .get_automatically .icon:hover::after {
+	color:#000;
+}
+
+.call_ibatis_query_task_html .query_type label,
+   .call_ibatis_query_task_html .module_id label,
+   .call_ibatis_query_task_html .service_type label,
+   .call_ibatis_query_task_html .service_id label,
+   .call_ibatis_query_task_html .params .main_label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .query_type label {
+	width:75px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .module_id label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .service_type label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .service_id label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .params .main_label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .opts .main_label {
+	width:65px;
+}
+.call_ibatis_query_task_html .query_type select {
+	width:235px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .query_type select {
+	width:calc(100% - 82px);
+}
+.call_ibatis_query_task_html .module_id input,
+   .call_ibatis_query_task_html .service_type input,
+   .call_ibatis_query_task_html .service_id input,
+   .call_ibatis_query_task_html .params .parameters_code {
+	width:210px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .module_id input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .service_type input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .service_id input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .params .parameters_code,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .opts .options_code {
+	width:calc(100% - 164px);
+}
+.call_ibatis_query_task_html .service_type select.service_type_string {
+	width:235px;
+	margin-right:5px;
+}
+.call_ibatis_query_task_html .service_type select.service_type_string {
+	width:calc(100% - 195px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .service_type select.service_type_string {
+	width:calc(100% - 140px);
+}
+.call_ibatis_query_task_html .module_id select,
+   .call_ibatis_query_task_html .service_type select.service_type_type,
+   .call_ibatis_query_task_html .service_id select,
+   .call_ibatis_query_task_html .params .parameters_type,
+   .call_ibatis_query_task_html .opts .options_type {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+	float:none;
+	display:inline-block;
+	margin-bottom:0;
+}
+.call_ibatis_query_task_html > div:not(.broker_method_obj) > .add_variable {
+	margin-left:-26px;
+}
+.call_ibatis_query_task_html > div.broker_method_obj > .add_variable {
+	
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_ibatis_query_task_html .opts > .options > .items {
+	margin-left:125px;
+}
+
+

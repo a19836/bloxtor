@@ -1,0 +1,93 @@
+.selected_task_properties .conditions {
+	margin-top:10px;
+}
+.selected_task_properties .conditions ul, .selected_task_properties .conditions li {
+	width:100%;
+	float:none;
+	clear:left;
+}
+
+.selected_task_properties .conditions ul {
+	border:1px solid #CCC;
+	padding:5px 5px 0px 5px;
+	margin:5px 0px 5px 0px;
+	box-sizing:border-box;
+}
+.selected_task_properties .conditions ul ul {
+	width:auto;
+	margin-left:20px;
+}
+.selected_task_properties .conditions li.group {
+	min-height:20px;
+	margin-bottom:5px;
+}
+.selected_task_properties .conditions li.group > select {
+	margin-right:10px;
+}
+.selected_task_properties .conditions li.item {
+	min-height:20px;
+	margin-bottom:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .conditions li.item {
+	min-width:180px;
+	position:relative;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .conditions li.item:hover:before {
+	width:calc(100% - 34px);
+	height:27px;
+	content:"";
+	position:absolute;
+	top:-28px;
+	left:0;
+	background:#f7f7f7;
+	border:1px solid #ddd;
+}
+.selected_task_properties .conditions li.item input {
+	margin-right:5px;
+	height:17px;
+	line-height:17px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .conditions li.item input {
+	width:calc(50% - 50px);
+}
+.selected_task_properties .conditions li.item select {
+	margin-right:5px;
+	height:20px;
+	line-height:20px;
+}
+.selected_task_properties .conditions li.item select.var_type {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:23px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .conditions li.item select.var_type {
+	position:absolute;
+	top:-25px;
+	left:3px;
+	display:none;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .conditions li.item select.var_type:nth-of-type(3) {
+	right:30px;
+	left:auto;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .conditions li.item:hover select.var_type {
+	display:block;
+}
+
+.selected_task_properties .conditions li.group .icon.group_add::before {
+	content:"\f271";
+}
+.selected_task_properties .conditions li.group .icon.item_add::before {
+	content:"\f0fe";
+	font-size:16px;
+}
+
+.selected_task_properties .conditions .add_variable {
+	margin-top:4px;
+	margin-left:-23px;
+}
+

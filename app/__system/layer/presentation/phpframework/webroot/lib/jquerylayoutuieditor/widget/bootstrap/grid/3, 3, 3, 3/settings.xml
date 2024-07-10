@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>3, 3, 3, 3</label>
+	<tag>bscontainer3333</tag>
+	<settings>
+		<menu_class>bscontainer</menu_class>
+		<create_widget_class>BSContainer3333Widget</create_widget_class>
+	</settings>
+	<files>
+		<css>../CreateWidgetBootstrapContainerClassObj.css</css>
+		<js>../CreateWidgetBootstrapContainerClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bscontainer3333:before,
+		  body > .menu-widget.menu-widget-bscontainer3333.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSContainer3333Widget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapContainerClassObj(ui_creator, menu_widget, "bscontainer3333", [3, 3, 3, 3]);
+			obj.extend(this);
+		}
+	]]></menu_js>
+</widget>

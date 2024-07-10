@@ -1,0 +1,104 @@
+a:1:{s:7:"MyArray";a:1:{s:7:"methods";a:6:{s:20:"removeRepeatedValues";a:15:{s:4:"name";s:20:"removeRepeatedValues";s:16:"start_line_index";i:4;s:17:"start_token_index";i:7;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:14;s:20:"end_args_token_index";i:17;s:9:"arguments";a:1:{s:5:"&$arr";N;}s:25:"start_brackets_line_index";i:4;s:26:"start_brackets_token_index";i:19;s:23:"end_brackets_line_index";i:20;s:24:"end_brackets_token_index";i:155;s:14:"end_line_index";i:20;s:15:"end_token_index";i:155;}s:18:"arrKeysToLowerCase";a:15:{s:4:"name";s:18:"arrKeysToLowerCase";s:16:"start_line_index";i:22;s:17:"start_token_index";i:157;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:164;s:20:"end_args_token_index";i:174;s:9:"arguments";a:2:{s:5:"&$arr";N;s:10:"$recursely";s:5:"false";}s:25:"start_brackets_line_index";i:22;s:26:"start_brackets_token_index";i:176;s:23:"end_brackets_line_index";i:24;s:24:"end_brackets_token_index";i:192;s:14:"end_line_index";i:24;s:15:"end_token_index";i:192;}s:18:"arrKeysToUpperCase";a:15:{s:4:"name";s:18:"arrKeysToUpperCase";s:16:"start_line_index";i:26;s:17:"start_token_index";i:194;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:201;s:20:"end_args_token_index";i:211;s:9:"arguments";a:2:{s:5:"&$arr";N;s:10:"$recursely";s:5:"false";}s:25:"start_brackets_line_index";i:26;s:26:"start_brackets_token_index";i:213;s:23:"end_brackets_line_index";i:28;s:24:"end_brackets_token_index";i:229;s:14:"end_line_index";i:28;s:15:"end_token_index";i:229;}s:4:"sort";a:15:{s:4:"name";s:4:"sort";s:16:"start_line_index";i:44;s:17:"start_token_index";i:344;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:351;s:20:"end_args_token_index";i:360;s:9:"arguments";a:2:{s:4:"$arr";N;s:5:"$flag";s:5:"false";}s:25:"start_brackets_line_index";i:44;s:26:"start_brackets_token_index";i:362;s:23:"end_brackets_line_index";i:47;s:24:"end_brackets_token_index";i:378;s:14:"end_line_index";i:47;s:15:"end_token_index";i:378;}s:9:"multisort";a:20:{s:4:"name";s:9:"multisort";s:16:"start_line_index";i:106;s:17:"start_token_index";i:382;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:1724:"/** Takes:
+	*        $data,  multidim array
+	*        $keys,  array(array(key=>col1, sort=>desc, case_sensitive=>1), array(key=>col2, type=>numeric))
+	*
+		###############
+
+		// Example Data
+
+		$_DATA['table1'][] = array("name" => "Sebastian", "age" => 18, "male" => true);
+		$_DATA['table1'][] = array("name" => "Lawrence",  "age" => 16, "male" => true);
+		$_DATA['table1'][] = array("name" => "Olivia",    "age" => 10, "male" => false);
+		$_DATA['table1'][] = array("name" => "Dad",       "age" => 50, "male" => true);
+		$_DATA['table1'][] = array("name" => "Mum",       "age" => 40, "male" => false);
+		$_DATA['table1'][] = array("name" => "Sebastian", "age" => 56, "male" => true);
+		$_DATA['table1'][] = array("name" => "Lawrence",  "age" => 19, "male" => true);
+		$_DATA['table1'][] = array("name" => "Olivia",    "age" => 24, "male" => false);
+		$_DATA['table1'][] = array("name" => "Dad",       "age" => 10, "male" => true);
+		$_DATA['table1'][] = array("name" => "Mum",       "age" => 70, "male" => false);
+
+		###############
+
+		$res=MyArray::multisort($_DATA['table1'], array(array('key'=>'name', case_sensitive=>1),array('key'=>'age','sort'=>'desc')))
+		var_dump($res); 
+
+		array(10) {
+		  [8]=>
+		  array(3) {
+		    ["name"]=>
+		    string(3) "Dad"
+		    ["age"]=>
+		    int(10)
+		    ["male"]=>
+		    bool(true)
+		  }
+		  [3]=>
+		  array(3) {
+		    ["name"]=>
+		    string(3) "Dad"
+		    ["age"]=>
+		    int(50)
+		    ["male"]=>
+		    bool(true)
+		  }
+		  [1]=>
+		  array(3) {
+		    ["name"]=>
+		    string(8) "Lawrence"
+		    ["age"]=>
+		    int(16)
+		    ["male"]=>
+		    bool(true)
+		  }
+		  [6]=>
+		  array(3) {
+		    ["name"]=>
+		    string(8... 	
+	*/";}s:25:"start_comments_line_index";i:49;s:26:"start_comments_token_index";i:380;s:23:"end_comments_line_index";i:105;s:24:"end_comments_token_index";i:380;s:22:"start_args_token_index";i:389;s:20:"end_args_token_index";i:394;s:9:"arguments";a:2:{s:5:"$data";N;s:5:"$keys";N;}s:25:"start_brackets_line_index";i:106;s:26:"start_brackets_token_index";i:396;s:23:"end_brackets_line_index";i:166;s:24:"end_brackets_token_index";i:890;s:14:"end_line_index";i:166;s:15:"end_token_index";i:890;}s:13:"arrayToString";a:20:{s:4:"name";s:13:"arrayToString";s:16:"start_line_index";i:216;s:17:"start_token_index";i:894;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:1100:"/*public static function multisort($data, $keys) {
+		// List As Columns
+		$cols = array();
+		foreach ($data as $key => $row) {
+			foreach ($keys as $k) {
+				$cols[ $k['key'] ][$key] = $k['case_sensitive'] ? strtolower($row[ $k['key'] ]) : $row[ $k['key'] ];
+			}
+		}
+
+		// List original keys
+		$idkeys = array_keys($data);
+
+		// Sort Expression
+		$i = 0;
+		$sort = '';
+		foreach ($keys as $k){
+			if(is_array($cols[$k['key']])) {
+				if($sort) {
+					$sort .= ',';
+				}
+				
+				$sort .= is_numeric($k['key']) ? '$cols['.$k['key'].']' : '$cols["'.$k['key'].'"]';
+				if(isset($k['sort']) && $k['sort']) {
+					$sort.=',SORT_'.strtoupper($k['sort']);
+				}
+				if(isset($k['type']) && $k['type']) {
+					$sort.=',SORT_'.strtoupper($k['type']);
+				}
+				$i++;
+			}
+		}
+		
+		if($sort) {
+			$sort .= ',$idkeys';
+
+			// Sort Funct
+			$sort = 'array_multisort('.$sort.');';
+			//echo "!$sort!";
+			eval($sort);
+		}
+		
+		// Rebuild Full Array
+		$result = array();
+		foreach($idkeys as $idkey){
+			$result[$idkey] = $data[$idkey];
+		}
+		return $result; 
+	}*/";}s:25:"start_comments_line_index";i:167;s:26:"start_comments_token_index";i:892;s:23:"end_comments_line_index";i:214;s:24:"end_comments_token_index";i:892;s:22:"start_args_token_index";i:901;s:20:"end_args_token_index";i:903;s:9:"arguments";a:1:{s:4:"$arr";N;}s:25:"start_brackets_line_index";i:216;s:26:"start_brackets_token_index";i:905;s:23:"end_brackets_line_index";i:241;s:24:"end_brackets_token_index";i:1091;s:14:"end_line_index";i:241;s:15:"end_token_index";i:1091;}}}}

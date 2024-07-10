@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Widget Label</label>
+	<tag>widget_unique_tag</tag>
+	<files>
+		<css>css/relative/file/path.css</css>
+		<js>js/relative/file/path.js</js>
+	</files>
+	<settings>
+		<menu_class>class_foo</menu_class>
+		<template_class>class_bar</template_class>
+		<template_node_name>a</template_node_name>
+		<template_header_class>class_t</template_header_class>
+		<menu_settings_class>class_x</menu_settings_class>
+		<menu_layer_class>class_w</menu_layer_class>
+		
+		<resizable>1 or 0</resizable>
+		
+		<on_open_widget_header_func>someJSFunctionName</on_open_widget_header_func>
+		<on_close_widget_header_func>someJSFunctionName</on_close_widget_header_func>
+		<on_open_droppable_header_func>someJSFunctionName</on_open_droppable_header_func>
+		<on_close_droppable_header_func>someJSFunctionName</on_close_droppable_header_func>
+		
+		<create_widget_class>mainJSFunctionNameOfThisWidgetClassIfExists</create_widget_class>
+		<create_widget_func>mainJSFunctionNameOfThisWidgetIfExists</create_widget_func>
+		
+		<on_drag_start_func>someJSFunctionName</on_drag_start_func>
+		<on_drag_helper_func>someJSFunctionName</on_drag_helper_func>
+		<on_drag_stop_func>someJSFunctionName</on_drag_stop_func>
+		<on_parse_template_widget_html_func>someJSFunctionName</on_parse_template_widget_html_func>
+		<on_clean_template_widget_html_func>someJSFunctionName</on_clean_template_widget_html_func>
+		<on_clone_menu_widget_func>someJSFunctionName</on_clone_menu_widget_func>
+		<on_create_template_widget_func>someJSFunctionName</on_create_template_widget_func>
+		<on_open_settings_func>someJSFunctionName</on_open_settings_func>
+		<on_close_settings_func>someJSFunctionName</on_close_settings_func>
+		<on_resize_settings_func>someJSFunctionName</on_resize_settings_func>
+		<on_before_parse_widget_settings_func>someJSFunctionName</on_before_parse_widget_settings_func>
+		<on_after_parse_widget_settings_func>someJSFunctionName</on_after_parse_widget_settings_func>
+		<on_before_save_settings_field_func>someJSFunctionName</on_before_save_settings_field_func>
+		<on_after_save_settings_field_func>someJSFunctionName</on_after_save_settings_field_func>
+	</settings>
+	<menu_widget><![CDATA[... some html here ...]]></menu_widget>
+	<template_widget><![CDATA[... some html here ...]]></template_widget>
+	<properties><![CDATA[... some html here ...]]></properties>
+	<menu_css><![CDATA[... some css here ...]]></menu_css>
+	<template_css><![CDATA[... some css here ...]]></template_css>
+	<menu_js><![CDATA[... some js here ...]]></menu_js>
+	<template_js><![CDATA[... some js here ...]]></template_js>
+</widget>

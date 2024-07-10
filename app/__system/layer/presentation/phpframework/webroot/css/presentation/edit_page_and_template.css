@@ -1,0 +1,2086 @@
+:root {
+	--selection-color:var(--main-popup-header-bg);
+	--mytree-dragged-widget-bg:var(--main-popup-header-bg);
+	--mytree-dragged-widget-color:var(--main-popup-header-color);
+}
+
+.status_message.bottom_messages .status_message_info.warning {
+	padding-left:20px;
+	padding-right:20px;
+	background:#ffc107;
+	color:#2C2D34;
+	box-sizing:border-box;
+}
+.status_message.bottom_messages .status_message_info.warning span.close_message {
+	margin-right:0;
+}
+
+/* regions_blocks_includes_settings_overlay */
+.regions_blocks_includes_settings_overlay {
+	content:"";
+	position:fixed;
+	top:30px;
+	left:0;
+	right:0;
+	bottom:0;
+	z-index:1;
+	background:rgba(0, 0, 0, .5);
+	display:none;
+}
+.regions_blocks_includes_settings {
+	height:300px;
+	margin:0 auto;
+	padding:40px 15px 10px;
+	position:fixed;
+	left:0;
+	right:0;
+	bottom:0;
+	overflow:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow:overlay;
+	box-sizing:border-box;
+	z-index:5;
+	color:var(--main-settings-color);
+	background:var(--main-settings-bg);
+	font-size:8pt;
+}
+.regions_blocks_includes_settings:not(.resizing) {
+	transition:.2s all;
+}
+.regions_blocks_includes_settings.collapsed {
+	height:25px !important;
+	padding-top:20px;
+	overflow:hidden;
+	bottom:-10px;
+}
+.regions_blocks_includes_settings .settings_header {
+	height:35px;
+	line-height:25px;
+	margin-top:-45px;
+	padding:8px 5px 5px 15px;
+	position:fixed;
+	left:0;
+	right:0;
+	box-sizing:border-box;
+	overflow:hidden;
+	cursor:ns-resize;
+	z-index:1051;
+	
+	/*font-weight:bold;*/
+	border-bottom:1px solid var(--main-settings-header-border);
+	color:var(--main-settings-color);
+	background:var(--main-settings-bg);
+	/*background: -moz-linear-gradient(top, var(--main-iframe-bg) 50%, #f7f7f7 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, var(--main-iframe-bg)), color-stop(100%, #f7f7f7));
+	background: -webkit-linear-gradient(top, var(--main-iframe-bg) 50%, #f7f7f7 100%);
+	background: -o-linear-gradient(top, var(--main-iframe-bg) 50%, #f7f7f7 100%);
+	background: -ms-linear-gradient(top, var(--main-iframe-bg) 50%, #f7f7f7 100%);
+	background: linear-gradient(to bottom, var(--main-iframe-bg) 50%, #f7f7f7 100%);
+	border-top:1px solid #eee;*/
+}
+.regions_blocks_includes_settings.collapsed .settings_header {
+	margin-top:-35px;
+	border:0;
+	
+	/*background: -moz-linear-gradient(bottom, var(--main-iframe-bg) 50%, #ffffff73 100%);
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(50%, var(--main-iframe-bg)), color-stop(100%, #ffffff73));
+	background: -webkit-linear-gradient(bottom, var(--main-iframe-bg) 50%, #ffffff73 100%);
+	background: -o-linear-gradient(bottom, var(--main-iframe-bg) 50%, #ffffff73 100%);
+	background: -ms-linear-gradient(bottom, var(--main-iframe-bg) 50%, #ffffff73 100%);
+	background: linear-gradient(to top, var(--main-iframe-bg) 50%, #ffffff73 100%);*/
+}
+.regions_blocks_includes_settings .settings_header::before {
+	content:"";
+	height:5px;
+	display:block;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	
+	border-top:1px solid var(--resize-bar-border);
+	border-bottom:1px solid var(--resize-bar-border);
+	background:var(--resize-bar-bg);
+	/*background:var(--resize-bar-horizontal-img) repeat-x var(--main-template-bg);*/
+	box-sizing:border-box;
+}
+.regions_blocks_includes_settings .settings_header .icon {
+	width:34px;
+	height:10px;
+	margin:0;
+	position:absolute;
+	top:0;
+	left:45%;
+	left:calc(50% - 17px);
+	text-indent:-9999px;
+	cursor:pointer;
+	opacity:1;
+}
+.regions_blocks_includes_settings .settings_header .icon.maximize {
+	background:url(../../img/tool_frame_top.gif) no-repeat;
+}
+.regions_blocks_includes_settings .settings_header .icon.minimize {
+	background:url(../../img/tool_frame_bottom.gif) no-repeat;
+}
+.regions_blocks_includes_settings .settings_header .icon::before {
+    display:none;
+}
+
+.regions_blocks_includes_settings .invisible {
+	visibility:hidden;
+}
+
+.regions_blocks_includes_settings input:not([type=button]):not([type=submit]), 
+  .regions_blocks_includes_settings select, 
+  .regions_blocks_includes_settings textarea {
+	font-family:var(--main-font-family);
+	font-size: 0.9em;
+	/*background:#ddd;
+	border: 1px inset #ddd;*/
+	color: #555555;
+}
+
+.regions_blocks_includes_settings:not(.collapsed) > ul.tabs {
+	position:fixed;
+	right:10px;
+	margin-top:-42px;
+	z-index:1052; /* bigger than .regions_blocks_includes_settings .settings_header in edit_page_and_template.css */
+	border:0;
+}
+.regions_blocks_includes_settings:not(.collapsed) > ul.tabs li.ui-tabs-active {
+	background:var(--main-settings-bg);
+	border-color:var(--main-settings-header-border);
+}
+.regions_blocks_includes_settings > .ui-tabs-panel {
+	padding:0;
+}
+
+.regions_blocks_includes_settings .template_params .items .item > .delete {
+	display:none;
+}
+.regions_blocks_includes_settings .includes .items .item > .search {
+	margin-left:10px;
+}
+.regions_blocks_includes_settings .icon {
+	display:inline-block;
+	float:none;
+	margin:auto 0 auto 12px;
+	z-index:100;
+	font-size:14px;
+}
+.regions_blocks_includes_settings .icon.add,
+  .regions_blocks_includes_settings .icon.delete {
+	width:13px;
+}
+
+.regions_blocks_includes_settings .items,
+  .regions_blocks_includes_settings .template_region_items {
+	margin-left:20px;
+}
+.regions_blocks_includes_settings .defined_regions .template_region_items {
+	margin-left:35px;
+}
+.regions_blocks_includes_settings .defined_template_params .items {
+	margin-left:5px;
+}
+.regions_blocks_includes_settings .template label {
+	width:150px;
+	display:inline-block;
+}
+.regions_blocks_includes_settings .template select {
+	background-color:#FFF;
+}
+.regions_blocks_includes_settings .other_region_blocks, 
+   .regions_blocks_includes_settings .defined_regions, 
+   .regions_blocks_includes_settings .includes, 
+   .regions_blocks_includes_settings .template_params, 
+   .regions_blocks_includes_settings .other_template_params, 
+   .regions_blocks_includes_settings .defined_template_params {
+	margin-top:20px;
+}
+.regions_blocks_includes_settings .other_region_blocks,
+   .regions_blocks_includes_settings .defined_regions,
+   .regions_blocks_includes_settings .other_template_params, 
+   .regions_blocks_includes_settings .defined_template_params {
+	margin-left:20px;
+}
+.regions_blocks_includes_settings .region_blocks .template_region_items .template_region_item, 
+   .regions_blocks_includes_settings .other_region_blocks .template_region_items .template_region_item,
+   .regions_blocks_includes_settings .defined_regions .template_region_items .template_region_item,
+   .regions_blocks_includes_settings .template_params .items .item,
+   .regions_blocks_includes_settings .other_template_params .items .item,
+   .regions_blocks_includes_settings .defined_template_params .items .item {
+	width:695px;
+	margin-top:10px;
+}
+.regions_blocks_includes_settings .region_blocks .template_region_items .template_region_item:not(.has_edit) > .edit,
+  .regions_blocks_includes_settings .other_region_blocks .template_region_items .template_region_item:not(.has_edit) > .edit {
+	display:none !important;
+}
+.regions_blocks_includes_settings .region_blocks .template_region_items .template_region_item > label, 
+   .regions_blocks_includes_settings .other_region_blocks .template_region_items .template_region_item > label, 
+   .regions_blocks_includes_settings .template_params .items .item > label, 
+   .regions_blocks_includes_settings .other_template_params .items .item > label {
+	width:150px;
+	margin-left:5px;
+	margin-right:5px;
+	display:inline-block;
+	font-weight:normal;
+	font-style:normal;
+	white-space:nowrap;
+	overflow:hidden;
+	vertical-align:middle;
+}
+.regions_blocks_includes_settings .other_region_blocks .template_region_items .template_region_item > label {
+	width:130px;
+}
+.regions_blocks_includes_settings .other_template_params .items .item > label {
+	width:145px;
+}
+.regions_blocks_includes_settings .region_blocks .template_region_items .template_region_item > label:hover, 
+   .regions_blocks_includes_settings .other_region_blocks .template_region_items .template_region_item > label:hover, 
+   .regions_blocks_includes_settings .template_params .items .item > label:hover, 
+   .regions_blocks_includes_settings .other_template_params .items .item > label:hover {
+	z-index:1;
+	position:relative;
+	overflow:visible;
+}
+.regions_blocks_includes_settings .region_blocks .template_region_items .template_region_item > label:hover:before, 
+   .regions_blocks_includes_settings .other_region_blocks .template_region_items .template_region_item > label:hover:before, 
+   .regions_blocks_includes_settings .template_params .items .item > label:hover:before, 
+   .regions_blocks_includes_settings .other_template_params .items .item > label:hover:before {
+	content:attr(title);
+	padding:5px 10px 5px 0;
+	display:block;
+	background:var(--main-settings-bg);
+	color:transparent;
+	position:absolute;
+	top:-5px;
+	z-index:-1;
+}
+.regions_blocks_includes_settings .defined_regions .template_region_items .template_region_item,
+  .regions_blocks_includes_settings .defined_template_params .items .item {
+	margin:10px 0;
+}
+.regions_blocks_includes_settings .defined_regions .template_region_items .template_region_item:before,
+  .regions_blocks_includes_settings .defined_template_params .items .item:before {
+    content:"·";
+    font-size:40px;
+    vertical-align:middle;
+    line-height:20px;
+    margin-right:10px;
+}
+.regions_blocks_includes_settings input:not([type=button]):not([type=submit]),
+  .regions_blocks_includes_settings select {
+	height:26px;
+	font-size:inherit;
+	background-color:#FFF;
+	border:1px solid #ddd;
+	border-radius:4px;
+	box-sizing:border-box;
+}
+.regions_blocks_includes_settings .region_blocks .template_region_items .template_region_item > input,
+  .regions_blocks_includes_settings .other_region_blocks .template_region_items .template_region_item > input {
+	width:202px;
+	text-align:left;
+	/*direction:rtl; - Cannot change the directio to right, otherwise the blocks like "_login" will appear "login_" */
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .block_options,
+   .regions_blocks_includes_settings .template_region_items .template_region_item > .pretty_block_options_button {
+	width:200px !important; /* !important must be here bc if block_options is hidden then pretty_block_options_button will have the width:0. so we need to overright this issue! */
+}
+.regions_blocks_includes_settings .template_params .items .item.inactive *:not(input[type=checkbox]),
+  .regions_blocks_includes_settings .template_params .items .item.inactive input[type=checkbox].template_param_value,
+  .regions_blocks_includes_settings .other_template_params .items .item.inactive input[type=checkbox].template_param_value {
+	cursor:not-allowed;
+	opacity:.3;
+}
+.regions_blocks_includes_settings .template_params .items .item > input:not([type=checkbox]),
+  .regions_blocks_includes_settings .other_template_params .items .item > input:not([type=checkbox]) {
+	width:240px;
+}
+.regions_blocks_includes_settings .template_params .items .item > input[type=checkbox] {
+  	width:auto;
+  	margin:0;
+}
+.regions_blocks_includes_settings .other_template_params .items .item > input[type=checkbox]:not(.template_param_value) {
+  	display:none;
+}
+.regions_blocks_includes_settings .template_params .items .item > input[type=color],
+  .regions_blocks_includes_settings .other_template_params .items .item > input[type=color] {
+	width:20px;
+	margin:auto 0 auto 10px;
+	padding:0;
+	border:0;
+	background:transparent;
+}
+.regions_blocks_includes_settings .template_params .items .item.boolean input[type=checkbox].template_param_value,
+  .regions_blocks_includes_settings .other_template_params .items .item.boolean input[type=checkbox].template_param_value {
+	margin-right:10px;
+}
+.regions_blocks_includes_settings .template_params .items .item.boolean > .icon,
+  .regions_blocks_includes_settings .other_template_params .items .item.boolean > .icon,
+  .regions_blocks_includes_settings .template_params .items .item.boolean > input[type=color],
+  .regions_blocks_includes_settings .other_template_params .items .item.boolean > input[type=color] {
+	display:none
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .pretty_block_options_button {
+	height:24px;
+	display:inline-block !important;
+	background:white;
+	vertical-align:middle;
+	border-color:#eee;
+	border-radius:2px;
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .pretty_block_options_button:hover {
+	border-color:#eee;
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .pretty_block_options_button.hidden {
+	display:none !important;
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .pretty_block_options_button .ui-selectmenu-text {
+	line-height:17px;
+	/*direction:rtl; - Cannot change the directio to right, otherwise the blocks like "_login" will appear "login_" */
+}
+.pretty_block_options_menu > ul { /* must be generic bc this is appended to the body */
+	max-width:100vw !important;
+	min-height:40px;
+	max-height:200px;
+}
+.pretty_block_options_menu .import_module_block {
+	margin:0 !important;
+	padding:5px !important;
+	background:#ddd;
+	border-bottom:1px inset #bbb !important;
+	font-weight:normal;
+}
+.pretty_block_options_menu .import_module_block a,
+  .pretty_block_options_menu .import_module_block a i {
+	color:var(--selection-color);
+}
+.pretty_block_options_menu .import_module_block a:hover,
+  .pretty_block_options_menu .import_module_block a:hover i {
+	color:initial;
+}
+.pretty_block_options_menu .import_module_block a .add {
+	margin:auto 5px;
+}
+.pretty_block_options_menu > ul .ui-menu-item {
+	padding-left:20px;
+	border:0;
+	border-top:1px solid transparent;
+	border-bottom:1px solid transparent;
+	font-weight:normal;
+}
+.pretty_block_options_menu > ul .ui-menu-item.ui_menu_item_selected {
+	border-color:#fbcb09;
+	border-color:var(--selection-color);
+	background:#ccc;
+	color:#c77405;
+	color:var(--selection-color);
+}
+.pretty_block_options_menu > ul .ui-menu-item.ui-state-focus:not(.ui_menu_item_selected),
+  .pretty_block_options_menu > ul .ui-menu-item.ui-state-disabled {
+	margin:0;
+	background:transparent;
+	border-color:transparent;
+	color:inherit;
+}
+.pretty_block_options_menu > ul .ui-menu-item:not(.ui-state-disabled):hover,
+  .pretty_block_options_menu > ul .ui-menu-item.ui-state-focus:not(.ui-state-disabled):hover {
+	margin:0;
+	background:#dadada;
+	border-color:#fbcb09;
+	border-color:var(--selection-color);
+	color:#c77405;
+	color:var(--selection-color);
+	opacity:.8;
+}
+.pretty_block_options_menu > ul .ui-menu-item:nth-child(2) { /* blank option */
+	padding-left:5px;
+	color:#999;
+}
+.pretty_block_options_menu > ul .ui-menu-item:nth-child(2):before {
+	content:"-- none --";
+}
+
+.regions_blocks_includes_settings .template_region_items .template_region_item > .type,
+  .regions_blocks_includes_settings .template_region_items .template_region_item > .region_block_type {
+	color:#CCC;
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .block_text,
+   .regions_blocks_includes_settings .template_region_items .template_region_item > .block_html,
+   .regions_blocks_includes_settings .template_region_items .template_region_item > .block_params > .block_param .block_param_text,
+   .regions_blocks_includes_settings .items .item > .template_param_text {
+	float:none;
+	clear:left;
+	margin-top:3px;
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .block_text > textarea,
+   .regions_blocks_includes_settings .template_region_items .template_region_item > .block_html > textarea,
+   .regions_blocks_includes_settings .template_region_items .template_region_item > .block_params > .block_param .block_param_text > textarea,
+   .regions_blocks_includes_settings .items .item > .template_param_text > textarea {
+	width:100%;
+	height:auto;
+	min-height:100px;
+	background-color:#FFF;
+	border:1px solid #ddd;
+	border-radius:4px;
+	box-sizing:border-box;
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .block_params > .block_param > label {
+	width:150px;
+	display:inline-block;
+	font-weight:normal;
+	font-size:80%;
+	color:#666;
+	vertical-align:middle; /* in case the label be in 2 lines bc is too big */
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .block_params > .block_param .block_param_value {
+	width:192px;
+	color:#666;
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .block_html > .ace_editor {
+	width:100%;
+	min-width:540px;
+	height:auto;
+	min-height:200px;
+	background:#fff;
+	border:1px solid #ddd;
+	border-radius:2px;
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .block_params > .block_param select, 
+   .regions_blocks_includes_settings .includes .item > select, 
+   .regions_blocks_includes_settings .template_params .item > select, 
+   .regions_blocks_includes_settings .other_template_params .item > select {
+	width:70px;
+	color:#CCC;
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .block_params {
+	margin-left:40px;
+}
+.regions_blocks_includes_settings .template_region_items .template_region_item > .block_params > .block_param {
+	margin-top:5px;
+}
+.regions_blocks_includes_settings .no_items {
+	margin-top:10px;
+	margin-left:50px;
+}
+
+.regions_blocks_includes_settings .includes .items {
+	margin-top:5px;
+}
+.regions_blocks_includes_settings .includes .items .item {
+	margin-top:5px;
+}
+.regions_blocks_includes_settings .includes .items .item > .path {
+	width:330px;
+}
+
+/* regions_blocks_includes_settings - SLA */
+.regions_blocks_includes_settings .sla {
+	min-width:825px;
+	background:transparent;
+}
+.regions_blocks_includes_settings .sla .ui-widget {
+	font-size:8.5px !important;
+}
+.regions_blocks_includes_settings .sla input:not([type=button]):not([type=submit]), 
+  .regions_blocks_includes_settings .sla select {
+	height:auto !important;
+	font-size:inherit !important;
+	box-sizing:content-box;
+}
+.regions_blocks_includes_settings .sla .relationship .query_insert_update_delete .attributes .column input,
+  .regions_blocks_includes_settings .sla .relationship .query_insert_update_delete .attributes .value input {
+	box-sizing:border-box;
+}
+.regions_blocks_includes_settings .sla textarea {
+	font-size:inherit;
+}
+.regions_blocks_includes_settings .sla .icon.add {
+	width:15px;
+}
+.regions_blocks_includes_settings .sla .icon.delete {
+	width:13px;
+}
+.regions_blocks_includes_settings .sla .sla_groups_flow > nav {
+	position:absolute;
+	right:109px;
+	margin-top:-35px;
+}
+.regions_blocks_includes_settings .sla > ul.tabs li.ui-tabs-active {
+	background:var(--main-settings-bg);
+}
+
+.regions_blocks_includes_settings .sla .taskflowchartdiagram .icon, 
+  .regions_blocks_includes_settings .sla .selected_task_properties .icon, 
+  .regions_blocks_includes_settings .sla .selected_connection_properties .icon {
+	margin:auto 3px;
+}
+.regions_blocks_includes_settings .sla .selected_task_properties .search_page_url {
+	margin-left:-18px;
+}
+.regions_blocks_includes_settings .sla .selected_task_properties .add_variable.inline {
+	/*margin-top:2px;*/
+	margin-left:-18px;
+}
+.regions_blocks_includes_settings .sla .selected_task_properties .icon.edit_source {
+	font-size:inherit;
+}
+.regions_blocks_includes_settings .sla .selected_task_properties .icon.add_variable::before {
+	font-size:16px;
+}
+.regions_blocks_includes_settings .sla .selected_task_properties .form_containers > .add {
+	width:15px;
+}
+.regions_blocks_includes_settings .sla .selected_task_properties .form_containers .fields .field .input_src .add_variable.inline,
+  .regions_blocks_includes_settings .sla .selected_task_properties .form_containers .fields .field .input_href .add_variable.inline {
+	margin-left:-21px;
+}
+.regions_blocks_includes_settings .sla .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .limit_start .limit .add_variable, 
+  .regions_blocks_includes_settings .sla .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .relationship .limit_start .start .add_variable {
+	margin-top:0;
+}
+.regions_blocks_includes_settings .sla .sla_main_groups .sla_group_item {
+	background:#fff;
+}
+.regions_blocks_includes_settings .sla .selected_task_properties .array_items > .items > .group_add {
+	margin-left:10px;
+}
+.regions_blocks_includes_settings .sla .get_url_contents_task_html .dts .data_type, 
+  .regions_blocks_includes_settings .sla .get_url_contents_task_html .result_type select[name=result_type_type] {
+	padding:0;
+}
+.regions_blocks_includes_settings .sla .get_url_contents_task_html .dts .array_items > .items {
+	margin-top:-25px;
+}
+.regions_blocks_includes_settings .sla .soap_connector_task_html .client_options table input {
+	box-sizing:border-box;
+}
+.regions_blocks_includes_settings .sla .selected_task_properties .create_form_task_html .ptl_settings .ptl_external_vars.array_items .items {
+	margin-left:0;
+}
+.regions_blocks_includes_settings .sla .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .include_file_action_body {
+	text-align:left;
+}
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .code_action_body textarea,
+  .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .code_action_body .ace_editor {
+	font-size:10px;
+}
+
+/* regions_blocks_includes_settings - SLA - taskflowchart */
+.regions_blocks_includes_settings .sla #ui > .taskflowchart > .workflow_menu li a .icon {
+	margin-left:0;
+}
+.regions_blocks_includes_settings .sla .taskflowchart.with_top_bar_menu > .workflow_menu.top_bar_menu > ul {
+	position:absolute;
+}
+.regions_blocks_includes_settings .sla .taskflowchart.fixed_properties.resizable_task_properties > .selected_task_properties > .resize_properties_panel, 
+  .regions_blocks_includes_settings .sla .taskflowchart.fixed_properties.resizable_connection_properties > .selected_connection_properties .resize_properties_panel, 
+  .regions_blocks_includes_settings .sla .taskflowchart.fixed_side_properties.resizable_task_properties > .selected_task_properties > .resize_properties_panel, 
+  .regions_blocks_includes_settings .sla .taskflowchart.fixed_side_properties.resizable_connection_properties > .selected_connection_properties .resize_properties_panel {
+	background:var(--resize-bar-bg);
+	/*background:var(--resize-bar-horizontal-img) repeat-x var(--main-template-bg);*/
+}
+.regions_blocks_includes_settings .sla .taskflowchart > .selected_task_properties > .maximize_minimize_icon, 
+  .regions_blocks_includes_settings .sla .taskflowchart > .selected_connection_properties > .maximize_minimize_icon {
+	background:none;
+	text-indent:0;
+}
+
+/* regions_blocks_includes_settings - Design */
+.regions_blocks_includes_settings .design_settings > div {
+	margin:10px 0;
+}
+.regions_blocks_includes_settings .design_settings > div > label {
+	width:150px;
+	display:inline-block;
+}
+.regions_blocks_includes_settings .design_settings > div > input {
+	width:calc(100% - 155px);
+}
+.regions_blocks_includes_settings .design_settings > div.special_body_attributes > input {
+	width:calc(100% - 190px);
+}
+
+.regions_blocks_includes_settings .css_files {
+	margin-top:20px;
+}
+.regions_blocks_includes_settings .css_files > ul li:not(.empty_files),
+  .regions_blocks_includes_settings .js_files > ul li:not(.empty_files) {
+	list-style-type:disc;
+	margin-left:20px;
+}
+.regions_blocks_includes_settings .css_files > ul li a,
+  .regions_blocks_includes_settings .js_files > ul li a {
+	color:var(--link-color);
+}
+
+/* TEMPLATE REGION INFO POPUP */
+.template_region_info_popup {
+	position:absolute;
+	top:5%;
+	left:5%;
+	right:5%;
+	bottom:5%;
+	width:90%;
+	height:90%;
+}
+.template_region_info_popup > iframe {
+	width:100%;
+	height:100%;
+}
+
+/* EDIT WEBROOT FILE */
+#edit_webroot_file {
+	width:auto !important;
+	height:auto !important;
+	position:fixed !important;
+	top:5px !important;
+	left:5px !important;
+	right:5px !important;
+	bottom:5px !important;
+	padding:0 !important;
+}
+#edit_webroot_file iframe {
+	width:100%;
+	height:100%;
+	box-sizing:border-box;
+	border:none;
+}
+
+/* CHOOSE MODULE BLOCK POPUP */
+.choose_module_block_popup {
+	position:absolute;
+	top:5%;
+	left:5%;
+	right:5%;
+	bottom:5%;
+	width:90%;
+	height:90%;
+}
+.choose_module_block_popup iframe {
+	width:100%;
+	height:100%;
+}
+
+/* TAB CONTENT TEMPLATE LAYOUT */
+body > .dragging_menu_item {
+	padding:5px;
+	background:var(--mytree-dragged-widget-bg) !important;
+	color:var(--mytree-dragged-widget-color);
+	border:0;
+	border-radius:5px;
+	text-align:center;
+}
+
+/* MODULE INFO TOOLTIP */
+#module_info_tooltip {
+	min-width:100px;
+	min-height:70px;
+	position:fixed;
+	padding:10px;
+	background:#fff;
+	border:1px solid var(--resize-bar-border);
+	border-radius:5px;
+	z-index:3;
+}
+#module_info_tooltip > .close {
+	margin:0;
+	position:absolute;
+	top:5px;
+	right:1px;
+	font-size:var(--icon-font-size);
+	color:#333;
+}
+#module_info_tooltip > .close::before {
+	width:15px;
+	display:inline-block;
+	text-rendering:auto;
+	-webkit-font-smoothing: antialiased;
+	font:var(--fa-font-solid);
+	/*content:x"\f057";*/
+	content:"\f00d";
+	line-height:16px;
+}
+#module_info_tooltip > .close:hover {
+	opacity:1;
+}
+#module_info_tooltip > .module_data {
+	width:400px;
+	max-width:95vw;
+	text-align:center;
+}
+#module_info_tooltip > .module_data > .loading {
+	margin:40px auto 0;
+	padding-left: 20px;
+	display: inline-block;
+}
+#module_info_tooltip > .module_data > .module_img {
+	width:25%;
+	width:70px;
+	height:70px;
+	line-height:70px;
+	text-transform:uppercase;
+	text-align:center;
+	font-size:14px;
+	font-weight:bold;
+	float:left;
+}
+#module_info_tooltip > .module_data > .module_img img {
+	width:100%;
+	height:100%;
+}
+#module_info_tooltip > .module_data > .module_label {
+	width:75%;
+	width:calc(100% - 170px);
+	margin-bottom:5px;
+	padding-left:20px;
+	font-weight:bold;
+	text-align:left;
+	float:left;
+}
+#module_info_tooltip > .module_data > .module_description {
+	width:75%;
+	width:calc(100% - 170px);
+	padding-left:20px;
+	text-align:left;
+	float:left;
+}
+
+/* CODE */
+/* CODE - MENU - NOT TOP BAR MENU */
+.code_layout_ui_editor .code_menu:not(.top_bar_menu) {
+	position:absolute;
+	top:.5em;
+	left:0;
+	z-index:11;
+}
+.code_layout_ui_editor .code_menu:not(.top_bar_menu) ul {
+	background:none;
+	border:none;
+}
+.code_layout_ui_editor .code_menu:not(.top_bar_menu) ul li {
+	border:none;
+}
+.code_layout_ui_editor .code_menu:not(.top_bar_menu) ul li a {
+	color:#fff;
+	border-right-color:#fff;
+}
+
+
+/* CODE - MENU - TOP BAR MENU */
+.code_layout_ui_editor .code_menu.top_bar_menu {
+	z-index:2;
+}
+.code_layout_ui_editor .code_menu.top_bar_menu > ul {
+	/*border:0;*/
+}
+
+/* CODE - ELS UI */
+.code_layout_ui_editor .layout-ui-editor,
+  .template_region_block_html_editor_popup .layout-ui-editor {
+	height:auto;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0px;
+	margin:0;
+	background:var(--main-template-bg);
+	color:var(--main-template-color);
+}
+.dark_theme .code_layout_ui_editor .layout-ui-editor,
+  .dark_theme .template_region_block_html_editor_popup .layout-ui-editor {
+	background:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+}
+.template_region_block_html_editor_popup .layout-ui-editor {
+	background:transparent; /* in firefox this editor appears with a bigger z-index than the popup close icon. so we must put the bg transparent so we can see the popup close btn */
+}
+.code_layout_ui_editor .layout-ui-editor.full-screen,
+  .template_region_block_html_editor_popup .layout-ui-editor.full-screen {
+	position: absolute !important; /* overwrite the css from jquerylayoutuieditor/style.css */
+	bottom: 0px !important;
+}
+.code_layout_ui_editor .layout-ui-editor > .tabs,
+  .template_region_block_html_editor_popup .layout-ui-editor > .tabs {
+	display:none;
+}
+#code .layout-ui-editor textarea {
+	position:initial !important;/* bc of the '#code textarea' that sets the position to fixed. */
+	border:1px solid var(--menu-settings-input-border, transparent);
+    
+}
+.code_layout_ui_editor .layout-ui-editor > .menu-settings {
+	/* This is very important otherwise the layout_ui_editor_right_container will appear in the background of the menu-settings: z-index must be at least 1 */
+	/* This is very important otherwise the .options-left will appear above of the ".fixed-properties > .menu-settings": z-index must be at least 4 */
+	/* This is very important otherwise the border will not be shown bc the .options-left appears above the ".fixed-side-properties > .menu-settings": z-index must be at least 4 */
+	z-index:4;
+}
+.code_layout_ui_editor .layout-ui-editor.sidebar_options_left.fixed-properties > .menu-settings {
+	/* This is very important otherwise the .options-left will appear above of the menu-settings */
+	z-index:4;
+}
+.template_region_block_html_editor_popup .layout-ui-editor > .menu-widgets > li:first-child {
+	display:none; /*hide code group menu bc ptl and php are not allowed in the template_region_block_html_editor_popup */
+}
+.template_region_block_html_editor_popup .layout-ui-editor > .menu-widgets .group:nth-child(2) .group-title {
+	padding-top:0;
+	border-top:0;
+}
+.template_region_block_html_editor_popup .layout-ui-editor > .menu-widgets li.menu-widget-php {
+	display:none !important;
+}
+
+.code_layout_ui_editor .layout-ui-editor .move,
+  .code_layout_ui_editor .layout-ui-editor .add,
+  .code_layout_ui_editor .layout-ui-editor .delete,
+  .template_region_block_html_editor_popup .layout-ui-editor .move,
+  .template_region_block_html_editor_popup .layout-ui-editor .add,
+  .template_region_block_html_editor_popup .layout-ui-editor .delete {
+	background-image:none;
+}
+.code_layout_ui_editor .layout-ui-editor label,
+  .template_region_block_html_editor_popup .layout-ui-editor label {
+	font-style:inherit;
+	font-weight:inherit;
+	color:inherit;
+	font-family:inherit;
+}
+.code_layout_ui_editor .layout-ui-editor .template-source textarea,
+   .code_layout_ui_editor .layout-ui-editor .template-source .ace_editor,
+   .code_layout_ui_editor .layout-ui-editor .template-full-source textarea,
+   .code_layout_ui_editor .layout-ui-editor .template-full-source .ace_editor,
+  .template_region_block_html_editor_popup .layout-ui-editor .template-source textarea,
+  .template_region_block_html_editor_popup .layout-ui-editor .template-source .ace_editor,
+  .template_region_block_html_editor_popup .layout-ui-editor .template-full-source textarea,
+  .template_region_block_html_editor_popup .layout-ui-editor .template-full-source .ace_editor {
+	height:100% !important;
+	z-index:1; /* This is very important otherwise the layout_ui_editor_right_container will appear in the background of the menu-settings */
+}
+.code_layout_ui_editor .layout-ui-editor .tabs .tab.view-page {
+	display:none; /* disable view tab bc does not parse PHP */
+}
+
+/* CODE - ELS UI - OPTIONS */
+.code_layout_ui_editor .layout-ui-editor > .options > .options-left,
+  .code_layout_ui_editor .layout-ui-editor > .options > .options-center,
+  .code_layout_ui_editor .layout-ui-editor > .options > .options-right,
+  .code_layout_ui_editor .layout-ui-editor > .options > .options-right-2,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options > .options-left,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options > .options-center,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options > .options-right,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options > .options-right-2 {
+	padding-top:7px;
+}
+.code_layout_ui_editor .layout-ui-editor > .options > .options-right,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options > .options-right {
+	direction:rtl;
+}
+.code_layout_ui_editor .layout-ui-editor > .options > .options-right .sub-options,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options > .options-right .sub-options {
+	direction:ltr;
+}
+.code_layout_ui_editor .layout-ui-editor > .options .option,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options .option {
+	opacity:1;
+}
+.code_layout_ui_editor .layout-ui-editor > .options .option.show-full-source,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options .option.show-full-source,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options .option.full-screen {
+	display:none !important;
+}
+.code_layout_ui_editor .layout-ui-editor .option,
+  .template_region_block_html_editor_popup .layout-ui-editor .option {
+	background-image:none;
+}
+.code_layout_ui_editor .layout-ui-editor > .template-widgets-options > .options > .show-option {
+	padding:5px;
+}
+.code_layout_ui_editor .layout-ui-editor > .template-widgets-options > .options > .show-option label {
+	cursor:inherit;
+}
+.code_layout_ui_editor .layout-ui-editor > .template-widgets-options > .options > .show-ptl,
+  .code_layout_ui_editor .layout-ui-editor > .options .toggle-ptl,
+  .template_region_block_html_editor_popup .layout-ui-editor > .template-widgets-options > .options > .show-php,
+  .template_region_block_html_editor_popup .layout-ui-editor > .template-widgets-options > .options > .show-ptl,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options .toggle-php,
+  .template_region_block_html_editor_popup .layout-ui-editor > .options .toggle-ptl {
+	display:none;
+}
+
+/* CODE - ELS UI - LAYOUT UI EDITOR - TOP BAR MENU - OPTIONS */
+.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option:not(.sub_menu):hover {
+	color:var(--main-popup-header-color) !important;
+}
+.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option:not(.sub_menu):not(.sub-options):hover,
+  .in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option:not(.sub_menu):hover > i {
+	opacity:.9;
+}
+.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.option-active {
+	color:var(--main-template-color) !important;
+}
+.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub-options.open {
+	color:var(--main-popup-header-color) !important;
+}
+
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.sidebar_options_left) > .options > .options-left {
+	width:auto;
+	height:30px;
+	padding:5px;
+	top:0;
+	left:0;
+	right:calc(100% - 205px);
+	box-sizing:border-box;
+	background:var(--main-template-bg);
+	white-space:nowrap;
+	z-index:3;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options .options-left {
+	width:135px;
+	height:auto;
+	padding-top:0;
+	top:0;
+	left:0 !important;
+	right:auto !important; /* important is to overwrite the value set when resize */
+	bottom:0;
+	border-right:1px solid var(--resize-bar-border);
+	background:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+	z-index:3;
+	transition:left .2s ease-in-out, right .2s ease-in-out, width .2s ease-in-out, height .2s ease-in-out, opacity .5s;
+}
+.dark_theme .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-left {
+	background:var(--main-iframe-bg);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse:not(.sidebar_options_left) > .options > .options-left {
+	left:calc(100% - 205px);
+	right:0;
+	text-align:center;
+	direction:ltr;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left > .options > .options-left {
+	left:auto !important; /* important is to overwrite the value set when resize */
+	right:0 !important;
+	border-left:1px solid var(--resize-bar-border);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left.left-panel-collapsed > .options .options-left {
+	width:32px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left.left-panel-collapsed > .options .options-left .option {
+	max-width:32px;
+	overflow:hidden;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-left .option {
+	color:var(--main-iframe-color);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-left .option.option-disabled {
+	opacity:.35 !important;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.sidebar_options_left) > .options > .options-left .option:hover:after {
+	margin-top:5px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.sidebar_options_left) > .options > .options-left .option:not(.show-option-panel) {
+	display:none;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.sidebar_options_left) > .options > .options-left::before {
+	content:"List:";
+	display:inline-block;
+	font:var(--main-font-family);
+	font-size:8pt;
+	color:var(--main-iframe-color);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.sidebar_options_left) > .options > .options-left .option.show-option-panel {
+	width:calc(100% - 20px);
+	margin:0;
+	/*border-color:var(--main-context-menu-border);*/
+	border-color:transparent;
+	background:inherit;
+	color:var(--link-color);
+	/*font-weight:bold;*/
+	font-size:8pt;
+	text-align:left;
+	box-shadow:none; /* bc of on hover and focus events */
+	vertical-align:baseline;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.sidebar_options_left) > .options > .options-left .option.show-option-panel:hover {
+	color:var(--link-color) !important;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option {
+	width:auto;
+	height:auto;
+	padding:10px;
+	display:block;
+	text-align:left;
+	direction:ltr;
+	position:absolute;
+	left:0;
+	right:0;
+	border-top:1px solid transparent;
+	border-bottom:1px solid transparent;
+	white-space:nowrap;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.option-active {
+	padding-right:11px;
+	right:-1px;
+	background:var(--main-template-bg);
+	color:var(--main-iframe-top-title-color) !important;
+	border-top-color:var(--resize-bar-border);
+	border-bottom-color:var(--resize-bar-border);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left > .options > .options-left .option.option-active {
+	padding-left:11px;
+	left:-1px;
+	right:0;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-option-panel,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-settings {
+	display:none;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left.hide-template-widgets-options > .options > .options-left .option.show-layout-options {
+	/*display:none;*/
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left:not(.with_right_container_dbs) > .options > .options-left .option.show-right-container-dbs {
+	display:none;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-widgets {
+	top:0;
+	border-top:none !important;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-layers {
+	top:40px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-right-container {
+	top:80px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-right-container-dbs {
+	top:120px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-layout-options {
+	bottom:0;
+	border-bottom:none !important;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.choose-template {
+	padding:8px 10px; /* 8px so this option be aligned with ".fixed-side-properties > .menu-settings.collapsed" */
+	bottom:40px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.toggle-left-options {
+	padding:0;
+	position:absolute;
+	top:50%;
+	left:calc(50% - 8px);
+	right:auto;
+	font-size:20px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.sidebar_options_left) > .options .options-left .option.toggle-left-options {
+	display:none;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option:after {
+	margin:5px 0 0 10px;
+	display:inline-block;
+	font-family:var(--main-editor-font-family);
+	font-size:8pt;
+	vertical-align:middle;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-widgets:after {
+	content:"Widgets";
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-layers:after {
+	content:"Layers";
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-right-container:after {
+	content:"Modules & Blocks";
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-right-container-dbs:before {
+    content:"\f1c0";
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font: var(--fa-font-solid);
+    font-size:15px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-right-container-dbs:after {
+	content:"Databases";
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.show-layout-options:after {
+	content:"Layout Options";
+	content:"Canvas Toggles";
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .options > .options-left .option.choose-template:after {
+	content:"Switch Template";
+}
+
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	width:200px;
+	padding:0 50px 0 0;
+	position:fixed;
+	top:16px;
+	left:auto;
+	right:285px;
+	bottom:auto;
+	box-sizing:border-box;
+	background:var(--main-iframe-bg);
+	z-index:1;
+}
+.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center {
+	background:var(--main-popup-header-bg);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center .layout-in-desktop {
+	position:absolute;
+	top:4px;
+	right:0px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center .layout-in-mobile {
+	position:absolute;
+	top:4px;
+	right:28px;
+	padding-right:10px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center .option.option-screen-width, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center .option.option-screen-height {
+	width:55px;
+	padding-right:20px;
+	font-size:10pt;
+	color:#999 !important; /* so the color doesn't change to red */
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center .option.option-px {
+	margin-left:-20px;
+	font-size:10pt;
+	color:#999 !important; /* so the color doesn't change to red */
+	cursor:not-allowed;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-center .option.option-x {
+	font-size:10pt;
+	color:#999 !important; /* so the color doesn't change to red */
+	cursor:not-allowed;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right {
+	width:130px;
+	padding:0;
+	position:fixed;
+	top:19px;
+	left:auto;
+	right:25px;
+	bottom:auto;
+	box-sizing:border-box;
+	background:var(--main-iframe-bg);
+	z-index:1;
+	text-align:right;
+}
+.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right {
+	top:17px;
+	background:var(--main-popup-header-bg);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option:not(input) {
+	width:auto;
+	color:inherit;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options.zooms {
+	margin-left:0;
+	padding-left:16px;
+	border-left:1px solid var(--main-context-menu-border);
+	
+	margin-right:5px;
+	padding-right:16px;
+	border-right:1px solid var(--main-context-menu-border);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options.toggles {
+	margin-right:5px;
+	padding-left:11px;
+	padding-right:15px;
+	border-right:1px solid var(--main-context-menu-border);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul {
+	width:auto;
+	height:auto;
+	min-width:140px;
+	padding-top:10px;
+	background:var(--main-iframe-bg);
+	font-size:10pt;
+	direction:ltr;
+	border-bottom:1px solid var(--main-context-menu-border);
+	border-bottom-left-radius:3px;
+	border-bottom-right-radius:3px;
+	color:var(--main-context-menu-color);
+	right:0;
+	left:auto;
+	display:block;
+	opacity:1;
+	transition:.5s all;
+}
+.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul {
+	background:none;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options.zooms ul {
+	min-width:150px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options:not(.open) ul {
+	width:0;
+	min-width:auto;
+	height:0;
+	padding:0;
+	overflow:hidden;
+	opacity:0;
+}
+/*.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options.open > ul:before {
+	content:" ";
+	width:0;
+	height:0;
+	display:block;
+	position:absolute;
+	top:-5px;
+	right:19px;
+	border-top:8px solid transparent;
+	border-right:8px solid transparent;
+	border-bottom:8px solid var(--main-context-menu-border);
+	border-left:8px solid transparent;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options.open > ul:after {
+	content:" ";
+	height:0;
+	width:0;
+	display:block;
+	position:absolute;
+	top:-3px;
+	right:20px;
+	border-top:7px solid transparent;
+	border-right:7px solid transparent;
+	border-bottom:7px solid var(--main-context-menu-bg);
+	border-left:7px solid transparent;
+}*/
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li {
+	line-height:20px;
+	padding:4px 15px 4px 10px;
+	border-left:1px solid var(--main-context-menu-border);
+	border-right:1px solid var(--main-context-menu-border);
+	background:var(--main-context-menu-bg);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li:first-child {
+	border-top:1px solid var(--main-context-menu-border);
+	border-top-left-radius:3px;
+	border-top-right-radius:3px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li:nth-of-type(1)::before,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li:nth-last-of-type(1)::after {
+	content:"";
+	height:10px;
+	margin:-4px -15px 4px -10px;
+	display:block;
+	background:var(--main-context-menu-bg);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li:nth-last-of-type(1)::after {
+	margin:4px -15px -4px -10px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li:hover {
+	background:var(--main-context-menu-hover-bg);
+	color:var(--main-context-menu-hover-color);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li i {
+	width:15px;
+	visibility:hidden;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.zoom-range {
+	border-top-color:var(--main-context-menu-border);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.zoom-range input {
+	width:calc(100% - 30px);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.zoom-range span {
+	float:left;
+	font-size:6pt;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-background,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-borders,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-php,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-ptl,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-comments,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-js,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-css,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.auto-resize {
+	padding-left:35px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.auto-resize::after,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-background::before,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-css::after {
+	margin-left:-35px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-background input,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-borders input,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-php input,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-ptl input,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-comments input,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-js input,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.toggle-css input,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .sub-options ul li.auto-resize input {
+	position:absolute;
+	left:5px;
+	opacity:0;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.layout-shown) > .options .option.full-screen {
+	display:none;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.save {
+	position:fixed;
+	top:10px;
+	right:0;
+}
+
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .template-widgets-options > .options input[type="checkbox"] {
+	opacity:0;
+}
+
+/* CODE - ELS UI - LAYOUT UI EDITOR - TOP BAR MENU - OPTIONS - AUTO-SAVE */
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu {
+	width:16px;
+	direction:ltr;
+	font-family:var(--main-font-family);
+	font-size:12px;
+	text-align:left;
+	overflow:visible;
+	
+	position:absolute;
+	right:-55px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu:before {
+	width:13px;
+	height:16px;
+	/*padding-top:4px;*/
+	display:block;
+	cursor:pointer;
+	font-size:14px;
+	
+	padding-top:2px;
+	content:"\f142";
+	text-indent:2px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu:hover:before,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu.open:before {
+	color:var(--icon-hover-color);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu > ul {
+	width:auto;
+	height:auto;
+	padding:13px 0 0;
+	position:absolute;
+	top:15px;
+	right:0;
+	background:transparent;
+	border-bottom:1px solid var(--main-context-menu-border);
+	border-bottom-left-radius:3px;
+	border-bottom-right-radius:3px;
+	cursor:default;
+	box-sizing:border-box;
+	display:block;
+	overflow:hidden;
+	opacity:1;
+	transition:.5s all;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu:not(.open) > ul {
+	width:0;
+	min-width:auto;
+	height:0;
+	opacity:0;
+}
+/*.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu.open > ul:before {
+	content:" ";
+	width:0;
+	height:0;
+	display:block;
+	position:absolute;
+	top:-2px;
+	right:10px;
+	border-top:8px solid transparent;
+	border-right:8px solid transparent;
+	border-bottom:8px solid var(--main-context-menu-border);
+	border-left:8px solid transparent;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options > .options-right .option.sub_menu.open > ul:after {
+	content:" ";
+	height:0;
+	width:0;
+	display:block;
+	position:absolute;
+	top:0px;
+	right:11px;
+	border-top:7px solid transparent;
+	border-right:7px solid transparent;
+	border-bottom:7px solid var(--main-context-menu-bg);
+	border-left:7px solid transparent;
+}*/
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li {
+	margin:0;
+	display:block;
+	padding:5px;
+	position:relative;
+	background:var(--main-context-menu-bg);
+	color:var(--main-context-menu-color);
+	font-style:normal;
+	font-size:10pt;
+	border-left:1px solid var(--main-context-menu-border);
+	border-right:1px solid var(--main-context-menu-border);
+	cursor:pointer;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li:first-child {
+	border-top:1px solid var(--main-context-menu-border);
+	border-top-left-radius:3px;
+	border-top-right-radius:3px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li:nth-of-type(1)::before,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li:nth-last-of-type(1)::after {
+	content:"";
+	height:10px;
+	display:block;
+	background:var(--main-context-menu-bg);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li.without_padding {
+	padding:0;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li:hover {
+	background:var(--main-context-menu-hover-bg);
+	color:var(--main-context-menu-hover-color);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li.auto_save_activation,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li.auto_convert_activation {
+	padding:4px 15px 4px 10px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li input[type=checkbox] {
+	position:absolute;
+	left:5px;
+	opacity:0;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li a {
+	padding:4px 15px 4px 10px;
+	display:block;
+	color:inherit;
+	text-decoration:none;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li a > .icon {
+	width:20px;
+	height:20px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li .icon::before,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option.sub_menu ul li .icon::after {
+	display:none !important;
+}
+
+/* CODE - ELS UI - LAYOUT UI EDITOR - TOP BAR MENU - PANELS */
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.fixed-properties.menu-settings-shown {
+	bottom:30px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .resize-panels,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .template-source,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .template-full-source,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .template-widgets,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .template-preview {
+	top:0;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .menu-widgets, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .menu-layers,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .template-widgets-options {
+	top:30px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .menu-widgets, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .menu-layers, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.sidebar_options_left > .template-widgets-options {
+	top:0;
+	border-top:none;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).sidebar_options_left > .menu-widgets, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).sidebar_options_left > .menu-layers, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).sidebar_options_left > .template-widgets-options {
+	left:135px;
+	right:calc(100% - 340px);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).sidebar_options_left.left-panel-collapsed > .menu-widgets, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).sidebar_options_left.left-panel-collapsed > .menu-layers, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).sidebar_options_left.left-panel-collapsed > .template-widgets-options {
+	left:32px;
+	right:calc(100% - 237px);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left > .menu-widgets, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left > .menu-layers, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left > .template-widgets-options {
+	left:calc(100% - 340px);
+	right:135px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left.left-panel-collapsed > .menu-widgets, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left.left-panel-collapsed > .menu-layers, 
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left.left-panel-collapsed > .template-widgets-options {
+	left:calc(100% - 237px);
+	right:32px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).fixed-side-properties.sidebar_options_left > .menu-settings {
+	left:135px;
+	right:calc(100% - 340px);
+	border-left:1px solid var(--resize-bar-border);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).fixed-side-properties.sidebar_options_left.left-panel-collapsed > .menu-settings {
+	left:32px;
+	right:calc(100% - 237px);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.fixed-side-properties.sidebar_options_left > .menu-settings {
+	left:calc(100% - 340px);
+	right:136px;
+	border-right:1px solid var(--resize-bar-border);
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.fixed-side-properties.sidebar_options_left.left-panel-collapsed > .menu-settings {
+	left:calc(100% - 237px);
+	right:33px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse > .template-widgets {
+	margin-right:2px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).sidebar_options_left > .template-widgets {
+	left:345px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).sidebar_options_left.left-panel-collapsed > .template-widgets {
+	left:242px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left > .template-widgets {
+	right:345px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left.left-panel-collapsed > .template-widgets {
+	right:242px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).sidebar_options_left > .resize-panels {
+	left:340px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu:not(.reverse).sidebar_options_left.left-panel-collapsed > .resize-panels {
+	left:237px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left > .resize-panels {
+	right:340px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu.reverse.sidebar_options_left.left-panel-collapsed > .resize-panels {
+	right:237px;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .menu-layers {
+	padding:10px;
+}
+.code_layout_ui_editor .layout-ui-editor.fixed-side-properties > .menu-settings.full-screen {
+	top:30px !important;
+}
+.code_layout_ui_editor .layout-ui-editor.fixed-side-properties.sidebar_options_left > .menu-settings.full-screen {
+	top:0 !important;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .template-source,
+  .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .template-full-source {
+	border:0;
+}
+.code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .template-widgets > .template-widgets-droppable {
+	border-color:var(--resize-bar-border) !important;
+	border-color:#2C2D34 !important;
+	border:0;
+}
+
+/* CODE - ELS UI - LAYOUT UI EDITOR - TOP BAR MENU - PROPERTIES */
+.code_layout_ui_editor .layout-ui-editor.fixed-properties > .menu-settings,
+  .code_layout_ui_editor .layout-ui-editor.fixed-side-properties > .menu-settings {
+	max-height:calc(100vh - 80px); /* bc of the top bar and the bottom:30px of the .layout-ui-editor */
+}
+.code_layout_ui_editor .layout-ui-editor.fixed-side-properties > .menu-settings > .resize-menu-settings,
+  .code_layout_ui_editor .layout-ui-editor.fixed-properties > .menu-settings > .resize-menu-settings {
+	/*border-top:1px solid var(--resize-bar-border);
+	border-bottom:1px solid var(--resize-bar-border);
+	background: var(--resize-bar-bg);*/
+     /*background: var(--resize-bar-horizontal-img) repeat-x var(--main-template-bg);*/
+     z-index:2;
+}
+.code_layout_ui_editor .layout-ui-editor.fixed-properties > .menu-settings.full-screen {
+	z-index:3;
+}
+
+/* CODE - ELS UI - LAYOUT UI EDITOR - TOP BAR MENU - POPUP */
+.code_layout_ui_editor .layout-ui-editor > .layout-ui-editor-popup {
+	margin-top:-40px;
+}
+
+/* CODE - MYTREE */
+.code_layout_ui_editor .mytree .icon {	
+	margin-left:5px;
+	display:inline-block;
+	vertical-align:middle;
+	font-size:12px;
+	color:inherit;
+}
+.code_layout_ui_editor .mytree .icon.refresh {
+	opacity:0;
+}
+.code_layout_ui_editor .mytree .jstree-open > .icon.refresh,
+  .code_layout_ui_editor .mytree .jstree-open > a .icon.refresh {
+	opacity:.7
+}
+.code_layout_ui_editor .mytree .table-list,
+  .code_layout_ui_editor .mytree .table-edit,
+  .code_layout_ui_editor .mytree .table-add,
+  .code_layout_ui_editor .mytree .table-view {
+	vertical-align:baseline;
+	color:var(--icon-hover-color);
+}
+.code_layout_ui_editor .mytree .table-list::before {	
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f00a";
+}
+.code_layout_ui_editor .mytree .table-edit::before {	
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f044";
+}
+.code_layout_ui_editor .mytree .table-add::before {	
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f0fe";
+}
+.code_layout_ui_editor .mytree .table-view::before {	
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f06e";
+}
+.code_layout_ui_editor .mytree .diagram::before {	
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f0e8";
+}
+
+.code_layout_ui_editor .mytree li > .sub_menu {
+	margin-left:0;
+	position:relative;
+	color:inherit;
+}
+.code_layout_ui_editor .mytree li > .sub_menu.open > ul {
+	padding:10px 0;
+	display:block;
+	visibility:visible;
+	top:auto;
+	left:-120px;
+	background-color:var(--main-context-menu-bg, #f7f7f7); 
+	color:var(--main-context-menu-color, #999);
+	border:1px solid var(--main-context-menu-border, #ccc); 
+	border-radius:3px;
+	box-shadow:none;
+	font-family:var(--main-font-family, inherit);
+	font-size:8pt;
+	overflow:auto;
+}
+.code_layout_ui_editor .mytree li > .sub_menu.open > ul li {
+	background:transparent;
+}
+.code_layout_ui_editor .mytree li > .sub_menu.open > ul li:hover {
+	background:var(--main-context-menu-hover-bg);
+	color:var(--main-context-menu-hover-color);
+}
+.code_layout_ui_editor .mytree li > .sub_menu.open > ul li a {
+	background:inherit;
+	color:inherit;
+}
+.code_layout_ui_editor .mytree li > .sub_menu.open > ul li:hover a .icon {
+	opacity:1;
+}
+
+/* CODE - DB TABLE UIS DIAGRAM BLOCK POPUP */
+.code_layout_ui_editor .db_table_uis_diagram_block {
+	position:fixed !important;
+	top:20px !important;
+	left:20px !important;
+	right:20px !important;
+	bottom:20px !important;
+}
+.code_layout_ui_editor .db_table_uis_diagram_block > .popup_close {
+	z-index:auto !important;
+}
+.code_layout_ui_editor .db_table_uis_diagram_block > iframe {
+	width:100% !important;
+	height:100% !important;
+}
+
+/* CODE - ELS UI RIGHT CONTAINER */
+/*.code_layout_ui_editor .layout_ui_editor_right_container_resize {
+	width:5px;
+	position:absolute;
+	top:3.5em;
+	right:calc(20% - 5px);
+	bottom:3.5em;
+	box-sizing:border-box;
+	background:#796669;
+	cursor:ew-resize;
+	z-index:11;
+	display:none;
+}*/
+/*.code_layout_ui_editor .layout_ui_editor_right_container_resize.full-screen {
+	position:fixed;
+	top:3.5em;
+	bottom:2.8em;
+}*/
+
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container {
+	margin:0;
+	padding:0 0 20px 0;
+	position:absolute;
+	top:30px;
+	bottom:0;
+	overflow-y:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow-y:overlay;
+	overflow-x:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow-x:overlay;
+	vertical-align:top;
+	display:none;
+	box-sizing:border-box;
+	
+	font-family:var(--main-font-family);
+	border-top:1px solid rgba(0,0,0,0.25);
+	font-size:11px;
+	transition:.2s all;
+}
+.code_layout_ui_editor .layout-ui-editor.sidebar_options_left .layout_ui_editor_right_container {
+	top:0;
+	border-top:none;
+}
+.code_layout_ui_editor .layout-ui-editor:not(.reverse) .layout_ui_editor_right_container {
+	left:0;
+	right:calc(100% - 205px);
+}
+.code_layout_ui_editor .layout-ui-editor:not(.reverse).sidebar_options_left .layout_ui_editor_right_container {
+	left:135px;
+	right:calc(100% - 340px);
+}
+.code_layout_ui_editor .layout-ui-editor:not(.reverse).sidebar_options_left.left-panel-collapsed .layout_ui_editor_right_container {
+	left:32px;
+	right:calc(100% - 237px);
+}
+.code_layout_ui_editor .layout-ui-editor.reverse .layout_ui_editor_right_container {
+	left:calc(100% - 205px);
+	right:0;
+}
+.code_layout_ui_editor .layout-ui-editor.reverse.sidebar_options_left .layout_ui_editor_right_container {
+	left:calc(100% - 340px);
+	right:135px;
+}
+.code_layout_ui_editor .layout-ui-editor.reverse.sidebar_options_left.left-panel-collapsed .layout_ui_editor_right_container {
+	left:calc(100% - 237px);
+	right:32px;
+}
+.code_layout_ui_editor .layout-ui-editor:not(.reverse).with-minimized-panels > .layout_ui_editor_right_container {
+	right:100% !important;
+}
+.code_layout_ui_editor .layout-ui-editor.reverse.with-minimized-panels > .layout_ui_editor_right_container {
+	left:100% !important;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container a {
+	color:var(--menu-layers-group-title-color);
+}
+/*.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container.full-screen {
+	position:fixed;
+	top:3.5em;
+	bottom:2.8em;
+}*/
+
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree {
+	min-width:auto;
+	max-width:none;
+	min-height:auto;
+	max-height:none;
+	margin:0;
+	padding:0 0 0 5px;
+	border:0;
+	overflow:visible;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container.only_dbs .mytree:not(.db_drivers_tree),
+  .code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container:not(.only_dbs) .mytree.db_drivers_tree {
+	display:none;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li a label {
+	white-space:nowrap;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree a > i.jstree-icon {
+	vertical-align:middle;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree a > i.jstree-icon.cms_module:after {
+	display:none; /* hide locker icon */
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree a > i.jstree-icon.table {
+	cursor:move;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree .jstree-hovered {
+	background:var(--main-navigator-tree-item-hover-bg) !important;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree .jstree-clicked {
+	background:var(--main-navigator-tree-item-clicked-bg) !important;
+	color:var(--main-navigator-tree-item-clicked-color);
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree .template-widget {
+	display:none;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree > li:first-child {
+	padding-top:10px;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li a {
+	color:var(--menu-layers-group-title-color);
+	cursor:pointer;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li a > label {
+	cursor:inherit;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li.draggable_menu_item > a {
+	padding-top:5px;
+	padding-right:5px;
+	padding-bottom:5px;
+	cursor:move;
+	position:relative; /* bc of the .icon.info and .icon.edit in modules and blocks lists*/
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li.draggable_menu_item > a > .jstree-icon {
+	background:var(--mytree-dragged-widget-bg);
+	color:var(--mytree-dragged-widget-color);
+	border-radius:3px;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li.draggable_menu_item > a > .jstree-icon::before {
+	color:inherit;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li.draggable_menu_item > a label {
+	color:var(--mytree-dragged-widget-bg);
+	cursor:move;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree .block_file,
+  .code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree .module_folder,
+  .code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree .table {
+	margin-right:5px;
+	margin-left:-2px;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree .block_file::before {
+	margin-left:0;
+	content:"\f1b2";
+	font:var(--fa-font-solid);
+	font-size:16px;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree > li[db_driver_name]:not(.with_reserved_tables) > ul > li.module_table {
+	display:none;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li[data-jstree='{"icon":"table"}'] > ul > li:first-child {
+	margin-top:5px;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li[data-jstree='{"icon":"table"}'] > ul > li > a,
+  .code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li[data-jstree='{"icon":"table"}'] > ul > li > a label,
+  .code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li[data-jstree='{"icon":"table"}'] > ul > li > a i {
+	min-height:auto;
+	font-size:10px;
+	cursor:initial;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li[data-jstree='{"icon":"table"}'] > ul > li > a.jstree-clicked,
+  .code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li[data-jstree='{"icon":"table"}'] > ul > li > a.jstree-hovered {
+	background:transparent !important;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li[data-jstree='{"icon":"table"}'] > ul > li > a i {
+	height:auto;
+}
+.code_layout_ui_editor .layout-ui-editor .layout_ui_editor_right_container .mytree li[data-jstree='{"icon":"table"}'] > ul > li > a i:before {
+	margin-top:0;
+	font-size:12px;
+}
+
+/* TEMPLATE REGION BLOCK HTML EDITOR POPUP */
+.template_region_block_html_editor_popup {
+	position:absolute;
+	top:5%;
+	left:5%;
+	right:5%;
+	bottom:5%;
+	width:90%;
+	height:90%;
+}
+.template_region_block_html_editor_popup .layout-ui-editor {
+	top:15px;
+	left:10px;
+	right:10px;
+	bottom:10px;
+}
+
+/* CHOOSE DB TABLE WIDGET OPTIONS POPUP */
+.choose_db_table_widget_options_popup {
+	top:auto;
+	left:auto;
+	right:auto;
+	bottom:auto;
+	width:350px;
+}
+.choose_db_table_widget_options_popup .toggle_advanced_options {
+	margin: 10px 0;
+	text-align: center;
+}
+.choose_db_table_widget_options_popup .toggle_advanced_options a {
+	color: inherit;
+	font-size:90%;
+}
+.choose_db_table_widget_options_popup .db_broker,
+  .choose_db_table_widget_options_popup .db_driver,
+  .choose_db_table_widget_options_popup .type,
+  .choose_db_table_widget_options_popup .db_table,
+  .choose_db_table_widget_options_popup .table_alias,
+  .choose_db_table_widget_options_popup .widget_type,
+  .choose_db_table_widget_options_popup .widget_group,
+  .choose_db_table_widget_options_popup .widget_list_type,
+  .choose_db_table_widget_options_popup .widget_action {
+	padding:10px 20px 0;
+}
+.choose_db_table_widget_options_popup .db_broker.hidden,
+  .choose_db_table_widget_options_popup .db_driver.hidden,
+  .choose_db_table_widget_options_popup .type.hidden,
+  .choose_db_table_widget_options_popup .db_table.hidden,
+  .choose_db_table_widget_options_popup .table_alias.hidden,
+  .choose_db_table_widget_options_popup .widget_type.hidden,
+  .choose_db_table_widget_options_popup .widget_group.hidden,
+  .choose_db_table_widget_options_popup .widget_list_type.hidden,
+  .choose_db_table_widget_options_popup .widget_action.hidden {
+	display:none !important;
+}
+.choose_db_table_widget_options_popup.with_advanced_options .db_broker.hidden,
+  .choose_db_table_widget_options_popup.with_advanced_options .db_driver.hidden,
+  .choose_db_table_widget_options_popup.with_advanced_options .type.hidden,
+  .choose_db_table_widget_options_popup.with_advanced_options .db_table.hidden,
+  .choose_db_table_widget_options_popup.with_advanced_options .table_alias.hidden,
+  .choose_db_table_widget_options_popup.with_advanced_options .widget_type.hidden,
+  .choose_db_table_widget_options_popup.with_advanced_options .widget_group.hidden,
+  .choose_db_table_widget_options_popup.with_advanced_options .widget_list_type.hidden,
+  .choose_db_table_widget_options_popup.with_advanced_options .widget_action.hidden {
+	display:block !important;
+}
+.choose_db_table_widget_options_popup .db_broker label,
+  .choose_db_table_widget_options_popup .db_driver label,
+  .choose_db_table_widget_options_popup .type label,
+  .choose_db_table_widget_options_popup .db_table label,
+  .choose_db_table_widget_options_popup .table_alias label,
+  .choose_db_table_widget_options_popup .widget_type label,
+  .choose_db_table_widget_options_popup .widget_group label,
+  .choose_db_table_widget_options_popup .widget_list_type label,
+  .choose_db_table_widget_options_popup .widget_action label {
+	width:110px;
+	display:inline-block;
+}
+.choose_db_table_widget_options_popup .table_alias input {
+	width:calc(100% - 120px);
+}
+.choose_db_table_widget_options_popup .db_broker select,
+  .choose_db_table_widget_options_popup .db_driver select,
+  .choose_db_table_widget_options_popup .type select,
+  .choose_db_table_widget_options_popup .widget_type select,
+  .choose_db_table_widget_options_popup .widget_group select,
+  .choose_db_table_widget_options_popup .widget_list_type select,
+  .choose_db_table_widget_options_popup .widget_action select {
+	width:calc(100% - 110px);
+}
+.choose_db_table_widget_options_popup .db_table select {
+	width:calc(100% - 132px);
+	margin-right:5px;
+}
+.choose_db_table_widget_options_popup .button {
+	padding:20px;
+	text-align:center;
+}
+.choose_db_table_widget_options_popup select,
+  .choose_db_table_widget_options_popup input {
+	font-size:inherit;
+}
+
+/* CREATE DB TABLE OR ATTRIBUTE POPUP */
+.create_db_table_or_attribute_popup {
+	position:absolute;
+	top:5%;
+	left:5%;
+	right:5%;
+	bottom:5%;
+	width:90%;
+	height:90%;
+}
+.create_db_table_or_attribute_popup iframe {
+	width:100%;
+	height:100%;
+}
+.create_db_table_or_attribute_popup > .iframe_top_bar_bg {
+	height:50px;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	background:var(--main-popup-header-bg);
+	z-index:1;
+}
+.create_db_table_or_attribute_popup > .continue {
+	line-height:14px;
+	padding:7px 10px;
+	position:absolute;
+	top:10px;
+	right:15px;
+	background:var(--main-popup-header-color);
+	color:var(--main-popup-header-bg);
+	font-size:7pt;
+	z-index:2;
+}
+
+/* CHOOSE DB TABLE WIDGET OPTIONS POPUP */
+.replace_existing_db_table_widget_popup {
+	/*top:auto;
+	left:auto;
+	right:auto;
+	bottom:auto;*/
+}
+.replace_existing_db_table_widget_popup .info {
+	padding:20px;
+	text-align:center;
+}
+.replace_existing_db_table_widget_popup .button {
+	margin:0;
+	padding:0 20px 20px;
+	text-align:center;
+}
+.replace_existing_db_table_widget_popup .button input {
+	margin:0 10px;
+}
+.replace_existing_db_table_widget_popup .table_alias {
+	width:250px;
+	margin:0 auto;
+	padding:0 20px 20px;
+	text-align:center;
+}
+.replace_existing_db_table_widget_popup .table_alias label {
+	width:80px;
+	display:inline-block;
+}
+.replace_existing_db_table_widget_popup .table_alias input {
+	width:calc(100% - 90px);
+	font-size:inherit;
+}
+
+/* ERROR and INVALID */
+.error {
+	width:100%;
+	text-align:center;
+	font-style:italic;
+	color:#B51E3F;
+	margin-top:10px;
+	margin-bottom:20px;
+}
+
+.invalid {
+	padding:10px;
+	position:absolute;
+	left:0;
+	top:50px;
+	right:0;
+	text-align:center;
+	background:#fff;
+	border:1px solid #B51E3F;
+	color:#B51E3F;
+	z-index:6;
+}
+.invalid a {
+	text-decoration:underline;
+}
+.invalid .close {
+	position:absolute;
+	right:5px;
+	bottom:10px;
+}

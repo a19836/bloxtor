@@ -1,0 +1,133 @@
+::-webkit-scrollbar {
+	height:10px;
+}
+
+/* TOP BAR */
+.top_bar header > ul {
+	right:27px;
+}
+
+/* TASKS FLOW CHART */
+.taskflowchart.with_top_bar_menu .tasks_menu, 
+  .taskflowchart.with_top_bar_menu .tasks_menu_hide, 
+  .taskflowchart.with_top_bar_menu .tasks_flow {
+	top:50px !important;
+}
+.taskflowchart .tasks_menu {
+	width:0px !important;
+	display:none;
+	overflow:hidden;
+}
+.taskflowchart .tasks_flow {
+	left:0px !important;
+	right:0px !important;
+}
+.taskflowchart .tasks_menu_hide {
+	display:none;
+}
+
+.taskflowchart .tasks_flow::-webkit-scrollbar {
+	height:10px;
+}
+.taskflowchart .tasks_flow .task.task_server {
+	opacity:1;
+}
+.taskflowchart .tasks_flow .task.task_server:hover {
+	opacity:.8 !important;
+}
+.taskflowchart .selected_task_properties {
+	width:auto !important;
+	height:auto !important;
+}
+.taskflowchart.with_top_bar_menu .selected_task_properties, 
+  .taskflowchart.with_top_bar_menu .selected_connection_properties {
+	background:#fff !important;
+}
+
+/* TEMPLATE TASKS FLOW CHART */
+
+.server_task_html {
+	font-size:8pt;
+}
+.server_task_html .template_workflow > .taskflowchart > .tasks_flow {
+	top:0 !important;
+	border:0;
+}
+.server_task_html .template_workflow .taskflowchart .workflow_menu {
+	top:-30px;
+	left:auto;
+	right:50px;
+	border:0;
+	background:#fff;
+}
+.server_task_html .template_workflow .taskflowchart .workflow_menu ul.dropdown li {
+	padding:0;
+}
+.server_task_html .template_workflow .taskflowchart .workflow_menu ul.dropdown li.set_global_settings {
+	margin-left:10px;
+	border-left:0;
+}
+.server_task_html .template_workflow .taskflowchart .workflow_menu ul.dropdown li a .icon {
+	margin:0;
+}
+.server_task_html .template_workflow .taskflowchart .selected_task_properties, 
+  .server_task_html .template_workflow .taskflowchart .selected_connection_properties {
+    padding: 35px 15px 15px 15px;
+}
+
+.server_task_html .myfancypopup.template_properties > .popup_close {
+	top:15px;
+	right:15px;
+}
+
+/* CHOOSE FROM FILE MANAGER */
+
+.choose_from_file_manager {
+	min-width:400px;
+	height:auto !important;
+}
+.choose_from_file_manager div {
+	float:none;
+	clear:left;
+}
+.choose_from_file_manager .mytree {
+	border:0;
+	min-width:300px;
+	min-height:200px;
+	max-width:450px;
+	max-height:300px;
+	overflow:auto;
+	margin-bottom:10px;
+	margin-top:10px;
+	padding-left:10px;
+	padding-right:10px;
+}
+.choose_from_file_manager .button {
+	height:20px;
+	padding-top:5px;
+	text-align:center;
+	width:100%;
+	clear:left;
+	float:none;
+}
+.choose_from_file_manager.with_title > .button {
+	height:auto;
+	margin-bottom:15px;
+}
+.choose_from_file_manager .button input  {
+	font-size:inherit;
+}
+
+/* LOADING PANEL */
+
+.loading_panel {
+	position:fixed;
+	top:0px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	background-color:#333;
+	opacity:0.6;
+	filter: alpha(opacity=60);/* For IE */
+	z-index:9000;
+}

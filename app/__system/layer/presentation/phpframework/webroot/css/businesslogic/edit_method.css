@@ -1,0 +1,13 @@
+.top_bar header > .title > select.is_business_logic_service {
+	margin-left:5px;
+}
+body .top_bar .title .advanced_settings,
+  body .file_class_method_obj .advanced_settings {
+	display:none;
+}
+
+.file_class_method_obj #settings .is_business_logic_service {
+	width:140px;
+	height:25px;
+	margin:10px auto 10px auto;
+}

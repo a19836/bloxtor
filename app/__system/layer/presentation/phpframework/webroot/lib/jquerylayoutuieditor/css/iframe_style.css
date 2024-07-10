@@ -1,0 +1,1239 @@
+/* UI */
+:root {
+	--html-element-top-spacing:10px;
+	--html-element-left-spacing:10px;
+	--html-element-right-spacing:10px;
+	--html-element-bottom-spacing:10px;
+	
+	--html-element-border:2px dashed #bfc4db;
+	--html-element-active-border:2pt dashed #4070ff;
+	--html-element-active-gap:-2px;
+	--html-element-over-border:1px solid #4070ff;
+	--html-element-over-gap:-1px;
+}
+
+html {
+	/* min-width and min-height are for firefox, bc the html doesn't have full height, so we need to force it */
+	min-width:100vw;
+	min-height:100vh;
+}
+body {
+	/* min-width and min-height are for firefox, bc the body doesn't have full height, so we need to force it */
+	min-width:100vw;
+	min-height:100vh;
+	margin:0;
+	
+	overflow:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow:overlay; /* The scrollbar will then also take transparent backgrounds across the page. This will also put the scrollbar inside the page instead of removing some of the width to put in the scrollbar.However the overlay value is now deprecated and only works in Chrome and Safari anymore. */
+}
+.main-droppable {
+	width:100%; 
+	min-height:100vh; /* this style is for firefox, bc the body doesn't have full height, so we need to force it */
+	padding:.5em;
+	box-sizing:border-box;
+	
+	-ms-transform-origin: 0 0 0px; 
+	-webkit-transform-origin: 0 0 0px; 
+	-moz-transform-origin: 0 0 0px; 
+	-o-transform-origin: 0 0 0px; 
+	transform-origin: 0 0 0px;
+	
+	-ms-transition: transform 200ms ease-in-out;
+	-webkit-transition: transform 200ms ease-in-out;
+	-moz-transition: transform 200ms ease-in-out;
+	-o-transition: transform 200ms ease-in-out;
+	transition: transform 200ms ease-in-out;
+}
+.main-droppable.with-background { 
+	background-image: -webkit-repeating-radial-gradient(center center, #ecf1ff, #ecf1ff .5px, transparent 1px, transparent 100%);
+	background-image: -moz-repeating-radial-gradient(center center, #ecf1ff, #ecf1ff .5px, transparent 1px, transparent 100%);
+	background-image: -ms-repeating-radial-gradient(center center, #ecf1ff, #ecf1ff .5px, transparent 1px, transparent 100%);
+	background-image: repeating-radial-gradient(center center, #ecf1ff, #ecf1ff .5px, transparent 1px, transparent 100%);
+	
+	-webkit-background-size: 10px 10px;
+	-moz-background-size: 10px 10px;
+	background-size: 10px 10px;
+}
+
+/* GENERIC */
+
+/* bootstrap */
+.modal-backdrop.show { /* when user click s in button to open popup, the div.modal-backdrop gets created and doesn't allow us to click in the other widgets. So we need to hide it. */
+	display:none !important;
+}
+
+/* when dropping an element */
+.main-droppable.highlight {
+	-ms-box-shadow: inset 0px 0px 10px 5px rgba(0, 0, 0, 0.3) !important;
+	-webkit-box-shadow: inset 0px 0px 10px 5px rgba(0, 0, 0, 0.3) !important;
+	-moz-box-shadow: inset 0px 0px 10px 5px rgba(0, 0, 0, 0.3) !important;
+	box-shadow: inset 0px 0px 10px 5px rgba(0, 0, 0, 0.3) !important;
+}
+.highlight {
+	outline:2px solid #ffca6f !important;
+}
+.highlight-left {
+	box-shadow: -2px 0px 0px 0px red !important;
+}
+.highlight-right {
+	box-shadow: 2px 0px 0px 0px red !important;
+}
+.highlight-top {
+	box-shadow: 0px -2px 0px 0px red !important;
+}
+.highlight-bottom {
+	box-shadow: 0px 2px 0px 0px red !important;
+}
+.highlight-parent-left {
+	box-shadow: inset 2px 0px 0px 0px green !important;
+}
+.highlight-parent-right {
+	box-shadow: inset -2px 0px 0px 0px green !important;
+}
+.highlight-parent-top {
+	box-shadow: inset 0px 2px 0px 0px green !important;
+}
+.highlight-parent-bottom {
+	box-shadow: inset 0px -2px 0px 0px green !important;
+}
+
+/* when sorting an element */
+.place-holder {
+	min-width:1em;
+	min-height:1em;
+	display:inline-block;
+	border:2px dashed #000 !important;
+	vertical-align:middle;
+}
+.ui-sortable {
+	cursor:row-resize;
+}
+.ui-draggable {
+	cursor:move;
+	cursor:grab;
+}
+.ui-draggable.ui-draggable-dragging {
+	cursor:grabbing;
+}
+
+/* SCROLLBARS */
+
+:not(.template-widget)::-webkit-scrollbar { /* Let's get this party started */
+	width:10px;
+	height:10px;
+	background:transparent;
+}
+:not(.template-widget)::-webkit-scrollbar-track { /* Track */
+	/*-webkit-border-radius:5px;
+	border-radius:5px;
+	-webkit-box-shadow:inset 0 0 6px rgba(0,0,0, 0);*/
+	background:transparent;
+}
+:not(.template-widget)::-webkit-scrollbar-thumb { /* Handle */
+	background:#83889E;
+	/*-webkit-box-shadow:inset 0 0 6px rgba(250,250,250,0.8);*/
+
+	background-clip:padding-box;
+	border:2px solid transparent;
+	border-radius:9999px;
+	/*-webkit-box-shadow:0 0px 1px rgba(250,250,250,0.8);*/
+}
+:not(.template-widget)::-webkit-scrollbar-thumb:window-inactive {
+	/*background:rgba(0,0,0,0.35);*/
+}
+
+/* TEMPLATE WIDGET */
+
+.template-widget.widget-over,
+  .droppable.droppable-over {
+	outline:var(--html-element-over-border);
+	outline-offset:var(--html-element-over-gap);
+}
+.template-widget.widget-active,
+  .droppable.droppable-active {
+	outline:var(--html-element-active-border);
+	outline-offset:var(--html-element-active-gap);
+}
+.template-widget.widget-hidden,
+  .droppable.droppable-hidden {
+	display:none !important;
+}
+.template-widget.widget-children-hidden > * {
+	display:none !important;
+}
+
+.template-widget.widget-resize-n {
+	cursor:n-resize;
+}
+.template-widget.widget-resize-s {
+	cursor:s-resize;
+}
+.template-widget.widget-resize-e {
+	cursor:e-resize;
+}
+.template-widget.widget-resize-w {
+	cursor:w-resize;
+}
+.template-widget.widget-resize-ne {
+	cursor:ne-resize;
+}
+.template-widget.widget-resize-nw {
+	cursor:nw-resize;
+}
+.template-widget.widget-resize-se {
+	cursor:se-resize;
+}
+.template-widget.widget-resize-sw {
+	cursor:sw-resize;
+}
+
+/* MENU WIDGETS - HTML COMMENT */
+.template-widget.html-comment {
+	margin:5px !important; /* !important is bc of the css when .borders is active */
+	padding:5px !important; /* !important is bc of the css when .borders is active */
+	border:none !important; /* !important is bc of the css when .borders is active */
+	border-radius:5px;
+	background:#666;
+	background-image:none !important; /* !important is bc of the css when .borders is active */
+	color:#fff;
+	vertical-align:middle;
+	display:block;
+	word-break:break-all;
+}
+.main-droppable:not(.borders) .template-widget.html-comment {
+	display:none;
+}
+.main-droppable.borders .template-widget.html-comment:before {
+	content:"";
+	border:0;
+	display:none;
+}
+.template-widget.html-comment > pre {
+	margin:0 !important; /* !important is bc of the css when .borders is active */
+	padding:0 !important; /* !important is bc of the css when .borders is active */
+	border:none !important; /* !important is bc of the css when .borders is active */
+	background-image:none !important; /* !important is bc of the css when .borders is active */
+	background-image:none !important; /* !important is bc of the css when .borders is active */
+	color:inherit;
+	font-size:inherit;
+	font-family:inherit;
+	overflow:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow:overlay;
+}
+.template-widget.html-comment > pre::-webkit-scrollbar {
+	height:7px;
+}
+.template-widget.html-comment > pre:empty {
+	width:1em;
+	height:1em;
+}
+.template-widget.html-comment > pre:empty:before {
+	content:"Write text here...";
+	font-size:80%;
+	color:#ccc;
+}
+.main-droppable.borders .template-widget.html-comment > pre:before {
+	content:"";
+	border:0;
+	display:none;
+}
+.widget-header.widget-header-html-comment .options .props,
+   .widget-header.widget-header-html-comment .options .toggle {
+	display:none !important;
+}
+
+/* TEMPLATE WIDGET BORDERS */
+.main-droppable.borders .container.row.template-widget > .droppable.template-widget {
+	margin:0;
+}
+
+.main-droppable.borders p.template-widget,
+  .main-droppable.borders h1.template-widget,
+  .main-droppable.borders h2.template-widget,
+  .main-droppable.borders h3.template-widget,
+  .main-droppable.borders h4.template-widget,
+  .main-droppable.borders h5.template-widget,
+  .main-droppable.borders h6.template-widget,
+  .main-droppable.borders div.template-widget,
+  .main-droppable.borders section.template-widget,
+  .main-droppable.borders article.template-widget,
+  .main-droppable.borders blockquote.template-widget,
+  .main-droppable.borders address.template-widget,
+  .main-droppable.borders pre.template-widget,
+  .main-droppable.borders figure.template-widget,
+  .main-droppable.borders figcaption.template-widget,
+  .main-droppable.borders hgroup.template-widget,
+  .main-droppable.borders aside.template-widget,
+  .main-droppable.borders ul.template-widget,
+  .main-droppable.borders ol.template-widget,
+  .main-droppable.borders dl.template-widget {
+	background-repeat:no-repeat;
+	border:var(--html-element-border);
+	margin-top:var(--html-element-top-spacing);
+	margin-left:var(--html-element-left-spacing);
+	margin-right:var(--html-element-right-spacing);
+	margin-bottom:var(--html-element-bottom-spacing);
+	padding-top:10px;
+}
+.main-droppable.borders br.template-widget,
+  .main-droppable.borders wbr.template-widget,
+  .main-droppable.borders nobr.template-widget,
+  .main-droppable.borders hr.template-widget,
+  .main-droppable.borders img.template-widget,
+  .main-droppable.borders image.template-widget {
+	border:var(--html-element-border);
+} 
+.main-droppable.borders span.template-widget,
+  .main-droppable.borders label.template-widget,
+  .main-droppable.borders td.template-widget,
+  .main-droppable.borders th.template-widget,
+  .main-droppable.borders footer.template-widget,
+  .main-droppable.borders header.template-widget,
+  .main-droppable.borders main.template-widget,
+  .main-droppable.borders nav.template-widget,
+  .main-droppable.borders dd.template-widget,
+  .main-droppable.borders dt.template-widget,
+  .main-droppable.borders li.template-widget,
+  .main-droppable.borders a.template-widget,
+  .main-droppable.borders abbr.template-widget,
+  .main-droppable.borders b.template-widget,
+  .main-droppable.borders bdi.template-widget,
+  .main-droppable.borders bdo.template-widget,
+  .main-droppable.borders cite.template-widget,
+  .main-droppable.borders code.template-widget,
+  .main-droppable.borders data.template-widget,
+  .main-droppable.borders dfn.template-widget,
+  .main-droppable.borders em.template-widget,
+  .main-droppable.borders i.template-widget,
+  .main-droppable.borders kbd.template-widget,
+  .main-droppable.borders mark.template-widget,
+  .main-droppable.borders q.template-widget,
+  .main-droppable.borders rb.template-widget,
+  .main-droppable.borders rp.template-widget,
+  .main-droppable.borders rt.template-widget,
+  .main-droppable.borders rtc.template-widget,
+  .main-droppable.borders ruby.template-widget,
+  .main-droppable.borders s.template-widget,
+  .main-droppable.borders samp.template-widget,
+  .main-droppable.borders small.template-widget,
+  .main-droppable.borders strong.template-widget,
+  .main-droppable.borders sub.template-widget,
+  .main-droppable.borders sup.template-widget,
+  .main-droppable.borders time.template-widget,
+  .main-droppable.borders u.template-widget,
+  .main-droppable.borders var.template-widget,
+  .main-droppable.borders area.template-widget,
+  .main-droppable.borders audio.template-widget,
+  .main-droppable.borders map.template-widget,
+  .main-droppable.borders track.template-widget,
+  .main-droppable.borders video.template-widget,
+  .main-droppable.borders embed.template-widget,
+  .main-droppable.borders object.template-widget,
+  .main-droppable.borders param.template-widget,
+  .main-droppable.borders picture.template-widget,
+  .main-droppable.borders source.template-widget,
+  .main-droppable.borders canvas.template-widget,
+  .main-droppable.borders noscript.template-widget,
+  .main-droppable.borders del.template-widget,
+  .main-droppable.borders ins.template-widget,
+  .main-droppable.borders col.template-widget,
+  .main-droppable.borders colgroup.template-widget,
+  .main-droppable.borders datalist.template-widget,
+  .main-droppable.borders fieldset.template-widget,
+  .main-droppable.borders form.template-widget,
+  .main-droppable.borders legend.template-widget,
+  .main-droppable.borders meter.template-widget,
+  .main-droppable.borders output.template-widget,
+  .main-droppable.borders details.template-widget,
+  .main-droppable.borders dialog.template-widget,
+  .main-droppable.borders menu.template-widget,
+  .main-droppable.borders summary.template-widget,
+  .main-droppable.borders slot.template-widget,
+  .main-droppable.borders template.template-widget,
+  .main-droppable.borders acronym.template-widget,
+  .main-droppable.borders applet.template-widget,
+  .main-droppable.borders basefont.template-widget,
+  .main-droppable.borders bgsound.template-widget,
+  .main-droppable.borders big.template-widget,
+  .main-droppable.borders blink.template-widget,
+  .main-droppable.borders center.template-widget,
+  .main-droppable.borders command.template-widget,
+  .main-droppable.borders content.template-widget,
+  .main-droppable.borders dir.template-widget,
+  .main-droppable.borders element.template-widget,
+  .main-droppable.borders font.template-widget,
+  .main-droppable.borders frame.template-widget,
+  .main-droppable.borders frameset.template-widget,
+  .main-droppable.borders isindex.template-widget,
+  .main-droppable.borders keygen.template-widget,
+  .main-droppable.borders listing.template-widget,
+  .main-droppable.borders marquee.template-widget,
+  .main-droppable.borders menuitem.template-widget,
+  .main-droppable.borders multicol.template-widget,
+  .main-droppable.borders nextid.template-widget,
+  .main-droppable.borders noembed.template-widget,
+  .main-droppable.borders noframes.template-widget,
+  .main-droppable.borders plaintext.template-widget,
+  .main-droppable.borders shadow.template-widget,
+  .main-droppable.borders spacer.template-widget,
+  .main-droppable.borders strike.template-widget,
+  .main-droppable.borders tt.template-widget,
+  .main-droppable.borders xmp.template-widget {
+	border:var(--html-element-border);
+	margin-top:var(--html-element-top-spacing);
+	margin-left:var(--html-element-left-spacing);
+	margin-right:var(--html-element-right-spacing);
+	margin-bottom:var(--html-element-bottom-spacing);
+}
+.main-droppable.borders:not([dir=rtl]) p.template-widget,
+  .main-droppable.borders:not([dir=rtl]) h1.template-widget,
+  .main-droppable.borders:not([dir=rtl]) h2.template-widget,
+  .main-droppable.borders:not([dir=rtl]) h3.template-widget,
+  .main-droppable.borders:not([dir=rtl]) h4.template-widget,
+  .main-droppable.borders:not([dir=rtl]) h5.template-widget,
+  .main-droppable.borders:not([dir=rtl]) h6.template-widget,
+  .main-droppable.borders:not([dir=rtl]) div.template-widget,
+  .main-droppable.borders:not([dir=rtl]) section.template-widget,
+  .main-droppable.borders:not([dir=rtl]) article.template-widget,
+  .main-droppable.borders:not([dir=rtl]) blockquote.template-widget,
+  .main-droppable.borders:not([dir=rtl]) address.template-widget,
+  .main-droppable.borders:not([dir=rtl]) pre.template-widget,
+  .main-droppable.borders:not([dir=rtl]) figure.template-widget,
+  .main-droppable.borders:not([dir=rtl]) figcaption.template-widget,
+  .main-droppable.borders:not([dir=rtl]) hgroup.template-widget,
+  .main-droppable.borders:not([dir=rtl]) aside.template-widget,
+  .main-droppable.borders:not([dir=rtl]) ul.template-widget,
+  .main-droppable.borders:not([dir=rtl]) ol.template-widget,
+  .main-droppable.borders:not([dir=rtl]) dl.template-widget,
+  
+  .main-droppable.borders:not([dir=rtl]) br.template-widget,
+  .main-droppable.borders:not([dir=rtl]) wbr.template-widget,
+  .main-droppable.borders:not([dir=rtl]) nobr.template-widget,
+  .main-droppable.borders:not([dir=rtl]) hr.template-widget,
+  
+  .main-droppable.borders:not([dir=rtl]) span.template-widget,
+  .main-droppable.borders:not([dir=rtl]) label.template-widget,
+  .main-droppable.borders:not([dir=rtl]) td.template-widget,
+  .main-droppable.borders:not([dir=rtl]) th.template-widget,
+  .main-droppable.borders:not([dir=rtl]) footer.template-widget,
+  .main-droppable.borders:not([dir=rtl]) header.template-widget,
+  .main-droppable.borders:not([dir=rtl]) main.template-widget,
+  .main-droppable.borders:not([dir=rtl]) nav.template-widget,
+  .main-droppable.borders:not([dir=rtl]) dd.template-widget,
+  .main-droppable.borders:not([dir=rtl]) dt.template-widget,
+  .main-droppable.borders:not([dir=rtl]) li.template-widget,
+  .main-droppable.borders:not([dir=rtl]) a.template-widget,
+  .main-droppable.borders:not([dir=rtl]) abbr.template-widget,
+  .main-droppable.borders:not([dir=rtl]) b.template-widget,
+  .main-droppable.borders:not([dir=rtl]) bdi.template-widget,
+  .main-droppable.borders:not([dir=rtl]) bdo.template-widget,
+  .main-droppable.borders:not([dir=rtl]) cite.template-widget,
+  .main-droppable.borders:not([dir=rtl]) code.template-widget,
+  .main-droppable.borders:not([dir=rtl]) data.template-widget,
+  .main-droppable.borders:not([dir=rtl]) dfn.template-widget,
+  .main-droppable.borders:not([dir=rtl]) em.template-widget,
+  .main-droppable.borders:not([dir=rtl]) i.template-widget,
+  .main-droppable.borders:not([dir=rtl]) kbd.template-widget,
+  .main-droppable.borders:not([dir=rtl]) mark.template-widget,
+  .main-droppable.borders:not([dir=rtl]) q.template-widget,
+  .main-droppable.borders:not([dir=rtl]) rb.template-widget,
+  .main-droppable.borders:not([dir=rtl]) rp.template-widget,
+  .main-droppable.borders:not([dir=rtl]) rt.template-widget,
+  .main-droppable.borders:not([dir=rtl]) rtc.template-widget,
+  .main-droppable.borders:not([dir=rtl]) ruby.template-widget,
+  .main-droppable.borders:not([dir=rtl]) s.template-widget,
+  .main-droppable.borders:not([dir=rtl]) samp.template-widget,
+  .main-droppable.borders:not([dir=rtl]) small.template-widget,
+  .main-droppable.borders:not([dir=rtl]) strong.template-widget,
+  .main-droppable.borders:not([dir=rtl]) sub.template-widget,
+  .main-droppable.borders:not([dir=rtl]) sup.template-widget,
+  .main-droppable.borders:not([dir=rtl]) time.template-widget,
+  .main-droppable.borders:not([dir=rtl]) u.template-widget,
+  .main-droppable.borders:not([dir=rtl]) var.template-widget,
+  .main-droppable.borders:not([dir=rtl]) area.template-widget,
+  .main-droppable.borders:not([dir=rtl]) audio.template-widget,
+  .main-droppable.borders:not([dir=rtl]) map.template-widget,
+  .main-droppable.borders:not([dir=rtl]) track.template-widget,
+  .main-droppable.borders:not([dir=rtl]) video.template-widget,
+  .main-droppable.borders:not([dir=rtl]) embed.template-widget,
+  .main-droppable.borders:not([dir=rtl]) object.template-widget,
+  .main-droppable.borders:not([dir=rtl]) param.template-widget,
+  .main-droppable.borders:not([dir=rtl]) picture.template-widget,
+  .main-droppable.borders:not([dir=rtl]) source.template-widget,
+  .main-droppable.borders:not([dir=rtl]) canvas.template-widget,
+  .main-droppable.borders:not([dir=rtl]) noscript.template-widget,
+  .main-droppable.borders:not([dir=rtl]) del.template-widget,
+  .main-droppable.borders:not([dir=rtl]) ins.template-widget,
+  .main-droppable.borders:not([dir=rtl]) col.template-widget,
+  .main-droppable.borders:not([dir=rtl]) colgroup.template-widget,
+  .main-droppable.borders:not([dir=rtl]) datalist.template-widget,
+  .main-droppable.borders:not([dir=rtl]) fieldset.template-widget,
+  .main-droppable.borders:not([dir=rtl]) form.template-widget,
+  .main-droppable.borders:not([dir=rtl]) legend.template-widget,
+  .main-droppable.borders:not([dir=rtl]) meter.template-widget,
+  .main-droppable.borders:not([dir=rtl]) output.template-widget,
+  .main-droppable.borders:not([dir=rtl]) details.template-widget,
+  .main-droppable.borders:not([dir=rtl]) dialog.template-widget,
+  .main-droppable.borders:not([dir=rtl]) menu.template-widget,
+  .main-droppable.borders:not([dir=rtl]) summary.template-widget,
+  .main-droppable.borders:not([dir=rtl]) slot.template-widget,
+  .main-droppable.borders:not([dir=rtl]) template.template-widget,
+  .main-droppable.borders:not([dir=rtl]) acronym.template-widget,
+  .main-droppable.borders:not([dir=rtl]) applet.template-widget,
+  .main-droppable.borders:not([dir=rtl]) basefont.template-widget,
+  .main-droppable.borders:not([dir=rtl]) bgsound.template-widget,
+  .main-droppable.borders:not([dir=rtl]) big.template-widget,
+  .main-droppable.borders:not([dir=rtl]) blink.template-widget,
+  .main-droppable.borders:not([dir=rtl]) center.template-widget,
+  .main-droppable.borders:not([dir=rtl]) command.template-widget,
+  .main-droppable.borders:not([dir=rtl]) content.template-widget,
+  .main-droppable.borders:not([dir=rtl]) dir.template-widget,
+  .main-droppable.borders:not([dir=rtl]) element.template-widget,
+  .main-droppable.borders:not([dir=rtl]) font.template-widget,
+  .main-droppable.borders:not([dir=rtl]) frame.template-widget,
+  .main-droppable.borders:not([dir=rtl]) frameset.template-widget,
+  .main-droppable.borders:not([dir=rtl]) isindex.template-widget,
+  .main-droppable.borders:not([dir=rtl]) keygen.template-widget,
+  .main-droppable.borders:not([dir=rtl]) listing.template-widget,
+  .main-droppable.borders:not([dir=rtl]) marquee.template-widget,
+  .main-droppable.borders:not([dir=rtl]) menuitem.template-widget,
+  .main-droppable.borders:not([dir=rtl]) multicol.template-widget,
+  .main-droppable.borders:not([dir=rtl]) nextid.template-widget,
+  .main-droppable.borders:not([dir=rtl]) noembed.template-widget,
+  .main-droppable.borders:not([dir=rtl]) noframes.template-widget,
+  .main-droppable.borders:not([dir=rtl]) plaintext.template-widget,
+  .main-droppable.borders:not([dir=rtl]) shadow.template-widget,
+  .main-droppable.borders:not([dir=rtl]) spacer.template-widget,
+  .main-droppable.borders:not([dir=rtl]) strike.template-widget,
+  .main-droppable.borders:not([dir=rtl]) tt.template-widget,
+  .main-droppable.borders:not([dir=rtl]) xmp.template-widget {
+	margin-top:var(--html-element-top-spacing);
+	margin-left:var(--html-element-left-spacing);
+	margin-right:var(--html-element-right-spacing);
+	margin-bottom:var(--html-element-bottom-spacing);
+}
+.main-droppable.borders:not([dir=rtl]) .container.row.template-widget,
+  .main-droppable.borders:not([dir=rtl]) .container.row.template-widget > div.droppable {
+	margin-left:0;
+  	padding-top:20px;
+  	border:var(--html-element-border);
+}
+
+.main-droppable.borders[dir=rtl] p.template-widget,
+  .main-droppable.borders[dir=rtl] h1.template-widget,
+  .main-droppable.borders[dir=rtl] h2.template-widget,
+  .main-droppable.borders[dir=rtl] h3.template-widget,
+  .main-droppable.borders[dir=rtl] h4.template-widget,
+  .main-droppable.borders[dir=rtl] h5.template-widget,
+  .main-droppable.borders[dir=rtl] h6.template-widget,
+  .main-droppable.borders[dir=rtl] div.template-widget,
+  .main-droppable.borders[dir=rtl] section.template-widget,
+  .main-droppable.borders[dir=rtl] article.template-widget,
+  .main-droppable.borders[dir=rtl] blockquote.template-widget,
+  .main-droppable.borders[dir=rtl] address.template-widget,
+  .main-droppable.borders[dir=rtl] pre.template-widget,
+  .main-droppable.borders[dir=rtl] figure.template-widget,
+  .main-droppable.borders[dir=rtl] figcaption.template-widget,
+  .main-droppable.borders[dir=rtl] hgroup.template-widget,
+  .main-droppable.borders[dir=rtl] aside.template-widget,
+  .main-droppable.borders[dir=rtl] ul.template-widget,
+  .main-droppable.borders[dir=rtl] ol.template-widget,
+  .main-droppable.borders[dir=rtl] dl.template-widget,
+  
+  .main-droppable.borders[dir=rtl] br.template-widget,
+  .main-droppable.borders[dir=rtl] wbr.template-widget,
+  .main-droppable.borders[dir=rtl] nobr.template-widget,
+  .main-droppable.borders[dir=rtl] hr.template-widget,
+  
+  .main-droppable.borders[dir=rtl] span.template-widget,
+  .main-droppable.borders[dir=rtl] label.template-widget,
+  .main-droppable.borders[dir=rtl] td.template-widget,
+  .main-droppable.borders[dir=rtl] th.template-widget,
+  .main-droppable.borders[dir=rtl] footer.template-widget,
+  .main-droppable.borders[dir=rtl] header.template-widget,
+  .main-droppable.borders[dir=rtl] main.template-widget,
+  .main-droppable.borders[dir=rtl] nav.template-widget,
+  .main-droppable.borders[dir=rtl] dd.template-widget,
+  .main-droppable.borders[dir=rtl] dt.template-widget,
+  .main-droppable.borders[dir=rtl] li.template-widget,
+  .main-droppable.borders[dir=rtl] a.template-widget,
+  .main-droppable.borders[dir=rtl] abbr.template-widget,
+  .main-droppable.borders[dir=rtl] b.template-widget,
+  .main-droppable.borders[dir=rtl] bdi.template-widget,
+  .main-droppable.borders[dir=rtl] bdo.template-widget,
+  .main-droppable.borders[dir=rtl] cite.template-widget,
+  .main-droppable.borders[dir=rtl] code.template-widget,
+  .main-droppable.borders[dir=rtl] data.template-widget,
+  .main-droppable.borders[dir=rtl] dfn.template-widget,
+  .main-droppable.borders[dir=rtl] em.template-widget,
+  .main-droppable.borders[dir=rtl] i.template-widget,
+  .main-droppable.borders[dir=rtl] kbd.template-widget,
+  .main-droppable.borders[dir=rtl] mark.template-widget,
+  .main-droppable.borders[dir=rtl] q.template-widget,
+  .main-droppable.borders[dir=rtl] rb.template-widget,
+  .main-droppable.borders[dir=rtl] rp.template-widget,
+  .main-droppable.borders[dir=rtl] rt.template-widget,
+  .main-droppable.borders[dir=rtl] rtc.template-widget,
+  .main-droppable.borders[dir=rtl] ruby.template-widget,
+  .main-droppable.borders[dir=rtl] s.template-widget,
+  .main-droppable.borders[dir=rtl] samp.template-widget,
+  .main-droppable.borders[dir=rtl] small.template-widget,
+  .main-droppable.borders[dir=rtl] strong.template-widget,
+  .main-droppable.borders[dir=rtl] sub.template-widget,
+  .main-droppable.borders[dir=rtl] sup.template-widget,
+  .main-droppable.borders[dir=rtl] time.template-widget,
+  .main-droppable.borders[dir=rtl] u.template-widget,
+  .main-droppable.borders[dir=rtl] var.template-widget,
+  .main-droppable.borders[dir=rtl] area.template-widget,
+  .main-droppable.borders[dir=rtl] audio.template-widget,
+  .main-droppable.borders[dir=rtl] map.template-widget,
+  .main-droppable.borders[dir=rtl] track.template-widget,
+  .main-droppable.borders[dir=rtl] video.template-widget,
+  .main-droppable.borders[dir=rtl] embed.template-widget,
+  .main-droppable.borders[dir=rtl] object.template-widget,
+  .main-droppable.borders[dir=rtl] param.template-widget,
+  .main-droppable.borders[dir=rtl] picture.template-widget,
+  .main-droppable.borders[dir=rtl] source.template-widget,
+  .main-droppable.borders[dir=rtl] canvas.template-widget,
+  .main-droppable.borders[dir=rtl] noscript.template-widget,
+  .main-droppable.borders[dir=rtl] del.template-widget,
+  .main-droppable.borders[dir=rtl] ins.template-widget,
+  .main-droppable.borders[dir=rtl] col.template-widget,
+  .main-droppable.borders[dir=rtl] colgroup.template-widget,
+  .main-droppable.borders[dir=rtl] datalist.template-widget,
+  .main-droppable.borders[dir=rtl] fieldset.template-widget,
+  .main-droppable.borders[dir=rtl] form.template-widget,
+  .main-droppable.borders[dir=rtl] legend.template-widget,
+  .main-droppable.borders[dir=rtl] meter.template-widget,
+  .main-droppable.borders[dir=rtl] output.template-widget,
+  .main-droppable.borders[dir=rtl] details.template-widget,
+  .main-droppable.borders[dir=rtl] dialog.template-widget,
+  .main-droppable.borders[dir=rtl] menu.template-widget,
+  .main-droppable.borders[dir=rtl] summary.template-widget,
+  .main-droppable.borders[dir=rtl] slot.template-widget,
+  .main-droppable.borders[dir=rtl] template.template-widget,
+  .main-droppable.borders[dir=rtl] acronym.template-widget,
+  .main-droppable.borders[dir=rtl] applet.template-widget,
+  .main-droppable.borders[dir=rtl] basefont.template-widget,
+  .main-droppable.borders[dir=rtl] bgsound.template-widget,
+  .main-droppable.borders[dir=rtl] big.template-widget,
+  .main-droppable.borders[dir=rtl] blink.template-widget,
+  .main-droppable.borders[dir=rtl] center.template-widget,
+  .main-droppable.borders[dir=rtl] command.template-widget,
+  .main-droppable.borders[dir=rtl] content.template-widget,
+  .main-droppable.borders[dir=rtl] dir.template-widget,
+  .main-droppable.borders[dir=rtl] element.template-widget,
+  .main-droppable.borders[dir=rtl] font.template-widget,
+  .main-droppable.borders[dir=rtl] frame.template-widget,
+  .main-droppable.borders[dir=rtl] frameset.template-widget,
+  .main-droppable.borders[dir=rtl] isindex.template-widget,
+  .main-droppable.borders[dir=rtl] keygen.template-widget,
+  .main-droppable.borders[dir=rtl] listing.template-widget,
+  .main-droppable.borders[dir=rtl] marquee.template-widget,
+  .main-droppable.borders[dir=rtl] menuitem.template-widget,
+  .main-droppable.borders[dir=rtl] multicol.template-widget,
+  .main-droppable.borders[dir=rtl] nextid.template-widget,
+  .main-droppable.borders[dir=rtl] noembed.template-widget,
+  .main-droppable.borders[dir=rtl] noframes.template-widget,
+  .main-droppable.borders[dir=rtl] plaintext.template-widget,
+  .main-droppable.borders[dir=rtl] shadow.template-widget,
+  .main-droppable.borders[dir=rtl] spacer.template-widget,
+  .main-droppable.borders[dir=rtl] strike.template-widget,
+  .main-droppable.borders[dir=rtl] tt.template-widget,
+  .main-droppable.borders[dir=rtl] xmp.template-widget {
+	background-position-x: right;
+	margin-top:var(--html-element-top-spacing);
+	margin-left:var(--html-element-left-spacing);
+	margin-right:var(--html-element-right-spacing);
+	margin-bottom:var(--html-element-bottom-spacing);
+}
+.main-droppable.borders[dir=rtl] .container.row.template-widget,
+  .main-droppable.borders[dir=rtl] .container.row.template-widget > div.droppable {
+	margin-right:0;
+  	padding-top:20px;
+  	border:var(--html-element-border);
+}
+
+/* prepare bootstrap row and cols. This is very important to show the label and input in the same line for each column of a form */
+.main-droppable.borders .row.template-widget:not(.container),
+  .main-droppable.borders .row.template-widget:not(.container) {
+	padding:10px;
+}
+.main-droppable.borders .row.template-widget:not(.container) > *,
+  .main-droppable.borders .row.template-widget:not(.container) > * {
+	margin:0;
+}
+
+.main-droppable.borders p.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhCQAJAJEAAAAAAP///7u7u////yH5BAEAAAMALAAAAAAJAAkAAAIQnG+CqCN/mlyvsRUpThG6AgA7);
+}
+.main-droppable.borders h1.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhDQAKAIABALu7u////yH5BAEAAAEALAAAAAANAAoAAAIXjI8GybGu1JuxHoAfRNRW3TWXyF2YiRUAOw==);
+}
+.main-droppable.borders h2.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhDgAKAIABALu7u////yH5BAEAAAEALAAAAAAOAAoAAAIajI8Hybbx4oOuqgTynJd6bGlWg3DkJzoaUAAAOw==);
+}
+.main-droppable.borders h3.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhDgAKAIABALu7u////yH5BAEAAAEALAAAAAAOAAoAAAIZjI8Hybbx4oOuqgTynJf2Ln2NOHpQpmhAAQA7);
+}
+.main-droppable.borders h4.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhDgAKAIABALu7u////yH5BAEAAAEALAAAAAAOAAoAAAIajI8HybbxInR0zqeAdhtJlXwV1oCll2HaWgAAOw==);
+}
+.main-droppable.borders h5.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhDgAKAIABALu7u////yH5BAEAAAEALAAAAAAOAAoAAAIajI8HybbxIoiuwjane4iq5GlW05GgIkIZUAAAOw==);
+}
+.main-droppable.borders h6.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhDgAKAIABALu7u////yH5BAEAAAEALAAAAAAOAAoAAAIajI8HybbxIoiuwjan04jep1iZ1XRlAo5bVgAAOw==);
+}
+.main-droppable.borders div.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhEgAKAIABALu7u////yH5BAEAAAEALAAAAAASAAoAAAIfjI9poI0cgDywrhuxfbrzDEbQM2Ei5aRjmoySW4pAAQA7);
+}
+.main-droppable.borders section.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhKAAKAIABALu7u////yH5BAEAAAEALAAAAAAoAAoAAAI5jI+pywcNY3sBWHdNrplytD2ellDeSVbp+GmWqaDqDMepc8t17Y4vBsK5hDyJMcI6KkuYU+jpjLoKADs=);
+}
+.main-droppable.borders article.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhKgAKAIABALu7u////yH5BAEAAAEALAAAAAAqAAoAAAI6jI+pywkNY3wG0GBvrsd2tXGYSGnfiF7ikpXemTpOiJScasYoDJJrjsG9gkCJ0ag6KhmaIe3pjDYBBQA7);
+}
+.main-droppable.borders blockquote.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhPgAKAIABALu7u////yH5BAEAAAEALAAAAAA+AAoAAAJPjI+py+0Knpz0xQDyuUhvfoGgIX5iSKZYgq5uNL5q69asZ8s5rrf0yZmpNkJZzFesBTu8TOlDVAabUyatguVhWduud3EyiUk45xhTTgMBBQA7);
+}
+.main-droppable.borders address.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhLQAKAIABALu7u////yH5BAEAAAEALAAAAAAtAAoAAAI/jI+pywwNozSP1gDyyZcjb3UaRpXkWaXmZW4OqKLhBmLs+K263DkJK7OJeifh7FicKD9A1/IpGdKkyFpNmCkAADs=);
+}
+.main-droppable.borders pre.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAKAIABALu7uwAAACH5BAEAAAEALAAAAAAVAAoAAAIjjI+ZoN0cgDwSmnpz1NCueYERhnibZVKLNnbOq8IvKpJtVQAAOw==);
+}
+.main-droppable.borders figure.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhJAAKAIAAALu7u////yH5BAEAAAEALAAAAAAkAAoAAAI0jI+py+2fwAHUSFvD3RlvG4HIp4nX5JFSpnZUJ6LlrM52OE7uSWosBHScgkSZj7dDKnWAAgA7);
+}
+.main-droppable.borders hgroup.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhJwAKAIABALu7uwAAACH5BAEAAAEALAAAAAAnAAoAAAI3jI+pywYNI3uB0gpsRtt5fFnfNZaVSYJil4Wo03Hv6Z62uOCgiXH1kZIIJ8NiIxRrAZNMZAtQAAA7);
+}
+.main-droppable.borders aside.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhHgAKAIABAKqqqv///yH5BAEAAAEALAAAAAAeAAoAAAItjI+pG8APjZOTzgtqy7I3f1yehmQcFY4WKZbqByutmW4aHUd6vfcVbgudgpYCADs=);
+}
+.main-droppable.borders ul.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhDQAKAIAAALu7u////yH5BAEAAAEALAAAAAANAAoAAAIXjI8GybGuYnqUVSjvw26DzzXiqIDlVwAAOw==);
+}
+.main-droppable.borders ol.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhDQAKAIABALu7u////yH5BAEAAAEALAAAAAANAAoAAAIXjI8GybH6HHt0qourxC6CvzXieHyeWQAAOw==);
+}
+.main-droppable.borders dl.template-widget {
+	background-image: url(data:image/gif;base64,R0lGODlhDQAKAIABALu7u////yH5BAEAAAEALAAAAAANAAoAAAIXjI8GybEOnmOvUoWznTqeuEjNSCqeGRUAOw==);
+}
+
+
+.main-droppable.borders .template-widget:not(input):not(select):not(textarea):not(button):not(progress):not(img):not(image):not(iframe):not(table):not(tbody):not(tfoot):not(thead):not(tr):not(hr):empty,
+  .main-droppable.borders .droppable:not(input):not(select):not(textarea):not(button):not(progress):not(img):not(image):not(iframe):not(table):not(tbody):not(tfoot):not(thead):not(tr):not(hr):empty {
+	min-width:1em;
+	min-height:1em;
+}
+.main-droppable.borders .template-widget.widget-over:not(.widget-active):not(input):not(select):not(textarea):not(button):not(progress):not(img):not(image):not(iframe):not(table):not(tbody):not(tfoot):not(thead):not(tr):before,
+  .main-droppable.borders .droppable.droppable-over:not(.droppable-active):not(input):not(select):not(textarea):not(button):not(progress):not(img):not(image):not(iframe):not(table):not(tbody):not(tfoot):not(thead):not(tr):before {
+	height:10px;
+	margin-top:-10px;
+	padding:0 3px;
+	position:absolute;
+	background:#3b97e3;
+	color:#fff;
+	font-size:8px;
+	font-weight:normal;
+	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	text-transform:uppercase;
+	overflow:hidden;
+	white-space:nowrap;
+}
+
+/*.main-droppable.borders p.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders p.droppable.droppable-over:before {
+	content:"p";
+}
+.main-droppable.borders h1.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders h1.droppable.droppable-over:before {
+	content:"h1";
+}
+.main-droppable.borders h2.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders h2.droppable.droppable-over:before {
+	content:"h2";
+}
+.main-droppable.borders h3.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders h3.droppable.droppable-over:before {
+	content:"h3";
+}
+.main-droppable.borders h4.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders h4.droppable.droppable-over:before {
+	content:"h4";
+}
+.main-droppable.borders h5.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders h5.droppable.droppable-over:before {
+	content:"h5";
+}
+.main-droppable.borders h6.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders h6.droppable.droppable-over:before {
+	content:"h6";
+}
+.main-droppable.borders div.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders div.droppable.droppable-over:before {
+	content:"div";
+}
+.main-droppable.borders section.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders section.droppable.droppable-over:before {
+	content:"section";
+}
+.main-droppable.borders article.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders article.droppable.droppable-over:before {
+	content:"article";
+}
+.main-droppable.borders blockquote.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders blockquote.droppable.droppable-over:before {
+	content:"blockquote";
+}
+.main-droppable.borders address.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders address.droppable.droppable-over:before {
+	content:"address";
+}
+.main-droppable.borders pre.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders pre.droppable.droppable-over:before {
+	content:"pre";
+}
+.main-droppable.borders figure.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders figure.droppable.droppable-over:before {
+	content:"figure";
+}
+.main-droppable.borders figcaption.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders figcaption.droppable.droppable-over:before {
+	content:"figcaption";
+}
+.main-droppable.borders hgroup.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders hgroup.droppable.droppable-over:before {
+	content:"hgroup";
+}
+.main-droppable.borders aside.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders aside.droppable.droppable-over:before {
+	content:"aside";
+}
+.main-droppable.borders ul.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders ul.droppable.droppable-over:before {
+	content:"ul";
+}
+.main-droppable.borders ol.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders ol.droppable.droppable-over:before {
+	content:"ol";
+}
+.main-droppable.borders dl.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders dl.droppable.droppable-over:before {
+	content:"dl";
+}*/
+
+.main-droppable.borders span.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders span.droppable.droppable-over:before {
+	content:"span";
+}
+.main-droppable.borders label.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders label.droppable.droppable-over:before {
+	content:"label";
+}
+.main-droppable.borders td.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders td.droppable.droppable-over:before {
+	content:"td";
+}
+.main-droppable.borders th.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders th.droppable.droppable-over:before {
+	content:"th";
+}
+.main-droppable.borders footer.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders footer.droppable.droppable-over:before {
+	content:"footer";
+}
+.main-droppable.borders header.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders header.droppable.droppable-over:before {
+	content:"header";
+}
+.main-droppable.borders main.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders main.droppable.droppable-over:before {
+	content:"main";
+}
+.main-droppable.borders nav.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders nav.droppable.droppable-over:before {
+	content:"nav";
+}
+.main-droppable.borders dd.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders dd.droppable.droppable-over:before {
+	content:"dd";
+}
+.main-droppable.borders dt.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders dt.droppable.droppable-over:before {
+	content:"dt";
+}
+.main-droppable.borders li.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders li.droppable.droppable-over:before {
+	content:"li";
+}
+.main-droppable.borders a.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders a.droppable.droppable-over:before {
+	content:"a";
+}
+.main-droppable.borders abbr.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders abbr.droppable.droppable-over:before {
+	content:"abbr";
+}
+.main-droppable.borders b.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders b.droppable.droppable-over:before {
+	content:"b";
+}
+.main-droppable.borders bdi.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders bdi.droppable.droppable-over:before {
+	content:"bdi";
+}
+.main-droppable.borders bdo.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders bdo.droppable.droppable-over:before {
+	content:"bdo";
+}
+.main-droppable.borders cite.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders cite.droppable.droppable-over:before {
+	content:"cite";
+}
+.main-droppable.borders code.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders code.droppable.droppable-over:before {
+	content:"code";
+}
+.main-droppable.borders data.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders data.droppable.droppable-over:before {
+	content:"data";
+}
+.main-droppable.borders dfn.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders dfn.droppable.droppable-over:before {
+	content:"dfn";
+}
+.main-droppable.borders em.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders em.droppable.droppable-over:before {
+	content:"em";
+}
+.main-droppable.borders i.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders i.droppable.droppable-over:before {
+	content:"i";
+}
+.main-droppable.borders kbd.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders kbd.droppable.droppable-over:before {
+	content:"kbd";
+}
+.main-droppable.borders mark.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders mark.droppable.droppable-over:before {
+	content:"mark";
+}
+.main-droppable.borders q.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders q.droppable.droppable-over:before {
+	content:"q";
+}
+.main-droppable.borders rb.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders rb.droppable.droppable-over:before {
+	content:"rb";
+}
+.main-droppable.borders rp.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders rp.droppable.droppable-over:before {
+	content:"rp";
+}
+.main-droppable.borders rt.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders rt.droppable.droppable-over:before {
+	content:"rt";
+}
+.main-droppable.borders rtc.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders rtc.droppable.droppable-over:before {
+	content:"rtc";
+}
+.main-droppable.borders ruby.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders ruby.droppable.droppable-over:before {
+	content:"ruby";
+}
+.main-droppable.borders s.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders s.droppable.droppable-over:before {
+	content:"s";
+}
+.main-droppable.borders samp.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders samp.droppable.droppable-over:before {
+	content:"samp";
+}
+.main-droppable.borders small.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders small.droppable.droppable-over:before {
+	content:"small";
+}
+.main-droppable.borders strong.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders strong.droppable.droppable-over:before {
+	content:"strong";
+}
+.main-droppable.borders sub.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders sub.droppable.droppable-over:before {
+	content:"sub";
+}
+.main-droppable.borders sup.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders sup.droppable.droppable-over:before {
+	content:"sup";
+}
+.main-droppable.borders time.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders time.droppable.droppable-over:before {
+	content:"time";
+}
+.main-droppable.borders u.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders u.droppable.droppable-over:before {
+	content:"u";
+}
+.main-droppable.borders var.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders var.droppable.droppable-over:before {
+	content:"var";
+}
+.main-droppable.borders area.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders area.droppable.droppable-over:before {
+	content:"area";
+}
+.main-droppable.borders audio.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders audio.droppable.droppable-over:before {
+	content:"audio";
+}
+.main-droppable.borders map.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders map.droppable.droppable-over:before {
+	content:"map";
+}
+.main-droppable.borders track.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders track.droppable.droppable-over:before {
+	content:"track";
+}
+.main-droppable.borders video.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders video.droppable.droppable-over:before {
+	content:"video";
+}
+.main-droppable.borders embed.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders embed.droppable.droppable-over:before {
+	content:"embed";
+}
+.main-droppable.borders object.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders object.droppable.droppable-over:before {
+	content:"object";
+}
+.main-droppable.borders param.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders param.droppable.droppable-over:before {
+	content:"param";
+}
+.main-droppable.borders picture.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders picture.droppable.droppable-over:before {
+	content:"picture";
+}
+.main-droppable.borders source.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders source.droppable.droppable-over:before {
+	content:"source";
+}
+.main-droppable.borders canvas.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders canvas.droppable.droppable-over:before {
+	content:"canvas";
+}
+.main-droppable.borders noscript.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders noscript.droppable.droppable-over:before {
+	content:"noscript";
+}
+.main-droppable.borders del.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders del.droppable.droppable-over:before {
+	content:"del";
+}
+.main-droppable.borders ins.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders ins.droppable.droppable-over:before {
+	content:"ins";
+}
+.main-droppable.borders col.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders col.droppable.droppable-over:before {
+	content:"col";
+}
+.main-droppable.borders colgroup.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders colgroup.droppable.droppable-over:before {
+	content:"colgroup";
+}
+.main-droppable.borders datalist.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders datalist.droppable.droppable-over:before {
+	content:"datalist";
+}
+.main-droppable.borders fieldset.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders fieldset.droppable.droppable-over:before {
+	content:"fieldset";
+}
+.main-droppable.borders form.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders form.droppable.droppable-over:before {
+	content:"form";
+}
+.main-droppable.borders legend.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders legend.droppable.droppable-over:before {
+	content:"legend";
+}
+.main-droppable.borders meter.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders meter.droppable.droppable-over:before {
+	content:"meter";
+}
+.main-droppable.borders output.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders output.droppable.droppable-over:before {
+	content:"output";
+}
+.main-droppable.borders details.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders details.droppable.droppable-over:before {
+	content:"details";
+}
+.main-droppable.borders dialog.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders dialog.droppable.droppable-over:before {
+	content:"dialog";
+}
+.main-droppable.borders menu.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders menu.droppable.droppable-over:before {
+	content:"menu";
+}
+.main-droppable.borders summary.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders summary.droppable.droppable-over:before {
+	content:"summary";
+}
+.main-droppable.borders slot.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders slot.droppable.droppable-over:before {
+	content:"slot";
+}
+.main-droppable.borders template.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders template.droppable.droppable-over:before {
+	content:"template";
+}
+.main-droppable.borders acronym.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders acronym.droppable.droppable-over:before {
+	content:"acronym";
+}
+.main-droppable.borders applet.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders applet.droppable.droppable-over:before {
+	content:"applet";
+}
+.main-droppable.borders basefont.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders basefont.droppable.droppable-over:before {
+	content:"basefont";
+}
+.main-droppable.borders bgsound.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders bgsound.droppable.droppable-over:before {
+	content:"bgsound";
+}
+.main-droppable.borders big.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders big.droppable.droppable-over:before {
+	content:"big";
+}
+.main-droppable.borders blink.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders blink.droppable.droppable-over:before {
+	content:"blink";
+}
+.main-droppable.borders center.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders center.droppable.droppable-over:before {
+	content:"center";
+}
+.main-droppable.borders command.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders command.droppable.droppable-over:before {
+	content:"command";
+}
+.main-droppable.borders content.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders content.droppable.droppable-over:before {
+	content:"content";
+}
+.main-droppable.borders dir.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders dir.droppable.droppable-over:before {
+	content:"dir";
+}
+.main-droppable.borders element.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders element.droppable.droppable-over:before {
+	content:"element";
+}
+.main-droppable.borders font.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders font.droppable.droppable-over:before {
+	content:"font";
+}
+.main-droppable.borders frame.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders frame.droppable.droppable-over:before {
+	content:"frame";
+}
+.main-droppable.borders frameset.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders frameset.droppable.droppable-over:before {
+	content:"frameset";
+}
+.main-droppable.borders isindex.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders isindex.droppable.droppable-over:before {
+	content:"isindex";
+}
+.main-droppable.borders keygen.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders keygen.droppable.droppable-over:before {
+	content:"keygen";
+}
+.main-droppable.borders listing.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders listing.droppable.droppable-over:before {
+	content:"listing";
+}
+.main-droppable.borders marquee.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders marquee.droppable.droppable-over:before {
+	content:"marquee";
+}
+.main-droppable.borders menuitem.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders menuitem.droppable.droppable-over:before {
+	content:"menuitem";
+}
+.main-droppable.borders multicol.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders multicol.droppable.droppable-over:before {
+	content:"multicol";
+}
+.main-droppable.borders nextid.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders nextid.droppable.droppable-over:before {
+	content:"nextid";
+}
+.main-droppable.borders noembed.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders noembed.droppable.droppable-over:before {
+	content:"noembed";
+}
+.main-droppable.borders noframes.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders noframes.droppable.droppable-over:before {
+	content:"noframes";
+}
+.main-droppable.borders plaintext.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders plaintext.droppable.droppable-over:before {
+	content:"plaintext";
+}
+.main-droppable.borders shadow.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders shadow.droppable.droppable-over:before {
+	content:"shadow";
+}
+.main-droppable.borders spacer.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders spacer.droppable.droppable-over:before {
+	content:"spacer";
+}
+.main-droppable.borders strike.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders strike.droppable.droppable-over:before {
+	content:"strike";
+}
+.main-droppable.borders tt.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders tt.droppable.droppable-over:before {
+	content:"tt";
+}
+.main-droppable.borders xmp.template-widget.widget-over:not(.widget-active):before,
+  .main-droppable.borders xmp.droppable.droppable-over:before {
+	content:"xmp";
+}
+
+/* WIDGET RESOURCES */
+.template-widget[data-widget-resource-value]:empty,
+  .template-widget[data-widget-item-attribute-field-view]:empty,
+  .template-widget[data-widget-item-attribute-link-view]:empty,
+  .template-widget[data-widget-item-attribute-link-edit]:empty {
+	min-width:20px !important;
+	min-height:10px !important;
+}
+.template-widget[data-widget-item-attribute-field-view]:empty:not(input):not(textarea):not(select):after,
+  .template-widget[data-widget-item-attribute-link-view]:empty:not(input):not(textarea):not(select):after,
+  .template-widget[data-widget-item-attribute-link-edit]:empty:not(input):not(textarea):not(select):after,
+  .template-widget[data-widget-item-attribute-field-edit]:empty:not(input):not(textarea):not(select):after {
+	content:"dummy data" !important;
+}
+
+/* BOOTSTRAP */
+.template-widget.modal { /* very usefull to see the popups mainly the [data-widget-popup] elements */
+	display:block !important;
+	position:static !important;
+	background:rgba(0,0,0,.1) !important;
+	opacity:1 !important;
+}
+.template-widget.d-none { /* very usefull to see the popups mainly the [data-widget-popup] elements - DEPRECATED - bc if there is an element with d-none, it should be hidden. Is the user that should remove this class in order to access it. */
+	/*display:unset !important;
+	opacity:.1 !important;*/
+}
+

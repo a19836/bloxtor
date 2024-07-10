@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import><?php echo dirname($vars["dal_path"])."/"; ?>cache_handler.xml</import>
+	
+	<services>
+		<service id="Item.findById" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php">
+			<key>Item.findById_ids-&lt;?php echo md5(serialize($input[0]));?&gt;_data-&lt;?php echo md5(serialize($input[1]));?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="Item.find" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php">
+			<key>Item.find_data-&lt;?php echo md5(serialize($input));?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="Item.findRelationships" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600">
+			<key>Item.findRelationships_data-&lt;?php echo md5(serialize($input));?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="Item.findRelationship" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600">
+			<key>Item.findRelationship_relname-&lt;?php echo $input[0];?&gt;_data-&lt;?php echo md5(serialize($input[1]));?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="Item.select_all_by_status" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600">
+			<validation_script>return is_object($output) &amp;&amp; is_a($output, "Exception") ? false : true;</validation_script>
+			<key>Item.select_all_by_status_st-&lt;?php echo $input["status"];?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="Item.insert" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_item.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="Item.insertAll" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_item.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="Item.update" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_item.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="Item.updateAll" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_item.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="Item.insertOrUpdate" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_item.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="Item.insertOrUpdateAll" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_item.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="Item.delete" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<!--to_delete>
+				<import relative="1">cache_item.xml</import>
+			</to_delete-->
+		</service>
+		
+		<service id="Item.deleteAll" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_item.xml</import>
+			</to_delete>
+		</service>
+		
+		<!-- *************** SubItem **************** -->
+		
+		<service id="SubItem.select_all_by_item" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600">
+			<validation_script>return is_object($output) &amp;&amp; is_a($output, "Exception") ? false : true;</validation_script>
+			<key>SubItem.select_all_by_item_itemid-&lt;?php echo $input["item_id"];?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="SubItem.insert" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_subitem.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="SubItem.insertAll" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_subitem.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="SubItem.update" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_subitem.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="SubItem.updateAll" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_subitem.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="SubItem.insertOrUpdate" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_subitem.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="SubItem.insertOrUpdateAll" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_subitem.xml</import>
+			</to_delete>
+		</service>
+		
+		<service id="SubItem.delete" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<!--to_delete>
+				<import relative="1">cache_subitem.xml</import>
+			</to_delete-->
+		</service>
+		
+		<service id="SubItem.deleteAll" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<import relative="1">cache_subitem.xml</import>
+			</to_delete>
+		</service>
+	</services>
+</beans>

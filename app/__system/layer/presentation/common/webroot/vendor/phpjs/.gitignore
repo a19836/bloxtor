@@ -1,0 +1,6 @@
+_tools/_temp/*
+_octopress/_deploy
+nbproject
+gitup.dat
+.project
+.gitup.dat

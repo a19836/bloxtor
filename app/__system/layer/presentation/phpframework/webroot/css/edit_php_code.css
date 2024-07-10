@@ -1,0 +1,596 @@
+/*.title {
+	color: #000;
+	font-size: 16px;
+	margin: 10px 0 20px 0px;
+	text-align: center;
+	width: 100%;
+	min-height:25px;
+}
+
+.sub_title {
+	text-align:center;
+	width:100%;
+	height:20px;
+	margin-bottom:20px;
+}*/
+
+.ui-widget {
+	font-size:0.9em !important;
+}
+
+.code_menu:not(.top_bar_menu) ul {
+	width:100%;
+	min-height:25px;
+	float:none;
+	clear:left;
+	
+	padding: 0px;
+	border: 1px outset #999999;
+	background: #eee;
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Q1ZTNlNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0iI2NjZGVlMCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiM2M4Y2MiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-linear-gradient(top,  #eee 0%, #ddd 40%, #ccc 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eee), color-stop(40%,#ddd), color-stop(100%,#ccc));
+	background: -webkit-linear-gradient(top,  #eee 0%,#ddd 40%,#ccc 100%);
+	background: -o-linear-gradient(top,  #eee 0%,#ddd 40%,#ccc 100%);
+	background: -ms-linear-gradient(top,  #eee 0%,#ddd 40%,#ccc 100%);
+	background: linear-gradient(to bottom, #eee 0%,#ddd 40%,#ccc 100%);
+	
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr='#eee', endColorstr='#ccc',GradientType=0 )";
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eee', endColorstr='#ccc',GradientType=0 );
+}
+.code_menu:not(.top_bar_menu) ul li {
+	margin:0 2px 0 5px;
+	border-right:1px solid #ccc;
+	display:inline-block;
+}
+.code_menu:not(.top_bar_menu) ul li a {
+	color:#222;
+	font-size:10px;
+	cursor:pointer;
+	padding:0 0 0 20px;
+	height:25px;
+	line-height:27px;
+	display:block;
+	border-right:1px inset #999;
+}
+.code_menu:not(.top_bar_menu) ul li ul {
+	margin-left:-14px;
+	position:absolute;
+	top:auto;
+	left:auto;
+	background:#eee;
+	border:0;
+	z-index:2;
+	display:none;
+}
+.code_menu:not(.top_bar_menu) ul li:hover ul {
+	display:block;
+}
+.code_menu:not(.top_bar_menu) ul li ul li {
+	margin:0;
+	padding:5px 8px;
+	display:block;
+	border-left:1px inset #fff;
+	border-bottom:1px inset #ccc;
+	border-right:0;
+}
+.code_menu:not(.top_bar_menu) ul li ul li:hover{
+	background:#b3c8cc;
+}
+.code_menu:not(.top_bar_menu) ul li.auto_save_activation,
+  .code_menu:not(.top_bar_menu) ul li.auto_convert_activation {
+	width:150px;
+	position:relative;
+}
+.code_menu:not(.top_bar_menu) ul li.auto_save_activation input,
+  .code_menu:not(.top_bar_menu) ul li.auto_convert_activation input {
+	position:absolute;
+	right:10px;
+}
+
+#code.editor_full_screen {
+	/*position:fixed;
+	top:0px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	margin:0;
+	height:auto;
+	z-index:9;*/
+}
+#code textarea, #code .ace_editor {
+	width:100%;
+	border:0;
+	border-bottom:3px inset #CCC;
+	margin:0;
+}
+#code textarea {
+	position:fixed !important; /* 2021-02-08 JP: this is very important bc is fixing the problem with scroll up, where when focused or pressed key inside editor the page scrolls to top.*/
+}
+#code .ace_editor .ace_gutter {
+	background:var(--main-ace-editor-bg);
+	color:var(--main-ace-editor-color);
+}
+#code .ace_editor .ace_gutter .ace_gutter-active-line {
+	background:var(--main-ace-editor-active-line-number-bg);
+}
+#code .ace_editor .ace_layer .ace_active-line {
+	background:var(--main-ace-editor-active-line-bg);
+}
+#code .ace_editor .ace_search {
+	background:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+}
+#code .ace_editor .ace_search input[type=submit]:not(:disabled), 
+  #code .ace_editor .ace_search input[type=button]:not(:disabled), 
+  #code .ace_editor .ace_search button:not(:disabled) {
+	color:#333;
+}
+
+#code.ui-tabs-panel {
+	padding:0 !important;
+}
+
+#ui {	
+	padding:0;
+}
+#ui.tasks_flow_full_screen {
+	/*position:fixed;
+	top:0px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	margin:0;
+	height:auto;
+	z-index:9;*/
+}
+#ui .taskflowchart {
+	height:400px;
+	position:relative;
+	overflow:hidden;
+}
+
+#ui .taskflowchart .workflow_menu {
+	display:none;
+}
+#ui .taskflowchart .workflow_menu:not(.top_bar_menu) ul.dropdown li {
+	border-left:1px inset #FFF;
+}
+#ui .taskflowchart .workflow_menu:not(.top_bar_menu) ul.dropdown li a {
+	display:block;
+}
+#ui .taskflowchart .workflow_menu:not(.top_bar_menu) ul.dropdown li ul {
+	min-width:auto;
+	position:absolute;
+	top:auto;
+	left:auto;
+	margin-left:-9px;
+}
+#ui .taskflowchart .workflow_menu:not(.top_bar_menu) ul.dropdown li.sort_tasks ul {
+	width:90px;
+}
+
+#ui .taskflowchart .tasks_menu .task {
+	/*width:80px;
+	font-size:8px;*/
+}
+#ui .taskflowchart .tasks_flow .connection_add_new_task_panel .generic_buttons input {
+	/*background:#d5e3e4;*/
+	font-size:inherit;
+}
+
+#ui .taskflowchart.with_top_bar_menu .tasks_menu,
+  #ui .taskflowchart.with_top_bar_menu .tasks_menu_hide,
+  #ui .taskflowchart.with_top_bar_menu .tasks_flow {
+	top:0;
+}
+
+.big_white_panel {
+	position:fixed;
+	top:50px;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	background-color:#FFF;
+	z-index:1000;
+}
+
+.hide_show_header {
+	position:absolute;
+	right:10px;
+	top:10px;
+	width:20px;
+	height:20px;
+	cursor:pointer;
+}
+.hide_show_header.maximize {
+	background:url("../common/img/icon/maximize_icon.png") 0px 0px no-repeat;
+}
+.hide_show_header.minimize {
+	background:url("../common/img/icon/minimize_icon.png") 0px 0px no-repeat;
+}
+
+/* POPUPS */
+/* POPUPS - choose_from_file_manager */
+.choose_from_file_manager {
+	min-width:400px;
+	height:auto !important;
+}
+.choose_from_file_manager div {
+	float:none;
+	clear:left;
+}
+.choose_from_file_manager .mytree {
+	margin-top:0;
+	margin-bottom:15px;
+	cursor:auto;
+}
+.choose_from_file_manager .variable_type .mytree {
+	margin-top:10px;
+}
+.choose_from_file_manager .mytree .jstree-node > .icon {
+	/* For the add and refresh icons after the jstree-anchor */
+	margin-left:5px;
+}
+.choose_from_file_manager .type,
+   .choose_from_file_manager .new_var,
+   .choose_from_file_manager .existent_var,
+   .choose_from_file_manager .property,
+   .choose_from_file_manager .variable_settings,
+   .choose_from_file_manager .method,
+   .choose_from_file_manager .function,
+   .choose_from_file_manager .businesslogic,
+   .choose_from_file_manager .broker,
+   .choose_from_file_manager .db_driver,
+   .choose_from_file_manager .db_driver,
+   .choose_from_file_manager .query_string_attributes {
+   	
+}
+.choose_from_file_manager > .title + .type {
+	padding-top:5px;
+}
+.choose_from_file_manager .query_string_attributes {
+   	margin:20px 0 10px;
+}
+.choose_from_file_manager .broker.single_broker {
+	display:none;
+}
+.choose_from_file_manager .type label, 
+   .choose_from_file_manager .new_var label,
+   .choose_from_file_manager .existent_var label, 
+   .choose_from_file_manager .property label, 
+   .choose_from_file_manager .variable_settings label,
+   .choose_from_file_manager .method label, 
+   .choose_from_file_manager .function label, 
+   .choose_from_file_manager .businesslogic label, 
+   .choose_from_file_manager .broker label, 
+   .choose_from_file_manager .db_driver label {
+	display:inline-block;
+	width:120px;
+	font-weight:normal;
+	font-style:normal;
+}
+.choose_from_file_manager .businesslogic label {
+	font-size:10pt;
+	width:160px;
+}
+.choose_from_file_manager .query_string_attributes label {
+	display:block;
+}
+.choose_from_file_manager .type select, 
+   .choose_from_file_manager .new_var input:not([type=checkbox]),
+   .choose_from_file_manager .new_var select,
+   .choose_from_file_manager .existent_var select,
+   .choose_from_file_manager .property select, 
+   .choose_from_file_manager .variable_settings input:not([type=checkbox]),
+   .choose_from_file_manager .method select, 
+   .choose_from_file_manager .function select, 
+   .choose_from_file_manager .businesslogic select, 
+   .choose_from_file_manager .broker select, 
+   .choose_from_file_manager .db_driver select, 
+   .choose_from_file_manager .query_string_attributes input {
+	display:inline-block;
+	width:250px;
+	margin-bottom:5px;
+	font-size:inherit;
+}
+.choose_from_file_manager .businesslogic select {
+	margin-bottom:0;
+}
+.choose_from_file_manager .new_var input:not([type=checkbox]) {
+	box-sizing: border-box;
+}
+.choose_from_file_manager .new_var > .name > .sub_group {
+	max-width:400px;
+	padding-left:130px;
+	box-sizing:border-box;
+}
+.choose_from_file_manager .new_var > .name > .sub_group .sub_group {
+	padding-left:10px;
+}
+.choose_from_file_manager .new_var > .name > .sub_group input  {
+	width:calc(100% - 27px);
+}
+.choose_from_file_manager .new_var > .name > .add {
+	margin-left:5px;
+	margin-bottom:5px;
+	font-size:16px;
+}
+.choose_from_file_manager .new_var > .name > .sub_group .delete {
+	margin-left:9px;
+	font-size:14px;
+}
+.choose_from_file_manager .icon.info {
+	margin:0px 0px 0px 5px;
+}
+.choose_from_file_manager .query_string_attributes .icon {
+	margin-left:5px;
+	vertical-align:middle;
+	font-size:14px;
+}
+.choose_from_file_manager .query_string_attributes .empty_query_string_attributes {
+	opacity:.8;
+}
+.choose_from_file_manager .query_string_attributes .query_string_attribute input {
+	width:170px;
+	padding-right:20px;
+	box-sizing:border-box;
+}
+.choose_from_file_manager .query_string_attributes .query_string_attribute .add_variable {
+	margin-left:-15px;
+	margin-top:-4px;
+}
+.choose_from_file_manager .button {
+	padding-top:5px;
+	text-align:center;
+	width:100%;
+	clear:left;
+	float:none;
+}
+.choose_from_file_manager .button input  {
+	display:inline;
+	float:none;
+	font-size:inherit;
+}
+
+/* POPUPS - choose_from_file_manager.with_title */
+.myfancypopup.choose_from_file_manager.with_title {
+	padding:15px;
+}
+.myfancypopup.choose_from_file_manager.with_title > .title {
+	margin:-15px -15px 15px;
+}
+
+/* POPUPS - choose_query_from_file_manager and choose_db_driver_table */
+#choose_query_from_file_manager.choose_from_file_manager > .mytree {
+	margin-top:10px;
+}
+
+/* POPUPS - choose_hibernate_object_method_from_file_manager and choose_db_driver_table */
+#choose_hibernate_object_method_from_file_manager.choose_from_file_manager > .mytree {
+	margin-top:10px;
+}
+
+/* POPUPS - choose_db_driver and choose_db_driver_table */
+#choose_db_driver {
+	width:325px;	
+}
+#choose_db_driver_table {
+	width:340px;	
+}
+#choose_db_driver .broker, 
+  #choose_db_driver .db_driver,
+  #choose_db_driver_table .broker, 
+  #choose_db_driver_table .db_driver, 
+  #choose_db_driver_table .type, 
+  #choose_db_driver_table .db_table {
+	margin:10px 0;
+}
+#choose_db_driver .broker label, 
+  #choose_db_driver .db_driver label,
+  #choose_db_driver_table .broker label, 
+  #choose_db_driver_table .db_driver label, 
+  #choose_db_driver_table .type label, 
+  #choose_db_driver_table .db_table label {
+	display:inline-block;
+	width:110px;
+	overflow:hidden;
+	vertical-align:middle;
+}
+#choose_db_driver .broker select, 
+  #choose_db_driver .db_driver select,
+  #choose_db_driver_table .broker select, 
+  #choose_db_driver_table .db_driver select, 
+  #choose_db_driver_table .type select, 
+  #choose_db_driver_table .db_table select {
+	width:200px;
+	font-size:inherit;
+}
+#choose_db_driver_table .db_table .icon {
+	margin-left:5px;
+}
+#choose_db_driver .button,
+  #choose_db_driver_table .button {
+	padding-top:5px;
+	text-align:center;
+	width:100%;
+	clear:left;
+	float:none;
+}
+#choose_db_driver .button input,
+  #choose_db_driver_table .button input  {
+	display:inline;
+	float:none;
+	font-size:inherit;
+}
+
+/* POPUPS - choose_db_driver.with_title and choose_db_driver_table.with_title */
+#choose_db_driver.with_title,
+  #choose_db_driver_table.with_title {
+	padding:15px;
+}
+#choose_db_driver.with_title > .title,
+  #choose_db_driver_table.with_title > .title {
+	margin:-15px -15px 20px;
+}
+
+/* POPUPS - choose_image_url_from_file_manager and choose_webroot_file_url_from_file_manager */
+#choose_image_url_from_file_manager .mytree .jstree-anchor > label span.icon,
+  #choose_webroot_file_url_from_file_manager .mytree .jstree-anchor > label span.icon {
+	margin-left:5px;
+}
+
+/* POPUPS - upload_from_file_manager */
+#upload_from_file_manager {
+	width:95vw;
+	height:95vh;
+}
+#upload_from_file_manager iframe {
+	width:100%;
+	height:100%;
+}
+
+/* POPUPS - edit_task_source_popup */
+.edit_task_source_popup {
+	position:absolute;
+	top:30px !important; /* If I have a edit_task_source_popup open inside of another edit_task_source_popup I need to have the close button from the first popup separated from the second popup. So I need a Top of 30px. Otherwise the user-experience will be weird. */
+	left:20px !important;
+	right:20px !important;
+	bottom:10px !important;
+}
+.edit_task_source_popup > iframe {
+	width:100%;
+	height:100%;
+}
+
+/* POPUPS - edit_obj_from_file_manager_tree_popup */
+.edit_obj_from_file_manager_tree_popup {
+	position:absolute;
+	top:5%;
+	left:5%;
+	right:5%;
+	bottom:5%;
+	width:90%;
+	height:90%;
+}
+.edit_obj_from_file_manager_tree_popup > iframe {
+	width:100%;
+	height:100%;
+}
+
+/* TREE */
+.mytree {
+	/*border:1px inset #ddd;*/
+	min-width:300px;
+	min-height:200px;
+	max-width:450px;
+	max-height:300px;
+	overflow:auto; /* must have overflow auto and then overlay, otherwise scroll will be hidden in Firefox */
+	overflow:overlay;
+	margin-bottom:10px;
+	margin-top:10px;
+}
+
+/* CONFIRM SAVE */
+.confirm_save {
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	background-color:#FFF;
+	/*z-index:1501; /*.workflow_menu from tasks workflow has an zindex of 1500. So this zindex must be bigger.*/
+	z-index:9999999; /*In edit_template_simple.php, .with_top_bar_tab .code_menu.top_bar_menu has an zindex of 10001, In edit_block_simple.php, .with_top_bar_tab .code_menu.top_bar_menu has an zindex of 1000000. So this zindex must be bigger.*/
+}
+.confirm_save .title {
+	margin:20px auto;
+	text-align:center;
+}
+.confirm_save .code_comparison {
+	
+}
+.confirm_save .code_comparison .old_code, .confirm_save .code_comparison .new_code {
+	width:50%;
+	float:left;
+}
+.confirm_save .code_comparison .old_code label, .confirm_save .code_comparison .new_code label {
+	display:block;
+	margin-left:2%;
+	text-align:center;
+	color:#999;
+}
+.confirm_save .code_comparison .old_code pre, .confirm_save .code_comparison .new_code pre {
+	position:absolute;
+	top:80px;
+	bottom:65px;
+	width:47%;
+	overflow:auto;
+	overflow:overlay;
+	border:1px inset #CCC;
+	background-color:#F0F0F0;
+}
+.confirm_save .code_comparison .old_code pre {
+	left:2%;
+}
+.confirm_save .code_comparison .new_code pre {
+	right:2%;
+}
+.confirm_save .code_comparison .old_code pre code, .confirm_save .code_comparison .new_code pre code {
+	display:inline-block;
+	white-space:pre;
+	overflow-x:visible;
+	overflow-y:visible;
+	overflow:visible;
+	-webkit-text-size-adjust:none;
+}
+/* Fixing highlight issue when a line is too big */
+.confirm_save .code_comparison .old_code pre code span, .confirm_save .code_comparison .new_code pre code span {
+	word-wrap:break-word;
+	white-space:pre-wrap;
+}
+.confirm_save .buttons {
+	position:absolute;
+	left:0;
+	right:0;
+	bottom:0;
+	text-align:center;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+.confirm_save .buttons input {
+	/*height:20px;
+	line-height:15px;*/
+	margin-right:20px;
+	font-size:10px;
+}
+.confirm_save .disable_auto_scroll {
+	position:absolute;
+	left:2%;
+	bottom:0;
+	margin-bottom:10px;
+	color:#aaa;
+	font-size:10px;
+	cursor:pointer;
+}
+.confirm_save .disable_word_wrap {
+	position:absolute;
+	right:2%;
+	bottom:0;
+	margin-bottom:10px;
+	color:#aaa;
+	font-size:10px;
+	cursor:pointer;
+}
+
+/* To print the workflow */
+@media print {
+	#ui .taskflowchart .tasks_flow {
+		background-color:transparent !important;
+	}
+	.ui-tabs-nav {
+		display:none !important;
+	}
+	.hide_show_header {
+		display:none !important;
+	}
+}

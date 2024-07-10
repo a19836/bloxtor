@@ -1,0 +1,83 @@
+/* TOP BAR */
+.top_bar {
+	margin-bottom:20px;
+}
+
+/* MANAGE RECORD */
+.manage_record {
+	padding:0 10px;
+}
+.manage_record.in_popup {
+	padding:0 20px 10px;
+}
+
+/* TABLE */
+.manage_record table {
+	width:100%;
+}
+.manage_record table th {
+	min-width:100px;
+	padding-bottom:5px;
+	padding-right:10px;
+	color:#333;
+}
+.manage_record table td {
+	padding-bottom:5px;
+}
+.manage_record table input:not([type=checkbox]):not([type=radio]),
+  .manage_record table textarea,
+  .manage_record table select {
+	width:100%;
+	box-sizing:border-box;
+}
+.manage_record table td .file_content {
+	max-height:100px;
+	word-break:break-all;
+	overflow:auto;
+}
+.manage_record table td .file_content img,
+  .manage_record table td .file_content svg {
+	max-width:100px;
+	max-height:100px;
+}
+.manage_record table td .file_content a {
+	cursor:pointer;
+	color:var(--link-color);
+}
+
+/* TABLE - EDITOR */
+.manage_record table tr.with_editor th {
+	padding-top:40px;
+	vertical-align:top;
+}
+.manage_record table tr.with_editor td.ui-tabs {
+	border:0;
+}
+.manage_record table tr.with_editor .tabs,
+  .manage_record table tr.with_editor .tabs li {
+	border-color:#eee;
+}
+.manage_record table tr.with_editor .ui-tabs-panel {
+	padding:0;
+	border-top:0;
+	border-left:1px solid #eee;
+	border-right:1px solid #eee;
+	border-bottom:1px solid #eee;
+}
+.manage_record table tr.with_editor .cloned_textarea {
+	height:327px; /* which is the height of the tinymce editor */
+	padding:10px;
+}
+
+/* ERROR */
+.manage_record .error {
+	margin:20px 0;
+	color:#B51E3F;
+	text-align:center;
+}
+.manage_record .ok {
+	margin:20px 0;
+	color:green;
+	text-align:center;
+}
+

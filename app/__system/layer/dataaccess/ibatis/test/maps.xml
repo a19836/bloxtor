@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<import>
+	<result_map id="resultMapTest" class="vendor.dao.test.ItemTest">
+		<result output_name="id" input_name="id" output_type="org.phpframework.object.php.Primitive(int)" input_type="org.phpframework.object.db.DBPrimitive(int)" />
+		<result output_name="title" input_name="title" output_type="org.phpframework.object.php.String" input_type="org.phpframework.object.db.DBPrimitive(varchar)" />
+		<result output_name="status" input_name="status" output_type="org.phpframework.object.php.Integer" input_type="org.phpframework.object.db.DBPrimitive(int)" />
+	</result_map>
+
+	<result_map id="selectItemsResultMap">
+		<result output_name="rownum_index" input_name="rownum" output_type="org.phpframework.object.php.Primitive(int)" input_type="org.phpframework.object.db.DBPrimitive(int)" mandatory="1" />
+		<result output_name="type_of_request" input_name="type" output_type="org.phpframework.object.php.Primitive(string)" input_type="org.phpframework.object.db.DBPrimitive(varchar)" mandatory="0" />
+		<result output_name="item_id" input_name="id" output_type="org.phpframework.object.php.Primitive(int)" input_type="org.phpframework.object.db.DBPrimitive(int)" />
+		<result output_name="item_title" input_name="title" output_type="org.phpframework.object.php.Primitive(string)" input_type="org.phpframework.object.db.DBPrimitive(varchar)" />
+		<result output_name="item_status" input_name="status" output_type="org.phpframework.object.php.Primitive(int)" input_type="org.phpframework.object.db.DBPrimitive(int)" />
+	</result_map>
+
+	<parameter_map id="selectItemsParameterMap">
+		<parameter input_name="row" output_name="ROW_NUM" input_type="org.phpframework.object.php.Primitive(int)" output_type="org.phpframework.object.db.DBPrimitive(int)" mandatory="1" />
+		<parameter input_name="type" output_name="TYPE" input_type="org.phpframework.object.php.Primitive(string)" output_type="org.phpframework.object.db.DBPrimitive(varchar)" mandatory="0" />
+	</parameter_map>
+
+	<parameter_map id="selectItemsParameterMapWithClass" class="vendor.dao.test.ItemTest">
+		<parameter input_name="title" output_name="DESCRIPTION" input_type="org.phpframework.object.php.Primitive(string)" output_type="org.phpframework.object.db.DBPrimitive(varchar)" mandatory="1" />
+	</parameter_map>
+</import>

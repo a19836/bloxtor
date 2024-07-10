@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Nav Bar</label>
+	<tag>navbar</tag>
+	<settings>
+		<resizable>1</resizable>
+		<create_widget_class>NavBarWidget</create_widget_class>
+	</settings>
+	<template_widget><![CDATA[
+ <div class="navbar-container">
+    <a href="#" class="navbar-brand">Title here</a>
+    <div class="navbar-burger">
+      <div class="navbar-burger-line"></div>
+      <div class="navbar-burger-line"></div>
+      <div class="navbar-burger-line"></div>
+    </div>
+    <div data-navbar="navbar-items" class="navbar-items">
+      <nav data-navbar="navbar-menu" class="navbar-menu">
+        <a href="#" class="navbar-menu-link">Home</a>
+        <a href="#" class="navbar-menu-link">About</a>
+        <a href="#" class="navbar-menu-link">Contact</a>
+      </nav>
+    </div>
+</div>
+
+<style>
+.navbar-items {
+  display:inline-block;
+  float:right;
+}
+.navbar {
+  background-color:#222;
+  color:#ddd;
+  min-height:50px;
+  width:100%;
+}
+.navbar-container {
+  max-width:950px;
+  margin:0 auto;
+  width:95%;
+}
+.navbar-container::after {
+  content:"";
+  clear:both;
+  display:block;
+}
+.navbar-brand {
+  min-width:50px;
+  margin:10px 0;
+  padding:5px 10px;
+  display:block;
+  color:inherit;
+  text-decoration:none;
+  vertical-align:middle;
+  float:left;
+}
+.navbar-brand:empty {
+  min-height:50px;
+}
+.navbar-menu {
+  padding:10px 0;
+  display:block;
+  float:right;
+  text-align:right;
+  margin:0;
+}
+.navbar-menu-link {
+  margin:0;
+  color:inherit;
+  text-decoration:none;
+  display:inline-block;
+  padding:10px 15px;
+}
+.navbar-burger {
+  margin:10px 0;
+  width:45px;
+  padding:5px 10px;
+  display:none;
+  float:right;
+  cursor:pointer;
+}
+.navbar-burger-line {
+  padding:1px;
+  background-color:white;
+  margin:5px 0;
+}
+@media (max-width: 768px) {
+  .navbar-burger {
+    display:block;
+  }
+  .navbar-items {
+    display:none;
+    width:100%;
+  }
+  .navbar-menu {
+    width:100%;
+  }
+  .navbar-menu-link {
+    display:block;
+  }
+}
+</style>
+	]]></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property title-link">
+			<label class="col-md-4 col-sm-5 col-form-label">Title Link: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="title-link" />
+		</div>
+		<div class="form-group row settings-property title-class">
+			<label class="col-md-4 col-sm-5 col-form-label">Title Class: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="title-class" />
+		</div>
+		
+		<div class="form-group row settings-property style">
+			<label class="col-12 col-form-label">Style: </label>
+			<textarea class="col-12 form-control"></textarea>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-navbar:before,
+		  body > .menu-widget.menu-widget-navbar.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-navbar > .settings-properties .style textarea {
+			height:300px !important;
+			text-align:left;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function NavBarWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.navbar.parseHtml",
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.navbar.onCloneMenuWidget",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.navbar.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.navbar.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.navbar.parseSettings",
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.navbar.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.navbar.saveSettingsField",
+				});
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				var brand = widget.find(" > .navbar-container > .navbar-brand");
+				widget_settings["title-link"] = brand.attr("href");
+				widget_settings["title-class"] = ui_creator.getTemplateWidgetCurrentClassesWithoutReservedClasses(brand);
+			};
+			
+			me.prepareJSCode = function(widget) {
+				if (!widget.children("script")[0]) {
+					var id = widget.attr("id");
+					var s = document.createElement('script');
+					s.type = 'text/javascript';
+					
+					var code = ''
++ 'var items = document.querySelectorAll("#' + id + '");'
++ '  for (var i = 0, len = items.length; i < len; i++) {'
++ '    (function(){'
++ '      var e,t=0,n=function(){'
++ '        var e,t=document.createElement("void"),n={'
++ '          transition:"transitionend",'
++ '          OTransition:"oTransitionEnd",'
++ '          MozTransition:"transitionend",'
++ '          WebkitTransition:"webkitTransitionEnd"'
++ '        };'
++ '        for(e in n)if(void 0!==t.style[e])return n[e]'
++ '      }(),'
++ '      r=function(e){'
++ '        var t=window.getComputedStyle(e),n=t.display,r=(t.position,t.visibility,t.height,parseInt(t["max-height"]));'
++ '        if("none"!==n&&"0"!==r)return e.offsetHeight;'
++ '        e.style.height="auto",e.style.display="block",e.style.position="absolute",e.style.visibility="hidden";'
++ '        var i=e.offsetHeight;'
++ '        return e.style.height="",e.style.display="",e.style.position="",e.style.visibility="",i'
++ '      },'
++ '      i=function(e){'
++ '        t=1;'
++ '        var n=r(e),i=e.style;'
++ '        i.display="block",i.transition="max-height 0.25s ease-in-out",i.overflowY="hidden",""==i["max-height"]&&(i["max-height"]=0),0==parseInt(i["max-height"])?(i["max-height"]="0",setTimeout(function(){'
++ '          i["max-height"]=n+"px"'
++ '        },10)):i["max-height"]="0"'
++ '      },'
++ '      a=function(r){'
++ '        if(r.preventDefault(),!t){'
++ '          var a=this.closest("[data-navbar=navbar]"),o=a.querySelector("[data-navbar=navbar-items]");'
++ '          i(o),e||(o.addEventListener(n,function(){'
++ '            t=0;'
++ '            var e=o.style;'
++ '            0==parseInt(e["max-height"])&&(e.display="",e["max-height"]="")'
++ '          }),e=1)'
++ '      	 }'
++ '      };'
++ '      "navbar-collapse"in this||this.querySelector(".navbar-burger").addEventListener("click",a),this["navbar-collapse"]=1'
++ '    }'
++ '    .bind(items[i]))();'
++ '}';
+			
+					try {
+						s.appendChild(document.createTextNode(code));
+						widget[0].appendChild(s);
+					} catch (e) {
+						s.text = code;
+						widget[0].appendChild(s);
+					}
+				}
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.getAttribute("data-navbar") == "navbar" && html_element.classList.contains("navbar") && $(html_element).children(".navbar-container").length > 0) {
+					var navbar_container = $(html_element).children(".navbar-container");
+					
+					navbar_container.addClass("ignore-widget");
+					navbar_container.find(" > .navbar-burger > .navbar-burger-line").addClass("ignore-widget");
+					navbar_container.children(".navbar-items").addClass("ignore-widget");
+				}
+			};
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) {
+					var id = "navbar-" + parseInt(Math.random() * 1000);
+					widget.attr("data-navbar", "navbar").attr("id", id).addClass("navbar");
+					
+					me.prepareJSCode(widget);
+					
+					//set navbar widget
+					setTimeout(function() {
+						var navbar_container = widget.children(".navbar-container");
+						
+						ui_creator.convertHtmlElementToWidget( navbar_container.children(".navbar-brand") );
+						
+						navbar_container.children(".navbar-burger").children().addClass("ignore-widget");
+						ui_creator.convertHtmlElementToWidget( navbar_container.children(".navbar-burger") );
+						
+						var menu = navbar_container.find(" > .navbar-items > .navbar-menu");
+						ui_creator.createTemplateWidgetFromMenuWidgetTag("navmenu", menu.parent(), menu[0]);
+						ui_creator.convertHtmlElementToWidget( menu.children() );
+					}, 1000);
+				}
+				
+				return widget;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				me.prepareJSCode(widget);
+				
+				var brand = widget.find(" > .navbar-container > .navbar-brand");
+				var classes_bkp = brand.attr("class");
+				var classes = ui_creator.getTemplateWidgetCurrentClassesWithoutReservedClasses(brand);
+				brand.attr("class", classes);
+				
+				var html = ui_creator.getCleanedHtmlElement(widget[0]);
+				
+				brand.attr("class", classes_bkp);
+				
+				return html;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				//prepare editable box
+				widget.attr("contenteditable", "false");
+				widget.find(" > .navbar-container > .navbar-brand").attr("contenteditable", "true");
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var textarea = menu_settings.find(".settings-properties .style textarea");
+				textarea.val( widget.children("style").html() );
+				
+				ui_creator.addMenuSettingsContextMenu(textarea);
+				ui_creator.addMenuSettingsContextMenu( menu_settings.find(".settings-properties input") );
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("style")) {
+						widget.children("style").html(field_value);
+						
+						me.prepareJSCode(widget);
+					}
+					else if (sprop.hasClass("title-link"))
+						widget.find(" > .navbar-container > .navbar-brand").attr("href", field_value);
+					else if (sprop.hasClass("title-class")) {
+						var brand = widget.find(" > .navbar-container > .navbar-brand");
+						var classes = ui_creator.getTemplateWidgetCurrentReservedClasses(brand) + " " + field_value;
+						brand.attr("class", classes);
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

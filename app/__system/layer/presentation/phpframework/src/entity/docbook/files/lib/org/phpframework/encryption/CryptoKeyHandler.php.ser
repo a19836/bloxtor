@@ -1,0 +1,43 @@
+a:1:{s:16:"CryptoKeyHandler";a:1:{s:7:"methods";a:10:{s:6:"getKey";a:14:{s:4:"name";s:6:"getKey";s:16:"start_line_index";i:14;s:17:"start_token_index";i:79;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:86;s:20:"end_args_token_index";i:87;s:25:"start_brackets_line_index";i:14;s:26:"start_brackets_token_index";i:89;s:23:"end_brackets_line_index";i:26;s:24:"end_brackets_token_index";i:157;s:14:"end_line_index";i:26;s:15:"end_token_index";i:157;}s:9:"getHexKey";a:14:{s:4:"name";s:9:"getHexKey";s:16:"start_line_index";i:28;s:17:"start_token_index";i:159;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:22:"start_args_token_index";i:166;s:20:"end_args_token_index";i:167;s:25:"start_brackets_line_index";i:28;s:26:"start_brackets_token_index";i:169;s:23:"end_brackets_line_index";i:30;s:24:"end_brackets_token_index";i:185;s:14:"end_line_index";i:30;s:15:"end_token_index";i:185;}s:11:"encryptText";a:20:{s:4:"name";s:11:"encryptText";s:16:"start_line_index";i:38;s:17:"start_token_index";i:189;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:124:"/**
+	 * Encrypt a text into ciphertext
+	 * 
+	 * @param mixed $text - decrypted text
+	 * @param string $key - crypto key
+	 */";}s:25:"start_comments_line_index";i:32;s:26:"start_comments_token_index";i:187;s:23:"end_comments_line_index";i:37;s:24:"end_comments_token_index";i:187;s:22:"start_args_token_index";i:196;s:20:"end_args_token_index";i:201;s:9:"arguments";a:2:{s:5:"$text";N;s:4:"$key";N;}s:25:"start_brackets_line_index";i:38;s:26:"start_brackets_token_index";i:203;s:23:"end_brackets_line_index";i:54;s:24:"end_brackets_token_index";i:290;s:14:"end_line_index";i:54;s:15:"end_token_index";i:290;}s:11:"decryptText";a:20:{s:4:"name";s:11:"decryptText";s:16:"start_line_index";i:62;s:17:"start_token_index";i:294;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:123:"/**
+	 * Decrypt a cipher text
+	 * 
+	 * @param string $cipher_text - encrypted text
+	 * @param string $key - crypto key
+	 */";}s:25:"start_comments_line_index";i:56;s:26:"start_comments_token_index";i:292;s:23:"end_comments_line_index";i:61;s:24:"end_comments_token_index";i:292;s:22:"start_args_token_index";i:301;s:20:"end_args_token_index";i:306;s:9:"arguments";a:2:{s:12:"$cipher_text";N;s:4:"$key";N;}s:25:"start_brackets_line_index";i:62;s:26:"start_brackets_token_index";i:308;s:23:"end_brackets_line_index";i:86;s:24:"end_brackets_token_index";i:426;s:14:"end_line_index";i:86;s:15:"end_token_index";i:426;}s:17:"encryptJsonObject";a:20:{s:4:"name";s:17:"encryptJsonObject";s:16:"start_line_index";i:94;s:17:"start_token_index";i:430;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:152:"/**
+	 * Encrypt an object/array into json and then into ciphertext
+	 * 
+	 * @param mixed $obj - object or array
+	 * @param string $key - crypto key
+	 */";}s:25:"start_comments_line_index";i:88;s:26:"start_comments_token_index";i:428;s:23:"end_comments_line_index";i:93;s:24:"end_comments_token_index";i:428;s:22:"start_args_token_index";i:437;s:20:"end_args_token_index";i:442;s:9:"arguments";a:2:{s:4:"$obj";N;s:4:"$key";N;}s:25:"start_brackets_line_index";i:94;s:26:"start_brackets_token_index";i:444;s:23:"end_brackets_line_index";i:102;s:24:"end_brackets_token_index";i:488;s:14:"end_line_index";i:102;s:15:"end_token_index";i:488;}s:17:"decryptJsonObject";a:20:{s:4:"name";s:17:"decryptJsonObject";s:16:"start_line_index";i:110;s:17:"start_token_index";i:492;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:182:"/**
+	 * Decrypt a cipher text into json and then into object/array
+	 * 
+	 * @param string $cipher_text - encrypted text from a json obj/array
+	 * @param string $key - crypto key
+	 */";}s:25:"start_comments_line_index";i:104;s:26:"start_comments_token_index";i:490;s:23:"end_comments_line_index";i:109;s:24:"end_comments_token_index";i:490;s:22:"start_args_token_index";i:499;s:20:"end_args_token_index";i:511;s:9:"arguments";a:3:{s:12:"$cipher_text";N;s:4:"$key";N;s:17:"$convert_to_array";s:4:"true";}s:25:"start_brackets_line_index";i:110;s:26:"start_brackets_token_index";i:513;s:23:"end_brackets_line_index";i:114;s:24:"end_brackets_token_index";i:552;s:14:"end_line_index";i:114;s:15:"end_token_index";i:552;}s:23:"encryptSerializedObject";a:20:{s:4:"name";s:23:"encryptSerializedObject";s:16:"start_line_index";i:122;s:17:"start_token_index";i:556;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:157:"/**
+	 * Encrypt an object/array into serialize and then into ciphertext
+	 * 
+	 * @param mixed $obj - object or array
+	 * @param string $key - crypto key
+	 */";}s:25:"start_comments_line_index";i:116;s:26:"start_comments_token_index";i:554;s:23:"end_comments_line_index";i:121;s:24:"end_comments_token_index";i:554;s:22:"start_args_token_index";i:563;s:20:"end_args_token_index";i:568;s:9:"arguments";a:2:{s:4:"$obj";N;s:4:"$key";N;}s:25:"start_brackets_line_index";i:122;s:26:"start_brackets_token_index";i:570;s:23:"end_brackets_line_index";i:130;s:24:"end_brackets_token_index";i:614;s:14:"end_line_index";i:130;s:15:"end_token_index";i:614;}s:23:"decryptSerializedObject";a:20:{s:4:"name";s:23:"decryptSerializedObject";s:16:"start_line_index";i:138;s:17:"start_token_index";i:618;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:199:"/**
+	 * Decrypt a cipher text into serialized text and then into object/array
+	 * 
+	 * @param string $cipher_text - encrypted text from a serialized obj/array
+	 * @param string $key - crypto key
+	 */";}s:25:"start_comments_line_index";i:132;s:26:"start_comments_token_index";i:616;s:23:"end_comments_line_index";i:137;s:24:"end_comments_token_index";i:616;s:22:"start_args_token_index";i:625;s:20:"end_args_token_index";i:630;s:9:"arguments";a:2:{s:12:"$cipher_text";N;s:4:"$key";N;}s:25:"start_brackets_line_index";i:138;s:26:"start_brackets_token_index";i:632;s:23:"end_brackets_line_index";i:142;s:24:"end_brackets_token_index";i:668;s:14:"end_line_index";i:142;s:15:"end_token_index";i:668;}s:8:"binToHex";a:20:{s:4:"name";s:8:"binToHex";s:16:"start_line_index";i:151;s:17:"start_token_index";i:672;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:155:"/**
+	* Convert a binary string into a hexadecimal string without cache-timing 
+	* leaks
+	* 
+	* @param string $bin_string (raw binary)
+	* @return string
+	*/";}s:25:"start_comments_line_index";i:144;s:26:"start_comments_token_index";i:670;s:23:"end_comments_line_index";i:150;s:24:"end_comments_token_index";i:670;s:22:"start_args_token_index";i:679;s:20:"end_args_token_index";i:681;s:9:"arguments";a:1:{s:11:"$bin_string";N;}s:25:"start_brackets_line_index";i:151;s:26:"start_brackets_token_index";i:683;s:23:"end_brackets_line_index";i:154;s:24:"end_brackets_token_index";i:697;s:14:"end_line_index";i:154;s:15:"end_token_index";i:697;}s:8:"hexToBin";a:20:{s:4:"name";s:8:"hexToBin";s:16:"start_line_index";i:163;s:17:"start_token_index";i:701;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:155:"/**
+	* Convert a hexadecimal string into a binary string without cache-timing 
+	* leaks
+	* 
+	* @param string $hex_string
+	* @return string (raw binary)
+	*/";}s:25:"start_comments_line_index";i:156;s:26:"start_comments_token_index";i:699;s:23:"end_comments_line_index";i:162;s:24:"end_comments_token_index";i:699;s:22:"start_args_token_index";i:708;s:20:"end_args_token_index";i:710;s:9:"arguments";a:1:{s:11:"$hex_string";N;}s:25:"start_brackets_line_index";i:163;s:26:"start_brackets_token_index";i:712;s:23:"end_brackets_line_index";i:166;s:24:"end_brackets_token_index";i:726;s:14:"end_line_index";i:166;s:15:"end_token_index";i:726;}}}}

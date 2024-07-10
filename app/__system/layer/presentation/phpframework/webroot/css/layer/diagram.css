@@ -1,0 +1,119 @@
+::-webkit-scrollbar-track {
+	background-color:transparent !important; /* overwrite the bg from the setup.css */
+}
+
+/* TOP BAR */
+.top_bar header {
+	z-index:5;
+}
+.top_bar header > ul {
+	right:27px;
+}
+
+/* TASKS FLOW CHART */
+.taskflowchart.with_top_bar_menu .tasks_menu, 
+  .taskflowchart.with_top_bar_menu .tasks_menu_hide, 
+  .taskflowchart.with_top_bar_menu .tasks_flow {
+	top:50px;
+}
+.taskflowchart .tasks_menu {
+	width:140px;
+}
+.taskflowchart:not(.reverse) .tasks_flow {
+	left:145px;
+}
+.taskflowchart.reverse .tasks_flow {
+	right:145px;
+}
+.taskflowchart:not(.reverse) .tasks_menu_hide {
+	left:140px;
+}
+.taskflowchart.reverse .tasks_menu_hide {
+	right:140px;
+}
+
+.taskflowchart .tasks_flow::-webkit-scrollbar {
+	height:10px;
+}
+.taskflowchart .tasks_menu .tasks_group_tasks {
+	padding:0;
+}
+
+.taskflowchart.with_top_bar_menu .workflow_menu ul.dropdown li.layers_settings:hover:after {
+	display:none;
+}
+.taskflowchart.with_top_bar_menu .workflow_menu ul.dropdown li.layers_settings > a > .icon.layers_settings::before {
+	content:"\f5fd";
+}
+.taskflowchart.with_top_bar_menu .workflow_menu ul.dropdown li.layers_settings > a > .icon.layers_settings::after {
+	content:"\f31e";
+}
+.taskflowchart.with_top_bar_menu .workflow_menu ul.dropdown li.layers_settings > ul li:nth-child(even):not(:last-child) {
+	border-bottom:1px solid #eee;
+}
+.taskflowchart.with_top_bar_menu .workflow_menu ul.dropdown li.layers_settings > ul li .icon {
+	margin:0;
+	display:none;
+}
+
+.taskflowchart .tasks_flow {
+
+}
+.taskflowchart .tasks_flow #layer_presentations,
+  .taskflowchart .tasks_flow #layer_bls,
+  .taskflowchart .tasks_flow #layer_dals,
+  .taskflowchart .tasks_flow #layer_dbs,
+  .taskflowchart .tasks_flow #layer_drivers {
+	width:100%; 
+	height:25%; 
+	min-height:100px; 
+	border-top:1px dashed #DFE1ED;
+	text-align:center;
+}
+.taskflowchart .tasks_flow #layer_presentations {
+	border-top:0;
+}
+.taskflowchart .tasks_flow #layer_drivers {
+	border-top-style:solid;
+	border-bottom:0;
+	background:#F0F1F5;
+}
+.taskflowchart .tasks_flow .layer_title {
+	width:90vw; 
+	width:calc(100vw - 160px); 
+	padding:10px 15px;
+	position:sticky; 
+	top:0;
+	left:0; 
+	color:#83889E; 
+	display:block; 
+	white-space:nowrap;
+	text-align:left;
+}
+
+.taskflowchart.with_top_bar_menu .selected_task_properties, 
+  .taskflowchart.with_top_bar_menu .selected_connection_properties {
+	background:#fff !important;
+}
+
+.task_context_menu .activate_task a, 
+  .task_context_menu .activate_task a:hover, 
+  .task_context_menu .activate_task a.active, 
+  .task_context_menu .activate_task a.active:hover {
+	background:none;
+}
+.task_context_menu .activate_task a::before {
+	width:15px;
+	display:inline-block;
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f14a";
+	margin-right:12px;
+	font-size:14px;
+	color:green;
+}
+.task_context_menu .activate_task a.active::before {
+	opacity:.5;
+	color:#999;
+}

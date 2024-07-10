@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sql_mapping>
+	<insert id="insert_permission">
+		insert into sysauth_permission (permission_id, name, created_date, modified_date) values (#permission_id#, '#name#', '#created_date#', '#modified_date#')
+	</insert>
+	
+	<update id="update_permission">
+		update sysauth_permission set name='#name#', modified_date='#modified_date#' where permission_id=#permission_id#
+	</update>
+	
+	<delete id="delete_permission">
+		delete from sysauth_permission where permission_id=#permission_id#
+	</delete>
+	
+	<delete id="delete_all_permissions">
+		delete from sysauth_permission
+	</delete>
+	
+	<select id="get_permission">
+		select * from sysauth_permission where permission_id=#permission_id#
+	</select>
+	
+	<select id="get_all_permissions">
+		select * from sysauth_permission
+	</select>
+	
+	<select id="get_permissions_by_conditions">
+		select * from sysauth_permission where #conditions#
+	</select>
+</sql_mapping>

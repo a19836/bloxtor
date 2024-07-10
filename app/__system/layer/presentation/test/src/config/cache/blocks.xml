@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import><?php echo $vars["presentation_common_path"] . $vars["presentation_caches_path"] . "cache_handler.xml"; ?></import>
+	
+	<services>
+		<!-- THE RULES BELOW ARE EXAMPLES ONLY, BC THESE BLOCK FILES DO NOT EXIST IN THIS PROJECT -->
+		
+		<!-- Articles belonging to specific environments, mirrored through the object_id and object_type_id variables. -->
+		<!-- /public/articles, corresponding to the block file: 'this project'/src/block/public/articles.php using the module: 'article/list_articles' or 'article/catalog'. -->
+		<service id="public/articles" cache_handler="ServiceCacheHandler" to_cache="true" ttl="600">
+			<key>articles_&lt;?php echo $_SERVER["HTTP_HOST"] . "_" . $input["action_settings"]["object_type_id"] . "_" . $input["action_settings"]["object_id"] . "_" . $input["action_settings"]["group"]; ?&gt;</key>
+		</service>
+		
+		<!-- /public/article?article_id=1, corresponding to the block file: 'this project'/src/block/public/article.php using the module: 'article/properties'. -->
+		<service id="public/article" cache_handler="ServiceCacheHandler" to_cache="true" ttl="600">
+			<validation_script>return $_GET["article_id"] > 0;</validation_script>
+			<key>article_properties_&lt;?php echo $_SERVER["HTTP_HOST"] . "_" . $GLOBALS["my_defined_environment_id"] . "_" . $_GET["article_id"]; ?&gt;</key>
+		</service>
+		
+		<!-- /private/admin/articles/edit_article, corresponding to the block file: 'this project'/src/block/private/admin/articles/edit_article.php using the module: 'article/edit_article'. -->
+		<service id="private/admin/articles/edit_article" cache_handler="ServiceCacheHandler">
+			<validation_script>return $_POST;</validation_script>
+			<to_delete>
+				<service>
+					<key>articles_&lt;?php echo $_SERVER["HTTP_HOST"] . "_" . $input["action_settings"]["object_to_objects"][0]["object_type_id"] . "_" . $input["action_settings"]["object_to_objects"][0]["object_id"] . "_" . $input["action_settings"]["object_to_objects"][0]["group"]; ?&gt;</key>
+				</service>
+				<service type="prefix">
+					<key>article_properties_&lt;?php echo $_SERVER["HTTP_HOST"] . "_" . $input["object_to_objects"][0]["object_id"] . "_"; ?&gt;</key>
+				</service>
+			</to_delete>
+		</service>
+	</services>
+</beans>

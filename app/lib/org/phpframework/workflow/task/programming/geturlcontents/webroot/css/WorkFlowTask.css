@@ -1,0 +1,191 @@
+.taskflowchartmenu .task.task_geturlcontents {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_geturlcontents .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_geturlcontents .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.get_url_contents_task_html {
+	min-width:500px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html {
+	min-width:auto;
+}
+.get_url_contents_task_html > .info {
+	text-align:center;
+	margin-bottom:15px;
+}
+.get_url_contents_task_html > .info a {
+	color:var(--link-color);
+}
+
+.get_url_contents_task_html .dts {
+   	min-width:420px;
+   	min-height:20px;
+   	margin:0 auto 5px auto;
+   	padding-top:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .dts {
+   	min-width:auto;
+}
+.get_url_contents_task_html .dts .array_items .items {
+	position:absolute;
+	margin-top:-23px;
+	margin-left:120px;
+}
+.get_url_contents_task_html .dts .array_items .items > label {
+	display:none;
+}
+.get_url_contents_task_html .dts .array_items > .items > .item_add {
+	display:none;
+}
+.get_url_contents_task_html .dts .array_items ul .items {
+	position:static;
+	margin-top:0;
+	margin-left:0;
+}
+.get_url_contents_task_html .dts .array_items > ul .item > .search {
+	float:none;
+	display:inline-block;
+	vertical-align:middle;
+	margin:auto 0;
+}
+.get_url_contents_task_html .dts .array_items > ul > .item.url {
+	background:#ccc;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .dts .array_items > ul > .item.url:hover:before {
+	width:calc(100% - 2px);
+	top:-28px;
+}
+.get_url_contents_task_html .dts .array_items > ul > .item.url .key,
+  .get_url_contents_task_html .dts .array_items > ul > .item.url .value_type {
+	background:#ccc;
+	color:#000;
+	border-color:#ccc;
+}
+.get_url_contents_task_html .dts .array_items > ul > .item.url .key {
+	text-transform:uppercase;
+	font-weight:bold;
+}
+.get_url_contents_task_html .dts .array_items > ul > .item.url .value {
+	width:300px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .dts .array_items > ul > .item.url .value {
+	width:calc(100% - 100px);
+	margin:1px 0 0 0;
+	background:transparent;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .dts .array_items > ul > .item.url .value_type {
+	top:-24px;
+	right:0;
+	background:transparent;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .dts .array_items > ul > .item.url .add_variable {
+	margin-left:-18px;
+}
+.get_url_contents_task_html .dts .array_items > ul > li > ul > .item input.key {
+	width:108px;
+}
+.get_url_contents_task_html .dts .array_items > ul > li > ul > .item select.key {
+	/*width:116px;*/
+	width:180px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .dts .array_items > ul > li > ul > .item input.value {
+	width:calc(100% - 170px);
+}
+.get_url_contents_task_html .dts label {
+	width:60px;
+}
+.get_url_contents_task_html .dts .data_code {
+	width:220px;
+	margin-right:5px;
+	padding-right:20px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .dts .data_code {
+	width:calc(100% - 160px);
+}
+.get_url_contents_task_html .dts > .add_variable {
+	margin-left:-26px;
+}
+
+.get_url_contents_task_html .dts .data_type {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+}
+
+.get_url_contents_task_html .result_type {
+	width:100%;
+	height:auto;
+	margin-top:20px;
+	margin-bottom:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .result_type {
+	position:relative;
+}
+.get_url_contents_task_html .result_type label,
+  .get_url_contents_task_html .result_type select,
+  .get_url_contents_task_html .result_type input {
+	margin-right:5px;
+}
+.get_url_contents_task_html .result_type select[name=result_type],
+  .get_url_contents_task_html .result_type input {
+  	width:130px;
+  	height:21px;
+  	line-height:21px;
+  	box-sizing:border-box;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .result_type select[name=result_type],
+  .taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .result_type input {
+  	width:calc(100% - 65px);
+  	margin-left:60px;
+  	display:block;
+  	margin-top:5px;
+}
+.get_url_contents_task_html .result_type input {
+	padding-right:20px;
+}
+.get_url_contents_task_html .dts .data_type,
+  .get_url_contents_task_html .result_type select[name=result_type_type] {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+	float:none;
+	display:inline-block;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .get_url_contents_task_html .result_type select[name=result_type_type] {
+	position:absolute;
+	top:-3px;
+	left:60px;
+}
+.get_url_contents_task_html .result_type .add_variable {
+	margin-left:-26px;
+}
+.get_url_contents_task_html .dts .info,
+  .get_url_contents_task_html .result_type .info {
+	padding-top:10px;
+	/*font-size:90%;*/
+}
+.get_url_contents_task_html .dts .info a {
+	color:var(--link-color);
+}
+.get_url_contents_task_html .dts .info ul li {
+	margin-left:20px;
+	list-style:disc;
+}
+.get_url_contents_task_html .result_type .info li {
+	margin-left:20px;
+	list-style-type:disc;
+}

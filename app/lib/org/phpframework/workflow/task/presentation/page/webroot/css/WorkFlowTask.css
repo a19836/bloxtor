@@ -1,0 +1,151 @@
+.taskflowchartmenu .task.task_page {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_page .info:before {
+	background-image:url('../img/bg.svg');
+}
+
+/* page_task_html */
+.page_task_html {
+	border:0;
+	font-size:inherit;
+}
+.page_task_html > ul.ui-tabs-nav {
+	background:none;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-radius: 0;
+}
+.page_task_html > .loading {
+	text-align:center;
+	margin-bottom:20px;
+}
+.page_task_html > .invalid_file {
+	text-align:center;
+	color:#B51E3F;
+	margin-bottom:20px;
+}
+.page_task_html > .invalid_file a {
+	color:#B51E3F;
+}
+.page_task_html > .error {
+	text-align:center;
+	color:#B51E3F;
+	margin-bottom:20px;
+}
+
+/* SETTINGS */
+.page_task_html .settings > div > label {
+	width:150px;
+	display:inline-block;
+}
+.page_task_html .settings .file_name input {
+	width:200px;
+	display:inline-block;
+}
+.page_task_html .settings .template select {
+	width:200px;
+}
+
+/* SETTINGS - ADVANCED SETTINGS */
+.page_task_html .advanced_settings {
+	margin-top:20px;
+	padding:5px;
+	border:1px solid #ccc;
+}
+.page_task_html .advanced_settings > a {
+	width:100%;
+	color:#999;
+	cursor:pointer;
+	display:block;
+}
+.page_task_html .advanced_settings > a.edit_page {
+	margin-top:20px;
+	text-align:right;
+	color:#4070FF;
+}
+.page_task_html .advanced_settings > a .icon.update::before {
+	content:"\f303";
+}
+.page_task_html .advanced_settings > div {
+	margin-top:20px;
+}
+.page_task_html .advanced_settings li {
+	margin-bottom:5px;
+	margin-left:10px;
+}
+.page_task_html .advanced_settings li label {
+	width:150px;
+	height:auto;
+	vertical-align:middle;
+	word-break: break-all;
+}
+.page_task_html .advanced_settings li label {
+	font-weight:normal;
+}
+.page_task_html .advanced_settings li input[type="text"] {
+	min-width:200px;
+	width:calc(100% - 210px);
+}
+.page_task_html .advanced_settings li input[readonly] {
+	background:transparent;
+	color:#999;
+	border:1px solid #ccc;
+	cursor:pointer;
+}
+.page_task_html .advanced_settings .regions_blocks li input {
+	width:calc(100% - 265px);
+}
+.page_task_html .advanced_settings .regions_blocks li.reserved input {
+	background:transparent;
+	color:#d9d9d9;
+	border:1px solid #fff;
+	cursor:not-allowed;
+}
+.page_task_html .advanced_settings .includes li input[type="text"] {
+	width:calc(100% - 80px);
+}
+.page_task_html .advanced_settings .includes li input[type="checkbox"] {
+	margin-left:5px;
+}
+.page_task_html .advanced_settings .regions_blocks li .icon.add::before {
+	vertical-align:middle;
+}
+
+/* EDIT PAGE ADMIN PANEL POPUP */
+
+.page_task_html .edit_page_admin_panel_popup {
+	width:calc(100vw - 20px);
+	height:calc(100vh - 80px);
+	position:fixed;
+	left:10px !important;
+	top:60px !important;
+	z-index:2005 !important; /* Must be !important bc for some reason when the myfancypopup calculates the z-index, is giving a z-index smaller than main popup close button... */
+	box-sizing:border-box;
+	padding:0;
+	border-radius:5px;
+	overflow:auto;
+}
+.page_task_html .edit_page_admin_panel_popup > iframe {
+	width:100% !important;
+	height:100% !important;
+	/* !important is very important otherwise the myfancypopp will overwrite this values */
+}
+
+/* AUTHENTICATION */
+.page_task_html .authentication > div > label {
+	width:200px;
+	display:inline-block;
+}
+.page_task_html .authentication .authentication_users {
+	margin:20px 0 0;
+	display:none;
+}
+.page_task_html .authentication .authentication_users table {
+	min-width:200px;
+}
+.page_task_html .authentication .authentication_users table select {
+	min-width:205px;
+	margin:3px 0;
+}

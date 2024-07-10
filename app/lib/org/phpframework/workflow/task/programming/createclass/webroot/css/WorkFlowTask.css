@@ -1,0 +1,188 @@
+.taskflowchartmenu .task.task_createclass {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_createclass .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_createclass .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.create_class_task_html {
+	min-width:500px;
+	margin:0 auto;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html {
+	min-width:auto;
+}
+.create_class_task_html > .name,
+  .create_class_task_html > .extends,
+  .create_class_task_html > .implements,
+  .create_class_task_html > .abstract,
+  .create_class_task_html > .interface,
+  .create_class_task_html > .properties,
+  .create_class_task_html > .methods,
+  .create_class_task_html > .comments {
+	width:100%;
+	min-height:20px;
+	margin-top:10px;
+	margin-bottom:5px;
+}
+.create_class_task_html > .name {
+	margin-top:0;
+}
+.create_class_task_html > .name label,
+  .create_class_task_html > .extends label,
+  .create_class_task_html > .implements label,
+  .create_class_task_html > .abstract label,
+  .create_class_task_html > .interface label {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .name label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .extends label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .implements label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .abstract label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .interface label {
+	width:60px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .name input {
+	width:calc(100% - 75px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .extends input,
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .implements input {
+	width:calc(100% - 100px);
+}
+
+.create_class_task_html > .properties > label,
+  .create_class_task_html > .comments label {
+	width:100%;
+	margin-bottom:5px;
+	display:block;
+	float:none;
+}
+.create_class_task_html > .comments textarea {
+	width:100%;
+	max-width:100%;
+	height:100px;
+	float:none;
+	box-sizing: border-box;
+}
+
+.create_class_task_html > .properties {
+	margin-top:20px;
+}
+.create_class_task_html > .properties table {
+	min-width:500px;
+	width:100%;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .properties table {
+	min-width:auto;
+}
+.create_class_task_html > .properties table input {
+    width:100%;
+    height:auto;
+    box-sizing:border-box;
+    float:none;
+}
+.create_class_task_html > .properties table select {
+    width:100%;
+}
+.create_class_task_html > .properties table .name,
+  .create_class_task_html > .properties table .value,
+  .create_class_task_html > .properties table .comments {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .properties table .name,
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .properties table .value,
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .properties table .comments {
+	width:unset;
+}
+.create_class_task_html > .properties table .type,
+  .create_class_task_html > .properties table .var_type {
+	width:70px;
+}
+.create_class_task_html > .properties table .static {
+	width:40px;
+	text-align:center;
+}
+.create_class_task_html > .properties table .static input {	
+	height:auto;
+	margin:auto;
+	float:none;
+}
+.create_class_task_html > .properties table .icon_cell {
+	width:20px;
+}
+.create_class_task_html > .properties table .icon_cell .icon {
+	margin:auto 0 auto 5px;
+}
+.create_class_task_html > .properties table input {
+	border:1px solid #ddd;
+}
+.create_class_task_html > .properties table select {
+	border:0;
+	background:transparent;
+	color:#999;
+}
+.create_class_task_html > .properties table .empty td {
+	text-align:center;
+	color:#ccc;
+}
+
+.create_class_task_html > .methods {
+	margin-top:20px;
+}
+.create_class_task_html > .methods > label {
+	width:100%;
+	margin-bottom:10px;
+	display:block;
+	float:none;
+}
+.create_class_task_html > .methods > label .icon {
+	
+}
+.create_class_task_html > .methods li {
+	margin:10px auto 0;
+	padding:5px;
+	border:1px solid #ddd;
+}
+.create_class_task_html > .methods li > .name,
+  .create_class_task_html > .methods li > .type,
+  .create_class_task_html > .methods li > .abstract,
+  .create_class_task_html > .methods li > .static {
+	background:none;
+	border:1px solid #ddd;
+	margin-bottom:10px;
+}
+.create_class_task_html > .methods li > .icon.update,
+  .create_class_task_html > .methods li > .icon.remove {
+	margin-bottom:10px;
+	float:right;
+}
+.create_class_task_html > .methods li > .icon.update::before {
+	content:"\f303";
+}
+.create_class_task_html > .methods li table {
+	margin-top:10px;
+}
+
+.create_class_task_html > .methods li > .comments {
+	min-height:20px;
+	margin-top:10px;
+	margin-bottom:5px;
+}
+.create_class_task_html > .methods li > .comments label {
+	width:100%;
+	margin-bottom:5px;
+	display:block;
+	float:none;
+}
+.create_class_task_html > .methods li > .comments textarea {
+	width:100%;
+	max-width:100%;
+	height:50px;
+	box-sizing:border-box;
+	border-color:#eee;
+	float:none;
+}

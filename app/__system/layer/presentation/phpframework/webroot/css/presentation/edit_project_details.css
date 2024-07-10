@@ -1,0 +1,193 @@
+body,
+  #main_column,
+  body:not(.in_popup) #main_column {
+	background:#fff;
+}
+
+/* TOP BAR */
+.top_bar {
+	margin-bottom:15px;
+}
+.top_bar li.save {
+	display:none;
+}
+
+/* CREATE PROJECT */
+.edit_project_details {
+	width:520px;
+	margin:15px auto;
+	padding:10px 0 50px;
+	text-align:center;
+	position:relative;
+}
+.edit_project_details form {
+	/*margin-top:15px;*/
+}
+.edit_project_details:not(.with_advanced_options) .advanced_option {
+	display:none !important;
+}
+
+.edit_project_details .left_content {
+	width:208px;
+	margin-right:15px;
+	padding-left:10px;
+	display:inline-block;
+	text-align:center;
+	vertical-align:middle;
+}
+.edit_project_details .left_content img,
+  .edit_project_details .left_content .no_logo {
+	width:100px;
+	height:100px;
+	margin:20px auto 18px;
+	display:inline-block;
+	border:1px solid #ddd;
+	border-radius:100%;
+	overflow:hidden;
+}
+.edit_project_details .left_content .no_logo::before {
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	font: var(--fa-font-solid);
+	font-size:80px;
+	display:block;
+	margin-top:10px;
+	/*content:"\f0a0";*/
+	content:"\f49e";
+	color:#999;
+}
+.edit_project_details .left_content label,
+  .edit_project_details .left_content input:not([type=checkbox]),
+  .edit_project_details .left_content select {
+  	width:200px;
+	margin:0;
+	display:block;
+	text-align:left;
+	font-size:inherit;
+}
+.edit_project_details .left_content input {
+	color:#83889E;
+}
+.edit_project_details .left_content .icon.search {
+	width:13px;
+}
+.edit_project_details .left_content .project_folder {
+	margin:20px auto 0;
+}
+.edit_project_details .left_content .project_folder input {
+	width:180px;
+	display:inline-block;
+}
+
+.edit_project_details .right_content {
+	width:270px;
+	text-align:left;
+	vertical-align:top;
+	display:inline-block;
+}
+.edit_project_details .right_content > div {
+	margin-bottom:20px;
+}
+.edit_project_details .right_content label {
+	display:block;
+	color:var(--main-template-color);
+}
+.edit_project_details .right_content input:not([type=checkbox]) {
+	width:250px;
+	font-size:inherit;
+	color:#83889E;
+}
+.edit_project_details .right_content select {
+	width:255px;
+	font-size:inherit;
+	color:#83889E;
+}
+.edit_project_details .right_content textarea {
+	width:250px;
+	height:70px;
+	font-size:inherit;
+	color:#83889E;
+}
+.edit_project_details .right_content .name .auto_normalize {
+	margin:5px 15px 0 0;
+	text-align:right;
+	font-size:90%;
+	opacity:.8;
+}
+.edit_project_details .right_content .project_db_driver a {
+	margin-top:3px;
+	display:block;
+	text-align:left;
+}
+.edit_project_details .right_content .no_db_drivers {
+	opacity:.7;
+}
+.edit_project_details .project_default_db_driver {
+	margin-top:-10px;
+	opacity:.7;
+}
+.edit_project_details .project_default_db_driver span {
+	font-weight:bold;
+}
+
+.edit_project_details .no_project_default_db_driver {
+	margin:10px 20px 20px;
+	opacity:.7;
+}
+.edit_project_details .no_project_default_db_driver span {
+	font-weight:bold;
+}
+
+.edit_project_details .db_details {
+	width:505px;
+	margin:0 auto 20px;
+	padding:20px;
+	border:1px solid #ddd;
+	border-radius:2px;
+	box-sizing:border-box;
+	text-align:left;
+	box-shadow:0 0 0.5rem 0.1rem rgb(200 200 200 / 20%) inset;
+}
+.edit_project_details .db_details .form_fields {width:410px; margin:0 auto;}
+.edit_project_details .db_details .form_field {min-height:20px; line-height:20px; margin-bottom:5px;}
+.edit_project_details .db_details .form_field label {width:150px; display:inline-block;}
+.edit_project_details .db_details .form_field input:not([type=checkbox]) {width:215px; font-size:inherit;}
+.edit_project_details .db_details .form_field select {width:220px; font-size:inherit;}
+.edit_project_details .db_details .form_field.db_port input {width:60px;}
+.edit_project_details .db_details .form_field.show_advanced_db_options span { display:block; text-align:right; padding-right:30px; }
+.edit_project_details .db_details .form_field .toggle_password {
+	margin-left: 5px;
+}
+
+.edit_project_details .toggle_advanced_options {
+	cursor:pointer;
+	color:inherit;
+	position:absolute;
+	left:20px;
+	bottom:10px;
+	color:var(--link-color);
+}
+.edit_project_details .toggle_advanced_options:hover {
+	text-decoration:underline;
+}
+
+.edit_project_details .buttons {
+	position:absolute;
+	bottom:0;
+	right:40px;
+}
+.edit_project_details .buttons input {
+	font-size:inherit;
+}
+.edit_project_details .buttons input.loading {
+	padding-left:25px;
+	background-position:5px center;
+}
+
+/* FILE MANAGER POPUP */
+.edit_project_details.single_presentation_layer #choose_project_folder_url_from_file_manager > .broker {
+	display:none;
+}
+#choose_project_folder_url_from_file_manager {
+	text-align:left;
+}

@@ -1,0 +1,324 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+/* TOP BAR */
+.top_bar {
+	margin-bottom:20px;
+}
+.top_bar header {
+	width:calc(100% - 220px);
+	left:0;
+	right:220px;
+}
+body.main_navigator_reverse .top_bar header {
+	left:220px;
+	right:0;
+}
+.top_bar header > ul > li:hover:after {	
+	
+}
+
+/* USER */
+#menu {
+	position:fixed;
+	top:0;
+	left:auto;
+	right:0;
+	bottom:0;
+	width:230px;
+	padding-top:0px;
+	overflow:auto;
+	overflow:overlay;
+	text-align:right;
+	z-index:1;
+	
+	color:var(--main-iframe-color);
+	background-color:var(--main-iframe-bg);
+	background: -moz-linear-gradient(right, var(--main-iframe-bg) 97%, #ffffff73 100%);
+	background: -webkit-gradient(linear, right top, right bottom, color-stop(97%, var(--main-iframe-bg)), color-stop(100%, #ffffff73));
+	background: -webkit-linear-gradient(right, var(--main-iframe-bg) 97%, #ffffff73 100%);
+	background: -o-linear-gradient(right, var(--main-iframe-bg) 97%, #ffffff73 100%);
+	background: -ms-linear-gradient(right, var(--main-iframe-bg) 97%, #ffffff73 100%);
+	background: linear-gradient(to left, var(--main-iframe-bg) 97%, #ffffff73 100%);
+}
+body.main_navigator_reverse #menu {
+	left:0;
+	right:auto;
+	text-align:left;
+}
+#menu ul {
+	/*border-top:1px dashed #FFF;*/
+}
+#menu ul li {
+	height:20px;
+	/*border-bottom:1px dashed #FFF;*/
+	padding:3px 10px;
+}
+#menu ul li:hover:not(.current_user) {
+	background-color:rgba(255, 255, 255, .5);
+}
+#menu ul li.active {
+	background-color:rgba(255, 255, 255);
+	font-weight:bold;
+}
+#menu ul li a {
+	color:var(--main-iframe-color);
+	font-size:90%;
+}
+#menu li.current_user {
+	height:50px;
+	line-height:50px;
+	padding:0 10px 0 0;
+	font-style:italic;
+	text-align:right;
+	color:#999;
+	font-size:90%;
+	box-sizing:border-box;
+	
+	color:var(--main-iframe-color);
+	border-bottom:1px solid #aaa;
+	background:var(--main-iframe-bg);
+	/*background: linear-gradient(to bottom, #f7f7f7 0%, var(--main-iframe-bg) 95%, #ffffff73 100%);*/
+}
+body.main_navigator_reverse #menu li.current_user {
+	padding:0 0 0 10px;
+	text-align:left;
+	border-right:1px dashed #FFF;
+}
+#menu li.manage_menu_item {
+	border-top:1px dashed #FFF;
+}
+#menu li.manage_user_type_permissions,
+  #menu li.manage_layout_type_permissions {
+	border-bottom:1px dashed #FFF;
+}
+#menu li.manage_layout_types,
+  #menu li.manage_reserved_db_table_names,
+  #menu li.manage_login_controls,
+  #menu li.change_db_keys,
+  #menu li.change_auth_settings {
+	margin-top:20px;
+	border-bottom:1px dashed #FFF;
+}
+#menu li.change_db_keys {
+	background-color:rgba(255, 255, 255, .4);
+}
+
+#content {
+	position:absolute;
+	top:0;
+	left:0;
+	right:220px;
+	bottom:0;
+	overflow:auto;
+	overflow:overlay;
+}
+body.main_navigator_reverse #content {
+	left:220px;
+	right:0;
+}
+
+#content .users_list {padding:0 10px 10px;}
+#content .user_types_list {padding:0 10px 10px;}
+#content .layout_types_list {padding:0 10px 10px;}
+#content .reserved_db_table_names_list {padding:0 10px 10px;}
+#content .object_types_list {padding:0 10px 10px;}
+#content .permissions_list {padding:0 10px 10px;}
+#content .login_controls_list {padding:0 10px 10px;}
+#content .edit_user_type {padding:0 10px 10px;}
+#content .edit_layout_type {padding:0 10px 10px;}
+#content .edit_reserved_db_table_name {padding:0 10px 10px;}
+#content .object_user_type {padding:0 10px 10px;}
+#content .edit_user {padding:0 10px 10px;}
+#content .edit_permission {padding:0 10px 10px;}
+#content .change_db_keys {padding:0 10px 10px;}
+#content .change_auth_settings {padding:0 10px 10px;}
+
+#content table { margin:0 auto; }
+#content th { border-right:1px solid #eee; text-transform:capitalize; font-size:10px; color:#666; }
+#content td { border-top:1px solid #CCC; border-right:1px solid #eee; padding:0px 2px 0px 2px; }
+#content table .user_id { width:50px; }
+#content table .permission_id { width:50px; }
+#content table .user_type_id { width:60px; }
+#content table .layout_type_id { width:50px; }
+#content table .reserved_db_table_name_id { width:50px; }
+#content table .object_type_id { width:50px; }
+#content table .user_type { width:100px; }
+#content table .layout_type { width:100px; }
+#content table .reserved_db_table_name { width:100px; }
+#content table .username { width:150px; }
+#content table .name { width:150px; }
+#content table .created_date { width:150px; text-align:center; }
+#content table .modified_date { width:150px; text-align:center; }
+#content table td.object_id { text-align:left; padding-left:5px; padding-right:5px; }
+#content table .user_type_permission { min-width:100px; }
+#content table .layout_type_permission { min-width:100px; }
+#content table .buttons { width:20px; padding:0; border:0; }
+#content table .buttons .add {font-size:14px;}
+#content table .buttons .icon {margin:0 5px;}
+#content table .buttons .update {}
+
+#content div.user_type { width:310px; margin:0 auto 20px auto; float:none; clear:left;}
+#content div.user_type label { display:inline-block; width:100px; }
+#content div.user_type select { width:200px; text-align:center; font-size:inherit; }
+
+#content div.layout_type { width:430px; margin:0 auto 20px auto; float:none; clear:left;}
+#content div.layout_type label { display:inline-block; width:100px; }
+#content div.layout_type select[name=type_id] { width:110px; font-size:inherit; }
+#content div.layout_type select[name=layout_type_id] { width:200px; font-size:inherit; }
+
+#content .edit_layout_type div.type { height:auto; }
+#content .edit_layout_type div.type select[name=choose_project] { width:205px; margin-top:5px; margin-left:80px; background:#fff; color:#999; }
+
+#content .form_fields { width:310px; margin:0 auto; }
+#content .form_fields .form_field { float:none; clear:left; margin-bottom:7px; }
+#content .form_fields .form_field label { width:80px; display:inline-block; font-weight:normal; }
+#content .form_fields .form_field input { width:200px; font-size:inherit; }
+#content .form_fields .form_field select { width:205px; font-size:inherit; }
+#content .buttons { width:150px; height:20px; margin:15px auto 20px auto; float:none; clear:left; }
+#content .buttons .submit_button { float:left; width:70px; text-align:center; }
+#content .buttons .submit_button input { font-size:10px; font-weight:bold; line-height:15px; }
+#content form > .buttons { display:none; }
+
+#content .change_db_keys { width:560px; margin:0 auto; }
+#content .change_db_keys .form_fields { width:100%; }
+#content .change_db_keys .form_fields .form_field_login { width:300px; margin-left:auto; margin-right:auto; }
+#content .change_db_keys .form_fields .form_field_login.password { margin-bottom:20px; }
+#content .change_db_keys .form_fields .form_field_key label { width:235px; }
+#content .change_db_keys .form_fields .form_field_key input { width:300px; }
+#content .change_db_keys .label { width:100%; margin:0 auto 10px auto; font-weight:bold; text-align:center; }
+#content .change_db_keys .info { text-align:center; margin-top:20px; }
+#content .change_db_keys .buttons { display:none; }
+
+#content .change_auth_settings .form_fields { width:460px; }
+#content .change_auth_settings .form_fields .form_field label { width:240px; }
+#content .change_auth_settings .form_fields .form_field input { width:60px; }
+#content .change_auth_settings .form_fields .form_field_db { margin-left:90px; }
+#content .change_auth_settings .form_fields .form_field_db label { width:150px; }
+#content .change_auth_settings .form_fields .form_field_db input { width:170px; }
+#content .change_auth_settings .form_fields .form_field_db input[type=checkbox] { width:auto; }
+#content .change_auth_settings .form_fields .form_field_db.db_port input {width:60px;}
+#content .change_auth_settings .form_fields .form_field_db select { width:175px; }
+#content .change_auth_settings .form_fields .auth_db_path input { width:200px; }
+#content .change_auth_settings .form_fields .remote_db_credentials { height:20px; margin-bottom:5px; font-weight:bold; }
+#content .change_auth_settings .form_fields .show_advanced_db_options span { display:block; text-align:right; padding-right:45px; }
+#content .change_auth_settings .form_fields .form_field .toggle_password {
+	margin-left:5px;
+}
+#content .change_auth_settings .label { width:100%; margin:0 auto 20px auto; font-weight:bold; text-align:center; }
+#content .change_auth_settings .buttons { display:none; }
+
+#content .edit_user .error { width:100%; text-align:center; font-weight:bold; color:#B51E3F; }
+#content .edit_login_control .error { width:100%; text-align:center; font-weight:bold; color:#B51E3F; }
+
+#content .user_type_permissions_list table {min-width:350px; font-size:80%;}
+#content .user_type_permissions_list table .user_type_permission {width:50px; text-align:center;}
+#content .user_type_permissions_list table .user_type_permission.new:after {content:"new"; color:#B51E3F; font-weight:bold; margin-left:10px; position:absolute; opacity:0.6;}
+#content .user_type_permissions_list table .user_type_permission .toggle {
+	display:inline-block;
+	position:absolute;
+	margin-left:50px;
+	font-size:16px;
+}
+#content .user_type_permissions_list table .user_type_permission .toggle::before {
+	content:"\f204";
+	margin-left:1px;
+}
+#content .user_type_permissions_list table .user_type_permission .toggle.active::before {
+	content:"\f205";
+	margin-left:1px;
+}
+#content .user_type_permissions_list table .icon {
+	width:24px;
+	height:20px;
+	display:inline-block;
+	float:none;
+	vertical-align:top;
+	font-size:16px;
+}
+#content .user_type_permissions_list .user_type_permissions_content {
+	border:0;
+}
+#content .user_type_permissions_list .user_type_permissions_content > .tabs  { 
+	background:none;
+	border-top:0;
+	border-left:0;
+	border-right:0;
+	border-radius:0;
+}
+#content .user_type_permissions_list .user_type_permissions_content #pages_permissions_list,
+  #content .user_type_permissions_list .user_type_permissions_content #layers_permissions_list {
+	max-height:calc(100vh - 175px);
+	overflow:auto;
+	overflow:overlay;
+	position:relative;
+	box-sizing:border-box;
+}
+#content .user_type_permissions_list .user_type_permissions_content #layers_permissions_list table td {
+	padding:3px 0;
+}
+#content .user_type_permissions_list .user_type_permissions_content #layers_permissions_list table td.main_node {
+	text-align:left;
+}
+#content .user_type_permissions_list .user_type_permissions_content #layers_permissions_list table td.object_id {
+	text-align:left;
+	padding-left:20px;
+}
+#content .user_type_permissions_list .buttons {
+	 display:none;
+}
+
+#content .layout_type_permissions_list .layout_type select {text-align:left;}
+#content .layout_type_permissions_list .layout_type_permissions_content {
+	border:0;
+}
+#content .layout_type_permissions_list .layout_type_permissions_content label {font-weight:normal;}
+#content .layout_type_permissions_list .layout_type_permissions_content > .tabs { 
+	background:none;
+	border-top:0;
+	border-left:0;
+	border-right:0;
+	border-radius:0;
+}
+#content .layout_type_permissions_list .layout_type_permissions_content #belonging_to_layout,
+  #content .layout_type_permissions_list .layout_type_permissions_content #referenced_in_layout {
+	max-height:calc(100vh - 165px);
+	overflow:auto;
+	overflow:overlay;
+	position:relative;
+	font-size:80%;
+	box-sizing:border-box;
+}
+#content .layout_type_permissions_list .layout_type_permissions_content .mytree {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+#content .layout_type_permissions_list .layout_type_permissions_content .mytree li {
+	margin-left:15px;
+	position:relative;
+}
+#content .layout_type_permissions_list .layout_type_permissions_content .mytree > ul > li {
+	margin-left:27px;
+}
+#content .layout_type_permissions_list .layout_type_permissions_content .mytree li label > input[type=checkbox] {
+	position:absolute;
+	top:3px;
+	left:-15px;
+}
+#content .layout_type_permissions_list .mytree .icon.main_node {
+	width:24px;
+	height:20px;
+	margin-left:15px;
+	display:inline-block;
+	float:none;
+	vertical-align:top;
+	font-size:16px;
+}
+#content .layout_type_permissions_list .buttons {
+	 display:none;
+}

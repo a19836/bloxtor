@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>PTL</label>
+	<tag>ptl</tag>
+	<settings>
+		<create_widget_class>PTLWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[
+		<pre class="ptl-content"></pre>
+		<div class="droppable"></div>
+	]]></template_widget>
+	<properties></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-ptl:before,
+		  body > .menu-widget.menu-widget-ptl.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets > .widget-header.widget-header-ptl .options .props,
+		   .layout-ui-editor > .template-widgets > .widget-header.widget-header-ptl .options .toggle {
+			display:none !important;
+		}
+		.layout-ui-editor > .template-widgets > .droppable-header.droppable-header-ptl {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-ptl .settings-id,
+		   .layout-ui-editor > .menu-settings.menu-settings-ptl .settings-classes,
+		   .layout-ui-editor > .menu-settings.menu-settings-ptl .settings-properties,
+		   .layout-ui-editor > .menu-settings.menu-settings-ptl .settings-widget,
+		   .layout-ui-editor > .menu-settings.menu-settings-ptl .settings-general,
+		   .layout-ui-editor > .menu-settings.menu-settings-ptl .settings-dimension,
+		   .layout-ui-editor > .menu-settings.menu-settings-ptl .settings-typography,
+		   .layout-ui-editor > .menu-settings.menu-settings-ptl .settings-decorations,
+		   .layout-ui-editor > .menu-settings.menu-settings-ptl .settings-events,
+		   .layout-ui-editor > .menu-settings.menu-settings-ptl .settings-others,
+		   .layout-ui-editor > .menu-settings.menu-settings-ptl .settings-extra,
+			.layout-ui-editor > .menu-settings.menu-settings-ptl li.settings-tabs > ul > li.settings-tab-properties,
+			.layout-ui-editor > .menu-settings.menu-settings-ptl li.settings-tabs > ul > li.settings-tab-widget,
+			.layout-ui-editor > .menu-settings.menu-settings-ptl li.settings-tabs > ul > li.settings-tab-style,
+			.layout-ui-editor > .menu-settings.menu-settings-ptl li.settings-tabs > ul > li.settings-tab-events,
+			.layout-ui-editor > .menu-settings.menu-settings-ptl li.settings-tabs > ul > li.settings-tab-extra {
+			display:none;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-ptl li.settings-tabs {
+			margin-top:35px;
+		}
+		
+		.layout-ui-editor > .menu-layers .group.group-ptl > ul {
+			display:none !important;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.template-widget.template-widget-ptl {
+			margin:5px !important; /* !important is bc of the css when .borders is active */
+			padding:0 !important; /* !important is bc of the css when .borders is active */
+			border:1px dotted #ab7a90 !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			border-radius:5px;
+			vertical-align:middle;
+			display:block;
+			word-break:break-all;
+		}
+		body > .droppable.borders .template-widget.template-widget-ptl:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+		
+		.template-widget.template-widget-ptl > .ptl-content {
+			width:auto;
+			min-height:1.5em;
+			margin:0 !important; /* !important is bc of the css when .borders is active */
+			padding:0 .2em !important; /* !important is bc of the css when .borders is active */
+			border:0 !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			display:block;
+			background:#ab7a90;
+			color:#333;
+			/*font-size:inherit;*/
+			font-size:12px;
+			font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+			overflow:auto;
+		}
+		.template-widget.template-widget-ptl > .ptl-content::-webkit-scrollbar {
+			height:7px;
+		}
+		body > .droppable.borders .template-widget.template-widget-ptl > .ptl-content:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+		
+		.template-widget.template-widget-ptl > .droppable {
+			min-height:20px;
+			margin:0 !important; /* !important is bc of the css when .borders is active */
+			padding:5px !important; /* !important is bc of the css when .borders is active */
+			border:0 !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			outline:none !important;
+		}
+		.template-widget.template-widget-ptl.is-single-ptl-tag > .droppable {
+			display:none;
+		}
+		body > .droppable.borders .template-widget.template-widget-ptl > .droppable {
+			margin:unset;
+			padding:unset;
+			border:unset;
+		}
+		body > .droppable.borders .template-widget.template-widget-ptl > .droppable:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function PTLWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.ptl.parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.ptl.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.ptl.onCreateTemplateWidget",
+				});
+				
+				menu_widget.removeAttr("data-on-clone-menu-widget-func");
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (!html_element)
+					return false;
+				
+				var node_name = html_element.nodeName.toLowerCase();
+				var ret = {
+					"widget-droppable-selector": " > .droppable",
+				};
+				
+				//if html_element is ptl
+				if (/^\/?(php|ptl|\?):/i.test(node_name)) { //allow empty ptl codes
+					//console.log(html_element);
+					
+					return ret;
+				}
+				
+				//Otherwise if html_element was previously a template-widget-ptl node.
+				//Note that if we call the recreateWidgetChildren or convertHtmlElementToWidget methods for this widget.parent(), when the html_element is already a widget (created previously), we need to be prepared to parse it and re-convert this html_element (which is already a widget) into a new widget. So we need to detect this cases with the following code:
+				if (me.isRecreateWidget(html_element))
+					return ret;
+				
+				return false;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				var children_html = ui_creator.getCleanedHtmlContents( widget.children(".droppable").contents() );
+				
+				var html = widget.children(".ptl-content").html();
+				html = html.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n").replace(/&emsp;/g, "\t").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+				
+				//replace \u2003 which is a weird white space char that is created when we call '$(.ptl-content).html()' function and it converts the \t to this char.
+				html = html.replace(/\u2003/g, "\t"); 
+				
+				html = "<" + html + ">" + children_html;
+				
+				var node_name = MyHtmlBeautify.getPTLTagName(html, 0);
+				var end_node_tag = "</" + node_name + ">";
+				
+				if (!MyHtmlBeautify.isDecrementPrefixPTLTag(end_node_tag))
+					html += end_node_tag;
+				
+				//Note: Do not add single close tags like '/>', otherwise when we read the html again the browser won't understand this tag as closed and will put all the siblings as children of the html_element.
+				
+				return html;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element, options) {
+				var ptl_content = widget.children(".ptl-content");
+				var default_text = ptl_content.html();
+				
+				ptl_content.html(html_element ? "" : (default_text ? default_text : "ptl:echo Via PTL code"));
+				
+				if (html_element) {
+					//console.log(html_element);
+					//console.log(html_element.attributes);
+					
+					var is_recreate = me.isRecreateWidget(html_element);
+					var node_name = html_element.nodeName.toLowerCase();
+					var j_html_element = $(html_element);
+					var html = "";
+					
+					//if html_element was previously a template-widget-ptl node.
+					//Note that if we call the recreateWidgetChildren or convertHtmlElementToWidget methods for this widget.parent(), when the html_element is already a widget (created previously), we need to be prepared to parse it and re-convert this html_element (which is already a widget) into a new widget. So we need to detect this cases with the following code:
+					if (is_recreate) {
+						html = j_html_element.children(".ptl-content").html();
+						
+						if (j_html_element.hasClass("is-single-ptl-tag"))
+							widget.addClass("is-single-ptl-tag");
+						
+						//Note that in this case, after the onCreateTemplateWidget gets called, the system will call the parseHtmlContents method which converts the j_html_element.contents() to widgets. So we need to remove the previous children and add the droppable contents.
+						var children = j_html_element.children();
+						j_html_element.append( j_html_element.children(".droppable").contents() );
+						children.remove();
+						
+						//check if properties are open for the old widget and if yes, open the properties for the new widget
+						ui_creator.reloadOpenMenuSettingsIfOpenedWithOldWidget(j_html_element, widget, 1000);
+					}
+					else {
+						html = node_name;
+						if (html_element.attributes)
+							$.each(html_element.attributes, function(idx, attr) {
+								html += " " + attr.name + (attr.value != "" ? '=' + attr.value : ""); //Do not add quotes otherwise it will mess the code like: if x==0
+							});
+						
+						//for the cases: <input placeHolder="<ptl:echo str_replace('"', '&quot;', ($input[article_id] )) />" />
+						html = html.replace(/&/g, "&amp;");
+						
+						if (MyHtmlBeautify && MyHtmlBeautify.isSinglePTLTag('<' + node_name + '></' + node_name + '>'))
+							widget.addClass("is-single-ptl-tag");
+					}
+					
+					//console.log(html);
+					ptl_content.html(html);
+					
+					$(html_element).remove();
+				}
+				
+				//prepare editable box
+				widget.attr("contenteditable", "false");
+				widget.children(".droppable").attr("contenteditable", "true");
+				
+				ptl_content.attr("contenteditable", "true")
+					.keydown(function(e) {
+						e.stopPropagation(); //otherwise if the user press ctrl+v to paste a string, it will call the ui_creator.TextSelection.options.on_create_node function which then will convert this widget into a normal html block widget, which will mess the layout.
+						
+						//avoids enter key to create unespected html elements. Only shift+enter keys are allowed.
+						var is_shift = window.event ? window.event.shiftKey : e.shiftKey;
+						
+						if (e.keyCode === 13 && !is_shift) {
+							ui_creator.showError("Please use Shift-enter keys instead...");
+							return false;
+						}
+					})
+					.mouseup(function(e) {
+						//prevents that the TextSelection open the inline menu
+						e.preventDefault();
+						e.stopPropagation();
+						
+						ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+					})
+					.blur(function(e) {
+						if (typeof ui_creator.options.on_template_widgets_layout_changed_func == "function")
+							ui_creator.options.on_template_widgets_layout_changed_func(null);
+					});
+				
+				//only allows paste with text, discarding the html. Html is not allowed here.
+				ui_creator.setPasteCallbackForOnlyText(ptl_content);
+			};
+			
+			me.isRecreateWidget = function(html_element) {
+				if (html_element) {
+					var node_name = html_element.nodeName.toLowerCase();
+					var j_html_element = $(html_element);
+					
+					if (node_name == "div" && j_html_element.hasClass("template-widget-ptl") && j_html_element.data("data-tag") == "ptl")
+						return true;
+					else if (node_name == "div" && j_html_element.children("pre.ptl-content").length == 1 && j_html_element.children("div.droppable").length == 1 && j_html_element.children().length == 2)
+						return true;
+				}
+				
+				return false;
+			};
+		}
+	]]></menu_js>
+</widget>

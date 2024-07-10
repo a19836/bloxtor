@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import relative="1">app.xml</import>
+	
+	<!-- PRESENTATION -->
+	<var name="presentation_vars">
+		<list>
+			<item name="presentations_path"><?php echo SYSTEM_LAYER_PATH; ?>presentation/</item>
+			<item name="presentations_modules_file_path"><?php echo SYSTEM_LAYER_PATH; ?>presentation/modules.xml</item>
+			<item name="presentation_configs_path">src/config/</item>
+			<item name="presentation_utils_path">src/util/</item>
+			<item name="presentation_controllers_path">src/controller/</item>
+			<item name="presentation_entities_path">src/entity/</item>
+			<item name="presentation_views_path">src/view/</item>
+			<item name="presentation_templates_path">src/template/</item>
+			<item name="presentation_blocks_path">src/block/</item>
+			<item name="presentation_modules_path">src/module/</item>
+			<item name="presentation_webroot_path">webroot/</item>
+			
+			<item name="presentation_common_project_name">common</item>
+			<item name="presentation_common_path"><?php echo SYSTEM_LAYER_PATH; ?>presentation/common/</item>
+			
+			<!--item name="presentation_files_extension">php</item-->
+		</list>
+	</var>
+	
+	<!-- DISPATCHER CACHE -->
+	<var name="dispatcher_cache_vars">
+		<list>
+			<item name="dispatcher_caches_path">src/config/cache/</item>
+			<item name="dispatchers_cache_file_name">dispatcher.xml</item>
+			<item name="dispatchers_cache_path"><?php echo LAYER_CACHE_PATH;?>syspresentation/dispatcher/</item>
+			<item name="dispatchers_default_cache_ttl">600</item>
+			<item name="dispatchers_default_cache_type">text</item>
+			<item name="dispatchers_module_cache_maximum_size"></item>
+		</list>
+	</var>
+	
+	<bean name="PresentationDispatcherCacheHandler" path="lib.org.phpframework.dispatcher.DispatcherCacheHandler">
+		<constructor_arg reference="dispatcher_cache_vars" />
+		<constructor_arg reference="presentation_vars" />
+	</bean>
+	
+	<!-- PRESENTATION -->
+	<bean name="BusinessLogicBrokerClient" path="lib.org.phpframework.broker.client.local.LocalBusinessLogicBrokerClient">
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		
+		<function name="addBeansFilePath">
+			<parameter><?php echo SYSTEM_BEAN_PATH; ?>business_logic_layer.xml</parameter>
+		</function>
+		<function name="setBeanName">
+			<parameter>BusinessLogicBrokerServer</parameter>
+		</function>
+	</bean>
+	<!--bean name="BusinessLogicBrokerClient" path="lib.org.phpframework.broker.client.rest.RESTBusinessLogicBrokerClient">
+		<constructor_arg>
+			<list>
+				<item name="url">http://jplpinto.localhost/__system/businesslogic/</item>
+				<item name="http_auth">basic</item>
+				<item name="user_pwd">&lt;?php echo $GLOBALS['rest_user_pwd']; ?></item>
+			</list>
+		</constructor_arg>
+	</bean-->
+	
+	<bean name="PresentationLayer" path="lib.org.phpframework.layer.presentation.PresentationLayer">
+		<constructor_arg reference="presentation_vars" />
+		
+		<property name="cacheLayer" reference="PresentationCacheLayer" />
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		
+		<function name="addBroker">
+			<parameter reference="BusinessLogicBrokerClient" />
+			<!--parameter value="pc" /-->
+		</function>
+	</bean>
+	
+	<import relative="1">presentation_data_access_sample.xml</import><!-- This is only to show that is possible to call the DATA ACCESS LAYER from the PRESENTATION LAYER -->
+	
+	<var name="presentation_cache_vars">
+		<list>
+			<item name="presentation_caches_path">src/config/cache/</item>
+			<item name="presentations_cache_file_name">pages.xml</item>
+			<item name="presentations_cache_path"><?php echo LAYER_CACHE_PATH; ?>syspresentation/pages/</item>
+			<item name="presentations_default_cache_ttl">600</item>
+			<item name="presentations_default_cache_type">text</item>
+			<item name="presentations_module_cache_maximum_size"></item>
+		</list>
+	</var>
+	
+	<bean name="PresentationCacheLayer" path="lib.org.phpframework.layer.cache.PresentationCacheLayer">
+		<constructor_arg reference="PresentationLayer" />
+		<constructor_arg reference="presentation_cache_vars" />
+	</bean>
+	
+	<!-- EVC + CMS LAYER -->
+	<bean name="EVC" path="lib.org.phpframework.layer.presentation.evc.EVC">
+		<property name="presentationLayer" reference="PresentationLayer" />
+		<property name="defaultController">index</property>
+	</bean>
+	
+	<bean name="PresentationCMSLayer" path="lib.org.phpframework.layer.presentation.cms.CMSLayer">
+		<constructor_arg reference="EVC" />
+		
+		<property name="cacheLayer" reference="PresentationMultipleCMSCacheLayer" />
+	</bean>
+	
+	<function name="setCMSLayer" reference="EVC">
+		<parameter reference="PresentationCMSLayer" />
+	</function>
+	
+	<var name="presentation_multiple_cms_cache_vars">
+		<list>
+			<item name="presentation_cms_module_caches_path">src/config/cache/</item>
+			<item name="presentations_cms_module_cache_file_name">modules.xml</item>
+			<item name="presentations_cms_module_cache_path"><?php echo LAYER_CACHE_PATH; ?>syspresentation/modules/</item>
+			<item name="presentations_cms_module_default_cache_ttl">600</item>
+			<item name="presentations_cms_module_default_cache_type">text</item>
+			<item name="presentations_cms_module_module_cache_maximum_size"></item>
+			
+			<item name="presentation_cms_block_caches_path">src/config/cache/</item>
+			<item name="presentations_cms_block_cache_file_name">blocks.xml</item>
+			<item name="presentations_cms_block_cache_path"><?php echo LAYER_CACHE_PATH; ?>syspresentation/blocks/</item>
+			<item name="presentations_cms_block_default_cache_ttl">600</item>
+			<item name="presentations_cms_block_default_cache_type">text</item>
+			<item name="presentations_cms_block_module_cache_maximum_size"></item>
+		</list>
+	</var>
+	
+	<bean name="PresentationMultipleCMSCacheLayer" path="lib.org.phpframework.layer.presentation.cms.cache.MultipleCMSCacheLayer">
+		<constructor_arg reference="PresentationCMSLayer" />
+		<constructor_arg reference="presentation_multiple_cms_cache_vars" />
+	</bean>
+	
+	<!-- ROUTER -->
+	<var name="router_vars">
+		<list>
+			<item name="routers_path">src/config/</item>
+			<item name="routers_file_name">router.xml</item>
+		</list>
+	</var>
+	
+	<bean name="PresentationRouter" path="lib.org.phpframework.router.PresentationRouter">
+		<constructor_arg reference="router_vars" />
+		
+		<property name="presentationLayer" reference="PresentationLayer" />
+	</bean>
+	
+	<!-- PRESENTATION_DISPATCHER -->
+	<bean name="EVCDispatcher" path="lib.org.phpframework.dispatcher.EVCDispatcher">
+		<property name="router" reference="PresentationRouter" />
+		<property name="EVC" reference="EVC" />
+	</bean>
+	<!--bean name="EVCDispatcher" path="org.phpframework.dispatcher.PresentationDispatcher" path_prefix="<?php echo LIB_PATH;?>">
+		<property name="router" reference="PresentationRouter" />
+		<property name="presentationLayer" reference="PresentationLayer" />
+	</bean-->
+</beans>

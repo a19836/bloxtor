@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Text + Combo Boxes</label>
+	<tag>input_select</tag>
+	<settings>
+		<create_widget_class>InputSelectWidget</create_widget_class>
+	</settings>
+	<template_widget><![CDATA[<div data-widget-item-attribute-field-edit data-widget-item-attribute-field-toggle-select-input>
+	<div class="input-group show">
+		<select class="form-control custom-select form-select" data-allow-null="1">
+			<option value=""></option>
+		</select>
+		<div class="input-group-append">
+			<button class="btn btn-outline-secondary" onclick="MyWidgetResourceLib.ItemHandler.toggleItemAttributeSelectFieldToInputField(this); return false;">
+				<span class="bi bi-plus-lg icon icon-add"></span>
+			</button>
+		</div>
+	</div>
+	<div class="input-group">
+		<input class="form-control" />
+		<div class="input-group-append">
+			<button class="btn btn-outline-secondary" onclick="MyWidgetResourceLib.ItemHandler.toggleItemAttributeInputFieldToSelectField(this); return false;">
+				<span class="bi bi-search icon icon-search"></span>
+			</button>
+		</div>
+	</div>
+</div>]]></template_widget>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-input_select:before,
+		  body > .menu-widget.menu-widget-input_select.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function InputSelectWidget(ui_creator, menu_widget) {
+			var me = this;
+
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-drag-stop-func": ui_creator.obj_var_name + ".menu_widgets_objs.input_select.onDropMenuWidget",
+				});
+			};
+
+			me.onDropMenuWidget = function(menu_widget, widget, event, ui_obj) {
+				ui_creator.convertHtmlElementToWidget( widget.children() );
+			};
+		}
+	]]></menu_js>
+</widget>

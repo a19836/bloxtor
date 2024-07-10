@@ -1,0 +1,107 @@
+.taskflowchartmenu .task.task_callhibernateobject {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_callhibernateobject .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_callhibernateobject .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.call_hibernate_object_task_html {
+	width:430px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html {
+	width:auto;
+}
+
+.call_hibernate_object_task_html .get_automatically,
+   .call_hibernate_object_task_html .module_id,
+   .call_hibernate_object_task_html .service_id {
+	width:430px;
+	min-height:20px;
+	margin:0 auto 5px;;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .get_automatically,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .module_id,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .service_id {
+	width:100%;
+}
+.call_hibernate_object_task_html .get_automatically {
+	/*margin-top:15px;*/
+	margin-bottom:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .get_automatically {
+	margin-top:0;
+}
+.call_hibernate_object_task_html .get_automatically label {
+	width:230px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .get_automatically label {
+	width:170px;
+}
+.call_hibernate_object_task_html .get_automatically .icon {
+	width:23px;
+	height:23px;
+}
+.call_hibernate_object_task_html .get_automatically .icon::before {
+	content:"\f022";
+}
+.call_hibernate_object_task_html .get_automatically .icon::after {
+	content:"\f079";
+}
+.call_hibernate_object_task_html .get_automatically .icon:hover::after {
+	color:#000;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .broker_method_obj label {
+	width:75px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .broker_method_obj select {
+	width:calc(100% - 80px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .broker_method_obj input {
+	width:calc(100% - 125px);
+	margin-left:77px;
+}
+.call_hibernate_object_task_html .module_id label,
+   .call_hibernate_object_task_html .service_id label {
+	width:110px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .opts .main_label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .module_id label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .service_id label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .opts .main_label {
+	width:75px;
+}
+.call_hibernate_object_task_html .module_id input,
+   .call_hibernate_object_task_html .service_id input {
+	width:227px;
+	margin-right:5px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .module_id input,
+   .taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .service_id input {
+	width:calc(100% - 155px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .opts .options_code {
+	width:calc(100% - 174px);
+}
+.call_hibernate_object_task_html .module_id select,
+   .call_hibernate_object_task_html .service_id select {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+}
+.call_hibernate_object_task_html .broker_method_obj .search {
+	margin:0;
+}
+.call_hibernate_object_task_html > div:not(.broker_method_obj) > .add_variable {
+	margin-left:-26px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .call_hibernate_object_task_html .opts > .options > .items {
+	margin-left:135px;
+}

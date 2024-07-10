@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Template Region Block</label>
+	<tag>region-block</tag>
+	<settings>
+		<create_widget_class>TemplateRegionBlockWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<!-- Note that the template_widget must be the same than the entity/presentation/edit_simple_template_layout.php -->
+	<template_widget><![CDATA[
+		<div class="template_region" region="">
+			<div class="template_region_name">
+				<span class="icon info template_region_name_icon" onClick="openTemplateRegionInfoPopup(this)" title="View region samples">View region samples</span>
+				<span class="template_region_name_label">Region <span></span>.</span>
+				<a class="template_region_name_link" href="javascript:void(0)" onClick="addFirstRegionBlock(this)" title="Add a new box so you can choose an existent block file"><i class="icon add"></i> Add Block File</a>
+			</div>
+			<div class="template_region_items droppable"></div>
+			<div class="template_region_intro">
+				<div class="template_region_intro_title">Drag&Drop Widgets Here!</div>
+				<div class="template_region_intro_text">Or click in the "Add" button above to add a block file.<br/>Otherwise click me, to edit text...</div>
+			</div>
+		</div>
+	]]></template_widget>
+	<properties></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-region-block:before,
+		  body > .menu-widget.menu-widget-region-block.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#region_block.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets > .widget-header.widget-header-region-block .options .props,
+		   .layout-ui-editor > .template-widgets > .widget-header.widget-header-region-block .options .toggle {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .template-widgets > .droppable-header.droppable-header-region-block {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-region-block .settings-id,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-block .settings-classes,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-block .settings-properties,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-block .settings-widget,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-block .settings-general,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-block .settings-dimension,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-block .settings-typography,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-block .settings-decorations,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-block .settings-events,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-block .settings-others,
+		   .layout-ui-editor > .menu-settings.menu-settings-region-block .settings-extra,
+			.layout-ui-editor > .menu-settings.menu-settings-region-block li.settings-tabs > ul > li.settings-tab-properties,
+			.layout-ui-editor > .menu-settings.menu-settings-region-block li.settings-tabs > ul > li.settings-tab-widget,
+			.layout-ui-editor > .menu-settings.menu-settings-region-block li.settings-tabs > ul > li.settings-tab-style,
+			.layout-ui-editor > .menu-settings.menu-settings-region-block li.settings-tabs > ul > li.settings-tab-events,
+			.layout-ui-editor > .menu-settings.menu-settings-region-block li.settings-tabs > ul > li.settings-tab-extra {
+			display:none;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-region-block li.settings-tabs {
+			margin-top:35px;
+		}
+		
+		.layout-ui-editor > .menu-layers .group.group-region-block > ul {
+			display:none !important;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.main-droppable .template-widget.template-widget-region-block {
+			width:100% !important;
+			box-sizing:border-box !important;
+		}
+		.main-droppable.borders .template-widget.template-widget-region-block {
+			width:calc(100% - var(--html-element-left-spacing) - var(--html-element-right-spacing)) !important;
+			padding-top:0 !important;
+		}
+		.template-widget.template-widget-region-block:before {
+			height:auto !important;
+			margin-top:0 !important;
+			background:none !important;
+		}
+		.template-widget.template-widget-region-block > .template_region > .template_region_name {
+			font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+		}
+		.template-widget.template-widget-region-block > .template_region > .template_region_name > .template_region_name_label > span {
+			cursor:pointer !important;
+		}
+		.template-widget.template-widget-region-block > .template_region > .template_region_name > .template_region_name_label > span:focus-visible {
+			outline:1px solid #000;
+			outline-offset:1px;
+			border-radius:1px;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function TemplateRegionBlockWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs['region-block'].parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs['region-block'].cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs['region-block'].onCreateTemplateWidget",
+					"data-on-drag-stop-func": ui_creator.obj_var_name + ".menu_widgets_objs['region-block'].onDropMenuWidget",
+				});
+				
+				menu_widget.removeAttr("data-on-clone-menu-widget-func");
+				
+				//add php widget on drop handler to avoid dropping to the template_region
+				var PHPWidgetObj = ui_creator.getMenuWidgetObjByTag("php");
+				
+				if (PHPWidgetObj)
+					PHPWidgetObj.addOnDropMenuWidgetHandler(me.onDropMenuWidget);
+				else
+					var interval_id = setInterval(function() {
+						PHPWidgetObj = ui_creator.getMenuWidgetObjByTag("php");
+						
+						if (PHPWidgetObj) {
+							clearInterval(interval_id);
+							
+							PHPWidgetObj.addOnDropMenuWidgetHandler(me.onDropMenuWidget);
+						}
+					}, 700);
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && html_element.nodeType == Node.ELEMENT_NODE && html_element.classList.contains("template_region")) {
+					//remove droppable class, so this children doesn't get converted into a droppable widget.
+					$(html_element).children(".template_region_items").removeClass("droppable");
+					
+					return true;
+				}
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				var template_region = widget.children(".template_region");
+				var region = template_region.attr("region");
+				region = region.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n").replace(/&emsp;/g, "\t").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+				
+				var code = '<? echo $EVC->getCMSLayer()->getCMSTemplateLayer()->renderRegion(' + region + '); ?>';
+				
+				//Do not get the .children inside of .template_region_items.droppable bc this is already done from the settings panel, outside of the LayoutUIEditor
+				
+				return code;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				var template_region = widget.children(".template_region");
+				
+				//prepare template_region to be the same than the default html in this widget
+				if (html_element) {
+					widget.html("");
+					widget.append(html_element); //This is very important so we don't loose the events previously set in the children.
+					
+					template_region = widget.children(".template_region");
+					template_region.find(" > .template_region_name > .template_region_name_label").html('Region <span></span>.');
+				}
+				
+				//prepare template_region with region name
+				var items = template_region.children(".template_region_items");
+				var span = template_region.find(" > .template_region_name > .template_region_name_label > span");
+				
+				//add class droppable, so this children allows drag&drop from another widgets.
+				items.addClass("droppable");
+				
+				if (html_element) {
+					//set region name
+					var region = template_region.attr("region");
+					span.html(region);
+					
+					//prepare inner .template_region_item elements to don't be in conflict with the layout-ui-editor
+					var win = ui_creator.getTemplateWidgetsIframe()[0].contentWindow;
+					
+					if (typeof win.prepareRegionBlockConflictsWithLayoutUIEditor == "function") {
+						var item_children = items.find(".template_region_item");
+						
+						for (var i = 0; i < item_children.length; i++) 
+							win.prepareRegionBlockConflictsWithLayoutUIEditor(item_children[i]);
+					}
+					
+					//convert html_element children
+					ui_creator.convertHtmlElementToWidget( items.contents() );
+				}
+				else { //ask user what is the new region name
+					var region = prompt("What is the new region name?");
+					region = region ? region : "Some Region";
+					
+					if (region.substr(0, 1) != '$')
+						region = '"' + region + '"';
+					
+					span.html(region);
+					me.updateRegionName(widget);
+				}
+				
+				//prepare editable box
+				widget.attr("contenteditable", "false");
+				items.attr("contenteditable", "true");
+				
+				//prepare region with editable name
+				span.attr("contenteditable", "true")
+				  .mouseup(function(e) {
+					//prevents that the TextSelection open the inline menu
+					e.preventDefault();
+					e.stopPropagation();
+					
+					ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+				  })
+				  .keyup(function(e) {
+				  	me.updateRegionName(widget);
+				  })
+				  .blur(function(e) {
+				  	me.updateRegionName(widget);
+				  })
+				  .click(function(e) {
+				  	var old_region = template_region.attr("region");
+				  	var new_region = prompt("Region", old_region);
+				  	
+				  	if (new_region) {
+				  		span.html(new_region);
+				  		me.updateRegionName(widget);
+				  	}
+				  });
+				
+				//prepare template_region_name_icon
+				if (typeof openTemplateRegionInfoPopup != "function")
+					template_region.find(" > .template_region_name > .template_region_name_icon").remove();
+				
+				//prepare template_region_name_link
+				if (typeof addFirstRegionBlock != "function")
+					template_region.find(" > .template_region_name > .template_region_name_link").remove();
+			};
+			
+			/* UTILS */
+			
+			me.updateRegionName = function(widget) {
+				//because this method is called in key pressed, we should give a timeout in case the user wants to write a word
+				if (widget[0].timeout_id)
+		  			clearTimeout(widget[0].timeout_id);
+		  		
+			  	widget[0].timeout_id = setTimeout(function() {
+			  		if (widget[0].timeout_id) {
+			  			clearTimeout(widget[0].timeout_id);
+			  			widget[0].timeout_id = null;
+			  		}
+			  		
+					var template_region = widget.children(".template_region");
+					var span = template_region.find(" > .template_region_name > .template_region_name_label > span");
+					var region = span.text();
+					var region = ("" + region).replace(/^\s/g, "").replace(/\s$/g, ""); //trim
+					var first_char = region[0];
+					var last_char = region[region.length - 1];
+					
+					if (first_char == '$') //if: $a"... or $a'...
+						region = region.replace(/["']/g, "");
+					else {
+						var region_type = getArgumentType(region);
+						
+						if (region_type == "string")
+							region = '"' + region.replace(/"/g, "") + '"';
+					}
+					
+					template_region.attr("region", region);
+					
+					//set new region if is different and set cursor caret where it was before.
+					if (region != span.text()) {
+						var doc = span[0].ownerDocument || span[0].document;
+						var win = doc.defaultView || doc.parentWindow;
+						var selection = win.getSelection();
+						
+						var range = selection.getRangeAt(0);
+						var offset = range.endOffset > 0 ? range.endOffset - 1 : 0;
+						
+						span.text(region);
+						
+						var range = doc.createRange();
+						range.setStart(span[0].childNodes[0], offset);
+						range.collapse(true);
+						selection.removeAllRanges();
+						selection.addRange(range);
+					}
+			  	}, 1000);
+			};
+			
+			//This func will be used when we drop php and region-block widgets.
+			me.onDropMenuWidget = function(menu_widget, widget, event, ui_obj) {
+				var template_region = widget.parent().closest(".template_region");
+				
+				if (template_region[0]) {
+					widget.hide();
+					
+					ui_creator.showError("You cannot drop this widget inside of a template region.");
+					
+					setTimeout(function() {
+						ui_creator.deleteTemplateWidget(widget);
+					}, 500);
+				}
+			};
+		}
+	]]></menu_js>
+</widget>

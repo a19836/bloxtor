@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+	<label>Business Logic</label>
+	<tag>businesslogic</tag>
+	<files>
+		<task_properties_html>WorkFlowTaskHtml.php</task_properties_html>
+		<connection_properties_html>../common/WorkFlowConnectionHtml.php</connection_properties_html>
+		<css>../../common/css/global.css</css>
+		<css>../common/css/global.css</css>
+		<css>css/WorkFlowTask.css</css>
+		<js>../../common/js/global.js</js>
+		<js>../common/js/global.js</js>
+		<js>js/WorkFlowTask.js</js>
+	</files>
+	<settings>
+		<task_menu>
+			<show_start_task_menu>true</show_start_task_menu>
+		</task_menu>
+		<connection_menu>
+			<show_set_label_menu>false</show_set_label_menu>
+			<show_overlay_types_menu>false</show_overlay_types_menu>
+		</connection_menu>
+		<callback>
+			<on_load_task_properties>onLoadLayerTaskProperties</on_load_task_properties>
+			<on_submit_task_properties>onSubmitLayerTaskProperties</on_submit_task_properties>
+			<on_complete_task_properties>onCompleteLayerTaskProperties</on_complete_task_properties>
+			<on_cancel_task_properties></on_cancel_task_properties>
+			
+			<on_load_connection_properties>onLoadLayerConnectionProperties</on_load_connection_properties>
+			<on_submit_connection_properties>onSubmitLayerConnectionProperties</on_submit_connection_properties>
+			
+			<on_check_task_label>BusinessLogicLayerTaskPropertyObj.onCheckLabel</on_check_task_label>
+			<on_cancel_task_label>BusinessLogicLayerTaskPropertyObj.onCancelLabel</on_cancel_task_label>
+			
+			<on_success_task_cloning>onLayerTaskCloning</on_success_task_cloning>
+			<on_success_task_creation>onLayerTaskCreation</on_success_task_creation>
+			<on_success_connection_drop>onLayerConnectionDrop</on_success_connection_drop>
+			
+			<on_show_task_menu>onShowLayerTaskMenu</on_show_task_menu>
+			
+			<!--on_click_task>showTaskPropertiesIfExists</on_click_task>
+			<on_click_connection>showConnectionPropertiesIfExists</on_click_connection-->
+		</callback>
+	</settings>
+</task>

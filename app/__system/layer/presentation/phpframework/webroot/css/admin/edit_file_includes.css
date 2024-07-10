@@ -1,0 +1,110 @@
+/* TOP BAR */
+.top_bar header > .title {
+	max-width:calc(100% - 60px);
+}
+
+/* FILE INCLUDES */
+.includes_obj {
+	font-size:10pt;
+	overflow:auto;
+}
+.includes_obj div {
+	float:none;
+	clear:left;
+}
+.includes_obj label {
+	width:100px;
+	display:inline-block;
+	font-weight:normal;
+	font-style:normal;
+}
+.includes_obj input {
+	display:inline-block;
+	font-size:10pt;
+}
+.includes_obj select {
+	display:inline-block;
+	font-size:10pt;
+}
+
+.includes_obj .namespace {
+	width:100%;
+	margin-bottom:5px;
+}
+.includes_obj .namespace input {
+	width:calc(100% - 150px);
+	min-width:200px;
+}
+.includes_obj .includes,
+   .includes_obj .uses {
+	width:100%;
+	margin-top:20px;
+}
+.includes_obj .includes label,
+   .includes_obj .uses label {
+	width:80px;
+}
+.includes_obj .includes .fields,
+   .includes_obj .uses .fields {
+	width:100%;
+}
+.includes_obj .includes .include,
+   .includes_obj .uses .use {
+	width:100%;
+	margin-left:10px;
+	margin-top:10px;
+}
+.includes_obj .includes .include label,
+   .includes_obj .uses .use label {
+	width:50px;
+}
+.includes_obj .includes .include .include_path {
+	width:calc(100% - 235px);
+	min-width:200px;
+}
+.includes_obj .includes .include .include_type {
+	width:80px;
+	margin-left:5px;
+}
+.includes_obj .includes .include .include_once {
+	width:auto;
+	margin-left:5px;
+}
+.includes_obj .uses .use .use_as {
+	text-align:center;
+}
+.includes_obj .uses .use .use_name,
+   .includes_obj .uses .use .use_alias {
+	width:calc(50% - 90px);
+	min-width:200px;
+	margin:0 5px;
+	text-align:center;
+}
+
+.buttons {
+	padding-top:20px;
+	text-align:center;
+	width:100%;
+	clear:left;
+	float:none;
+}
+
+.myfancypopup .button {
+	text-align:center;
+	margin-top:10px;
+}
+.myfancypopup .button input {
+	font-size:10pt;
+	display:inline;
+	float:none;
+}
+
+/* TREE */
+.mytree {
+	min-width:300px;
+	min-height:200px;
+	max-width:450px;
+	max-height:350px;
+	overflow:auto;
+	border:0;
+}

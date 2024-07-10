@@ -1,0 +1,932 @@
+/* MENU SETTINGS - EVENTS *
+.layout-ui-editor > .menu-settings li.group.settings-events input[disabled] {
+	cursor:not-allowed;
+}*/
+
+/* MENU SETTINGS - WIDGET - GENERIC */
+.layout-ui-editor > .menu-settings.menu-settings-html-singular-tag li.group.settings-widget {
+	display:none;
+}
+.layout-ui-editor > .menu-settings.menu-settings-html-comment li.group.settings-widget {
+	display:none;
+}
+
+.layout-ui-editor > .menu-settings li.group.settings-widget input:not([type=checkbox]):not([type=radio]):not([type=color]),
+  .layout-ui-editor > .menu-settings li.group.settings-widget select {
+	width:100px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget input[type=checkbox],
+  .layout-ui-editor > .menu-settings li.group.settings-widget input[type=radio] {
+	margin-top: 0.5em;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget label {
+	max-width:calc(100% - 120px);
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	box-sizing:border-box;
+	display:inline-block;
+}
+
+.layout-ui-editor > .menu-settings li.group.settings-widget .mandatory {
+	color:red;
+}
+
+/* MENU SETTINGS - WIDGET - TAB */
+.layout-ui-editor > .menu-settings .settings-widget.settings-tabs-container.settings-tabs-container-first > .group-title {
+	display:none
+}
+.layout-ui-editor > .menu-settings .settings-widget.settings-tabs-container.settings-tabs-container-first > ul {
+	padding-top:0;
+	padding-left:0;
+	padding-right:0;
+}
+.layout-ui-editor > .menu-settings .settings-widget.settings-tabs-container.settings-tabs-container-first > ul > li:first-child {
+	margin-top:0;
+}
+.layout-ui-editor > .menu-settings .settings-widget.settings-tabs-container.settings-tabs-container-first > ul > li:first-child > .group-title {
+	padding-top:0;
+	border-top:0;
+}
+
+/* MENU SETTINGS - WIDGET - GROUP */
+.layout-ui-editor > .menu-settings li.group.settings-widget li:last-child {
+	margin-bottom:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .group-block > li:last-child {
+	margin-bottom:5px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .group,
+  .layout-ui-editor > .menu-settings li.group.settings-widget li .group-block li {
+	width:auto;
+	min-width:auto;
+	display:block;
+}
+.layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .group > ul > li {
+	width:300px;
+	max-width:100%;
+	max-width:100%;
+}
+.layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .group > ul > li > ul li {
+	width:auto;
+	min-width:auto;
+	margin:5px 0;
+	display:block;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .group:not(.group-open) > .group-title {
+	margin-bottom:8px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .group:not(.group-open) > .group-title > .widget-group-item-add {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .group.group-disabled > ul input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .group.group-disabled > ul select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .group.group-disabled > ul textarea {
+	opacity:.5;
+	cursor:not-allowed;
+}
+
+/* MENU SETTINGS - WIDGET - ICONS */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-group-item-add,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-item-add,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-item-remove,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .swap-input-select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .choose-table-attribute,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .choose-widget-resource,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .choose-widget-resource-attribute,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .refresh-existent-data,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .choose-event,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .choose-page,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .add-extra-callback,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .remove-extra-callback,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .add-extra-event,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .remove-extra-event {
+	line-height:2.2em;
+	margin-right:10px;
+	font-weight:bold;
+	cursor:pointer;
+	vertical-align:middle;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-group-item-add,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-item-add {
+	line-height:normal;
+	margin-left:10px;
+	margin-right:0;
+	font-size:120%;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .add-extra-callback,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .remove-extra-callback,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .add-extra-event,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .remove-extra-event {
+	line-height:2em;
+	font-size:120%;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .swap-input-select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .choose-table-attribute,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .choose-widget-resource,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .choose-widget-resource-attribute,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .refresh-existent-data,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .choose-event,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .choose-page,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .add-extra-callback,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .remove-extra-callback,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .add-extra-event,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .remove-extra-event {
+	float:right;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-item-remove {
+	margin-left:10px;
+	margin-right:0;
+	float:right;
+}
+
+/* MENU SETTINGS - WIDGET - GROUP INFO */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-group-info {
+	padding-left:10px;
+	opacity:.7;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget:not(.group-open) > .widget-group-info,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .group:not(.group-open) > .widget-group-info {
+	display:none;
+}
+
+/* MENU SETTINGS - WIDGET - SWAP FIELD */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field:not(.select-shown) > .refresh-existent-data {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field.widget-resource-reference {
+	height:25px;
+	overflow:hidden;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field > label {
+	max-width:calc(100% - 160px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field.with-extra-callbacks > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field.with-extra-events > label {
+	max-width:calc(100% - 175px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field.widget-resource-reference > input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field.widget-resource-reference > select {
+	max-width:calc(100% - 110px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field.widget-id > input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field.widget-id > select {
+	max-width:calc(100% - 90px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field.select-shown > select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field:not(.select-shown) > input {
+	display:block;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field:not(.select-shown) > select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-swap-field.select-shown > input {
+	display:none;
+}
+
+/* MENU SETTINGS - WIDGET - SUB OPTIONS */
+.layout-ui-editor > .menu-settings li.group.settings-widget .with-sub-options > label {
+	cursor:pointer;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .with-sub-options > .toggle {
+	width:16px;
+	font-size:140%;
+	margin-right:5px;
+	text-align:center;
+	vertical-align:middle;
+	cursor:pointer;
+}
+
+/* MENU SETTINGS - WIDGET - EMPTY ITEMS */
+.layout-ui-editor > .menu-settings li.group.settings-widget .empty-items {
+	margin-top:10px !important;
+	opacity:.7;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .empty-items:not(:only-child) {
+	display:none !important;
+}
+
+/* MENU SETTINGS - WIDGET - SORTABLE */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-sortable-children {
+	cursor:move;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-sortable-child-place-holder {
+	height:2em;
+	background-color:var(--menu-settings-group-block-list-bg, #ccc);
+}
+
+/* MENU SETTINGS - WIDGET - ATTR NAME */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-attr-name {
+	width:auto;
+	margin-left:0;
+	margin-right:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-attr-name > label {
+	max-width:calc(100% - 140px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-attr-name > input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-attr-name > select {
+	max-width:calc(100% - 95px);
+}
+
+/* MENU SETTINGS - WIDGET - STATIC ITEM */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-static-item input.widget-static-item-key {
+	width:calc(50% - 40px);
+	float:left;
+}
+
+/* MENU SETTINGS - WIDGET - AVAILABLE VALUES */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-available-values {
+	margin-bottom:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-available-values > .widget-item-add {
+	line-height:inherit;
+	margin-top:3px;
+	float:right;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-available-values > select {
+	width:auto;
+	float:none;
+	background:transparent;
+	border-color:transparent;
+	text-align:right;
+	float:right;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-available-values > ul {
+	min-height:auto;
+	padding:0;
+}
+
+/* MENU SETTINGS - WIDGET - PERMISSIONS */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-permission {
+	margin-top:10px;
+	padding-left:10px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .group:not(.group-open) > .widget-permission {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-permission > label {
+	max-width:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-permission > ul {
+	margin-top:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-permission > ul > li {
+	margin:0 0 5px;
+	padding-top:5px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-permission > ul > li > label {
+	max-width:calc(100% - 30px);
+	padding:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-permission > ul > li > ul {
+	padding-top:0;
+	padding-left:0;
+	padding-bottom:0;
+}
+.layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-permission > .group-block > li > ul > li {
+	width:300px;
+	max-width:100%;
+	margin-right:20px;
+	display:inline-block;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-permission > .group-block > li > ul > li:nth-child(n+3) label:before {
+	content:"or ";
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-permission > .group-block > li > ul > li input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-permission > .group-block > li > ul > li select {
+	max-width:calc(100% - 80px);
+}
+
+/* MENU SETTINGS - WIDGET - RESOURCES */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resources > ul {
+	padding-bottom:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resources .group:last-child {
+	margin-bottom:0;
+}
+.layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-resources .widget-resources-type {
+	width:auto;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resources .widget-resources-type > ul {
+	padding-top:0;
+	padding-bottom:0;
+}
+.layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-resources .widget-resources-type > ul > li {
+	width:300px;
+	max-width:100%;
+	display:inline-block;
+	margin-right:20px;
+}
+.layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-resources .widget-resources-type > .widget-resources-type-properties > ul > li {
+	width:300px;
+	max-width:100%;
+	margin-left:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resources .widget-resources-type > .group-title > .widget-item-remove {
+	line-height:normal;
+	cursor:pointer;
+	float:right;
+	font-size:120%;
+	font-weight:bold;
+	vertical-align:middle;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resources .widget-resources-type:not(.group-open) > .group-title > .widget-item-remove {
+	display:none;
+}
+
+/* MENU SETTINGS - WIDGET - RESOURCE */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource > .widget-resource-remove,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource > .widget-resource-toggle {
+	line-height:2.2em;
+	margin:5px 0 0 10px;
+	cursor:pointer;
+	float:right;
+	font-weight:bold;
+	vertical-align:middle;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource > .group-block {
+	margin-top:0; /* needed for .fixed-properties */
+	margin-right:-10px; /* needed for .fixed-properties */
+	padding-top:25px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource:not(.widget-advanced-options) > .group-block > li:not(.widget-resource-reference) {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-reference,
+  .layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .group > ul > li.widget-resource > ul li.widget-resource-reference {
+	margin-top:-20px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-reference > label {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-reference > input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-reference > select {
+	width:calc(100% - 75px);
+	max-width:none;
+	float:left;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-reference:not(.select-shown) > input {
+	width:calc(100% - 55px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource.widget-resource-url .widget-resource-reference > input {
+	display:block !important;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource.widget-resource-url .widget-resource-reference > select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource.widget-resource-url .widget-resource-reference > .swap-input-select {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-reference > .swap-input-select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-reference > .refresh-existent-data,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-reference > .choose-widget-resource {
+	margin-left:10px;
+	margin-right:0;
+	/*float:left;*/
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource:not(.widget-resource-url) .widget-resource-value {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-reference > .mandatory {
+	position:absolute;
+	margin:2px 0 0 2px;
+}
+
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-value > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-parse-callback > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-validate-callback > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-success-callback > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-error-callback > label {
+	max-width: calc(100% - 140px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-parse-callback.with-extra-callbacks > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-validate-callback.with-extra-callbacks > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-success-callback.with-extra-callbacks > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-error-callback.with-extra-callbacks > label {
+	max-width: calc(100% - 155px);
+}
+
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions .widget-resource-conditions-table {
+	overflow-x:auto;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table {
+	width:100%;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table thead th {
+	font-weight:normal;
+	opacity:.5;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .name,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .value {
+	min-width:100px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .type,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .case,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .operator {
+	width:60px;
+	min-width:60px;
+	max-width:60px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .action {
+	width:20px;
+	min-width:20px;
+	max-width:20px;
+	text-align:center;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .name input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .value input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .type select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .case select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions table .operator select {
+	width:100%;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-resource .widget-resource-conditions .remove-resource-condition {
+	font-size:120%;
+	cursor:pointer;
+}
+
+/* MENU SETTINGS - WIDGET - DISPLAY RESOURCE ATTRIBUTE */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > .group-title > .widget-display-resource-value-toggle {
+	line-height:2.2em;
+	margin:0 -5px 0 10px;
+	padding:5px;
+	display:inline-block;
+	font-weight:bold;
+	vertical-align:middle;
+	cursor:pointer;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value:not(.group-open) > .group-title > .widget-display-resource-value-toggle,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value.with-display-disabled > .group-title > .widget-display-resource-value-toggle {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > .group-title > .widget-display-resource-value-toggle:hover {
+	opacity:.5;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > ul {
+	padding-bottom:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value:not(.widget-advanced-options) > ul > li:not(.widget-display-resource-value-resource-reference):not(.widget-display-resource-value-resource-display):not(.widget-display-resource-value-resource-attribute) {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value.with-display-disabled > ul > li:not(.widget-display-resource-value-resource-display) {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value.with-display-resource > ul > li.widget-display-resource-value-resource-attribute {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value:not(.with-display-target-attribute) > ul > li.widget-display-resource-value-display-target-attribute {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-resource-attribute > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-display-callback > label {
+	max-width:calc(100% - 140px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-display-handler > label {
+	max-width:calc(100% - 160px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-display-callback.with-extra-callbacks > label {
+	max-width:calc(100% - 155px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-display-handler.with-extra-callbacks > label {
+	max-width:calc(100% - 175px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-resource-attribute > input[readonly],
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-resource-index > input[readonly] {
+	cursor:not-allowed;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-resource-attribute > input.highlight,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-resource-index > input.highlight {
+	border-color:var(--menu-settings-button-bg, #796669);
+}
+.layout-ui-editor > .menu-settings:not(.menu-settings-select) li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-allow-new-options {
+	display:none;
+}
+.layout-ui-editor > .menu-settings:not(.menu-settings-checkbox):not(.menu-settings-radiobox):not(.menu-settings-select):not(.menu-settings-input):not(.menu-settings-textarea):not(.menu-settings-button) li.group.settings-widget .widget-display-resource-value > ul > li.widget-display-resource-value-ignore-field-name {
+	display:none;
+}
+
+/* MENU SETTINGS - WIDGET - PROPERTIES */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-handler input:not(:focus),
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-complete-callback input:not(:focus),
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-end-callback input:not(:focus),
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-handler select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-complete-callback select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-end-callback select {
+	direction:rtl;
+	text-align:left;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-checkbox > label {
+	max-width:calc(100% - 70px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li:not(.widget-property-open):not(.widget-property-shown-attrs-names):not(.widget-property-pks-attrs-names):not(.widget-property-default-attrs-values):not(.widget-property-search-attrs-names):not(.with-extra-callbacks):not(.with-extra-events) > ul {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-widget-type label {
+	max-width:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-widget-type select {
+	width:100%;
+	height:200px;
+	min-height:100px;
+	max-height:70vh;
+	overflow:auto;
+	resize:vertical;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-widget-type select option.widget_type_group {
+	margin-top:5px;
+	font-weight:bold;
+}
+
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties :not(.widget-advanced-options) > ul > li.advanced-option {
+	display:none;
+}
+
+.layout-ui-editor > .menu-settings li.group.settings-widget .toggle-advanced-options {
+	line-height:2.2em;
+	margin:0 -5px 0 10px;
+	padding:5px;
+	display:inline-block;
+	font-weight:bold;
+	vertical-align:middle;
+	cursor:pointer;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .toggle-advanced-options:hover {
+	opacity:.5;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .group:not(.group-open) > .group-title > .toggle-advanced-options {
+	display:none;
+}
+
+/* MENU SETTINGS - WIDGET - PROPERTIES - EXTRA CALLBACKS/EVENTS */
+.layout-ui-editor > .menu-settings li.group.settings-widget .with-extra-callbacks .extra-callbacks,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .with-extra-events .extra-events {
+	padding:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .with-extra-callbacks .extra-callbacks:before,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .with-extra-events .extra-events:before {
+	content: " ";
+	height: 1px;
+	display: block;
+	float: none;
+	clear: both;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .with-extra-callbacks .extra-callbacks:empty,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .with-extra-events .extra-events:empty {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .with-extra-callbacks .extra-callbacks li:last-child,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .with-extra-events .extra-events li:last-child {
+	margin-bottom:5px;
+}
+
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-check-callback > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-draw-callback > label {
+	max-width:calc(100% - 140px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-check-callback.with-extra-callbacks > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-draw-callback.with-extra-callbacks > label {
+	max-width:calc(100% - 160px);
+}
+
+/* MENU SETTINGS - WIDGET - PROPERTIES - SHOWN/PKS/SEARCH ATTRS NAMES */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-shown-attrs-names > select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-search-attrs-names > select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-pks-attrs-names > select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-default-attrs-values > select {
+	width:auto;
+	float:none;
+	background:transparent;
+	border-color:transparent;
+	text-align:right;
+	cursor:pointer;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-shown-attrs-names > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-search-attrs-names > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-pks-attrs-names > label {
+	padding-bottom:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-shown-attrs-names > .widget-item-add,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-search-attrs-names > .widget-item-add,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-pks-attrs-names > .widget-item-add,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-default-attrs-values > .widget-item-add {
+	line-height:inherit;
+	margin-top:3px;
+	margin-right:-1px;
+	float:right;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-shown-attrs-names > select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-search-attrs-names > select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-pks-attrs-names > select,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-default-attrs-values > select {
+	float:right;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-shown-attrs-names > ul,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-search-attrs-names > ul,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-pks-attrs-names > ul,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-default-attrs-values > ul {
+	padding-top:0;
+	min-height:auto;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-default-attrs-values > ul li input {
+	width:calc(50% - 25px);
+	max-width:none;
+	direction:ltr;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-default-attrs-values > ul li input.attr_name {
+	margin-right:5px;
+}
+
+/* MENU SETTINGS - WIDGET - PROPERTIES - ACTIONS */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-viewable,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-addable,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-editable,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-removable,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-multiple-items-actions {
+	margin-left:-10px;
+	margin-right:-10px;
+	padding:10px;
+	background-color:rgba(0, 0, 0, 0.02);
+}
+.layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-viewable,
+  .layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-addable,
+  .layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-editable,
+  .layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-removable,
+  .layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-multiple-items-actions {
+	width:660px;
+	min-width:auto;
+	max-width:100%;
+	margin-left:10px;
+	margin-right:0;
+	box-sizing:border-box;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-multiple-items-actions:not(.widget-property-multiple-list-items-actions) > label {
+	max-width:calc(100% - 150px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-multiple-items-actions > ul {
+	margin-top:10px;
+}
+
+/* MENU SETTINGS - WIDGET - PROPERTIES - ACTION PERMISSIONS */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-action-permissions {
+	margin-top:20px;
+	margin-left:-10px;
+	padding:10px;
+	background:rgba(0, 0, 0, .05);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-action-permissions:first-child {
+	margin-top:-10px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-action-permissions > label {
+	max-width:none;
+	padding-top:0;
+	padding-bottom:0;
+	opacity:.5;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-action-permissions > label + .widget-permission {
+	margin-top:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-action-permissions > .widget-permission {
+	padding-left:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-action-permissions > .widget-permission > .group-block {
+	margin-right:0;
+}
+.layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-properties .widget-property-action-permissions > .widget-permission > .group-block > li > ul li {
+	width:280px;
+	margin-right:0;
+}
+@media (min-width:700px) {
+	.layout-ui-editor.fixed-properties > .menu-settings li.group.settings-widget .widget-properties .widget-property-action-permissions > .widget-permission > .group-block > li > ul li:nth-child(even) {
+		margin-right:20px;
+	}
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-action-permissions > .widget-permission > .group-block > li > ul > li input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-action-permissions > .widget-permission > .group-block > li > ul > li select {
+	max-width:calc(100% - 60px);
+}
+
+/* MENU SETTINGS - WIDGET - PROPERTIES - GRAPH */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-info {
+	margin-top:30px;
+	margin-bottom:20px;
+	opacity:.5;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-info:hover {
+	opacity:1;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-load-type {
+	margin-bottom:20px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-legend > .group-title > input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-title > .group-title > input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-sub-title > .group-title > input {
+	margin:auto 0 auto 10px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-title-padding input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-sub-title-padding input {
+	width:50px !important;
+}
+
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-callbacks.group-open + .widget-property-graph-data-sets.group-open {
+	margin-top:15px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets:not(.with-widget-group-info) > .widget-group-info {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets > ul {
+	padding-left:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets > ul > li.empty-items {
+	text-align:center;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets > ul > li.widget-property-graph-data-set {
+	margin-right:-10px;
+	margin-bottom:15px;
+	padding:10px;
+	border:1px solid rgba(0,0,0,0.25);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets > ul > li.widget-property-graph-data-set:not(:last-child) {
+	margin-bottom:10px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets > ul > li.widget-property-graph-data-set:after {
+	content:"";
+	display:block;
+	clear:both;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets > ul > li.widget-property-graph-data-set > input {
+	float:right;
+	width:50px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets > ul > li.widget-property-graph-data-set > ul {
+	margin-top:5px;
+	padding:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets > ul > li.widget-property-graph-data-set > ul:before {
+	content:"";
+	height:1px;
+	display:block;
+	float:none;
+	clear:both;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets > ul > li.widget-property-graph-data-set > ul > li:last-child {
+	margin-bottom:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-graph-data-sets > ul > li.widget-property-graph-data-set > ul > li.widget-property-graph-data-set-border-width > input {
+	width:50px;
+}
+
+/* MENU SETTINGS - WIDGET - PROPERTIES - CALENDAR */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-info {
+	margin-top:30px;
+	margin-bottom:20px;
+	opacity:.5;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-info:hover {
+	opacity:1;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-load-type {
+	margin-bottom:20px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-header-toolbar > .group-title > input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-footer-toolbar > .group-title > input {
+	margin:auto 0 auto 10px;
+}
+
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-callbacks.group-open + .widget-property-calendar-data-sets.group-open {
+	margin-top:15px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets-settings.group-open + .widget-property-calendar-resources-data-sets.group-open {
+	margin-top:15px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets.group-open + .widget-property-calendar-advanced {
+	margin-top:15px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets:not(.group-open) > .widget-property-calendar-include-all-load-resources {
+	display:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > .widget-property-calendar-include-all-load-resources {
+	margin:10px 0 0 25px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > .widget-property-calendar-include-all-load-resources input {
+	margin:auto;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul {
+	padding-left:0;
+	padding-bottom:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.empty-items,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.empty-items {
+	text-align:center;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set {
+	margin-right:-10px;
+	margin-bottom:15px;
+	padding:10px;
+	border:1px solid rgba(0,0,0,0.25);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set:not(:last-child),
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set:not(:last-child) {
+	margin-bottom:10px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set:after,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set:after {
+	content:"";
+	display:block;
+	clear:both;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > label {
+	width:calc(100% - 60px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > ul {
+	margin-top:5px;
+	padding:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul:before,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > ul:before {
+	content:"";
+	height:1px;
+	display:block;
+	float:none;
+	clear:both;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li:last-child,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > ul > li:last-child {
+	margin-bottom:0;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.data-pks-attrs-names,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.background-color,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > ul > li.data-pks-attrs-names,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > ul > li.background-color {
+	margin-top:20px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.widget-property-calendar-data-set-data-title-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.widget-property-calendar-data-set-data-start-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.widget-property-calendar-data-set-data-end-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.widget-property-calendar-data-set-data-url-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.widget-property-calendar-data-set-data-resource-id-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.widget-property-calendar-data-set-data-group-id-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.widget-property-calendar-data-set-data-group-display-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.widget-property-calendar-data-set-data-color-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > ul > li.widget-property-calendar-resources-data-set-data-title-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > ul > li.widget-property-calendar-resources-data-set-data-allow-events-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > ul > li.widget-property-calendar-resources-data-set-data-color-attribute-name > label {
+	max-width:calc(100% - 140px);
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.widget-property-calendar-data-set-background-color > input.color-code,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > ul > li.widget-property-calendar-data-set-text-color > input.color-code,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > ul > li.widget-property-calendar-resources-data-set-background-color > input.color-code,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > ul > li.widget-property-calendar-resources-data-set-text-color > input.color-code {
+	width:calc(100% - 180px);
+	min-width:50px;
+}
+
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets.group-open + .widget-property-calendar-data-sets-settings.group-open {
+	margin-top:15px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets-settings > ul > li.widget-property-calendar-data-sets-data-title-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets-settings > ul > li.widget-property-calendar-data-sets-data-start-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets-settings > ul > li.widget-property-calendar-data-sets-data-end-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets-settings > ul > li.widget-property-calendar-data-sets-data-url-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets-settings > ul > li.widget-property-calendar-data-sets-data-resource-id-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets-settings > ul > li.widget-property-calendar-data-sets-data-group-id-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets-settings > ul > li.widget-property-calendar-data-sets-data-group-display-attribute-name > label,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-calendar-data-sets-settings > ul > li.widget-property-calendar-data-sets-data-color-attribute-name > label {
+	max-width:calc(100% - 140px);
+}
+
+/* MENU SETTINGS - WIDGET - PROPERTIES - MATRIX */
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-matrix-load-type {
+	margin-top:30px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-matrix-fks-attrs-names table th {
+	font-weight:normal;
+	opacity:.5;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-matrix-fks-attrs-names table input,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-matrix-fks-attrs-names table select {
+	width:100%;
+	max-width:none;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-matrix-fks-attrs-names table .widget-attr-name,
+  .layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-matrix-fks-attrs-names table .widget-fk-attr-name {
+	min-width:100px;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-matrix-fks-attrs-names table .widget-axis {
+	width:40px;
+	min-width:40px;
+	max-width:40px;
+	text-align:center;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-matrix-fks-attrs-names table .widget-axis select {
+	text-align:center;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-matrix-fks-attrs-names table .action {
+	width:20px;
+	min-width:20px;
+	max-width:20px;
+	text-align:center;
+}
+.layout-ui-editor > .menu-settings li.group.settings-widget .widget-properties .widget-property-matrix-fks-attrs-names table .action .remove-fk {
+	font-size:120%;
+	cursor:pointer;
+}

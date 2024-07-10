@@ -1,0 +1,216 @@
+a:2:{s:2:"S3";a:2:{s:7:"methods";a:28:{s:7:"setAuth";a:20:{s:4:"name";s:7:"setAuth";s:16:"start_line_index";i:71;s:17:"start_token_index";i:142;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:141:"/**
+	* Set AWS access key and secret key
+	*
+	* @param string $accessKey Access key
+	* @param string $secretKey Secret key
+	* @return void
+	*/";}s:25:"start_comments_line_index";i:64;s:26:"start_comments_token_index";i:140;s:23:"end_comments_line_index";i:70;s:24:"end_comments_token_index";i:140;s:22:"start_args_token_index";i:149;s:20:"end_args_token_index";i:154;s:9:"arguments";a:2:{s:10:"$accessKey";N;s:10:"$secretKey";N;}s:25:"start_brackets_line_index";i:71;s:26:"start_brackets_token_index";i:156;s:23:"end_brackets_line_index";i:74;s:24:"end_brackets_token_index";i:176;s:14:"end_line_index";i:74;s:15:"end_token_index";i:176;}s:11:"listBuckets";a:20:{s:4:"name";s:11:"listBuckets";s:16:"start_line_index";i:83;s:17:"start_token_index";i:180;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:127:"/**
+	* Get a list of buckets
+	*
+	* @param boolean $detailed Returns detailed bucket list when true
+	* @return array | false
+	*/";}s:25:"start_comments_line_index";i:77;s:26:"start_comments_token_index";i:178;s:23:"end_comments_line_index";i:82;s:24:"end_comments_token_index";i:178;s:22:"start_args_token_index";i:187;s:20:"end_args_token_index";i:193;s:9:"arguments";a:1:{s:9:"$detailed";s:5:"false";}s:25:"start_brackets_line_index";i:83;s:26:"start_brackets_token_index";i:195;s:23:"end_brackets_line_index";i:109;s:24:"end_brackets_token_index";i:533;s:14:"end_line_index";i:109;s:15:"end_token_index";i:533;}s:9:"getBucket";a:20:{s:4:"name";s:9:"getBucket";s:16:"start_line_index";i:125;s:17:"start_token_index";i:537;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:8:"comments";a:1:{i:0;s:445:"/*
+	* Get contents for a bucket
+	*
+	* If maxKeys is null this method will loop through truncated result sets
+	*
+	* @param string $bucket Bucket name
+	* @param string $prefix Prefix
+	* @param string $marker Marker (last file listed)
+	* @param string $maxKeys Max keys (maximum number of keys to return)
+	* @param string $delimiter Delimiter
+	* @param boolean $returnCommonPrefixes Set to true to return CommonPrefixes
+	* @return array | false
+	*/";}s:25:"start_comments_line_index";i:112;s:26:"start_comments_token_index";i:535;s:23:"end_comments_line_index";i:124;s:24:"end_comments_token_index";i:535;s:22:"start_args_token_index";i:544;s:20:"end_args_token_index";i:581;s:9:"arguments";a:6:{s:7:"$bucket";N;s:7:"$prefix";s:4:"null";s:7:"$marker";s:4:"null";s:8:"$maxKeys";s:4:"null";s:10:"$delimiter";s:4:"null";s:21:"$returnCommonPrefixes";s:5:"false";}s:25:"start_brackets_line_index";i:125;s:26:"start_brackets_token_index";i:583;s:23:"end_brackets_line_index";i:194;s:24:"end_brackets_token_index";i:1473;s:14:"end_line_index";i:194;s:15:"end_token_index";i:1473;}s:9:"putBucket";a:20:{s:4:"name";s:9:"putBucket";s:16:"start_line_index";i:205;s:17:"start_token_index";i:1477;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:189:"/**
+	* Put a bucket
+	*
+	* @param string $bucket Bucket name
+	* @param constant $acl ACL flag
+	* @param string $location Set as "EU" to create buckets hosted in Europe
+	* @return boolean
+	*/";}s:25:"start_comments_line_index";i:197;s:26:"start_comments_token_index";i:1475;s:23:"end_comments_line_index";i:204;s:24:"end_comments_token_index";i:1475;s:22:"start_args_token_index";i:1484;s:20:"end_args_token_index";i:1502;s:9:"arguments";a:3:{s:7:"$bucket";N;s:4:"$acl";s:17:"self::ACL_PRIVATE";s:9:"$location";s:5:"false";}s:25:"start_brackets_line_index";i:205;s:26:"start_brackets_token_index";i:1504;s:23:"end_brackets_line_index";i:229;s:24:"end_brackets_token_index";i:1768;s:14:"end_line_index";i:229;s:15:"end_token_index";i:1768;}s:12:"deleteBucket";a:20:{s:4:"name";s:12:"deleteBucket";s:16:"start_line_index";i:238;s:17:"start_token_index";i:1772;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:92:"/**
+	* Delete an empty bucket
+	*
+	* @param string $bucket Bucket name
+	* @return boolean
+	*/";}s:25:"start_comments_line_index";i:232;s:26:"start_comments_token_index";i:1770;s:23:"end_comments_line_index";i:237;s:24:"end_comments_token_index";i:1770;s:22:"start_args_token_index";i:1779;s:20:"end_args_token_index";i:1781;s:9:"arguments";a:1:{s:7:"$bucket";N;}s:25:"start_brackets_line_index";i:238;s:26:"start_brackets_token_index";i:1783;s:23:"end_brackets_line_index";i:249;s:24:"end_brackets_token_index";i:1918;s:14:"end_line_index";i:249;s:15:"end_token_index";i:1918;}s:9:"inputFile";a:20:{s:4:"name";s:9:"inputFile";s:16:"start_line_index";i:259;s:17:"start_token_index";i:1922;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:195:"/**
+	* Create input info array for putObject()
+	*
+	* @param string $file Input file
+	* @param mixed $md5sum Use MD5 hash (supply a string if you want to use your own)
+	* @return array | false
+	*/";}s:25:"start_comments_line_index";i:252;s:26:"start_comments_token_index";i:1920;s:23:"end_comments_line_index";i:258;s:24:"end_comments_token_index";i:1920;s:22:"start_args_token_index";i:1929;s:20:"end_args_token_index";i:1938;s:9:"arguments";a:2:{s:5:"$file";N;s:7:"$md5sum";s:4:"true";}s:25:"start_brackets_line_index";i:259;s:26:"start_brackets_token_index";i:1940;s:23:"end_brackets_line_index";i:267;s:24:"end_brackets_token_index";i:2051;s:14:"end_line_index";i:267;s:15:"end_token_index";i:2051;}s:13:"inputResource";a:20:{s:4:"name";s:13:"inputResource";s:16:"start_line_index";i:278;s:17:"start_token_index";i:2055;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:248:"/**
+	* Create input array info for putObject() with a resource
+	*
+	* @param string $resource Input resource to read from
+	* @param integer $bufferSize Input byte size
+	* @param string $md5sum MD5 hash to send (optional)
+	* @return array | false
+	*/";}s:25:"start_comments_line_index";i:270;s:26:"start_comments_token_index";i:2053;s:23:"end_comments_line_index";i:277;s:24:"end_comments_token_index";i:2053;s:22:"start_args_token_index";i:2062;s:20:"end_args_token_index";i:2075;s:9:"arguments";a:3:{s:10:"&$resource";N;s:11:"$bufferSize";N;s:7:"$md5sum";s:2:"''";}s:25:"start_brackets_line_index";i:278;s:26:"start_brackets_token_index";i:2077;s:23:"end_brackets_line_index";i:286;s:24:"end_brackets_token_index";i:2152;s:14:"end_line_index";i:286;s:15:"end_token_index";i:2152;}s:9:"putObject";a:20:{s:4:"name";s:9:"putObject";s:16:"start_line_index";i:300;s:17:"start_token_index";i:2156;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:331:"/**
+	* Put an object
+	*
+	* @param mixed $input Input data
+	* @param string $bucket Bucket name
+	* @param string $uri Object URI
+	* @param constant $acl ACL constant
+	* @param array $metaHeaders Array of x-amz-meta-* headers
+	* @param array $requestHeaders Array of request headers or content type as a string
+	* @return boolean
+	*/";}s:25:"start_comments_line_index";i:289;s:26:"start_comments_token_index";i:2154;s:23:"end_comments_line_index";i:299;s:24:"end_comments_token_index";i:2154;s:22:"start_args_token_index";i:2163;s:20:"end_args_token_index";i:2198;s:9:"arguments";a:6:{s:7:"&$input";N;s:7:"$bucket";N;s:4:"$uri";N;s:4:"$acl";s:17:"self::ACL_PRIVATE";s:12:"$metaHeaders";s:7:"array()";s:15:"$requestHeaders";s:7:"array()";}s:25:"start_brackets_line_index";i:300;s:26:"start_brackets_token_index";i:2200;s:23:"end_brackets_line_index";i:361;s:24:"end_brackets_token_index";i:2877;s:14:"end_line_index";i:361;s:15:"end_token_index";i:2877;}s:13:"putObjectFile";a:20:{s:4:"name";s:13:"putObjectFile";s:16:"start_line_index";i:375;s:17:"start_token_index";i:2881;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:324:"/**
+	* Put an object from a file (legacy function)
+	*
+	* @param string $file Input file path
+	* @param string $bucket Bucket name
+	* @param string $uri Object URI
+	* @param constant $acl ACL constant
+	* @param array $metaHeaders Array of x-amz-meta-* headers
+	* @param string $contentType Content type
+	* @return boolean
+	*/";}s:25:"start_comments_line_index";i:364;s:26:"start_comments_token_index";i:2879;s:23:"end_comments_line_index";i:374;s:24:"end_comments_token_index";i:2879;s:22:"start_args_token_index";i:2888;s:20:"end_args_token_index";i:2921;s:9:"arguments";a:6:{s:5:"$file";N;s:7:"$bucket";N;s:4:"$uri";N;s:4:"$acl";s:17:"self::ACL_PRIVATE";s:12:"$metaHeaders";s:7:"array()";s:12:"$contentType";s:4:"null";}s:25:"start_brackets_line_index";i:375;s:26:"start_brackets_token_index";i:2923;s:23:"end_brackets_line_index";i:377;s:24:"end_brackets_token_index";i:2955;s:14:"end_line_index";i:377;s:15:"end_token_index";i:2955;}s:15:"putObjectString";a:20:{s:4:"name";s:15:"putObjectString";s:16:"start_line_index";i:391;s:17:"start_token_index";i:2959;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:323:"/**
+	* Put an object from a string (legacy function)
+	*
+	* @param string $string Input data
+	* @param string $bucket Bucket name
+	* @param string $uri Object URI
+	* @param constant $acl ACL constant
+	* @param array $metaHeaders Array of x-amz-meta-* headers
+	* @param string $contentType Content type
+	* @return boolean
+	*/";}s:25:"start_comments_line_index";i:380;s:26:"start_comments_token_index";i:2957;s:23:"end_comments_line_index";i:390;s:24:"end_comments_token_index";i:2957;s:22:"start_args_token_index";i:2966;s:20:"end_args_token_index";i:2999;s:9:"arguments";a:6:{s:7:"$string";N;s:7:"$bucket";N;s:4:"$uri";N;s:4:"$acl";s:17:"self::ACL_PRIVATE";s:12:"$metaHeaders";s:7:"array()";s:12:"$contentType";s:12:"'text/plain'";}s:25:"start_brackets_line_index";i:391;s:26:"start_brackets_token_index";i:3001;s:23:"end_brackets_line_index";i:393;s:24:"end_brackets_token_index";i:3028;s:14:"end_line_index";i:393;s:15:"end_token_index";i:3028;}s:9:"getObject";a:20:{s:4:"name";s:9:"getObject";s:16:"start_line_index";i:404;s:17:"start_token_index";i:3032;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:171:"/**
+	* Get an object
+	*
+	* @param string $bucket Bucket name
+	* @param string $uri Object URI
+	* @param mixed $saveTo Filename or resource to write to
+	* @return mixed
+	*/";}s:25:"start_comments_line_index";i:396;s:26:"start_comments_token_index";i:3030;s:23:"end_comments_line_index";i:403;s:24:"end_comments_token_index";i:3030;s:22:"start_args_token_index";i:3039;s:20:"end_args_token_index";i:3051;s:9:"arguments";a:3:{s:7:"$bucket";N;s:4:"$uri";N;s:7:"$saveTo";s:5:"false";}s:25:"start_brackets_line_index";i:404;s:26:"start_brackets_token_index";i:3053;s:23:"end_brackets_line_index";i:425;s:24:"end_brackets_token_index";i:3322;s:14:"end_line_index";i:425;s:15:"end_token_index";i:3322;}s:13:"getObjectInfo";a:20:{s:4:"name";s:13:"getObjectInfo";s:16:"start_line_index";i:436;s:17:"start_token_index";i:3326;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:189:"/**
+	* Get object information
+	*
+	* @param string $bucket Bucket name
+	* @param string $uri Object URI
+	* @param boolean $returnInfo Return response information
+	* @return mixed | false
+	*/";}s:25:"start_comments_line_index";i:428;s:26:"start_comments_token_index";i:3324;s:23:"end_comments_line_index";i:435;s:24:"end_comments_token_index";i:3324;s:22:"start_args_token_index";i:3333;s:20:"end_args_token_index";i:3345;s:9:"arguments";a:3:{s:7:"$bucket";N;s:4:"$uri";N;s:11:"$returnInfo";s:4:"true";}s:25:"start_brackets_line_index";i:436;s:26:"start_brackets_token_index";i:3347;s:23:"end_brackets_line_index";i:447;s:24:"end_brackets_token_index";i:3525;s:14:"end_line_index";i:447;s:15:"end_token_index";i:3525;}s:10:"copyObject";a:20:{s:4:"name";s:10:"copyObject";s:16:"start_line_index";i:460;s:17:"start_token_index";i:3529;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:268:"/**
+	* Copy an object
+	*
+	* @param string $bucket Source bucket name
+	* @param string $uri Source object URI
+	* @param string $bucket Destination bucket name
+	* @param string $uri Destination object URI
+	* @param constant $acl ACL constant
+	* @return mixed | false
+	*/";}s:25:"start_comments_line_index";i:450;s:26:"start_comments_token_index";i:3527;s:23:"end_comments_line_index";i:459;s:24:"end_comments_token_index";i:3527;s:22:"start_args_token_index";i:3536;s:20:"end_args_token_index";i:3556;s:9:"arguments";a:5:{s:10:"$srcBucket";N;s:7:"$srcUri";N;s:7:"$bucket";N;s:4:"$uri";N;s:4:"$acl";s:17:"self::ACL_PRIVATE";}s:25:"start_brackets_line_index";i:460;s:26:"start_brackets_token_index";i:3558;s:23:"end_brackets_line_index";i:477;s:24:"end_brackets_token_index";i:3811;s:14:"end_line_index";i:477;s:15:"end_token_index";i:3811;}s:16:"setBucketLogging";a:20:{s:4:"name";s:16:"setBucketLogging";s:16:"start_line_index";i:488;s:17:"start_token_index";i:3815;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:224:"/**
+	* Set logging for a bucket
+	*
+	* @param string $bucket Bucket name
+	* @param string $targetBucket Target bucket (where logs are stored)
+	* @param string $targetPrefix Log prefix (e,g; domain.com-)
+	* @return boolean
+	*/";}s:25:"start_comments_line_index";i:480;s:26:"start_comments_token_index";i:3813;s:23:"end_comments_line_index";i:487;s:24:"end_comments_token_index";i:3813;s:22:"start_args_token_index";i:3822;s:20:"end_args_token_index";i:3834;s:9:"arguments";a:3:{s:7:"$bucket";N;s:13:"$targetBucket";N;s:13:"$targetPrefix";s:4:"null";}s:25:"start_brackets_line_index";i:488;s:26:"start_brackets_token_index";i:3836;s:23:"end_brackets_line_index";i:535;s:24:"end_brackets_token_index";i:4401;s:14:"end_line_index";i:535;s:15:"end_token_index";i:4401;}s:16:"getBucketLogging";a:20:{s:4:"name";s:16:"getBucketLogging";s:16:"start_line_index";i:547;s:17:"start_token_index";i:4405;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:244:"/**
+	* Get logging status for a bucket
+	*
+	* This will return false if logging is not enabled.
+	* Note: To enable logging, you also need to grant write access to the log group
+	*
+	* @param string $bucket Bucket name
+	* @return array | false
+	*/";}s:25:"start_comments_line_index";i:538;s:26:"start_comments_token_index";i:4403;s:23:"end_comments_line_index";i:546;s:24:"end_comments_token_index";i:4403;s:22:"start_args_token_index";i:4412;s:20:"end_args_token_index";i:4414;s:9:"arguments";a:1:{s:7:"$bucket";N;}s:25:"start_brackets_line_index";i:547;s:26:"start_brackets_token_index";i:4416;s:23:"end_brackets_line_index";i:563;s:24:"end_brackets_token_index";i:4617;s:14:"end_line_index";i:563;s:15:"end_token_index";i:4617;}s:20:"disableBucketLogging";a:20:{s:4:"name";s:20:"disableBucketLogging";s:16:"start_line_index";i:572;s:17:"start_token_index";i:4621;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:92:"/**
+	* Disable bucket logging
+	*
+	* @param string $bucket Bucket name
+	* @return boolean
+	*/";}s:25:"start_comments_line_index";i:566;s:26:"start_comments_token_index";i:4619;s:23:"end_comments_line_index";i:571;s:24:"end_comments_token_index";i:4619;s:22:"start_args_token_index";i:4628;s:20:"end_args_token_index";i:4630;s:9:"arguments";a:1:{s:7:"$bucket";N;}s:25:"start_brackets_line_index";i:572;s:26:"start_brackets_token_index";i:4632;s:23:"end_brackets_line_index";i:574;s:24:"end_brackets_token_index";i:4647;s:14:"end_line_index";i:574;s:15:"end_token_index";i:4647;}s:17:"getBucketLocation";a:20:{s:4:"name";s:17:"getBucketLocation";s:16:"start_line_index";i:583;s:17:"start_token_index";i:4651;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:100:"/**
+	* Get a bucket's location
+	*
+	* @param string $bucket Bucket name
+	* @return string | false
+	*/";}s:25:"start_comments_line_index";i:577;s:26:"start_comments_token_index";i:4649;s:23:"end_comments_line_index";i:582;s:24:"end_comments_token_index";i:4649;s:22:"start_args_token_index";i:4658;s:20:"end_args_token_index";i:4660;s:9:"arguments";a:1:{s:7:"$bucket";N;}s:25:"start_brackets_line_index";i:583;s:26:"start_brackets_token_index";i:4662;s:23:"end_brackets_line_index";i:595;s:24:"end_brackets_token_index";i:4849;s:14:"end_line_index";i:595;s:15:"end_token_index";i:4849;}s:22:"setAccessControlPolicy";a:20:{s:4:"name";s:22:"setAccessControlPolicy";s:16:"start_line_index";i:606;s:17:"start_token_index";i:4853;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:249:"/**
+	* Set object or bucket Access Control Policy
+	*
+	* @param string $bucket Bucket name
+	* @param string $uri Object URI
+	* @param array $acp Access Control Policy Data (same as the data returned from getAccessControlPolicy)
+	* @return boolean
+	*/";}s:25:"start_comments_line_index";i:598;s:26:"start_comments_token_index";i:4851;s:23:"end_comments_line_index";i:605;s:24:"end_comments_token_index";i:4851;s:22:"start_args_token_index";i:4860;s:20:"end_args_token_index";i:4878;s:9:"arguments";a:3:{s:7:"$bucket";N;s:4:"$uri";s:2:"''";s:4:"$acp";s:7:"array()";}s:25:"start_brackets_line_index";i:606;s:26:"start_brackets_token_index";i:4880;s:23:"end_brackets_line_index";i:654;s:24:"end_brackets_token_index";i:5427;s:14:"end_line_index";i:654;s:15:"end_token_index";i:5427;}s:22:"getAccessControlPolicy";a:20:{s:4:"name";s:22:"getAccessControlPolicy";s:16:"start_line_index";i:664;s:17:"start_token_index";i:5431;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:151:"/**
+	* Get object or bucket Access Control Policy
+	*
+	* @param string $bucket Bucket name
+	* @param string $uri Object URI
+	* @return mixed | false
+	*/";}s:25:"start_comments_line_index";i:657;s:26:"start_comments_token_index";i:5429;s:23:"end_comments_line_index";i:663;s:24:"end_comments_token_index";i:5429;s:22:"start_args_token_index";i:5438;s:20:"end_args_token_index";i:5447;s:9:"arguments";a:2:{s:7:"$bucket";N;s:4:"$uri";s:2:"''";}s:25:"start_brackets_line_index";i:664;s:26:"start_brackets_token_index";i:5449;s:23:"end_brackets_line_index";i:710;s:24:"end_brackets_token_index";i:5935;s:14:"end_line_index";i:710;s:15:"end_token_index";i:5935;}s:12:"deleteObject";a:20:{s:4:"name";s:12:"deleteObject";s:16:"start_line_index";i:720;s:17:"start_token_index";i:5939;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:119:"/**
+	* Delete an object
+	*
+	* @param string $bucket Bucket name
+	* @param string $uri Object URI
+	* @return boolean
+	*/";}s:25:"start_comments_line_index";i:713;s:26:"start_comments_token_index";i:5937;s:23:"end_comments_line_index";i:719;s:24:"end_comments_token_index";i:5937;s:22:"start_args_token_index";i:5946;s:20:"end_args_token_index";i:5951;s:9:"arguments";a:2:{s:7:"$bucket";N;s:4:"$uri";N;}s:25:"start_brackets_line_index";i:720;s:26:"start_brackets_token_index";i:5953;s:23:"end_brackets_line_index";i:731;s:24:"end_brackets_token_index";i:6085;s:14:"end_line_index";i:731;s:15:"end_token_index";i:6085;}s:19:"getAuthenticatedURL";a:20:{s:4:"name";s:19:"getAuthenticatedURL";s:16:"start_line_index";i:744;s:17:"start_token_index";i:6089;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:338:"/**
+	* Get a query string authenticated URL
+	*
+	* @param string $bucket Bucket name
+	* @param string $uri Object URI
+	* @param integer $lifetime Lifetime in seconds
+	* @param boolean $hostBucket Use the bucket name as the hostname
+	* @param boolean $https Use HTTPS ($hostBucket should be false for SSL verification)
+	* @return string
+	*/";}s:25:"start_comments_line_index";i:734;s:26:"start_comments_token_index";i:6087;s:23:"end_comments_line_index";i:743;s:24:"end_comments_token_index";i:6087;s:22:"start_args_token_index";i:6096;s:20:"end_args_token_index";i:6118;s:9:"arguments";a:5:{s:7:"$bucket";N;s:4:"$uri";N;s:9:"$lifetime";N;s:11:"$hostBucket";s:5:"false";s:6:"$https";s:5:"false";}s:25:"start_brackets_line_index";i:744;s:26:"start_brackets_token_index";i:6120;s:23:"end_brackets_line_index";i:750;s:24:"end_brackets_token_index";i:6224;s:14:"end_line_index";i:750;s:15:"end_token_index";i:6224;}s:18:"createDistribution";a:20:{s:4:"name";s:18:"createDistribution";s:16:"start_line_index";i:762;s:17:"start_token_index";i:6228;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:273:"/**
+	* Create a CloudFront distribution
+	*
+	* @param string $bucket Bucket name
+	* @param boolean $enabled Enabled (true/false)
+	* @param array $cnames Array containing CNAME aliases
+	* @param string $comment Use the bucket name as the hostname
+	* @return array | false
+	*/";}s:25:"start_comments_line_index";i:753;s:26:"start_comments_token_index";i:6226;s:23:"end_comments_line_index";i:761;s:24:"end_comments_token_index";i:6226;s:22:"start_args_token_index";i:6235;s:20:"end_args_token_index";i:6260;s:9:"arguments";a:4:{s:7:"$bucket";N;s:8:"$enabled";s:4:"true";s:7:"$cnames";s:7:"array()";s:8:"$comment";s:2:"''";}s:25:"start_brackets_line_index";i:762;s:26:"start_brackets_token_index";i:6262;s:23:"end_brackets_line_index";i:779;s:24:"end_brackets_token_index";i:6505;s:14:"end_line_index";i:779;s:15:"end_token_index";i:6505;}s:15:"getDistribution";a:20:{s:4:"name";s:15:"getDistribution";s:16:"start_line_index";i:788;s:17:"start_token_index";i:6509;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:145:"/**
+	* Get CloudFront distribution info
+	*
+	* @param string $distributionId Distribution ID from listDistributions()
+	* @return array | false
+	*/";}s:25:"start_comments_line_index";i:782;s:26:"start_comments_token_index";i:6507;s:23:"end_comments_line_index";i:787;s:24:"end_comments_token_index";i:6507;s:22:"start_args_token_index";i:6516;s:20:"end_args_token_index";i:6518;s:9:"arguments";a:1:{s:15:"$distributionId";N;}s:25:"start_brackets_line_index";i:788;s:26:"start_brackets_token_index";i:6520;s:23:"end_brackets_line_index";i:805;s:24:"end_brackets_token_index";i:6723;s:14:"end_line_index";i:805;s:15:"end_token_index";i:6723;}s:18:"updateDistribution";a:20:{s:4:"name";s:18:"updateDistribution";s:16:"start_line_index";i:814;s:17:"start_token_index";i:6727;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:158:"/**
+	* Update a CloudFront distribution
+	*
+	* @param array $dist Distribution array info identical to output of getDistribution()
+	* @return array | false
+	*/";}s:25:"start_comments_line_index";i:808;s:26:"start_comments_token_index";i:6725;s:23:"end_comments_line_index";i:813;s:24:"end_comments_token_index";i:6725;s:22:"start_args_token_index";i:6734;s:20:"end_args_token_index";i:6736;s:9:"arguments";a:1:{s:5:"$dist";N;}s:25:"start_brackets_line_index";i:814;s:26:"start_brackets_token_index";i:6738;s:23:"end_brackets_line_index";i:834;s:24:"end_brackets_token_index";i:7019;s:14:"end_line_index";i:834;s:15:"end_token_index";i:7019;}s:18:"deleteDistribution";a:20:{s:4:"name";s:18:"deleteDistribution";s:16:"start_line_index";i:843;s:17:"start_token_index";i:7023;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:152:"/**
+	* Delete a CloudFront distribution
+	*
+	* @param array $dist Distribution array info identical to output of getDistribution()
+	* @return boolean
+	*/";}s:25:"start_comments_line_index";i:837;s:26:"start_comments_token_index";i:7021;s:23:"end_comments_line_index";i:842;s:24:"end_comments_token_index";i:7021;s:22:"start_args_token_index";i:7030;s:20:"end_args_token_index";i:7032;s:9:"arguments";a:1:{s:5:"$dist";N;}s:25:"start_brackets_line_index";i:843;s:26:"start_brackets_token_index";i:7034;s:23:"end_brackets_line_index";i:857;s:24:"end_brackets_token_index";i:7209;s:14:"end_line_index";i:857;s:15:"end_token_index";i:7209;}s:17:"listDistributions";a:19:{s:4:"name";s:17:"listDistributions";s:16:"start_line_index";i:865;s:17:"start_token_index";i:7213;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:69:"/**
+	* Get a list of CloudFront distributions
+	*
+	* @return array
+	*/";}s:25:"start_comments_line_index";i:860;s:26:"start_comments_token_index";i:7211;s:23:"end_comments_line_index";i:864;s:24:"end_comments_token_index";i:7211;s:22:"start_args_token_index";i:7220;s:20:"end_args_token_index";i:7221;s:25:"start_brackets_line_index";i:865;s:26:"start_brackets_token_index";i:7223;s:23:"end_brackets_line_index";i:889;s:24:"end_brackets_token_index";i:7486;s:14:"end_line_index";i:889;s:15:"end_token_index";i:7486;}s:13:"__getMimeType";a:20:{s:4:"name";s:13:"__getMimeType";s:16:"start_line_index";i:985;s:17:"start_token_index";i:8222;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:124:"/**
+	* Get MIME type for file
+	*
+	* @internal Used to get mime types
+	* @param string &$file File path
+	* @return string
+	*/";}s:25:"start_comments_line_index";i:978;s:26:"start_comments_token_index";i:8220;s:23:"end_comments_line_index";i:984;s:24:"end_comments_token_index";i:8220;s:22:"start_args_token_index";i:8229;s:20:"end_args_token_index";i:8232;s:9:"arguments";a:1:{s:6:"&$file";N;}s:25:"start_brackets_line_index";i:985;s:26:"start_brackets_token_index";i:8234;s:23:"end_brackets_line_index";i:1023;s:24:"end_brackets_token_index";i:8696;s:14:"end_line_index";i:1023;s:15:"end_token_index";i:8696;}s:14:"__getSignature";a:20:{s:4:"name";s:14:"__getSignature";s:16:"start_line_index";i:1033;s:17:"start_token_index";i:8700;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:1;s:12:"doc_comments";a:1:{i:0;s:169:"/**
+	* Generate the auth string: "AWS AccessKey:Signature"
+	*
+	* @internal Used by S3Request::getResponse()
+	* @param string $string String to sign
+	* @return string
+	*/";}s:25:"start_comments_line_index";i:1026;s:26:"start_comments_token_index";i:8698;s:23:"end_comments_line_index";i:1032;s:24:"end_comments_token_index";i:8698;s:22:"start_args_token_index";i:8707;s:20:"end_args_token_index";i:8709;s:9:"arguments";a:1:{s:7:"$string";N;}s:25:"start_brackets_line_index";i:1033;s:26:"start_brackets_token_index";i:8711;s:23:"end_brackets_line_index";i:1035;s:24:"end_brackets_token_index";i:8731;s:14:"end_line_index";i:1035;s:15:"end_token_index";i:8731;}}s:5:"props";a:4:{s:11:"ACL_PRIVATE";a:16:{s:4:"name";s:11:"ACL_PRIVATE";s:4:"type";s:6:"public";s:5:"value";s:9:"'private'";s:8:"var_type";s:6:"string";s:6:"static";b:0;s:8:"abstract";b:0;s:5:"const";b:1;s:16:"start_line_index";i:39;s:17:"start_token_index";i:13;s:14:"end_line_index";i:39;s:15:"end_token_index";i:20;s:8:"comments";a:1:{i:0;s:12:"// ACL flags";}s:25:"start_comments_line_index";i:38;s:26:"start_comments_token_index";i:11;s:23:"end_comments_line_index";i:39;s:24:"end_comments_token_index";i:11;}s:15:"ACL_PUBLIC_READ";a:11:{s:4:"name";s:15:"ACL_PUBLIC_READ";s:4:"type";s:6:"public";s:5:"value";s:13:"'public-read'";s:8:"var_type";s:6:"string";s:6:"static";b:0;s:8:"abstract";b:0;s:5:"const";b:1;s:16:"start_line_index";i:40;s:17:"start_token_index";i:22;s:14:"end_line_index";i:40;s:15:"end_token_index";i:29;}s:21:"ACL_PUBLIC_READ_WRITE";a:11:{s:4:"name";s:21:"ACL_PUBLIC_READ_WRITE";s:4:"type";s:6:"public";s:5:"value";s:19:"'public-read-write'";s:8:"var_type";s:6:"string";s:6:"static";b:0;s:8:"abstract";b:0;s:5:"const";b:1;s:16:"start_line_index";i:41;s:17:"start_token_index";i:31;s:14:"end_line_index";i:41;s:15:"end_token_index";i:38;}s:6:"useSSL";a:11:{s:4:"name";s:6:"useSSL";s:4:"type";s:6:"public";s:5:"value";s:4:"true";s:8:"var_type";s:0:"";s:6:"static";b:1;s:8:"abstract";b:0;s:5:"const";b:0;s:16:"start_line_index";i:43;s:17:"start_token_index";i:40;s:14:"end_line_index";i:43;s:15:"end_token_index";i:49;}}}s:9:"S3Request";a:2:{s:7:"methods";a:4:{s:12:"setParameter";a:20:{s:4:"name";s:12:"setParameter";s:16:"start_line_index";i:1100;s:17:"start_token_index";i:9192;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:12:"doc_comments";a:1:{i:0;s:107:"/**
+	* Set request parameter
+	*
+	* @param string $key Key
+	* @param string $value Value
+	* @return void
+	*/";}s:25:"start_comments_line_index";i:1093;s:26:"start_comments_token_index";i:9190;s:23:"end_comments_line_index";i:1099;s:24:"end_comments_token_index";i:9190;s:22:"start_args_token_index";i:9197;s:20:"end_args_token_index";i:9202;s:9:"arguments";a:2:{s:4:"$key";N;s:6:"$value";N;}s:25:"start_brackets_line_index";i:1100;s:26:"start_brackets_token_index";i:9204;s:23:"end_brackets_line_index";i:1102;s:24:"end_brackets_token_index";i:9218;s:14:"end_line_index";i:1102;s:15:"end_token_index";i:9218;}s:9:"setHeader";a:20:{s:4:"name";s:9:"setHeader";s:16:"start_line_index";i:1112;s:17:"start_token_index";i:9222;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:12:"doc_comments";a:1:{i:0;s:104:"/**
+	* Set request header
+	*
+	* @param string $key Key
+	* @param string $value Value
+	* @return void
+	*/";}s:25:"start_comments_line_index";i:1105;s:26:"start_comments_token_index";i:9220;s:23:"end_comments_line_index";i:1111;s:24:"end_comments_token_index";i:9220;s:22:"start_args_token_index";i:9227;s:20:"end_args_token_index";i:9232;s:9:"arguments";a:2:{s:4:"$key";N;s:6:"$value";N;}s:25:"start_brackets_line_index";i:1112;s:26:"start_brackets_token_index";i:9234;s:23:"end_brackets_line_index";i:1114;s:24:"end_brackets_token_index";i:9248;s:14:"end_line_index";i:1114;s:15:"end_token_index";i:9248;}s:12:"setAmzHeader";a:20:{s:4:"name";s:12:"setAmzHeader";s:16:"start_line_index";i:1124;s:17:"start_token_index";i:9252;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:12:"doc_comments";a:1:{i:0;s:109:"/**
+	* Set x-amz-meta-* header
+	*
+	* @param string $key Key
+	* @param string $value Value
+	* @return void
+	*/";}s:25:"start_comments_line_index";i:1117;s:26:"start_comments_token_index";i:9250;s:23:"end_comments_line_index";i:1123;s:24:"end_comments_token_index";i:9250;s:22:"start_args_token_index";i:9257;s:20:"end_args_token_index";i:9262;s:9:"arguments";a:2:{s:4:"$key";N;s:6:"$value";N;}s:25:"start_brackets_line_index";i:1124;s:26:"start_brackets_token_index";i:9264;s:23:"end_brackets_line_index";i:1126;s:24:"end_brackets_token_index";i:9278;s:14:"end_line_index";i:1126;s:15:"end_token_index";i:9278;}s:11:"getResponse";a:19:{s:4:"name";s:11:"getResponse";s:16:"start_line_index";i:1134;s:17:"start_token_index";i:9282;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:12:"doc_comments";a:1:{i:0;s:59:"/**
+	* Get the S3 response
+	*
+	* @return object | false
+	*/";}s:25:"start_comments_line_index";i:1129;s:26:"start_comments_token_index";i:9280;s:23:"end_comments_line_index";i:1133;s:24:"end_comments_token_index";i:9280;s:22:"start_args_token_index";i:9287;s:20:"end_args_token_index";i:9288;s:25:"start_brackets_line_index";i:1134;s:26:"start_brackets_token_index";i:9290;s:23:"end_brackets_line_index";i:1258;s:24:"end_brackets_token_index";i:10554;s:14:"end_line_index";i:1258;s:15:"end_token_index";i:10554;}}s:5:"props";a:1:{s:2:"fp";a:11:{s:4:"name";s:2:"fp";s:4:"type";s:6:"public";s:5:"value";s:40:"false, $size  0, $data  false, $response";s:8:"var_type";s:0:"";s:6:"static";b:0;s:8:"abstract";b:0;s:5:"const";b:0;s:16:"start_line_index";i:1062;s:17:"start_token_index";i:8955;s:14:"end_line_index";i:1062;s:15:"end_token_index";i:8979;}}}}

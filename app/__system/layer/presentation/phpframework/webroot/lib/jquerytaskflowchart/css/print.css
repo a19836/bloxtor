@@ -1,0 +1,67 @@
+/* GENERAL */
+.taskflowchart {
+	height:auto !important;
+}
+.taskflowchart .workflow_menu {
+	display:none !important;
+}
+.taskflowchart .tasks_menu {
+	display:none !important;
+}
+.taskflowchart .tasks_menu_hide {
+	display:none !important;
+}
+.taskflowchart .tasks_flow {
+	top:0px !important;
+	left:0px !important;
+	width:100% !important;
+	height:100% !important;
+	overflow:visible !important;
+	overflow-y:visible !important;
+	overflow-x:visible !important;
+	
+	border:0;
+}
+
+.taskflowchart .tasks_flow .task,
+   .taskflowchart .task.is_start_task .start_task_overlay {
+	box-shadow:none !important;
+	-o-box-shadow:none !important;
+	-webkit-box-shadow:none !important;
+	-moz-box-shadow:none !important;
+	
+	/* For IE */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(enabled=false)" !important;
+	filter: progid:DXImageTransform.Microsoft.Shadow(enabled=false) !important;
+}
+
+.taskflowchart .tasks_flow .task .info *,
+   .taskflowchart .tasks_flow .task .eps * {
+	opacity:1 !important;
+	-ms-filter: alpha(opacity=100) !important;
+	filter: alpha(opacity=100) !important;
+}
+
+/* MENUS */
+.task_context_menu {
+	display:none !important;
+}
+.connection_context_menu {
+	display:none !important;
+}
+
+/* PROPERTIES */
+.selected_task_properties {
+	display:none !important;
+}
+.selected_connection_properties {
+	display:none !important;
+}
+.tasks_properties {
+	display:none !important;
+}
+
+.scroll {
+	overflow-y:visible !important;
+	overflow-x:visible !important;
+}

@@ -1,0 +1,430 @@
+/* TOP BAR */
+.top_bar {
+	margin-bottom:10px;
+}
+.top_bar header > .title {
+	max-width:calc(100% - 170px);
+}
+.top_bar.in_popup header > .title {
+	max-width:calc(100% - 190px);
+}
+.top_bar header > .title > input {
+	width:100px;
+}
+.top_bar:not(.in_popup) header > .title > .class_name {
+	color:var(--main-template-color);
+}
+.top_bar header > ul {
+	right:135px;
+}
+.top_bar.in_popup header > ul {
+	top:18px;
+	right:171px;
+}
+
+/* ERROR */
+.error {
+	padding:10px;
+	text-align:center;
+	color:#B51E3F;
+}
+
+/* FILE CLASS METHOD */
+.file_class_method_obj {
+	width:100%;
+	overflow:auto;
+	margin:0;
+	padding:0;
+	border:0;
+	box-sizing:border-box;
+	position:relative;
+}
+
+/* FILE CLASS METHOD - SETTINGS */
+.file_class_method_obj #settings {
+	height:220px;
+	margin:0 auto;
+	padding:40px 15px 10px;
+	position:fixed;
+	left:0;
+	right:0;
+	bottom:0;
+	overflow:auto;
+	box-sizing:border-box;
+	z-index:1050;
+	color:var(--main-settings-color);
+	background:var(--main-settings-bg);
+	font-size:10pt;
+}
+.file_class_method_obj #settings:not(.resizing) {
+	transition:.2s all;
+}
+.file_class_method_obj #settings.collapsed {
+	height:25px !important;
+	padding-top:25px;
+	overflow:hidden;
+	bottom:-5px;
+}
+
+.file_class_method_obj #settings div {
+	float:none;
+	clear:left;
+}
+.file_class_method_obj #settings label {
+	width:80px;
+	padding-top:3px;
+	display:inline-block;
+	font-weight:normal;
+	font-style:normal;
+}
+.file_class_method_obj #settings input {
+	display:inline-block;
+}
+.file_class_method_obj #settings select {
+	display:inline-block;
+}
+
+.file_class_method_obj #settings .settings_header {
+	height:35px;
+	line-height:25px;
+	margin-top:-45px;
+	padding:8px 5px 5px 15px;
+	position:fixed;
+	left:0;
+	right:0;
+	box-sizing:border-box;
+	overflow:hidden;
+	cursor:ns-resize;
+	z-index:1051;
+	
+	/*font-weight:bold;*/
+	border-bottom:1px solid var(--main-settings-header-border);
+	color:var(--main-settings-color);
+	background:var(--main-settings-bg);
+	/*background: -moz-linear-gradient(top, #eee 50%, #f7f7f7 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(50%, #eee), color-stop(100%, #f7f7f7));
+	background: -webkit-linear-gradient(top, #eee 50%, #f7f7f7 100%);
+	background: -o-linear-gradient(top, #eee 50%, #f7f7f7 100%);
+	background: -ms-linear-gradient(top, #eee 50%, #f7f7f7 100%);
+	background: linear-gradient(to bottom, #eee 50%, #f7f7f7 100%);
+	border-top:1px solid #eee;*/
+}
+.file_class_method_obj #settings.collapsed .settings_header {
+	margin-top:-30px;
+	border:0;
+	
+	/*background: -moz-linear-gradient(bottom, #eee 50%, #ffffff73 100%);
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(50%, #eee), color-stop(100%, #ffffff73));
+	background: -webkit-linear-gradient(bottom, #eee 50%, #ffffff73 100%);
+	background: -o-linear-gradient(bottom, #eee 50%, #ffffff73 100%);
+	background: -ms-linear-gradient(bottom, #eee 50%, #ffffff73 100%);
+	background: linear-gradient(to top, #eee 50%, #ffffff73 100%);*/
+}
+.file_class_method_obj #settings .settings_header::before {
+	content:"";
+	height:5px;
+	display:block;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	
+	border-top:1px solid var(--resize-bar-border);
+	border-bottom:1px solid var(--resize-bar-border);
+	background:var(--resize-bar-bg);
+	/*background:var(--resize-bar-horizontal-img) repeat-x var(--main-template-bg);*/
+	box-sizing:border-box;
+}
+.file_class_method_obj #settings .settings_header .icon {
+	width:34px;
+	height:10px;
+	position:absolute;
+	top:0;
+	left:45%;
+	left:calc(50% - 17px);
+	text-indent:-9999px;
+	cursor:pointer;
+	opacity:1;
+}
+.file_class_method_obj #settings .settings_header .icon.maximize {
+	background:url(../../img/tool_frame_top.gif) no-repeat;
+}
+.file_class_method_obj #settings .settings_header .icon.minimize {
+	background:url(../../img/tool_frame_bottom.gif) no-repeat;
+}
+.file_class_method_obj #settings .settings_header .icon::before {
+    display:none;
+}
+
+.file_class_method_obj #settings .name {
+	margin-top:10px;
+}
+.file_class_method_obj #settings .name, 
+  .file_class_method_obj #settings .visibility, 
+  .file_class_method_obj #settings .type,
+  .file_class_method_obj #settings .abstract, 
+  .file_class_method_obj #settings .static {
+	width:100%;
+	margin-bottom:5px;
+}
+.file_class_method_obj #settings .visibility {
+	padding-bottom:20px;
+}
+.file_class_method_obj #settings .name input {
+	width:230px;
+}
+.file_class_method_obj #settings .visibility input, 
+  .file_class_method_obj #settings .abstract input, 
+  .file_class_method_obj #settings .static input {
+	margin-left:0;
+}
+.file_class_method_obj .visibility .info {
+	font-size:12px;
+}
+
+/* ARGUMENTS */
+.file_class_method_obj #settings .arguments {
+	width:100%;
+	padding-bottom:20px;
+}
+.file_class_method_obj #settings .arguments > .add {
+	vertical-align: middle;
+	font-size:14px;
+}
+.file_class_method_obj #settings .arguments table {
+	margin-top:5px;
+}
+.file_class_method_obj #settings .arguments thead th {
+	font-size:10px;
+	border-bottom:1px solid #ccc;
+	border-right:1px solid #f5f5f5;
+	box-sizing:border-box;
+	opacity:.8;
+}
+.file_class_method_obj #settings .arguments thead th:nth-last-child(2) {
+	border-right:0;
+}
+.file_class_method_obj #settings .arguments thead th:not(.icon_cell) {
+	text-indent:3px;
+}
+.file_class_method_obj #settings .arguments tbody td {
+	border-bottom:1px solid #ccc;
+	border-right:1px solid #f5f5f5;
+	background:#fff;
+}
+.file_class_method_obj #settings .arguments tbody td:nth-last-child(2) {
+	border-right:0;
+}
+.file_class_method_obj #settings .arguments .icon_cell {
+	padding-left:0;
+	border:0;
+	background:unset;
+}
+.file_class_method_obj #settings .arguments .icon_cell .icon {
+	margin:auto 5px;
+	font-size:14px;
+}
+.file_class_method_obj #settings .arguments tbody input, 
+  .file_class_method_obj #settings .arguments tbody select {
+	border:0;
+	background-color:transparent;
+	float:none;
+	clear:left;
+}
+.file_class_method_obj #settings .arguments table .name {
+	width:150px;
+}
+.file_class_method_obj #settings .arguments table .name input {
+	width:145px;
+}
+.file_class_method_obj #settings .arguments table .value {
+	width:250px;
+}
+.file_class_method_obj #settings .arguments table .value input {
+	width:245px;
+}
+.file_class_method_obj #settings .arguments table .var_type {
+	width:80px;
+	text-align:center;/* bc of th */
+}
+.file_class_method_obj #settings .arguments table .var_type select {
+	width:80px;
+	text-align:center;
+}
+
+/* ANNOTATIONS */
+.file_class_method_obj #settings .annotations {
+	margin-bottom:20px;
+} 
+.file_class_method_obj #settings .annotations > .add {
+	vertical-align: middle;
+	font-size:14px;
+}
+.file_class_method_obj #settings .annotations table {
+	width:975px;
+	margin-top:5px;
+}
+.file_class_method_obj #settings .annotations thead th {
+	font-size:10px;
+	border-bottom:1px solid #ccc;
+	border-right:1px solid #f5f5f5;
+	box-sizing:border-box;
+	opacity:.8;
+}
+.file_class_method_obj #settings .annotations thead th:nth-last-child(2) {
+	border-right:0;
+}
+.file_class_method_obj #settings .annotations thead th:not(.icon_cell) {
+	text-indent:3px;
+}
+.file_class_method_obj #settings .annotations tbody td {
+	border-bottom:1px solid #ccc;
+	border-right:1px solid #f5f5f5;
+	background:#fff;
+}
+.file_class_method_obj #settings .annotations tbody td:nth-last-child(2) {
+	border-right:0;
+}
+.file_class_method_obj #settings .annotations .icon_cell {
+	padding-left:0;
+	border:0;
+	background:unset;
+}
+.file_class_method_obj #settings .annotations .icon_cell .icon {
+	margin:auto 5px;
+	font-size:14px;
+}
+.file_class_method_obj #settings .annotations tbody input, .file_class_method_obj .annotations tbody select {
+	border:0;
+	background-color:transparent;
+	float:none;
+	clear:left;
+}
+
+.file_class_method_obj #settings .annotations table .name {
+	width:200px;
+}
+.file_class_method_obj #settings .annotations table .default {
+	width:100px;
+}
+.file_class_method_obj #settings .annotations table .annotation_type {
+	width:80px;
+}
+.file_class_method_obj #settings .annotations table .type {
+	width:150px;
+}
+.file_class_method_obj #settings .annotations table .not_null {
+	width:70px;
+	text-align:center;
+	text-indent:0;
+}
+.file_class_method_obj #settings .annotations table .description {
+	width:150px;
+}
+.file_class_method_obj #settings .annotations table .others {
+	width:200px;
+}
+.file_class_method_obj #settings .annotations table .name input {
+	width:195px;
+}
+.file_class_method_obj #settings .annotations table .default input {
+	width:95px;
+}
+.file_class_method_obj #settings .annotations table .annotation_type select {
+	width:80px;
+}
+.file_class_method_obj #settings .annotations table .type select {
+	width:110px;
+}
+.file_class_method_obj #settings .annotations table .type input {
+	width:105px;
+	display:inline;
+}
+.file_class_method_obj #settings .annotations table .type select optgroup {
+	margin-left:10px;
+}
+.file_class_method_obj #settings .annotations table .type select optgroup.main_optgroup {
+	margin-left:0px;
+}
+.file_class_method_obj #settings .annotations table .not_null input {
+	margin:0 auto;
+}
+.file_class_method_obj #settings .annotations table .description input {
+	width:145px;
+}
+.file_class_method_obj #settings .annotations table .others input {
+	width:195px;
+}
+
+.file_class_method_obj #settings .annotations table .type .textfield,
+  .file_class_method_obj #settings .annotations table .type .search {
+	width:14px;
+	margin:auto 0;
+}
+
+/* COMMENTS */
+.file_class_method_obj #settings .comments {
+	width:100%;
+}
+.file_class_method_obj #settings .comments label {
+	width:100%;
+	clear:left;
+	float:none;
+}
+.file_class_method_obj #settings .comments textarea {
+	width:100%;
+	height:60px;
+	margin-top:5px;
+}
+
+/* CODE */
+.file_class_method_obj #code > textarea,
+  .file_class_method_obj #code .ace_editor {
+	height:calc(100vh - 70px) !important;
+}
+.file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu > .tasks_menu:not(.task_properties_shown):not(.connection_properties_shown), 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu > .tasks_menu_hide:not(.task_properties_shown):not(.connection_properties_shown), 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu > .tasks_flow:not(.task_properties_shown):not(.connection_properties_shown),
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .tasks_menu, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .tasks_menu_hide, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .tasks_flow, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_task_properties, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_connection_properties,
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .selected_task_properties, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .selected_connection_properties {
+	margin-bottom:33px;
+}
+.file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu.task_properties_collapsed, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu.connection_properties_collapsed, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu_hide.task_properties_collapsed, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu_hide.connection_properties_collapsed, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_flow.task_properties_collapsed, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_flow.connection_properties_collapsed {
+	margin-bottom:30px;
+}
+.file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu.task_properties_shown:not(.task_properties_collapsed), 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu.connection_properties_shown:not(.connection_properties_collapsed), 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu_hide.task_properties_shown:not(.task_properties_collapsed), 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_menu_hide.connection_properties_shown:not(.connection_properties_collapsed), 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_flow.task_properties_shown:not(.task_properties_collapsed), 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .tasks_flow.connection_properties_shown:not(.connection_properties_collapsed) {
+	margin-bottom:30px;
+}
+.file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .selected_task_properties.collapsed_properties, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_properties > .selected_connection_properties.collapsed_properties,
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_task_properties.collapsed_properties, 
+  .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu.fixed_side_properties > .selected_connection_properties.collapsed_properties {
+	height:35px !important;
+}
+
+.file_class_method_obj #ui > .taskflowchart .tasks_flow.drop_hover { /* .drop_hover is set in admin_menu.js */
+	box-shadow:inset 0 0 30px 0px rgba(0, 0, 0, .1);
+}
+
+/* To print the workflow */
+@media print {
+	.file_class_method_obj {
+		overflow:visible !important;
+		border:0 !important;
+	}
+}

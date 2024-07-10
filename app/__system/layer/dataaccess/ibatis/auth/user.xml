@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sql_mapping>
+	<insert id="insert_user">
+		insert into sysauth_user (user_id, username, password, name, created_date, modified_date) values (#user_id#, '#username#', '#password#', '#name#', '#created_date#', '#modified_date#')
+	</insert>
+	
+	<update id="update_user">
+		update sysauth_user set username='#username#', password='#password#', name='#name#', modified_date='#modified_date#' where user_id=#user_id#
+	</update>
+	
+	<delete id="delete_user">
+		delete from sysauth_user where user_id=#user_id#
+	</delete>
+	
+	<delete id="delete_all_users">
+		delete from sysauth_user
+	</delete>
+	
+	<select id="get_user">
+		select * from sysauth_user where user_id=#user_id#
+	</select>
+	
+	<select id="get_all_users">
+		select * from sysauth_user
+	</select>
+	
+	<select id="get_users_by_conditions">
+		select * from sysauth_user where #conditions#
+	</select>
+</sql_mapping>

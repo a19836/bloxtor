@@ -1,0 +1,22 @@
+<?php
+/**
+* @author       Laurent Jouanneau
+* @copyright    2012-2015 Laurent Jouanneau
+* @link         http://jelix.org
+* @licence      MIT
+*/
+
+namespace Jelix\FakeServerConf;
+
+/**
+ * simulate a server configured with apache + mod_php
+ */
+class ApacheMod extends FakeServerConf {
+
+    public function setHttpRequest($url, $method='get', $body='', $bodyContentType='application/x-www-form-urlencoded') {
+        parent::setHttpRequest($url, $method, $body, $bodyContentType);
+        if (isset($_SERVER['PATH_INFO'])) {
+            $_SERVER['PATH_TRANSLATED'] = $_SERVER["DOCUMENT_ROOT"].ltrim($_SERVER['PATH_INFO'], '/');
+        }
+    }
+}

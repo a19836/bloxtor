@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import relative="1">app.xml</import>
+	
+	<!-- BUSINESS LOGIC -->
+	<bean name="IbatisDataAccessBrokerClient" path="lib.org.phpframework.broker.client.local.LocalIbatisDataAccessBrokerClient">
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		
+		<function name="addBeansFilePath">
+			<parameter><?php echo SYSTEM_BEAN_PATH; ?>ibatis_data_access_layer.xml</parameter>
+		</function>
+		<function name="setBeanName">
+			<parameter>IbatisDataAccessBrokerServer</parameter>
+		</function>
+	</bean>
+	<!--bean name="IbatisDataAccessBrokerClient" path="lib.org.phpframework.broker.client.rest.RESTIbatisDataAccessBrokerClient">
+		<constructor_arg>
+			<list>
+				<item name="url">http://jplpinto.localhost/__system/dataaccess/ibatis/</item>
+				<item name="http_auth">basic</item>
+				<item name="user_pwd">&lt;?php echo $GLOBALS['rest_user_pwd']; ?></item>
+				<item name="response_type">xml</item>
+			</list>
+		</constructor_arg>
+	</bean-->
+	
+	<bean name="HibernateDataAccessBrokerClient" path="lib.org.phpframework.broker.client.local.LocalHibernateDataAccessBrokerClient">
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		
+		<function name="addBeansFilePath">
+			<parameter><?php echo SYSTEM_BEAN_PATH; ?>hibernate_data_access_layer.xml</parameter>
+		</function>
+		<function name="setBeanName">
+			<parameter>HibernateDataAccessBrokerServer</parameter>
+		</function>
+	</bean>
+	
+	<var name="business_logic_vars">
+		<list>
+			<item name="business_logic_path"><?php echo SYSTEM_LAYER_PATH; ?>businesslogic/</item>
+			<item name="business_logic_modules_file_path"><?php echo SYSTEM_LAYER_PATH; ?>businesslogic/modules.xml</item>
+			<item name="business_logic_services_file_name">services.xml</item>
+			
+			<item name="business_logic_modules_common_name">common</item>
+			<item name="business_logic_modules_common_path"><?php echo SYSTEM_LAYER_PATH; ?>businesslogic/common/</item>
+			<item name="business_logic_modules_service_common_file_path"><?php echo SYSTEM_LAYER_PATH; ?>businesslogic/common/CommonService.php</item>
+			
+			<item name="business_logic_services_annotations_enabled">1</item>
+		</list>
+	</var>
+	
+	<bean name="BusinessLogicLayer" path="lib.org.phpframework.layer.businesslogic.BusinessLogicLayer">
+		<constructor_arg reference="business_logic_vars" />
+		
+		<property name="cacheLayer" reference="BusinessLogicCacheLayer" />
+		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
+		<property name="docBlockParser" reference="BusinessLogicDocBlockParser" />
+		
+		<function name="addBroker">
+			<parameter reference="IbatisDataAccessBrokerClient" />
+		</function>
+		<function name="addBroker">
+			<parameter reference="HibernateDataAccessBrokerClient" />
+		</function>
+	</bean>
+	
+	<bean name="BusinessLogicBrokerServer" path="lib.org.phpframework.broker.server.local.LocalBusinessLogicBrokerServer">
+		<constructor_arg reference="BusinessLogicLayer" />
+	</bean>
+	<!--bean name="BusinessLogicBrokerServer" path="lib.org.phpframework.broker.server.rest.RESTBusinessLogicBrokerServer">
+		<constructor_arg reference="BusinessLogicLayer" />
+	</bean-->
+	
+	<var name="business_logic_cache_vars">
+		<list>
+			<item name="business_logic_cache_file_name">cache.xml</item>
+			<item name="business_logic_cache_path"><?php echo LAYER_CACHE_PATH; ?>sysbusinesslogic/</item>
+			<item name="business_logic_default_cache_ttl">600</item>
+			<item name="business_logic_module_cache_maximum_size"></item>
+		</list>
+	</var>
+	
+	<bean name="BusinessLogicCacheLayer" path="lib.org.phpframework.layer.cache.BusinessLogicCacheLayer">
+		<constructor_arg reference="BusinessLogicLayer" />
+		<constructor_arg reference="business_logic_cache_vars" />
+	</bean>
+	
+	<bean name="BusinessLogicDocBlockParser" path="org.phpframework.phpscript.docblock.DocBlockParser">
+		<property name="cacheHandler" reference="BusinessLogicDocBlockParserCacheHandler" />
+	</bean>
+	
+	<bean name="BusinessLogicDocBlockParserCacheHandler" path="org.phpframework.cache.user.filesystem.FileSystemUserCacheHandler">
+		<property name="rootPath"><?php echo LAYER_CACHE_PATH; ?>sysbusinesslogic/annotations/</property>
+	</bean>
+</beans>

@@ -1,0 +1,83 @@
+.taskflowchartmenu .task.task_includeblock {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_includeblock .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_includeblock .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.include_block_task_html {
+	width:440px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html {
+	width:100%;
+}
+
+.include_block_task_html div.project, 
+   .include_block_task_html div.block {
+	margin-bottom:5px;
+}
+.include_block_task_html div.project,
+   .include_block_task_html div.block,
+   .include_block_task_html .once {
+	width:100%;
+	min-height:20px;
+}
+.include_block_task_html .project label,
+   .include_block_task_html .block label,
+   .include_block_task_html .broker_method_obj label,
+   .include_block_task_html .once label {
+	width:100px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html .project label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html .block label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html .broker_method_obj label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html .once label {
+	width:70px;
+}
+.include_block_task_html .project input,
+   .include_block_task_html .block input {
+	width:230px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html .project input {
+	width:calc(100% - 147px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html .block input {
+	width:calc(100% - 170px);
+}
+.include_block_task_html .broker_method_obj {
+	margin-left:0;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html .broker_method_obj label {
+	width:70px;
+}
+.include_block_task_html .broker_method_obj input {
+	margin-left:105px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html .broker_method_obj input {
+	width:calc(100% - 100px);
+	margin-left:72px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html .broker_method_obj select {
+	width:calc(100% - 75px);
+}
+.include_block_task_html .project select.project {
+	width:237px;
+	text-align:center;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .include_block_task_html .project select.project {
+	width:calc(100% - 138px);
+}
+.include_block_task_html .project select.type,
+   .include_block_task_html .block select {
+	background-color:#FFF;
+	color:#AAA;
+	border:1px solid #ddd;
+	text-align:center;
+	font-size:9px;
+	width:60px;
+	height:19px;
+}

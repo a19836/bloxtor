@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Button</label>
+	<tag>button</tag>
+	<settings>
+		<resizable>1</resizable>
+		<template_class>droppable</template_class>
+		<template_node_name>button</template_node_name>
+		<create_widget_class>ButtonWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property type">
+			<label class="col-md-4 col-sm-5 col-form-label">Type: </label>
+			<select class="col-md-8 col-sm-7 form-control" name="type">
+				<option value="">Button</option>
+				<option value="button_image">Button Image</option>
+				<option value="button">Input Button</option>
+				<option value="image">Input Image</option>
+				<option value="submit">Input Submit</option>
+				<option value="reset">Input Reset</option>
+			</select>
+		</div>
+		<div class="form-group row settings-property name">
+			<label class="col-md-4 col-sm-5 col-form-label">Name: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="name" />
+		</div>
+		<div class="form-group row settings-property value">
+			<label class="col-md-4 col-sm-5 col-form-label">Value: </label>
+			<input class="col-md-8 col-sm-7 form-control" name="value" />
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-button:before,
+		  body > .menu-widget.menu-widget-button.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-button {
+			border-radius:0 5px 5px 0;
+		}
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-button .options .option.toggle {
+			display:none;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function ButtonWidget(ui_creator, menu_widget) {
+			var me = this;
+			var available_input_types = ["submit", "button", "image", "reset"];
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.button.parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.button.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.button.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.button.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.button.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.button.parseSettings",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				var node_name = html_element ? html_element.nodeName.toLowerCase() : "";
+				
+				if (node_name == "button" || (node_name == "input" && available_input_types.indexOf(("" + html_element.getAttribute("type")).toLowerCase()) != -1)) 
+					return {
+						droppable: node_name == "button" ? $(html_element) : null,
+					};
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				var node_name = widget[0] ? widget[0].nodeName.toLowerCase() : "";
+				var type = ("" + widget.attr("type")).toLowerCase();
+				
+				widget_settings["type"] = node_name == "button" ? (type == "image" ? "button_image" : "") : type;
+				widget_settings["name"] = widget.attr("name");
+				widget_settings["value"] = type == "image" ? widget.attr("src") : widget.attr("value");
+			};
+			
+			me.cleanHtml = function(html_element) {
+				if (html_element.nodeName.toLowerCase() == "button" && $(html_element).find(".template-widget").length == 0) {
+					var clone = ui_creator.cloneHtmlElementBeforeCleanIt(html_element);
+					clone[0].innerHTML = '';
+					
+					var html = ui_creator.getCleanedHtmlElement(clone[0]);
+					var text = html_element.innerHTML;
+					
+					clone.remove();
+					
+					return html.replace('</button>', text + '</button>');
+				}
+				
+				return ui_creator.getCleanedHtmlElement(html_element);
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				//widget.attr("disabled", "disabled");
+				
+				if (!html_element) 
+					widget.append("Button");
+				
+				//if submit input inside of a form, disable previous click events
+				if (widget.is("input[type=submit]") && widget.parent().closest("form").length > 0) {
+					widget.off("click");
+					ui_creator.setTemplateWidgetOnClickEvent(widget);
+				}
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var value_elm = menu_settings.find(" > .settings-properties > ul > .value");
+				
+				//change the node name when type is changed
+				var select = menu_settings.find(" > .settings-properties > ul > .type select");
+				select.change(function() {
+					if (this.value == "image" || this.value == "button_image") {
+						value_elm.children("label").html("Src: ");
+						value_elm.show();
+					}
+					else {
+						value_elm.children("label").html("Value: ");
+						
+						if (!this.value) //button
+							value_elm.hide();
+						else
+							value_elm.show();
+					}
+					
+					ui_creator.saveMenuSettingsField(this);
+				});
+				
+				ui_creator.addMenuSettingsContextMenu(select);
+				ui_creator.addMenuSettingsContextMenu( menu_settings.find(" > .settings-properties input") );
+				
+				//console.log(widget[0].nodeName +":"+widget.attr("type"));
+				if (widget.attr("type") == "image") {
+					value_elm.children("label").html("Src: ");
+					value_elm.show();
+				}
+				else {
+					value_elm.children("label").html("Value: ");
+					
+					if (widget[0].nodeName.toLowerCase() == "button")
+						value_elm.hide();
+					else
+						value_elm.show();
+				}
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					var node_name = widget[0].nodeName.toLowerCase();
+					
+					if (sprop.hasClass("type")) {
+						var new_node_name = field_value != "" && field_value != "button_image" ? "input" : "button";
+					
+						if (node_name != new_node_name) {
+							var input_value = null;
+							
+							if (new_node_name == "input") {
+								if (field_value != "")
+									widget[0].type = field_value;
+								
+								if (widget.text())
+									input_value = widget.text();
+								
+								widget.html("");
+							}
+							else if (widget[0].hasAttribute("value"))
+								input_value = widget.attr("value");
+							
+							widget = ui_creator.changeWidgetNodeName(widget, new_node_name);
+							
+							if (widget && widget[0]) {
+								if (new_node_name == "input") {
+									if (input_value)
+										widget.attr("value", input_value);
+									
+									//if submit input inside of a form, disable previous click events
+									if (widget.is("input[type=submit]") && widget.parent().closest("form").length > 0) {
+										widget.off("click");
+										ui_creator.setTemplateWidgetOnClickEvent(widget);
+									}
+								}
+								else { //button
+									if (input_value)
+										widget.html(input_value);
+									else if (widget.text() == "")
+										widget.html("Button");
+									
+									//do not use widget.removeAttr bc gives an error
+									widget[0].removeAttribute("value");
+									
+									if (field_value != "button_image")
+										widget[0].removeAttribute("type");
+								}
+							}
+						}
+					}
+					else if (sprop.hasClass("name")) {
+						if (field_value != "")
+							widget.attr("name", field_value);
+						else
+							widget.removeAttr("name");
+					}
+					else if (sprop.hasClass("value")) {
+						var v = field_value != "" ? field_value : "";
+						
+						if (widget.attr("type") == "image" || widget.attr("type") == "button_image")
+							widget.attr("src", v);
+						else if (node_name != "button")
+							widget.attr("value", v).val(v);
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

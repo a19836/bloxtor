@@ -1,0 +1,100 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+/* TEST UNITS */
+.test_units {
+	padding-top:10px;
+	padding-left:30px;
+}
+.test_units .test_units_tree li > i,
+  .test_units .test_units_tree li > a {
+	position:relative;
+}
+.test_units .test_units_tree .icon {
+	margin:auto 5px;
+	vertical-align:middle;
+	font-size:16px;
+}
+.test_units .test_units_tree .icon.info {
+	width:18px;
+}
+.test_units .test_units_tree .icon.add_folder::before {
+	content:"\f65e";
+}
+.test_units .test_units_tree .icon.add_test::before {
+	content:"\f477";
+}
+
+.test_units .test_units_tree .edit_test_unit_file {
+	width:100%;
+	height:500px;
+	max-height:80vh;
+	display:block;
+	border:1px solid #ccc;
+	background:#fff;
+}
+.test_units .test_units_tree .edit_test_unit_file .refresh {
+	margin:-20px 0 0 5px;
+	position:absolute;
+}
+.test_units .test_units_tree .edit_test_unit_file iframe {
+	width:100%;
+	height:100%;
+	padding:0;
+}
+
+.test_units .test_units_tree .select_test_unit {
+	position:absolute;
+	left:10px;
+	margin-top:7px;
+}
+
+.test_units .test_units_tree li:before {
+	content:"";
+	display:block;
+	position:absolute;
+	left:0;
+	width:100%;
+	height:24px;
+}
+.test_units .test_units_tree li.success:before {
+	background:green;
+	background:rgba(0, 255, 0, .2);
+}
+.test_units .test_units_tree li.warning:before {
+	background:orange;
+	background:rgba(255, 165, 0, .4);
+}
+.test_units .test_units_tree li.error:before {
+	background:#B51E3F;
+	background:rgba(255, 0, 0, .2);
+}
+
+.test_units .test_units_tree .executed_test_response {
+	padding:10px;
+	background:#eee;
+	background:rgba(0, 0, 0, .05);
+	color:#000;
+	text-align:center;
+	display:none;
+}
+.test_units .test_units_tree li.success > .executed_test_response {
+	background:rgba(0, 255, 0, .35);
+}
+.test_units .test_units_tree li.warning > .executed_test_response {
+	background:rgba(255, 165, 0, .55);
+}
+.test_units .test_units_tree li.error > .executed_test_response {
+	background:rgba(255, 0, 0, .35);
+}
+
+.test_units .test_units_tree .jstree-clicked, 
+  .test_units .test_units_tree .jstree-clicked.jstree-hovered {
+	background:unset !important;
+	box-shadow:unset !important;
+}

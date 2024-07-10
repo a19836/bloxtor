@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg505"
+   xml:space="preserve"
+   style="enable-background:new 0 0 54 42;"
+   viewBox="0 0 54 42"
+   y="0px"
+   x="0px"
+   version="1.1"><metadata
+   id="metadata511"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs509" />
+<style
+   id="style2"
+   type="text/css">
+	.st0{fill:#FFFFFF;}
+	.st1{fill:#83889E;}
+</style>
+<g
+   id="define_a_class">
+	<path
+   id="path73"
+   d="M41.48,36.59c3.07,0,5.57-2.49,5.57-5.57V10.98c0-3.08-2.49-5.57-5.57-5.57H12.52c-3.07,0-5.57,2.49-5.57,5.57   v20.04c0,3.08,2.49,5.57,5.57,5.57h26.73H41.48z"
+   class="st0" />
+	<path
+   id="path75"
+   d="M 42.59,5.41 H 11.41 C 8.95,5.41 6.96,7.4 6.96,9.86 v 22.27 c 0,2.46 1.99,4.45 4.45,4.45 h 31.18 c 2.46,0 4.45,-2 4.45,-4.45 V 9.86 C 47.04,7.4 45.05,5.41 42.59,5.41 Z M 38.14,29.35 H 22.55 c -0.93,0 -1.67,-0.74 -1.67,-1.67 0,-0.93 0.74,-1.67 1.67,-1.67 h 15.59 c 0.93,0 1.67,0.74 1.67,1.67 0,0.93 -0.75,1.67 -1.67,1.67 z m 0,-6.68 H 22.55 c -0.93,0 -1.67,-0.74 -1.67,-1.67 0,-0.93 0.74,-1.67 1.67,-1.67 h 15.59 c 0.93,0 1.67,0.74 1.67,1.67 0,0.93 -0.75,1.67 -1.67,1.67 z m 0,-6.68 H 22.55 c -0.93,0 -1.67,-0.74 -1.67,-1.67 0,-0.93 0.74,-1.67 1.67,-1.67 h 15.59 c 0.93,0 1.67,0.74 1.67,1.67 0,0.93 -0.75,1.67 -1.67,1.67 z"
+   class="st1" />
+<ellipse
+   ry="2.6260169"
+   rx="2.6432204"
+   cy="14.015847"
+   cx="15.278812"
+   id="path1318"
+   style="fill:#ffffff;fill-opacity:1" /><ellipse
+   ry="2.6260169"
+   rx="2.6432204"
+   cy="20.822035"
+   cx="15.305084"
+   id="path1318-3"
+   style="fill:#ffffff;fill-opacity:1" /><ellipse
+   ry="2.6260169"
+   rx="2.6432204"
+   cy="27.584745"
+   cx="15.305083"
+   id="path1318-3-6"
+   style="fill:#ffffff;fill-opacity:1" /></g>
+
+</svg>

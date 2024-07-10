@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<bean name="TestService" namespace="__system\businesslogic" path="TestService" path_prefix="<?php echo $vars["current_business_logic_module_path"];?>" extension="php">
+		<property name="PHPFrameWorkObjName"><?php echo $vars["phpframework_obj_name"] ? $vars["phpframework_obj_name"] : $objs["phpframework_obj_name"]; ?></property>
+		<property name="businessLogicLayer" reference="BusinessLogicLayer" />
+		<property name="userCacheHandler" reference="UserCacheHandler" />
+	</bean>
+	
+	<bean name="TestService2" namespace="Test" path="subtest/TestService" path_prefix="<?php echo $vars["current_business_logic_module_path"];?>" extension="php">
+		<property name="PHPFrameWorkObjName"><?php echo $vars["phpframework_obj_name"] ? $vars["phpframework_obj_name"] : $objs["phpframework_obj_name"]; ?></property>
+		<property name="businessLogicLayer" reference="BusinessLogicLayer" />
+		<property name="userCacheHandler" reference="UserCacheHandler" />
+	</bean>
+	
+	<bean name="TestService3" namespace="Test\a" path="subtest/TestService" path_prefix="<?php echo $vars["current_business_logic_module_path"];?>" extension="php">
+		<property name="PHPFrameWorkObjName"><?php echo $vars["phpframework_obj_name"] ? $vars["phpframework_obj_name"] : $objs["phpframework_obj_name"]; ?></property>
+		<property name="businessLogicLayer" reference="BusinessLogicLayer" />
+		<property name="userCacheHandler" reference="UserCacheHandler" />
+	</bean>
+	
+	<import relative="1">../common/services.xml</import>
+	
+	<bean name="TestExtendCommonServiceWithDiferentName" namespace="__system\businesslogic" path="TestExtendCommonService" path_prefix="<?php echo $vars["current_business_logic_module_path"];?>" extend="CommonService"></bean>
+	
+	<services>
+		<service id="get_query" constructor="TestService" namespace="" function="getQuery" />
+		<service id="get_query_sql" constructor="TestService" function="getQuerySQL" />
+		<service id="get_obj" constructor="TestService" function="getObj" />
+		
+		<service id="get_query_sql_namespace" constructor="TestService" namespace="Test" function="getQuerySQL" />
+		<service id="get_query_namespace" constructor="\Test\a\TestService" function="getSQL" />
+		<service id="get_query_relative_namespace" constructor="Test\a\TestService" function="getSQL" />
+		
+		<service id="get_query_sql_namespace2" constructor="TestService2" function="getQuerySQL" />
+		<service id="get_query_namespace3" constructor="TestService3" function="getSQL" />
+		
+		<service id="test" file="subtest/IndependentFunctionsServices.php" function="foo" namespace="__system\businesslogic" />
+		
+		<service id="exec_business_logic_test" constructor="TestService" function="executeBusinessLogicTest" />
+		<service id="del_business_logic_test_cache" constructor="TestService" function="deleteBusinessLogicTestCache" />
+	</services>
+</beans>

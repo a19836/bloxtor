@@ -1,0 +1,19 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+/* TOP BAR */
+.top_bar {
+	margin-bottom:20px;
+}
+
+/* INVALID */
+.invalid {
+	padding:10px;
+	text-align:center;
+	color:#B51E3F;
+}

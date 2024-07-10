@@ -1,0 +1,8 @@
+
+- You must install the curl extension in php.
+- Copy all this files at the document root of your virtual host.
+- The virtual host should be named testapp.local, or modify  generateserverdata.php 
+- Launch http://testapp.local/generateserverdata.php
+- Copy the generated content in a phpunit class.
+
+

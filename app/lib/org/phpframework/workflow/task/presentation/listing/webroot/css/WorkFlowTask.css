@@ -1,0 +1,132 @@
+.taskflowchartmenu .task.task_listing {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_listing .info:before {
+	background-image:url('../img/bg.svg');
+}
+
+/* task properties */
+/* task properties - Table UI */
+.listing_task_html .ui.table .ui_html > table {
+	border:1px solid #c0c0c0;
+}
+.listing_task_html .ui.table .ui_html > table > thead > tr > th {
+	padding:5px;
+	background:#f7f7f7;
+	text-align:center;
+}
+.listing_task_html .ui.table .ui_html > table > thead > tr > th,
+   .listing_task_html .ui.table .ui_html > table > tbody > tr > td {
+	border-bottom:1px solid #c0c0c0;
+	border-left:1px solid #c0c0c0;
+}
+.listing_task_html .ui.table .ui_html > table > thead > tr > th:first-child,
+   .listing_task_html .ui.table .ui_html > table > tbody > tr > td:first-child {
+	border-left:none;
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value {
+	padding:0 !important;
+	background:#fff;
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value .icon {
+	margin:3px;
+	float:right;
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value .icon.update::before {
+	content:"\f303";
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value:before {
+	display:inline-block;
+	color:#555;
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value.input:before {
+	content:"...";
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value.number:before {
+	content:"nn...";
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value.date:before {
+	content:"yyyy-mm-dd";
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value.datetime:before {
+	content:"yyyy-mm-dd hh:ii";
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value.time:before {
+	content:"hh:ii";
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value.checkbox:before {
+	content:"Yes/No";
+}
+.listing_task_html .ui.table .ui_html > table .ui_table_attribute_value.textarea:before {
+	content:"...";
+}
+
+/* task properties - Tree and Multi-Form UI */
+.listing_task_html .ui.tree table .ui_table_attribute_value:before,
+   .listing_task_html .ui.multi_form table .ui_table_attribute_value:before {
+	display:block;
+	padding:5px;
+	color:#555;
+}
+.listing_task_html .ui.tree table .ui_table_attribute_value.input:before,
+   .listing_task_html .ui.multi_form table .ui_table_attribute_value.input:before {
+	content:"...";
+	width:100%;
+	min-width:100px;
+	box-sizing:border-box;
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+.listing_task_html .ui.tree table .ui_table_attribute_value.number:before,
+   .listing_task_html .ui.multi_form table .ui_table_attribute_value.number:before {
+	content:"nn...";
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+.listing_task_html .ui.tree table .ui_table_attribute_value.date:before,
+   .listing_task_html .ui.multi_form table .ui_table_attribute_value.date:before {
+	content:"yyyy-mm-dd";
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+.listing_task_html .ui.tree table .ui_table_attribute_value.datetime:before,
+   .listing_task_html .ui.multi_form table .ui_table_attribute_value.datetime:before {
+	content:"yyyy-mm-dd hh:ii";
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+.listing_task_html .ui.tree table .ui_table_attribute_value.time:before,
+   .listing_task_html .ui.multi_form table .ui_table_attribute_value.time:before {
+	content:"hh:ii";
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+.listing_task_html .ui.tree table .ui_table_attribute_value.checkbox:before,
+   .listing_task_html .ui.multi_form table .ui_table_attribute_value.checkbox:before {
+	content:"Yes/No";
+}
+.listing_task_html .ui.tree table .ui_table_attribute_value.textarea:before,
+   .listing_task_html .ui.multi_form table .ui_table_attribute_value.textarea:before {
+	content:"...";
+	width:100%;
+	min-width:100px;
+	height:50px;
+	box-sizing:border-box;
+	border:1px solid #f7f7f7;
+	border-radius:3px;
+}
+
+/* task properties - Tree UI */
+.listing_task_html .ui.tree .ui_html:before,
+   .listing_task_html .ui.tree .ui_html:after {
+	content:"Other objects...";
+	padding:10px;
+	margin:10px 0;
+	display:block;
+	border:1px solid #eee;
+	text-align:center;
+}
+.listing_task_html .ui.tree table {
+	border:1px solid #eee;
+	padding:0 0 0 10px;
+}

@@ -1,0 +1,524 @@
+body:not(.in_popup),
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:transparent;
+}
+
+/* TOP BAR */
+.top_bar {
+	margin-bottom:20px;
+}
+.top_bar .icon.info::before {
+	margin-top:2px;
+	display:inline-block;
+}
+
+/* INSTALL PROGRAM */
+.install_program {
+	margin:0 20px 20px;
+	text-align:center;
+}
+.install_program input[type=text][disabled] {
+	opacity:.3;
+}
+.install_program ul {
+	margin-left:10px;
+	text-align:left;
+}
+.install_program .file_ok {
+	background:rgba(0, 128, 0, .2);
+}
+.install_program .file_exists {
+	background:rgba(255, 0, 0, .2);
+}
+
+/* program_info */
+
+.install_program .program_info {
+	margin:10px 0;
+	padding:10px;
+	color:var(--main-iframe-top-title-color, inherit);
+	background:var(--main-iframe-bg, #eee);
+	border:1px solid var(--resize-bar-border, #ccc);
+	border-radius: 5px;
+	text-align:left;
+}
+.install_program .program_info .program_name span {
+	font-weight:bold;
+}
+.install_program .program_info .program_description {
+	margin-top:10px;
+}
+.install_program .program_info .program_description:empty {
+	display:none;
+}
+.install_program .program_info .program_with_db {
+	margin-top:10px;
+	font-weight:bold;
+	text-align:right;
+}
+.install_program .program_info .program_with_db:empty {
+	display:none;
+}
+.install_program .program_info .program_with_db .icon {
+	font-size:14px;
+	cursor:auto;
+}
+
+/* step 0 */
+
+.install_program .step_0 .install_program_step_0_with_tabs {
+	border:0;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > ul {
+	margin-top:20px !important;
+	background:none;
+	border:0;
+	text-align:center;
+	font-size:13px;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > ul li {
+	margin:0 !important;
+	background:none !important;
+	border:none !important;
+	display:inline-block;
+	float:none !important;
+	font-weight:normal;
+	cursor:pointer;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > ul li:not(:first-child) {
+	border-left:1px solid #DFE1ED !important;
+	border-radius:0;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > ul li a {
+	margin:0 5px;
+	padding:0 10px !important;
+	border-bottom:1px solid transparent !important;
+	color:#83889E !important;
+	float:none !important;
+	text-decoration:none !important;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > ul li.ui-state-active a {
+	font-weight:bold;
+	/*border-bottom-color:var(--icon-active-color) !important;*/
+	color:#2C2D34 !important;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > .file_upload > .title {
+	margin:20px 0 0;
+	color:#999;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > .file_upload .upload_file {
+	width:270px;
+	/*width: calc(100% - 57px);*/
+	margin:10px auto 0 auto;
+	display:block;
+	font-size:inherit;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > .file_upload .upload_file::file-selector-button {
+	padding:10px;
+	border:1px solid rgba(0,0,0, .1);
+	border-radius:inherit;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > .file_upload .upload_url {
+	margin:10px auto 0 auto;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > .file_upload .upload_url input {
+	width:278px;
+	margin-left:5px;
+	margin-right:5px;
+	padding:10px;
+	box-sizing:border-box;
+}
+.install_program .step_0 .install_program_step_0_with_tabs > .file_upload .upload_url .icon {
+	height:16px;
+	margin-left:0;
+	display:inline-block;
+	float:none;
+	vertical-align:middle;
+}
+.install_program .step_0:not(.show_info) > .info {
+	display:none;
+}
+.install_program .step_0 > .info {
+	position:absolute;
+	top:50px;
+	left:0;
+	right:0;
+	padding:20px;
+	text-align:center;
+	background:var(--main-iframe-bg, #eee);
+	border-bottom:1px solid var(--resize-bar-border, #ccc);
+}
+.install_program .step_0 .warning {
+	padding:20px;
+	border:1px solid #efbebe;
+	border-radius:5px;
+	background:#efbebe7a;
+	color:#B51E3F;
+}
+.install_program .step_0 .go_to_programs_download_page {
+	width:100%;
+	margin:40px 0 30px;
+	text-align:center;
+	color:#999;
+}
+
+/* step 1 */
+
+.install_program .step_1 .program_settings {
+	margin:40px 0 20px;
+	padding:10px;
+	text-align:left;
+	background:var(--main-iframe-bg, #eee);
+	border:1px solid var(--resize-bar-border, #ccc);
+	border-radius: 5px;
+	border-top-left-radius:0;
+}
+.install_program .step_1 .overwrite {
+	margin-top:20px;
+	padding-top:20px;
+	border-top:1px solid var(--resize-bar-border, #ccc);
+	text-align:left;
+}
+.install_program .step_1 .program_settings > label:first-child {
+	position:absolute;
+	margin:-32px 0 0 -11px;
+	font-size: 80%;
+	font-weight:700;
+	background: #eee;
+	padding: 5px 10px;
+	border-top: 1px solid var(--resize-bar-border, #ccc);
+	border-left: 1px solid var(--resize-bar-border, #ccc);
+	border-right: 1px solid var(--resize-bar-border, #ccc);
+	border-radius: 5px;
+	border-bottom-left-radius:0;
+	border-bottom-right-radius:0;
+}
+.install_program .step_1 .program_settings label {
+	font-weight:normal;
+}
+.install_program .step_1 .program_settings .info {
+	font-size: 80%;
+}
+.install_program .step_1 .db_drivers,
+  .install_program .step_1 .layers {
+	margin-top:20px;
+	text-align:left;
+}
+.install_program .step_1 .db_drivers + .layers {
+	padding-top:20px;
+	border-top:1px solid var(--resize-bar-border, #ccc);
+}
+.install_program .step_1 .db_drivers > label,
+  .install_program .step_1 .layers > label {
+	display:block;
+}
+.install_program .step_1 .db_drivers > ul,
+  .install_program .step_1 .layers > ul {
+	display:inline-block;
+	margin:10px auto 0;
+	padding-left:20px;
+}
+.install_program .step_1 .db_drivers > ul li input[type=checkbox],
+  .install_program .step_1 .layers > ul li input[type=checkbox] {
+	margin-right:10px;
+}
+
+/* step 2 */
+
+.install_program .step_2 .db_drivers,
+  .install_program .step_2 .layers {
+	margin-top:20px;
+	text-align:left;
+}
+.install_program .step_2 .db_drivers + .layers {
+	padding-top:20px;
+	border-top:1px solid var(--resize-bar-border, #ccc);
+}
+.install_program .step_2 > .db_drivers > label,
+  .install_program .step_2 > .layers > label {
+	display:block;
+}
+.install_program .step_2 > .db_drivers > ul,
+  .install_program .step_2 > .layers > ul {
+	display:inline-block;
+	margin:10px auto 0;
+	padding-left:20px;
+}
+.install_program .step_2 > .layers table td:nth-child(1) {
+	width:auto;
+}
+.install_program .step_2 > .layers table td:nth-child(2) {
+	min-width:50px;
+	text-align:center;
+	font-weight:700;
+}
+.install_program .step_2 > .layers table td:nth-child(3) {
+	min-width:180px;
+	font-size:80%;
+	text-align:center;
+}
+
+/* step 3 */
+
+.install_program .step_3 > .program_info {
+	margin-bottom:20px;
+}
+.install_program .step_3 > .error {
+	color:#B51E3F;
+}
+.install_program .step_3 > .error_title {
+	color:#B51E3F;
+	font-weight:bold;
+}
+.install_program .step_3 > .messages_list,
+  .install_program .step_3 > .errors_list {
+	margin:10px 20px;
+	padding:20px;
+	background:var(--main-iframe-bg, #eee);
+	border-radius:1rem;
+	font-weight:bold;
+	color:#000;
+}
+.install_program .step_3 > .messages_list ul,
+  .install_program .step_3 > .messages_list li,
+  .install_program .step_3 > .errors_list ul,
+  .install_program .step_3 > .errors_list li {
+	margin-left:20px;
+	list-style:disc;
+}
+.install_program .step_3 > .messages_list li,
+  .install_program .step_3 > .errors_list li {
+	margin-bottom:10px;
+}
+.install_program .step_3 > .ok {
+	margin:40px 0;
+	display:block;
+	font-weight:bold;
+}
+.install_program .step_3 > .users_permissions {
+	margin:20px 20px 40px;
+	padding:20px;
+	text-align:center;
+	background:var(--main-iframe-bg, #eee);
+	border-radius:1rem;
+}
+.install_program .step_3 > .users_permissions .info {
+	margin-top:10px;
+	display:block;
+	font-family:var(--main-font-family);
+	text-align: left;
+}
+.install_program .step_3 > .users_permissions .info img {
+	vertical-align:middle;
+}
+.install_program .step_3 > .users_permissions .info .icon {
+	font-size:14px;
+	cursor:auto;
+}
+.install_program .step_3 > .users_permissions .info ol {
+	padding-left:20px;
+	display: block;
+	text-align: left;
+}
+.install_program .step_3 > .users_permissions .info ol li {
+	margin:5px 0;
+}
+.install_program .step_3 > .users_permissions > .users_management_admin_panel_popup {
+	width:90vw !important;
+	height:90vh !important;
+	position:fixed !important;
+	left:5% !important;
+	top:5% !important;
+	box-sizing:border-box;
+}
+.install_program .step_3 > .users_permissions > .users_management_admin_panel_popup > iframe {
+	width:100% !important;
+	height:100% !important;
+	/* !important is very important otherwise the myfancypopp will overwrite this values */
+}
+.install_program .step_3 > .users_permissions > .popup_overlay {
+	width:auto !important;
+	height:auto !important;
+	position:fixed !important;
+	z-index:1 !important;
+}
+
+/* install_store_program */
+
+.install_store_program {
+	text-align:center;
+}
+.install_store_program > .title {
+	margin:20px 0 0;
+	color:#999;
+}
+.install_store_program > .search_program {
+	max-width:250px;
+	margin:10px auto 0;
+	color:#999;
+	position:relative;
+	display:inline-block;
+}
+.install_store_program > .search_program .icon.search {
+	cursor:default;
+	color:inherit;
+}
+.install_store_program > .search_program input {
+	width:100%;
+	margin-left:-28px;
+	padding:10px 20px 10px 25px;
+	color:inherit;
+	border-color:inherit;
+	border-radius:0.2rem;
+	font-size:10pt;
+	box-sizing:border-box;
+}
+.install_store_program > .search_program input::placeholder {
+	color:inherit;
+}
+.install_store_program > .search_program .icon.close {
+	margin:0;
+	position:absolute;
+	top:13px;
+	right:7px;
+}
+.install_store_program ul {
+	margin:20px 0 0;
+	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+}
+.install_store_program ul li:not(.loading):not(.empty) {
+	flex: 25%;
+	max-width: 200px;
+	min-height:210px;
+	margin:30px;
+	padding:20px 10px 50px;
+	display: inline-block;
+	background: #fff;
+	border: 1px solid var(--main-iframe-bg, #ccc);
+	border-radius: 5px;
+	font-size: 10px;
+	text-align:center;
+	position:relative;
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 5%);
+}
+.install_store_program ul li:not(.loading):not(.empty):hover {
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 20%);
+}
+.install_store_program ul li.hidden {
+	display:none !important;
+}
+.install_store_program ul li > .with_db {
+	position:absolute;
+	top:0;
+	left:7px;
+	opacity:.8;
+}
+.install_store_program ul li > .with_db .icon:hover {
+	color:inherit;
+	cursor:inherit;
+}
+.install_store_program ul li > .with_db .icon:after {
+	color:#666 !important;
+}
+.install_store_program ul li > .with_db:not(:hover) .title {
+	visibility:hidden;
+}
+.install_store_program ul li img {
+	height:90px;
+	margin-top:10px;
+}
+.install_store_program ul li label {
+	margin:15px -10px 10px;
+	padding:10px 10px 0;
+	border-top:1px solid var(--main-iframe-bg, #ddd);
+	display: block;
+	text-align: center;
+	font-weight:normal;
+	color:#666;
+	cursor:auto;
+}
+.install_store_program ul li div {
+	margin:5px 0 10px;
+	display: block;
+	text-align: center;
+	font-weight:normal;
+	color:#999;
+}
+.install_store_program ul li.loading {
+	margin-top:20px;
+	padding-left:30px;
+}
+.install_store_program ul li.empty {
+	margin-top:20px;
+}
+.install_store_program ul li .choose_program {
+	width:80px;
+	margin:auto;
+	
+	position:absolute;
+	left:10px;
+	right:10px;
+	bottom:10px;
+	text-align:center;
+}
+
+/* PROGRAM POPUPS - install_store_program_popup */
+
+.install_store_program_popup {
+	top:10px !important;
+	left:10px !important;
+	right:10px !important;
+	bottom:10px !important;
+}
+.install_store_program_popup ul {
+	max-height: calc(100% - 60px);
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: flex-start;
+	padding: 10px;
+	overflow: auto;
+}
+.install_store_program_popup ul li {
+	flex: 25%;
+	max-width: 200px;
+	margin: 10px;
+	padding: 10px;
+	display: inline-block;
+	background: #fff;
+	border: 1px solid var(--resize-bar-border, #ccc);
+	border-radius: 5px;
+	font-size: 80%;
+	text-align:center;
+}
+.install_store_program_popup ul li img {
+    width:100%;
+    border-bottom:1px solid #ddd;
+}
+.install_store_program_popup ul li label {
+    margin:15px 0 10px;
+    display: block;
+    text-align: center;
+    font-weight:normal;
+    color:#666;
+}
+.install_store_program_popup ul li div {
+    margin:5px 0 10px;
+    display: block;
+    text-align: center;
+    font-weight:normal;
+    color:#999;
+}
+.install_store_program_popup ul li.loading {
+	padding-left:30px;
+	border:none;
+	background:transparent;
+	text-align:center;
+}

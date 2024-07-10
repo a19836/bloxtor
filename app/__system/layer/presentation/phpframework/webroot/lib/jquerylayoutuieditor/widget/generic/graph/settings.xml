@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Graph</label>
+	<tag>graph</tag>
+	<settings>
+		<template_class>droppable</template_class>
+		<resizable>1</resizable>
+		<create_widget_class>GraphWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget></template_widget>
+	<properties><![CDATA[
+		<div class="info">For more information or options about "Drawing a Graph" and how it works, please open the "<a href="https://www.chartjs.org/" target="chartjs">https://www.chartjs.org/</a>" web-page.</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-graph:before,
+		  body > .menu-widget.menu-widget-graph.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-graph {
+			border-radius:0 5px 5px 0;
+		}
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-graph .options .option.toggle {
+			display:none;
+		}
+		
+		.layout-ui-editor.fixed-side-properties > .menu-settings.menu-settings-graph > .settings-properties > ul > .info {
+			opacity:.5;
+		}
+		.layout-ui-editor.fixed-side-properties > .menu-settings.menu-settings-graph > .settings-properties > ul > .info:hover {
+			opacity:1;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.template-widget[data-widget-graph]::after {
+			content:"";
+			height:100%;
+			display:block;
+			background-image:url('#widget_webroot_url#default_chart.svg');
+			background-size: 90% 90%;
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function GraphWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.graph.parseHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.graph.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.graph.onOpenWidgetSettings",
+				});
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (html_element && (html_element.hasAttribute("data-widget-graph")))
+					return {
+						droppable: $(html_element),
+					};
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				if (!html_element) {
+					widget.css({width: "200px", height: "200px"});
+					
+					var props = {
+						load: "MyWidgetResourceLib.ChartHandler.loadChartResource",
+						graph: {
+							include_lib: 1
+						}
+					};
+					widget.attr("data-widget-props", JSON.stringify(props));
+					widget.attr("data-widget-resources-load", "");
+					widget.attr("data-widget-graph", "");
+				}
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				//expand dynamic widgets properties and scrol down until the graph properties
+				var settings_widget = menu_settings.children(".settings-widget");
+				
+				if (!settings_widget.hasClass("group-open")) {
+					settings_widget.find(" > .group-title").trigger("click");
+					
+					//waits a while so the dynamic widgets properties be expanded
+					setTimeout(function() {
+						menu_settings.scrollTop(800); //scroll until the widget-property-graph-info
+						
+						setTimeout(function() {
+							menu_settings.scrollTop(800); //scroll until the widget-property-graph-info
+						}, 500);
+					}, 300);
+				}
+			};
+		}
+	]]></menu_js>
+</widget>

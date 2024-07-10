@@ -1,0 +1,10 @@
+.taskflowchartmenu .task.task_restconnector {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_restconnector .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_restconnector .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}

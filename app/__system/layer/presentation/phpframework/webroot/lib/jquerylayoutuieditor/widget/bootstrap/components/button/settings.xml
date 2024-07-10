@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Button</label>
+	<tag>bsbutton</tag>
+	<settings>
+		<create_widget_class>BSButtonWidget</create_widget_class>
+	</settings>
+	<files>
+		<css>../../CreateWidgetBootstrapClassObj.css</css>
+		<js>../../CreateWidgetBootstrapClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bsbutton:before,
+		  body > .menu-widget.menu-widget-bsbutton.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-bsbutton {
+			border-radius:0 5px 5px 0;
+		}
+		.layout-ui-editor > .template-widgets .widget-header.widget-header-bsbutton .options .option.toggle {
+			display:none;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSButtonWidget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapClassObj(ui_creator, menu_widget, "bsbutton");
+			obj.extend(this);
+			
+			obj.available_items = {
+				4: [
+					{
+						image: '#widget_webroot_url#button_rounded_primary.png',
+						name: 'Rounded button - blue',
+						html: '<button class="btn btn-primary rounded-pill px-3" type="button">Primary</button>'
+					},
+					{
+						image: '#widget_webroot_url#button_rounded_secondary.png',
+						name: 'Rounded button - gray',
+						html: '<button class="btn btn-secondary rounded-pill px-3" type="button">Secondary</button>'
+					},
+					{
+						image: '#widget_webroot_url#button_rounded_success.png',
+						name: 'Rounded button - green',
+						html: '<button class="btn btn-success rounded-pill px-3" type="button">Success</button>'
+					},
+					{
+						image: '#widget_webroot_url#button_rounded_danger.png',
+						name: 'Rounded button - red',
+						html: '<button class="btn btn-danger rounded-pill px-3" type="button">Danger</button>'
+					},
+					{
+						image: '#widget_webroot_url#button_rounded_warning.png',
+						name: 'Rounded button - yellow',
+						html: '<button class="btn btn-warning rounded-pill px-3" type="button">Warning</button>'
+					},
+					{
+						image: '#widget_webroot_url#button_rounded_info.png',
+						name: 'Rounded button - light blue',
+						html: '<button class="btn btn-info rounded-pill px-3" type="button">Info</button>'
+					},
+					{
+						image: '#widget_webroot_url#button_rounded_light.png',
+						name: 'Rounded button - light',
+						html: '<button class="btn btn-light rounded-pill px-3" type="button">Light</button>'
+					},
+					{
+						image: '#widget_webroot_url#button_rounded_dark.png',
+						name: 'Rounded button - dark',
+						html: '<button class="btn btn-dark rounded-pill px-3" type="button">Dark</button>'
+					},
+					{
+						image: '#widget_webroot_url#button_rounded_link.png',
+						name: 'Rounded button - link',
+						html: '<button class="btn btn-link rounded-pill px-3" type="button">Link</button>'
+					},
+					
+					{
+						image: '#widget_webroot_url#button_primary.png',
+						name: 'Button',
+						html: '<button class="btn btn-primary" type="button">Primary action</button>'
+					},
+					{
+						image: '#widget_webroot_url#button_outline.png',
+						name: 'Button - outline',
+						html: '<button class="btn btn-outline-secondary" type="button">Secondary action</button>'
+					},
+					
+					{
+						image: '#widget_webroot_url#button_loading_icon.png',
+						name: 'Loading spin icon',
+						html: '<button class="btn btn-primary" type="button" disabled><span class="spinner-border spinner-border-sm" aria-hidden="true"></span></button>'
+					},
+					{
+						image: '#widget_webroot_url#button_loading_icon_label.png',
+						name: 'Loading spin button',
+						html: '<button class="btn btn-primary" type="button" disabled><span class="spinner-border spinner-border-sm" aria-hidden="true"></span><span class="ml-2" role="status">Loading...</span></button>'
+					},
+					
+					{
+						image: '#widget_webroot_url#button_primary_large.png',
+						name: 'Large button',
+						html: '<button type="button" class="btn btn-primary btn-lg">Large button</button>',
+						class: 'large'
+					},
+					{
+						image: '#widget_webroot_url#button_primary_small.png',
+						name: 'Small button',
+						html: '<button type="button" class="btn btn-primary btn-sm">Small button</button>',
+						class: 'small'
+					},
+					{
+						image: '#widget_webroot_url#button_primary_block.png',
+						name: 'Button block',
+						html: '<button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>'
+					},
+					{
+						image: '#widget_webroot_url#link_secondary_large.png',
+						name: 'Large link',
+						html: '<a href="#" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">Link</a>'
+					},
+					{
+						image: '#widget_webroot_url#button_secondary_disabled.png',
+						name: 'Button disabled',
+						html: '<button type="button" class="btn btn-secondary btn-lg" disabled>Button</button>'
+					}
+				],
+			};
+			
+			obj.available_items["5.3"] = obj.available_items[4].slice(); //clone array
+			
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_primary_icon.png',
+				name: 'Button with icon',
+				html: '<button class="btn btn-primary d-inline-flex align-items-center" type="button">Primary icon<svg class="bi ms-1" width="20" height="20"><use xlink:href="#arrow-right-short"></use></svg></button>',
+				title: 'Needs Bootstrap bi classes to be installed'
+			});
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_outline_icon.png',
+				name: 'Button with icon - outline',
+				html: '<button class="btn btn-outline-secondary d-inline-flex align-items-center" type="button">Secondary icon<svg class="bi ms-1" width="20" height="20"><use xlink:href="#arrow-right-short"></use></svg></button>',
+				title: 'Needs Bootstrap bi classes to be installed'
+			});
+			
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_close_primary_small.png',
+				name: 'Button close',
+				html: '<button class="btn btn-primary rounded-circle p-2 lh-1" type="button"><svg class="bi" width="16" height="16"><use xlink:href="#x-lg"></use></svg><span class="visually-hidden">Dismiss</span></button>',
+				class: 'small'
+			});
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_close_outline_small.png',
+				name: 'Button close - outline',
+				html: '<button class="btn btn-outline-primary rounded-circle p-2 lh-1" type="button"><svg class="bi" width="16" height="16"><use xlink:href="#x-lg"></use></svg><span class="visually-hidden">Dismiss</span></button>',
+				class: 'small'
+			});
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_close_primary_big.png',
+				name: 'Button close big',
+				html: '<button class="btn btn-primary rounded-circle p-3 lh-1" type="button"><svg class="bi" width="24" height="24"><use xlink:href="#x-lg"></use></svg><span class="visually-hidden">Dismiss</span></button>',
+				class: 'large'
+			});
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_close_outline_big.png',
+				name: 'Button close big - outline',
+				html: '<button class="btn btn-outline-primary rounded-circle p-3 lh-1" type="button"><svg class="bi" width="24" height="24"><use xlink:href="#x-lg"></use></svg><span class="visually-hidden">Dismiss</span></button>',
+				class: 'large'
+			});
+			
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_group_mixed_styles.png',
+				name: 'Buttons group with mixed styles',
+				html: '<div class="btn-group" role="group" aria-label="Basic mixed styles example"><button type="button" class="btn btn-danger">Left</button><button type="button" class="btn btn-warning">Middle</button><button type="button" class="btn btn-success">Right</button></div>'
+			});
+			
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_single_toggle.png',
+				name: 'Single toggle button',
+				html: '<button type="button" class="btn btn-primary" data-bs-toggle="button" aria-pressed="false">Single toggle</button>'
+			});
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_radio_group.png',
+				name: 'Radio buttons',
+				html: '<div class="btn-group" role="group" aria-label="Basic radio toggle button group"><input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="new-password" checked><label class="btn btn-outline-secondary" for="btnradio1">Radio 1</label><input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="new-password"><label class="btn btn-outline-secondary" for="btnradio2">Radio 2</label><input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="new-password"><label class="btn btn-outline-secondary" for="btnradio3">Radio 3</label></div>'
+			});
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_checkbox.png',
+				name: 'Checkbox button',
+				html: '<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group"><input type="checkbox" class="btn-check" id="btncheck" autocomplete="new-password"><label class="btn btn-outline-primary" for="btncheck">Checkbox 1</label></div>'
+			});
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_checkbox_group.png',
+				name: 'Checkbox buttons',
+				html: '<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group"><input type="checkbox" class="btn-check" id="btncheck1" autocomplete="new-password"><label class="btn btn-outline-primary" for="btncheck1">Checkbox 1</label><input type="checkbox" class="btn-check" id="btncheck2" autocomplete="new-password"><label class="btn btn-outline-primary" for="btncheck2">Checkbox 2</label><input type="checkbox" class="btn-check" id="btncheck3" autocomplete="new-password"><label class="btn btn-outline-primary" for="btncheck3">Checkbox 3</label></div>'
+			});
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_toolbar.png',
+				name: 'Buttons toolbar',
+				html: '<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups"><div class="btn-group me-2" role="group" aria-label="First group"><button type="button" class="btn btn-primary">1</button><button type="button" class="btn btn-primary">2</button><button type="button" class="btn btn-primary">3</button><button type="button" class="btn btn-primary">4</button></div><div class="btn-group me-2" role="group" aria-label="Second group"><button type="button" class="btn btn-secondary">5</button><button type="button" class="btn btn-secondary">6</button><button type="button" class="btn btn-secondary">7</button></div><div class="btn-group" role="group" aria-label="Third group"><button type="button" class="btn btn-info">8</button></div></div>'
+			});
+			
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_group_large.png',
+				name: 'Buttons group large',
+				html: '<div class="btn-group btn-group-lg" role="group" aria-label="Large button group"><button type="button" class="btn btn-outline-dark">Left</button><button type="button" class="btn btn-outline-dark">Middle</button><button type="button" class="btn btn-outline-dark">Right</button></div>',
+				class: 'large'
+			});
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_group_small.png',
+				name: 'Buttons group small',
+				html: '<div class="btn-group btn-group-sm" role="group" aria-label="Small button group"><button type="button" class="btn btn-outline-dark">Left</button><button type="button" class="btn btn-outline-dark">Middle</button><button type="button" class="btn btn-outline-dark">Right</button></div>',
+				class: 'small'
+			});
+			
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_group_nesting.png',
+				name: 'Buttons group nesting',
+				html: '<div class="btn-group" role="group" aria-label="Button group with nested dropdown"><button type="button" class="btn btn-primary">1</button><button type="button" class="btn btn-primary">2</button><div class="btn-group" role="group"><button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</button><ul class="dropdown-menu" aria-labelledby="btnGroupDrop1"><li><a class="dropdown-item" href="#">Dropdown link</a></li><li><a class="dropdown-item" href="#">Dropdown link</a></li></ul></div></div>'
+			});
+			
+			obj.available_items["5.3"].push({
+				image: '#widget_webroot_url#button_group_vertical.png',
+				name: 'Buttons group vertical',
+				html: '<div class="btn-group-vertical" role="group" aria-label="Vertical radio toggle button group"><input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio1" autocomplete="new-password" checked=""><label class="btn btn-outline-danger" for="vbtn-radio1">Radio 1</label><input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio2" autocomplete="new-password"><label class="btn btn-outline-danger" for="vbtn-radio2">Radio 2</label><input type="radio" class="btn-check" name="vbtn-radio" id="vbtn-radio3" autocomplete="new-password"><label class="btn btn-outline-danger" for="vbtn-radio3">Radio 3</label></div>'
+			});
+			
+			obj.available_items[4].push({
+				image: '#widget_webroot_url#button_single_toggle.png',
+				name: 'Single toggle button',
+				html: '<button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false">Single toggle</button>'
+			});
+			obj.available_items[4].push({
+				image: '#widget_webroot_url#button_radio_group.png',
+				name: 'Radio buttons',
+				html: '<div class="btn-group btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary active"><input type="radio" name="options" id="option1" checked> Active</label><label class="btn btn-secondary"><input type="radio" name="options" id="option2"> Radio</label><label class="btn btn-secondary"><input type="radio" name="options" id="option3"> Radio</label></div>'
+			});
+			obj.available_items[4].push({
+				image: '#widget_webroot_url#button_checkbox.png',
+				name: 'Checkbox button',
+				html: '<div class="btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary active"><input type="checkbox" checked> Checked</label></div>'
+			});
+		}
+	]]></menu_js>
+</widget>

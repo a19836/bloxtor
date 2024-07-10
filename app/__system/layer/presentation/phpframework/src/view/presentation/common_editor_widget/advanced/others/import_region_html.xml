@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Import Region Html</label>
+	<tag>import-template-region-html</tag>
+	<settings>
+		<create_widget_class>ImportTemplateRegionHtmlWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[]]></template_widget>
+	<properties></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-import-template-region-html:before,
+		  body > .menu-widget.menu-widget-import-template-region-html.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets > .widget-header.widget-header-import-template-region-html .options .props,
+		   .layout-ui-editor > .template-widgets > .widget-header.widget-header-import-template-region-html .options .toggle {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-id,
+		   .layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-classes,
+		   .layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-properties,
+		   .layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-widget,
+		   .layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-general,
+		   .layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-dimension,
+		   .layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-typography,
+		   .layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-decorations,
+		   .layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-events,
+		   .layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-others,
+		   .layout-ui-editor > .menu-settings.menu-settings-import-template-region-html .settings-extra,
+			.layout-ui-editor > .menu-settings.menu-settings-import-template-region-html li.settings-tabs > ul > li.settings-tab-properties,
+			.layout-ui-editor > .menu-settings.menu-settings-import-template-region-html li.settings-tabs > ul > li.settings-tab-widget,
+			.layout-ui-editor > .menu-settings.menu-settings-import-template-region-html li.settings-tabs > ul > li.settings-tab-style,
+			.layout-ui-editor > .menu-settings.menu-settings-import-template-region-html li.settings-tabs > ul > li.settings-tab-events,
+			.layout-ui-editor > .menu-settings.menu-settings-import-template-region-html li.settings-tabs > ul > li.settings-tab-extra {
+			display:none;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-import-template-region-html li.settings-tabs {
+			margin-top:35px;
+		}
+		
+		.layout-ui-editor > .menu-layers .group.group-import-template-region-html > ul {
+			display:none !important;
+		}
+		
+		.show_templates_regions_html_popup {
+			width:95vw;
+			height:95vh;
+			box-sizing: border-box;
+		}
+		.show_templates_regions_html_popup iframe {
+			width:100%;
+			height:calc(100% - 60px);
+		}
+		.show_templates_regions_html_popup .button {
+			margin-top:15px;
+			text-align:center;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function ImportTemplateRegionHtmlWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-drag-stop-func": ui_creator.obj_var_name + ".menu_widgets_objs['import-template-region-html'].onDropMenuWidget",
+				});
+				
+				if (!templates_regions_html_url) {
+					alert("The 'templates_regions_html_url' variable does not exist or is empty! 'import-template-region-html' widget will be removed from the layout ui editor!");
+				    
+				    	menu_widget.remove();
+				}
+			};
+			
+			me.onDropMenuWidget = function(menu_widget, widget, event, ui) {
+				if (templates_regions_html_url) {
+					var popup = $(".show_templates_regions_html_popup");
+					var iframe = popup.children("iframe");
+					var button = popup.children(".button");
+					
+					if (!popup[0]) {
+						var url = templates_regions_html_url;
+						url += (url.indexOf("?") == -1 ? "?" : "&") + "popup=1";
+						
+						popup = $('<div class="myfancypopup with_iframe_title show_templates_regions_html_popup"><iframe src="' + url + '"></iframe><div class="button"><input type="button" value="Update" onClick="MyFancyPopup.settings.updateFunction(this)" /></div></div>');
+						$("body").append(popup);
+					
+						iframe = popup.children("iframe");
+						button = popup.children(".button");
+						
+						button.hide();
+						
+						iframe.load(function() {
+							button.show();
+						});
+					}
+					else
+						button.show();
+					
+					MyFancyPopup.init({
+						elementToShow: popup,
+						parentElement: document,
+						
+						updateFunction: function() {
+							button.hide();
+							
+							//var iframe_body = $(iframe[0].contentWindow.document.body);
+							var iframe_body = iframe.contents().find("body");
+							var li = iframe_body.find(".templates_regions_html_obj input[name='template_region']:checked").parent().closest("li");
+							
+							if (li[0]) {
+								//getting editor inside of the iframe
+								var iframe_jquery_obj = iframe[0].contentWindow.$;
+								var view_source = li.find(" > .content > .view_source");
+								var editor = iframe_jquery_obj.data(view_source[0], "editor");
+								
+								//getting html
+								var region_html = editor ? editor.getValue() : view_source.children("textarea").val();
+								
+								me.setTemplateRegionHtml(widget, region_html);
+								MyFancyPopup.hidePopup();
+							}
+							else {
+								button.show();
+								alert("Please select a region to continue...");
+							}
+						}
+					});
+					
+					MyFancyPopup.showPopup();
+				}
+			};
+			
+			me.setTemplateRegionHtml = function(widget, html) {
+				var p = widget.parent();
+				var item = $(html);
+				
+				widget.after(item);
+				widget.remove();
+				
+				if (!item.hasClass("template-widget") && !item.data("data-template-id")) {
+					ui_creator.convertHtmlElementToWidget(item);
+					ui_creator.refreshElementMenuLayer(item);
+				}
+				
+				ui_creator.refreshElementMenuLayer(widget); //resfresh of a null or non existent element, will force the ui_creator to call the prepareMenuLayers() and refresh all menu layers
+				
+				if (typeof ui_creator.options.on_template_widgets_layout_changed_func == "function")
+					ui_creator.options.on_template_widgets_layout_changed_func(widget);
+			};
+		}
+	]]></menu_js>
+</widget>

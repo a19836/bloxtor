@@ -1,0 +1,205 @@
+/* WIDGET PERMISSIONS */
+
+[data-widget-permissions]:not([data-widget-permissions-loaded]):not(.template-widget) {
+	display:none;
+}
+
+/* WIDGET SEARCH */
+
+[data-widget-search]:not(.template-widget) [data-widget-search-added-attrs-item] {
+	display:none;
+}
+
+/* WIDGET PAGINATION */
+
+[data-widget-pagination]:not(.template-widget) [data-widget-pagination-pages-numbers-item]:not([data-widget-pagination-pages-numbers-item-loaded]):not(.template-widget) {
+	display:none;
+}
+[data-widget-pagination] [data-widget-pagination-pages-numbers-item][selected] {
+	font-weight:bold;
+}
+[data-widget-pagination] [data-widget-pagination-pages-numbers-item][selected]:not(:hover) {
+	background-color:rgba(0, 0, 0, .05);
+}
+
+/* WIDGET LIST */
+
+[data-widget-list].list-responsive:not(.template-widget) { /* copied from bootstrap */
+	display:block;
+	width:100%;
+	overflow-x:auto;
+	-webkit-overflow-scrolling:touch;
+	-ms-overflow-style:-ms-autohiding-scrollbar;
+}
+[data-widget-list][data-widget-list-with-toggle-table-tree]:not(.template-widget) [data-widget-list-tree]:not(.template-widget) {
+	display:none;
+}
+/*[data-widget-list]:not(.template-widget) [data-widget-list-table]:not(.template-widget) + [data-widget-list-tree]:not(.template-widget),
+  [data-widget-list]:not(.template-widget) [data-widget-list-tree]:not(.template-widget) + [data-widget-list-table]:not(.template-widget) {
+	display:none;
+}*/
+
+[data-widget-list]:not(.template-widget) [data-widget-item-head]:not(.template-widget)[onclick] {
+	cursor:pointer;
+}
+[data-widget-list]:not(.template-widget) [data-widget-item-head]:not(.template-widget):not(.asc):not(.desc) .icon-sort-reset,
+  [data-widget-list]:not(.template-widget) [data-widget-item-head]:not(.template-widget):not(.asc) .icon-sort-asc,
+  [data-widget-list]:not(.template-widget) [data-widget-item-head]:not(.template-widget):not(.desc) .icon-sort-desc {
+	display:none;
+}
+[data-widget-list]:not(.template-widget) [data-widget-item-head]:not(.template-widget).asc .icon-sort,
+  [data-widget-list]:not(.template-widget) [data-widget-item-head]:not(.template-widget).desc .icon-sort {
+	display:none;
+}
+
+
+[data-widget-list]:not(.template-widget) [data-widget-item]:not([data-widget-item-loaded]):not(.template-widget),
+  [data-widget-list]:not(.template-widget) [data-widget-item-add]:not([data-widget-item-loaded]):not(.template-widget) {
+	display:none;
+}
+/*[data-widget-list]:not(.template-widget) [data-widget-loading] {
+	display:none;
+}*/
+[data-widget-list]:not(.template-widget) [data-widget-empty] {
+	display:none;
+}
+
+/* WIDGET ITEM */
+[data-widget-item][data-widget-with-button-toggle-inline-edit-view] [data-widget-item-attribute-field-edit], 
+  [data-widget-item][data-widget-with-button-toggle-inline-edit-view] [data-widget-item-attribute-link-edit], 
+  [data-widget-item][data-widget-with-button-toggle-inline-edit-view] [data-widget-item-button-update],
+  [data-widget-form][data-widget-with-button-toggle-inline-edit-view] [data-widget-item-attribute-field-edit], 
+  [data-widget-form][data-widget-with-button-toggle-inline-edit-view] [data-widget-item-attribute-link-edit], 
+  [data-widget-form][data-widget-with-button-toggle-inline-edit-view] [data-widget-item-button-update],
+  form[data-widget-with-button-toggle-inline-edit-view] [data-widget-item-attribute-field-edit], 
+  form[data-widget-with-button-toggle-inline-edit-view] [data-widget-item-attribute-link-edit], 
+  form[data-widget-with-button-toggle-inline-edit-view] [data-widget-item-button-update] {
+	display:none; /* If there is view and edit fields in the same column, we start by showing the view fields, hidding the edit fields un til the user clicks in the toggle button. */
+}
+
+[data-widget-form]:not(.show-add-fields) [data-widget-item-attribute-field-add],
+  [data-widget-form]:not(.show-add-fields) [data-widget-item-button-add],
+  [data-widget-form]:not(.show-add-fields) [data-widget-item-button-add-cancel],
+  form:not(.show-add-fields) [data-widget-item-attribute-field-add],
+  form:not(.show-add-fields) [data-widget-item-button-add],
+  form:not(.show-add-fields) [data-widget-item-button-add-cancel] {
+	display:none;
+}
+[data-widget-form].show-add-fields [data-widget-item-attribute-field-view],
+  [data-widget-form].show-add-fields [data-widget-item-attribute-link-view],
+  [data-widget-form].show-add-fields [data-widget-item-attribute-field-edit],
+  [data-widget-form].show-add-fields [data-widget-item-attribute-link-edit],
+  [data-widget-form].show-add-fields [data-widget-item-button-edit],
+  [data-widget-form].show-add-fields [data-widget-item-button-update],
+  [data-widget-form].show-add-fields [data-widget-item-button-remove],
+  [data-widget-form].show-add-fields [data-widget-item-button-view],
+  [data-widget-form].show-add-fields [data-widget-item-button-toggle-inline-edit-view],
+  [data-widget-form].show-add-fields [data-widget-button-add],
+  form.show-add-fields [data-widget-item-attribute-field-view],
+  form.show-add-fields [data-widget-item-attribute-link-view],
+  form.show-add-fields [data-widget-item-attribute-field-edit],
+  form.show-add-fields [data-widget-item-attribute-link-edit],
+  form.show-add-fields [data-widget-item-button-edit],
+  form.show-add-fields [data-widget-item-button-update],
+  form.show-add-fields [data-widget-item-button-remove],
+  form.show-add-fields [data-widget-item-button-view],
+  form.show-add-fields [data-widget-item-button-toggle-inline-edit-view],
+  form.show-add-fields [data-widget-button-add] {
+	display:none !important;
+}
+
+[data-widget-list]:not(.template-widget) table [data-widget-list-select-items-head],
+  [data-widget-list]:not(.template-widget) table [data-widget-item-selected-column] {
+	width:30px;
+}
+[data-widget-list-tree] [data-widget-item] [data-widget-item-selected-column],
+  [data-widget-list] ul > li[data-widget-item] [data-widget-item-selected-column] {
+	float:right;
+}
+
+[data-widget-item-attribute-field-toggle-select-input]:not(.template-widget) > :not(.template-widget):not(.show) {
+	display:none;
+}
+
+/* STATUS MESSAGE */
+
+.status_message {
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	background:rgba(0, 0, 0, .1);
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	cursor:pointer;
+	z-index:9999999999999;
+}
+.status_message_info,
+  .status_message_error {
+  	min-width:250px;
+	max-width:90vw;
+	padding:0 20px 20px;
+	border-radius:4px;
+	background:white;
+	position:relative;
+	cursor:default;
+	white-space:pre-line; /*Because of the end lines*/
+}
+.status_message_info:before,
+  .status_message_error:before {
+	margin:0 -20px 20px;
+	padding:20px;
+	display:block;
+	border-top-left-radius:4px;
+	border-top-right-radius:4px;
+	color:white;
+	font-weight:bold;
+}
+.status_message_info:before {
+	content:"Info";
+	background:green;
+}
+.status_message_error:before {
+	content:"Alert";
+	background:red;
+}
+.status_message_info .close_message,
+  .status_message_error .close_message {
+  	width:15px;
+	position:absolute;
+	top:13px;
+	right:20px;
+  	overflow:hidden;
+	color:white;
+	font-weight:bold;
+	font-size:25px;
+	opacity:.95;
+	cursor:pointer;
+}
+.status_message_info .close_message:hover,
+  .status_message_error .close_message:hover {
+	opacity:1;
+}
+.status_message_info .close_message:before,
+  .status_message_error .close_message:before {
+	content:"\00d7";
+  	margin-right:20px;
+}
+
+.status_message_error > iframe {
+	width:100%;
+	height:200px;
+	margin-top:20px;
+	display:block;
+	border:0;
+	overflow:auto;
+}
+
+@media (max-width: 250px) {
+	.status_message_info,
+	  .status_message_error {
+	  	min-width:auto;
+	}
+}

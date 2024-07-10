@@ -1,0 +1,186 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+input, 
+  textarea, 
+  select {
+	font-size:inherit;
+}
+
+/* DROPDOWN */
+.top_bar {
+	margin-bottom:20px;
+}
+
+.title {
+	text-align:center;
+	margin-bottom:20px;
+}
+
+/* SELECT OPTIONS */
+.select_options .choose_from_file_manager {
+	width:300px;
+	margin:0 auto;
+}
+.select_options .choose_from_file_manager div {
+	float:none;
+	clear:left;
+}
+.select_options .choose_from_file_manager .broker,
+   .choose_from_file_manager .db_driver,
+   .choose_from_file_manager .type,
+   .choose_from_file_manager .include_db_driver {
+	height:20px;
+}
+.select_options .choose_from_file_manager .tables {
+	min-height:20px;
+}
+.select_options .choose_from_file_manager .include_db_driver {
+	margin-top:10px;
+	padding-left:80px;
+	box-sizing:border-box;
+}
+.select_options .choose_from_file_manager .broker.single_broker {
+	display:none;
+}
+.select_options .choose_from_file_manager .broker label,
+   .select_options .choose_from_file_manager .db_driver label,
+   .select_options .choose_from_file_manager .type label,
+   .select_options .choose_from_file_manager .tables > label {
+	display:block;
+	float:left;
+	width:80px;
+	height:20px;
+	line-height:20px;
+	font-weight:normal;
+	font-style:normal;
+}
+.select_options .choose_from_file_manager .tables > label {
+	float:none;
+}
+.select_options .choose_from_file_manager .include_db_driver label {
+	font-weight:normal;
+}
+.select_options .choose_from_file_manager .broker select,
+   .select_options .choose_from_file_manager .db_driver select,
+   .select_options .choose_from_file_manager .type select {
+	display:block;
+	float:left;
+	width:200px;
+	margin-bottom:5px;
+}
+.select_options .choose_from_file_manager .tables ul {
+	width:600px;
+	display:block;
+	margin-top:5px;
+	padding-left:20px;
+	float: none;
+	clear: both;
+}
+.select_options .choose_from_file_manager .tables li label {
+	margin-left:5px;
+	font-weight:normal;
+}
+.select_options .choose_from_file_manager .tables li label > span {
+	color:blue;
+	opacity:.6;
+	cursor:pointer;
+}
+.select_options .choose_from_file_manager .tables li label > span::after {
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f303";
+	margin-left:5px;
+}
+
+.select_options .choose_from_file_manager .namespace {
+	margin-top:20px;
+}
+.select_options .choose_from_file_manager .namespace label {
+	font-weight:normal;
+}
+.select_options .choose_from_file_manager .namespace input {
+	width:200px;
+}
+
+.select_options .choose_from_file_manager .options {
+	margin:0 auto;
+	padding-top:20px;
+	width:370px;
+	clear:left;
+	float:none;
+}
+.select_options .choose_from_file_manager .overwrite {
+	float:none;
+	clear:left;
+	width:100%;
+}
+.select_options .choose_from_file_manager .overwrite input {
+	
+}
+.select_options .choose_from_file_manager .overwrite label {
+	font-size:9px;
+	font-weight:normal;
+}
+
+.select_options .choose_from_file_manager .mytree {
+	float:none;
+	clear:left;
+	min-width:300px;
+	min-height:200px;
+	margin:10px auto;
+}
+.select_options .choose_from_file_manager .mytree li > a > span {
+	color:blue;
+	cursor:pointer;
+}
+.select_options .choose_from_file_manager .mytree li > a > span::after {
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f303";
+	margin-left:5px;
+}
+.select_options .choose_from_file_manager .mytree label {
+	font-weight:normal;
+	font-style:normal;
+}
+
+/* STATUSES */
+.statuses {
+	margin-top:20px;
+}
+.statuses table {
+	width:600px;
+	margin:20px auto;
+}
+.statuses th {
+	color:#999;
+	font-size:10px;
+	height:20px;
+	line-height:20px;
+}
+.statuses th.status {
+	text-align:center;
+}
+.statuses td {
+	color:#999;
+	height:20px;
+	line-height:20px;
+}
+.statuses td.status {
+	font-weight:bold;
+	text-align:center;
+}
+.statuses td.status_ok {
+	color:#009900;
+}
+.statuses td.status_error {
+	color:#990000;
+}

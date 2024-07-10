@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sql_mapping>
+	<insert id="insert_login_control">
+		insert into sysauth_login_control (username, session_id, login_expired_time, failed_login_attempts, failed_login_time, created_date, modified_date) values ('#username#', '#session_id#', #login_expired_time#, #failed_login_attempts#, #failed_login_time#, '#created_date#', '#modified_date#')
+	</insert>
+	
+	<update id="update_login_control">
+		update sysauth_login_control set session_id='#session_id#', login_expired_time=#login_expired_time#, failed_login_attempts=#failed_login_attempts#, failed_login_time=#failed_login_time#, modified_date='#modified_date#' where username='#username#'
+	</update>
+	
+	<delete id="delete_login_control">
+		delete from sysauth_login_control where username=#username#
+	</delete>
+	
+	<delete id="delete_all_login_controls">
+		delete from sysauth_login_control
+	</delete>
+	
+	<select id="get_login_control">
+		select * from sysauth_login_control where username='#username#'
+	</select>
+	
+	<select id="get_login_control_by_session_id">
+		select * from sysauth_login_control where session_id='#session_id#'
+	</select>
+	
+	<select id="get_all_login_controls">
+		select * from sysauth_login_control
+	</select>
+</sql_mapping>

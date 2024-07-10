@@ -1,0 +1,104 @@
+/* TOP BAR */
+.top_bar.in_popup header {
+	z-index:5;
+}
+
+/* SQL AREA */
+.sql_text_area .ace_editor, .sql_text_area textarea {
+	width:100%;
+	height:100px;
+	margin:0;
+	border-top:1px inset #CCC;
+	border-bottom:1px inset #CCC;
+}
+.sql_results {
+	margin:0;
+	overflow:auto;
+}
+.sql_results.in_popup {
+	height:auto !important;
+}
+.sql_results table {
+	width:100%;
+}
+.sql_results table th {
+	font-size:10px;
+	color:#999;
+	padding:0 5px;
+}
+.sql_results table td {
+	border-top:1px solid #CCC;
+	border-right:1px solid #eee;
+	color:#333;
+	padding:0 5px;
+}
+.sql_results table td.empty {
+	padding-top:40px;
+	text-align:center;
+	color:#aaa;
+}
+.sql_results table td.message {
+	padding-top:20px;
+	text-align:center;
+}
+.sql_results table td.message.success {
+	color:#198754;
+}
+.sql_results table td.message.error {
+	color:#dc3545;
+}
+.sql_results table td.empty.error:before {
+	content:"Error: ";
+}
+.sql_results .dataTables_length, .sql_results .dataTables_filter, .sql_results .dataTables_info, .sql_results .dataTables_paginate {
+	height:20px;
+	line-height:20px;
+	color:#555;
+	font-size:10px;
+	margin-left:5px;
+	margin-right:5px;
+}
+.sql_results .dataTables_length label, .sql_results .dataTables_filter label {
+	color:#555;
+	font-weight:normal;
+}
+.sql_results .dataTables_length select, .sql_results .dataTables_filter input {
+	background-color:#FFF;
+	color:#555;
+	font-size:10px;
+}
+.sql_results .dataTables_length select {
+	text-align:center;
+}
+.sql_results .dataTables_filter input {
+	width:200px;
+}
+.sql_results table.dataTable.compact thead th, .sql_results table.dataTable.compact thead td {
+	padding-top:0;
+	padding-bottom:0;
+	padding-right:20px;
+}
+.sql_results table.dataTable thead .sorting {
+	background:url("../../common/vendor/jquerydatatables/media/images/sort_both_dark.png") no-repeat scroll right center;
+}
+.sql_results .dataTables_wrapper .dataTables_info {
+	padding-top:4px;
+}
+.sql_results .dataTables_scrollBody {
+	/*overflow-x:hidden !important;*/
+}
+.sql_results table.dataTable.compact tbody {
+	font-size:10px;
+}
+.sql_results table.dataTable.compact tbody th, .sql_results table.dataTable.compact tbody td {
+	padding-top:0;
+	padding-bottom:0;
+}
+.sql_results .dataTables_wrapper .dataTables_paginate .paginate_button {
+	padding:0px 2px;
+}
+.sql_results .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+	background:linear-gradient(to bottom, #fff 0%, #dcdcdc 100%) repeat scroll 0 0;
+	border:1px solid #cacaca;
+	color:#333 !important;
+}

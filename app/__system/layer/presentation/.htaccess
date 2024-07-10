@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+  
+   #RewriteCond %{HTTP_HOST}  ^host1.*  [OR,NC]
+   #RewriteCond %{HTTP_HOST}  ^host2.*  [OR,NC]
+   #RewriteCond %{HTTP_HOST}  localhost [NC]
+   RewriteRule ^$ phpframework/webroot/ [L,NC]
+   
+   #RewriteCond %{HTTP_HOST} localhost [NC]
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteRule (.*) phpframework/webroot/$1 [L,NC]
+   
+   #RewriteCond %{HTTP_HOST} test2.com [NC]
+   #RewriteCond %{REQUEST_FILENAME} !-d
+   #RewriteCond %{REQUEST_FILENAME} !-f
+   #RewriteRule (.*) test2/webroot/$1 [L,NC]
+</IfModule>

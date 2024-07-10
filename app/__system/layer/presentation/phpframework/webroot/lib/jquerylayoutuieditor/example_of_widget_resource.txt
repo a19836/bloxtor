@@ -1,0 +1,968 @@
+
+*** NOTES ***
+- There are 2 types of resources:
+	* Native resources: which are resources loaded in the server side via PHP. Basically each entity will have a new setting called "resources" that will be loaded when the page is executed (in the server side). 
+		Then, in all regions-blocks' HTML, the system should search for tags like "#resource_name[attribute name][...]#" and then replace them with the correspondent loaded resources' attributes. 
+		The system should only replace the tags for the loaded resources. All the other tags should be left alone, because will be loaded dynamically in javascript when the "Widget Resources" get loaded.
+		These resources can be Business_logic, data_access rule, util function, other function, object method, array, string/value, variable, rest connector, etc... => same options than in the Form Module.
+	* Widgets resources: which are resources loaded in the browser side via Javascript. Basically the browser will search for html elements with the attribute "data-widget-resources" and then load these resources by executing the function "data-widget-resources-load".
+
+*** PROPERTIES ***
+	data-widget-resources properties: json object or simple values, like:
+		"native resource name",
+		["native resource name x", "native resource name y"],
+		id/key: "native resource name", //nome da variável do resource nativo correspondente.
+		id/key: ["native resource name x", "native resource name y"], //lista sequencial com nomes da variáveis de resources nativos.
+		id/key: {
+			name: resource var name from server side
+			type (optional): native (default)|url
+			value (optional if type==native): If type==url: full url to execute ajax request
+			method (optional): GET or POST
+			validate (optional): function to validate ajax request response
+		}
+		id/key: [
+			"native resource name x",
+			{value: "native resource name y", ...},
+			{...}
+		]
+		
+		Note that the data-widget-resources could be an array too with multiple json objects. In this case the system will load multiple resources... The resources can be dependent from each-other, where I can have a second resource that is based from some attribute of the first resource. In this case, the resources must be loaded synchronously, otherwise they can be loaded assynchronously and all at once.
+	
+	Widget permissions (data-widget-permissions): json object or simple values, like:
+		user_type_id,
+		[user_type_id_x, user_type_id_y],
+		user_type_ids:
+			user_type_id,
+			[user_type_id_x, user_type_id_y],
+		access/view/show/hide/remove: user_type_id,
+		access/view/show/hide/remove: [user_type_id_x, user_type_id_y],
+		access/view/show/hide/remove:
+			resources: 
+				resource_name,
+				[resource_name, resource_name],
+				{name: xxx, ...}
+			user_type_ids:
+				user_type_id,
+				[user_type_id_x, user_type_id_y],
+		
+		example:
+			access/view: [...],
+			hide: [...],
+			remove: [...],
+		
+		Note that the php should parse the html nodes before it sends to the browser and remove all nodes which have the "remove" permission and set display=none to the ones with permission "hide". Do this in the controler "index.php" and "page.php".
+		
+	Widget search properties (data-widget-props for search):
+		dependent_widgets_id: ['table_elm_id_1', 'table_elm_id_2']
+		
+		Settings UI:
+			button "add input search field". (Shows or hides data-widget-search-input)
+			button "add select search field". (Shows or hides data-widget-search-select)
+			button "add user choice based in attributes". (Shows or hides data-widget-search-multiple. Shows an UI to choose what attributes should be available)
+
+	Widget pagination properties (data-widget-props for pagination):
+		Load: MyWidgetResourceLib.PaginationHandler.loadPaginationResource
+		dependent_widgets_id: ['table_elm_id_1', 'table_elm_id_2']
+		number of pages
+		other properties of pagination like: theme and others. (Note that the items_limit_per_page will be got from the list properties.)
+	
+	Widget pagination resource (data-widget-resources for pagination):
+		resource to get the total of records of a list
+		
+	data-widget-pagination-go-to-page-dropdown properties:
+		Load: (optional - default: MyWidgetResourceLib.PaginationHandler.loadDropdownPages)
+		get: (optional - default: MyWidgetResourceLib.PaginationHandler.getDropdownSelectedPageNumber)
+		set: (default: MyWidgetResourceLib.PaginationHandler.setDropdownSelectedPageNumber)
+	
+	Widget list properties (data-widget-props for list):
+		Load: MyWidgetResourceLib.TableHandler.loadListTableAndTreeResource
+		dependent_widgets_id: ['top_pagination_elm_id_1', 'bottom_pagination_elm_id_2'] //optional, this is only an example, if applies...
+		empty_message: "There are no items available" (only show this property if selector item: "[data-widget-empty]" does not exist)
+		loading_message: "Loading items..." (only show this property if selector item: "[data-widget-loading]" does not exist)
+		items_limit_per_page: 100 //records limit per page
+		starting_page_number: 0
+		pks_attrs_names (ul/li list): names of table's attributes that are PKs. (in array or string comma delimiter)
+		with widgets (select): table|tree|both. 
+			if "table" is choosen, then add html element with data-widget-list-table and remove data-widget-list-tree.
+			if "tree" is choosen, then add html element with data-widget-list-tree and remove data-widget-list-table.
+			if "both" is choosen, then add or remove html elements with data-widget-button-toggle-between-widgets.
+		with add action
+			button type (select): none|button
+				if none: remove html elements with data-widget-button-add, data-widget-button-add and data-widget-item-button-add and data-widget-item-button-add-cancel.
+				if button: add html elements with data-widget-button-add and data-widget-item-button-add and data-widget-item-button-add-cancel (according with "fields type" below) and remove data-widget-button-add.
+			panel type: (select): popup|inline (only be active if "button type" select is button)
+				if popup: remove data-widget-item-button-add and data-widget-item-button-add-cancel.
+				if inline: add html elements with data-widget-item-button-add and data-widget-item-button-add-cancel.
+			
+			addable permissions: ...
+		viewable details (checkbox): yes|no. Add or remove all html elements which are "data-widget-item-attribute-field-view".
+		editable (select): none|inline|link|button
+			if none: remove html elements with data-widget-item-attribute-link-edit, data-widget-item-attribute-link-edit, data-widget-item-attribute-field-edit.
+			if inline: allows users to edit inside of the row. Add or remove all html elements which are "data-widget-item-attribute-field-edit".
+				with auto_save (checkbox): add or remove the onBlur, onKeyUp and onChange events.
+				with save button (checkbox): add or remove a save button at the end of row. Add or remove all html elements which are "data-widget-item-button-update".
+			if link: allows users to click the values and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit". If yes, the data-widget-popup-edit popup is added, otherwise remove it.
+				with edit button (checkbox): allows users to click the button and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit".
+			if button: allows users to click the button and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit". If yes, the data-widget-popup-edit popup is added, otherwise remove it.
+			
+			editable permissions: ...
+		toggle between edit and view fields (checkbox): If "viewable details" and "editable" options are selected, then show this option, which will add or remove html elements with data-widget-item-button-toggle-inline-edit-view.	
+		removable button (checkbox): yes|no. Add or remove all html elements which are "data-widget-item-button-remove".
+			removable permissions: ...
+		multiple items actions (checkbox): yes|no. Add or remove all html elements which are "data-widget-list-select-items-checkbox", "data-widget-list-item-selected-checkbox"
+		
+	Widget list resource (data-widget-resources for list):
+		get resource name (string): contains the name of the resource to loop through it and create the list's items. This is the primary resource for the list.
+		save resource row data url: contains the url to save a resource via ajax.
+		remove resource row data url: contains the url to remove a resource via ajax.
+
+	Widget popup properties (data-widget-props for popup):
+		Load: MyWidgetResourceLib.PopupHandler.loadPopupResource
+		dependent_widgets_id: ['form_elm_id_1'] or null in case of popup: "data-widget-popup data-widget-popup-view"
+		show: handler
+		hide: handler
+
+	Widget form properties (data-widget-props for form):
+		Load: MyWidgetResourceLib.FormHandler.loadFormResource (in case of edit form popup. The Add form popup will not have any handler.)
+		dependent_widgets_id: null
+		
+	Widget form resource (data-widget-resources for form):
+		edit form 
+			data-widget-resources:
+				get resource row data url
+				save resource row data url
+				remove resource row data url
+		
+		add form 
+			data-widget-resources:
+				insert resource row data url
+	
+	data-widget-group-list properties (data-widget-props for group):
+		Settings UI:
+			db_broker (select): db broker of the resource dragged.
+			db_driver (select): db driver of the resource dragged.
+			db_type (select): db type of the resource dragged.
+			db_table (select): table name of the resource dragged.
+			db_attributes (ul/li list): list with attributes name that the user selected. By default all table's attributes are selected.
+			
+			with search panel (checkbox): add or remove html elements with data-widget-search.
+			with short actions panel (checkbox): add or remove html elements with data-widget-short-actions.
+			with top pagination panel (checkbox): add or remove html elements with data-widget-pagination before the widget data-widget-list.
+			list panel:
+				with widgets (select): table|tree|both. 
+					if "table" is choosen, then add html element with data-widget-list-table and remove data-widget-list-tree.
+					if "tree" is choosen, then add html element with data-widget-list-tree and remove data-widget-list-table.
+					if "both" is choosen, then add or remove html elements with data-widget-button-toggle-between-widgets.
+				with add action
+					button type (select): none|button
+						if none: remove html elements with data-widget-button-add, data-widget-button-add and data-widget-item-button-add and data-widget-item-button-add-cancel.
+						if button: add html elements with data-widget-button-add and data-widget-item-button-add and data-widget-item-button-add-cancel (according with "fields type" below) and remove data-widget-button-add.
+					panel type: (select): popup|inline (only be active if "button type" select is button)
+						if popup: remove data-widget-item-button-add and data-widget-item-button-add-cancel.
+						if inline: add html elements with data-widget-item-button-add and data-widget-item-button-add-cancel.
+							
+					addable permissions: ...
+				viewable details: add or remove html elements with data-widget-item-attribute-link-view, data-widget-item-attribute-link-view.
+					if yes, the data-widget-popup-view popup is added, otherwise remove it.
+					
+					viewable permissions: ...
+				editable (select): none|inline|link|button
+					if none: remove html elements with data-widget-item-attribute-link-edit, data-widget-item-attribute-link-edit, data-widget-item-attribute-field-edit.
+					if inline: allows users to edit inside of the row. Add or remove all html elements which are "data-widget-item-attribute-field-edit".
+						with auto_save (checkbox): add or remove the onBlur, onKeyUp and onChange events.
+						with save button (checkbox): add or remove a save button at the end of row. Add or remove all html elements which are "data-widget-item-button-update".
+					if link: allows users to click the values and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit". If yes, the data-widget-popup-edit popup is added, otherwise remove it.
+						with edit button (checkbox): allows users to click the button and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit".
+					if button: allows users to click the button and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit". If yes, the data-widget-popup-edit popup is added, otherwise remove it.
+					
+					editable permissions: ...
+				toggle between edit and view fields (checkbox): If "viewable details" and "editable" options are selected, then show this option, which will add or remove html elements with data-widget-item-button-toggle-inline-edit-view.	
+				removable button (checkbox): yes|no. Add or remove all html elements which are "data-widget-item-button-remove".
+					removable permissions: ...
+				multiple items remove (checkbox): yes|no. Add or remove all html elements which are "data-widget-list-select-items-checkbox", "data-widget-list-item-selected-checkbox" and "data-widget-button-multiple-remove" (if empty).
+				multiple items save (checkbox): yes|no. Add or remove all html elements which are "data-widget-list-select-items-checkbox", "data-widget-list-item-selected-checkbox" and "data-widget-button-multiple-save" (if empty).
+			with bottom pagination panel (checkbox): add or remove html elements with data-widget-pagination after the widget data-widget-list.
+			
+			user permissions - para serem usadas nas permissions dos widgets (data-widget-permissions):
+				view/access: [user_type_id, ...]: for data-widget-group-list. The value for this permission is ALL USERS (by default)
+				add: [user_type_id, ...]: for add buttons and correspondent popups
+				edit: [user_type_id, ...]: for edit/update buttons and correspondent popups
+				remove: [user_type_id, ...]: for remove/delete buttons and correspondent popups
+				
+				The "user permissions" for each type are detected by checking the data-widget-permissions of the correspondent widgets. Some permissions have multiple widgets, so if there are 2 widgets for the same permission type, but with different user configurations/permissions, then we should choose one widget to show and show a warning message too, bc any change will be done in both widgets.
+			
+	data-widget-button-multiple-remove & data-widget-button-multiple-save properties (data-widget-props for button):
+		dependent_widgets_id: ['table_elm_id_1']
+		empty_message: 'No selected elements...'
+	
+	Widget select properties (data-widget-props for select box):
+		Load: MyWidgetResourceLib.FieldHandler.loadFieldResource
+		load_resource_type: replace|append|prepend
+	
+	Widget input properties (data-widget-props for input box):
+		Load: MyWidgetResourceLib.FieldHandler.loadFieldResource (Basic this load a resource and if the input has the "data-widget-resource-value" attribute, then loads the correspondent value to the input box. Note that the input must hv the "data-widget-resources-load" attribute too.)
+	
+	data-widget-button-toggle-between-widgets properties:
+		dependent_widgets_id: ['table_elm_id_1']
+	
+	data-widget-form properties (data-widget-props for group):
+		pks_attrs_names (ul/li list): names of table's attributes that are PKs. (in array or string comma delimiter)
+		viewable details (checkbox): add or remove html elements with data-widget-item-attribute-field-view.
+			viewable permissions: ...
+		with add action (checkbox): add or remove html elements with data-widget-item-button-add and data-widget-item-attribute-field-edit (if is not editable).
+			add permissions: ...
+		editable (checkbox): add or remove html elements with data-widget-item-button-update and data-widget-item-attribute-field-edit (if is not with add action).
+			editable permissions: ...
+		removable (checkbox): add or remove html elements with data-widget-item-button-remove.
+			removable permissions: ...
+	
+	data-widget-group-form properties (data-widget-props for group):
+		Settings UI:
+			db_broker (select): db broker of the resource dragged.
+			db_driver (select): db driver of the resource dragged.
+			db_type (select): db type of the resource dragged.
+			db_table (select): table name of the resource dragged.
+			db_attributes (ul/li list): list with attributes name that the user selected. By default all table's attributes are selected.
+			
+			viewable details (checkbox): add or remove html elements with data-widget-item-attribute-field-view.
+				viewable permissions: ...
+			with add action (checkbox): add or remove html elements with data-widget-item-button-add and data-widget-item-attribute-field-edit (if is not editable).
+				add permissions: ...
+			editable (checkbox): add or remove html elements with data-widget-item-button-update and data-widget-item-attribute-field-edit (if is not with add action).
+				editable permissions: ...
+			removable (checkbox): add or remove html elements with data-widget-item-button-remove.
+				removable permissions: ...
+	
+*** XXX - MENU SETTINGS *** data-widget-xxx
+	--Properties--
+		...
+
+	--Widget--
+	--Widget - Resources - Load Resource--
+		Info: ...
+		Resources: + (plus icon to add new items below)
+			item:
+				type: select (native|url)
+					if type == native
+						resource name: input/select & switch_icon (This button is to switch between input and select. The select contains the resources name already defined.)
+						remove icon
+					else //if type == url
+						resource name: input (the name where we will save the result from the url response)
+						value: input (url to execute ajax request)
+						remove icon
+				method: select (GET|POST)
+				data_type: select (json|xml|text)
+				Parse js callback: input (title="callback to parse the response")
+				Validate js callback: input (title="callback to validate the response")
+				Success js callback: input (title="callback on success validation")
+				Error js callback: input (title="callback on error")
+				Success message: input (PlaceHolder="Executed successfully!")
+				Error message: input (PlaceHolder="Error: executed unsuccessfully. Please try again...")
+			...
+		...
+	--Widget - Display Resource Attribute--
+		Info: display an attribute from a loaded the resource
+		Resource Name: input/select & switch_icon (This button is to switch between input and select. The select contains the resources name already defined.) (placeHolder|title="Empty to get the parent resource if apply")
+		Resource Attribute: input & edit_icon (edit_icon will show a popup to define the resource attribute name)
+		index: input (placeHolder="empty for automatic index or a numeric value")
+		replacement type: select (replace|append|prepend)
+		default: input (title="Default value on empty")
+		available_values: + (plus icon to add new items below)
+			item:
+				type: select (static|dynamic)
+					if type == static
+						+ (plus icon to add new items below)
+						key/value pair: input & input & remove_icon
+						...
+					else //if type == dynamic
+						type: select (native|url)
+							if type == native
+								resource name: input/select & switch_icon (This button is to switch between input and select. The select contains the resources name already defined.)
+							else //if type == url
+								resource name: input (the name where we will save the result from the url response)
+								value: input (url to execute ajax request)
+						method: select (GET|POST)
+						data_type: select (json|xml|text)
+						Parse js callback: input (title="callback to parse the response")
+						Validate js callback: input (title="callback to validate the response")
+						Success js callback: input (title="callback on success validation")
+						Error js callback: input (title="callback on error")
+						Success message: input (PlaceHolder="Executed successfully!")
+						Error message: input (PlaceHolder="Error: executed unsuccessfully. Please try again...")
+			...
+	--Widget - Dependencies--
+		dependent_widgets_id: +
+			widget id: input/select & switch_icon & remove_icon (This button is to switch between input and select. The select contains the widgets ids already defined in the html.)
+			...
+	--Widget - Permissions--
+		show if (there is a valid resource, if any defined, and a logged user):
+			valid resource: +
+				resource_name: input
+				or resource_name: input
+				...
+			user is: +
+				user_type_id: select & remove_icon (value "0": for public users)
+				or user_type_id: 
+				...
+		hide if (there is a valid resource, if any defined, and a logged user):
+			valid resource: +
+				...
+			user is: +
+				user_type: select & remove_icon (value "0": for public users)
+				...
+		remove if (there is a valid resource, if any defined, and a logged user):
+			valid resource: +
+				...
+			user is: +
+				user_type: select & remove_icon (value "0": for public users)
+				...
+	--Widget - foo--
+	...
+
+*** GROUP LIST - MENU SETTINGS *** data-widget-group-list
+	--Widget--
+	--Widget - Properties--
+		(Info: Note that any change in these properties will take imediate effect in the inner html and correspodnent objects, overwriting any previous changes...)
+		
+		is widget group list (checkbox): add or remove data-widget-group-list
+		
+		db_broker (select): db broker of the resource dragged.
+		db_driver (select): db driver of the resource dragged.
+		db_type (select): db type of the resource dragged.
+		db_table (select): table name of the resource dragged.
+		db_attributes (ul/li list): list with attributes name that the user selected. By default all table's attributes are selected.
+		
+		with search panel (checkbox): add or remove html elements with data-widget-search.
+		with short actions panel (checkbox): add or remove html elements with data-widget-short-actions.
+		with top pagination panel (checkbox): add or remove html elements with data-widget-pagination before the widget data-widget-list.
+		list panel:
+			with widgets (select): table|tree|both. 
+				if "table" is choosen, then add html element with data-widget-list-table and remove data-widget-list-tree.
+				if "tree" is choosen, then add html element with data-widget-list-tree and remove data-widget-list-table.
+				if "both" is choosen, then add or remove html elements with data-widget-button-toggle-between-widgets.
+			with add action
+				button type (select): none|button
+					if none: remove html elements with data-widget-button-add, data-widget-button-add and data-widget-item-button-add and data-widget-item-button-add-cancel.
+					if button: add html elements with data-widget-button-add and data-widget-item-button-add and data-widget-item-button-add-cancel (according with "fields type" below) and remove data-widget-button-add.
+				panel type: (select): popup|inline (only be active if "button type" select is button|link)
+					if popup: remove data-widget-item-button-add and data-widget-item-button-add-cancel.
+					if inline: add html elements with data-widget-item-button-add and data-widget-item-button-add-cancel.
+				
+				addable permissions: ...
+			viewable details: add or remove html elements with data-widget-item-attribute-link-view, data-widget-item-attribute-link-view.
+				if yes, the data-widget-popup-view popup is added, otherwise remove it.
+				
+				viewable permissions: ...
+			editable (select): none|inline|link|button
+				if none: remove html elements with data-widget-item-attribute-link-edit, data-widget-item-attribute-link-edit, data-widget-item-attribute-field-edit.
+				if inline: allows users to edit inside of the row. Add or remove all html elements which are "data-widget-item-attribute-field-edit".
+					with auto_save (checkbox): add or remove the onBlur, onKeyUp and onChange events.
+					with save button (checkbox): add or remove a save button at the end of row. Add or remove all html elements which are "data-widget-item-button-update".
+				if link: allows users to click the values and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit". If yes, the data-widget-popup-edit popup is added, otherwise remove it.
+					with edit button (checkbox): allows users to click the button and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit".
+				if button: allows users to click the button and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit". If yes, the data-widget-popup-edit popup is added, otherwise remove it.
+				
+				editable permissions: ...
+			toggle between edit and view fields (checkbox): If "viewable details" and "editable" options are selected, then show this option, which will add or remove html elements with data-widget-item-button-toggle-inline-edit-view.	
+			removable button (checkbox): yes|no. Add or remove all html elements which are "data-widget-item-button-remove".
+				removable permissions: ...
+			multiple items remove (checkbox): yes|no. Add or remove all html elements which are "data-widget-list-select-items-checkbox", "data-widget-list-item-selected-checkbox" and "data-widget-button-multiple-remove" (if empty).
+			multiple items save (checkbox): yes|no. Add or remove all html elements which are "data-widget-list-select-items-checkbox", "data-widget-list-item-selected-checkbox" and "data-widget-button-multiple-save" (if empty).
+		with bottom pagination panel (checkbox): add or remove html elements with data-widget-pagination after the widget data-widget-list.
+	
+	data-widget-props:
+		same properties above...
+		
+*** GROUP FORM - MENU SETTINGS *** data-widget-group-form
+	--Widget--
+	--Widget - Properties--
+		(Info: Note that any change in these properties will take imediate effect in the inner html and correspodnent objects, overwriting any previous changes...)
+		
+		is widget group form (checkbox): add or remove data-widget-group-form
+		
+		db_broker (select): db broker of the resource dragged.
+		db_driver (select): db driver of the resource dragged.
+		db_type (select): db type of the resource dragged.
+		db_table (select): table name of the resource dragged.
+		db_attributes (ul/li list): list with attributes name that the user selected. By default all table's attributes are selected.
+		
+		viewable details (checkbox): add or remove html elements with data-widget-item-attribute-field-view.
+			viewable permissions: ...
+		with add action (checkbox): add or remove html elements with data-widget-item-button-add and data-widget-item-attribute-field-edit (if is not editable).
+			add permissions: ...
+		editable (checkbox): add or remove html elements with data-widget-item-button-update and data-widget-item-attribute-field-edit (if is not with add action).
+			editable permissions: ...
+		removable (checkbox): add or remove html elements with data-widget-item-button-remove.
+			removable permissions: ...
+	
+	data-widget-props:
+		same properties above...
+	
+*** Search - MENU SETTINGS *** data-widget-search
+	--Widget--
+	--Widget - Properties--
+		is widget search (checkbox): add or remove data-widget-search
+		
+		button "add input search field". (Shows or hides data-widget-search-input)
+		button "add select search field". (Shows or hides data-widget-search-select)
+		button "add user choice based in attributes". (Shows or hides data-widget-search-multiple. Shows an UI to choose what attributes should be available)
+		
+		attrs: +
+			input: 'name'
+			input: 'description'
+			input: 'xxx'
+		type: select (contains|starts_with|ends_with)
+		operator: select (or|and)
+	--Widget - Dependencies--
+	--Widget - Permissions--
+		
+	data-widget-props:
+		dependent_widgets_id
+		all properties above
+
+*** Search Input and Select - MENU SETTINGS *** data-widget-search-input and data-widget-search-select
+	--Widget--
+	--Widget - Properties--
+		attrs: +
+			input: 'name'
+			input: 'description'
+			input: 'xxx'
+		type: select (contains|starts_with|ends_with)
+		operator: select (or|and)
+	--Widget - Dependencies--
+	--Widget - Permissions--
+		
+	data-widget-props:
+		dependent_widgets_id
+		all properties above
+
+	Note that in the case of data-widget-search-select we will have the widgets resources like it shows in the section "*** Select box - MENU SETTINGS ***".
+
+*** Search Multiple Button - MENU SETTINGS *** data-widget-search-multiple-button
+	--Widget--
+	--Widget - Properties--
+		type: select (contains|starts_with|ends_with)
+		operator: select (or|and)
+	--Widget - Dependencies--
+	--Widget - Permissions--
+		
+	data-widget-props:
+		dependent_widgets_id
+		all properties above
+
+*** Short actions (Multiple Button) - MENU SETTINGS *** data-widget-button-multiple-remove & data-widget-button-multiple-save
+	--Widget--
+	--Widget - Resources--
+	--Widget - Resources - Load Resource--
+	--Widget - Resources - Save Resource--
+	--Widget - Resources - Remove Resource--
+		Info: set the resource(s) to execute action based on the selected items from the dependent widgets
+		Resources: + (plus icon to add new items below)
+			... (same than others)
+		Complete js callback: input (title="callback after execute all resources")
+	--Widget - Display Resource Attribute--
+	--Widget - Properties--
+		empty_message: input (placeHolder="No selected elements...")
+	--Widget - Dependencies--
+	--Widget - Permissions--
+	
+	data-widget-props:
+		dependent_widgets_id
+		complete: {
+			load: complete js callback,
+			save: complete js callback, //if data-widget-button-multiple-save
+			remove: complete js callback //if data-widget-button-multiple-remove
+		}
+		empty_message: input
+		
+	data-widget-resources:
+		resource settings
+		or [resource settings, resource settings]
+		or {execute: resource settings...}
+		or {execute: [resource settings, resource settings]}
+
+*** Pagination - MENU SETTINGS *** data-widget-pagination
+	--Widget--
+	--Widget - Resources--
+	--Widget - Resources - Load Resource--
+		Info: set the resource(s) to get the total records number
+		Load js handler: input (mandatory) (title="start function to execute the load resources and create the correspondent html")
+		Resources: + (plus icon to add new items below)
+				... (same than others)
+		complete js callback: input (title="callback after execute all resources")
+	--Widget - Properties--
+		is widget pagination (checkbox): add or remove data-widget-pagination
+		
+		number of pages to show at once: input
+	--Widget - Dependencies--
+	--Widget - Permissions--
+
+	data-widget-props:
+		dependent_widgets_id
+		load: Load js handler => MyWidgetResourceLib.PaginationHandler.loadPaginationResource
+		complete: complete js callback
+		dependent_widgets_id
+		number of pages
+		
+	data-widget-resources:
+		resource settings
+		or [resource settings, resource settings]
+		or {load: resource settings...}
+		or {load: [resource settings, resource settings]}
+
+*** Pagination Dropdown - MENU SETTINGS *** data-widget-pagination-go-to-page-dropdown
+	--Widget--
+	--Widget - Display Resource Attribute--
+	--Widget - Properties--
+		load js handler: (optional - default: MyWidgetResourceLib.PaginationHandler.loadDropdownPages)
+		get js handler: (optional - default: MyWidgetResourceLib.PaginationHandler.getDropdownSelectedPageNumber)
+		set js handler: (default: MyWidgetResourceLib.PaginationHandler.setDropdownSelectedPageNumber)
+	--Widget - Dependencies--
+	--Widget - Permissions--
+
+	data-widget-props:
+		dependent_widgets_id
+		load: Load js handler => MyWidgetResourceLib.PaginationHandler.loadDropdownPages
+		get: get js handler => MyWidgetResourceLib.PaginationHandler.getDropdownSelectedPageNumber
+		set: set js handler => MyWidgetResourceLib.PaginationHandler.setDropdownSelectedPageNumber
+
+*** Pagination Page Item - MENU SETTINGS *** data-widget-pagination-pages-numbers-item
+	--Widget--
+	--Widget - Display Resource Attribute--
+	--Widget - Properties--
+		load js handler: (optional - default: MyWidgetResourceLib.PaginationHandler.loadItemPage)
+	--Widget - Dependencies--
+	--Widget - Permissions--
+
+	data-widget-props:
+		dependent_widgets_id
+		load: Load js handler => MyWidgetResourceLib.PaginationHandler.loadItemPage
+
+*** List (Table/Tree) - MENU SETTINGS *** data-widget-list
+	--Widget--
+	--Widget - Resources--
+	--Widget - Resources - Load Resource--
+		Info: set the resource(s) to load data into widget
+		Load js handler: input (mandatory) (title="start function to execute the load resources and create the correspondent html")
+		Resources: + (plus icon to add new items below)
+			... (same than others)
+		Complete js callback: input (title="callback after execute all resources")
+	--Widget - Resources - Add Resource--
+	--Widget - Resources - Update Resource--
+	--Widget - Resources - Update Attribute Resource--
+	--Widget - Resources - Remove Resource--
+		Info: set the resource(s) to add, update, update attribute or remove data from widget
+		Resources: + (plus icon to add new items below)
+				... (same than others)
+		complete js callback: input (title="callback after execute all resources")
+	--Widget - Properties--
+		is widget list (checkbox): add or remove data-widget-list
+		
+		empty_message (input): "There are no items available" (only show this property if selector item: "[data-widget-empty]" does not exist)
+		loading_message (input): "Loading items..." (only show this property if selector item: "[data-widget-loading]" does not exist)
+		items_limit_per_page (input): 100 //records limit per page
+		starting_page_number (input): 0
+		pks_attrs_names (ul/li list): + icon (names of table's attributes that are PKs. (in array or string comma delimiter))
+			input
+			...
+		with widgets (select): table|tree|both. 
+			if "table" is choosen, then add html element with data-widget-list-table and remove data-widget-list-tree.
+			if "tree" is choosen, then add html element with data-widget-list-tree and remove data-widget-list-table.
+			if "both" is choosen, then add or remove html elements with data-widget-button-toggle-between-widgets.
+		with add action
+			button type (select): none|button
+				if none: remove html elements with data-widget-button-add, data-widget-button-add and data-widget-item-button-add and data-widget-item-button-add-cancel.
+				if button: add html elements with data-widget-button-add and data-widget-item-button-add and data-widget-item-button-add-cancel (according with "fields type" below) and remove data-widget-button-add.
+			panel type: (select): popup|inline (only be active if "button type" select is button)
+				if popup: remove data-widget-item-button-add and data-widget-item-button-add-cancel.
+				if inline: add html elements with data-widget-item-button-add and data-widget-item-button-add-cancel.
+			
+			addable permissions: ...
+		viewable details (checkbox): yes|no. Add or remove all html elements which are "data-widget-item-attribute-field-view".
+			viewable permissions: ...
+		editable (select): none|inline|link|button
+			if none: remove html elements with data-widget-item-attribute-link-edit, data-widget-item-attribute-link-edit, data-widget-item-attribute-field-edit.
+			if inline: allows users to edit inside of the row. Add or remove all html elements which are "data-widget-item-attribute-field-edit".
+				with auto_save (checkbox): add or remove the onBlur, onKeyUp and onChange events.
+				with save button (checkbox): add or remove a save button at the end of row. Add or remove all html elements which are "data-widget-item-button-update".
+			if link: allows users to click the values and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit". If yes, the data-widget-popup-edit popup is added, otherwise remove it.
+				with edit button (checkbox): allows users to click the button and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit".
+			if button: allows users to click the button and open a popup form to edit that element. Add or remove all html elements which are "data-widget-item-attribute-link-edit". If yes, the data-widget-popup-edit popup is added, otherwise remove it.
+			
+			editable permissions: ...
+		toggle between edit and view fields (checkbox): If "viewable details" and "editable" options are selected, then show this option, which will add or remove html elements with data-widget-item-button-toggle-inline-edit-view.	
+		removable button (checkbox): yes|no. Add or remove all html elements which are "data-widget-item-button-remove".
+			removable permissions: ...
+		multiple items actions (checkbox): yes|no. Add or remove all html elements which are "data-widget-list-select-items-checkbox", "data-widget-list-item-selected-checkbox"
+	--Widget - Dependencies--
+	--Widget - Permissions--
+	
+	data-widget-props:
+		dependent_widgets_id
+		load: load js handler => MyWidgetResourceLib.ListHandler.loadListTableAndTreeResource
+		complete: {
+			load: complete js callback,
+			add: complete js callback, => MyWidgetResourceLib.ListHandler.onAddListResourceItemSuccess
+			update: complete js callback,
+			update_attribute: complete js callback,
+			remove: complete js callback,
+		}
+		...all other properties above...
+		
+	data-widget-resources:
+		{load: resource settings, add: resource settings, update: [resource settings, resource settings], update_attribute: ..., remove...}
+
+*** Popup - MENU SETTINGS *** data-widget-popup
+	--Widget--
+	--Widget - Properties--
+		is widget popup (checkbox): add or remove data-widget-popup
+		
+		show js handler
+		hide js handler
+	--Widget - Dependencies--
+	--Widget - Permissions--
+
+	data-widget-props:
+		dependent_widgets_id
+		load: load js handler => MyWidgetResourceLib.PopupHandler.loadPopupResource
+		show (optional): show js handler
+		hide (optional): hide js handler
+
+*** Form - MENU SETTINGS *** data-widget-form
+	--Widget--
+	--Widget - Resources--
+	--Widget - Resources - Load Resource--
+		is widget form (checkbox): add or remove data-widget-form
+		
+		Info: set the resource(s) to load data into widget
+		Load js handler: input (mandatory) (title="start function to execute the load resources and create the correspondent html")
+		Resources: + (plus icon to add new items below)
+			... (same than others)
+		Complete js callback: input (title="callback after execute all resources")
+	--Widget - Resources - Add Resource--
+	--Widget - Resources - Update Resource--
+	--Widget - Resources - Update Attribute Resource--
+	--Widget - Resources - Remove Resource--
+		Info: set the resource(s) to add, update, update attribute or remove data from widget
+		Resources: + (plus icon to add new items below)
+				... (same than others)
+		complete js callback: input (title="callback after execute all resources")
+	--Widget - Properties--
+		pks_attrs_names (ul/li list): + icon (names of table's attributes that are PKs. (in array or string comma delimiter))
+			input
+			...
+		viewable details (checkbox): add or remove html elements with data-widget-item-attribute-field-view.
+			viewable permissions: ...
+		with add action (checkbox): add or remove html elements with data-widget-item-button-add and data-widget-item-attribute-field-edit (if is not editable).
+			add permissions: ...
+		editable (checkbox): add or remove html elements with data-widget-item-button-update and data-widget-item-attribute-field-edit (if is not with add action).
+			editable permissions: ...
+		removable (checkbox): add or remove html elements with data-widget-item-button-remove.
+			removable permissions: ...
+	--Widget - Dependencies--
+	--Widget - Permissions--
+
+	data-widget-props:
+		dependent_widgets_id
+		load: load js handler => MyWidgetResourceLib.FormHandler.loadFormResource
+		complete: {
+			load: complete js callback,
+			add: complete js callback, => MyWidgetResourceLib.FormHandler.onResourcePopupFormAddSuccess or MyWidgetResourceLib.FormHandler.onResourceFormAddSuccess
+			update: complete js callback,
+			update_attribute: complete js callback,
+			remove: complete js callback, => MyWidgetResourceLib.FormHandler.onResourcePopupFormRemoveSuccess
+		}
+		...all other properties above...
+		
+	data-widget-resources:
+		{load: resource settings, add: resource settings, update: [resource settings, resource settings], update_attribute: ..., remove...}
+
+*** Select box - MENU SETTINGS *** 
+	--Widget--
+	--Widget - Resources--
+	--Widget - Resources - Load Resource--
+		Info: set the resource(s) to load data into widget
+		Load js handler: input (mandatory) (title="start function to execute the load resources and create the correspondent html")
+		Resources: + (plus icon to add new items below)
+			... (same than others)
+		Complete js callback: input (title="callback after execute all resources")
+	--Widget - Display Resource Attribute--
+	--Widget - Dependencies--
+	--Widget - Permissions--
+	
+	data-widget-props:
+		dependent_widgets_id
+		load: load js handler => MyWidgetResourceLib.FieldHandler.loadFieldResource
+		complete: complete js callback
+	
+	data-widget-resources:
+		resource settings
+		or [resource settings, resource settings]
+		or {load: resource settings...}
+		or {load: [resource settings, resource settings]}
+
+*** Any Other HTML Element - MENU SETTINGS ***
+	--Widget--
+	--Widget - Resources--
+	--Widget - Resources - Load Resource--
+	--Widget - Display Resource Attribute--
+	--Widget - Dependencies--
+	--Widget - Permissions--
+	
+	data-widget-props:
+		dependent_widgets_id
+		load: load js handler => MyWidgetResourceLib.FieldHandler.loadFieldResource
+		
+	data-widget-resources:
+		resource settings
+		or [resource settings, resource settings]
+		or {load: resource settings...}
+		or {load: [resource settings, resource settings]}
+
+*** HTML ***
+	<div id="widget_group_list_$some_id_generated_automatically_when_drag_an_drop_widget" data-widget-group-list data-widget-props="{json object with group properties}" data-widget-permissions="{json object with user permissions}">
+		<!-- *** Button *** -->
+		<button onClick="MyWidgetResourceLib.PopupHandler.openButtonAddPopup(this)" data-widget-button-add data-widget-popup-id="$a_popup_id" data-widget-permissions="{json object with user permissions}">Add $a_table_name</button>
+		<a href="javascript:void(0)" onClick="MyWidgetResourceLib.PopupHandler.openButtonAddPopup(this)" data-widget-button-add data-widget-popup-id="$a_popup_id" data-widget-permissions="{json object with user permissions}">Add $a_table_name</a>
+		<a href="javascript:void(0)" onClick="MyWidgetResourceLib.ShortActionHandler.addInlineResourceListItemToDependentWidgets(this)" data-widget-button-add data-widget-props="{dependent_widgets_id: "table id"}" data-widget-permissions="{json object with user permissions}">Add $a_table_name</a>
+		
+		<!-- *** Search *** -->
+		<div id="widget_search_$some_id_generated_automatically_when_drag_an_drop_widget" data-widget-search data-widget-props="{json object with search properties}" data-widget-permissions="{json object with user permissions}">
+			<!-- If button "add input search field" or by default -->
+			<input onKeyUp="MyWidgetResourceLib.SearchHandler.onBlurSearchWidgetSearchInput(this, 1)" onBlur="MyWidgetResourceLib.SearchHandler.refreshSearchWidgetResource(this)" data-widget-search-input data-widget-props="{search_attrs:'name,description,xxx', search_type:'contains|starts_with|ends_with', search_operator:'or'}" />
+			
+			<!-- button "add select search field" -->
+			<select onChange="MyWidgetResourceLib.SearchHandler.refreshSearchWidgetResource(this)" data-widget-search-select data-widget-props="{search_attrs:'yyy', search_type:'contains|starts_with|ends_with', search_operator:'or', load func, ...}" data-widget-resources="{json object with the correspondent manual or dynamic items}" data-widget-permissions="{json object with user permissions}" data-widget-resources-load>
+				Options from the UI when clicking in the button "add select search field", this is, manual or dynamic items where the select box will have the attribute: "data-widget-resource" which will contain a json object with the correspondent manual or dynamic items to create the select box.
+			</select>
+			
+			<!-- If button "add user choice based in attributes" -->
+			<div data-widget-search-multiple>
+				<div>
+					<select data-widget-resources="" data-widget-resources-load>
+					OR
+					<select>
+						<option>attribute 1</option>
+						<option>attribute 2</option>
+						<option>...</option> (Options from the UI when clicking in the button "add user choice based in attributes")
+					</select>
+					<span class="icon add" onClick="MyWidgetResourceLib.SearchHandler.addWidgetSearchDynamicAttribute(this, 1)">Add Condition</span>
+				</div>
+				<ul data-widget-search-added-attrs></ul>
+				<button onClick="MyWidgetResourceLib.SearchHandler.refreshSearchWidgetResource(this)" data-widget-search-multiple-button data-widget-props="{type:'contains|starts_with|ends_with', operator:'and'}">Search</button>
+			</div>
+		</div>
+		
+		<!-- *** Short actions *** -->
+		<div id="widget_short_actions_$some_id_generated_automatically_when_drag_an_drop_widget" data-widget-short-actions data-widget-permissions="{json object with user permissions}">
+			<a href="javascript:void(0)" onClick="MyWidgetResourceLib.ShortActionHandler.executeResourceMultipleRemoveAction(this)" data-widget-button-multiple-remove data-widget-props="{dependent_widgets_id: "table id", empty_message: 'No elements selected...'}" data-widget-resources="{json object with resource properties to remove objs}">remove</a>
+			<a href="javascript:void(0)" onClick="MyWidgetResourceLib.ShortActionHandler.executeResourceMultipleSaveAction(this)" data-widget-button-multiple-save data-widget-props="{dependent_widgets_id: "table id", empty_message: 'No elements selected...'}" data-widget-resources="{json object with resource properties to save objs}" data-widget-permissions="{json object with user permissions}">save</a>
+			
+			<a href="javascript:void(0)" onClick="MyWidgetResourceLib.PopupHandler.openButtonAddPopup(this)" data-widget-button-add data-widget-popup-id="$a_popup_id" data-widget-permissions="{json object with user permissions}">Add <table name></a>
+			<a href="javascript:void(0)" onClick="MyWidgetResourceLib.ShortActionHandler.addInlineResourceListItemToDependentWidgets(this)" data-widget-button-add data-widget-props="{dependent_widgets_id: "table id"}" data-widget-permissions="{json object with user permissions}">Add <table name></a>
+			
+			<a href="javascript:void(0)" onClick="MyWidgetResourceLib.ListHandler.toggleTableAndTree(this)" data-widget-button-toggle-between-widgets  data-widget-props="{json object with dependencies ids}" data-widget-permissions="{json object with user permissions}">Toggle table to tree</a>
+		</div>
+		
+		<!-- *** Pagination *** -->
+		<div id="widget_top_pagination_$some_id_generated_automatically_when_drag_an_drop_widget" data-widget-pagination data-widget-props="{json object with pagination properties}" data-widget-resources="{json object with resource properties that will return the count of the items of some table}" data-widget-permissions="{json object with user permissions}">
+			<div data-widget-pagination-go-to-page>
+				<select data-widget-pagination-go-to-page-dropdown data-widget-props="{json object with the load func}" onChange="MyWidgetResourceLib.PaginationHandler.goToDropdownPage(this)"></select>
+				<a href="javascript:void(0)" onClick="MyWidgetResourceLib.PaginationHandler.goToDropdownPage(this)">Go/Refresh</button> <!-- optional -->
+			</div>
+			
+			<div data-widget-pagination-pages>
+				<a data-widget-pagination-pages-first href="javascript:void(0)" onClick="MyWidgetResourceLib.PaginationHandler.goToFirstPage(this)"></a>
+				<a data-widget-pagination-pages-previous href="javascript:void(0)" onClick="MyWidgetResourceLib.PaginationHandler.goToPreviousPage(this)"></a>
+				
+				<div data-widget-pagination-pages-numbers>
+					<a data-widget-pagination-pages-numbers-item data-widget-pagination-pages-numbers-item-value="$page_number" data-widget-props="{json object with the load func}" href="javascript:void(0)" onClick="MyWidgetResourceLib.PaginationHandler.goToElementPage(this)">$page_number</a>
+				</div>
+				
+				<a data-widget-pagination-pages-next href="javascript:void(0)" onClick="MyWidgetResourceLib.PaginationHandler.goToNextPage(this)"></a>
+				<a data-widget-pagination-pages-last href="javascript:void(0)" onClick="MyWidgetResourceLib.PaginationHandler.goToLastPage(this)"></a>
+			</div>
+		</div>
+		
+		<!-- *** List *** -->
+		<div class="list-responsive" id="widget_list_$some_id_generated_automatically_when_drag_an_drop_widget" data-widget-permissions="{json object with user permissions}" data-widget-list data-widget-props="{json object with table properties}" data-widget-resources="{json object with resource properties}" data-widget-resources-load>
+			<table data-widget-list-table>
+				<thead>
+					<tr>
+						<th data-widget-permissions="{json object with user permissions}">
+							<input type="checkbox" onClick="MyWidgetResourceLib.ListHandler.toggleListAttributeSelectCheckboxes(this)" data-widget-list-select-items-checkbox />
+						</th>
+						
+						<th onClick="MyWidgetResourceLib.ListHandler.sortListResource(this)" data-widget-item-attribute-name="attribute 1">attribute 1 <span class="icon reset-sort" onClick="MyWidgetResourceLib.ListHandler.resetListResourceSort(this)"></span></th>
+						
+						<th> <!-- This is when the data-widget-item-button-remove or data-widget-item-attribute-link-edit or data-widget-button-add exist -->
+							<a class="icon add" href="javascript:void(0)" onClick="MyWidgetResourceLib.PopupHandler.openButtonAddPopup(this)" data-widget-button-add data-widget-popup-id="$a_popup_id" data-widget-permissions="{json object with user permissions}">Add $a_table_name</a>
+							<a class="icon add" href="javascript:void(0)" onClick="MyWidgetResourceLib.ListHandler.addInlineResourceListItem(this)" data-widget-button-add data-widget-permissions="{json object with user permissions}">Add $a_table_name</a>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-widget-item data-widget-pks-attrs="{pks with values for each object}"> <!-- data-widget-item identifies the rows that should be parsed according with the php resource object. -->
+						<td data-widget-item-column>#[$i][attr name 1]#<td> <!-- from table resource -->
+						<td data-widget-item-column><input value="#[$i][attr name 1]#"/><td> <!-- from table resource -->
+						<td data-widget-item-column><label>#some_other_resource_name[attr name 1]#</label><td> <!-- from external resource -->
+						<td data-widget-item-column data-widget-resource-value="{resource_name: '...', attribute: '...', index: 'auto|0|1|...', available_values: {json object with the correspondent manual or dynamic items}, type: replace|append|prepend}"></td> <!-- this will replace html of td with the correspondent value. Note that the 'resource_name', 'index' and 'available_values' keys are optional. -->
+						<td data-widget-item-column data-widget-resource-value="#[$i][attr name 1]#"></td>
+						<td data-widget-item-column data-widget-resource-value="attr name 1"></td>
+						<td data-widget-item-column data-widget-resource-value="#some_other_resource_name[attr name 1]#"></td>
+						
+						or
+						
+						<td data-widget-item-column data-widget-permissions="{json object with user permissions}">
+							<input type="checkbox" data-widget-list-item-selected-checkbox data-widget-permissions="{json object with user permissions}" /> <!-- No need to have a value, bc we will use data-widget-pks-attrs in the TRs -->
+							
+							<span data-widget-item-attribute-field-view data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-permissions="{json object with user permissions}"><span>
+							<span data-widget-item-button-view class="icon view" onClick="MyWidgetResourceLib.ItemHandler.openItemViewPopupById(this)" data-widget-popup-id="$a_popup_id" data-widget-permissions="{hide:[user type ids]}">view</span>
+							<span data-widget-item-button-edit class="icon edit" onClick="MyWidgetResourceLib.ItemHandler.openItemEditPopupById(this)" data-widget-popup-id="$a_popup_id" data-widget-permissions="{view:[user type ids]}">edit</span>
+							<span data-widget-item-button-remove class="icon remove" onClick="MyWidgetResourceLib.ItemHandler.removeResourceItem(this)">remove</span>
+							
+							<a data-widget-item-attribute-link-view href="javascript:void(0)" onClick="MyWidgetResourceLib.ItemHandler.openItemViewPopupById(this)" data-widget-popup-id="$a_popup_id" data-widget-resource-value="{attribute: 'attr name 1', available_values: {json object with the correspondent manual or dynamic items}}" data-widget-permissions="{hide:[user type ids]}"></a>
+							<a data-widget-item-attribute-link-edit href="javascript:void(0)" onClick="MyWidgetResourceLib.ItemHandler.openItemEditPopupById(this)" data-widget-popup-id="$a_popup_id" data-widget-resource-value="{attribute: 'attr name 1', available_values: {json object with the correspondent manual or dynamic items}}" data-widget-permissions="{view:[user type ids]}"></a>
+							
+							<input onBlur="MyWidgetResourceLib.ItemHandler.updateResourceItemAttributeOnBlur(this)" onKeyUp="MyWidgetResourceLib.ItemHandler.updateResourceItemAttributeOnKeyUp(this)" data-widget-item-attribute-field-edit data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-props="{...}" />
+							<input type="checkbox" value="1" onBlur="MyWidgetResourceLib.ItemHandler.updateResourceItemAttributeOnBlur(this)" onClick="MyWidgetResourceLib.ItemHandler.updateResourceItemAttributeOnClick(this)" data-widget-item-attribute-field-edit data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-permissions="{json object with user permissions}" data-widget-props="{...}" />
+							<select onBlur="MyWidgetResourceLib.ItemHandler.updateResourceItemAttributeOnBlur(this)" onChange="MyWidgetResourceLib.ItemHandler.updateResourceItemAttributeOnChange(this)" data-widget-item-attribute-field-edit data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-props="{json object with the load func and other props}" data-widget-resources="{json object with the correspondent manual or dynamic items}" data-widget-permissions="{json object with user permissions}" data-widget-item-resources-load>...</select>
+							<span data-widget-item-button-update class="icon save" onClick="MyWidgetResourceLib.ItemHandler.updateResourceItem(this)" data-widget-props="{...}" data-widget-permissions="{json object with user permissions}">save</span> <!-- This icon is to update an existent record -->
+							
+							<span data-widget-item-button-add class="icon save" onClick="MyWidgetResourceLib.ItemHandler.addResourceItem(this)" data-widget-props="{...}" data-widget-permissions="{json object with user permissions}">save</span> <!-- This icon is to insert a new record -->
+							<span data-widget-item-button-add-cancel class="icon cancel" onClick="MyWidgetResourceLib.ItemHandler.cancelAddResourceItem(this)" data-widget-props="{...}" data-widget-permissions="{json object with user permissions}">cancel</span> <!-- This icon is to cancel the insert of a new record -->
+							
+							<span data-widget-item-button-toggle-inline-edit-view class="icon toggle" onClick="MyWidgetResourceLib.ItemHandler.toggleResourceAttributesEditing(this)" data-widget-props="{...}" data-widget-permissions="{json object with user permissions}">save</span>
+						</td>
+					</tr>
+					<tr data-widget-loading><td colspan="3">Loading new data... Please wait a while...</td></tr>
+					<tr data-widget-empty><td colspan="3">
+						There are no records available.<br/>
+						Please click in the button below to add new records:
+						
+						<button onClick="MyWidgetResourceLib.PopupHandler.openButtonAddPopup(this)" data-widget-button-add data-widget-popup-id="$a_popup_id" data-widget-permissions="{json object with user permissions}">Add new Record</button>
+						<button onClick="MyWidgetResourceLib.ListHandler.addInlineResourceListItem(this)" data-widget-button-add data-widget-permissions="{json object with user permissions}">Add new Record</a>
+					</td></tr>
+				</tbody>
+			</table>
+			
+			<!-- This widget is the same than the table widget but with different html -->
+			<ul data-widget-list-tree style="display:none">
+				<li data-widget-item data-widget-pks-attrs="{pks with values for each object}">
+					<div data-widget-permissions="{json object with user permissions}">
+						<label>$an_attribute_name:</label>
+						<span data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-permissions="{json object with user permissions}"></span>
+					</div>
+					
+					... (similar with the table widget above)
+				</li>
+			</ul>
+		</div>
+		
+		<!-- *** Popup + Form *** -->
+		<div id="widget_popup_view_$some_id_generated_automatically_when_drag_an_drop_widget" class="modal" data-widget-popup data-widget-popup-view data-widget-props="{json object with popup properties}" data-widget-resources="{json object with resource properties}" data-widget-permissions="{json object with user permissions}">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">View $a_table name:</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form id="widget_form_view_$some_id_generated_automatically_when_drag_an_drop_widget" onSubmit="return false;" data-widget-form data-widget-resources="{json object with resource properties}" data-widget-props="{pks_attrs_names: "xxx"}" data-widget-permissions="{json object with user permissions}">
+							<div data-widget-item-attribute-field-view data-widget-permissions="{json object with user permissions}">
+								<label>$an_attribute_name:</label>
+								<span data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-permissions="{json object with user permissions}"></span>
+							</div>
+							...
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="widget_popup_edit_$some_id_generated_automatically_when_drag_an_drop_widget" class="modal" data-widget-popup data-widget-popup-edit data-widget-props="{json object with popup properties}" data-widget-permissions="{json object with user permissions}">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Edit $a_table name:</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form id="widget_form_edit_$some_id_generated_automatically_when_drag_an_drop_widget" method="post" onSubmit="return false;" data-widget-form data-widget-resources="{json object with resource properties}" data-widget-props="{pks_attrs_names: "xxx", dependent_widgets_id: ['table_elm_id_1']}" data-widget-permissions="{json object with user permissions}">
+							<div data-widget-item-attribute-field-edit>
+								<label>$an_attribute_name:</label>
+								<input name="$an_attribute_name" data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-permissions="{json object with user permissions}" />
+							</div>
+							...
+							
+							<input data-widget-item-button-update type="button" value="save" onClick="MyWidgetResourceLib.ItemHandler.updateResourceItem(this)" data-widget-props="{dependent_widgets_id: ['table_elm_id_1']}" data-widget-permissions="{json object with user permissions}" />
+							<input data-widget-item-button-remove type="button" value="remove" onClick="MyWidgetResourceLib.ItemHandler.removeResourceItem(this)" />
+							<input type="button" value="cancel" onClick="MyWidgetResourceLib.PopupHandler.closeParentPopup(this)" data-widget-props="{dependent_widgets_id: ['table_elm_id_1']}" data-widget-permissions="{json object with user permissions}" />
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="widget_popup_add_$some_id_generated_automatically_when_drag_an_drop_widget" class="modal" data-widget-popup data-widget-popup-add data-widget-props="{json object with popup properties}" data-widget-permissions="{json object with user permissions}">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add $a_table name:</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form id="widget_form_add_$some_id_generated_automatically_when_drag_an_drop_widget" method="post" onSubmit="return false;" data-widget-form data-widget-resources="{json object with resource properties}" data-widget-props="{pks_attrs_names: "xxx", dependent_widgets_id: ['table_elm_id_1']}" data-widget-permissions="{json object with user permissions}">
+							<div data-widget-item-attribute-field-edit>
+								<label>$an_attribute_name:</label>
+								<input name="$an_attribute_name" data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-permissions="{json object with user permissions}" />
+							</div>
+							
+							<div data-widget-item-attribute-field-edit>
+								<label>$an_attribute_name:</label>
+								<select name="$an_attribute_name" data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-props="{json object with the load func}" data-widget-resources="{json object with the correspondent manual or dynamic items}" data-widget-permissions="{json object with user permissions}" data-widget-resources-load>
+									...it may contain some FK values
+								</select>
+							</div>
+							
+							...
+							
+							<input data-widget-item-button-add type="button" value="add" onClick="MyWidgetResourceLib.ItemHandler.addResourceItem(this)" data-widget-props="{dependent_widgets_id: ['table_elm_id_1']}" data-widget-permissions="{json object with user permissions}" />
+							<input type="button" value="cancel" onClick="MyWidgetResourceLib.PopupHandler.closeParentPopup(this)" />
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="widget_group_form_$some_id_generated_automatically_when_drag_an_drop_widget" data-widget-group-form data-widget-props="{json object with group properties}" data-widget-permissions="{json object with user permissions}">
+		<form id="widget_form_edit_$some_id_generated_automatically_when_drag_an_drop_widget" method="post" onSubmit="return false;" data-widget-form data-widget-resources="{json object with resource properties}" data-widget-props="{pks_attrs_names: "xxx"}" data-widget-permissions="{json object with user permissions}">
+			<h5 class="modal-title">Edit $a_table name:</h5>
+			
+			<div data-widget-item-attribute-field-edit>
+				<label>$an_attribute_name:</label>
+				<input name="$an_attribute_name" data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-permissions="{json object with user permissions}" />
+			</div>
+			
+			<div data-widget-item-attribute-field-edit>
+				<label>$an_attribute_name:</label>
+				<select name="$an_attribute_name" data-widget-resource-value="{attribute: 'attr name 1'}" data-widget-props="{json object with the load func}" data-widget-resources="{json object with the correspondent manual or dynamic items}" data-widget-permissions="{json object with user permissions}" data-widget-resources-load>
+					...it may contain some FK values
+				</select>
+			</div>
+			
+			...
+			
+			<input data-widget-item-button-add type="button" value="add" onClick="MyWidgetResourceLib.ItemHandler.addResourceItem(this)" data-widget-permissions="{json object with user permissions}" />
+			<input data-widget-item-button-update type="button" value="save" onClick="MyWidgetResourceLib.ItemHandler.updateResourceItem(this)" data-widget-permissions="{json object with user permissions}" />
+			<input data-widget-item-button-remove type="button" value="remove" onClick="MyWidgetResourceLib.ItemHandler.removeResourceItem(this)" />
+		</form>
+	</div>
+	

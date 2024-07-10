@@ -1,0 +1,50 @@
+.taskflowchartmenu .task.task_setblockparams {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_setblockparams .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_setblockparams .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.set_block_params_task_html {
+	width:390px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_block_params_task_html {
+	width:100%;
+}
+
+.set_block_params_task_html .value {
+	/*margin-top:10px;*/
+}
+.set_block_params_task_html .value,
+   .set_block_params_task_html .type {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.set_block_params_task_html .value label,
+   .set_block_params_task_html .type label {
+	width:50px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_block_params_task_html .value label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .set_block_params_task_html .type label {
+	width:35px;
+}
+.set_block_params_task_html .value input {
+	width:280px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_block_params_task_html .value input {
+	width:calc(100% - 50px);
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .set_block_params_task_html.with_search .value input {
+	width:calc(100% - 70px);
+}
+.set_block_params_task_html .value .search {
+	display:none;
+}
+.set_block_params_task_html.with_search .value .search {
+	display:inline-block;
+}

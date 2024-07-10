@@ -1,0 +1,2 @@
+<br/>
+view sample/index

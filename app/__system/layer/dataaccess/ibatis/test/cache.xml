@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<import><?php echo dirname($vars["dal_path"])."/"; ?>cache_handler.xml</import>
+	
+	<services>
+		<service id="select_item" module_id="<?php echo $vars["current_dal_module_id"]; ?>" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600">
+			<validation_script>return is_object($output) &amp;&amp; is_a($output, "Exception") ? false : true;</validation_script>
+			<key>select_item_id-&lt;?php echo is_numeric($input) ? $input : ($input['id'] ? $input['id'] : $input['item_id']);?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="select_items" module_id="<?php echo $vars["current_dal_module_id"]; ?>" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600">
+			<validation_script>return is_object($output) &amp;&amp; is_a($output, "Exception") ? false : true;</validation_script>
+			<key>select_items_type-&lt;?php echo $input["type"];?&gt;_rownum-&lt;?php echo $input["row"];?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="procedure_items" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php">
+			<validation_script>return is_object($output) &amp;&amp; is_a($output, "Exception") ? false : true;</validation_script>
+			<key>procedure_items-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="procedure_items_class" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php">
+			<validation_script>return is_object($output) &amp;&amp; is_a($output, "Exception") ? false : true;</validation_script>
+			<key>procedure_items_data-&lt;?php 
+				$data = $input->getData();
+				echo is_array($data) ? md5(serialize($data)) : str_replace(" ", "", $data);
+			?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+		</service>
+		
+		<service id="insert_item" cache_handler="ServiceCacheHandler" to_cache="false">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<service type="prefix">
+					<key>select_item_id-</key>
+				</service>
+				<service type="prefix">
+					<key>select_items</key>
+				</service>
+				<service>
+					<key>procedure_items</key>
+				</service>
+				<!--service type="regex">
+					<key>/([a-z0-9\-\_]*)_user_details_([a-z0-9\-\_]*)uid-&lt;?php echo $input["user_id"];?&gt;/i</key>
+				</service>
+				<service type="prefix">
+					<key>get_seeker_user_details_uid-&lt;?php echo $input["user_id"];?&gt;</key>
+				</service>
+				<service>
+					<key>get_seeker_user_details_uid-&lt;?php echo $input["user_id"];?&gt;</key>
+				</service>
+				<service module_id="FORUM">
+					<key>get_seeker_user_details</key>
+				</service>
+				<service>
+					<key>seeker_user_details_exists_uid-&lt;?php echo $input["user_id"];?&gt;</key>
+				</service-->
+			</to_delete>
+		</service>
+		
+		<service id="update_item" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<service>
+					<!--script>$input = $input["id"];</script>
+					<key>select_item_id-&lt;?php echo $input;?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key-->
+					<key>select_item_id-&lt;?php echo $input["id"];?&gt;-&lt;?php echo $options['db_driver'];?&gt;</key>
+				</service>
+				<service type="prefix">
+					<key>select_items</key>
+				</service>
+				<service>
+					<key>procedure_items</key>
+				</service>
+			</to_delete>
+		</service>
+		
+		<service id="update_all_items" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<service type="prefix">
+					<key>select_item_id-&lt;?php echo "";?&gt;</key>
+				</service>
+				<service type="prefix">
+					<key>select_items</key>
+				</service>
+				<service>
+					<key>procedure_items</key>
+				</service>
+			</to_delete>
+		</service>
+		
+		<service id="delete_item" cache_handler="ServiceCacheHandler">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<!--service>
+					<key>select_item_id-&lt;?php echo $input;?&gt;</key>
+				</service-->
+				<service type="prefix">
+					<key>select_items</key>
+				</service>
+				<service>
+					<key>procedure_items</key>
+				</service>
+			</to_delete>
+		</service>
+	</services>
+</beans>

@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Script</label>
+	<tag>script</tag>
+	<settings>
+		<create_widget_class>ScriptWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[
+		<div class="script-file"></div>
+		<pre class="script-content"></pre>
+	]]></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property src">
+			<label class="col-md-4 col-sm-4 col-form-label">Src: </label>
+			<input class="col-md-8 col-sm-8 form-control" name="src" />
+		</div>
+		<div class="form-group row settings-property language">
+			<label class="col-md-4 col-sm-4 col-form-label">Language: </label>
+			<input class="col-md-8 col-sm-8 form-control" name="language" value="javascript" />
+		</div>
+		<div class="form-group row settings-property type">
+			<label class="col-md-4 col-sm-4 col-form-label">Type: </label>
+			<input class="col-md-8 col-sm-8 form-control" name="type" value="text/javascript" />
+		</div>
+		<div class="form-group row settings-property content">
+			<label class="col-md-12 col-form-label">Script: <a class="pretty_print">Pretty Print Code</a></label>
+			<textarea class="col-md-12 form-control" name="content" rows="10"></textarea>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-script:before,
+		  body > .menu-widget.menu-widget-script.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-script li.group.settings-properties > ul .settings-property.content .form-control {
+			text-align:left;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-script li.group.settings-widget,
+		  .layout-ui-editor > .menu-settings.menu-settings-script li.group.settings-general,
+		  .layout-ui-editor > .menu-settings.menu-settings-script li.group.settings-dimension,
+		  .layout-ui-editor > .menu-settings.menu-settings-script li.group.settings-typography,
+		  .layout-ui-editor > .menu-settings.menu-settings-script li.group.settings-decorations,
+		  .layout-ui-editor > .menu-settings.menu-settings-script li.group.settings-events,
+		  .layout-ui-editor > .menu-settings.menu-settings-script li.group.settings-others,
+		  .layout-ui-editor > .menu-settings.menu-settings-script li.settings-tabs > ul > li.settings-tab-widget,
+		  .layout-ui-editor > .menu-settings.menu-settings-script li.settings-tabs > ul > li.settings-tab-style,
+		  .layout-ui-editor > .menu-settings.menu-settings-script li.settings-tabs > ul > li.settings-tab-events {
+			display:none;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-script > .settings-properties .src.with-search-icon input {
+			padding-right:20px;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-script > .settings-properties .src .search {
+			display:inline-block;
+			float:none;
+			clear:both;
+			position:absolute;
+			right:10px;
+			margin:8px 0 0;
+			background:none;
+			cursor:pointer;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-script > .settings-properties .content .pretty_print {
+			float:right;
+			cursor:pointer;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-script > .settings-properties .content .ace_editor {
+			width:100%;
+			height:200px;
+			border:1px solid var(--menu-settings-input-border, transparent);
+		}
+		
+		.layout-ui-editor > .menu-layers .group.group-script > ul {
+			display:none !important;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.template-widget.template-widget-script {
+			min-width:1em;
+			min-height:1em;
+			height:auto;
+			margin:5px !important; /* !important is bc of the css when .borders is active */
+			padding:5px !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			display:block;
+			background:#000;
+			color:#fff;
+			border-radius:5px;
+			border:1px outset #bbb !important; /* !important is bc of the css when .borders is active */
+			word-break:break-all;
+			text-align:left;
+		}
+		body > .droppable.borders .template-widget.template-widget-script:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+		
+		.template-widget.template-widget-script > .script-file {
+			margin:0 !important; /* !important is bc of the css when .borders is active */
+			padding:0 !important; /* !important is bc of the css when .borders is active */
+			border:0 !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			background:rgba(255, 255, 255, .2);
+			font-size:12px;
+		}
+		.template-widget.template-widget-script > .script-file:empty:before {
+			content:"the javascript file if apply...";
+		}
+		body > .droppable.borders .template-widget.template-widget-script > .script-file:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+		
+		.template-widget.template-widget-script > .script-content {
+			margin:0 !important; /* !important is bc of the css when .borders is active */
+			padding:0 !important; /* !important is bc of the css when .borders is active */
+			border:0 !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			display:block;
+			color:inherit;
+			font-size:12px;
+			font-family:inherit;
+			overflow:auto;
+			word-break:break-all;
+		}
+		.template-widget.template-widget-script > .script-content::-webkit-scrollbar {
+			height:7px;
+		}
+		.template-widget.template-widget-script > .script-content:empty:before {
+			content:"some javascript code if apply...";
+		}
+		body > .droppable.borders .template-widget.template-widget-script > .script-content:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function ScriptWidget(ui_creator, menu_widget) {
+			var me = this;
+			var update_menu_settings_timeout_id = null;
+			
+			me.ignore_attributes = ["contenteditable"];
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.script.parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.script.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.script.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.script.onOpenWidgetSettings",
+					"data-on-close-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.script.onCloseWidgetSettings",
+					"data-on-resize-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.script.onResizeWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.script.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.script.parseSettings",
+				});
+				
+				menu_widget.removeAttr("data-on-clone-menu-widget-func");
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (!html_element)
+					return false;
+				
+				var node_name = html_element.nodeName.toLowerCase();
+				
+				//if html_element is a script node.
+				if (node_name == "script")
+					return true;
+				
+				//Otherwise if html_element was previously a template-widget-script node.
+				//Note that if we call the recreateWidgetChildren or convertHtmlElementToWidget methods for this widget.parent(), when the html_element is already a widget (created previously), we need to be prepared to parse it and re-convert this html_element (which is already a widget) into a new widget. So we need to detect this cases with the following code:
+				if (me.isRecreateWidget(html_element))
+					return true;
+				
+				return false;
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				var src = widget.children(".script-file").html();
+				src = src.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n").replace(/&emsp;/g, "\t").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+				
+				var code = widget.children(".script-content").html();
+				code = code.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n").replace(/&emsp;/g, "\t").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+				
+				//replace \u2003 which is a weird white space char that is created when we call 'pre.html()' function and it converts the \t to this char.
+				src = src.replace(/\u2003/g, "\t"); 
+				code = code.replace(/\u2003/g, "\t"); 
+				
+				widget_settings["src"] = src;
+				widget_settings["content"] = code;
+				widget_settings["language"] = widget.data("widget-props-language");
+				widget_settings["type"] = widget.data("widget-props-type");
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				
+				var src = widget.children(".script-file").html();
+				var code = widget.children(".script-content").html();
+				var language = widget.data("widget-props-language");
+				var type = widget.data("widget-props-type");
+				
+				src = getCleanedHtmlSrc(src);
+				code = getCleanedHtmlCode(code);
+				
+				var html = '<' + 'script' + (src ? ' src="' + src + '"' : '') + (language ? ' language="' + language + '"' : '') + (type ? ' type="' + type + '"' : '') + '>' + code + '<' + '/script>'; //<script must be spearate otherwise gives error.
+				
+				if (ui_creator.options.beautify)
+					html = MyHtmlBeautify.beautify(html); //beautify code
+				
+				return html;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				var script_file = widget.children(".script-file");
+				var script_content = widget.children(".script-content");
+				
+				if (html_element) {
+					var is_recreate = me.isRecreateWidget(html_element);
+					var node_name = html_element.nodeName.toLowerCase();
+					var j_html_element = $(html_element);
+					var src = "";
+					var language = "";
+					var type = "";
+					var code = "";
+					
+					//if html_element was previously a template-widget-script node.
+					//Note that if we call the recreateWidgetChildren or convertHtmlElementToWidget methods for this widget.parent(), when the html_element is already a widget (created previously), we need to be prepared to parse it and re-convert this html_element (which is already a widget) into a new widget. So we need to detect this cases with the following code:
+					if (is_recreate) {
+						src = j_html_element.children(".script-file").html();
+						language = j_html_element.data("widget-props-language");
+						type = j_html_element.data("widget-props-type");
+						code = j_html_element.children(".script-content").html();
+						
+						src = getCleanedHtmlSrc(src);
+						code = getCleanedHtmlCode(code);
+						
+						//check if properties are open for the old widget and if yes, open the properties for the new widget
+						ui_creator.reloadOpenMenuSettingsIfOpenedWithOldWidget(j_html_element, widget, 1000);
+					}
+					//if html_element is a script node.
+					else { //if (node_name == "script") {
+						src = j_html_element.attr("src");
+						language = j_html_element.attr("language");
+						type = j_html_element.attr("type");
+						code = j_html_element.html();
+					}
+					
+					widget[0].appendChild( document.createElement("script") ); //must be appendChild bc append doesn't work
+					var script = widget.children("script");
+					
+					widget.data("widget-props-language", language);
+					widget.data("widget-props-type", type);
+					
+					script.attr("language", language);
+					script.attr("type", type);
+					
+					if (src && src != "") {
+						script_file.html( src.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>").replace(/\t/g, "&emsp;").replace(/ /g, "&nbsp;") );
+						
+						//parse src in case it contains the $project_url_prefix or $project_common_url_prefix
+						var aux = typeof ui_creator.options.on_convert_project_url_php_vars_to_real_values_func == "function" ? ui_creator.options.on_convert_project_url_php_vars_to_real_values_func(src, widget) : src;
+						
+						script[0].src = aux;
+					}
+					
+					if (code && code != "") {
+						//replace php tags
+						if (code.indexOf("<!--?") != -1)
+							code = code.replace(/<!--\?/g, '<?').replace(/\?-->/g, '?>');
+						
+						//prepare prefix tabs by removing the tabs that don't matter
+						var m = code.match(/^\r?\n(\s+)/);
+						
+						if (m && m[1]) {
+							var prefix = m[1];
+							var regex = new RegExp("(\r?\n)" + prefix, "g");
+							code = code.replace(regex, "$1");
+							
+							widget.data("prefix", prefix);
+						}
+						
+						//remove first and last white spaces - trim code
+						code = code.replace(/^\s+/g, "").replace(/\s+$/g, "");
+						
+						//show code
+						script_content.html( code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>").replace(/\t/g, "&emsp;").replace(/ /g, "&nbsp;") );
+						
+						//convert url vars to real urls in code, this is, parse code in case it contains the $project_url_prefix or $project_common_url_prefix
+						if (typeof ui_creator.options.on_convert_project_url_php_vars_to_real_values_func == "function")
+							code = ui_creator.options.on_convert_project_url_php_vars_to_real_values_func(code, widget);
+						
+						script[0].textContent = code;
+					}
+					
+					j_html_element.remove();
+				}
+				
+				//prepare .style-content editable
+				widget.attr("contenteditable", "false");
+				
+				$([script_file[0], script_content[0]]).attr("contenteditable", "true")
+					.keydown(function(e) {
+						e.stopPropagation(); //otherwise if the user press ctrl+v to paste a string, it will call the ui_creator.TextSelection.options.on_create_node function which then will convert this widget into a normal html block widget, which will mess the layout.
+						
+						//avoids enter key to create unespected html elements. Only shift+enter keys are allowed.
+						var is_shift = window.event ? window.event.shiftKey : e.shiftKey;
+						
+						if (e.keyCode === 13 && !is_shift) {
+							ui_creator.showError("Please use Shift-enter keys instead...");
+							return false;
+						}
+					})
+					.keyup(function(e) {
+						if (update_menu_settings_timeout_id)
+							clearTimeout(update_menu_settings_timeout_id);
+						
+						update_menu_settings_timeout_id = setTimeout(function() {
+							ui_creator.reloadMenuSettingsIfOpened(widget);
+						}, 700);
+					})
+					.mouseup(function(e) {
+						//prevents that the TextSelection open the inline menu
+						e.preventDefault();
+						e.stopPropagation();
+						
+						ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+					})
+					.blur(function(e) {
+						if (typeof ui_creator.options.on_template_widgets_layout_changed_func == "function")
+							ui_creator.options.on_template_widgets_layout_changed_func(null);
+					});
+				
+				//only allows paste with text, discarding the html. Html is not allowed here.
+				ui_creator.setPasteCallbackForOnlyText(script_file);
+				ui_creator.setPasteCallbackForOnlyText(script_content);
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var settings_properties = menu_settings.children(".settings-properties");
+				
+				if (typeof ui_creator.options.on_choose_webroot_file_url_func == "function") {
+					var icon = $('<span class="zmdi zmdi-search-in-file search"></span>');
+					icon.on("click", function() {
+						ui_creator.options.on_choose_webroot_file_url_func(this);
+					});
+					settings_properties.find(".settings-property.src").addClass("with-search-icon").append(icon);
+				}
+				
+				ui_creator.addMenuSettingsContextMenu( settings_properties.find("input") );
+				
+				settings_properties.find(".settings-property.content .pretty_print").on("click", function(ev) {
+					var p = $(this).parent().closest(".settings-property.content");
+					var editor = p.data("editor");
+					var code = editor ? editor.getValue() : p.children("textarea").val();
+					
+					code = MyHtmlBeautify.beautify('<' + 'script>' + code + '</' + 'script>');
+					code = code.substr(('<' + 'script>').length);
+					code = code.substr(0, code.length - ('</' + 'script>').length);
+					
+					if (editor) {
+						editor.setValue(code, -1);
+						editor.focus();
+					}
+					else
+						p.children("textarea").val(code).focus();
+				});
+				
+				//convert content textarea to editor, but only after the code be loaded into the textarea. That why the createEditor method must be inside of the settimeout.
+				setTimeout(function() {
+					me.createEditor(widget, settings_properties.find(".settings-property.content textarea")[0]);
+				}, 300);
+			};
+			
+			me.onCloseWidgetSettings = function(widget, menu_settings) {
+				var editor = menu_settings.find(".settings-properties .settings-property.content").data("editor");
+				
+				if (editor) {
+					editor.destroy();
+					editor.container.remove();
+				}
+			};
+			
+			me.onResizeWidgetSettings = function(widget, menu_settings) {
+				if (ui_creator.isMenuSettingsOpened() && ui_creator.isMenuSettingsVisible()) {
+					var editor = menu_settings.find(".settings-properties .settings-property.content").data("editor");
+					
+					if (editor) 
+						editor.resize();
+				}
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var sprop = field.parent();
+					var settings_properties = sprop.parent().closest(".settings-properties");
+					var editor = settings_properties.find(".settings-property.content").data("editor");
+					var props = ui_creator.getMenuSettingsProperties(settings_properties);
+					
+					if (editor)
+						props["content"] = editor.getValue();
+					
+					var script_file = widget.children(".script-file");
+					var script_content = widget.children(".script-content");
+					var script = widget.children("script");
+					
+					if (!script[0] && (props["src"] != "" || props["content"] != "")) {
+						script = $( document.createElement("script") );
+						widget[0].appendChild(script[0]); //must be appendChild bc append doesn't work
+					}
+					else if (props["src"] == "" && props["content"] == "") {
+						script.remove();
+						script = null;
+					}
+					
+					if (sprop.hasClass("src")) {
+						if (props["src"] != "") {
+							script_file.html( ("" + props["src"]).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>").replace(/\t/g, "&emsp;").replace(/ /g, "&nbsp;") );
+							
+							//parse src in case it contains the $project_url_prefix or $project_common_url_prefix
+							var aux = typeof ui_creator.options.on_convert_project_url_php_vars_to_real_values_func == "function" ? ui_creator.options.on_convert_project_url_php_vars_to_real_values_func(props["src"], widget) : props["src"];
+							
+							script[0].src = aux;
+						}
+						else
+							script_file.html("");
+					}
+					else if (sprop.hasClass("content")) {
+						if (props["content"] != "") {
+							script_content.html( ("" + props["content"]).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>").replace(/\t/g, "&emsp;").replace(/ /g, "&nbsp;") );
+							script[0].textContent = props["content"];
+						}
+						else if (props["src"] != "" || props["content"] == "")
+							script_content.html("");
+						
+						if (editor)
+							ui_creator.saveMenuSettingsField(sprop);
+					}
+					else { //save the other props
+						widget.data("widget-props-" + field.attr("name"), field.val());
+						
+						if (script && script[0])
+							script.attr(field.attr("name"), field.val());
+					}
+				}
+				
+				return status;
+			};
+			
+			me.createEditor = function(widget, textarea) {
+				if (ace) {
+					var parent = $(textarea).parent();
+					var editor = parent.data("editor");
+					
+					if (!editor) {
+						ace.require("ace/ext/language_tools");
+						var editor = ace.edit(textarea);
+						editor.setTheme("ace/theme/chrome");
+						editor.session.setMode("ace/mode/javascript");
+						editor.setAutoScrollEditorIntoView(true);
+						editor.setOption("minLines", 5);
+						editor.setOptions({
+							enableBasicAutocompletion: true,
+							enableSnippets: true,
+							enableLiveAutocompletion: false,
+						});
+						editor.setOption("wrap", true);
+						
+						var save = function() {
+							me.saveSettingsField(parent.parent().find(".settings-property.content").children()[0], widget, true);
+						};
+						
+						editor.commands.addCommand({
+							name: "saveFile",
+							bindKey: {
+								win: "Ctrl-S",
+								mac: "Command-S",
+								sender: "editor|cli"
+							},
+							exec: function(env, args, request) {
+								save();
+							},
+						});
+						
+						var on_change_timeout_id = null;
+						
+						//add on change event to disable auto save and convert when user is writing code.
+						editor.on("change", function(data, ed) {
+							if (on_change_timeout_id) {
+								clearTimeout(on_change_timeout_id);
+							}
+							
+							on_change_timeout_id = setTimeout(function() {
+								save();
+							}, 5000);
+						});
+						editor.on("blur", function(data, ed) {
+							if (on_change_timeout_id) {
+								clearTimeout(on_change_timeout_id);
+								
+								save();
+							}
+						});
+						
+						parent.find("textarea.ace_text-input").removeClass("ace_text-input"); //fixing problem with scroll up, where when focused or pressed key inside editor the page scrolls to top.
+						/* If still this scrolling problem persists, please adds the following css:
+						.some_class textarea {
+							position:fixed !important;
+						}*/
+						
+						parent.data("editor", editor);
+					}
+						
+					return editor;
+				}
+			};
+			
+			function getCleanedHtmlSrc(src) {
+				src = src.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n").replace(/&emsp;/g, "\t").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+				
+				//replace \u2003 which is a weird white space char that is created when we call 'pre.html()' function and it converts the \t to this char.
+				src = src.replace(/\u2003/g, "\t"); 
+				
+				//remove the weird chars from code, this is, in the php editor appears some red dots in the code, which means there some weird chars in the code.
+				var eol_control_var = "#" + (Math.random() * 10000000) + "__SYSTEM_EOL_" + (Math.random() * 10000000) + "#";
+				src = src.replace(/\n/g, eol_control_var);
+				
+				src = src.replace(/[^\x20-\x7E]/g, ''); //This will remove the end_lines too but I save them through the eol_control_var and then the MyHtmlBeautify.beautify will add them again
+				
+				var regex = new RegExp(eol_control_var, "g");
+				src = src.replace(regex, "\n");
+				
+				return src;
+			}
+			
+			function getCleanedHtmlCode(code) {
+				code = code.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n").replace(/&emsp;/g, "\t").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+				
+				/* DEPRECATED bc the code below will remove all end lines and then execute the MyHtmlBeautify.beautify
+				//add first and last end line removed from trim code on onCreateTemplateWidget
+				if (code)
+					code = code.replace(/^([^\n])/, "\n$1").replace(/([^\n])$/, "$1\n");
+				
+				//prepare prefix tabs by adding them
+				var prefix = widget.data("prefix");
+				
+				if (prefix)
+					code = code.replace(/\n/g, "\n" + prefix);
+				*/
+				
+				//replace \u2003 which is a weird white space char that is created when we call 'pre.html()' function and it converts the \t to this char.
+				code = code.replace(/\u2003/g, "\t"); 
+				
+				//remove the weird chars from code, this is, in the php editor appears some red dots in the code, which means there some weird chars in the code.
+				var eol_control_var = "#" + (Math.random() * 10000000) + "__SYSTEM_EOL_" + (Math.random() * 10000000) + "#";
+				code = code.replace(/\n/g, eol_control_var);
+				
+				code = code.replace(/[^\x20-\x7E]/g, ''); //This will remove the end_lines too but I save them through the eol_control_var and then the MyHtmlBeautify.beautify will add them again
+				
+				var regex = new RegExp(eol_control_var, "g");
+				code = code.replace(regex, "\n");
+				
+				return code;
+			}
+			
+			me.isRecreateWidget = function(html_element) {
+				if (html_element) {
+					var node_name = html_element.nodeName.toLowerCase();
+					var j_html_element = $(html_element);
+					
+					if (node_name == "div" && j_html_element.hasClass("template-widget-script") && j_html_element.data("data-tag") == "script")
+						return true;
+					else if (node_name == "div" && j_html_element.children("div.script-file").length == 1 && j_html_element.children("pre.script-content").length == 1 && j_html_element.children().not("script").length == 2)
+						return true;
+				}
+				
+				return false;
+			};
+		}
+	]]></menu_js>
+</widget>

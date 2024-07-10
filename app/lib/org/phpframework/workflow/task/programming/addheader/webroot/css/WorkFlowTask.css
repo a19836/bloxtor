@@ -1,0 +1,44 @@
+.taskflowchartmenu .task.task_addheader {
+	background-image:url('../img/bg.svg');
+}
+.taskflowchartdiagram .task.task_addheader .eps {
+	background-image:url('../img/bg_hover.svg');
+}
+.taskflowchartdiagram .task.task_addheader .ep {
+	border-color:transparent !important;
+	background-color:transparent !important;
+}
+
+.add_header_task_html {
+	width:295px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .add_header_task_html {
+	width:100%;
+}
+
+.add_header_task_html .value {
+	/*margin-top:15px;*/
+}
+
+.add_header_task_html .value,
+   .add_header_task_html .type {
+	width:100%;
+	min-height:20px;
+	margin-bottom:5px;
+}
+.add_header_task_html .value label,
+   .add_header_task_html .type label {
+	width:60px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .add_header_task_html .value label,
+   .taskflowchart.fixed_side_properties .selected_task_properties .add_header_task_html .type label {
+	width:35px;
+}
+.add_header_task_html .value input {
+	width:200px;   
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .add_header_task_html .value input {
+	width:calc(100% - 50px); 
+}
+
+

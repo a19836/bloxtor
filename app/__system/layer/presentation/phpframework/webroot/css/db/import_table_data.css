@@ -1,0 +1,141 @@
+/* IMPORT DATA */
+.import_table_data {
+	text-align:center;
+}
+
+.import_table_data > form > div {
+	width:340px;
+	margin:0 auto 10px;
+	text-align:left;
+}
+.import_table_data > form > div.columns_attributes,
+   .import_table_data > form > div.insert_ignore,
+   .import_table_data > form > div.update_existent {
+	margin-top:20px;
+}
+.import_table_data > form > div > label {
+	width:160px;
+	height:20px;
+	display:inline-block;
+	float:none;
+}
+.import_table_data div.ignore_rows_number label,
+   .import_table_data div.insert_ignore label,
+   .import_table_data div.update_existent label,
+   .import_table_data div.force label {
+	width:235px;
+}
+.import_table_data div.columns_attributes label {
+	width:auto;
+	display:block;
+}
+.import_table_data input, .import_table_data select {
+	display:inline-block;
+	float:none;
+	font-size:inherit;
+}
+.import_table_data input {
+	width:170px;
+	box-sizing:border-box;
+}
+.import_table_data div.ignore_rows_number input {
+	width:50px;
+}
+.import_table_data div.insert_ignore input,
+   .import_table_data div.update_existent input,
+   .import_table_data div.force input {
+	width:auto;
+	vertical-align:top;
+}
+.import_table_data select {
+	width:100px;
+	height:20px;
+}
+.import_table_data div.insert_ignore .info,
+   .import_table_data div.update_existent .info,
+   .import_table_data div.force .info {
+	margin-left:25px;
+	font-size:80%;
+}
+.import_table_data .add {
+	font-size:16px;
+}
+.import_table_data .delete {
+	height:auto;
+	margin-top:3px;
+	float:right;
+	font-size:14px;
+}
+
+.import_table_data table {
+	float:none;
+	clear:left;
+	margin:10px auto;
+}
+.import_table_data thead {
+	margin-top:10px;
+	margin-left:10px;
+}
+.import_table_data thead th {
+	height:18px;
+	line-height:18px;
+	text-align:center;
+	font-size:9px;
+}
+.import_table_data tbody td {
+	text-align:center;
+	height:20px;
+	background-color:#FFF;
+	border-top:1px solid #CCC;
+	border-right:1px solid #eee;
+}
+.import_table_data tbody select {
+	background-color:#FFF;
+	border:none;
+}
+
+/* ERROR */
+.error {
+	width:100%;
+	min-height:20px;
+	margin-bottom:20px;
+	text-align:center;
+	color:#B51E3F;
+	box-sizing:border-box;
+}
+
+/* ERROR */
+.errors {
+	margin-top:40px !important;
+	margin-bottom:40px !important;
+	text-align:left !important;
+	padding-left:10px;
+}
+.errors > label {
+	color:#B51E3F;
+}
+.errors > ul {
+	margin:0;
+	padding:0;
+	padding-left:20px;
+}
+.errors > ul > li {
+	margin:10px;
+	padding:10px;
+	list-style:none;
+	border:1px solid #ccc;
+	background:#fee;
+}
+.errors > ul > li:before {
+  content: "\2022";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+  color: #B51E3F; /* Change the color */
+  font-size:16px;
+  font-weight: bold; /* If you want it to be bold */
+  display: inline-block; /* Needed to add space between the bullet and the text */
+  width: 1em; /* Also needed for space (tweak if needed) */
+  margin-left:-1.7em; /* Also needed for space (tweak if needed) */
+  margin-right:.5em; /* Also needed for space (tweak if needed) */
+}
+.errors > ul > li:nth-child(even) {
+	background:#fdd;
+}

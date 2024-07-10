@@ -1,0 +1,257 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+/* GENERIC */
+#setup {
+	margin-bottom:20px;
+	padding-top:60px;
+}
+#setup .buttons {
+	position:absolute;
+	top:10px;
+	left:10px;
+	right:10px;
+	min-height:40px;
+	z-index:500;
+	
+	padding:0px;
+	/*color:#555;*/
+	color:#fff;
+	background:var(--link-color);
+	/*background:var(--main-iframe-bg);
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Q1ZTNlNCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0iI2NjZGVlMCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiM2M4Y2MiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-linear-gradient(top,  #eee 0%, var(--main-iframe-bg) 40%, var(--main-iframe-bg) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eee), color-stop(40%,var(--main-iframe-bg)), color-stop(100%,#cccDFE1ED));
+	background: -webkit-linear-gradient(top,  #eee 0%,var(--main-iframe-bg) 40%,var(--main-iframe-bg) 100%);
+	background: -o-linear-gradient(top,  #eee 0%,var(--main-iframe-bg) 40%,var(--main-iframe-bg) 100%);
+	background: -ms-linear-gradient(top,  #eee 0%,var(--main-iframe-bg) 40%,var(--main-iframe-bg) 100%);
+	background: linear-gradient(to bottom,  #eee 0%,var(--main-iframe-bg) 40%,var(--main-iframe-bg) 100%);
+	
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr='#eee', endColorstr='var(--main-iframe-bg)',GradientType=0 )";
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eee', endColorstr='var(--main-iframe-bg)',GradientType=0 );*/
+	
+	-moz-border-radius:0.5em; 
+	-webkit-border-radius:0.5em;
+	border-radius:0.5em;
+	
+	/*border:1px outset #999999;
+	
+	box-shadow: 2px 2px 10px #aaa;
+	-o-box-shadow: 2px 2px 10px #aaa;
+	-webkit-box-shadow: 2px 2px 10px #aaa;
+	-moz-box-shadow: 2px 2px 10px #aaa;*/
+	
+	/* For IE - alpha(opacity=90) */
+	/*-ms-filter:
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=0)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=90)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=180)",
+		"progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=270)";
+	filter:
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=0),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=90),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=180),
+		progid:DXImageTransform.Microsoft.Shadow(Color=#aaaaaa, Strength=2, Direction=270);*/
+		
+	font-family:var(--main-font-family);
+	font-weight:normal;
+	text-align:center;
+}
+#setup .buttons .ok, #setup .buttons .back, #setup .buttons .cancel {
+	border:0;
+	background:0;
+	/*color:#777;*/
+	font-size:12px;
+	margin:5px 7px;
+	cursor:pointer;
+	
+	-moz-border-radius:0.5em; 
+	-webkit-border-radius:0.5em;
+	border-radius:0.5em;
+}
+#setup .buttons .ok:hover, #setup .buttons .back:hover, #setup .buttons .cancel:hover {
+	/*color:#555;*/
+	text-decoration:underline;
+}
+
+#setup .buttons .ok {
+	float:right;
+}
+#setup .buttons .back {
+	padding-right:30px;
+	float:right;
+	border-right:1px solid;
+	border-radius:0;
+}
+#setup .buttons .cancel {
+	float:left;
+}
+
+#setup .setup_input label {
+	height:20px;
+	line-height:20px;
+} 
+#setup .setup_input input, #setup .setup_input select {
+	font-size:12px;
+}
+#setup input[type=button]:focus {
+	box-shadow:none;
+}
+
+/* TERMS AND CONDITIONS */
+#terms_and_conditions {
+	min-width:500px;
+	margin:0 auto;
+	text-align:center;
+	padding:20px;
+}
+#terms_and_conditions .title {
+	width:100%;
+	margin-bottom:20px;
+}
+#terms_and_conditions .title h1 {
+	font-size:14px;
+	margin:0;
+	padding:0;
+	color:var(--link-color);
+}
+#terms_and_conditions .license {
+	width:100%;
+	height:300px;
+	height:calc(100vh - 210px);
+	overflow:auto;
+	border:1px inset #CCC;
+	text-align:left;
+	margin-bottom:10px;
+}
+#terms_and_conditions .dependencies {
+	margin-top:10px;
+}
+#terms_and_conditions .acceptance label,
+  #terms_and_conditions .dependencies label {
+    display: block;
+    padding-left: 17px;
+    text-indent: -17px;
+    font-weight:normal;
+}
+#terms_and_conditions .acceptance input,
+  #terms_and_conditions .dependencies input {
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    margin:0 5px 0 0;
+    vertical-align: middle;
+    position: relative;
+    top: 0px;
+    *overflow: hidden;
+}
+
+/* PROJECT NAME */
+#project_name {
+	width:450px;
+	margin:0 auto;
+	text-align:justify;
+	padding-top:20px;
+}
+#project_name .title {
+	width:100%;
+	margin-bottom:20px;
+}
+#project_name .title h1 {
+	font-size:14px;
+	margin:0;
+	padding:0;
+	text-align:center;
+	color:var(--link-color);
+}
+#project_name .info {
+	text-align:center;
+}
+#project_name .name {
+	margin-top:20px;
+	text-align:center;
+}
+#project_name .name input {
+	width:200px;
+	text-align:center;
+	margin-left:5px;
+}
+
+/* DB */
+.db_settings {width:100%; min-height:300px; text-align:left; padding-top:20px;}
+.db_settings h1 {width:100%; font-size:14px; text-align:center; line-height:30px; margin:10px 0px; padding:0px 0px;}
+.db_settings .info {width:100%; font-size:12px; text-align:center; margin-bottom:20px;}
+.db_settings .warning {width:100%; font-size:12px; text-align:center; margin-top:20px; color:#B51E3F;}
+.db_settings .info .advanced {}
+.db_settings .form_fields {width:400px; margin:0 auto;}
+.db_settings .form_field {float:none; clear:left; min-height:20px; line-height:20px; margin-bottom:3px;}
+.db_settings .form_field label {width:150px; float:left; text-align:left;}
+.db_settings .form_field input:not([type=checkbox]) {width:215px;}
+.db_settings .form_field select {width:220px;}
+.db_settings .form_field.db_port input {width:60px;}
+.db_settings .form_field.show_advanced_db_options span { display:block; text-align:right; padding-right:30px; }
+.db_settings .form_field .toggle_password {
+	margin-left: 5px;
+}
+.db_settings .buttons {display:none;}
+.db_settings .hide {display:none;}
+
+/* LAYERS */
+#layer_form.hide_setup {
+	margin-top:-55px; /* This is the padding-top for the parent div: #setup */
+}
+#layer_form:not(.hide_setup) .top_bar header {
+	top:70px;
+	
+	/*background: linear-gradient(0deg, #ffffff73 0%, #eee 50%, #ffffff73 100%);*/
+
+}
+#layer_form:not(.hide_setup) .top_bar header li.save {
+	display:none;
+}
+#layer_form:not(.hide_setup) .taskflowchart.with_top_bar_menu .tasks_menu, 
+  #layer_form:not(.hide_setup) .taskflowchart.with_top_bar_menu .tasks_menu_hide, 
+  #layer_form:not(.hide_setup) .taskflowchart.with_top_bar_menu .tasks_flow {
+	top:120px !important;
+}
+#layer_form:not(.hide_setup) .taskflowchart.with_top_bar_menu .workflow_menu.top_bar_menu {
+	top:87px;
+}
+#layer_form:not(.hide_setup) .taskflowchart.with_top_bar_menu .workflow_menu.top_bar_menu > ul {
+	max-height:calc(100vh - 120px);
+}
+#layer_form .taskflowchart.with_top_bar_menu .workflow_menu.top_bar_menu li.save {
+	display:none;
+}
+#layer_form .taskflowchart.with_top_bar_menu .workflow_menu.top_bar_menu .set_global_vars {
+	border-top:1px solid var(--main-context-menu-border);
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}
+#layer_form .taskflowchart .workflow_menu .flush_cache,
+  #layer_form .taskflowchart .workflow_menu .flush_cache + .separator {
+	display:none !important; /* Do not allow flush cache when setup otherwise it will delete the file LAYER_CACHE_PATH/default_project_name with the default project name */
+}
+
+/* END */
+#end {
+	width:500px;
+	margin:0 auto;
+	text-align:center;
+	padding-top:20px;
+}
+#end .title {
+	width:100%;
+	margin-bottom:20px;
+}
+#end .title h1 {
+	font-size:14px;
+	margin:0;
+	padding:0;
+	color:var(--link-color);
+}

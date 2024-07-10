@@ -1,0 +1,126 @@
+body,
+  #main_column {
+	background:#DFE1ED !important;
+	min-height:auto;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+#title {
+	height:25px;
+	color:#666;
+	font-size: 14px;
+	font-weight: bold;
+	margin:60px 0 5px 0px;
+	text-align:center;
+}
+
+ul {
+	margin:50px 20px;
+	text-align:center;
+}
+li {
+	width:230px;
+	margin:20px !important;
+	display:inline-block;
+	position:relative;
+	color:#2C2D34;
+	border:1px solid rgba(0,0,0,.125);
+	border-radius:0.25rem;
+	background:#fff;
+	cursor:pointer;
+	vertical-align:top;
+	text-align:left;
+	
+	box-shadow:0px 0px 5px 0px rgba(0,0,0,0.1);
+	-webkit-box-shadow:0px 0px 5px 0px rgba(0,0,0,0.1);
+	-moz-box-shadow:0px 0px 5px 0px rgba(0,0,0,0.1);
+}
+li > .title {
+	margin-bottom:1rem;
+	padding:0 1.25rem;
+	display:block;
+	cursor:inherit;
+	font-size:1rem;
+	color:var(--icon-hover-color);
+	opacity:.9;
+}
+li:hover > .title {
+	opacity:1;
+}
+li > .sub_title {
+	margin-bottom:.5rem;
+	padding:0 1.25rem;
+	display:block;
+	font-size:.8rem;
+}
+li > .description {
+	padding:0 1.25rem;
+	margin-bottom:.75rem;
+	font-size:.7rem;
+	opacity:.8;
+}
+li > .button {
+	margin:0.25rem 1.25rem 1.25rem;
+	display: inline-block;
+	font-weight: 400;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	padding:0.375rem 0.75rem;
+	font-size:.8rem;
+	line-height:1.5;
+	border-radius:0.25rem;
+	border:1px solid var(--icon-hover-color);
+	color: #fff;
+	background-color:var(--icon-hover-color);
+	transition:all .15s ease-in-out;
+	opacity:.8;
+}
+li > .button:hover,
+  li:hover > .button {
+	opacity:1;
+}
+li > .photo {
+	width:100%;
+	margin-bottom:1rem;
+	padding:1.25rem 0;
+	cursor:pointer;
+	font-size:50px;
+	text-align:center;
+	box-sizing:border-box;
+	border-top-left-radius: calc(0.25rem - 1px);
+	border-top-right-radius: calc(0.25rem - 1px);
+	background:#2C2D34;
+	color:#DFE1ED;
+	opacity:1 !important;
+}
+li > .photo:hover,
+  li:hover > .photo {
+	color:var(--icon-hover-color);
+	color:#fff;
+}
+li > .photo::before {
+	line-height:normal;
+	margin:0;
+}
+li.simple_admin_ui > .photo::before {
+	content:"\f1ae";
+}
+li.citizen_admin_ui > .photo::before {
+	content:"\f0c0";
+}
+li.low_code_admin_ui > .photo::before {
+	content:"\f501";
+}
+li.advanced_admin_ui > .photo::before {
+	content:"\f21b";
+}
+li.expert_admin_ui > .photo::before {
+	content:"\f504";
+}

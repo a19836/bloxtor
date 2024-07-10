@@ -1,0 +1,21 @@
+.dropzone {
+	position:absolute;
+	left:0;
+	top:50px;
+	right:0;
+	bottom:0;
+	border:0;
+}
+
+.dropzone .dz-default {
+	margin-top:45vh;
+	/*font-size: 14px;
+	font-weight: bold;*/
+}
+.dropzone .dz-preview .dz-error-message {
+	width:300px;
+}
+.dropzone .dz-preview .dz-error-message.show {
+	display:block;
+	opacity:1;
+}

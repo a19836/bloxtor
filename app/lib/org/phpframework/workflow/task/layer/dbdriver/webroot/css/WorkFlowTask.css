@@ -1,0 +1,26 @@
+.taskflowchartmenu .task.task_dbdriver {
+	background-image:url('../img/logo.svg');
+}
+.taskflowchartdiagram .task.task_dbdriver {
+	background-image:url('../img/logo.svg');
+}
+
+.db_driver_task_html {
+	width:390px;
+}
+.db_driver_task_html div {
+	margin-bottom:5px;
+}
+.db_driver_task_html label {
+	width:140px;
+	display:inline-block;
+}
+.db_driver_task_html input:not([type=checkbox]) {
+	width:200px;
+}
+.db_driver_task_html select {
+	width:208px;
+}
+.db_driver_task_html .toggle_password::before {
+	content:"\f074";
+}

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Modal</label>
+	<tag>bsmodal</tag>
+	<settings>
+		<create_widget_class>BSModalWidget</create_widget_class>
+	</settings>
+	<files>
+		<css>../../CreateWidgetBootstrapClassObj.css</css>
+		<js>../../CreateWidgetBootstrapClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bsmodal:before,
+		  body > .menu-widget.menu-widget-bsmodal.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .myfancypopup.layout-ui-editor-bootstrap-widgets-popup.bsmodal {
+			width:520px;
+		}
+		.layout-ui-editor > .myfancypopup.layout-ui-editor-bootstrap-widgets-popup.bsmodal > .content > ul > li img {
+			max-width:300px;
+			max-height:300px;
+			height:auto;
+		}
+		.layout-ui-editor > .myfancypopup.layout-ui-editor-bootstrap-widgets-popup.bsmodal > .content > ul > li .name {
+			display:block;
+			float:none;
+			text-align:right;
+		}
+		.layout-ui-editor > .myfancypopup.layout-ui-editor-bootstrap-widgets-popup.bsmodal > .content > ul > li.name_centered .name {
+			text-align:center;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSModalWidget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapClassObj(ui_creator, menu_widget, "bsmodal");
+			obj.extend(this);
+			
+			obj.available_items = {
+				"4": [
+					{
+						image: '#widget_webroot_url#modal_6.png',
+						name: 'Popup - Hidden by default - Triggered by button',
+						html: '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalDefault">Launch demo modal</button><div class="modal fade" id="exampleModalDefault" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1><button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">...</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>'
+					},
+					{
+						image: '#widget_webroot_url#modal_7.png',
+						name: 'Popup - Hidden by default - Triggered by button',
+						html: '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdropLive">Launch static backdrop modal</button><div class="modal fade" id="staticBackdropLive" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLiveLabel" aria-modal="true" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h1 class="modal-title fs-5" id="staticBackdropLiveLabel">Modal title</h1><button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p>I will not close if you click outside me. Do not even try to press escape key.</p></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Understood</button></div></div></div></div>'
+					},
+					{
+						image: '#widget_webroot_url#modal_8.png',
+						name: 'Popup - Hidden by default - Triggered by button',
+						html: '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenteredScrollable">Vertically centered scrollable modal</button><div class="modal fade" id="exampleModalCenteredScrollable" tabindex="-1" aria-labelledby="exampleModalCenteredScrollableTitle" aria-modal="true" role="dialog"><div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h1 class="modal-title fs-5" id="exampleModalCenteredScrollableTitle">Modal title</h1><button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p>This is some placeholder content to show the scrolling behavior for modals. We use repeated line breaks to demonstrate how content can exceed minimum inner height, thereby showing inner scrolling. When content becomes longer than the predefined max-height of modal, content will be cropped and scrollable within the modal.</p><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><p>This content should appear at the bottom after you scroll.</p></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>'
+					}
+				],
+				"5.3": [
+					{
+						image: '#widget_webroot_url#modal_1.png',
+						name: '',
+						html: '<div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalSheet"><div class="modal-dialog" role="document"><div class="modal-content rounded-4 shadow"><div class="modal-header border-bottom-0"><h1 class="modal-title fs-5">Modal title</h1><button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body py-0"><p>This is a modal sheet, a variation of the modal that docs itself to the bottom of the viewport like the newer share sheets in iOS.</p></div><div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0"><button type="button" class="btn btn-lg btn-primary">Save changes</button><button type="button" class="btn btn-lg btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button></div></div></div></div>'
+					},
+					{
+						image: '#widget_webroot_url#modal_2.png',
+						name: '',
+						html: '<div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalChoice"><div class="modal-dialog" role="document"><div class="modal-content rounded-3 shadow"><div class="modal-body p-4 text-center"><h5 class="mb-0">Enable this setting?</h5><p class="mb-0">You can always change your mind in your account settings.</p></div><div class="modal-footer flex-nowrap p-0"><button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"><strong>Yes, enable</strong></button><button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-dismiss="modal" data-bs-dismiss="modal">No thanks</button></div></div></div></div>'
+					},
+					{
+						image: '#widget_webroot_url#modal_3.png',
+						name: '',
+						html: '<div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalTour"><div class="modal-dialog" role="document"><div class="modal-content rounded-4 shadow"><div class="modal-body p-5"><h2 class="fw-bold mb-0">What is new</h2><ul class="d-grid gap-4 my-5 list-unstyled small"><li class="d-flex gap-4"><svg class="bi text-body-secondary flex-shrink-0" width="48" height="48"><use xlink:href="#grid-fill"></use></svg><div><h5 class="mb-0">Grid view</h5>Not into lists? Try the new grid view.</div></li><li class="d-flex gap-4"><svg class="bi text-warning flex-shrink-0" width="48" height="48"><use xlink:href="#bookmark-star"></use></svg><div><h5 class="mb-0">Bookmarks</h5>Save items you love for easy access later.</div></li><li class="d-flex gap-4"><svg class="bi text-primary flex-shrink-0" width="48" height="48"><use xlink:href="#film"></use></svg><div><h5 class="mb-0">Video embeds</h5>Share videos wherever you go.</div></li></ul><button type="button" class="btn btn-lg btn-primary mt-5 w-100" data-dismiss="modal" data-bs-dismiss="modal">Great, thanks!</button></div></div></div></div>',
+						title: 'Needs Bootstrap bi classes to be installed'
+					},
+					{
+						image: '#widget_webroot_url#modal_4.png',
+						name: '',
+						html: '<div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin"><div class="modal-dialog" role="document"><div class="modal-content rounded-4 shadow"><div class="modal-header p-5 pb-4 border-bottom-0"><h1 class="fw-bold mb-0 fs-2">Sign up for free</h1><button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body p-5 pt-0"><form class=""><div class="form-floating mb-3"><input type="email" class="form-control rounded-3" id="floatingInput" placeholder="name@example.com"><label for="floatingInput">Email address</label></div><div class="form-floating mb-3"><input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password"><label for="floatingPassword">Password</label></div><button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign up</button><small class="text-body-secondary">By clicking Sign up, you agree to the terms of use.</small><hr class="my-4"><h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2><button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3" type="submit"><svg class="bi me-1" width="16" height="16"><use xlink:href="#twitter"></use></svg>Sign up with Twitter</button><button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" type="submit"><svg class="bi me-1" width="16" height="16"><use xlink:href="#facebook"></use></svg>Sign up with Facebook</button><button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3" type="submit"><svg class="bi me-1" width="16" height="16"><use xlink:href="#github"></use></svg>Sign up with GitHub</button></form></div></div></div></div>',
+						title: 'Needs Bootstrap bi classes to be installed'
+					},
+					{
+						image: '#widget_webroot_url#modal_5.png',
+						name: 'Shown by default',
+						html: '<div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Modal title</h5><button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><p>Modal body text goes here.</p></div><div class="modal-footer"><button type="button" class="btn btn-primary">Save changes</button><button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button></div></div></div></div>',
+						class: 'name_centered'
+					},
+					{
+						image: '#widget_webroot_url#modal_6.png',
+						name: 'Popup - Hidden by default - Triggered by button',
+						html: '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalDefault">Launch demo modal</button><div class="modal fade" id="exampleModalDefault" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1><button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">...</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>'
+					},
+					{
+						image: '#widget_webroot_url#modal_7.png',
+						name: 'Popup - Hidden by default - Triggered by button',
+						html: '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdropLive">Launch static backdrop modal</button><div class="modal fade" id="staticBackdropLive" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLiveLabel" aria-modal="true" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h1 class="modal-title fs-5" id="staticBackdropLiveLabel">Modal title</h1><button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p>I will not close if you click outside me. Do not even try to press escape key.</p></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Understood</button></div></div></div></div>'
+					},
+					{
+						image: '#widget_webroot_url#modal_8.png',
+						name: 'Popup - Hidden by default - Triggered by button',
+						html: '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenteredScrollable">Vertically centered scrollable modal</button><div class="modal fade" id="exampleModalCenteredScrollable" tabindex="-1" aria-labelledby="exampleModalCenteredScrollableTitle" aria-modal="true" role="dialog"><div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h1 class="modal-title fs-5" id="exampleModalCenteredScrollableTitle">Modal title</h1><button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><p>This is some placeholder content to show the scrolling behavior for modals. We use repeated line breaks to demonstrate how content can exceed minimum inner height, thereby showing inner scrolling. When content becomes longer than the predefined max-height of modal, content will be cropped and scrollable within the modal.</p><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><p>This content should appear at the bottom after you scroll.</p></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>'
+					},
+					{
+						image: '#widget_webroot_url#modal_9.png',
+						name: 'Popup - Hidden by default - Triggered by button',
+						html: '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">Full screen</button><div class="modal fade" id="exampleModalFullscreen" tabindex="-1" aria-labelledby="exampleModalFullscreenLabel" aria-modal="true" role="dialog"><div class="modal-dialog modal-fullscreen"><div class="modal-content"><div class="modal-header"><h1 class="modal-title fs-4" id="exampleModalFullscreenLabel">Full screen modal</h1><button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">...</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button></div></div></div></div>'
+					}
+				],
+			};
+		}
+	]]></menu_js>
+</widget>

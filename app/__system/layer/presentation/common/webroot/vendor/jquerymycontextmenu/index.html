@@ -1,0 +1,63 @@
+<html>
+<head>
+	<!--script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script-->
+	<script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+	
+	<!-- In case we would like to add the holdtap event -->
+	<script type="text/javascript" src="../jquerytaphold/taphold.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script type="text/javascript" src="js/jquery.mycontextmenu.js"></script>
+		
+	<script type="text/javascript">
+	$(document).ready(function($){
+		//apply context menu to links with class="mylinks"
+		$('a.mylinks').addcontextmenu('contextmenu1');
+	
+		//apply context menu to all images on the page
+		$('img').addcontextmenu('contextmenu2');
+	});
+	</script>
+</head>
+<body>
+	<p><a class="mylinks" href="#">Menu 1</a></p>
+	<p>Menu with image <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" /></p>
+	
+	<!--HTML for Context Menu 1-->
+	<ul id="contextmenu1" class="mycontextmenu">
+		<li><a href="#">Item 1a</a></li>
+		<li><a href="#">Item 2a</a></li>
+		<li><a href="#">Item Folder 3a</a>
+			<ul>
+			<li><a href="#">Sub Item 3.1a</a></li>
+			<li><a href="#">Sub Item 3.2a</a></li>
+			<li><a href="#">Sub Item 3.3a</a></li>
+			<li><a href="#">Sub Item 3.4a</a></li>
+			</ul>
+		</li>
+		<li><a href="#">Item 4a</a></li>
+		<li><a href="#">Item Folder 5a</a>
+			<ul>
+			<li><a href="#">Sub Item 5.1a</a></li>
+			<li><a href="#">Item Folder 5.2a</a>
+				<ul>
+				<li><a href="#">Sub Item 5.2.1a</a></li>
+				<li><a href="#">Sub Item 5.2.2a</a></li>
+				<li><a href="#">Sub Item 5.2.3a</a></li>
+				<li><a href="#">Sub Item 5.2.4a</a></li>
+				</ul>
+			</li>
+			</ul>
+		</li>
+		<li><a href="#">Item 6a</a></li>
+	</ul>
+	
+	<!--HTML for Context Menu 2-->
+	<ul id="contextmenu2" class="mycontextmenu">
+		<li><a href="#">Item 1a</a></li>
+		<li><a href="#">Item 2a</a></li>
+		<li><a href="#">Item 1a</a></li>
+		<li><a href="#">Item 2a</a></li>
+	</ul>
+</body>
+</html>

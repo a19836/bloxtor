@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<!-- DISABLE FOR NOW. THIS IS WORKING! BUT DOES NOT MAKE SENSE TO BE ACTIVE FOR NOW! -->
+	<!--import><?php echo $vars["dbl_path"]."/"; ?>cache_handler.xml</import>
+	
+	<services>
+		<service id="listtablefields" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600">
+			<validation_script>return is_object($output) &amp;&amp; is_a($output, "Exception") ? false : true;</validation_script>
+			<key>listtablefields-&lt;?php echo md5(json_encode($input) . $options['db_driver']);?&gt;</key>
+		</service>
+		
+		<service id="getData" cache_handler="ServiceCacheHandler" to_cache="true" cache_type="php" ttl="600">
+			<validation_script>return is_object($output) &amp;&amp; is_a($output, "Exception") ? false : true;</validation_script>
+			<key>getData-&lt;?php echo md5(json_encode($input) . $options['db_driver']);?&gt;</key>
+		</service>
+		
+		<service id="setData" cache_handler="ServiceCacheHandler" to_cache="false">
+			<validation_script>return $output;</validation_script>
+			<to_delete>
+				<service>
+					<key>getData</key>
+				</service>
+			</to_delete>
+		</service>
+	</services-->
+</beans>

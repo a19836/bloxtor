@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Stylesheet File</label>
+	<tag>link</tag>
+	<settings>
+		<create_widget_class>LinkWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[
+		<div class="link-file"></div>
+	]]></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property href">
+			<label class="col-md-4 col-sm-4 col-form-label">Href: </label>
+			<input class="col-md-8 col-sm-8 form-control" name="href" />
+		</div>
+		<div class="form-group row settings-property rel">
+			<label class="col-md-4 col-sm-4 col-form-label">Rel: </label>
+			<input class="col-md-8 col-sm-8 form-control" name="rel" value="stylesheet" />
+		</div>
+		<div class="form-group row settings-property type">
+			<label class="col-md-4 col-sm-4 col-form-label">Type: </label>
+			<input class="col-md-8 col-sm-8 form-control" name="type" value="text/css" />
+		</div>
+		<div class="form-group row settings-property charset">
+			<label class="col-md-4 col-sm-4 col-form-label">Charset: </label>
+			<input class="col-md-8 col-sm-8 form-control" name="charset" value="utf-8" />
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-link:before,
+		  body > .menu-widget.menu-widget-link.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-link li.group.settings-properties > ul .settings-property .form-control {
+			width:70%;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-link li.group.settings-widget,
+		  .layout-ui-editor > .menu-settings.menu-settings-link li.group.settings-general,
+		  .layout-ui-editor > .menu-settings.menu-settings-link li.group.settings-dimension,
+		  .layout-ui-editor > .menu-settings.menu-settings-link li.group.settings-typography,
+		  .layout-ui-editor > .menu-settings.menu-settings-link li.group.settings-decorations,
+		  .layout-ui-editor > .menu-settings.menu-settings-link li.group.settings-events,
+		  .layout-ui-editor > .menu-settings.menu-settings-link li.group.settings-others,
+		  .layout-ui-editor > .menu-settings.menu-settings-link li.settings-tabs > ul > li.settings-tab-widget,
+		  .layout-ui-editor > .menu-settings.menu-settings-link li.settings-tabs > ul > li.settings-tab-style,
+		  .layout-ui-editor > .menu-settings.menu-settings-link li.settings-tabs > ul > li.settings-tab-events {
+			display:none;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-link > .settings-properties .href.with-search-icon input {
+			padding-right:20px;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-link > .settings-properties .href .search {
+			display:inline-block;
+			float:none;
+			clear:both;
+			position:absolute;
+			right:10px;
+			margin:8px 0 0;
+			background:none;
+			cursor:pointer;
+		}
+		
+		.layout-ui-editor > .menu-layers .group.group-link > ul {
+			display:none !important;
+		}
+	]]></menu_css>
+	<template_css><![CDATA[
+		.template-widget.template-widget-link {
+			min-width:1em;
+			min-height:1em;
+			height:auto;
+			margin:5px !important; /* !important is bc of the css when .borders is active */
+			padding:5px !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			display:block;
+			background:#c0c0c0;
+			color:#666;
+			border-radius:5px;
+			border:1px outset #bbb !important; /* !important is bc of the css when .borders is active */
+			text-align:left;
+		}
+		body > .droppable.borders .template-widget.template-widget-link:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+		
+		.template-widget.template-widget-link > .link-file {
+			margin:0 !important; /* !important is bc of the css when .borders is active */
+			padding:0 !important; /* !important is bc of the css when .borders is active */
+			border:0 !important; /* !important is bc of the css when .borders is active */
+			background-image:none !important; /* !important is bc of the css when .borders is active */
+			font-size:12px;
+		}
+		.template-widget.template-widget-link > .link-file:empty:before {
+			content:"css file undefined";
+		}
+		body > .droppable.borders .template-widget.template-widget-link > .link-file:before {
+			content:"";
+			border:0;
+			display:none;
+		}
+	]]></template_css>
+	<menu_js><![CDATA[
+		function LinkWidget(ui_creator, menu_widget) {
+			var me = this;
+			var update_menu_settings_timeout_id = null;
+			
+			me.ignore_attributes = ["contenteditable"];
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-parse-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.link.parseHtml",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.link.cleanHtml",
+					"data-on-create-template-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.link.onCreateTemplateWidget",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.link.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.link.saveSettingsField",
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.link.parseSettings",
+				});
+				
+				menu_widget.removeAttr("data-on-clone-menu-widget-func");
+			};
+			
+			me.parseHtml = function(html_element) {
+				if (!html_element)
+					return false;
+				
+				var node_name = html_element.nodeName.toLowerCase();
+				
+				//if html_element is a link node.
+				if (node_name == "link")
+					return true;
+				
+				//Otherwise if html_element was previously a template-widget-link node.
+				//Note that if we call the recreateWidgetChildren or convertHtmlElementToWidget methods for this widget.parent(), when the html_element is already a widget (created previously), we need to be prepared to parse it and re-convert this html_element (which is already a widget) into a new widget. So we need to detect this cases with the following code:
+				if (me.isRecreateWidget(html_element))
+					return true;
+				
+				return false;
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				var link = widget.children("link");
+				
+				var href = widget.children(".link-file").html();
+				href = href.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n").replace(/&emsp;/g, "\t").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+				
+				//replace \u2003 which is a weird white space char that is created when we call 'pre.html()' function and it converts the \t to this char.
+				href = href.replace(/\u2003/g, "\t"); 
+				
+				widget_settings["href"] = href; //Do not use link.attr("href") bc the href can have the $project_url_prefix or $project_common_url_prefix var parsed
+				widget_settings["rel"] = link.attr("rel");
+				widget_settings["type"] = link.attr("type");
+				widget_settings["charset"] = link.attr("charset");
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var j_html_element = $(html_element);
+				var link = j_html_element.children("link"); 
+				var href = j_html_element.children(".link-file").html();
+				var href_bkp = link.attr("href");
+				
+				href = getCleanedHtmlHref(href);
+				link.attr("href", href);
+				
+				var html = ui_creator.getCleanedHtmlElement( link[0] );
+				
+				link.attr("href", href_bkp);
+				
+				return html;
+			};
+			
+			me.onCreateTemplateWidget = function(widget, html_element) {
+				var link_file = widget.children(".link-file");
+				
+				if (html_element) {
+					var is_recreate = me.isRecreateWidget(html_element);
+					var node_name = html_element.nodeName.toLowerCase();
+					var j_html_element = $(html_element);
+					
+					//if html_element was previously a template-widget-link node.
+					//Note that if we call the recreateWidgetChildren or convertHtmlElementToWidget methods for this widget.parent(), when the html_element is already a widget (created previously), we need to be prepared to parse it and re-convert this html_element (which is already a widget) into a new widget. So we need to detect this cases with the following code:
+					if (is_recreate) {
+						var href = j_html_element.children(".link-file").html();
+						var link = j_html_element.children("link"); 
+						
+						href = getCleanedHtmlHref(href);
+						link.attr("href", href);
+						
+						//append the link node to the widget so then we can remove the j_html_element
+						widget.append(link);
+						j_html_element.remove();
+						
+						//set the new html_element to the link node
+						html_element = link[0];
+						
+						//check if properties are open for the old widget and if yes, open the properties for the new widget
+						ui_creator.reloadOpenMenuSettingsIfOpenedWithOldWidget(j_html_element, widget, 1000);
+					}
+				}
+					
+				if (html_element) {
+					var href = html_element.getAttribute("href");
+					
+					if (href && href != "") {
+						link_file.html(href);
+						
+						//parse href in case it contains the $project_url_prefix or $project_common_url_prefix
+						var aux = typeof ui_creator.options.on_convert_project_url_php_vars_to_real_values_func == "function" ? ui_creator.options.on_convert_project_url_php_vars_to_real_values_func(href, widget) : href;
+						
+						html_element.setAttribute("href", aux);
+					}
+					
+					widget.append(html_element);
+				}
+				else
+					widget.append( document.createElement("link") );
+				
+				//prepare .style-content editable
+				widget.attr("contenteditable", "false");
+				var link = widget.children("link");
+				
+				link_file.attr("contenteditable", "true")
+					.keydown(function(e) {
+						e.stopPropagation(); //otherwise if the user press ctrl+v to paste a string, it will call the ui_creator.TextSelection.options.on_create_node function which then will convert this widget into a normal html block widget, which will mess the layout.
+						
+						//avoids enter key to create unespected html elements. Only shift+enter keys are allowed.
+						var is_shift = window.event ? window.event.shiftKey : e.shiftKey;
+						
+						if (e.keyCode === 13 && !is_shift) {
+							ui_creator.showError("Please use Shift-enter keys instead...");
+							return false;
+						}
+					})
+					.keyup(function(e) {
+						link.attr("href", link_file.text());
+						
+						if (update_menu_settings_timeout_id)
+							clearTimeout(update_menu_settings_timeout_id);
+						
+						update_menu_settings_timeout_id = setTimeout(function() {
+							ui_creator.reloadMenuSettingsIfOpened(widget);
+						}, 700);
+					})
+					.mouseup(function(e) {
+						//prevents that the TextSelection open the inline menu
+						e.preventDefault();
+						e.stopPropagation();
+						
+						ui_creator.TextSelection.hideMenu(); //we need this in case the TextSelection menu is open.
+					})
+					.blur(function(e) {
+						if (typeof ui_creator.options.on_template_widgets_layout_changed_func == "function")
+							ui_creator.options.on_template_widgets_layout_changed_func(null);
+					});
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				if (typeof ui_creator.options.on_choose_webroot_file_url_func == "function") {
+					var icon = $('<span class="zmdi zmdi-search-in-file search"></span>');
+					icon.on("click", function() {
+						ui_creator.options.on_choose_webroot_file_url_func(this);
+					});
+					menu_settings.find(" > .settings-properties .settings-property.href").addClass("with-search-icon").append(icon);
+				}
+				
+				ui_creator.addMenuSettingsContextMenu( menu_settings.find(".settings-properties input") );
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					var link = widget.children("link");
+					
+					if (sprop.hasClass("href")) {
+						var link_file = widget.children(".link-file");
+						
+						if (field_value != "") {
+							link_file.html( field_value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>").replace(/\t/g, "&emsp;").replace(/ /g, "&nbsp;") );
+							
+							//parse href in case it contains the $project_url_prefix or $project_common_url_prefix
+							var aux = typeof ui_creator.options.on_convert_project_url_php_vars_to_real_values_func == "function" ? ui_creator.options.on_convert_project_url_php_vars_to_real_values_func(field_value, widget) : field_value;
+							
+							link.attr("href", aux);
+						}
+						else {
+							link_file.html("");
+							link.removeAttr("href");
+						}
+					}
+					else if (sprop.hasClass("rel")) {
+						if (field_value != "")
+							link.attr("rel", field_value);
+						else
+							link.removeAttr("rel");
+					}
+					else if (sprop.hasClass("type")) {
+						if (field_value != "")
+							link.attr("type", field_value);
+						else
+							link.removeAttr("type");
+					}
+					else if (sprop.hasClass("charset")) {
+						if (field_value != "")
+							link.attr("charset", field_value);
+						else
+							link.removeAttr("charset");
+					}
+				}
+				
+				return status;
+			};
+			
+			function getCleanedHtmlHref(href) {
+				href = href.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n").replace(/&emsp;/g, "\t").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+				
+				//replace \u2003 which is a weird white space char that is created when we call 'pre.html()' function and it converts the \t to this char.
+				href = href.replace(/\u2003/g, "\t"); 
+				
+				//remove the weird chars from code, this is, in the php editor appears some red dots in the code, which means there some weird chars in the code.
+				var eol_control_var = "#" + (Math.random() * 10000000) + "__SYSTEM_EOL_" + (Math.random() * 10000000) + "#";
+				href = href.replace(/\n/g, eol_control_var);
+				
+				href = href.replace(/[^\x20-\x7E]/g, ''); //This will remove the end_lines too but I save them through the eol_control_var and then the MyHtmlBeautify.beautify will add them again
+				
+				var regex = new RegExp(eol_control_var, "g");
+				href = href.replace(regex, "\n");
+				
+				return href;
+			}
+			
+			me.isRecreateWidget = function(html_element) {
+				if (html_element) {
+					var node_name = html_element.nodeName.toLowerCase();
+					var j_html_element = $(html_element);
+					
+					if (node_name == "div" && j_html_element.hasClass("template-widget-link") && j_html_element.data("data-tag") == "link")
+						return true;
+					else if (node_name == "div" && j_html_element.children("div.link-file").length == 1 && j_html_element.children().not("link").length == 1)
+						return true;
+				}
+				
+				return false;
+			};
+		}
+	]]></menu_js>
+</widget>

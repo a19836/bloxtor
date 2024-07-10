@@ -1,0 +1,187 @@
+/* TOP BAR */
+.top_bar .title .class_name {
+	width:200px;
+	display:inline-block;
+}
+
+/* ERROR */
+.error {
+	padding:10px;
+	text-align:center;
+	color:#B51E3F;
+}
+
+/* FILE CLASS */
+.file_class_obj {
+	font-size:10pt;
+}
+.file_class_obj div .add {
+	margin:3px 0 0 0;
+	font-size:14px;
+}
+.file_class_obj label {
+	font-weight:normal;
+	font-style:normal;
+}
+
+.file_class_obj > .name {
+	width:200px;
+	position:fixed;
+	top:14px;
+	left:85px;
+	z-index:2;
+}
+.file_class_obj.in_popup > .name {
+	top:16px;
+	left:77px;
+  	color:var(--main-popup-header-color);
+}
+.file_class_obj .visibility,
+  .file_class_obj .abstract,
+  .file_class_obj .extend, 
+  .file_class_obj .implement {
+	width:100%;
+	margin-bottom:5px;
+}
+.file_class_obj > .name label {
+	display:none;
+}
+.file_class_obj > .name input {
+	width:190px;
+	border:1px solid #ccc;
+	background:transparent;
+  	color:inherit;
+}
+.file_class_obj .visibility input,
+  .file_class_obj .abstract input {
+	margin-left:0;
+}
+.file_class_obj .extend input, 
+  .file_class_obj .implement input {
+	width:calc(100% - 150px);
+	min-width:200px;
+}
+.file_class_obj .visibility .info {
+	font-size:12px;
+}
+
+.file_class_obj .properties {
+	width:100%;
+	padding-top:20px;
+}
+.file_class_obj .properties label {
+	width:80px;
+}
+.file_class_obj .properties label > .add {
+	vertical-align: middle;
+	font-size:16px;
+}
+.file_class_obj .properties table {
+	width:810px;
+	margin-top:5px;
+}
+.file_class_obj .properties thead th {
+	font-size:10px;
+	border-bottom:1px solid #CCC;
+	border-right:1px solid #eee;
+}
+.file_class_obj .properties thead th:nth-last-child(2) {
+	border-right:0;
+}
+.file_class_obj .properties thead th:not(.icon_cell) {
+	text-indent:3px;
+}
+.file_class_obj .properties tbody td {
+	border-bottom:1px solid #CCC;
+	border-right:1px solid #eee;
+}
+.file_class_obj .properties tbody td:nth-last-child(2) {
+	border-right:0;
+}
+.file_class_obj .properties .icon_cell {
+	border:0;
+	text-align:center;
+}
+.file_class_obj .properties .icon_cell .icon {
+	margin:auto 5px;
+	font-size:14px;
+}
+.file_class_obj .properties tbody input, .file_class_obj .properties tbody select {
+	border:0;
+	background-color:transparent;
+	float:none;
+	clear:left;
+}
+.file_class_obj .properties table .name {
+	width:150px;
+}
+.file_class_obj .properties table .name input {
+	width:145px;
+}
+.file_class_obj .properties table .value {
+	width:250px;
+}
+.file_class_obj .properties table .value input {
+	width:245px;
+}
+.file_class_obj .properties table .type {
+	width:100px;
+	text-align:center;
+	text-indent:0;
+}
+.file_class_obj .properties table .type select {
+	width:100px;
+	text-align:center;
+}
+.file_class_obj .properties table .static {
+	width:50px;
+	text-align:center;
+	text-indent:0;
+}
+.file_class_obj .properties table .static input {
+	display:inline;
+}
+.file_class_obj .properties table .var_type {
+	width:80px;
+	text-align:center;
+	text-indent:0;
+}
+.file_class_obj .properties table .var_type select {
+	width:80px;
+	text-align:center;
+}
+.file_class_obj .properties table .comments {
+	width:150px;
+}
+.file_class_obj .properties table .comments input {
+	width:145px;
+}
+.file_class_obj .properties table .icon_cell {
+	width:25px;
+}
+
+.file_class_obj .comments {
+	width:100%;
+	margin-top:20px;
+}
+.file_class_obj .comments label {
+	width:100%;
+	clear:left;
+	float:none;
+}
+.file_class_obj .comments textarea {
+	width:calc(100% - 10px);
+	min-width:200px;
+	height:60px;
+	margin-top:5px;
+	font-size:10pt;
+}
+
+/* POPUPS */
+/* POPUPS - choose_php_class */
+.choose_php_class.with_title {
+	padding:15px;
+}
+.choose_php_class.with_title > .title {
+	margin:-15px -15px 15px;
+}

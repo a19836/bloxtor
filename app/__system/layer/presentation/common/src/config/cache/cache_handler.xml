@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<bean name="ServiceCacheHandler" path="org.phpframework.cache.service.filesystem.FileSystemServiceCacheHandler" path_prefix="<?php echo LIB_PATH;?>">
+		<constructor_arg><?php echo $vars["presentations_module_cache_maximum_size"]; ?></constructor_arg>
+		
+		<property name="rootPath"><?php echo $vars["presentations_cache_path"] . $vars["current_presentation_id"]; ?></property>
+		<property name="defaultTTL"><?php echo $vars["presentations_default_cache_ttl"]; ?></property>
+		<property name="defaultType"><?php echo $vars["presentations_default_cache_type"]; ?></property>
+	</bean>
+</beans>

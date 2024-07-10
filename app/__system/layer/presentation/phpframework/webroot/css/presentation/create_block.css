@@ -1,0 +1,93 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+/* TOP BAR */
+.top_bar {
+	
+}
+
+/* MODULES */
+.modules_list {
+	width:100%;
+}
+.modules_list table {
+	width:100%;
+	margin:0 auto;
+	/*table-layout:fixed;*/
+}
+.modules_list table tr.group_module_item {
+	display:none;
+}
+.modules_list table th {
+	height:20px;
+	line-height:15px;
+}
+.modules_list table td {
+	border:1px solid #CCC;
+	word-wrap:break-word;
+}
+.modules_list table .group {
+	width:10px;
+	padding:5px 0 3px 10px;
+	border-right:0;
+	float:none;
+	clear:left;
+}
+.modules_list table .group label {
+	text-transform:uppercase;
+}
+.modules_list table .group .icon {
+	margin:0 10px 0 0;
+	float:left;
+}
+.modules_list table .photo {
+	width:100px;
+	text-align:center;
+	border-left:0;
+}
+.modules_list table td.photo {
+	color:#CCC;
+	font-size:10px;
+	font-style:italic;
+	font-weight:bold;
+	text-transform:uppercase;
+}
+.modules_list table .photo img,
+  .modules_list table .photo svg {
+	max-width:20px;
+	fill:var(--link-color);
+}
+.modules_list table .label {
+	width:150px;
+	text-align:center;
+}
+.modules_list table td.label {
+	font-weight:bold;
+	color:var(--link-color);
+}
+.modules_list table .description {
+	width:520px;
+	padding:0 3px 0px 3px;
+}
+.modules_list table .module_id {
+	width:150px;
+	text-align:center;
+}
+.modules_list table .buttons {
+	min-width:40px;
+	max-width:40px;
+	text-align:center;
+}
+.modules_list table .buttons .icon {
+	width:25px;
+	font-size:16px;
+}
+.modules_list table .buttons .icon.loading {
+	text-indent:30px;
+	background-position:0 5px;
+}

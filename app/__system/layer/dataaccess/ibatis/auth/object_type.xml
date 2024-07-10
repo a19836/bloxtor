@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sql_mapping>
+	<insert id="insert_object_type">
+		insert into sysauth_object_type (object_type_id, name, created_date, modified_date) values (#object_type_id#, '#name#', '#created_date#', '#modified_date#')
+	</insert>
+	
+	<update id="update_object_type">
+		update sysauth_object_type set name='#name#', modified_date='#modified_date#' where object_type_id=#object_type_id#
+	</update>
+	
+	<delete id="delete_object_type">
+		delete from sysauth_object_type where object_type_id=#object_type_id#
+	</delete>
+	
+	<delete id="delete_all_object_types">
+		delete from sysauth_object_type
+	</delete>
+	
+	<select id="get_object_type">
+		select * from sysauth_object_type where object_type_id=#object_type_id#
+	</select>
+	
+	<select id="get_all_object_types">
+		select * from sysauth_object_type
+	</select>
+	
+	<select id="get_object_types_by_conditions">
+		select * from sysauth_object_type where #conditions#
+	</select>
+</sql_mapping>

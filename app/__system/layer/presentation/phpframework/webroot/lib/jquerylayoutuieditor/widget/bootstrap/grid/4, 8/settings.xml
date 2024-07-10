@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>4, 8</label>
+	<tag>bscontainer48</tag>
+	<settings>
+		<menu_class>bscontainer</menu_class>
+		<create_widget_class>BSContainer48Widget</create_widget_class>
+	</settings>
+	<files>
+		<css>../CreateWidgetBootstrapContainerClassObj.css</css>
+		<js>../CreateWidgetBootstrapContainerClassObj.js</js>
+	</files>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-bscontainer48:before,
+		  body > .menu-widget.menu-widget-bscontainer48.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function BSContainer48Widget(ui_creator, menu_widget) {
+			var obj = new CreateWidgetBootstrapContainerClassObj(ui_creator, menu_widget, "bscontainer48", [4, 8]);
+			obj.extend(this);
+		}
+	]]></menu_js>
+</widget>

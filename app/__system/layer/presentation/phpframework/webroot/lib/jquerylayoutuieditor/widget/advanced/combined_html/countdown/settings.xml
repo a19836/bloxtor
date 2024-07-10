@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>Count Down</label>
+	<tag>countdown</tag>
+	<settings>
+		<resizable>1</resizable>
+		<create_widget_class>CountDownWidget</create_widget_class>
+	</settings>
+	<template_widget><![CDATA[
+<span data-js="countdown" class="countdown-cont"><div class="countdown-block">
+    <div data-js="countdown-day" class="countdown-digit">
+    </div>
+    <div class="countdown-label">days
+    </div>
+    </div><div class="countdown-block">
+    <div data-js="countdown-hour" class="countdown-digit">
+    </div>
+    <div class="countdown-label">hours
+    </div>
+    </div><div class="countdown-block">
+    <div data-js="countdown-minute" class="countdown-digit">
+    </div>
+    <div class="countdown-label">minutes
+    </div>
+    </div><div class="countdown-block">
+    <div data-js="countdown-second" class="countdown-digit">
+    </div>
+    <div class="countdown-label">seconds
+    </div>
+</div></span>
+<span data-js="countdown-endtext" class="countdown-endtext"></span>
+
+<style>
+.countdown{
+  text-align:center;
+  font-family:Helvetica, serif;
+}
+.countdown-block{
+  display:inline-block;
+  margin:0 10px;
+  padding:10px;
+}
+.countdown-digit{
+  font-size:5rem;
+}
+.countdown-endtext{
+  font-size:5rem;
+}
+.countdown-cont{
+  display:inline-block;
+}
+</style>
+	]]></template_widget>
+	<properties><![CDATA[
+		<div class="form-group row settings-property expired-date">
+			<label class="col-12 col-form-label">Expired Date: </label>
+			<input class="col-12 form-control" type="datetime-local" name="expired-date" />
+		</div>
+		<div class="form-group row settings-property style">
+			<label class="col-12 col-form-label">Style: </label>
+			<textarea class="col-12 form-control"></textarea>
+		</div>
+	]]></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-countdown:before,
+		  body > .menu-widget.menu-widget-countdown.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#logo.svg');
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-countdown > .settings-properties .style textarea {
+			height:300px !important;
+			text-align:left;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function CountDownWidget(ui_creator, menu_widget) {
+			var me = this;
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-clone-menu-widget-func": ui_creator.obj_var_name + ".menu_widgets_objs.countdown.onCloneMenuWidget",
+					"data-on-clean-template-widget-html-func": ui_creator.obj_var_name + ".menu_widgets_objs.countdown.cleanHtml",
+				});
+				
+				menu_widget.children(".properties").attr({
+					"data-on-before-parse-widget-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.countdown.parseSettings",
+					"data-on-open-settings-func": ui_creator.obj_var_name + ".menu_widgets_objs.countdown.onOpenWidgetSettings",
+					"data-on-after-save-settings-field-func": ui_creator.obj_var_name + ".menu_widgets_objs.countdown.saveSettingsField",
+				});
+			};
+			
+			me.parseSettings = function(widget, widget_settings) {
+				widget_settings["expired-date"] = widget.attr("data-countdown-expired-date");
+			};
+			
+			me.prepareJSCode = function(widget) {
+				if (!widget.children("script")[0]) {
+					var id = widget.attr("id");
+					var s = document.createElement('script');
+					s.type = 'text/javascript';
+					
+					var code = ''
++ 'if (typeof countdown != "function") '
++ '	function countdown() {'
++ '	    var main_elm = this;'
++ '      var expired_date = main_elm.getAttribute("data-countdown-expired-date");'
++ '      var time = Date.parse(expired_date);'
++ '      var end_text = main_elm.querySelector("[data-js=countdown-endtext]");'
++ '      var countdown = main_elm.querySelector("[data-js=countdown]");'
++ '      var countdown_day = main_elm.querySelector("[data-js=countdown-day]");'
++ '      var countdown_hour = main_elm.querySelector("[data-js=countdown-hour]");'
++ '      var countdown_min = main_elm.querySelector("[data-js=countdown-minute]");'
++ '      var countdown_sec = main_elm.querySelector("[data-js=countdown-second]");'
++ '      '
++ '      main_elm.countdown_interval && clearInterval(main_elm.countdown_interval);'
++ '      '
++ '      var showCountDown = function(day, hour, min, sec) {'
++ '        countdown_day.innerHTML = day < 10 ? "0" + day : day;'
++ '        countdown_hour.innerHTML = hour < 10 ? "0" + hour : hour;'
++ '        countdown_min.innerHTML = min < 10 ? "0" + min : min;'
++ '        countdown_sec.innerHTML = sec < 10 ? "0" + sec : sec;'
++ '      };'
++ '      '
++ '      var updateCountDown = function() {'
++ '        var i = time - (new Date).getTime();'
++ '        var day = Math.floor(i / 86400000);'
++ '        var hour = Math.floor(i % 86400000 / 3600000);'
++ '        var min = Math.floor(i % 360000 / 60000);'
++ '        var sec = Math.floor(i % 60000 / 1000);'
++ '      	 '
++ '        showCountDown(day, hour, min, sec);'
++ '      	 '
++ '        if (i < 0) {'
++ '      	 	main_elm.countdown_interval && clearInterval(main_elm.countdown_interval);'
++ '      	 	if (end_text.innerHTML.trim() == "") end_text.innerHTML = "EXPIRED";'
++ '      	 	countdown.style.display = "none";'
++ '      	 	end_text.style.display = "";'
++ '      	 }'
++ '      };'
++ '      '
++ '      if (time) {'
++ '        main_elm.countdown_interval = setInterval(updateCountDown, 1000);'
++ '        end_text.style.display = "none";'
++ '        countdown.style.display = "";'
++ '        updateCountDown();'
++ '      }'
++ '      else '
++ '        showCountDown(0, 0, 0, 0);'
++ '	};'
++ ''
++ 'var items = document.querySelectorAll("#' + id + '");'
++ 'for (var i = 0, len = items.length; i < len; i++)'
++ '    countdown.bind( items[i] )();'
++ '';
+			
+					try {
+						s.appendChild(document.createTextNode(code));
+						widget[0].appendChild(s);
+					} catch (e) {
+						s.text = code;
+						widget[0].appendChild(s);
+					}
+				}
+			}
+			
+			me.onCloneMenuWidget = function(widget, html_element) {
+				if (!html_element) {
+					var id = "countdown-" + parseInt(Math.random() * 1000);
+				
+					var d = new Date();
+					d.setDate(d.getDate() + 1);
+					var str_date = d.getFullYear() + "-" + ('0' + (d.getMonth()+1)).slice(-2) + "-" + ('0' + d.getDate()).slice(-2) + "T" + ('0' + d.getHours()).slice(-2) + ":" + ('0' + d.getMinutes()).slice(-2) + ":" + ('0' + d.getSeconds()).slice(-2);
+	  				
+					widget.attr("data-countdown-expired-date", str_date).attr("id", id).addClass("countdown");
+					
+					me.prepareJSCode(widget);
+				}
+				
+				return widget;
+			};
+			
+			me.cleanHtml = function(html_element) {
+				var widget = $(html_element);
+				me.prepareJSCode(widget);
+				
+				return ui_creator.getCleanedHtmlElement(widget[0]);
+			};
+			
+			me.onOpenWidgetSettings = function(widget, menu_settings) {
+				var textarea = menu_settings.find(".settings-properties .style textarea");
+				textarea.val( widget.children("style").html() );
+				
+				ui_creator.addMenuSettingsContextMenu(textarea);
+				ui_creator.addMenuSettingsContextMenu( menu_settings.find(".settings-properties input") );
+			};
+			
+			me.saveSettingsField = function(field, widget, status) {
+				if (status) {
+					field = $(field);
+					var field_value = field.val();
+					var sprop = field.parent();
+					
+					if (sprop.hasClass("style"))  {
+						widget.children("style").html(field_value);
+						
+						me.prepareJSCode(widget);
+					}
+					else if (sprop.hasClass("expired-date")) {
+						widget.attr("data-countdown-expired-date", field_value);
+						
+						//reset countdown
+						var doc = widget[0].ownerDocument;
+						var win = doc.defaultView || doc.parentWindow;
+						win.countdown.bind( widget[0] )();
+					}
+				}
+				
+				return status;
+			};
+		}
+	]]></menu_js>
+</widget>

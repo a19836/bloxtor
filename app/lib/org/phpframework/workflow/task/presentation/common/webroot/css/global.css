@@ -1,0 +1,684 @@
+/*.taskflowchartdiagram ._jsPlumb_connector path { 
+	stroke-width:2px; 
+}*/
+.taskflowchartdiagram .end_point {
+	opacity:0;
+}
+.taskflowchartdiagram .connector_overlay_label {
+	color:#000 !important;
+}
+
+/* MENU TASKS */
+.taskflowchartmenu .task,
+  .taskflowchart > .tasks_menu .task {
+	width:40px;
+	margin:15px 22px 30px;
+	padding:0;
+	overflow:visible;
+	background-size:contain;
+	background-image:url('../img/user_generated_task_bg.svg');
+	box-sizing:border-box;
+}
+.taskflowchartmenu .task span {
+	width:70px;
+	max-height:26px;
+	line-height:13px;
+	margin-left:-15px;
+	margin-right:-15px;
+	display:block;
+	position:absolute;
+	left:0;
+	top:40px;
+	color:#426efa;
+	font-size:10px;
+	font-weight:normal;
+	text-align:center;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+/* FLOW TASKS */
+.taskflowchartdiagram .task {
+	min-width:120px !important;
+	min-height:140px !important;
+	margin:0;
+	padding:0 0 20px !important;
+	border-radius:2px !important;
+	border-style:solid !important;
+	border-color:#DFE1ED !important;
+	box-shadow:3px 3px 4px rgba(0, 0, 0, 0.05) !important;
+	background-color:transparent;
+	box-sizing:border-box;
+}
+.taskflowchartdiagram .task:not(.is_start_task):hover {
+	opacity:1 !important;
+}
+.taskflowchartdiagram .task:hover:before {
+	display:none !important;
+}
+.taskflowchartdiagram .task .task_info {
+	min-height:auto;
+	background:none;
+	color:rgb(0, 0, 0, .3);
+}
+.taskflowchartdiagram .task:hover:after {
+	bottom:-25px !important;
+	left:-5px !important;
+	background:none !important;
+	
+	display:none !important; /* This causes noise in the diagram. The diagrams should be as simple as possible, so we should reduce the noise. */
+}
+.taskflowchartdiagram .task .info {
+	width:calc(100% + 2px);
+	min-height:25px;
+	margin-left:-1px;
+	padding:5px 10px 5px 33px;
+	border:1px solid #4070FF !important;
+	background:#4070FF;
+	color:#fff;
+	border-top-left-radius:2px;
+	border-top-right-radius:2px;
+	font-size:11px;
+	text-align:left;
+	box-sizing:border-box;
+	box-shadow:0px -1px 5px #ccc;
+}
+.taskflowchartdiagram .task .info:before {
+	content:"";
+	width:18px;
+	height:18px;
+	display:block;
+	position:absolute;
+	left:7px;
+	background-repeat:no-repeat;
+	background-color:#fff;
+	background-position:center;
+	background-size:15px 12px;
+	border-radius:100%;
+}
+.taskflowchartdiagram .task:hover .short_actions {
+	padding:10px;
+	top:-30px;
+	right:-5px;
+}
+.taskflowchartdiagram .task .eps {
+	width:20px;
+	height:20px;
+	margin:0;
+	padding:0;
+	position:absolute;
+	left:calc(50% - 8px);
+	bottom:-8px;
+	box-sizing:border-box;
+	z-index:99; /* bc of the .ui-resizable-handle items */
+}
+.taskflowchartdiagram .task .ep {
+	width:16px;
+	height:16px;
+	margin:0;
+	border:1px solid #4070FF !important;
+	border-radius:100%;
+	background:#4070FF !important;
+	box-shadow:0px -1px 5px #ccc;
+}
+.taskflowchartdiagram .task .ep:hover:after {
+	content:"Drag me to another box to connect with it";
+	padding:5px;
+	display:block;
+	position:absolute;
+	top:100%;
+	color:#fff;
+	background:#000;
+	border:1px solid #fff;
+	border-radius:2px;
+	white-space:nowrap;
+	z-index:4;
+	
+	display:none !important; /* This causes noise in the diagram. The diagrams should be as simple as possible, so we should reduce the noise. */
+}
+
+.taskflowchartdiagram .task > .task_droppable {
+	min-height:100px;
+	position:absolute;
+	top:30px;
+	left:0;
+	right:0;
+	bottom:20px;
+	box-sizing:border-box;
+}
+.taskflowchartdiagram .task > .task_droppable.task_droppable_over,
+  .taskflowchart .tasks_flow .task .task_droppable.task_droppable_over {
+	background-color:rgba(0, 0, 0, .04);
+	opacity:1 !important;
+}
+.taskflowchartdiagram .task .task_droppable .task:hover:after {
+	display:none;
+}
+
+/* page_content_task_html */
+.page_content_task_html {
+	border:0;
+	font-size:inherit;
+}
+.page_content_task_html > ul.ui-tabs-nav {
+	background:none;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-radius: 0;
+}
+
+/* Task Properties */
+.selected_task_properties {
+	width:auto; /* bc of the ui html be dynamic, we must set the width to auto. Otherwise the task properties popup will appear with the wrong width. */
+	height:auto; /* bc of the ui html be dynamic, we must set the height to auto. Otherwise the task properties popup will appear with the wrong height. */
+}
+.selected_task_properties .properties_task_id,
+  .selected_task_properties > .toggle_properties_side_icon, 
+  .selected_connection_properties > .toggle_properties_side_icon {
+	display:none !important;
+}
+
+/* Task Properties - settings */
+.selected_task_properties .popup_overlay,
+  .selected_task_properties .ui > .ui_html > table .ui_table_attribute_action .popup_overlay,
+  .selected_task_properties .ui > .ui_html > table .ui_table_attribute_value .popup_overlay,
+  .selected_task_properties .permissions .users_management_admin_panel .popup_overlay {
+	position:fixed;
+	width:100% !important; /* !important is very important otherwise the overlay will appear very small or hidden bellow some div */
+	height:100% !important;
+	left:0;
+	top:0;
+	display:block !important;
+}
+.taskflowchart.fixed_properties .selected_task_properties .properties_task_id, 
+  .taskflowchart.fixed_properties .selected_connection_properties .properties_task_id,
+  .taskflowchart.fixed_side_properties .selected_task_properties .properties_task_id, 
+  .taskflowchart.fixed_side_properties .selected_connection_properties .properties_task_id {
+	width:auto;
+}
+
+/* Task Properties - settings */
+.selected_task_properties .settings > div {
+	margin-bottom:10px;
+}
+.selected_task_properties .settings ul {
+	margin-left:20px;
+}
+.selected_task_properties .settings li {
+	margin-top:10px;
+}
+.selected_task_properties .settings .choose_db_table,
+  .selected_task_properties .settings .actions,
+  .selected_task_properties .settings .links,
+  .selected_task_properties .settings .pagination {
+	margin-top:20px;
+}
+
+/* Task Properties - settings - choose_db_table */
+.selected_task_properties .settings .choose_db_table li > label {
+	width:100px;
+	display:inline-block;
+}
+.selected_task_properties .settings .choose_db_table li > select {
+	width:calc(100% - 110px);
+}
+.selected_task_properties .settings .choose_db_table li > input {
+	width:calc(100% - 120px);
+}
+.selected_task_properties .settings .choose_db_table .advanced_table_settings {
+	display:none;
+}
+
+.selected_task_properties .settings .choose_db_table .db_table_parent {
+	margin-top:30px;
+}
+.selected_task_properties .settings .choose_db_table .db_table_parent label,
+   .selected_task_properties .settings .choose_db_table .db_table_parent_alias label {
+	width:160px;
+}
+.selected_task_properties .settings .choose_db_table .db_table_parent select {
+	width:calc(100% - 170px);
+}
+.selected_task_properties .settings .choose_db_table .db_table_parent_alias input {
+	width:calc(100% - 175px);
+}
+.selected_task_properties .settings .choose_db_table .db_table_parent .info {
+	display:block;
+	color:#999;
+	font-size:80%;
+	text-align:right;
+}
+
+.selected_task_properties .settings .choose_db_table .db_table_conditions {
+	margin-top:30px;
+}
+.selected_task_properties .settings .choose_db_table .db_table_conditions > label {
+	width:100%;
+}
+.selected_task_properties .settings .choose_db_table .db_table_conditions table {
+	width:100%;
+}
+.selected_task_properties .settings .choose_db_table .db_table_conditions table th {
+	width:150px;
+	color:#bbb;
+	text-align:center;
+	font-size:10px;
+}
+.selected_task_properties .settings .choose_db_table .db_table_conditions table td.attribute,
+   .selected_task_properties .settings .choose_db_table .db_table_conditions table td.value  {
+	width:150px;
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+}
+.selected_task_properties .settings .choose_db_table .db_table_conditions table .actions {
+	width:23px;
+	text-align:center;
+}
+.selected_task_properties .settings .choose_db_table .db_table_conditions table .no_conditions td {
+	text-align:center;
+	color:#999;
+}
+.selected_task_properties .settings .choose_db_table .db_table_conditions table td input,
+   .selected_task_properties .settings .choose_db_table .db_table_conditions table td select {
+	width:100%;
+	height:auto;
+	color:#999;
+	background:transparent;
+	border:0;
+	box-sizing:border-box;
+}
+.selected_task_properties .settings .choose_db_table .db_table_conditions table td.attributes select option.warning {
+	color:#B51E3F;
+}
+
+/* Task Properties - settings - actions */
+.selected_task_properties .settings .actions li.sub_actions_group {
+	padding-bottom:10px;
+}
+.selected_task_properties .settings .actions li > .icon {
+	margin:0 5px 0 -10px;
+}
+.selected_task_properties .settings .actions li > label {
+	width:130px;
+	display:inline-block;
+}
+.selected_task_properties .settings .actions li.sub_actions_group > label {
+	width:100%;
+}
+.selected_task_properties .settings .actions li > input.confirmation_message {
+	width:280px;
+	width:calc(100% - 200px);
+	margin-left:8px;
+}
+.selected_task_properties .settings .actions li > .advanced_action_settings {
+	display:none;
+}
+.selected_task_properties .settings .actions li > .advanced_action_settings label {
+	width:155px;
+}
+.selected_task_properties .settings .actions li > .advanced_action_settings input {
+	min-width:280px;
+	width:calc(100% - 180px);
+}
+
+/* Task Properties - settings - pagination */
+.selected_task_properties .settings .pagination .pagination_max_items input {
+	width:50px;
+}
+
+/* Task Properties - settings - links */
+.selected_task_properties .settings .links table {
+	width:1040px;
+}
+.selected_task_properties .settings .links table th {
+	width:200px;
+	color:#ccc;
+	text-align:center;
+	font-size:10px;
+}
+.selected_task_properties .settings .links table td:not(.actions) {
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+	background:#fff;
+}
+.selected_task_properties .settings .links table .actions {
+	width:23px;
+	text-align:center;
+}
+.selected_task_properties .settings .links table .no_links td {
+	text-align:center;
+	color:#999;
+}
+.selected_task_properties .settings .links table td input {
+	width:200px;
+	font-size:inherit;
+	color:#999;
+	background:transparent;
+	border:0;
+}
+.selected_task_properties .settings .links table td.url input {
+	width:160px;
+}
+.selected_task_properties .settings .links table td.url .icon {
+	margin:0;
+}
+
+/* Task Properties - settings - inner_task_settings */
+.selected_task_properties .settings .inner_task_settings {
+	margin-top:40px;
+}
+.selected_task_properties .settings .inner_task_settings ul {
+	margin-left:0;
+}
+.selected_task_properties .settings .inner_task_settings .parent_link_value,
+  .selected_task_properties .settings .inner_task_settings .parent_link_title,
+  .selected_task_properties .settings .inner_task_settings .interface_class,
+  .selected_task_properties .settings .inner_task_settings .parent_link_previous_html,
+  .selected_task_properties .settings .inner_task_settings .parent_link_next_html,
+  .selected_task_properties .settings .inner_task_settings .interface_previous_html,
+  .selected_task_properties .settings .inner_task_settings .interface_next_html {
+	margin-top:10px;
+}
+.selected_task_properties .settings .inner_task_settings .parent_link_class > label,
+  .selected_task_properties .settings .inner_task_settings .parent_link_value > label,
+  .selected_task_properties .settings .inner_task_settings .parent_link_title > label,
+  .selected_task_properties .settings .inner_task_settings .interface_type > label,
+  .selected_task_properties .settings .inner_task_settings .interface_class > label {
+	width:130px;
+	display:inline-block;
+	font-weight:normal;
+	font-size:90%;
+}
+.selected_task_properties .settings .inner_task_settings .parent_link_previous_html > label,
+  .selected_task_properties .settings .inner_task_settings .parent_link_next_html > label,
+  .selected_task_properties .settings .inner_task_settings .interface_previous_html > label,
+  .selected_task_properties .settings .inner_task_settings .interface_next_html > label {
+	width:100%;
+	display:inline-block;
+	font-weight:normal;
+	font-size:90%;
+}
+.selected_task_properties .settings .inner_task_settings .parent_link_class > input,
+  .selected_task_properties .settings .inner_task_settings .parent_link_value > input,
+  .selected_task_properties .settings .inner_task_settings .parent_link_title > input,
+  .selected_task_properties .settings .inner_task_settings .interface_type > input,
+  .selected_task_properties .settings .inner_task_settings .interface_class > input {
+	width:calc(100% - 145px);
+}
+.selected_task_properties .settings .inner_task_settings .parent_link_previous_html > textarea,
+  .selected_task_properties .settings .inner_task_settings .parent_link_next_html > textarea,
+  .selected_task_properties .settings .inner_task_settings .interface_previous_html > textarea,
+  .selected_task_properties .settings .inner_task_settings .interface_next_html > textarea {
+	width:100%;
+	box-sizing:border-box;
+	resize:vertical;
+}
+
+/* Task Properties - ui */
+.selected_task_properties .ui {
+	overflow-x:auto;
+}
+.selected_task_properties .ui > .add_ui_table_attribute {
+	margin-bottom:10px;
+	display:none;
+}
+.selected_task_properties .ui > .ui_html > table:not(.ui-sortable-helper) {
+	min-width:100%;
+}
+.selected_task_properties .ui > .ui_html > table tr {
+	cursor:move;
+}
+.selected_task_properties .ui > .ui_html > table .ui_table_attribute_label {
+	
+}
+.selected_task_properties .ui > .ui_html > table .ui_table_attribute_value {
+	padding:5px 0 5px 5px;
+	vertical-align:top;
+}
+.selected_task_properties .ui > .ui_html > table .ui_table_attribute_value > input:not([type=checkbox]):not([type=radio]),
+   .selected_task_properties .ui > .ui_html > table .ui_table_attribute_value > textarea,
+   .selected_task_properties .ui > .ui_html > table .ui_table_attribute_value > select {
+	width:100%;
+	min-width:100px;
+	box-sizing:border-box;
+}
+.selected_task_properties .ui > .ui_html > table .ui_table_attribute_value .info {
+	font-size:80%;
+	color:#ccc;
+}
+.selected_task_properties .ui > .ui_html > table .ui_table_attribute_value .info.with_link {
+	color:#4070FF;
+	text-decoration:underline;
+}
+.selected_task_properties .ui > .ui_html > table .ui_table_attribute_action {
+	text-align:center;
+}
+.selected_task_properties .ui > .ui_html > table .ui_table_attribute_action .icon.update::before {
+	content:"\f303";
+}
+
+/* Task Properties - ui - sortable */
+.selected_task_properties .ui > .ui_html > table .ui-sortable-helper {
+	background:rgba(0, 0, 0, .1);
+}
+.selected_task_properties .ui > .ui_html > table .ui-state-highlight {
+	/* Leave the default jquery css which is more pretty
+	background:rgba(252, 239, 161, .1);
+	border:none;*/
+}
+
+/* Task Properties - users_management_admin_panel */
+.selected_task_properties .users_management_admin_panel {
+	margin:20px 0 0;
+	text-align:right;
+}
+.selected_task_properties .users_management_admin_panel > a {
+	color:#4070FF;
+}
+.selected_task_properties .users_management_admin_panel > .users_management_admin_panel_popup {
+	width:90vw;
+	height:90vh;
+	position:fixed;
+	left:5%;
+	top:5%;
+	z-index:2005 !important; /* Must be !important bc for some reason when the myfancypopup calculates the z-index, is giving a z-index smaller than main popup close button... */
+}
+.selected_task_properties .users_management_admin_panel > .users_management_admin_panel_popup > iframe {
+	width:100% !important;
+	height:100% !important;
+	/* !important is very important otherwise the myfancypopp will overwrite this values */
+}
+
+/* Task Properties - users_management_admin_panel */
+.selected_task_properties .permissions > div > label {
+	width:200px;
+	display:inline-block;
+}
+.selected_task_properties .permissions .users_perms {
+	margin:20px 0 0;
+}
+.selected_task_properties .permissions .users_perms table {
+	margin:0 auto;
+}
+.selected_task_properties .permissions .users_perms table .user_type_id,
+   .selected_task_properties .permissions .users_perms table .activity_id {
+	min-width:115px;
+}
+.selected_task_properties .permissions .users_perms table select {
+	min-width:calc(100% - 6px);
+	margin:3px;
+}
+
+/* Task Properties - ui_table_attribute_properties_popup */
+.selected_task_properties .ui_table_attribute_properties_popup {
+	width:550px;
+	min-height:400px;
+	max-height:90vh;
+	position:fixed;
+	top:calc(50% - 85px);
+	left:calc(50% - 330px);
+	text-align:left;
+}
+.selected_task_properties .ui_table_attribute_properties_popup > ul.ui-tabs-nav {
+	background:none;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-radius: 0;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .ui_table_attribute_properties_settings {
+	overflow:auto;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .type {
+	margin-bottom:10px;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .class {
+	margin-bottom:20px;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .type label,
+  .selected_task_properties .ui_table_attribute_properties_popup .class label {
+	width:100px;
+}
+
+.selected_task_properties .ui_table_attribute_properties_popup .list_type {
+	margin-bottom:20px;
+	text-align:center;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .list_type label {
+	margin-right:5px;
+	font-weight:normal;
+	font-size:90%;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .list_from_db li {
+	margin-bottom:5px;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .list_from_db li > label {
+	width:150px;
+	display:inline-block;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .list_from_db li > select {
+	width:calc(100% - 160px);
+}
+.selected_task_properties .ui_table_attribute_properties_popup .list_from_db li > input {
+	width:calc(100% - 190px);
+}
+.selected_task_properties .ui_table_attribute_properties_popup .list_from_db li.db_table_alias > input {
+	width:calc(100% - 168px);
+}
+
+.selected_task_properties .ui_table_attribute_properties_popup .target,
+  .selected_task_properties .ui_table_attribute_properties_popup .label_value,
+  .selected_task_properties .ui_table_attribute_properties_popup .label_previous_html,
+  .selected_task_properties .ui_table_attribute_properties_popup .label_next_html,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_value,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_previous_html,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_next_html {
+	margin-top:10px;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .link > label,
+  .selected_task_properties .ui_table_attribute_properties_popup .target > label,
+  .selected_task_properties .ui_table_attribute_properties_popup .label_class > label,
+  .selected_task_properties .ui_table_attribute_properties_popup .label_value > label,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_class > label,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_value > label {
+	width:100px;
+	display:inline-block;
+	font-weight:normal;
+	font-size:90%;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .label_previous_html > label,
+  .selected_task_properties .ui_table_attribute_properties_popup .label_next_html > label,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_previous_html > label,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_next_html > label {
+	width:100%;
+	display:inline-block;
+	font-weight:normal;
+	font-size:90%;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .link > input {
+	width:calc(100% - 140px);
+}
+.selected_task_properties .ui_table_attribute_properties_popup .target > input,
+  .selected_task_properties .ui_table_attribute_properties_popup .label_class > input,
+  .selected_task_properties .ui_table_attribute_properties_popup .label_value > input,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_class > input,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_value > input {
+	width:calc(100% - 115px);
+}
+  .selected_task_properties .ui_table_attribute_properties_popup .label_previous_html > textarea,
+  .selected_task_properties .ui_table_attribute_properties_popup .label_next_html > textarea,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_previous_html > textarea,
+  .selected_task_properties .ui_table_attribute_properties_popup .input_next_html > textarea {
+	width:100%;
+	box-sizing:border-box;
+	resize:vertical;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .link .icon {
+	margin:0;
+}
+
+.selected_task_properties .ui_table_attribute_properties_popup .manual_list {
+	width:440px;
+	margin:20px auto 0 auto;
+	display:none;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .manual_list th {
+	width:200px;
+	color:#bbb;
+	text-align:center;
+	font-size:10px;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .manual_list td:not(.actions) {
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .manual_list .actions {
+	width:23px;
+	text-align:center;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .manual_list .actions .icon {
+	float:none !important;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .manual_list .no_items td {
+	text-align:center;
+	color:#999;
+}
+.selected_task_properties .ui_table_attribute_properties_popup .manual_list td input {
+	width:200px;
+	font-size:inherit;
+	color:#999;
+	background:transparent;
+	border:0;
+}
+
+/* CONNECTION PROPERTIES */
+.selected_connection_properties .presentation_connection_html {
+	width:370px;
+	margin:0 auto;
+}
+.selected_connection_properties .presentation_connection_html .connection_type,
+  .selected_connection_properties .presentation_connection_html .connection_label,
+  .selected_connection_properties .presentation_connection_html .connection_title,
+  .selected_connection_properties .presentation_connection_html .connection_class,
+  .selected_connection_properties .presentation_connection_html .connection_target {
+	margin-top:10px;
+}
+.selected_connection_properties .presentation_connection_html .connection_type > label,
+  .selected_connection_properties .presentation_connection_html .connection_label > label,
+  .selected_connection_properties .presentation_connection_html .connection_title > label,
+  .selected_connection_properties .presentation_connection_html .connection_class > label,
+  .selected_connection_properties .presentation_connection_html .connection_target > label {
+	width:150px;
+	display:inline-block;
+}
+.selected_connection_properties .presentation_connection_html .connection_type > select,
+  .selected_connection_properties .presentation_connection_html .connection_label > input,
+  .selected_connection_properties .presentation_connection_html .connection_title > input,
+  .selected_connection_properties .presentation_connection_html .connection_class > input,
+  .selected_connection_properties .presentation_connection_html .connection_target > input {
+	width:200px;
+	width:calc(100% - 160px);
+	box-sizing:border-box;
+	font-size:inherit;
+}

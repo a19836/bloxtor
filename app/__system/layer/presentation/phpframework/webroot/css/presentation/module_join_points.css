@@ -1,0 +1,416 @@
+/* JOIN POINTS */
+.module_join_points,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points {
+	float:none;
+	clear:both;
+	float:none;
+	width:auto;
+	min-width:550px;
+	margin-top:20px;
+}
+.regions_blocks_includes_settings .region_blocks .items .item .module_join_points {
+	width:550px;/* Force width to be 550px, otherwise it will show too big in the template page */
+	margin-left:35px;
+	margin-top:10px;
+	padding:5px;
+	border:1px inset #CCC;
+}
+.regions_blocks_includes_settings .region_blocks .items .item .module_join_points > label {
+	overflow:visible;
+}
+.module_join_points .add_variable.small,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .add_variable.small {
+	background-size:14px 14px;
+	margin-top:0 !important;
+}
+.module_join_points .add_variable.inline,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .add_variable.inline {
+	margin:2px 0 0 -20px;
+	position:absolute;
+	float:none;
+	clear:both;
+	display:inline-block;
+	vertical-align:middle;
+	opacity:.8;
+}
+
+.module_join_points .view_module_source_code,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .view_module_source_code {
+	color:#999;
+	cursor:pointer;
+	clear:none;
+	float:right;
+}
+.module_join_points .module_source_code,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .module_source_code {
+	position:fixed;
+	left:0;
+	top:30px;
+	bottom:0;
+	right:0;
+	background-color:#CCC;
+	background-color:rgba(0, 0, 0, 0.5);
+	padding:10px;
+	z-index:1099;
+	display:none;
+}
+.module_join_points .module_source_code .close,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .module_source_code .close {
+	display:block;
+	position:absolute;
+	top:15px;
+	right:15px;
+	cursor:pointer;
+	z-index:1;
+}
+.module_join_points .module_source_code textarea,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .module_source_code textarea {
+	width:100% !important;
+	height:100% !important;
+	color:#333;
+	font-size:10px;
+}
+
+.module_join_points .join_points,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points {
+	border:1px inset #CCC;
+	margin-top:5px;
+	padding:5px 5px 0px 5px;
+	clear:both;
+	float:none;
+}
+.regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points {
+	border:0;
+}
+.module_join_points .join_points .join_point,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point {
+	margin-bottom:5px;
+	border:1px solid #CCC;
+	clear:both;
+	float:none;
+}
+.module_join_points .join_points .join_point > label,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point > label {
+	width:auto;
+	display:block;
+	padding:5px 5px;
+	margin:0;
+	background-color:#eee;
+	clear:both;
+	float:none;
+}
+.module_join_points .join_points .join_point > label span,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point > label span {
+	width:calc(100% - 270px);
+	display:inline-block;
+}
+.module_join_points .join_points .join_point > span.maximize,
+   .module_join_points .join_points .join_point > span.minimize,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point > span.maximize,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point > span.minimize {
+	float:right;
+	margin:-22px 8px 0 0;
+}
+.module_join_points .join_points .join_point > span.add,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point > span.add {
+	float:right;
+	margin:-22px 27px 0 0;
+}
+.module_join_points .join_points .join_point > span.info,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point > span.info {
+	float:right;
+	margin:-22px 48px 0 0;
+}
+.module_join_points .join_points .join_point .join_point_active,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_active {
+	height:21px;
+	float:right;
+	margin:-24px 70px 0 0;
+	color:#888;
+	font-size:10px;
+	text-align:center;
+}
+.module_join_points .join_points .join_point .empty_items,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .empty_items {
+	display:none;
+	text-align:center;
+}
+
+.module_join_points .join_points .join_point .join_point_details,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_details {
+	background-color:#eee;
+	display:none;
+	padding:5px;
+	font-size:85%;
+}
+.module_join_points .join_points .join_point .join_point_details label,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_details label {
+	width:auto;
+	display:block;
+	clear:both;
+	float:none;
+	min-height:20px;
+	font-weight:normal;
+	margin:0 0 5px 0;
+	padding:0;
+}
+.module_join_points .join_points .join_point .join_point_details table,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_details table {
+	margin:0 auto;
+}
+.module_join_points .join_points .join_point .join_point_details table td,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_details table td {
+	border-top:1px solid #fff;
+	border-right:1px solid #fff;
+}
+.module_join_points .join_points .join_point .join_point_details table .key,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_details table .key {
+	width:150px;
+	text-align:center;
+}
+.module_join_points .join_points .join_point .join_point_details table .type,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_details table .type {
+	width:100px;
+	text-align:center;
+}
+
+.module_join_points .join_points .join_point .join_point_method,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method {
+	border:1px solid #999;
+	margin:5px;
+	padding:5px;
+	float:none;
+	clear:left;
+}
+.module_join_points .join_points .join_point .join_point_method > label,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method > label {
+	width:auto;
+	display:block;
+	clear:both;
+	float:none;
+	margin:0 0 5px 0;
+	padding:0;
+	color:#999;
+	text-align:center;
+}
+.module_join_points .join_points .join_point .join_point_method > span.delete,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method > span.delete {
+	float:right;
+	margin:-22px 2px 0 0;
+}
+.module_join_points .join_points .join_point .join_point_method div,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method div {
+	float:none;
+	clear:left;
+}
+.module_join_points .join_points .join_point .join_point_method div label,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method div label {
+	display:inline-block;
+	width:135px;
+	clear:none;
+	margin:0 0 5px 0;
+	padding:0;
+}
+.module_join_points .join_points .join_point .join_point_method div input,
+   .module_join_points .join_points .join_point .join_point_method div select,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method div input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method div select {
+	/*font-size:12px;*/
+}
+.module_join_points .join_points .join_point > span.icon, 
+   .module_join_points .join_points .join_point .join_point_method,
+   .module_join_points .join_points .join_point .join_point_method .method_obj,
+   .module_join_points .join_points .join_point .join_point_method .method_static,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point > span.icon,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_obj,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_static {
+	display:none;
+}
+
+.module_join_points .join_points .join_point .join_point_method .method_file input {
+	width:465px;
+}
+ .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_file input {
+	width:350px;
+}
+.module_join_points .join_points .join_point .join_point_method .method_name input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_name input {
+	
+}
+.regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_static input {
+	width:auto;
+}
+.module_join_points .join_points .join_point .join_point_method .method_name .icon.search,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_name .icon.search,
+   .module_join_points .join_points .join_point .join_point_method .method_file .icon.search,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_file .icon.search {
+	float:none;
+	display:inline-block;
+	margin:2px 0 0 5px;
+	vertical-align: middle;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping > label,
+   .module_join_points .join_points .join_point .join_point_method .method_args > label,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping > label,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping > label,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args > label,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping > label {
+	width:auto;
+	clear:both;
+	float:none;
+	margin-top:10px;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping .info,
+   .module_join_points .join_points .join_point .join_point_method .method_args .info,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping .info,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping .info,
+   .regions_blocks_includes_settings .region_blocks .items .item module_join_points .join_points .join_point .join_point_method .method_args .info,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping .info {
+	display:block;
+	width:auto;
+	float:none;
+	margin-top:-7px;
+	margin-bottom:5px;
+	color:#999;
+	font-size:10px;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table,
+   .module_join_points .join_points .join_point .join_point_method .method_args table,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table {
+	margin:5px auto;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table th,
+   .module_join_points .join_points .join_point .join_point_method .method_args table th,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table th,
+   .module_join_points .join_points .join_point .join_point_method .input_mapping table td,
+   .module_join_points .join_points .join_point .join_point_method .method_args table td,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table td,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table th,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table th,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table th,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table td,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table td,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table td {
+	text-align:center;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table td,
+   .module_join_points .join_points .join_point .join_point_method .method_args table td,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table td,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table td,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table td,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table td {
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table td.icons,
+   .module_join_points .join_points .join_point .join_point_method .method_args table td.icons,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table td.icons,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table td.icons,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table td.icons,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table td.icons {
+	border:0;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table .empty_table td,
+   .module_join_points .join_points .join_point .join_point_method .method_args table .empty_table td,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table .empty_table td,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table .empty_table td,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table .empty_table td,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table .empty_table td {
+	text-align:center;
+	color:#999;
+	text-transform:italic;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table .icons .icon,
+   .module_join_points .join_points .join_point .join_point_method .method_args table .icons .icon,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table .icons .icon,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table .icons .icon,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table .icons .icon,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table .icons .icon {
+	margin:2px 5px 0 5px;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table .join_point_input,
+   .module_join_points .join_points .join_point .join_point_method .input_mapping table .method_input,
+   .module_join_points .join_points .join_point .join_point_method .method_args table .value,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table .method_output,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table .join_point_output,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table .join_point_input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table .method_input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table .value,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table .method_output,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table .join_point_output {
+	width:210px;
+	overflow:hidden;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table td.join_point_input,
+   .module_join_points .join_points .join_point .join_point_method .input_mapping table td.method_input,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table td.method_output,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table td.join_point_output,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table td.join_point_input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table td.method_input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table td.method_output,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table td.join_point_output {
+	font-size:9px;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table .join_point_input input,
+   .module_join_points .join_points .join_point .join_point_method .input_mapping table .method_input input,
+   .module_join_points .join_points .join_point .join_point_method .method_args table .value input,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table .method_output input,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table .join_point_output input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table .join_point_input input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table .method_input input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table .value input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table .method_output input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table .join_point_output input {
+	width:150px;
+	font-size:10px;
+	background-color:#EEE;
+	color:#666;
+	border:0;
+}
+.module_join_points .join_points .join_point .join_point_method .method_args table .value input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table .value input {
+	width:200px;
+	background-color:#FFF;
+}
+.module_join_points .join_points .join_point .join_point_method .method_args table .value .add_variable.inline {
+	margin-left:-15px;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping .add_variable.inline,
+  .module_join_points .join_points .join_point .join_point_method .output_mapping .add_variable.inline {
+	margin:-2px 0 0 -17px !important;
+	font-size:12px;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table .erase_from_input,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table .erase_from_output,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table .erase_from_input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table .erase_from_output {
+	width:50px;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table .erase_from_input input,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table .erase_from_output input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table .erase_from_input input,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table .erase_from_output input {
+	width:auto;
+}
+.module_join_points .join_points .join_point .join_point_method .input_mapping table .from_to,
+   .module_join_points .join_points .join_point .join_point_method .output_mapping table .from_to,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .input_mapping table .from_to,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .output_mapping table .from_to {
+	width:20px;
+}
+.module_join_points .join_points .join_point .join_point_method .method_args table .type,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table .type {
+	width:85px;
+}
+.module_join_points .join_points .join_point .join_point_method .method_args table .type select,
+   .regions_blocks_includes_settings .region_blocks .items .item .module_join_points .join_points .join_point .join_point_method .method_args table .type select {
+	width:80px;
+	font-size:10px;
+	background-color:#FFF;
+	color:#999;
+	border:0;
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+	<!-- 
+	To start the mongodb service please execute this: 
+		sudo /etc/init.d/mongod restart
+	
+	To edit the mongod.conf please execute:
+		vim /etc/mongod.conf
+	-->
+
+	<var name="mongodb_host">127.0.0.1</var>
+	<var name="mongodb_db_name">phpframework_mongo_cache</var>
+	<var name="mongodb_username"></var>
+	<var name="mongodb_password"></var>
+	<var name="mongodb_port">27017</var>
+	
+	<!-- DRIVER -->
+	<bean name="MongoDBHandler" path="lib.org.phpframework.mongodb.MongoDBHandler">
+		<function name="connect">
+			<parameter index="1" reference="mongodb_HOST"></parameter>
+			<parameter index="2" reference="mongodb_db_name"></parameter>
+			<parameter index="3" reference="mongodb_username"></parameter>
+			<parameter index="4" reference="mongodb_password"></parameter>
+			<parameter index="5" reference="mongodb_port"></parameter>
+		</function>
+	</bean>
+</beans>
