@@ -2,6 +2,7 @@
 app/__system/layer/presentation/phpframework/webroot/__system/*
 app/__system/layer/presentation/test/webroot/__system/*
 other/*
+other/workflow/*
 tmp/*
 files/*
 
@@ -37,6 +38,9 @@ app/__system/layer/presentation/common/webroot/vendor/ckeditor
 
 #except the subfodlers:
 !other/authdb/
+!other/frameworkscreenshots/
+!other/workflow/
+!other/workflow/.gitkeep
 !vendor/dao/common
 !vendor/dao/module
 !vendor/dao/program
