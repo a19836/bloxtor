@@ -41,9 +41,14 @@ app/__system/layer/presentation/common/webroot/vendor/ckeditor
 !other/frameworkscreenshots/
 !other/workflow/
 !other/workflow/.gitkeep
-!vendor/dao/common
-!vendor/dao/module
-!vendor/dao/program
+!tmp/.htaccess
+!files/.htaccess
+!vendor/dao/common/.gitkeep
+!vendor/dao/module/.gitkeep
+!vendor/dao/program/.gitkeep
+!vendor/testunit/.gitkeep
 !vendor/layoutuieditor/widget/
+!vendor/layoutuieditor/widget/.gitkeep
 !vendor/codeworkfloweditor/task/
+!vendor/codeworkfloweditor/task/.gitkeep
 
