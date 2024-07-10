@@ -1,0 +1,45 @@
+#ignore all files below:
+app/__system/layer/presentation/phpframework/webroot/__system/*
+app/__system/layer/presentation/test/webroot/__system/*
+other/*
+tmp/*
+files/*
+
+vendor/dao/*
+vendor/dao/common/*
+vendor/dao/module/*
+vendor/dao/program/*
+vendor/testunit/*
+vendor/layoutuieditor/*
+vendor/layoutuieditor/widget/*
+vendor/codeworkfloweditor/*
+vendor/codeworkfloweditor/task/*
+
+app/__system/layer/presentation/common/src/module/*
+app/__system/layer/presentation/common/webroot/__system/*
+app/__system/layer/presentation/common/webroot/module/*
+app/__system/layer/presentation/phpframework/webroot/__system/*
+app/__system/layer/presentation/test/webroot/__system/*
+
+#sensitive info
+app/config/*
+app/layer/*
+
+#GPL libraries
+app/__system/layer/presentation/phpframework/webroot/vendor/wordpress.zip
+
+#LGPL libraries
+app/lib/vendor/phpjavascriptpacker
+app/lib/vendor/phpmailer
+app/lib/vendor/xsssanitizer
+app/__system/layer/presentation/common/webroot/vendor/tinymce
+app/__system/layer/presentation/common/webroot/vendor/ckeditor
+
+#except the subfodlers:
+!other/authdb/
+!vendor/dao/common
+!vendor/dao/module
+!vendor/dao/program
+!vendor/layoutuieditor/widget/
+!vendor/codeworkfloweditor/task/
+

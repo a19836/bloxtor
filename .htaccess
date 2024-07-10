@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+   
+   #Secure some sensible folders by disabling access to .git or .svn folders
+   RewriteRule (^|/)\.(git|svn)(/.*)?$ - [F,NC]
+   
+   RewriteRule ^$ app/layer/ [L,NC]
+   
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteRule (.*) app/layer/$1 [L,NC]
+</IfModule>
