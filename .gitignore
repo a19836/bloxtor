@@ -1,6 +1,4 @@
 #ignore all files below:
-app/__system/layer/presentation/phpframework/webroot/__system/*
-app/__system/layer/presentation/test/webroot/__system/*
 other/*
 other/workflow/*
 tmp/*
@@ -37,6 +35,13 @@ app/__system/layer/presentation/common/webroot/vendor/tinymce
 app/__system/layer/presentation/common/webroot/vendor/ckeditor
 
 #except the subfodlers:
+!app/__system/layer/presentation/common/src/module/.gitkeep
+!app/__system/layer/presentation/common/webroot/__system/.gitkeep
+!app/__system/layer/presentation/common/webroot/module/.gitkeep
+!app/__system/layer/presentation/phpframework/webroot/__system/.gitkeep
+!app/__system/layer/presentation/test/webroot/__system/.gitkeep
+!app/config/.gitkeep
+!app/layer/.htaccess
 !other/authdb/
 !other/frameworkscreenshots/
 !other/workflow/
