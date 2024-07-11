@@ -2,7 +2,7 @@
 
 ## What is Bloxtor
 
-Bloxtor is a **professional web-development framework designed for No-Coders, Low-Coders, and Coders alike**. It functions as a versatile code reader and converter, seamlessly transforming code into visual environments and visual components back into code. Discover more about Bloxtor on our homepage: [https://www.bloxtor.com]
+Bloxtor is a **professional and intelligent web-development framework designed for No-Coders, Low-Coders, and Coders alike**. It functions as a versatile code reader and converter, seamlessly transforming code into visual environments and visual components back into code. Discover more about Bloxtor on our homepage: [https://www.bloxtor.com]
 
 - All installations steps are in [INSTALL.md](./INSTALL.md)
 - Please read the Bloxtor terms and conditions at [LICENSE.md](./LICENSE.md)
@@ -10,8 +10,9 @@ Bloxtor is a **professional web-development framework designed for No-Coders, Lo
 
 ### Key Features
 
-- **Open-Source Freedom**: Bloxtor is open-source, giving you full control and independence from third-party dependencies. Check our [LICENSE.md](./LICENSE.md) for more details.
-- **Team Collaboration and Permissions**: Bloxtor supports development with multiple teams managing multiple projects and clients simultaneously, with customizable permissions and access controls.
+- **Faster Development**: With Bloxtor, developers can create applications 3x faster.
+- **Open-Source Freedom**: Bloxtor is open-source and transparent, giving you full control and independence from third-party dependencies. Check our [LICENSE.md](./LICENSE.md) for more details.
+- **Team Collaboration and Permissions**: Bloxtor supports development with multiple teams managing multiple projects and clients simultaneously, with customizable permissions and access controls, effectively solving Shadow IT issues.
 - **Automatic Code Generation**: Let Bloxtor generate the code for you. Customize it visually or dive into the code directly whenever you wish.
 - **Scalable Applications**: Every application built with Bloxtor is scalable, adheres to programming standards, and ensures stability and security, allowing developers to focus on business requirements.
 - **Flexible Deployment**: Deploy your applications in monolithic or microservices architectures across one or multiple servers.

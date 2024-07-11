@@ -119,58 +119,6 @@ $optional_files = array(
 $html = "<ol>
 	<li>Please point the Document Root from your WebServer to the $dir_path folder!</li>
 	<li>Install the PHP 5.6 or higher.</li>
-	<li>Please be sure that your WebServer has the mod_rewrite enable and the php.ini files are well configured, this is, for security and performance reasons, please update your php.ini files with:
-		<ul>
-			<li>short_open_tag = On</li>
-			<li>max_execution_time = 1000</li>
-			<li>variables_order = \"EGPCS\"</li>
-			<li>upload_max_filesize = 150M</li>
-			<li>post_max_size = 150M</li>
-			<li>date.timezone = Europe/Lisbon</li>
-			
-			<li>open_basedir = \"" . $installation_dir . "\"</li>
-			<li>sys_temp_dir = \"" . $installation_dir . "tmp\"</li>
-			<li>upload_tmp_dir = \"" . $installation_dir . "tmp\"</li>
-			<li>session.save_path = \"" . $installation_dir . "tmp\"</li>
-			<li>soap.wsdl_cache_dir = \"" . $installation_dir . "tmp\"</li>
-
-			<li>error_reporting = E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT</li>
-			<li>display_errors = Off</li>
-			<li>display_startup_errors = Off</li>
-			<li>log_errors = On</li>
-
-			<li>expose_php = Off</li>
-			<li>mail.add_x_header = Off</li>
-			<li>session.cookie_httponly = On</li>
-			<li>session.cookie_secure = On</li>
-			<li>session.use_strict_mode = On</li>
-			<li>allow_url_fopen = Off</li>
-			<li>allow_url_include = Off</li>
-
-			<li style=\"overflow-wrap:break-word;\">disable_functions = dl,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,exec,shell_exec,passthru,system,proc_open,popen,parse_ini_file,show_source</li>	
-		</ul>
-		<br/>
-		And if possible the following ones too (but only if you get request body limit exceed or something similar):
-		<ul>
-			<li>max_input_time = 360</li>
-			<li>memory_limit = 1024M</li>
-			<li>max_input_vars = 10000</li>
-			<li>suhosin.get.max_vars = 10000 (if apply)</li>
-			<li>suhosin.post.max_vars = 10000 (if apply)</li>
-			<li>suhosin.request.max_vars = 10000 (if apply)</li>
-		</ul>
-		<br/>
-		In linux, to enable the mod_rewrite in apache, try to execute this command: 
-		<ul>
-			<li>sudo a2enmod rewrite</li>
-		</ul>
-		<br/>
-		Note that you should make these changes in the php.ini from apache and cli mode. Usually these files are located in:
-		<ul>
-			<li>/etc/php/apache2/php.ini</li>
-			<li>/etc/php/cli/php.ini</li>
-		</ul>
-	</li>
 	<li>Please be sure that you have PHP installed and all the following modules:
 		<ul>
 			<li>bcmath (is installed by default)</li>
@@ -224,17 +172,16 @@ $html = "<ol>
 		If some module is missing you need to execute the command bellow in Linux to install the following packages:
 		<ul>
 			<li style=\"white-space:nowrap;\">sudo apt-get/yum install php-common php-cli php-bcmath php-curl php-gd php-mbstring php-mysql/php-mysqlnd php-pgsql php-xml php-ssh2 php-json</li>
-			<li style=\"white-space:nowrap;\">and optionally: sudo apt-get/yum install php-soap php-opcache php-dbg php-process php-odbc php-pdo php-fpm php-dba php-dbg</li>
+			<li style=\"white-space:nowrap;\">(optional) If you wish to install other extra packages please run: sudo apt-get/yum install php-soap php-opcache php-dbg php-process php-odbc php-pdo php-fpm php-dba php-dbg</li>
 		</ul>
 		
 		<br>
-		If you wish to connect to mssql-server, please install the 'mssql-server' package. If you are not able to install this package on linux os, please follow the tutorials in order to install the odbc drivers for mssql-server:
+		(optional) If you wish to connect to mssql-server, please install the 'mssql-server' package. If you are not able to install this package on linux os, please follow the tutorials in order to install the odbc drivers for mssql-server:
 		<ul>
 			<li><a href='https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver15' target='_blank'>https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver15</a></li>
 			<li><a href='https://www.easysoft.com/developer/languages/php/sql_server_unix_tutorial.html' target='_blank'>https://www.easysoft.com/developer/languages/php/sql_server_unix_tutorial.html</a></li>
 			<li><a href='https://www.easysoft.com/products/data_access/odbc-sql-server-driver/manual/installation.html#852113' target='_blank'>https://www.easysoft.com/products/data_access/odbc-sql-server-driver/manual/installation.html#852113</a></li>
 		</ul>
-		<br/>
 		After your odbc driver be installed, it should be present in the file: /etc/odbc.ini, otherwise add the following lines:
 		<ul>
 			<li style=\"white-space:nowrap;\">
@@ -246,7 +193,61 @@ $html = "<ol>
 		</ul>
 		Note that the Driver path should be to your driver.
 	</li>
-	<li>Go to your /etc/mysql/my.cnf and add the following line:
+	<li>Please be sure that your WebServer has the mod_rewrite enable and the php.ini files are well configured.<br/>
+		<br/>
+		In linux, to enable the mod_rewrite in apache, try to execute this command: 
+		<ul>
+			<li>sudo a2enmod rewrite</li>
+		</ul>
+		<br/>
+		(optional) For security and performance reasons, we recommend you to update your php.ini files with:
+		<ul>
+			<li>short_open_tag = On</li>
+			<li>max_execution_time = 1000</li>
+			<li>variables_order = \"EGPCS\"</li>
+			<li>upload_max_filesize = 150M</li>
+			<li>post_max_size = 150M</li>
+			<li>date.timezone = Europe/Lisbon</li>
+			
+			<li>open_basedir = \"" . $installation_dir . "\"</li>
+			<li>sys_temp_dir = \"" . $installation_dir . "tmp\"</li>
+			<li>upload_tmp_dir = \"" . $installation_dir . "tmp\"</li>
+			<li>session.save_path = \"" . $installation_dir . "tmp\"</li>
+			<li>soap.wsdl_cache_dir = \"" . $installation_dir . "tmp\"</li>
+
+			<li>error_reporting = E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT</li>
+			<li>display_errors = Off</li>
+			<li>display_startup_errors = Off</li>
+			<li>log_errors = On</li>
+
+			<li>expose_php = Off</li>
+			<li>mail.add_x_header = Off</li>
+			<li>session.cookie_httponly = On</li>
+			<li>session.cookie_secure = On</li>
+			<li>session.use_strict_mode = On</li>
+			<li>allow_url_fopen = Off</li>
+			<li>allow_url_include = Off</li>
+
+			<li style=\"overflow-wrap:break-word;\">disable_functions = dl,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,exec,shell_exec,passthru,system,proc_open,popen,parse_ini_file,show_source</li>	
+		</ul>
+		<br/>
+		(optional) And if possible the following ones too (but only if you get request body limit exceed):
+		<ul>
+			<li>max_input_time = 360</li>
+			<li>memory_limit = 1024M</li>
+			<li>max_input_vars = 10000</li>
+			<li>suhosin.get.max_vars = 10000 (if apply)</li>
+			<li>suhosin.post.max_vars = 10000 (if apply)</li>
+			<li>suhosin.request.max_vars = 10000 (if apply)</li>
+		</ul>
+		<br/>
+		Note that, if you decide to follow our recommendation, you should make these changes in the php.ini from apache and cli mode. Usually these files are located in:
+		<ul>
+			<li>/etc/php/apache2/php.ini</li>
+			<li>/etc/php/cli/php.ini</li>
+		</ul>
+	</li>
+	<li>(optional) Go to your /etc/mysql/my.cnf and add the following line:
 		<ul>
 			<li style=\"white-space:nowrap;\">
 				[mysqld]<br>
@@ -286,7 +287,7 @@ $html = "<ol>
 			</li>
 		</ul>
 	</li>
-	<li>Change the correspondent apache security configurations, if active - (Only if you get request body limit exceed or something similar), by adding of changing the following lines to the file /etc/modsecurity/modsecurity.conf:
+	<li>(optional) Change the correspondent apache security configurations, if active - (Only if you get request body limit exceed), by adding of changing the following lines to the file /etc/modsecurity/modsecurity.conf:
 		<ul>
 			<li>#to 32MB:<br>
 			SecRequestBodyLimit 32768000</li>
@@ -301,7 +302,7 @@ $html = "<ol>
 			SecResponseBodyLimit 32768000</li>
 		</ul>
 	</li>
-	<li>change the following apache configurations if apply (this is, inside of your virtual-host configuration add the following lines):
+	<li>(optional) Change the following apache configurations if apply (this is, inside of your virtual-host configuration add the following lines):
 		<ul>
 			<li>LimitInternalRecursion 100</li>
 			<li>LimitRequestBody 0</li>
@@ -311,7 +312,7 @@ $html = "<ol>
 			<li>LimitXMLRequestBody 10000000</li>
 		</ul>
 	</li>
-	<li>in CentOS is probably that the apache has the external network connections blocked which doesn't allow the mysql connect with the DBs. To check if this is OFF please type the following commands:<br/>
+	<li>In CentOS is probably that the apache has the external network connections blocked which doesn't allow the mysql connect with the DBs. To check if this is OFF please type the following commands:<br/>
 	&nbsp;&nbsp;&nbsp;sudo getsebool -a | grep httpd_can_network<br/>
 	<br/>
 	If the httpd_can_network_connect is OFF, you should enable them by typing:<br/>
