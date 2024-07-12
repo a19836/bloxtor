@@ -15,6 +15,8 @@
 	+ Apps for easy deployment: Buddy, CircleCI and "CloudBees CodeShip"; 
 	+ Apps for monitoring: Rollbar, ZenCrepes and "Meercode | CI Monitoring"; 
 	+ Apps to see diagrams on Github: "Lucidchart Connector".
+- Redesign the "Citizen Development" workspace and make it available by default.
+- Create a new workspace called "Ninja", which is basically a rudimentary file manager to manage all files including .htaccess and other reserved files. The idea is to give the developer permission to edit all files, as if he were connected via ssh.
 - Add Foreign Keys syncronization from the DB diagram to DB Server.
 - Add a new task in the logic editor to perform a calculation on an attribute in a list. eg: if I want to calculate the sum of an attribute from a list of records, instead of creating a diagram with the loop task, I call this new task that calculates the sum of an attribute from that list of records. Something like in Excel.
 - In the SLA/Resources section (of the Page editor), Add a new action to perform a calculation on an attribute in a list. eg: if I want to calculate the sum of an attribute from a list of records, I call this new action that calculates the sum of an attribute from that list of records.
