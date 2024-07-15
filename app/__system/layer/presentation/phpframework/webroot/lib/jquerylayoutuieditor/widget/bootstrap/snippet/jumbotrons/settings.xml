@@ -3,6 +3,7 @@
 	<label>Jumb otrons</label>
 	<tag>bsjumbotrons</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSJumbotronsWidget</create_widget_class>
 	</settings>
 	<files>

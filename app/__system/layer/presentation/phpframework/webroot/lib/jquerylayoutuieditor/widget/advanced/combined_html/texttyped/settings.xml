@@ -4,6 +4,7 @@
 	<tag>texttyped</tag>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>TextTypedWidget</create_widget_class>
 	</settings>
 	<template_widget><![CDATA[]]></template_widget>

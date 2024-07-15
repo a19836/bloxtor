@@ -4,6 +4,7 @@
 	<tag>container-8-4</tag>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<menu_class>container</menu_class>
 		<template_class>container row</template_class>
 		<create_widget_class>CreateWidgetContainerClassObj</create_widget_class>

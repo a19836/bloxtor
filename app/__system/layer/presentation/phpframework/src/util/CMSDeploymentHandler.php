@@ -2098,6 +2098,8 @@ exitScript(); //terminate script without errors
 " . $this->getRemoteServerExitScriptPHPCode() . "
 " . $this->getRemoteServerGetLibFunctionPHPCode() . "
 " . $this->getRemoteServerGetLaunchExceptionFunctionPHPCode() . "
+" . $this->getRemoteServerGetDebugLogFunctionFunctionPHPCode() . "
+" . $this->getRemoteServerGetDebugLogFunctionPHPCode() . "
 " . $this->getRemoteServerRemoveFileFunctionPHPCode() . "
 ?>";
 		
@@ -2902,6 +2904,8 @@ removeFile(\$deploying_folder_path);
 " . $this->getRemoteServerExitScriptPHPCode() . "
 " . $this->getRemoteServerGetLibFunctionPHPCode() . "
 " . $this->getRemoteServerGetLaunchExceptionFunctionPHPCode() . "
+" . $this->getRemoteServerGetDebugLogFunctionFunctionPHPCode() . "
+" . $this->getRemoteServerGetDebugLogFunctionPHPCode() . "
 " . $this->getRemoteServerRemoveFileFunctionPHPCode();
 		}
 		
@@ -3051,6 +3055,46 @@ function get_lib(\$str) {
 function launch_exception(Exception \$exception) {
 	throw \$exception;
 	return false;
+}
+";
+	}
+	
+	private function getRemoteServerGetDebugLogFunctionFunctionPHPCode() {
+		return "
+function debug_log_function(\$func, \$args, \$log_type = \"debug\") {
+	\$message = \$func . \"(\";
+	
+	if (is_array(\$args))
+		foreach(\$args as \$arg) {
+			\$message .= \$message ? \", \" : \"\";
+			
+			if (is_array(\$arg)) 
+				\$message .= stripslashes(json_encode(\$arg));
+			else if (is_object(\$arg)) 
+				\$message .= \"Object(\" . get_class(\$arg) . \")\";
+			else if (\$arg === true)
+				\$message .= \"true\";
+			else if (\$arg === false) 
+				\$message .= \"false\";
+			else if (\$arg == null)
+				\$message .= \"null\";
+			else if (is_numeric(\$arg)) 
+				\$message .= (int)\$arg;
+			else 
+				\$message .= \"'\" . \$arg . \"'\";
+		}
+		
+	\$message .= \")\";
+	debug_log(\$message);
+}
+";
+	}
+	
+	private function getRemoteServerGetDebugLogFunctionPHPCode() {
+		return "
+function debug_log(\$message, \$log_type = \"debug\") {
+	if (\$log_type == \"exception\" || \$log_type == \"error\")
+		error_log(\"[\" . date(\"Y-m-d H:i:s\") . \"][\$log_type] \$message\");
 }
 ";
 	}

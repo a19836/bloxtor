@@ -8,6 +8,7 @@
 	</files>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<menu_settings_class>table-sections-menu-settings</menu_settings_class>
 		<template_class>droppable</template_class>
 		<template_node_name>table</template_node_name>

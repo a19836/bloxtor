@@ -3,6 +3,7 @@
 	<label>Custom Container</label>
 	<tag>bscontainercustom</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<menu_class>bscontainer</menu_class>
 		<create_widget_class>BSContainerCustomWidget</create_widget_class>
 	</settings>

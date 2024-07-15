@@ -3,6 +3,7 @@
 	<label>Text + Combo Boxes</label>
 	<tag>input_select</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>InputSelectWidget</create_widget_class>
 	</settings>
 	<template_widget><![CDATA[<div data-widget-item-attribute-field-edit data-widget-item-attribute-field-toggle-select-input>

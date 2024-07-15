@@ -3,6 +3,7 @@
 	<label>Card</label>
 	<tag>bscard</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSCardWidget</create_widget_class>
 	</settings>
 	<files>

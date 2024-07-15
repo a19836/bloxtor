@@ -285,7 +285,7 @@ function LayoutUIEditor() {
 		//+ '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">'
 	+ '</head><body></body></html>');
 	
-	me.default_menu_widget_tag_html = '<li class="draggable menu-widget menu-widget-html-tag html-tag" data-tag="html-tag" title="Html Tag" data-on-clone-menu-widget-func="#LayoutUIEditor#.onCloneMenuHtmlTagWidget" data-on-clean-template-widget-html-func="#LayoutUIEditor#.onCleanTemplateHtmlTagWidget" data-on-create-template-widget-func="#LayoutUIEditor#.onCreateTemplateHtmlTagWidget" data-resizable="1">'
+	me.default_menu_widget_tag_html = '<li class="draggable menu-widget menu-widget-html-tag html-tag" data-tag="html-tag" title="Html Tag" data-on-clone-menu-widget-func="#LayoutUIEditor#.onCloneMenuHtmlTagWidget" data-on-clean-template-widget-html-func="#LayoutUIEditor#.onCleanTemplateHtmlTagWidget" data-on-create-template-widget-func="#LayoutUIEditor#.onCreateTemplateHtmlTagWidget" data-resizable="1" data-absolute-position="1">'
 			+ '<span>Html Block</span>'
 			+ '<div class="droppable template-widget template-widget-html-tag html-tag" data-label="Html Tag">'
 				+ 'Some Text'
@@ -1073,28 +1073,30 @@ function LayoutUIEditor() {
 	};
 	
 	me.updateWidgetPositionBasedInParent = function(event, dragged_elm, widget, ui_obj) {
-		var parent = widget.parent();
-		var position = parent.css("position");
-		var parent_offset = null;
-		var is_body = parent.is(template_widgets_iframe_body);
-		
-		if (position == "absolute" || position == "fixed" || position == "relative") {
-			parent_offset = parent.offset();
+		if (widget.data("absolute-position")) {
+			var parent = widget.parent();
+			var position = parent.css("position");
+			var parent_offset = null;
+			var is_body = parent.is(template_widgets_iframe_body);
 			
-			//add iframe offset in case the panels be flipped.
-			var o = template_widgets_iframe.offset();
-			parent_offset.top = parent_offset.top + o.top;
-			parent_offset.left = parent_offset.left + o.left;
-		}
-		else if (is_body)
-			parent_offset = template_widgets_iframe.offset();
-		
-		if (parent_offset) {
-			var dragged_elm_offset = ui_obj ? ui_obj.offset : dragged_elm.offset();
-			var top = parseInt(dragged_elm_offset.top - parent_offset.top);
-			var left = parseInt(dragged_elm_offset.left - parent_offset.left);
+			if (position == "absolute" || position == "fixed" || position == "relative") {
+				parent_offset = parent.offset();
+				
+				//add iframe offset in case the panels be flipped.
+				var o = template_widgets_iframe.offset();
+				parent_offset.top = parent_offset.top + o.top;
+				parent_offset.left = parent_offset.left + o.left;
+			}
+			else if (is_body)
+				parent_offset = template_widgets_iframe.offset();
 			
-			widget.css({position: "absolute", top: top + "px", left: left + "px"});
+			if (parent_offset) {
+				var dragged_elm_offset = ui_obj ? ui_obj.offset : dragged_elm.offset();
+				var top = parseInt(dragged_elm_offset.top - parent_offset.top);
+				var left = parseInt(dragged_elm_offset.left - parent_offset.left);
+				
+				widget.css({position: "absolute", top: top + "px", left: left + "px"});
+			}
 		}
 	};
 	
@@ -3031,6 +3033,12 @@ function LayoutUIEditor() {
 		
 		if (is_resizable)
 			widget.data("resizable", true);
+		
+		var is_absolute_position = menu_widget.attr("data-absolute-position");
+		is_absolute_position = !is_absolute_position || is_absolute_position == "" || is_absolute_position == "0" || ("" + is_absolute_position).toLowerCase() == "false" ? false : true;
+		
+		if (is_absolute_position)
+			widget.data("absolute-position", true);
 		
 		//set droppable childs only if widget comes from menu widgets
 		if (!html_element)
@@ -11950,7 +11958,7 @@ function LayoutUIEditor() {
 		if (elm) {
 			if (elm.nodeType == Node.ELEMENT_NODE) {
 				var j_elm = $(elm);
-				//var ignore_attributes = ["class", /*"data-label", "data-tag", "data-target-id", "data-template-id", "data-resizable", "old-style"*/];
+				//var ignore_attributes = ["class", /*"data-label", "data-tag", "data-target-id", "data-template-id", "data-resizable", "data-absolute-position", "old-style"*/];
 				var text_nodes = ["style", "script"];
 				var no_childs_nodes = MyHtmlBeautify.single_html_tags;
 				
@@ -12038,7 +12046,7 @@ function LayoutUIEditor() {
 			var node_name = elm.nodeName.toLowerCase();
 			var non_empty_attrs = ["id", "class", "name", "value", "style"];
 			var single_attrs = ["selected", "checked", "readonly", "disabled", "required"];
-			var ignore_attributes = [/*"data-label", "data-tag", "data-target-id", "data-template-id", "data-resizable", "old-style"*/];
+			var ignore_attributes = [/*"data-label", "data-tag", "data-target-id", "data-template-id", "data-resizable", "data-absolute-position", "old-style"*/];
 			var attributes_to_exclude = opts && $.isArray(opts["attributes_to_exclude"]) ? opts["attributes_to_exclude"] : [];
 			var attributes_to_include = opts && $.isArray(opts["attributes_to_include"]) ? opts["attributes_to_include"] : [];
 			

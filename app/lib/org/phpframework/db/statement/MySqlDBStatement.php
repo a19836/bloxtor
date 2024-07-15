@@ -80,7 +80,7 @@ trait MySqlDBStatement { //must be "trait" and not "class" bc this code will ser
 				kcu.column_name AS 'child_column', 
 				kcu.referenced_table_name AS 'parent_table', 
 				kcu.referenced_column_name AS 'parent_column',
-				kcu.constraint_name,
+				kcu.constraint_name AS 'constraint_name',
 				rc.UPDATE_RULE AS 'on_update',
 				rc.DELETE_RULE AS 'on_delete'
 		from information_schema.key_column_usage kcu
@@ -558,7 +558,7 @@ DROP PROCEDURE IF EXISTS dropTableForeignKey;";
 			column_name AS 'child_column', 
 			referenced_table_name AS 'parent_table', 
 			referenced_column_name AS 'parent_column',
-			constraint_name
+			constraint_name AS 'constraint_name'
 			FROM information_schema.key_column_usage
 			WHERE referenced_table_name is not null AND table_schema = DATABASE() AND table_name = '$table'");*/
 	}

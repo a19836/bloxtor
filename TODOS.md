@@ -1,6 +1,6 @@
 # Bloxtor To-Dos (Tasks)
 
-- Prepare the Bloxtor code to work with php 8 (so far the stable version of php is 7.2)
+- Prepare the Bloxtor code to work with php 8 (so far the stable version of php is 7.2) - working progress
 - Integrate Bloxtor with Laravel e Symphony, so the developers can use this thrid-party frameworks.
 - Integrate Bloxtor with Github so the developer can have code versioning. 
 - Integrate AI in the Page, Template and View editors to create beautiful HTML automatically and add that html to the correspondent region.

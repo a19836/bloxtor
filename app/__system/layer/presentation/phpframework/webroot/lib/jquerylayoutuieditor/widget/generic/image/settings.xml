@@ -4,6 +4,7 @@
 	<tag>image</tag>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<template_node_name>img</template_node_name>
 		<create_widget_class>ImageWidget</create_widget_class>
 	</settings>

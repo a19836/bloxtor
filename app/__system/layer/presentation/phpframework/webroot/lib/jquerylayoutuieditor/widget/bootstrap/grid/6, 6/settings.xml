@@ -3,6 +3,7 @@
 	<label>6, 6</label>
 	<tag>bscontainer66</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<menu_class>bscontainer</menu_class>
 		<create_widget_class>BSContainer66Widget</create_widget_class>
 	</settings>

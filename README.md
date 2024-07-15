@@ -5,6 +5,8 @@
 Bloxtor is a **professional and intelligent web-development framework designed for No-Coders, Low-Coders, and Coders alike**. It functions as a versatile code reader and converter, seamlessly transforming code into visual environments and visual components back into code. Discover more about Bloxtor on our homepage: [https://www.bloxtor.com]
 
 - All installations steps are in [INSTALL.md](./INSTALL.md)
+- Please read our documentation [here](https://bloxtor.com/onlineitframeworktutorial/).
+- Please watch our video tutorials [here](https://bloxtor.com/onlineitframeworktutorial/?block_id=video/simple).
 - Please read the Bloxtor terms and conditions at [LICENSE.md](./LICENSE.md)
 - Please read our tasks list at [TODOS.md](./TODOS.md) to understand how can you help us improve Bloxtor
 
@@ -30,7 +32,8 @@ Bloxtor emerged from the extensive professional experience of its creator, who i
 
 ### Mission and Vision
 
-Our **mission** is to offer a comprehensive tool that centralizes the entire web application development process, from planning to maintenance. This includes creating UML diagrams, supporting low-code, no-code, and citizen development, and providing deployment systems, unit tests, ticket management, BPM, and CRM systems, all enhanced with artificial intelligence.
+Our **mission** is to offer a comprehensive tool that centralizes the entire web application development process, from planning to maintenance, empowering all users to contribute to the development process. This includes creating UML diagrams, supporting low-code, no-code, and citizen development, and providing deployment systems, unit tests, ticket management, BPM, and CRM systems, all enhanced with artificial intelligence.
+Our mission is to create a versatile framework that can be used in any scenario, whether remotely or locally, online or offline, by everyone – both tech-savvy and non-tech individuals. Our tool is designed for use by individuals and companies alike, across all departments, not just IT.
 We believe that by creating a framework accessible to everyone - no-coders, low-coders, and coders - we will significantly advance the global web development and leave our mark on the world.
 
 Our **vision** is to make web development faster, more automated, intelligent, and sustainable. We aim to make Bloxtor a go-to tool for low-code, no-code, and citizen development projects, maintaining flexibility even with high levels of code abstraction.

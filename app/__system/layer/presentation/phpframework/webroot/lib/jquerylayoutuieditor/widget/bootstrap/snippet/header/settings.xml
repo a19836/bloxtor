@@ -3,6 +3,7 @@
 	<label>Header</label>
 	<tag>bsheader</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSHeaderWidget</create_widget_class>
 	</settings>
 	<files>

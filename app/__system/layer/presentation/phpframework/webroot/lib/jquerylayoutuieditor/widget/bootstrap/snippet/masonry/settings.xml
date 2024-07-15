@@ -3,6 +3,7 @@
 	<label>Masonry</label>
 	<tag>bsmasonry</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSMasonryWidget</create_widget_class>
 	</settings>
 	<files>

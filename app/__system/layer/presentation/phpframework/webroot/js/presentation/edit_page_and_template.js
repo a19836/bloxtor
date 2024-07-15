@@ -3954,7 +3954,7 @@ function initPageAndTemplateLayout(main_parent_elm, opts) {
 			
 			//set on_drag_stop_func event to set the position absolute to the elements that are dropped to body
 			PtlLayoutUIEditor.options.on_drag_stop_func = function(menu_widget, widget, event, ui_obj) {
-				if (widget.parent().is(".template_region_items.main-droppable") && widget.parent().parent().closest(".template_region").is(".full_body")) {
+				if (widget.parent().is(".template_region_items.main-droppable") && widget.parent().parent().closest(".template_region").is(".full_body") && widget.data("absolute-position")) {
 					var parent_offset = PtlLayoutUIEditor.getTemplateWidgetsIframe().offset();
 					var dragged_elm_offset = ui_obj ? ui_obj.offset : ui_obj.helper.offset();
 					var top = parseInt(dragged_elm_offset.top - parent_offset.top);

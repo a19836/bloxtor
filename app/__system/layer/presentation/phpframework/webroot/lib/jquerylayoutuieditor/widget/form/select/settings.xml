@@ -4,6 +4,7 @@
 	<tag>select</tag>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<template_node_name>select</template_node_name>
 		<create_widget_class>SelectWidget</create_widget_class>
 	</settings>

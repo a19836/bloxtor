@@ -4,6 +4,7 @@
 	<tag>tooltip</tag>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<template_node_name>span</template_node_name>
 		<create_widget_class>ToolTipWidget</create_widget_class>
 	</settings>

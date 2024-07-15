@@ -3,6 +3,7 @@
 	<label>Figure</label>
 	<tag>bsfigure</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSFigureWidget</create_widget_class>
 	</settings>
 	<files>

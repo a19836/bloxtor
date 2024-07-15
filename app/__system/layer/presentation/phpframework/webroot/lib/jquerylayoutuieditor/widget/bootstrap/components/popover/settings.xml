@@ -3,6 +3,7 @@
 	<label>Popover</label>
 	<tag>bspopover</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSPopoverWidget</create_widget_class>
 	</settings>
 	<files>

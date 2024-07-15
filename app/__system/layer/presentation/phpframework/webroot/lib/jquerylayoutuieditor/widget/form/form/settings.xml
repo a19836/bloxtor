@@ -4,6 +4,7 @@
 	<tag>form</tag>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<template_class>droppable</template_class>
 		<template_node_name>form</template_node_name>
 		<create_widget_class>FormWidget</create_widget_class>

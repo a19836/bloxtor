@@ -3,6 +3,7 @@
 	<label>Check Box</label>
 	<tag>checkbox</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<template_node_name>input</template_node_name>
 		<create_widget_class>CheckBoxWidget</create_widget_class>
 	</settings>

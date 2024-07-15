@@ -3,6 +3,7 @@
 	<label>Form</label>
 	<tag>bsform</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSFormWidget</create_widget_class>
 	</settings>
 	<files>

@@ -3,6 +3,7 @@
 	<label>Spinner</label>
 	<tag>bsspinner</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSSpinnerWidget</create_widget_class>
 	</settings>
 	<files>

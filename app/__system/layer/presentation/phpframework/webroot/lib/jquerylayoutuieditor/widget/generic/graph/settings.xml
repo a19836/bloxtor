@@ -5,6 +5,7 @@
 	<settings>
 		<template_class>droppable</template_class>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>GraphWidget</create_widget_class>
 	</settings>
 	<menu_widget></menu_widget>

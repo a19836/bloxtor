@@ -4,6 +4,7 @@
 	<tag>custom-container</tag>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<menu_class>container custom-container</menu_class>
 		<template_class>container custom-container row</template_class>
 		<create_widget_class>CustomContainerWidget</create_widget_class>

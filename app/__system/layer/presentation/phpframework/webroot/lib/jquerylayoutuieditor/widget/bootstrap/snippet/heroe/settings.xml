@@ -3,6 +3,7 @@
 	<label>Heroe</label>
 	<tag>bsheroe</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSHeroeWidget</create_widget_class>
 	</settings>
 	<files>

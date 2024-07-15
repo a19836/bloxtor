@@ -225,6 +225,9 @@ function getMenuWidgetHTML($file_path, $widgets_root_path, $widgets_root_url, &$
 		$resizable = $settings["resizable"];
 		$menu_attrs .= $resizable != "" && $resizable != "0" && strtolower($resizable) != "false" ? ' data-resizable="1"' : '';
 		
+		$absolute_position = $settings["absolute_position"];
+		$menu_attrs .= $absolute_position != "" && $absolute_position != "0" && strtolower($absolute_position) != "false" ? ' data-absolute-position="1"' : '';
+		
 		//Preparing template widget
 		$template_node_name = $settings["template_node_name"] ? $settings["template_node_name"] : "div";
 		$template_class = " template-widget-$tag " . $settings["template_class"];

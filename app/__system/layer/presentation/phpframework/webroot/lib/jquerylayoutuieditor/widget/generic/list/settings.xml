@@ -4,6 +4,7 @@
 	<tag>list</tag>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<template_class>container droppable</template_class>
 		<template_node_name>ul</template_node_name>
 		<create_widget_class>ListWidget</create_widget_class>

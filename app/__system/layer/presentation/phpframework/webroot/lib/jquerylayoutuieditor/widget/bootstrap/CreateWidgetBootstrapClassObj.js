@@ -186,7 +186,14 @@ function CreateWidgetBootstrapClassObj(ui_creator, menu_widget, widget_tag) {
 		var new_widget = $(html);
 		widget.after(new_widget);
 		
+		var position = widget.css("position");
+		var top = widget.css("top");
+		var left = widget.css("left");
+		
 		ui_creator.convertHtmlElementToWidget(new_widget);
 		ui_creator.replaceWidgetWithWidget(widget, new_widget);
+		
+		new_widget.css({position: position, top: top , left: left});
+		new_widget.trigger("click");
 	};
 }

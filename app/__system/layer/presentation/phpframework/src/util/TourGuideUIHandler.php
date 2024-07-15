@@ -686,10 +686,42 @@ class TourGuideUIHandler {
 			case "admin/index":
 				$admin_type = !empty($_GET["admin_type"]) ? $_GET["admin_type"] : $admin_type;
 				
+				//avoids the left and right keyboard keys to work from the inner iframe. With this function the arrows only work in the main window.
+				$prepare_inner_tourguides_func = 'function(current_step) {
+					var target = current_step.target;
+					var iframe = document.querySelector("#right_panel iframe");
+					
+					if (target && iframe) {
+						$(iframe).load(function() {
+							iframe.blur();
+							target.focus();
+						});
+						
+						iframe.blur();
+						target.focus();
+						
+						setTimeout(function() {
+							iframe.blur();
+							target.focus();
+							
+							setTimeout(function() {
+								iframe.blur();
+								target.focus();
+								
+								setTimeout(function() {
+									iframe.blur();
+									target.focus();
+								}, 1000);
+							}, 1000);
+						}, 1000);
+					}
+				}';
+				
 				if ($admin_type == "advanced") {
 					$options["steps"][] = array(
 						"selector" => "#top_panel",
 						"content" => "The <strong>Advanced Workspace</strong> comprises a '<strong>Top bar</strong>', a '<strong>Navigator</strong>', and a '<strong>Content Panel</strong>' displaying content corresponding to selections made in the Top bar or Navigator.",
+						"onStepEnd" => $prepare_inner_tourguides_func
 					);
 					$options["steps"][] = array(
 						"selector" => "#top_panel > .center",
@@ -743,6 +775,7 @@ class TourGuideUIHandler {
 					$options["steps"][] = array(
 						"selector" => "#top_panel",
 						"content" => "The <strong>Simple Workspace</strong> comprises a '<strong>Top bar</strong>' and a '<strong>Content Panel</strong>' displaying content corresponding to selections made in the Top bar.",
+						"onStepEnd" => $prepare_inner_tourguides_func
 					);
 					$options["steps"][] = array(
 						"selector" => "#top_panel > .center",

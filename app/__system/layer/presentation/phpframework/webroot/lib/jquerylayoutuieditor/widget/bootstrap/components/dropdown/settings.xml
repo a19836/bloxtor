@@ -3,6 +3,7 @@
 	<label>Dropdown</label>
 	<tag>bsdropdown</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSDropdownWidget</create_widget_class>
 	</settings>
 	<files>

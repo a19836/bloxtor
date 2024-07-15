@@ -3,6 +3,7 @@
 	<label>Radio Box</label>
 	<tag>radiobox</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<template_node_name>input</template_node_name>
 		<create_widget_class>RadioBoxWidget</create_widget_class>
 	</settings>

@@ -3,6 +3,7 @@
 	<label>Bread crumbs</label>
 	<tag>bsbreadcrumbs</tag>
 	<settings>
+		<absolute_position>1</absolute_position>
 		<create_widget_class>BSBreadcrumbsWidget</create_widget_class>
 	</settings>
 	<files>

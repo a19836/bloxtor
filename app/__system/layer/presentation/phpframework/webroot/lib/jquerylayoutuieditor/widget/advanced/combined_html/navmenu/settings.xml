@@ -4,6 +4,7 @@
 	<tag>navmenu</tag>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<template_class>container droppable</template_class>
 		<template_node_name>nav</template_node_name>
 		<create_widget_class>NavMenuWidget</create_widget_class>

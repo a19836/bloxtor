@@ -4,6 +4,7 @@
 	<tag>textarea</tag>
 	<settings>
 		<resizable>1</resizable>
+		<absolute_position>1</absolute_position>
 		<template_node_name>textarea</template_node_name>
 		<create_widget_class>TextareaWidget</create_widget_class>
 	</settings>
