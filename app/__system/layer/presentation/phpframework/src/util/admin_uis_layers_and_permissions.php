@@ -209,6 +209,8 @@ $is_testunits_allowed = $UserAuthenticationHandler->isPresentationFilePermission
 $is_program_installation_allowed = $UserAuthenticationHandler->isPresentationFilePermissionAllowed($EVC->getEntityPath("admin/install_program"), "access");
 $is_diff_files_allowed = $UserAuthenticationHandler->isPresentationFilePermissionAllowed($EVC->getEntityPath("diff/index"), "access");
 
+$is_module_user_installed = file_exists($EVC->getModulesPath($EVC->getCommonProjectName()) . "user/");
+
 //prepare admin uis permissions
 include $EVC->getUtilPath("admin_uis_permissions");
 ?>

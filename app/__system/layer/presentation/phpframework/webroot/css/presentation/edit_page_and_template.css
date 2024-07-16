@@ -1605,10 +1605,12 @@ body > .dragging_menu_item {
 }
 .code_layout_ui_editor .mytree .icon.refresh {
 	opacity:0;
+	display:none;
 }
 .code_layout_ui_editor .mytree .jstree-open > .icon.refresh,
   .code_layout_ui_editor .mytree .jstree-open > a .icon.refresh {
-	opacity:.7
+	opacity:.7;
+	display:inline-block;
 }
 .code_layout_ui_editor .mytree .table-list,
   .code_layout_ui_editor .mytree .table-edit,

@@ -486,12 +486,8 @@ class WorkFlowUIHandler {
 		if (is_array($this->tasks_groups_by_tag)) {
 			foreach ($this->tasks_groups_by_tag as $group_name => $tags) {
 				if ($tags) {
-					$group_class = "tasks_group_" . str_replace(array(" ", "-"), "_", strtolower($group_name));
+					$group_html = "";
 					
-					$html .= '<li class="tasks_group ' . $group_class . '">';
-					$html .= '<div class="tasks_group_label">' . $group_name . '</div>';
-					$html .= '<div class="tasks_group_tasks">';
-				
 					$t = count($this->tasks_order_by_tag);
 					for ($i = 0; $i < $t; $i++) {
 						$tag = $this->tasks_order_by_tag[$i];
@@ -504,7 +500,7 @@ class WorkFlowUIHandler {
 							if ($task_type && $task_settings) {
 								$added[] = $task_type;
 								
-								$html .= $this->printTaskList($task_type, $task_settings);
+								$group_html .= $this->printTaskList($task_type, $task_settings);
 							}
 						}
 					}
@@ -520,12 +516,22 @@ class WorkFlowUIHandler {
 						if ($task_type && $task_settings && !in_array($task_type, $added)) {
 							$added[] = $task_type;
 							
-							$html .= $this->printTaskList($task_type, $task_settings);
+							$group_html .= $this->printTaskList($task_type, $task_settings);
 						}
 					}
 					
-					$html .= '</div>
-					<div style="clear:left; float:none;"></div></li>';
+					//only show group if there is any task inside, otherwise it shows an empty group, which does not make sense.
+					if ($group_html) {
+						$group_class = "tasks_group_" . str_replace(array(" ", "-"), "_", strtolower($group_name));
+						
+						$html .= '<li class="tasks_group ' . $group_class . '">';
+						$html .= '<div class="tasks_group_label">' . $group_name . '</div>';
+						$html .= '<div class="tasks_group_tasks">';
+						$html .= $group_html;
+						$html .= '</div>
+							<div style="clear:left; float:none;"></div>
+						</li>';
+					}
 				}
 			}
 		}
