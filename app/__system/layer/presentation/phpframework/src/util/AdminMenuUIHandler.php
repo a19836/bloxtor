@@ -34,7 +34,7 @@ class AdminMenuUIHandler {
 ';
 	}
 	
-	public static function getContextMenus($exists_db_drivers, $get_store_programs_url) {
+	public static function getContextMenus($exists_db_drivers, $get_store_programs_url, $is_user_module_installed = false) {
 		return '
 <div id="selected_menu_properties" class="myfancypopup with_title">
 	<div class="title">Properties</div>
@@ -581,7 +581,7 @@ class AdminMenuUIHandler {
 	<li class="edit_config"><a onClick="return goTo(this, \'edit_config_url\', event)">Edit Config</a></li>
 	<li class="edit_init"><a onClick="return goTo(this, \'edit_init_url\', event)">Edit Init - Advanced</a></li>
 	<li class="line_break"></li>
-	<li class="manage_users"><a onClick="return goToPopup(this, \'manage_users_url\', event, \'with_iframe_title\')">Manage Users</a></li>
+	' . ($is_user_module_installed ? '<li class="manage_users"><a onClick="return goToPopup(this, \'manage_users_url\', event, \'with_iframe_title\')">Manage Users</a></li>' : '') . '
 	<li class="manage_references"><a onClick="return goToPopup(this, \'manage_references_url\', event, \'with_iframe_title\', refreshLastNodeParentChilds)">Manage References</a></li>
 	<li class="manage_wordpress"><a onClick="return goTo(this, \'manage_wordpress_url\', event)">Manage WordPress</a></li>
 	<li class="line_break"></li>

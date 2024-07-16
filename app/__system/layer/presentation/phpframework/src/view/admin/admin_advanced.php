@@ -32,7 +32,7 @@ var admin_home_projects_page_url = "' . $admin_home_projects_page_url . '";
 </script>';
 $head .= HeatMapHandler::getHtml($project_url_prefix);
 
-$main_content = AdminMenuUIHandler::getContextMenus($exists_db_drivers, $get_store_programs_url);
+$main_content = AdminMenuUIHandler::getContextMenus($exists_db_drivers, $get_store_programs_url, $is_module_user_installed);
 $main_content .= '
 	<div id="top_panel">
 		<ul class="left">

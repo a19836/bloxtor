@@ -5921,22 +5921,22 @@ function createCodeLayoutUIEditorEditor(textarea, opts) {
 				//add right_container to layout ui editor
 				var right_container = $(".layout_ui_editor_right_container");
 				var luie = PtlLayoutUIEditor.getUI();
-        			var menu_widgets = PtlLayoutUIEditor.getMenuWidgets();
-        			var menu_layers = PtlLayoutUIEditor.getMenuLayers();
-        			var template_widgets_options = PtlLayoutUIEditor.getTemplateWidgetsOptions();
+				var menu_widgets = PtlLayoutUIEditor.getMenuWidgets();
+				var menu_layers = PtlLayoutUIEditor.getMenuLayers();
+				var template_widgets_options = PtlLayoutUIEditor.getTemplateWidgetsOptions();
 				var menu_settings = PtlLayoutUIEditor.getMenuSettings();
-        			var options = luie.children(".options");
-        			
-        			luie.append(right_container);
-        			right_container.hide();
-        			
-        			var right_container_icon = $('<i class="zmdi zmdi-view-dashboard option show-right-container hidden" title="Show Modules and Blocks"></i>');
-        			var right_container_icon_click_handler = function(icon, is_dbs) {
+     			var options = luie.children(".options");
+     			
+     			luie.append(right_container);
+     			right_container.hide();
+     			
+     			var right_container_icon = $('<i class="zmdi zmdi-view-dashboard option show-right-container hidden" title="Show Modules and Blocks"></i>');
+     			var right_container_icon_click_handler = function(icon, is_dbs) {
 					luie.addClass("switching-panel");
 					menu_widgets.fadeOut("slow");
 					menu_layers.fadeOut("slow");
 					template_widgets_options.fadeOut("slow");
-        				right_container.fadeIn("slow", function() {
+		  				right_container.fadeIn("slow", function() {
 						luie.removeClass("switching-panel");
 					});
 					
@@ -5948,43 +5948,49 @@ function createCodeLayoutUIEditorEditor(textarea, opts) {
 						menu_settings.fadeOut("slow");
 						options.find(".show-settings").removeClass("option-active");
 					}
-        			}; 
-        			right_container_icon.click(function() {
-        				right_container_icon_click_handler(this, false);
-        				
+     			}; 
+     			right_container_icon.click(function() {
+     				right_container_icon_click_handler(this, false);
+     				
 					right_container.removeClass("only_dbs");
-        			});
-        			options.find(".show-widgets").before(right_container_icon);
-        			options.find(".show-option-panel").append('<option value="show-right-container">Modules, Blocks</option>');
-        			
-        			var right_container_dbs_icon = $('<i class="zmdi zmdi-db option show-right-container-dbs hidden" title="Show DBs"></i>');
-	   			right_container_dbs_icon.click(function() {
-	   				right_container_icon_click_handler(this, true);
-	   				
-					right_container.addClass("only_dbs");
-	   			});
-	   			right_container_icon.after(right_container_dbs_icon);
-				options.find(".show-option-panel").append('<option value="show-right-container-dbs">Databases</option>');
-	   			
-	   			options.find(".show-widgets, .show-layers, .show-layout-options" + (!luie.hasClass("fixed-properties") && !luie.hasClass("fixed-side-properties") ? ", .show-settings" : "")).click(function() {
-	   				right_container_icon.removeClass("option-active");
+     			});
+     			options.find(".show-widgets").before(right_container_icon);
+     			options.find(".show-option-panel").append('<option value="show-right-container">Modules, Blocks</option>');
+     			
+     			var right_container_dbs_icon = null;
+     			
+     			if (existCodeLayoutUIEditorSideBarRightContainerDBs()) {
+		  			right_container_dbs_icon = $('<i class="zmdi zmdi-db option show-right-container-dbs hidden" title="Show DBs"></i>');
+						right_container_dbs_icon.click(function() {
+						right_container_icon_click_handler(this, true);
+						
+						right_container.addClass("only_dbs");
+					});
+					right_container_icon.after(right_container_dbs_icon);
+					options.find(".show-option-panel").append('<option value="show-right-container-dbs">Databases</option>');
+					
+					if (showCodeLayoutUIEditorSideBarRightContainerDBs()) {
+						var with_right_container_dbs = getCodeLayoutUIEditorUserDefinedToggle("show-right-container-dbs");
+						
+						if (with_right_container_dbs === null || with_right_container_dbs == 2) {
+							luie.addClass("with_right_container_dbs");
+							saveCodeLayoutUIEditorUserDefinedToggle("show-right-container-dbs", 2); //2 is the default
+						}
+					}
+					else
+						options.find(".show-option-panel option[value='show-right-container-dbs']").hide();
+				}
+				
+   			options.find(".show-widgets, .show-layers, .show-layout-options" + (!luie.hasClass("fixed-properties") && !luie.hasClass("fixed-side-properties") ? ", .show-settings" : "")).click(function() {
+   				right_container_icon.removeClass("option-active");
+   				
+   				if (right_container_dbs_icon)
 	   				right_container_dbs_icon.removeClass("option-active");
-	   				
-	   				right_container.fadeOut("slow");
-	   			});
-	   			
-	   			if (showCodeLayoutUIEditorSideBarRightContainerDBs()) {
-	   				var with_right_container_dbs = getCodeLayoutUIEditorUserDefinedToggle("show-right-container-dbs");
-	   				
-	   				if (with_right_container_dbs === null || with_right_container_dbs == 2) {
-	   					luie.addClass("with_right_container_dbs");
-		   				saveCodeLayoutUIEditorUserDefinedToggle("show-right-container-dbs", 2); //2 is the default
-		   			}
-	   			}
-	   			else
-	   				options.find(".show-option-panel option[value='show-right-container-dbs']").hide();
-	   			
-	   			//add toggle_left_panel to layout ui editor
+   				
+   				right_container.fadeOut("slow");
+   			});
+   			
+	   		//add toggle_left_panel to layout ui editor
 				var toggle_left_panel = $('<i class="zmdi zmdi-swap-vertical-circle zmdi-hc-rotate-90 option toggle-left-options" title="Toggle Panel"></i>');
 				toggle_left_panel.click(function() {
 					luie.toggleClass("left-panel-collapsed");
@@ -6013,53 +6019,53 @@ function createCodeLayoutUIEditorEditor(textarea, opts) {
 				});
 				
 				//prepare save button
-        			var code_layout_ui_editor = $(".code_layout_ui_editor");
+        		var code_layout_ui_editor = $(".code_layout_ui_editor");
 				var code_menu = code_layout_ui_editor.find(".code_menu");
 				var save_option = $('<i class="zmdi zmdi-floppy option save" title="Save" style="display:none"></i>');
-        			
-        			save_option.click(function() {
-        				code_menu.find(".save a").trigger("click");
-        				PtlLayoutUIEditor.clickViewLayoutTabWithoutSourceConversion();
-        			});
-        			options.children(".options-left").prepend(save_option);
-        			
+     			
+     			save_option.click(function() {
+     				code_menu.find(".save a").trigger("click");
+     				PtlLayoutUIEditor.clickViewLayoutTabWithoutSourceConversion();
+     			});
+     			options.children(".options-left").prepend(save_option);
+        		
 				//prepare tabs click
-        			luie.find(" > .tabs > .tab").click(function() {
-					if ($(this).hasClass("view-layout")) {
-						save_option.show();
-					}
-					else {
-						save_option.hide();
-					}
-					
-					if ($(this).hasClass("view-source"))
-						code_menu.show();
-					else
-						code_menu.hide();
-		   		});
+     			luie.find(" > .tabs > .tab").click(function() {
+				if ($(this).hasClass("view-layout")) {
+					save_option.show();
+				}
+				else {
+					save_option.hide();
+				}
+				
+				if ($(this).hasClass("view-source"))
+					code_menu.show();
+				else
+					code_menu.hide();
+	   		});
 		   		
-		   		//prepare full-screen option
+		   	//prepare full-screen option
 				options.find(".full-screen").click(function() {
-        				toggleEditorFullScreen();
-	        			
-	        			if (menu_settings.is(":visible"))
-		        			PtlLayoutUIEditor.showFixedMenuSettings(true);
-        				
-        				/*if (luie.hasClass("full-screen")) {
-        					var z_index = luie.css("z-index");
-        					code_layout_ui_editor.addClass("editor_full_screen");
-        					code_menu.css("z-index", z_index + 1);
-        					openFullscreen();
-        				}
-        				else	{
-        					code_layout_ui_editor.removeClass("editor_full_screen");
-        					closeFullscreen();
-        				}*/
-        				
-        				setTimeout(function() {
-	        				PtlLayoutUIEditor.TextSelection.refreshMenu();
-	        			}, 1000);
-        			});
+        			toggleEditorFullScreen();
+        			
+        			if (menu_settings.is(":visible"))
+	        			PtlLayoutUIEditor.showFixedMenuSettings(true);
+     				
+     				/*if (luie.hasClass("full-screen")) {
+     					var z_index = luie.css("z-index");
+     					code_layout_ui_editor.addClass("editor_full_screen");
+     					code_menu.css("z-index", z_index + 1);
+     					openFullscreen();
+     				}
+     				else	{
+     					code_layout_ui_editor.removeClass("editor_full_screen");
+     					closeFullscreen();
+     				}*/
+     				
+     				setTimeout(function() {
+        				PtlLayoutUIEditor.TextSelection.refreshMenu();
+        			}, 1000);
+     			});
 
 				//initResizeCodeLayoutUIEditorRightContainer(PtlLayoutUIEditor);
 				
@@ -6213,6 +6219,10 @@ function prepareCodeLayoutUIEditorUserDefinedToggles(PtlLayoutUIEditor) {
 	}
 }
 
+function existCodeLayoutUIEditorSideBarRightContainerDBs() {
+	return $(".code_layout_ui_editor > .layout-ui-editor .layout_ui_editor_right_container > .mytree.db_drivers_tree").length > 0;
+}
+
 function showCodeLayoutUIEditorSideBarRightContainerDBs() {
 	//add show-right-container-dbs if not admin_advanced, bc the admin_advanced already contains the DB tab with all the DBs in a tree, which means this will be redundant and may confuse the user.
 	var show_right_container_dbs = window == window.parent || typeof window.parent.$ != "function" || window.parent.$.find("#left_panel .mytree .db_layers").length == 0;
@@ -6221,15 +6231,17 @@ function showCodeLayoutUIEditorSideBarRightContainerDBs() {
 }
 
 function addCodeLayoutUIEditorRightContainerDBsMenu(next_elm, class_name, with_separator) {
-	var PtlLayoutUIEditor = $(".code_layout_ui_editor > .layout-ui-editor").data("LayoutUIEditor");
-	var luie = PtlLayoutUIEditor.getUI();
-	var is_shown = luie.hasClass("with_right_container_dbs");
-	
-	var li = $('<li class="toggle_right_container_dbs ' + class_name + (is_shown ? ' active' : '') + '" title="Toggle Side Bar DBs Panel"><a onClick="toggleCodeLayoutUIEditorRightContainerDBsMenu(this)"><i class="icon toggle_ids"></i> <span>' + (is_shown ? 'Hide' : 'Show') + '</span> Side Bar DBs Panel <input type="checkbox"' + (is_shown ? ' checked' : '') + '/></a></li>');
-	next_elm.before(li);
-	
-	if (with_separator)
-		li.after('<li class="separator"></li>');
+	if (existCodeLayoutUIEditorSideBarRightContainerDBs()) {
+		var PtlLayoutUIEditor = $(".code_layout_ui_editor > .layout-ui-editor").data("LayoutUIEditor");
+		var luie = PtlLayoutUIEditor.getUI();
+		var is_shown = luie.hasClass("with_right_container_dbs");
+		
+		var li = $('<li class="toggle_right_container_dbs ' + class_name + (is_shown ? ' active' : '') + '" title="Toggle Side Bar DBs Panel"><a onClick="toggleCodeLayoutUIEditorRightContainerDBsMenu(this)"><i class="icon toggle_ids"></i> <span>' + (is_shown ? 'Hide' : 'Show') + '</span> Side Bar DBs Panel <input type="checkbox"' + (is_shown ? ' checked' : '') + '/></a></li>');
+		next_elm.before(li);
+		
+		if (with_separator)
+			li.after('<li class="separator"></li>');
+	}
 }
 
 function toggleCodeLayoutUIEditorRightContainerDBsMenu(elm) {

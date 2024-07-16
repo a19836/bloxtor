@@ -4,7 +4,7 @@
 - Integrate Bloxtor with Laravel e Symphony, so the developers can use this thrid-party frameworks.
 - Integrate Bloxtor with Github so the developer can have code versioning. 
 - Integrate AI in the Page, Template and View editors to create beautiful HTML automatically and add that html to the correspondent region.
-- Integrate AI in the Logic editor to create php code automatically, according with a developer description.
+- Integrate AI in the Logic Editor to create php code automatically, according with a developer description.
 - Integrate AI in the SQL editor to create statements automatically, according with a developer description.
 - Integrate Bloxtor with Zapier, where the user saves its credentials in Bloxtor and logs in to Zappier directly from Bloxtor (through an iframe).
 - Integrate Bloxtor with Lucidchart, where the user saves its credentials in Bloxtor and logs in to Lucidchart directly from Bloxtor (through an iframe), to create diagrams.
@@ -18,7 +18,7 @@
 - Redesign the "Citizen Development" workspace and make it available by default.
 - Create a new workspace called "Ninja", which is basically a rudimentary file manager to manage all files including .htaccess and other reserved files. The idea is to give the developer permission to edit all files, as if he were connected via ssh.
 - Add Foreign Keys syncronization from the DB diagram to DB Server.
-- Add a new task in the logic editor to perform a calculation on an attribute in a list. eg: if I want to calculate the sum of an attribute from a list of records, instead of creating a diagram with the loop task, I call this new task that calculates the sum of an attribute from that list of records. Something like in Excel.
+- Add a new task in the Logic Editor to perform a calculation on an attribute in a list. eg: if I want to calculate the sum of an attribute from a list of records, instead of creating a diagram with the loop task, I call this new task that calculates the sum of an attribute from that list of records. Something like in Excel.
 - In the SLA/Resources section (of the Page editor), Add a new action to perform a calculation on an attribute in a list. eg: if I want to calculate the sum of an attribute from a list of records, I call this new action that calculates the sum of an attribute from that list of records.
 - Add the option in the SQL editor to be able to add functions such as sum, count, etc... but in a visual way without the user needing to know these keywords.
 - In the Page Editor, find a way to execute functions directly in the html for certain dynamic data. For example: I may want to show the correspondent month, in full text, of a timestamp attribute from a records list. Find a away to do this in a user-friendly and visual way.
@@ -36,6 +36,7 @@
 - Improve the framework's dark theme.
 - Finish the cache settings in the "Advanced Settings Tab" of the Page Editor.
 - Change the word "Entity" to "Page" in the phpframework code. Currently an entity is a Page in Bloxtor. However, the people relate "entity" with a database model, which gets confused. So we need to change all files and replace "entity" with "page" word. Also change EVC (Entity-View-Controller) to PVC (Page-View-Controller).
+- In the Logic Editor, set the code auto-complete function, which shows multiple options to the developer of the possible code that he can do.
 
 Other tasks will be added as these tasks are completed.
 

@@ -2,7 +2,12 @@
 include_once get_lib("org.phpframework.workflow.WorkFlowTaskHandler");
 include_once get_lib("org.phpframework.util.HashTagParameter");
 include_once get_lib("org.phpframework.phpscript.PHPUICodeExpressionHandler");
-include_once $EVC->getModulePath("user/UserUtil", $EVC->getCommonProjectName());
+
+$common_project_name = $EVC->getCommonProjectName();
+$user_module_path = $EVC->getModulesPath($common_project_name) . "user/";
+
+if (file_exists($object_module_path))
+	include_once $EVC->getModulePath("user/UserUtil", $common_project_name);
 
 class SequentialLogicalActivityCodeConverter {
 	
@@ -374,18 +379,19 @@ class SequentialLogicalActivityCodeConverter {
 				$entity_path = $entity_path_var_name;
 				$logged_user_id = $action_value["logged_user_id"];
 				
-				if ($users_perms) {
+				if ($users_perms && class_exists("UserUtil")) {
 					//prepare users_perms
 					$exists_public_access = false;
 					$new_users_perms = array();
 					
-					foreach ($users_perms as $user_perm) 
-						if ($user_perm["user_type_id"] == \UserUtil::PUBLIC_USER_TYPE_ID) {
+					foreach ($users_perms as $user_perm) {
+						if ($user_perm["user_type_id"] == UserUtil::PUBLIC_USER_TYPE_ID) {
 							$exists_public_access = true;
 							break;
 						}
 						else
 							$new_users_perms[] = $user_perm;
+					}
 					
 					if (!$exists_public_access || $all_permissions_checked)  {
 						if ($logged_user_id && $new_users_perms && $entity_path) {

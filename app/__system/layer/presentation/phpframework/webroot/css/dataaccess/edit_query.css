@@ -821,6 +821,7 @@
 	clear:both;
 }
 .relationship .query_insert_update_delete .query_table input {
+	width:160px;
 	text-align:center;
 	margin-left:10px;
 }

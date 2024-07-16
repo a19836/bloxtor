@@ -34,61 +34,67 @@ if (isset($_POST["data"])) {
 	$content = str_replace("\$db_odbc_driver", $_POST["data"]["db_odbc_driver"], $content);
 	$content = str_replace("\$db_extra_dsn", $_POST["data"]["db_extra_dsn"], $content);
 	
-	if (file_put_contents($tasks_file_path, $content)) {
-		//PREPARE GLOBAL VARIABLES
-		$post_global_vars = array("default_db_driver" => "");
-			
-		//Only creates these global variables if is a new file, otherwise these variables and others already exist and we MUST NOT overwrite them! If new file, check first if DB credentials are valid here.
-		if ((file_exists($user_global_variables_file_path) && filesize($user_global_variables_file_path) > 0) ||	PHPVariablesFileHandler::saveVarsToFile($user_global_variables_file_path, $post_global_vars, true)) {
-			//check if DB credentials are valid here, before delete or create beans
-			if ($WorkFlowDBHandler->areTasksDBDriverSettingsValid($tasks_file_path, true)) {
-				//PREPARE FOLDERS AND BEANS
-				$WorkFlowBeansConverter = new WorkFlowBeansConverter($tasks_file_path, $user_beans_folder_path, $user_global_variables_file_path, $user_global_settings_file_path);
-				$WorkFlowBeansConverter->init();
+	$folder = dirname($tasks_file_path);
+	
+	if (is_dir($folder) || mkdir($folder, 0775, true)) {
+		if (file_put_contents($tasks_file_path, $content)) {
+			//PREPARE GLOBAL VARIABLES
+			$post_global_vars = array("default_db_driver" => "");
 				
-				if ($WorkFlowBeansConverter->createBeans()) {
-					//add layout type if it comes from setup
-					$continue = true;
+			//Only creates these global variables if is a new file, otherwise these variables and others already exist and we MUST NOT overwrite them! If new file, check first if DB credentials are valid here.
+			if ((file_exists($user_global_variables_file_path) && filesize($user_global_variables_file_path) > 0) ||	PHPVariablesFileHandler::saveVarsToFile($user_global_variables_file_path, $post_global_vars, true)) {
+				//check if DB credentials are valid here, before delete or create beans
+				if ($WorkFlowDBHandler->areTasksDBDriverSettingsValid($tasks_file_path, true)) {
+					//PREPARE FOLDERS AND BEANS
+					$WorkFlowBeansConverter = new WorkFlowBeansConverter($tasks_file_path, $user_beans_folder_path, $user_global_variables_file_path, $user_global_settings_file_path);
+					$WorkFlowBeansConverter->init();
 					
-					if (!$WorkFlowBeansConverter->createSetupDefaultProjectLayouts($UserAuthenticationHandler)) {
-						$continue = false;
-						$error_message = "Error trying to create the default project layout types. Please try again...";
-					}
-					
-					//flush cache - must be after the code: '$WorkFlowBeansConverter->createSetupDefaultProjectLayouts()'
-					FlushCacheHandler::flushCache($EVC, $webroot_cache_folder_path, $webroot_cache_folder_url, $workflow_paths_id, $user_global_variables_file_path, $user_beans_folder_path, $css_and_js_optimizer_webroot_cache_folder_path, $deployments_temp_folder_path);
-					
-					//check if db drivers are valid
-					if ($WorkFlowDBHandler->areTasksDBDriverBeanValid($tasks_file_path, true)) {
-						if ($continue) {
-							if ($is_inside_of_iframe)
-								echo '<script>
-									var url = window.top.location;
-									window.top.location = url;
-									//window.parent.location = url;
-								</script>';
-							else {
-								header("location: ?step=4");
-								echo '<script>window.location = "?step=4"</script>';
-							}
+					if ($WorkFlowBeansConverter->createBeans()) {
+						//add layout type if it comes from setup
+						$continue = true;
 						
-							die();
+						if (!$WorkFlowBeansConverter->createSetupDefaultProjectLayouts($UserAuthenticationHandler)) {
+							$continue = false;
+							$error_message = "Error trying to create the default project layout types. Please try again...";
 						}
+						
+						//flush cache - must be after the code: '$WorkFlowBeansConverter->createSetupDefaultProjectLayouts()'
+						FlushCacheHandler::flushCache($EVC, $webroot_cache_folder_path, $webroot_cache_folder_url, $workflow_paths_id, $user_global_variables_file_path, $user_beans_folder_path, $css_and_js_optimizer_webroot_cache_folder_path, $deployments_temp_folder_path);
+						
+						//check if db drivers are valid
+						if ($WorkFlowDBHandler->areTasksDBDriverBeanValid($tasks_file_path, true)) {
+							if ($continue) {
+								if ($is_inside_of_iframe)
+									echo '<script>
+										var url = window.top.location;
+										window.top.location = url;
+										//window.parent.location = url;
+									</script>';
+								else {
+									header("location: ?step=4");
+									echo '<script>window.location = "?step=4"</script>';
+								}
+							
+								die();
+							}
+						}
+						else
+							$error_message = "DataBase connection issue. " . str_replace($_POST["data"]["db_password"], "***",$WorkFlowDBHandler->getError());
 					}
 					else
-						$error_message = "DataBase connection issue. " . str_replace($_POST["data"]["db_password"], "***",$WorkFlowDBHandler->getError());
+						$error_message = "Error trying to create some folders. Please try again or talk with the system administrator.";
 				}
 				else
-					$error_message = "Error trying to create some folders. Please try again or talk with the system administrator.";
+					$error_message = "DataBase settings are wrong. " . str_replace($_POST["data"]["db_password"], "***",$WorkFlowDBHandler->getError());
 			}
 			else
-				$error_message = "DataBase settings are wrong. " . str_replace($_POST["data"]["db_password"], "***",$WorkFlowDBHandler->getError());
+				$error_message = "There was an error saving the DB settings. Please try again...";
 		}
 		else
-			$error_message = "There was an error saving the DB settings. Please try again...";
+			$error_message = "There was an error saving the DB settings in the layers diagram. Please try again...";
 	}
 	else
-		$error_message = "There was an error saving the DB settings. Please try again...";
+		$error_message = "There was an error creating the layers diagram folder. Please try again...";
 }
 
 $diagram_already_exists = file_exists($tasks_file_path);
@@ -145,4 +151,5 @@ $drivers_ignore_connection_options_by_extension = DB::getAllIgnoreConnectionOpti
 
 //check if already passed through the setup. If it did, it means that app/config/bean/app.xml exists
 $already_did_setup = file_exists(CONFIG_PATH . "bean/app.xml");
+
 ?>

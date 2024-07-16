@@ -24,7 +24,7 @@ $head .= '
 menu_item_properties = ' . json_encode($menu_item_properties) . ';
 </script>';
 
-$main_content = AdminMenuUIHandler::getContextMenus($exists_db_drivers, $get_store_programs_url);
+$main_content = AdminMenuUIHandler::getContextMenus($exists_db_drivers, $get_store_programs_url, $is_module_user_installed);
 
 if (!$projects) 
 	$main_content .= '<script>alert("Error: No projects available! Please contact your sysadmin...");</script>';

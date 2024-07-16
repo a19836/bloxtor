@@ -7,7 +7,7 @@ $head .= '
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/presentation/list.css" type="text/css" charset="utf-8" />
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/presentation/list.js"></script>';
 
-$main_content = AdminMenuUIHandler::getContextMenus($exists_db_drivers, $get_store_programs_url);
+$main_content = AdminMenuUIHandler::getContextMenus($exists_db_drivers, $get_store_programs_url, $is_module_user_installed);
 
 if ($item_type == "presentation") {
 	$et = $element_type ? (

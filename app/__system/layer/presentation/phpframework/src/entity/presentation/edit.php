@@ -1,7 +1,7 @@
 <?php
 include_once get_lib("org.phpframework.workflow.WorkFlowTaskHandler");
-include_once $EVC->getUtilPath("WorkFlowBrokersSelectedDBVarsHandler");
 include_once get_lib("org.phpframework.layer.presentation.cms.module.CMSModuleEnableHandler");
+include_once $EVC->getUtilPath("WorkFlowBrokersSelectedDBVarsHandler");
 include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 

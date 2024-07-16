@@ -7,11 +7,12 @@ $common_project_name = $EVC->getCommonProjectName();
 $modules_path = $EVC->getModulesPath($common_project_name);
 $object_module_path = $modules_path . "object/";
 $user_module_path = $modules_path . "user/";
-if (!file_exists($object_module_path) || !file_exists($user_module_path))
-	die("You must install the 'object' and 'user' module in order to proceed!");
 
-include_once $EVC->getModulePath("object/ObjectUtil", $common_project_name);
-include_once $EVC->getModulePath("user/UserUtil", $common_project_name);
+if (file_exists($object_module_path))
+	include_once $EVC->getModulePath("object/ObjectUtil", $common_project_name);
+
+if (file_exists($user_module_path))
+	include_once $EVC->getModulePath("user/UserUtil", $common_project_name);
 
 class CMSPresentationUIAutomaticFilesHandler {
 	
@@ -530,7 +531,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 		$user_module_installed_and_enabled = $PEVC->getCMSLayer()->getCMSModuleLayer()->existsModule("user/validate_user_activity");
 		$installed = false;
 		
-		if ($user_module_installed_and_enabled) {
+		if ($user_module_installed_and_enabled && class_exists("UserUtil")) {
 			$brokers = $PEVC->getPresentationLayer()->getBrokers();
 			
 			try {
@@ -550,7 +551,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 		$user_module_installed_and_enabled = $PEVC->getCMSLayer()->getCMSModuleLayer()->existsModule("user/validate_user_activity");
 		$available_items = array();
 		
-		if ($user_module_installed_and_enabled) {
+		if ($user_module_installed_and_enabled && class_exists("UserUtil")) {
 			$brokers = $PEVC->getPresentationLayer()->getBrokers();
 			$items = UserUtil::getAllUserTypes($brokers);
 			
@@ -566,7 +567,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 		$user_module_installed_and_enabled = $PEVC->getCMSLayer()->getCMSModuleLayer()->existsModule("user/validate_user_activity");
 		$available_items = array();
 		
-		if ($user_module_installed_and_enabled) {
+		if ($user_module_installed_and_enabled && class_exists("UserUtil")) {
 			$brokers = $PEVC->getPresentationLayer()->getBrokers();
 			$items = UserUtil::getAllActivities($brokers);
 			
@@ -581,7 +582,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 	public static function reinsertReservedActivities($PEVC) {
 		$user_module_installed_and_enabled = $PEVC->getCMSLayer()->getCMSModuleLayer()->existsModule("user/validate_user_activity");
 		
-		if ($user_module_installed_and_enabled) {
+		if ($user_module_installed_and_enabled && class_exists("UserUtil")) {
 			$brokers = $PEVC->getPresentationLayer()->getBrokers();
 			return UserUtil::reinsertReservedActivities($brokers);
 		}
@@ -593,7 +594,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 		$user_module_installed_and_enabled = $PEVC->getCMSLayer()->getCMSModuleLayer()->existsModule("user/validate_user_activity");
 		$activity_id = null;
 		
-		if ($user_module_installed_and_enabled) {
+		if ($user_module_installed_and_enabled && class_exists("UserUtil")) {
 			$brokers = $PEVC->getPresentationLayer()->getBrokers();
 			$name = strtolower($name);
 			$attrs = array("name" => $name);
@@ -618,7 +619,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 		$object_module_installed_and_enabled = $PEVC->getCMSLayer()->getCMSModuleLayer()->existsModule("object/edit_object_type");
 		$object_type_id = null;
 		
-		if ($object_module_installed_and_enabled) {
+		if ($object_module_installed_and_enabled && class_exists("ObjectUtil")) {
 			$brokers = $PEVC->getPresentationLayer()->getBrokers();
 			$name = strtolower($name);
 			$attrs = array("name" => $name);
@@ -642,7 +643,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 	public static function deleteUserTypeActivityObjects($PEVC, $activity_id, $object_type_id, $object_id) {
 		$user_module_installed_and_enabled = $PEVC->getCMSLayer()->getCMSModuleLayer()->existsModule("user/validate_user_activity");
 		
-		if ($user_module_installed_and_enabled) {
+		if ($user_module_installed_and_enabled && class_exists("UserUtil")) {
 			$brokers = $PEVC->getPresentationLayer()->getBrokers();
 			return UserUtil::deleteUserTypeActivityObjectsByActivityIdAndObjectId($brokers, $activity_id, $object_type_id, $object_id);
 		}
@@ -651,7 +652,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 	public static function insertUserTypeActivityObject($PEVC, $user_type_id, $activity_id, $object_type_id, $object_id) {
 		$user_module_installed_and_enabled = $PEVC->getCMSLayer()->getCMSModuleLayer()->existsModule("user/validate_user_activity");
 		
-		if ($user_module_installed_and_enabled) {
+		if ($user_module_installed_and_enabled && class_exists("UserUtil")) {
 			$brokers = $PEVC->getPresentationLayer()->getBrokers();
 			$data = array("user_type_id" => $user_type_id, "activity_id" => $activity_id, "object_type_id" => $object_type_id, "object_id" => $object_id);
 			return UserUtil::insertUserTypeActivityObject($brokers, $data);
@@ -662,7 +663,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 	public static function getUserTypeActivityObjectsByObject($PEVC, $object_type_id, $object_id) {
 		$user_module_installed_and_enabled = $PEVC->getCMSLayer()->getCMSModuleLayer()->existsModule("user/validate_user_activity");
 		
-		if ($user_module_installed_and_enabled) {
+		if ($user_module_installed_and_enabled && class_exists("UserUtil")) {
 			$brokers = $PEVC->getPresentationLayer()->getBrokers();
 			$conditions = array("object_type_id" => $object_type_id, "object_id" => $object_id);
 			return UserUtil::getUserTypeActivityObjectsByConditions($brokers, $conditions, null);
