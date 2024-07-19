@@ -329,6 +329,12 @@ class VideoTutorialHandler {
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/WgTCaDU9pCc", //report.webm
 			),
+			"9_understand_the_page_editor_in_detail" => array(
+				"title" => "Understand the Page Editor in detail",
+				"description" => "This video explains how to work in the Page Editor in detail and what are its key features...",
+				"image" => "",
+				"video" => "https://www.youtube.com/embed/Ht3-jU-A5HM", //2_5_page_visual_editor
+			),
 			"9_create_page_with_html_widgets_in_detail" => array(
 				"title" => "Create a page with HTML Widgets in detail",
 				"description" => "This video explains how to create a Page using Html Widgets to design your page layout and print some resources...",

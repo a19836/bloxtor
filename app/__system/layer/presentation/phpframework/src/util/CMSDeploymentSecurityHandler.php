@@ -113,11 +113,12 @@ class CMSDeploymentSecurityHandler {
 		self::removeFile("$deployment_folder_path/other/workflow/layer/layers_rest_bkp.xml", $error_messages);
 		
 		//remove username and password from dbdriver layer xml file for security reasons - This means that the __system/test project will not work bc the mysql DB credentials were removed. But it's fine bc this is only for my internal usage
-		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "mysql_db_username", '""', $error_messages);
+		//Note that the username variables cannot have empty values, otherwise when we are calling the entity/user/change_auth_settings.php, the DB Drivers beans will be initialized and the DB::setOptions will be called. If the username is empty, it will give an exception and all system will be broken.
+		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "mysql_db_username", '"your db user"', $error_messages);
 		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "mysql_db_password", '""', $error_messages);
-		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "pg_db_username", '""', $error_messages);
+		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "pg_db_username", '"your db user"', $error_messages);
 		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "pg_db_password", '""', $error_messages);
-		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "mssql_db_username", '""', $error_messages);
+		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "mssql_db_username", '"your db user"', $error_messages);
 		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "mssql_db_password", '""', $error_messages);
 		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "rest_user_pwd", '""', $error_messages);
 	}

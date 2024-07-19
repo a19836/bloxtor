@@ -14,6 +14,7 @@
 			<item name="persistent">&lt;?php echo $GLOBALS['mysql_db_persistent']; ?></item>
 			<item name="new_link">&lt;?php echo $GLOBALS['mysql_db_new_link']; ?></item>
 			<item name="encoding">&lt;?php echo $GLOBALS['mysql_db_encoding']; ?></item>
+			<item name="schema">&lt;?php echo $GLOBALS['mysql_db_schema']; ?></item>
 			<item name="odbc_data_source">&lt;?php echo $GLOBALS['mysql_db_odbc_data_source']; ?></item>
 			<item name="odbc_driver">&lt;?php echo $GLOBALS['mysql_db_odbc_driver']; ?></item>
 			<item name="extra_dsn">&lt;?php echo $GLOBALS['mysql_db_extra_dsn']; ?></item>
@@ -36,6 +37,7 @@
 			<item name="persistent">&lt;?php echo $GLOBALS['pg_db_persistent']; ?></item>
 			<item name="new_link">&lt;?php echo $GLOBALS['pg_db_new_link']; ?></item>
 			<item name="encoding">&lt;?php echo $GLOBALS['pg_db_encoding']; ?></item>
+			<item name="schema">&lt;?php echo $GLOBALS['pg_db_schema']; ?></item>
 			<item name="odbc_data_source">&lt;?php echo $GLOBALS['pg_db_odbc_data_source']; ?></item>
 			<item name="odbc_driver">&lt;?php echo $GLOBALS['pg_db_odbc_driver']; ?></item>
 			<item name="extra_dsn">&lt;?php echo $GLOBALS['pg_db_extra_dsn']; ?></item>
@@ -58,6 +60,7 @@
 			<item name="persistent">&lt;?php echo $GLOBALS['mssql_db_persistent']; ?></item>
 			<item name="new_link">&lt;?php echo $GLOBALS['mssql_db_new_link']; ?></item>
 			<item name="encoding">&lt;?php echo $GLOBALS['mssql_db_encoding']; ?></item>
+			<item name="schema">&lt;?php echo $GLOBALS['mssql_db_schema']; ?></item>
 			<item name="odbc_data_source">&lt;?php echo $GLOBALS['mssql_db_odbc_data_source']; ?></item>
 			<item name="odbc_driver">&lt;?php echo $GLOBALS['mssql_db_odbc_driver']; ?></item>
 			<item name="extra_dsn">&lt;?php echo $GLOBALS['mssql_db_extra_dsn']; ?></item>

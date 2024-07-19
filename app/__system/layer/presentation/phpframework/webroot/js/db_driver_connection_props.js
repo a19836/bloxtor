@@ -144,7 +144,7 @@ function getDBIgnoreOptions(form_fields) {
 		ignore_options = drivers_ignore_connection_options[db_type];
 	
 	if ($.isPlainObject(drivers_ignore_connection_options_by_extension) && drivers_ignore_connection_options_by_extension.hasOwnProperty(db_type) && $.isPlainObject(drivers_ignore_connection_options_by_extension[db_type]) && $.isArray(drivers_ignore_connection_options_by_extension[db_type][extension])) {
-		if (ignore_options)
+		if (!ignore_options)
 			ignore_options = drivers_ignore_connection_options_by_extension[db_type][extension];
 		else
 			ignore_options = ignore_options.concat(drivers_ignore_connection_options_by_extension[db_type][extension]);

@@ -1,4 +1,6 @@
 <?php
+include_once get_lib("org.phpframework.util.HashTagParameter");
+
 class SequentialLogicalActivity {
 	
 	private $xss_sanitize_lib_included = false;
@@ -109,20 +111,20 @@ class SequentialLogicalActivity {
 						$assignment_operator = null;
 						$result = $this->executeAction($action_type, $action_value, $results, $stop, $die, $assignment_operator);
 						
+						//set result inside of results
 						$result_var_name = isset($item_settings["result_var_name"]) ? trim($item_settings["result_var_name"]) : "";
-						$result_var_name = $result_var_name && substr($result_var_name, 0, 1) == '$' ? substr($result_var_name, 1) : $result_var_name;
+						$results_var_name = $this->prepareResultVarName($result_var_name, $results);
 						
 						if ($result_var_name) {
 							//parse result_var_name replacing the variables inside of the result_var_name, if apply. Note that this is very usefull to create associative arrays based in records list, through the LOOP action, where we set the result_var_name as: xxx[#item[id]#]. In this case the string '#item[id]#', will be replaced by the correspondent value and the result_var_name will be xxx[1], xxx[2], xxx[3], etc...
-							$result_var_name = $this->getParsedValueFromData($result_var_name, $results);
-							
 							if (substr($result_var_name, -2) == "[]") { //this allows the user to configure multiple groups where the output can be INSIDE OF an array variable. Example: "$result_var_name = 'arr[]';". This is very usefull to concatenate multiple outputs by implode this array variable later on...
 								$result_var_name = substr($result_var_name, 0, -2);
 								
-								if (!isset($results[ $result_var_name ]) || !is_array($results[ $result_var_name ]))
-									$results[ $result_var_name ] = array();
+								eval('$is_array = isset($' . $results_var_name . '[$result_var_name]) && is_array($' . $results_var_name . '[$result_var_name]);');
+								if (!$is_array)
+									eval('$' . $results_var_name . '[$result_var_name] = array();');
 								
-								$results[ $result_var_name ][] = $result;
+								eval('$' . $results_var_name . '[$result_var_name ][] = $result;');
 							}
 							else if (strpos($result_var_name, "[") !== false || strpos($result_var_name, "]") !== false) { //if result_var_name == "[0]name" or "[1][name]", set $results[0]["name"] = $result
 								preg_match_all("/([^\[\]]+)/u", trim($result_var_name), $sub_matches, PREG_PATTERN_ORDER); //'/u' means converts to unicode.
@@ -148,29 +150,36 @@ class SequentialLogicalActivity {
 									if (!$assignment_operator)
 										$assignment_operator = "=";
 									
-									eval('$results[' . implode('][', $keys) . '] ' . $assignment_operator . ' $result;');
+									eval('$' . $results_var_name . '[' . implode('][', $keys) . '] ' . $assignment_operator . ' $result;');
 								}
 								else {
-									if (isset($results[ $result_var_name ])) {
+									eval('$is_set = isset($' . $results_var_name . '[$result_var_name]);');
+									
+									if ($is_set) {
 										if ($assignment_operator == "+=")
-											$result = $results[ $result_var_name ] + $result;
+											eval('$result = $' . $results_var_name . '[$result_var_name] + $result;');
 										else if ($assignment_operator == "-=")
-											$result = $results[ $result_var_name ] - $result;
+											eval('$result = $' . $results_var_name . '[$result_var_name] - $result;');
 									}
 									
-									$results[ $result_var_name ] = $result;
+									eval('$' . $results_var_name . '[$result_var_name] = $result;');
 								}
 							}
 							else {
-								if (isset($results[ $result_var_name ])) {
+								eval('$is_set = isset($' . $results_var_name . '[$result_var_name]);');
+								
+								if ($is_set) {
 									if ($assignment_operator == "+=")
-										$result = $results[ $result_var_name ] + $result;
+										eval('$result = $' . $results_var_name . '[$result_var_name] + $result;');
 									else if ($assignment_operator == "-=")
-										$result = $results[ $result_var_name ] - $result;
+										eval('$result = $' . $results_var_name . '[$result_var_name] - $result;');
 								}
 								
-								$results[ $result_var_name ] = $result;
+								eval('$' . $results_var_name . '[$result_var_name] = $result;');
 							}
+							
+							//if ($results_var_name=="_GET")error_log("\nresult from $results_var_name for \${$results_var_name}[$result_var_name] (it should be empty):".print_r(${$results_var_name}[ $result_var_name ], 1)."\ndirectly from GET:".print_r($_GET[ $result_var_name ], 1), 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
+							//else error_log("\nresult from $results_var_name for \${$results_var_name}[$result_var_name]:".print_r(${$results_var_name}[ $result_var_name ], 1)."\ndirectly from results:".print_r($results[ $result_var_name ], 1), 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 						}
 						else
 							$html .= $result; //only add to html if not result_var_name
@@ -186,7 +195,31 @@ class SequentialLogicalActivity {
 		
 		return $html;
 	}
-
+	
+	private function prepareResultVarName(&$result_var_name, $results) {
+		$result_var_name = $result_var_name && substr($result_var_name, 0, 1) == '$' ? substr($result_var_name, 1) : $result_var_name;
+		$result_var_name = $this->getParsedValueFromData($result_var_name, $results);
+		$result_var_name = trim($result_var_name);
+		
+		if ($result_var_name && preg_match(HashTagParameter::HTML_SUPER_GLOBAL_VAR_NAME_FULL_REGEX, $result_var_name, $matches, PREG_OFFSET_CAPTURE) && $matches) {
+			$global_var_name = $matches[0][0];
+			
+			if ($global_var_name) {
+				$result_var_name = substr($result_var_name, strlen($global_var_name)); //$global_var_name already includes "[" (if apply)
+				
+				if (substr($global_var_name, -1) == "[") {
+					$global_var_name = substr($global_var_name, 0, -1);
+					
+					if (substr($result_var_name, -1) == "]")
+						$result_var_name = substr($result_var_name, 0, -1);
+				}
+			}
+		}
+		//error_log("\nglobal_var_name:$global_var_name\nresult_var_name:$result_var_name", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
+		
+		return $global_var_name ? $global_var_name : "results";
+	}
+	
 	private function executeCondition($condition_type, $condition_value, &$results) {
 		$status = true;
 		

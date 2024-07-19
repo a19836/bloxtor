@@ -41,6 +41,8 @@ $authentication_db_extra_dsn = $GLOBALS[$authentication_db_driver . "_db_extra_d
 if ($_POST) {
 	$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 	
+	$is_local_db_bkp = $is_local_db;
+	
 	$maximum_failed_attempts = $_POST["maximum_failed_attempts"];
 	$user_blocked_expired_time = $_POST["user_blocked_expired_time"];
 	$login_expired_time = $_POST["login_expired_time"];
@@ -121,22 +123,34 @@ if ($_POST) {
 				//Saving db credentials
 				if (PHPVariablesFileHandler::saveVarsToFile(GLOBAL_VARIABLES_PROPERTIES_FILE_PATH, $global_variables, true)) {
 					//Move Local DB to Remote DB or vice versa
-					if ($UserAuthenticationHandler->moveLocalDBToRemoteDBOrViceVersa($is_local_db, $global_variables)) {
-						//Move Local DB to another location
-						if ($UserAuthenticationHandler->moveLocalDBToAnotherFolder($auth_db_path)) {
-							$authentication_db_path = $auth_db_path;
-							$status_message = "Auth Settings changed successfully...";
+					try {
+						if ($UserAuthenticationHandler->moveLocalDBToRemoteDBOrViceVersa($is_local_db, $global_variables)) {
+							//Move Local DB to another location
+							if ($UserAuthenticationHandler->moveLocalDBToAnotherFolder($auth_db_path)) {
+								$authentication_db_path = $auth_db_path;
+								$status_message = "Auth Settings changed successfully...";
+							}
+							else {
+								//Putting back old auth db path
+								replaceVarInCode($code, "authentication_db_path", '"' . $authentication_db_path . '"');
+								file_put_contents($authentication_config_file_path, $code);
+								
+								$error_message = "There was an error trying to move Local DB to another location. Please try again...";
+							}
 						}
-						else {
-							//Putting back old auth db path
-							replaceVarInCode($code, "authentication_db_path", '"' . $authentication_db_path . '"');
-							file_put_contents($authentication_config_file_path, $code);
-							
-							$error_message = "There was an error trying to move Local DB to another location. Please try again...";
-						}
+						else
+							$error_message = "There was an error trying to move " . ($is_local_db ? "Remote DB to Local DB" : "Local DB to Remote DB") . ". Please try again...";
 					}
-					else
-						$error_message = "There was an error trying to move " . ($is_local_db ? "Remote DB to Local DB" : "Local DB to Remote DB") . ". Please try again...";
+					catch(Exception $e) {
+						if ($is_local_db != $is_local_db_bkp) {
+							replaceVarInCode($code, "is_local_db", $is_local_db_bkp ? "true" : "false");
+							file_put_contents($authentication_config_file_path, $code);
+						}
+						
+						$error_message = $e->getMessage();
+						debug_log($e->getMessage() . "\n" . $e->problem, "exception");
+						//launch_exception($e);
+					}
 				}
 				else
 					$error_message = "There was an error trying to save DB credentials to global variables. Please try again...";

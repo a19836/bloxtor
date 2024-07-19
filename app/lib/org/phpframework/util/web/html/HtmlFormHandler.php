@@ -1585,6 +1585,8 @@ class HtmlFormHandler {
 											$sub_matches[$j] = '"' . preg_replace("/\\?\$idx[^a-z\_]/i", '" . ' . $aux . ' . "', $sub_matches[$j]) . '"';
 											$sub_matches[$j] = str_replace(array('"" . ', ' . ""'), "", $sub_matches[$j]);
 										}
+										else if ($j == 0 && preg_match(HashTagParameter::HTML_SUPER_GLOBAL_VAR_NAME_FULL_REGEX, $sub_matches[$j])) //if global var, simply continue. Do not add quotes if is global var
+											continue;
 										else if (!is_numeric($sml) && strpos($sml, "'") === false && strpos($sml, '"') === false) { //avoid php errors because one of the keys is a RESERVED PHP CODE string.
 											//$sml_type = PHPUICodeExpressionHandler::getValueType($sml, array("non_set_type" => "string", "empty_string_type" => "string"));
 											//$sub_matches[$j] = PHPUICodeExpressionHandler::getArgumentCode($sub_matches[$j], $sml_type);
@@ -1594,11 +1596,33 @@ class HtmlFormHandler {
 									//echo "<pre>2:";echo $idx;print_r($sub_matches);echo "</pre>";
 									//var_dump(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 20));die();
 									
-									if ($is_ptl)
-										$replacement = '$' . $input_data_var_name . '[' . implode("][", str_replace('$idx', '$' . $idx_var_name, $sub_matches)) . ']';
-									else
-										eval('$replacement = isset($input_data[' . implode("][", $sub_matches) . ']) ? $input_data[' . implode("][", $sub_matches) . '] : null;');
-									//echo "<pre>3: \$input_data[" . implode("][", $sub_matches) . "]: ";print_r($replacement);echo "</pre><br>";
+									//if global var
+									if (preg_match(HashTagParameter::HTML_SUPER_GLOBAL_VAR_NAME_FULL_REGEX, $sub_matches[0])) {
+										$found_global_var_name = strtoupper($sub_matches[0]);
+										array_shift($sub_matches);
+										
+										if (count($sub_matches)) {
+											if ($is_ptl)
+												$replacement = '$' . $found_global_var_name . '[' . str_replace('$idx', '$' . $idx_var_name, implode("][", $sub_matches)) . ']';
+											else
+												eval('$replacement = isset($' . $found_global_var_name . '[' . implode("][", $sub_matches) . ']) ? $' . $found_global_var_name . '[' . implode("][", $sub_matches) . '] : null;');
+											
+											//error_log("\n\nIS GLOBAL {$found_global_var_name}[" . implode("][", $sub_matches) . "]:".print_r($replacement,1)."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
+										}
+										else {
+											if ($is_ptl)
+												$replacement = '$' . $found_global_var_name;
+											else
+												eval('$replacement = isset($' . $found_global_var_name . ') ? $' . $found_global_var_name . ' : null;');
+										}
+									}
+									else { //if value inside of $input_data var
+										if ($is_ptl)
+											$replacement = '$' . $input_data_var_name . '[' . str_replace('$idx', '$' . $idx_var_name, implode("][", $sub_matches)) . ']';
+										else
+											eval('$replacement = isset($input_data[' . implode("][", $sub_matches) . ']) ? $input_data[' . implode("][", $sub_matches) . '] : null;');
+										//echo "<pre>3: \$input_data[" . implode("][", $sub_matches) . "]: ";print_r($replacement);echo "</pre><br>";
+									}
 								}
 								catch (Exception $e) {
 									$replacement = "#ERROR REPLACING '$m'#";
@@ -1617,6 +1641,16 @@ class HtmlFormHandler {
 							$replacement = $is_ptl ? '$' . $idx_var_name : $idx;//replace by the correspondent key
 						else if ($m == '\\$idx') //#\\$idx#, returns $idx
 							$replacement = $is_ptl ? '\\$' . $idx_var_name : $idx;
+						else if (preg_match(HashTagParameter::HTML_SUPER_GLOBAL_VAR_NAME_FULL_REGEX, $m)) { //if is global var
+							$found_global_var_name = $m;
+							
+							try {
+								eval('$replacement = $is_ptl ? \'$\' . $found_global_var_name : $' . $found_global_var_name . ';');
+							}
+							catch (Exception $e) {
+								$replacement = "#ERROR REPLACING '$m'#";
+							}
+						}
 						else //if $value == #name#, returns $input["name"]
 							$replacement = $is_ptl ? '$' . $input_data_var_name . '[' . $m . ']' : $input_data[$m];
 						

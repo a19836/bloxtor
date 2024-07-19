@@ -277,7 +277,7 @@ class CMSObfuscatePHPFilesHandler {
 						"execute" => array("ignore_local_variables" => array('$EVC')),
 						"existActionsValidCondition" => array("ignore_local_variables" => array('$EVC')),
 						"initResults" => array("ignore_local_variables" => array('$EVC')),
-						"executeActions" => array("obfuscate_encapsed_string" => 1),
+						"executeActions" => array("obfuscate_encapsed_string" => 1, "ignore_local_variables" => array('$results')),
 						"executeAction" => array("ignore_local_variables" => array('$EVC')),
 						"getBlockHtml" => array("ignore_local_variables" => array('$EVC')),
 					),
@@ -407,7 +407,7 @@ class CMSObfuscatePHPFilesHandler {
 					"methods" => array(
 						"parseSettingsValue" => array("ignore_local_variables" => array('$replacement', '$input_data', '$idx')),
 						"parseNewInputData" => array("ignore_local_variables" => array('$input_data', '$idx')),
-						"getParsedValue" => array("ignore_local_variables" => array('$replacement', '$input_data', '$idx')),
+						"getParsedValue" => array("ignore_local_variables" => array('$replacement', '$input_data', '$idx', '$found_global_var_name')),
 					),
 				),
 			),
