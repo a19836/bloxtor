@@ -1346,6 +1346,8 @@ var myChart_' . $rand . ' = new Chart(canvas, {
 		if ($path) {
 			$once = !empty($action_value["include_once"]);
 			
+			$EVC = $this->getEVC(); //set EVC by defult. This is very important otherwise when we include utils from projects, they may call other utils through the EVC. and if the EVC is not defined, it will give a php error.
+			
 			if ($once)
 				include_once $path;
 			else

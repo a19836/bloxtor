@@ -9628,17 +9628,19 @@
 		//used when dependent widgets are lists
 		//Reload data from the dependent widgets based on a non-empty input field value.
 		refreshDependentWidgetsBasedInInputNonEmptyValue: function(elm) {
+			var name = elm.name;
 			var value = MyWidgetResourceLib.FieldHandler.getInputValue(elm);
 			
-			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)))
-				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, elm.name, value, null, true, false);
+			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)) && (name || MyWidgetResourceLib.fn.isNumeric(name)))
+				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, name, value, null, true, false);
 		},
 		//Reload data from the dependent widgets, that were not loaded yet, based on a non-empty input field value.
 		refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue: function(elm) {
+			var name = elm.name;
 			var value = MyWidgetResourceLib.FieldHandler.getInputValue(elm);
 			
-			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)))
-				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, elm.name, value, null, true, true);
+			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)) && (name || MyWidgetResourceLib.fn.isNumeric(name)))
+				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, name, value, null, true, true);
 		},
 		
 		//Reload data from the dependent widgets based on an input field value.
@@ -9658,19 +9660,21 @@
 		
 		//Reload data from the dependent widgets based on an input field value. If that value is empty, reload dependent widgets without any filter, this is, get all items from dependent widgets.
 		refreshDependentWidgetsBasedInInputValueButIfEmptyGetAll: function(elm) {
+			var name = elm.name;
 			var value = MyWidgetResourceLib.FieldHandler.getInputValue(elm);
 			
-			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)))
-				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, elm.name, value, null, true, false);
+			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)) && (name || MyWidgetResourceLib.fn.isNumeric(name)))
+				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, name, value, null, true, false);
 			else
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, null, null, null, true, false);
 		},
 		//Reload data from the dependent widgets, that were not loaded yet, based on an input field value. If that value is empty, reload dependent widgets without any filter, this is, get all items from dependent widgets.
 		refreshNotYetLoadedDependentWidgetsBasedInInputValueButIfEmptyGetAll: function(elm) {
+			var name = elm.name;
 			var value = MyWidgetResourceLib.FieldHandler.getInputValue(elm);
 			
-			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)))
-				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, elm.name, value, null, true, true);
+			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)) && (name || MyWidgetResourceLib.fn.isNumeric(name)))
+				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, name, value, null, true, true);
 			else
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, null, null, null, true, true);
 		},
@@ -9680,27 +9684,25 @@
 		//used when dependent widgets are lists
 		//Reload data from the dependent widgets based on a non-empty resource-attribute name and value of a html element. The resource-attribute value is based in the available_values and if empty get the default value.
 		refreshDependentWidgetsBasedInResourceNonEmptyValue: function(elm) {
+			var name = MyWidgetResourceLib.FieldHandler.getWidgetResourceValueAttributeName(elm, {force_input_name: true});
 			var value = MyWidgetResourceLib.FieldHandler.getFieldValue(elm, {
 				with_available_values: true,
 				with_default: true,
 			});
 			
-			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value))) {
-				var name = MyWidgetResourceLib.FieldHandler.getWidgetResourceValueAttributeName(elm, {force_input_name: true});
+			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)) && (name || MyWidgetResourceLib.fn.isNumeric(name)))
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, name, value, null, true, false);
-			}
 		},
 		//Reload data from the dependent widgets, that were not loaded yet, based on a non-empty resource-attribute name and value of a html element. The resource-attribute value is based in the available_values and if empty get the default value.
 		refreshNotYetLoadedDependentWidgetsBasedInResourceNonEmptyValue: function(elm) {
+			var name = MyWidgetResourceLib.FieldHandler.getWidgetResourceValueAttributeName(elm, {force_input_name: true});
 			var value = MyWidgetResourceLib.FieldHandler.getFieldValue(elm, {
 				with_available_values: true,
 				with_default: true,
 			});
 			
-			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value))) {
-				var name = MyWidgetResourceLib.FieldHandler.getWidgetResourceValueAttributeName(elm, {force_input_name: true});
+			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)) && (name || MyWidgetResourceLib.fn.isNumeric(name)))
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, name, value, null, true, true);
-			}
 		},
 		
 		//Reload data from the dependent widgets based on a resource-attribute name and value of a html element. The resource-attribute value is based in the available_values and if empty get the default value.
@@ -9726,29 +9728,27 @@
 		
 		//Reload data from the dependent widgets based on a resource-attribute name and value of a html element. If that value is empty, reload dependent widgets without any filter, this is, get all items from dependent widgets. The resource-attribute value is based in the available_values and if empty get the default value.
 		refreshDependentWidgetsBasedInResourceValueButIfEmptyGetAll: function(elm) {
+			var name = MyWidgetResourceLib.FieldHandler.getWidgetResourceValueAttributeName(elm, {force_input_name: true});
 			var value = MyWidgetResourceLib.FieldHandler.getFieldValue(elm, {
 				with_available_values: true,
 				with_default: true,
 			});
 			
-			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value))) {
-				var name = MyWidgetResourceLib.FieldHandler.getWidgetResourceValueAttributeName(elm, {force_input_name: true});
+			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)) && (name || MyWidgetResourceLib.fn.isNumeric(name)))
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, name, value, null, true, false);
-			}
 			else
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, null, null, null, true, false);
 		},
 		//Reload data from the dependent widgets, that were not loaded yet, based on a resource-attribute name and value of a html element. If that value is empty, reload dependent widgets without any filter, this is, get all items from dependent widgets. The resource-attribute value is based in the available_values and if empty get the default value.
 		refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll: function(elm) {
+			var name = MyWidgetResourceLib.FieldHandler.getWidgetResourceValueAttributeName(elm, {force_input_name: true});
 			var value = MyWidgetResourceLib.FieldHandler.getFieldValue(elm, {
 				with_available_values: true,
 				with_default: true,
 			});
 			
-			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value))) {
-				var name = MyWidgetResourceLib.FieldHandler.getWidgetResourceValueAttributeName(elm, {force_input_name: true});
+			if (value != undefined && (value || MyWidgetResourceLib.fn.isNumeric(value)) && (name || MyWidgetResourceLib.fn.isNumeric(name)))
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, name, value, null, true, true);
-			}
 			else
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, null, null, null, true, true);
 		},

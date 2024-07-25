@@ -33,5 +33,6 @@
 			<!--on_click_task>showTaskPropertiesIfExists</on_click_task-->
 		</callback>
 		<center_inner_elements>1</center_inner_elements>
+		<is_resizable_task>1</is_resizable_task>
 	</settings>
 </task>
