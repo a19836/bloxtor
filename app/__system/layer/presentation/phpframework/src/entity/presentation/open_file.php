@@ -5,9 +5,9 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -30,6 +30,9 @@ if ($path) {
 		
 		$project_url_prefix = getProjectUrlPrefix($PEVC, $selected_project_id);
 		$project_url_prefix .= substr($project_url_prefix, -1) != "/" ? "/" : "";
+		
+		if (empty($P->settings["presentation_webroot_path"]))
+			launch_exception(new Exception("'PresentationLayer->settings[presentation_webroot_path]' cannot be undefined!"));
 		
 		$project_url_suffix = substr($path, strlen($selected_project_id . $P->settings["presentation_webroot_path"]));
 		$project_url_suffix = substr($project_url_suffix, 0, 1) == "/" ? substr($project_url_suffix, 1) : $project_url_suffix;

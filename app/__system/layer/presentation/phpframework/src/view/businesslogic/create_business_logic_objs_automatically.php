@@ -1,6 +1,9 @@
 <?php
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$folder_path = isset($folder_path) ? $folder_path : null;
+$obj = isset($obj) ? $obj : null;
+
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 
 $choose_queries_from_file_manager_url = $project_url_prefix . "admin/get_sub_files?bean_name=#bean_name#&bean_file_name=#bean_file_name#$filter_by_layout_url_query&path=#path#";
@@ -29,7 +32,9 @@ $head = '
 ';
 $head .= LayoutTypeProjectUIHandler::getHeader();
 
-if ($_POST["step_1"]) {
+$main_content = "";
+
+if (!empty($_POST["step_1"])) {
 	$exists_any_status_ok = false;
 	
 	$main_content .= '<div class="statuses">
@@ -45,21 +50,25 @@ if ($_POST["step_1"]) {
 				<th class="object_name table_header">Object Name</th>
 				<th class="status table_header">Status</th>
 			</tr>';
-	$t = count($statuses);
-	for ($i = 0; $i < $t; $i++) {
-		$s = $statuses[$i];
-		$status = ($s[2] ? "ok" : "error");
-		
-		$main_content .= '<tr>
-			<td class="file_path">' . preg_replace("/\/+/", "/", $s[0]) . '</td>
-			<td class="object_name">' . $s[1] . '</td>
-			<td class="status status_' . $status . '">' . strtoupper($status) . '</td>
-		</tr>';
-		
-		if ($s[2]) {
-			$exists_any_status_ok = true;
+	
+	if (!empty($statuses)) {
+		$t = count($statuses);
+		for ($i = 0; $i < $t; $i++) {
+			$s = $statuses[$i];
+			$status = (!empty($s[2]) ? "ok" : "error");
+			
+			$main_content .= '<tr>
+				<td class="file_path">' . (isset($s[0]) ? preg_replace("/\/+/", "/", $s[0]) : "") . '</td>
+				<td class="object_name">' . (isset($s[1]) ? $s[1] : "") . '</td>
+				<td class="status status_' . $status . '">' . strtoupper($status) . '</td>
+			</tr>';
+			
+			if (!empty($s[2])) {
+				$exists_any_status_ok = true;
+			}
 		}
 	}
+	
 	$main_content .= '
 		</table>
 	</div>';
@@ -71,12 +80,19 @@ if ($_POST["step_1"]) {
 		</script>';
 }
 else {
+	$brokers_db_drivers_name = isset($brokers_db_drivers_name) ? $brokers_db_drivers_name : null;
+	$related_brokers = isset($related_brokers) ? $related_brokers : null;
+	$db_brokers_bean_file_by_bean_name = isset($db_brokers_bean_file_by_bean_name) ? $db_brokers_bean_file_by_bean_name : null;
+	$db_drivers = isset($db_drivers) ? $db_drivers : null;
+	$default_broker_name = isset($default_broker_name) ? $default_broker_name : null;
+	$is_db_layer = isset($is_db_layer) ? $is_db_layer : null;
+	
 	$head .= '<script>
 	var brokers_db_drivers_name = ' . json_encode($brokers_db_drivers_name) . ';';
 	
 	if ($related_brokers)
 		foreach ($related_brokers as $b)
-			if ($b[2]) {
+			if (!empty($b[2])) {
 				$get_sub_files_url = str_replace("#bean_file_name#", $b[1], str_replace("#bean_name#", $b[2], $choose_queries_from_file_manager_url));
 				
 				$head .= 'main_layers_properties.' . $b[2] . ' = {ui: {
@@ -142,9 +158,12 @@ else {
 		
 		if ($related_brokers) //by default sets $default_broker_name
 			foreach ($related_brokers as $b) {
-				$is_db_broker = $db_brokers_bean_file_by_bean_name[ $b[2] ] == $b[1];
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				$is_db_broker = $db_brokers_bean_file_by_bean_name[$b_bean_name] == $b_bean_file_name;
 				
-				$main_content .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" broker_name="' . $b[0] . '"' . ($is_db_broker ? ' is_db_broker="1"' : '') . '>' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>';
+				$main_content .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" broker_name="' . $b_broker_name . '"' . ($is_db_broker ? ' is_db_broker="1"' : '') . '>' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>';
 			}
 			
 		$main_content .= '
@@ -176,14 +195,15 @@ else {
 					<label>Tables:</label>
 					<ul>';
 		
-		if ($db_driver_tables) //by default sets $default_db_driver_table
+		if (!empty($db_driver_tables)) //by default sets $default_db_driver_table
 			foreach ($db_driver_tables as $table) {
-				$service_name = str_replace(" ", "", ucwords(strtolower(str_replace("_", " ", $table["name"])))) . "Service";
+				$table_name = isset($table["name"]) ? $table["name"] : null;
+				$service_name = str_replace(" ", "", ucwords(strtolower(str_replace("_", " ", $table_name)))) . "Service";
 				
 				$main_content .= '<li class="table">
-					<input type="checkbox" name="files[' . $table["name"] . '][all]" value="' . $default_broker_name . '" />
-					<input type="hidden" name="aliases[' . $table["name"] . '][all]" value="" />
-					<label title="Click here to enter a different table alias..." onClick="addServiceAlias(this, \'' . $service_name . '\')">' . $table["name"] . ' => ' . $service_name . '</label>
+					<input type="checkbox" name="files[' . $table_name . '][all]" value="' . $default_broker_name . '" />
+					<input type="hidden" name="aliases[' . $table_name . '][all]" value="" />
+					<label title="Click here to enter a different table alias..." onClick="addServiceAlias(this, \'' . $service_name . '\')">' . $table_name . ' => ' . $service_name . '</label>
 				</li>';
 			}
 		else

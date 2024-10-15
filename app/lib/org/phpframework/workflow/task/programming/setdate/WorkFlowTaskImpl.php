@@ -9,12 +9,12 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$props = $WorkFlowTaskCodeParser->getFunctionProps($stmt);
 		
 		if ($props) {
-			$func_name = $props["func_name"];
-			$args = $props["func_args"];
+			$func_name = isset($props["func_name"]) ? $props["func_name"] : null;
+			$args = isset($props["func_args"]) ? $props["func_args"] : null;
 			
 			if ($func_name && strtolower($func_name) == "date") {
-				if (empty($args) || (count($args) == 1 && $args[0]["type"] == "string")) {
-					$props["format"] = $args[0]["value"];
+				if (empty($args) || (count($args) == 1 && isset($args[0]["type"]) && $args[0]["type"] == "string")) {
+					$props["format"] = isset($args[0]["value"]) ? $args[0]["value"] : null;
 					
 					unset($props["func_name"]);
 					unset($props["func_args"]);
@@ -35,25 +35,27 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = self::parseResultVariableProperties($raw_data);
 		
-		$properties["format"] = $raw_data["childs"]["properties"][0]["childs"]["format"][0]["value"];
+		$properties["format"] = isset($raw_data["childs"]["properties"][0]["childs"]["format"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["format"][0]["value"] : null;
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$var_name = self::getPropertiesResultVariableCode($properties);
 		
-		$code = $prefix_tab . $var_name . "date(\"" . $properties["format"] . "\");\n";
+		$format = isset($properties["format"]) ? $properties["format"] : null;
+		$code = $prefix_tab . $var_name . "date(\"" . $format . "\");\n";
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$task_exit_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $task_exit_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

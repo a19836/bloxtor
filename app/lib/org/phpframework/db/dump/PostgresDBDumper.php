@@ -173,7 +173,8 @@ class PostgresDBDumper extends DBDumper {
 				$collation = !empty($collation) ? "COLLATE '$collation'" : "";
 				//$comment = !empty($comment) ? "COMMENT '$comment'" : ""; //not used in pgsql server
 				
-				$sql .= "  " . trim("\"$name\" $type{$length} $unique $null $charset $collation $default $extra $comment $check_constraint_value") . "," . PHP_EOL;
+				//$sql .= "  " . trim("\"$name\" $type{$length} $unique $null $charset $collation $default $extra $comment $check_constraint_value") . "," . PHP_EOL;
+				$sql .= "  " . trim("\"$name\" $type{$length} $null $collation $default") . "," . PHP_EOL;
 			}
 			
 			$sql = substr($sql, 0, strlen($sql) - 2) . PHP_EOL;//remove the last comma ','
@@ -233,7 +234,7 @@ class PostgresDBDumper extends DBDumper {
     
 	public function createStandInTableForView($view_name, $inner_sql) {
     		return "CREATE TABLE IF NOT EXISTS " . $this->escapeTable($view_name) . " (".
-            PHP_EOL . $innerSql . PHP_EOL . ");" . PHP_EOL;
+            PHP_EOL . $inner_sql . PHP_EOL . ");" . PHP_EOL;
 	}
 
 	public function getTableAttributeProperties($attr_type) {
@@ -413,7 +414,7 @@ END $$;" . PHP_EOL;
 		    	   	$rows = $this->DBDumperHandler->getDBDriver()->getSQL($stmt);
 		    	   	
 				foreach ($rows as $r)
-					if (!empty($r["table_name"]) && isset(r["constraint_name"]))
+					if (!empty($r["table_name"]) && isset($r["constraint_name"]))
 						$sql .= PHP_EOL . "ALTER TABLE " . $r["table_name"] . " ALTER CONSTRAINT " . $r["constraint_name"] . " DEFERRABLE INITIALLY DEFERRED;";
 		    	   	
 				$sql .= PHP_EOL;

@@ -9558,7 +9558,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 			
 			if (settings["widget_resource_value"].hasOwnProperty("attribute")) {
 				select.val("attribute");
-				widget_display_resource_value.removeClass("with-display-disabled");
+				widget_display_resource_value.removeClass("with-display-disabled").removeClass("with-display-resource");
 			}
 			else {
 				select.val("resource");
@@ -10944,6 +10944,8 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 	
 	function onChangeSelectedWidget() {
 		if (update_field_in_selected_widget_active) {
+			var curr_selected_widget = $(selected_widget);
+			
 			on_update_field_in_selected_widget_timeout_id && clearTimeout(on_update_field_in_selected_widget_timeout_id);
 			
 			on_update_field_in_selected_widget_timeout_id = setTimeout(function() {
@@ -10952,7 +10954,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 				
 				//call callback
 				if (typeof ui_creator.options.on_template_widgets_layout_changed_func == "function")
-					ui_creator.options.on_template_widgets_layout_changed_func( $(selected_widget) );
+					ui_creator.options.on_template_widgets_layout_changed_func(curr_selected_widget);
 			}, 500);
 		}
 	}

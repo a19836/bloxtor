@@ -4,14 +4,14 @@ include_once $EVC->getUtilPath("WorkFlowTestUnitHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$type_id = $_GET["type_id"];
-$layout_type_id = $_GET["layout_type_id"];
+$type_id = isset($_GET["type_id"]) ? $_GET["type_id"] : null;
+$layout_type_id = isset($_GET["layout_type_id"]) ? $_GET["layout_type_id"] : null;
 
-if ($_POST) {
+if (!empty($_POST)) {
 	$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 
-	$layout_type_id = $_POST["layout_type_id"];
-	$permissions_by_objects = $_POST["permissions_by_objects"];
+	$layout_type_id = isset($_POST["layout_type_id"]) ? $_POST["layout_type_id"] : null;
+	$permissions_by_objects = isset($_POST["permissions_by_objects"]) ? $_POST["permissions_by_objects"] : null;
 	
 	if ($layout_type_id && $UserAuthenticationHandler->updateLayoutTypePermissionsByObjectsPermissions($layout_type_id, $permissions_by_objects))
 		$status_message = "Layout Type Permissions were saved correctly";
@@ -28,7 +28,7 @@ ksort($layout_types);
 
 $permissions = $UserAuthenticationHandler->getAvailablePermissions();
 $object_types = $UserAuthenticationHandler->getAvailableObjectTypes();
-$layer_object_type_id = $object_types["layer"];
+$layer_object_type_id = isset($object_types["layer"]) ? $object_types["layer"] : null;
 
 //Preparing layers
 $raw_layers = AdminMenuHandler::getLayersFiles($user_global_variables_file_path);
@@ -47,15 +47,19 @@ $presentation_projects = array();
 $presentation_projects_by_folders = array();
 
 foreach ($layers_to_show as $layer_type_name) {
-	$layer_type = $raw_layers[$layer_type_name];
+	$layer_type = isset($raw_layers[$layer_type_name]) ? $raw_layers[$layer_type_name] : null;
 	
 	if ($layer_type) //filter by layers
 		foreach ($layer_type as $layer_name => $layer) {
 			$lln = strtolower($layer_name);
+			$layer_properties = isset($layer["properties"]) ? $layer["properties"] : null;
+			$layer_bean_name = isset($layer_properties["bean_name"]) ? $layer_properties["bean_name"] : null;
+			$layer_bean_file_name = isset($layer_properties["bean_file_name"]) ? $layer_properties["bean_file_name"] : null;
+			
 			$layers[$layer_type_name][$lln] = array();
-			$layers_label[$layer_type_name][$lln] = isset($layer["properties"]["item_label"]) ? $layer["properties"]["item_label"] : $lln;
-			$layers_object_id[$layer_type_name][$lln] = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $layer["properties"]["bean_file_name"], $layer["properties"]["bean_name"], $user_global_variables_file_path);
-			$layers_props[$layer_type_name][$lln] = $layer["properties"];
+			$layers_label[$layer_type_name][$lln] = isset($layer_properties["item_label"]) ? $layer_properties["item_label"] : $lln;
+			$layers_object_id[$layer_type_name][$lln] = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $layer_bean_file_name, $layer_bean_name, $user_global_variables_file_path);
+			$layers_props[$layer_type_name][$lln] = $layer_properties;
 			
 			if ($layer_type_name == "db_layers") {
 				foreach ($layer as $driver_name => $driver) 
@@ -64,15 +68,16 @@ foreach ($layers_to_show as $layer_type_name) {
 			}
 			else if ($layer_type_name == "presentation_layers" && $type_id == 0 && $layout_types) {
 				//prepare presentation layers projects
-				$projects = CMSPresentationLayerHandler::getPresentationLayerProjectsFiles($user_global_variables_file_path, $user_beans_folder_path, $layer["properties"]["bean_file_name"], $layer["properties"]["bean_name"]);
+				$projects = CMSPresentationLayerHandler::getPresentationLayerProjectsFiles($user_global_variables_file_path, $user_beans_folder_path, $layer_bean_file_name, $layer_bean_name);
 				$projs = array();
 				$projs_by_folders = array();
 				
 				if ($projects)
 					foreach ($projects as $project_name => $project_props) {
-						$proj_id = $layers_object_id[$layer_type_name][$lln] . "/$project_name";
+						$layer_object_id = isset($layers_object_id[$layer_type_name][$lln]) ? $layers_object_id[$layer_type_name][$lln] : null;
+						$proj_id = $layer_object_id . "/$project_name";
 						
-						if ($layout_types[$proj_id]) {
+						if (!empty($layout_types[$proj_id])) {
 							$lt_id = $layout_types[$proj_id];
 							$projs[$lt_id] = $project_name;
 							
@@ -94,7 +99,7 @@ foreach ($layers_to_show as $layer_type_name) {
 						}
 					}
 				
-				$layer_label = $layers_label[$layer_type_name][$lln];
+				$layer_label = isset($layers_label[$layer_type_name][$lln]) ? $layers_label[$layer_type_name][$lln] : null;
 				$presentation_projects[$layer_label] = $projs;
 				$presentation_projects_by_folders[$layer_label] = $projs_by_folders;
 			}

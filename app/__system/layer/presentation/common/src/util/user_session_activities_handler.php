@@ -16,7 +16,7 @@ function validateModuleUserActivity($EVC, $activity, $module_path) {
 }
 
 function validatePageUserActivity($EVC, $activity, $entity_path) {
-	if ($activity && $module_path) {
+	if ($activity && $entity_path) {
 		initUserSessionActivitiesHandler($EVC);
 		
 		if (!empty($GLOBALS["UserSessionActivitiesHandler"])) {

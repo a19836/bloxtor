@@ -1,7 +1,7 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "delete");
 
-if ($_GET["service"]) {
+if (!empty($_GET["service"])) {
 	$_GET["item_type"] = "businesslogic";
 	$_GET["class"] = $_GET["service"];
 	$_GET["remove_file_if_no_class"] = true;
@@ -10,10 +10,11 @@ if ($_GET["service"]) {
 	include $EVC->getEntityPath("admin/remove_file_class");
 	
 	//delete caches
-	if ($obj && is_a($obj, "BusinessLogicLayer") && $_POST && $status) 
+	if (!empty($obj) && is_a($obj, "BusinessLogicLayer") && !empty($_POST) && !empty($status))
 		CacheHandlerUtil::deleteFolder($obj->getCacheLayer()->getCachedDirPath(), false);
 	
-	die($status);
+	echo isset($status) ? $status : null;
+	die();
 }
 die();
 ?>

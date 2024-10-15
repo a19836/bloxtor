@@ -3,19 +3,20 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$layout_type_id = $_GET["layout_type_id"];
+$layout_type_id = isset($_GET["layout_type_id"]) ? $_GET["layout_type_id"] : null;
 
 if ($layout_type_id)
 	$layout_type_data = $UserAuthenticationHandler->getLayoutType($layout_type_id);
 
-if ($_POST["layout_type_data"]) {
-	$new_layout_type_data = $_POST["layout_type_data"];
+if (!empty($_POST["layout_type_data"])) {
+	$new_layout_type_data = isset($_POST["layout_type_data"]) ? $_POST["layout_type_data"] : null;
 	
-	if ($_POST["delete"]) {
+	if (!empty($_POST["delete"])) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "delete");
 
 		if ($layout_type_id && $UserAuthenticationHandler->deleteLayoutType($layout_type_id)) {
-			die("<script>alert('Layout Type deleted successfully'); document.location = '$project_url_prefix/user/manage_layout_types';</script>");
+			echo "<script>alert('Layout Type deleted successfully'); document.location = '$project_url_prefix/user/manage_layout_types';</script>";
+			die();
 		}
 		else {
 			$layout_type_data = $new_layout_type_data;
@@ -28,19 +29,22 @@ if ($_POST["layout_type_data"]) {
 	}
 	else {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
-
+		
+		$layout_type_name = isset($layout_type_data["name"]) ? $layout_type_data["name"] : null;
+		
 		//$new_layout_type_data["name"] = strtolower($new_layout_type_data["name"]); //Do not strtolower bc if project is inside of folder which is upper case, then we cannot make the layout lower case.
 		
-		if ($layout_type_data["name"] != $new_layout_type_data["name"]) {
+		if ($layout_type_name != $new_layout_type_data["name"]) {
 			$results = $UserAuthenticationHandler->searchLayoutTypes(array("name" => $new_layout_type_data["name"]));
-			if ($results[0]) {
+			
+			if (!empty($results[0])) {
 				$layout_type_data = $new_layout_type_data;
 				$error_message = "Error: Repeated Name";
 			}
 		}
 		
-		if (!$error_message) {
-			if ($layout_type_data) {
+		if (empty($error_message)) {
+			if (!empty($layout_type_data)) {
 				$layout_type_data = array_merge($layout_type_data, $new_layout_type_data);
 				
 				if ($UserAuthenticationHandler->updateLayoutType($layout_type_data)) {
@@ -56,7 +60,8 @@ if ($_POST["layout_type_data"]) {
 				$status = $UserAuthenticationHandler->insertLayoutType($layout_type_data);
 				
 				if ($status) {
-					die("<script>alert('Layout Type inserted successfully'); document.location = '?layout_type_id=" . $status . "';</script>");
+					echo "<script>alert('Layout Type inserted successfully'); document.location = '?layout_type_id=" . $status . "';</script>";
+					die();
 				}
 				else {
 					$error_message = "There was an error trying to insert this layout type. Please try again...";
@@ -86,7 +91,7 @@ if ($presentation_layers_projects)
 		$projs = array();
 		$projs_by_folders = array();
 		
-		if ($props["projects"]) {
+		if (!empty($props["projects"])) {
 			$folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $props["bean_file_name"], $bean_name, $user_global_variables_file_path);
 			
 			foreach ($props["projects"] as $project_name => $project_props) {
@@ -109,7 +114,7 @@ if ($presentation_layers_projects)
 			}
 		}
 		
-		$layer_label = $props["item_label"];
+		$layer_label = isset($props["item_label"]) ? $props["item_label"] : null;
 		$presentation_projects[$layer_label] = $projs;
 		$presentation_projects_by_folders[$layer_label] = $projs_by_folders;
 		//echo "<pre>";print_r($presentation_projects);print_r($presentation_projects_by_folders);die();

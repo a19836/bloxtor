@@ -28,12 +28,12 @@ $workflow_path_id = "deployment";
 $layer_brokers_settings = WorkFlowTestUnitHandler::getAllLayersBrokersSettings($user_global_variables_file_path, $user_beans_folder_path);
 //print_r($layer_brokers_settings);die();
 
-$db_brokers = $layer_brokers_settings["db_brokers"];
-$ibatis_brokers = $layer_brokers_settings["ibatis_brokers"];
-$hibernate_brokers = $layer_brokers_settings["hibernate_brokers"];
-$data_access_brokers = $layer_brokers_settings["data_access_brokers"];
-$business_logic_brokers = $layer_brokers_settings["business_logic_brokers"];
-$presentation_brokers = $layer_brokers_settings["presentation_brokers"];
+$db_brokers = isset($layer_brokers_settings["db_brokers"]) ? $layer_brokers_settings["db_brokers"] : null;
+$ibatis_brokers = isset($layer_brokers_settings["ibatis_brokers"]) ? $layer_brokers_settings["ibatis_brokers"] : null;
+$hibernate_brokers = isset($layer_brokers_settings["hibernate_brokers"]) ? $layer_brokers_settings["hibernate_brokers"] : null;
+$data_access_brokers = isset($layer_brokers_settings["data_access_brokers"]) ? $layer_brokers_settings["data_access_brokers"] : null;
+$business_logic_brokers = isset($layer_brokers_settings["business_logic_brokers"]) ? $layer_brokers_settings["business_logic_brokers"] : null;
+$presentation_brokers = isset($layer_brokers_settings["presentation_brokers"]) ? $layer_brokers_settings["presentation_brokers"] : null;
 
 //PREPARING BEAN FOLDERS
 $beans_folders_name = array(
@@ -51,8 +51,8 @@ foreach ($layer_brokers_settings as $k => $layer_brokers)
 		
 		for ($i = 0; $i < $t; $i++) {
 			$l = $layer_brokers[$i];
-			$bean_file_name = $l[1];
-			$bean_name = $l[2];
+			$bean_file_name = isset($l[1]) ? $l[1] : null;
+			$bean_name = isset($l[2]) ? $l[2] : null;
 			$bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $bean_file_name, $bean_name, $user_global_variables_file_path);
 			
 			if ($bean_folder_name)
@@ -69,16 +69,16 @@ $show_js_obfuscation_option = !empty($method[0]);
 
 //PREPARING LICENCE OPTIONS
 $li = $EVC->getPresentationLayer()->getPHPFrameWork()->getLicenceInfo();
-$projects_max_expiration_date = $li["ped"];
-$sysadmin_max_expiration_date = $li["sed"];
-$projects_max_num = $li["pmn"];
-$users_max_num = $li["umn"];
-$end_users_max_num = $li["eumn"];
-$actions_max_num = $li["amn"];
-$allowed_paths = $li["ap"];
-$allowed_domains = $li["ad"];
-$check_allowed_domains_port = $li["cadp"];
-$allowed_sysadmin_migration = $li["asm"];
+$projects_max_expiration_date = isset($li["ped"]) ? $li["ped"] : null;
+$sysadmin_max_expiration_date = isset($li["sed"]) ? $li["sed"] : null;
+$projects_max_num = isset($li["pmn"]) ? $li["pmn"] : null;
+$users_max_num = isset($li["umn"]) ? $li["umn"] : null;
+$end_users_max_num = isset($li["eumn"]) ? $li["eumn"] : null;
+$actions_max_num = isset($li["amn"]) ? $li["amn"] : null;
+$allowed_paths = isset($li["ap"]) ? $li["ap"] : null;
+$allowed_domains = isset($li["ad"]) ? $li["ad"] : null;
+$check_allowed_domains_port = isset($li["cadp"]) ? $li["cadp"] : null;
+$allowed_sysadmin_migration = isset($li["asm"]) ? $li["asm"] : null;
 
 if ($projects_max_num > 0)
 	$projects_max_num--; //decrease 1 project bc the $projects_max_num_allowed contains the common project

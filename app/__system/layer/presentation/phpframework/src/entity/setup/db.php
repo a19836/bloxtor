@@ -12,11 +12,26 @@ $WorkFlowDBHandler = new WorkFlowDBHandler($user_beans_folder_path, $user_global
 if (isset($_POST["data"])) {
 	$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 	
+	$_POST["data"]["db_type"] = isset($_POST["data"]["db_type"]) ? $_POST["data"]["db_type"] : null;
+	$_POST["data"]["db_extension"] = isset($_POST["data"]["db_extension"]) ? $_POST["data"]["db_extension"] : null;
+	$_POST["data"]["db_host"] = isset($_POST["data"]["db_host"]) ? $_POST["data"]["db_host"] : null;
+	$_POST["data"]["db_port"] = isset($_POST["data"]["db_port"]) ? $_POST["data"]["db_port"] : null;
+	$_POST["data"]["db_name"] = isset($_POST["data"]["db_name"]) ? $_POST["data"]["db_name"] : null;
+	$_POST["data"]["db_username"] = isset($_POST["data"]["db_username"]) ? $_POST["data"]["db_username"] : null;
+	$_POST["data"]["db_password"] = isset($_POST["data"]["db_password"]) ? $_POST["data"]["db_password"] : null;
+	$_POST["data"]["db_persistent"] = isset($_POST["data"]["db_persistent"]) ? $_POST["data"]["db_persistent"] : null;
+	$_POST["data"]["db_new_link"] = isset($_POST["data"]["db_new_link"]) ? $_POST["data"]["db_new_link"] : null;
+	$_POST["data"]["db_encoding"] = isset($_POST["data"]["db_encoding"]) ? $_POST["data"]["db_encoding"] : null;
+	$_POST["data"]["db_schema"] = isset($_POST["data"]["db_schema"]) ? $_POST["data"]["db_schema"] : null;
+	$_POST["data"]["db_odbc_data_source"] = isset($_POST["data"]["db_odbc_data_source"]) ? $_POST["data"]["db_odbc_data_source"] : null;
+	$_POST["data"]["db_odbc_driver"] = isset($_POST["data"]["db_odbc_driver"]) ? $_POST["data"]["db_odbc_driver"] : null;
+	$_POST["data"]["db_extra_dsn"] = isset($_POST["data"]["db_extra_dsn"]) ? $_POST["data"]["db_extra_dsn"] : null;
+	
 	if ($_POST["data"]["db_name"])
 		$_POST["data"]["db_name"] = str_replace(" ", "_", strtolower($_POST["data"]["db_name"]));
 	
 	//PREPARE TASKS WORKFLOW
-	$content = file_get_contents($EVC->getPresentationLayer()->getSelectedPresentationSetting("presentation_webroot_path") . "/assets/default_layers_workflow_" . (!empty($_POST["data"]["db_type"]) ? "with" : "without") . "_db.xml");
+	$content = file_get_contents($EVC->getPresentationLayer()->getSelectedPresentationSetting("presentation_webroot_path") . "/assets/default_layers_workflow_" . ($_POST["data"]["db_type"] ? "with" : "without") . "_db.xml");
 	
 	$content = str_replace("\$db_type", $_POST["data"]["db_type"], $content);
 	$content = str_replace("\$driver_label", $_POST["data"]["db_type"], $content);
@@ -64,7 +79,7 @@ if (isset($_POST["data"])) {
 						//check if db drivers are valid
 						if ($WorkFlowDBHandler->areTasksDBDriverBeanValid($tasks_file_path, true)) {
 							if ($continue) {
-								if ($is_inside_of_iframe)
+								if (!empty($is_inside_of_iframe))
 									echo '<script>
 										var url = window.top.location;
 										window.top.location = url;
@@ -101,6 +116,7 @@ $diagram_already_exists = file_exists($tasks_file_path);
 
 //set default data
 $data = $diagram_already_exists ? $WorkFlowDBHandler->getFirstTaskDBDriverCredentials($tasks_file_path, "db_") : array();
+
 if (isset($data["db_db_name"])) {
 	$data["db_name"] = $data["db_db_name"];
 	unset($data["db_db_name"]);
@@ -110,11 +126,11 @@ if (!isset($data["db_type"])) {
 	$data["db_type"] = isset($_POST["data"]["db_type"]) ? $_POST["data"]["db_type"] : "";
 }
 
-//print_r($data);die();
-
 if (!isset($data["db_encoding"])) {
 	$data["db_encoding"] = isset($_POST["data"]["db_encoding"]) ? $_POST["data"]["db_encoding"] : "utf8";
 }
+
+//print_r($data);die();
 
 //preparing db types
 $all_driver_labels = DB::getAllDriverLabelsByType();
@@ -131,7 +147,7 @@ if ($data["db_type"] && is_array($drivers_extensions[ $data["db_type"] ]))
 	foreach ($drivers_extensions[ $data["db_type"] ] as $idx => $enc)
 		$available_extensions_options[] = array("value" => $enc, "label" => $enc . ($idx == 0 ? " - Default" : ""));
 
-if ($data["db_extension"] && (!$drivers_extensions[ $data["db_type"] ] || !in_array($data["db_extension"], $drivers_extensions[ $data["db_type"] ])))
+if (!empty($data["db_extension"]) && (!$drivers_extensions[ $data["db_type"] ] || !in_array($data["db_extension"], $drivers_extensions[ $data["db_type"] ])))
 	$available_extensions_options[] = array("value" => $data["db_extension"], "label" => $data["db_extension"] . " - DEPRECATED");
 
 //preparing db encodings

@@ -3,6 +3,11 @@ include $EVC->getUtilPath("WorkFlowUIHandler");
 include $EVC->getUtilPath("WorkFlowPresentationHandler");
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$layer_path = isset($layer_path) ? $layer_path : null;
+$P = isset($P) ? $P : null;
+$selected_project_id = isset($selected_project_id) ? $selected_project_id : null;
+$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 
 $WorkFlowUIHandler = new WorkFlowUIHandler($WorkFlowTaskHandler, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
@@ -49,7 +54,7 @@ $head .= '
 ' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, $selected_db_vars) . '
 var layer_type = "pres";
 var selected_project_id = "' . $selected_project_id . '";
-var file_modified_time = ' . $file_modified_time . '; //for version control
+var file_modified_time = ' . (isset($file_modified_time) ? $file_modified_time : "null") . '; //for version control
 
 var get_workflow_file_url = \'' . $get_workflow_file_url . '\';
 var save_object_url = \'' . $save_url . '\';
@@ -60,7 +65,7 @@ var set_tmp_workflow_file_url = \'' . $set_tmp_workflow_file_url . '\';
 
 var edit_task_source_url = \'' . $edit_task_source_url . '\';
 
-var brokers_db_drivers = ' . json_encode($brokers_db_drivers) . ';
+var brokers_db_drivers = ' . (isset($brokers_db_drivers) ? json_encode($brokers_db_drivers) : "null") . ';
 
 ProgrammingTaskUtil.on_programming_task_edit_source_callback = onProgrammingTaskEditSource;
 ProgrammingTaskUtil.on_programming_task_choose_created_variable_callback = onProgrammingTaskChooseCreatedVariable;
@@ -88,7 +93,7 @@ $head .= '</script>';
 $main_content = '
 	<div class="top_bar">
 		<header>
-			<div class="title" title="' . $path . '">Edit Config' . ($config_file_name ? ' "' . $config_file_name . '"' : '') . ' for project: ' . BreadCrumbsUIHandler::getFilePathBreadCrumbsHtml($layer_path . $selected_project_id, $P) . '</div>
+			<div class="title" title="' . $path . '">Edit Config' . (!empty($config_file_name) ? ' "' . $config_file_name . '"' : '') . ' for project: ' . BreadCrumbsUIHandler::getFilePathBreadCrumbsHtml($layer_path . $selected_project_id, $P) . '</div>
 			<ul>
 				<li class="save" data-title="Save"><a onClick="saveConfig()"><i class="icon save"></i> Save</a></li>
 			</ul>
@@ -108,7 +113,7 @@ if ($obj_data) {
 			<div class="code_menu top_bar_menu" onClick="openSubmenu(this)">
 				' . WorkFlowPresentationHandler::getCodeEditorMenuHtml(array("save_func" => "saveConfig")) . '
 			</div>
-			<textarea>' . htmlspecialchars($obj_data["code"], ENT_NOQUOTES) . '</textarea>
+			<textarea>' . (isset($obj_data["code"]) ? htmlspecialchars($obj_data["code"], ENT_NOQUOTES) : "") . '</textarea>
 		</div>
 		
 		<div id="ui">' . WorkFlowPresentationHandler::getTaskFlowContentHtml($WorkFlowUIHandler, array("save_func" => "saveConfig")) . '</div>

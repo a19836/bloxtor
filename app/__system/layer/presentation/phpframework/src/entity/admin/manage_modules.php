@@ -5,8 +5,8 @@ include_once get_lib("org.phpframework.layer.presentation.cms.module.CMSModuleEn
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$popup = $_GET["popup"];
-$filter_by_layout = $_GET["filter_by_layout"]; //optional
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null; //optional
 
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
 
@@ -15,7 +15,7 @@ $LayoutTypeProjectHandler = new LayoutTypeProjectHandler($UserAuthenticationHand
 //$LayoutTypeProjectHandler->filterPresentationLayersProjectsByUserAndLayoutPermissions($files, $filter_by_layout, UserAuthenticationHandler::$PERMISSION_BELONG_NAME); //DEPRECATED - Do not filter files, bc we want to give the user oportunity to select what presentation layer does he wish to manage.
 
 //get default presentation layer
-if ($_GET["bean_name"]) 
+if (!empty($_GET["bean_name"]))
 	$default_presentation_layer_name = $_GET["bean_name"];
 else {
 	$files_bkp = $files;
@@ -32,8 +32,8 @@ $loaded_modules = $CMSModuleLayer->getLoadedModules();
 $modules = array();
 if (is_array($files)) {
 	foreach ($files as $bean_name => $layer_props) {
-		$bean_file_name = $layer_props["bean_file_name"];
-		$item_label = $layer_props["item_label"];
+		$bean_file_name = isset($layer_props["bean_file_name"]) ? $layer_props["bean_file_name"] : null;
+		$item_label = isset($layer_props["item_label"]) ? $layer_props["item_label"] : null;
 		
 		$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
 		$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($bean_name);
@@ -60,7 +60,7 @@ if (is_array($files)) {
 if (is_array($loaded_modules)) {
 	$loaded_modules_by_group = array();
 	foreach ($loaded_modules as $module_id => $loaded_module) {
-		$group_module_id = $loaded_module["group_id"];
+		$group_module_id = isset($loaded_module["group_id"]) ? $loaded_module["group_id"] : null;
 		$loaded_modules_by_group[$group_module_id][$module_id] = $loaded_module;
 	}
 	$loaded_modules = $loaded_modules_by_group;

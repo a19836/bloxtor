@@ -4,12 +4,12 @@ include_once $EVC->getUtilPath("WorkFlowDataAccessHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$table = $_GET["table"];
-$db_type = $_GET["db_type"] ? $_GET["db_type"] : "diagram";
-$popup = $_GET["popup"];
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$table = isset($_GET["table"]) ? $_GET["table"] : null;
+$db_type = !empty($_GET["db_type"]) ? $_GET["db_type"] : "diagram";
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 if ($bean_name && $table) {
 	$layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$bean_name";
@@ -37,7 +37,7 @@ if ($bean_name && $table) {
 				$tasks_tables = $WorkFlowDataAccessHandler->getTasksAsTables();
 				$task_table_name = $DBDriver->getTableInNamesList(array_keys($tasks_tables), $table);
 				
-				$exists = $task_table_name && $tasks_tables[$task_table_name];
+				$exists = $task_table_name && !empty($tasks_tables[$task_table_name]);
 			}
 			
 			//prepare tables and fields according with db type if doesn't exists in diagram or if db_type is "db"
@@ -49,7 +49,7 @@ if ($bean_name && $table) {
 				
 				$t = count($fks);
 				for ($i = 0; $i < $t; $i++) {
-					$fk_table = $fks[$i]["parent_table"];
+					$fk_table = isset($fks[$i]["parent_table"]) ? $fks[$i]["parent_table"] : null;
 					$attrs = $DBDriver->listTableFields($fk_table);
 					$tables_data[$fk_table] = array($attrs, null);
 				}
@@ -66,18 +66,18 @@ if ($bean_name && $table) {
 			//echo "db_type:$db_type, task_table_name:$task_table_name";die();
 			
 			//update table_fields according with db type
-			if ($task_table_name && $tasks_tables[$task_table_name])
+			if ($task_table_name && !empty($tasks_tables[$task_table_name]))
 				$table_fields = $tasks_tables[$task_table_name];
 			//echo "<pre>";print_r($table_fields);die();
 			
 			//prepare delete action
-			if ($_POST["delete"]) {
+			if (!empty($_POST["delete"])) {
 				$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 				
-				$selected_rows = $_POST["selected_rows"];
+				$selected_rows = isset($_POST["selected_rows"]) ? $_POST["selected_rows"] : null;
 				
 				if ($selected_rows) {
-					$selected_pks = $_POST["selected_pks"];
+					$selected_pks = isset($_POST["selected_pks"]) ? $_POST["selected_pks"] : null;
 					$status = true;
 					
 					foreach ($selected_rows as $idx) {
@@ -102,10 +102,10 @@ if ($bean_name && $table) {
 			$extra_fks = array();
 			
 			foreach ($table_fields as $field_name => $field) 
-				if ($field["fk"])
+				if (!empty($field["fk"]))
 					foreach ($field["fk"] as $fk) {
-						$fk_table = $fk["table"];
-						$fk_attribute = $fk["attribute"];
+						$fk_table = isset($fk["table"]) ? $fk["table"] : null;
+						$fk_attribute = isset($fk["attribute"]) ? $fk["attribute"] : null;
 						$fks[$fk_table][$fk_attribute] = $field_name;
 					}
 			//echo "<pre>";print_r($fks);
@@ -113,26 +113,28 @@ if ($bean_name && $table) {
 			foreach ($tasks_tables as $task_tn => $task_table_attributes) {
 				if ($task_tn != $task_table_name)
 					foreach ($task_table_attributes as $attribute_name => $attribute_props)
-						if ($attribute_props["fk"])
-							foreach ($attribute_props["fk"] as $fk)
-								if ($fk["table"] == $task_table_name) {
-									$extra_fks[$task_tn][$attribute_name] = $fk["attribute"];
-								}
+						if (!empty($attribute_props["fk"]))
+							foreach ($attribute_props["fk"] as $fk) {
+								$fk_table = isset($fk["table"]) ? $fk["table"] : null;
+								
+								if ($fk_table == $task_table_name)
+									$extra_fks[$task_tn][$attribute_name] = isset($fk["attribute"]) ? $fk["attribute"] : null;
+							}
 			}
 			//echo "<pre>";print_r($extra_fks);die();
 			
 			//prepare pks
 			$pks = array();
 			foreach ($table_fields as $field_name => $field)
-				if ($field["primary_key"]) 
+				if (!empty($field["primary_key"]))
 					$pks[] = $field_name;
 			
 			//prepare conditions
-			$conditions = $_GET["conditions"];
-			$conditions_operators = $_GET["conditions_operators"];
+			$conditions = isset($_GET["conditions"]) ? $_GET["conditions"] : null;
+			$conditions_operators = isset($_GET["conditions_operators"]) ? $_GET["conditions_operators"] : null;
 			if ($conditions)
 				foreach ($conditions as $field_name => $field_value)
-					if (!$table_fields[$field_name])
+					if (empty($table_fields[$field_name]))
 						unset($conditions[$field_name]);
 			
 			$conds = $conditions;
@@ -140,32 +142,40 @@ if ($bean_name && $table) {
 			//echo "<pre>";print_r($conditions_operators);die();
 			if ($conditions_operators) 
 				foreach ($conditions_operators as $field_name => $operator) {
+					$condition_value = isset($conditions[$field_name]) ? $conditions[$field_name] : null;
+					
 					if ($operator == "like" || $operator == "not like")
-						$conds[$field_name] = array("operator" => $operator, "value" => "%" . $conditions[$field_name] . "%");
+						$conds[$field_name] = array(
+							"operator" => $operator, 
+							"value" => "%" . $condition_value . "%"
+						);
 					else if ($operator != "=")
-						$conds[$field_name] = array("operator" => $operator, "value" => $conditions[$field_name]);
+						$conds[$field_name] = array(
+							"operator" => $operator, 
+							"value" => $condition_value
+						);
 				}
 			//echo "<pre>";print_r($conds);die();
 			
 			//prepare pagination
 			$count = $DBDriver->countObjects($table, $conds);
 			$settings = array(
-				"pg" => $_GET["pg"],
+				"pg" => isset($_GET["pg"]) ? $_GET["pg"] : null,
 			);
 			$PaginationLayout = new PaginationLayout($count, 100, $settings, "pg");
 			$pagination_data = $PaginationLayout->data;
 			
 			//prepare sorts
-			$sorts = $_GET["sorts"];
+			$sorts = isset($_GET["sorts"]) ? $_GET["sorts"] : null;
 			if ($sorts)
 				foreach ($sorts as $field_name => $field_value)
-					if (!$table_fields[$field_name])
+					if (empty($table_fields[$field_name]))
 						unset($sorts[$field_name]);
 			
 			//prepare results
 			$options = array(
-				"start" => $pagination_data["start"], 
-				"limit" => $pagination_data["limit"],
+				"start" => isset($pagination_data["start"]) ? $pagination_data["start"] : null, 
+				"limit" => isset($pagination_data["limit"]) ? $pagination_data["limit"] : null,
 				"sort" => $sorts,
 			);
 			$results = $DBDriver->findObjects($table, null, $conds, $options);
@@ -180,30 +190,34 @@ if ($bean_name && $table) {
 			$boolean_types = $DBDriver->getDBColumnBooleanTypes();
 			
 			foreach ($table_fields as $field_name => $field) {
-				$field_type = $field["type"];
+				$field_type = isset($field["type"]) ? $field["type"] : null;
 				$options = array();
 				
 				//prepare options if apply
-				if ($field["fk"] && $field["fk"][0]) {
+				if (!empty($field["fk"]) && !empty($field["fk"][0])) {
 					$fk = WorkFlowDataAccessHandler::getTableAttributeFKTable($field["fk"], $tasks_tables);
-					$fk_table = $fk["table"];
-					$fk_attribute = $fk["attribute"];
+					$fk_table = isset($fk["table"]) ? $fk["table"] : null;
+					$fk_attribute = isset($fk["attribute"]) ? $fk["attribute"] : null;
 					
 					$fk_count = $DBDriver->countObjects($fk_table);
 					
 					if ($fk_count < 1000) { //for performance issues only allow this feature if not more than x records in the DB.
-						$fk_table_attributes = $tasks_tables[$fk_table];
+						$fk_table_attributes = isset($tasks_tables[$fk_table]) ? $tasks_tables[$fk_table] : null;
 						$title_attr = WorkFlowDataAccessHandler::getTableAttrTitle($fk_table_attributes, $fk_table); //if there is no name, title or label, sets $fk_attribute
 						$title_attr = $title_attr ? $title_attr : $fk_attribute; //set $title_attr to $fk_attr if not exist. In this case the getAllOptions will simply return the a list with key/value pair like: 'primary key/primary key'.
 						
 						$fk_results = $DBDriver->findObjects($fk_table, array($fk_attribute, $title_attr), null);
 						
 						if ($fk_results) {
-							if ($field["null"])
+							if (!empty($field["null"]))
 								$options[""] = "";
 							
-							foreach ($fk_results as $fk_result)
-								$options[ $fk_result[$fk_attribute] ] = ($title_attr != $fk_attribute ? $fk_result[$fk_attribute] . " - " : "") . $fk_result[$title_attr];
+							foreach ($fk_results as $fk_result) {
+								$fkra = isset($fk_result[$fk_attribute]) ? $fk_result[$fk_attribute] : null;
+								$fkrt = isset($fk_result[$title_attr]) ? $fk_result[$title_attr] : null;
+								
+								$options[$fkra] = ($title_attr != $fk_attribute ? $fkra . " - " : "") . $fkrt;
+							}
 						}
 					}
 				}

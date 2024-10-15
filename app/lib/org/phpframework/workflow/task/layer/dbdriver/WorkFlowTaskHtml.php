@@ -32,7 +32,7 @@ DBDriverTaskPropertyObj.ignore_options_by_extension = ' . json_encode($ignore_co
 		<select class="task_property_field" name="extension" onChange="DBDriverTaskPropertyObj.onChangeExtension(this)">
 		<?php
 			if ($first_driver_type) {
-				$first_driver_extensions = $extensions[$first_driver_type];
+				$first_driver_extensions = isset($extensions[$first_driver_type]) ? $extensions[$first_driver_type] : null;
 				foreach ($first_driver_extensions as $idx => $value)
 					echo '<option value="' . $value . '">' . $value . ($idx == 0 ? " - Default" : "") . '</option>';
 			}
@@ -96,7 +96,7 @@ DBDriverTaskPropertyObj.ignore_options_by_extension = ' . json_encode($ignore_co
 			<option value="">-- Default --</option>
 		<?php
 			if ($first_driver_type) {
-				$first_driver_encodings = $encodings[$first_driver_type];
+				$first_driver_encodings = isset($encodings[$first_driver_type]) ? $encodings[$first_driver_type] : null;
 				foreach ($first_driver_encodings as $enc => $label)
 					echo '<option value="' . $enc . '">' . $label . '</option>';
 			}

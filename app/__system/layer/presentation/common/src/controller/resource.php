@@ -256,7 +256,7 @@ function parseFileContents($EVC, $contents) {
 		$t = count($includes_block);
 		
 		for ($i = 0; $i < $t; $i++) {
-			$include_block_code = $includes_block[$i]["match"];
+			$include_block_code = isset($includes_block[$i]["match"]) ? $includes_block[$i]["match"] : null;
 			$contents = str_replace($include_block_code, "", $contents);
 		}
 		
@@ -266,7 +266,7 @@ function parseFileContents($EVC, $contents) {
 		$t = count($hard_coded_regions_blocks);
 		
 		for ($i = 0; $i < $t; $i++) {
-			$hard_coded_region_block_code = $hard_coded_regions_blocks[$i]["match"];
+			$hard_coded_region_block_code = isset($hard_coded_regions_blocks[$i]["match"]) ? $hard_coded_regions_blocks[$i]["match"] : null;
 			$contents = str_replace($hard_coded_region_block_code, '""', $contents);
 		}
 	}
@@ -280,11 +280,13 @@ function parseFileContents($EVC, $contents) {
 	
 	for ($i = 0; $i < $t; $i++) {
 		$region_block = $regions_blocks[$i];
-		$region_code = WorkFlowTask::getVariableValueCode($region_block["region"], $region_block["region_type"]);
+		$region_block_type = isset($region_block["type"]) ? $region_block["type"] : null;
+		$region_code = isset($region_block["region"]) ? $region_block["region"] : null;
+		$region_code = WorkFlowTask::getVariableValueCode($region_code, isset($region_block["region_type"]) ? $region_block["region_type"] : null);
 		
 		//if includeRegionBlockPathOutput or includeRegionViewPathOutput. Note that the addRegionBlock and addRegionView were already removed by the code above that called the getHardCodedRegionsBlocks method
-		if (!$include_blocks_when_calling_resources && ($region_block["type"] == 3 || $region_block["type"] == 5)) { 
-			$hard_coded_region_block_code = $region_block["match"];
+		if (!$include_blocks_when_calling_resources && ($region_block_type == 3 || $region_block_type == 5)) { 
+			$hard_coded_region_block_code = isset($region_block["match"]) ? $region_block["match"] : null;
 			$contents = str_replace($hard_coded_region_block_code, '""', $contents);
 		}
 		//if addRegionHtml, addRegionBlock and addRegionView.
@@ -304,7 +306,7 @@ function parseFileContents($EVC, $contents) {
 	$t = count($rendered_regions);
 	
 	for ($i = 0; $i < $t; $i++) {
-		$rendered_region_code = $rendered_regions[$i]["match"];
+		$rendered_region_code = isset($rendered_regions[$i]["match"]) ? $rendered_regions[$i]["match"] : null;
 		$contents = str_replace($rendered_region_code, '""', $contents);
 	}
 	

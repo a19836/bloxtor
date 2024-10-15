@@ -5,13 +5,13 @@ include_once $EVC->getUtilPath("CodeResultGuesser");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$class_path = $_GET["class_path"];
-$class_name = $_GET["class_name"];
-$method = $_GET["method"];
-$db_driver = $_GET["db_driver"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$class_path = isset($_GET["class_path"]) ? $_GET["class_path"] : null;
+$class_name = isset($_GET["class_name"]) ? $_GET["class_name"] : null;
+$method = isset($_GET["method"]) ? $_GET["method"] : null;
+$db_driver = isset($_GET["db_driver"]) ? $_GET["db_driver"] : null;
 
 $class_path = str_replace("../", "", $class_path);//for security reasons
 $path = str_replace("../", "", $path);//for security reasons
@@ -45,7 +45,7 @@ if ($class_name && $method) {
 			//echo "$class_path:\n$code";die();
 			
 			if ($code) {
-				$db_driver = $db_driver ? $db_driver : $GLOBALS["default_db_driver"];
+				$db_driver = $db_driver ? $db_driver : (isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null);
 				
 				$CodeResultGuesser = new CodeResultGuesser($P, $UserAuthenticationHandler, $user_global_variables_file_path, $user_beans_folder_path, $project_url_prefix, $db_driver);
 				$props = $CodeResultGuesser->getCodeResultAttributes($code);

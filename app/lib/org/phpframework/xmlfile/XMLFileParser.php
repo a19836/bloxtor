@@ -88,7 +88,7 @@ class XMLFileParser {
 				}
 
 				if($import_path && file_exists($import_path)) {
-					$arr = self::getImportedXMLFileNodes($import_path, $external_vars, $parse_php, $import["xml_order_id"]);
+					$arr = self::getImportedXMLFileNodes($import_path, $external_vars, $parse_php, isset($import["xml_order_id"]) ? $import["xml_order_id"] : null);
 	
 					$first_node_name = is_array($arr) ? array_keys($arr) : array();
 					$first_node_name = isset($first_node_name[0]) ? $first_node_name[0] : null;

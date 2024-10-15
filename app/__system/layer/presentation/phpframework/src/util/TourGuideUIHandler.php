@@ -7,7 +7,7 @@ class TourGuideUIHandler {
 	
 	public static function getHtml($entity_code, $project_url_prefix, $project_common_url_prefix, $online_tutorials_url_prefix, $options = null) {
 		$restart_allow = !$options || !array_key_exists("restart_allow", $options) || $options["restart_allow"];
-		$css = $options ? $options["css"] : "";
+		$css = $options && !empty($options["css"]) ? $options["css"] : "";
 		
 		$tourguide_id = self::getPageTourGuideId($entity_code);
 		$tour_guide_options = self::getPageTourGuideOptions($entity_code, $project_url_prefix, $project_common_url_prefix, $online_tutorials_url_prefix, $tutorials_exist);
@@ -1146,7 +1146,7 @@ class TourGuideUIHandler {
 			);
 		}
 		
-		if ($options["steps"])
+		if (!empty($options["steps"]))
 			for ($i = 0, $t = count($options["steps"]); $i < $t; $i++) {
 				$step = $options["steps"][$i];
 				
@@ -1192,26 +1192,32 @@ class TourGuideUIHandler {
 		
 		if ($tutorials)
 			foreach ($tutorials as $id => $tutorial) {
-				if ($tutorial["video"] || $tutorial["items"]) {
+				if (!empty($tutorial["video"]) || !empty($tutorial["items"])) {
 					$attrs = '';
 					$collapse_icon = '';
 					//$tutorial["image"] = "http://jplpinto.localhost/__system/img/logo_full_white.svg";
 					
-					if ($tutorial["items"]) {
+					$tutorial_video = isset($tutorial["video"]) ? $tutorial["video"] : null;
+					$tutorial_image = isset($tutorial["image"]) ? $tutorial["image"] : null;
+					$tutorial_items = isset($tutorial["items"]) ? $tutorial["items"] : null;
+					$tutorial_title = isset($tutorial["title"]) ? $tutorial["title"] : null;
+					$tutorial_description = isset($tutorial["description"]) ? $tutorial["description"] : null;
+					
+					if ($tutorial_items) {
 						$attrs = 'onClick="toggleTourGuideTutorialSubTutorials(this)"';
 						$collapse_icon = '<span class="icon dropdown_arrow"></span>';
 					}
 					else
-						$attrs = 'onClick="openTourGuideTutorialVideoPopup(this)" video_url="' . $tutorial["video"] . '" image_url="' . $tutorial["image"] . '"';
+						$attrs = 'onClick="openTourGuideTutorialVideoPopup(this)" video_url="' . $tutorial_video . '" image_url="' . $tutorial_image . '"';
 					
-					$html .= '<li class="' . ($tutorial["items"] ? 'with_sub_tutorials' : 'with_video') . '">
+					$html .= '<li class="' . ($tutorial_items ? 'with_sub_tutorials' : 'with_video') . '">
 							<div class="tutorial_header" ' . $attrs . '>
-								<div class="tutorial_title"' . ($tutorial["description"] ? ' title="' . str_replace('"', '&quot;', strip_tags($tutorial["description"])) . '"' : '') . '><span class="icon video"></span>' . $tutorial["title"] . $collapse_icon . '</div>
-								' . ($tutorial["description"] ? '<div class="tutorial_description">' . $tutorial["description"] . '</div>' : '') . '
+								<div class="tutorial_title"' . ($tutorial_description ? ' title="' . str_replace('"', '&quot;', strip_tags($tutorial_description)) . '"' : '') . '><span class="icon video"></span>' . $tutorial_title . $collapse_icon . '</div>
+								' . ($tutorial_description ? '<div class="tutorial_description">' . $tutorial_description . '</div>' : '') . '
 							</div>';
 					
-					if ($tutorial["items"])
-						$html .= self::getPageTourGuideTutorialsHtml($tutorial["items"]);
+					if ($tutorial_items)
+						$html .= self::getPageTourGuideTutorialsHtml($tutorial_items);
 					
 					$html .= '</li>';
 				}

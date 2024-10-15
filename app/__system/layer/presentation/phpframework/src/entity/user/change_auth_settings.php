@@ -22,46 +22,46 @@ if (!$available_drivers && !$is_local_db) {
 }
 
 //getting current db credentials
-$authentication_db_driver = $GLOBALS["default_db_driver"] ? $GLOBALS["default_db_driver"] : "";
-$authentication_db_extension = $GLOBALS[$authentication_db_driver . "_db_extension"];
-$authentication_db_host = $GLOBALS[$authentication_db_driver . "_db_host"];
-$authentication_db_name = $GLOBALS[$authentication_db_driver . "_db_name"];
-$authentication_db_username = $GLOBALS[$authentication_db_driver . "_db_username"];
-$authentication_db_password = $GLOBALS[$authentication_db_driver . "_db_password"];
-$authentication_db_port = $GLOBALS[$authentication_db_driver . "_db_port"];
-$authentication_db_persistent = $GLOBALS[$authentication_db_driver . "_db_persistent"];
-$authentication_db_new_link = $GLOBALS[$authentication_db_driver . "_db_new_link"];
-$authentication_db_encoding = $GLOBALS[$authentication_db_driver . "_db_encoding"];
-$authentication_db_schema = $GLOBALS[$authentication_db_driver . "_db_schema"];
-$authentication_db_odbc_data_source = $GLOBALS[$authentication_db_driver . "_db_odbc_data_source"];
-$authentication_db_odbc_driver = $GLOBALS[$authentication_db_driver . "_db_odbc_driver"];
-$authentication_db_extra_dsn = $GLOBALS[$authentication_db_driver . "_db_extra_dsn"];
+$authentication_db_driver = !empty($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : "";
+$authentication_db_extension = isset($GLOBALS[$authentication_db_driver . "_db_extension"]) ? $GLOBALS[$authentication_db_driver . "_db_extension"] : null;
+$authentication_db_host = isset($GLOBALS[$authentication_db_driver . "_db_host"]) ? $GLOBALS[$authentication_db_driver . "_db_host"] : null;
+$authentication_db_name = isset($GLOBALS[$authentication_db_driver . "_db_name"]) ? $GLOBALS[$authentication_db_driver . "_db_name"] : null;
+$authentication_db_username = isset($GLOBALS[$authentication_db_driver . "_db_username"]) ? $GLOBALS[$authentication_db_driver . "_db_username"] : null;
+$authentication_db_password = isset($GLOBALS[$authentication_db_driver . "_db_password"]) ? $GLOBALS[$authentication_db_driver . "_db_password"] : null;
+$authentication_db_port = isset($GLOBALS[$authentication_db_driver . "_db_port"]) ? $GLOBALS[$authentication_db_driver . "_db_port"] : null;
+$authentication_db_persistent = isset($GLOBALS[$authentication_db_driver . "_db_persistent"]) ? $GLOBALS[$authentication_db_driver . "_db_persistent"] : null;
+$authentication_db_new_link = isset($GLOBALS[$authentication_db_driver . "_db_new_link"]) ? $GLOBALS[$authentication_db_driver . "_db_new_link"] : null;
+$authentication_db_encoding = isset($GLOBALS[$authentication_db_driver . "_db_encoding"]) ? $GLOBALS[$authentication_db_driver . "_db_encoding"] : null;
+$authentication_db_schema = isset($GLOBALS[$authentication_db_driver . "_db_schema"]) ? $GLOBALS[$authentication_db_driver . "_db_schema"] : null;
+$authentication_db_odbc_data_source = isset($GLOBALS[$authentication_db_driver . "_db_odbc_data_source"]) ? $GLOBALS[$authentication_db_driver . "_db_odbc_data_source"] : null;
+$authentication_db_odbc_driver = isset($GLOBALS[$authentication_db_driver . "_db_odbc_driver"]) ? $GLOBALS[$authentication_db_driver . "_db_odbc_driver"] : null;
+$authentication_db_extra_dsn = isset($GLOBALS[$authentication_db_driver . "_db_extra_dsn"]) ? $GLOBALS[$authentication_db_driver . "_db_extra_dsn"] : null;
 
 //posting new data
-if ($_POST) {
+if (!empty($_POST)) {
 	$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 	
 	$is_local_db_bkp = $is_local_db;
 	
-	$maximum_failed_attempts = $_POST["maximum_failed_attempts"];
-	$user_blocked_expired_time = $_POST["user_blocked_expired_time"];
-	$login_expired_time = $_POST["login_expired_time"];
-	$auth_db_path = $_POST["auth_db_path"];
-	$is_local_db = $_POST["is_local_db"];
-	$authentication_db_driver = $_POST["authentication_db_driver"];
-	$authentication_db_extension = $_POST["authentication_db_extension"];
-	$authentication_db_host = $_POST["authentication_db_host"];
-	$authentication_db_port = $_POST["authentication_db_port"];
-	$authentication_db_name = $_POST["authentication_db_name"];
-	$authentication_db_username = $_POST["authentication_db_username"];
-	$authentication_db_password = $_POST["authentication_db_password"];
-	$authentication_db_persistent = $_POST["authentication_db_persistent"];
-	$authentication_db_new_link = $_POST["authentication_db_new_link"];
-	$authentication_db_encoding = $_POST["authentication_db_encoding"];
-	$authentication_db_schema = $_POST["authentication_db_schema"];
-	$authentication_db_odbc_data_source = $_POST["authentication_db_odbc_data_source"];
-	$authentication_db_odbc_driver = $_POST["authentication_db_odbc_driver"];
-	$authentication_db_extra_dsn = $_POST["authentication_db_extra_dsn"];
+	$maximum_failed_attempts = isset($_POST["maximum_failed_attempts"]) ? $_POST["maximum_failed_attempts"] : null;
+	$user_blocked_expired_time = isset($_POST["user_blocked_expired_time"]) ? $_POST["user_blocked_expired_time"] : null;
+	$login_expired_time = isset($_POST["login_expired_time"]) ? $_POST["login_expired_time"] : null;
+	$auth_db_path = isset($_POST["auth_db_path"]) ? $_POST["auth_db_path"] : null;
+	$is_local_db = isset($_POST["is_local_db"]) ? $_POST["is_local_db"] : null;
+	$authentication_db_driver = isset($_POST["authentication_db_driver"]) ? $_POST["authentication_db_driver"] : null;
+	$authentication_db_extension = isset($_POST["authentication_db_extension"]) ? $_POST["authentication_db_extension"] : null;
+	$authentication_db_host = isset($_POST["authentication_db_host"]) ? $_POST["authentication_db_host"] : null;
+	$authentication_db_port = isset($_POST["authentication_db_port"]) ? $_POST["authentication_db_port"] : null;
+	$authentication_db_name = isset($_POST["authentication_db_name"]) ? $_POST["authentication_db_name"] : null;
+	$authentication_db_username = isset($_POST["authentication_db_username"]) ? $_POST["authentication_db_username"] : null;
+	$authentication_db_password = isset($_POST["authentication_db_password"]) ? $_POST["authentication_db_password"] : null;
+	$authentication_db_persistent = isset($_POST["authentication_db_persistent"]) ? $_POST["authentication_db_persistent"] : null;
+	$authentication_db_new_link = isset($_POST["authentication_db_new_link"]) ? $_POST["authentication_db_new_link"] : null;
+	$authentication_db_encoding = isset($_POST["authentication_db_encoding"]) ? $_POST["authentication_db_encoding"] : null;
+	$authentication_db_schema = isset($_POST["authentication_db_schema"]) ? $_POST["authentication_db_schema"] : null;
+	$authentication_db_odbc_data_source = isset($_POST["authentication_db_odbc_data_source"]) ? $_POST["authentication_db_odbc_data_source"] : null;
+	$authentication_db_odbc_driver = isset($_POST["authentication_db_odbc_driver"]) ? $_POST["authentication_db_odbc_driver"] : null;
+	$authentication_db_extra_dsn = isset($_POST["authentication_db_extra_dsn"]) ? $_POST["authentication_db_extra_dsn"] : null;
 	
 	if (!is_numeric($maximum_failed_attempts) || $maximum_failed_attempts < 0)
 		$error_message = "Maximum # of Failed Attempts must be numeric and bigger or equal than 0! Please try again...";
@@ -148,7 +148,7 @@ if ($_POST) {
 						}
 						
 						$error_message = $e->getMessage();
-						debug_log($e->getMessage() . "\n" . $e->problem, "exception");
+						debug_log($e->getMessage() . (!empty($e->problem) ? "\n" . $e->problem : ""), "exception");
 						//launch_exception($e);
 					}
 				}
@@ -197,22 +197,22 @@ if ($available_drivers)
 $drivers_extensions = DB::getAllExtensionsByType();
 $available_extensions_options = array();
 
-if ($authentication_db_driver && is_array($drivers_extensions[$authentication_db_driver]))
+if ($authentication_db_driver && isset($drivers_extensions[$authentication_db_driver]) && is_array($drivers_extensions[$authentication_db_driver]))
 	foreach ($drivers_extensions[$authentication_db_driver] as $idx => $enc)
 		$available_extensions_options[] = array("value" => $enc, "label" => $enc . ($idx == 0 ? " - Default" : ""));
 
-if ($authentication_db_extension && (!$drivers_extensions[$authentication_db_driver] || !in_array($authentication_db_extension, $drivers_extensions[$authentication_db_driver])))
+if ($authentication_db_extension && (empty($drivers_extensions[$authentication_db_driver]) || !in_array($authentication_db_extension, $drivers_extensions[$authentication_db_driver])))
 	$available_extensions_options[] = array("value" => $authentication_db_extension, "label" => $authentication_db_extension . " - DEPRECATED");
 
 //preparing db encodings
 $drivers_encodings = DB::getAllDBCharsetsByType();
 $available_encodings_options = array(array("value" => "", "label" => "-- Default --"));
 
-if ($authentication_db_driver && is_array($drivers_encodings[$authentication_db_driver]))
+if ($authentication_db_driver && isset($drivers_encodings[$authentication_db_driver]) && is_array($drivers_encodings[$authentication_db_driver]))
 	foreach ($drivers_encodings[$authentication_db_driver] as $enc => $label)
 		$available_encodings_options[] = array("value" => $enc, "label" => $label);
 
-if ($authentication_db_encoding && (!$drivers_encodings[$authentication_db_driver] || !array_key_exists($authentication_db_encoding, $drivers_encodings[$authentication_db_driver])))
+if ($authentication_db_encoding && (empty($drivers_encodings[$authentication_db_driver]) || !array_key_exists($authentication_db_encoding, $drivers_encodings[$authentication_db_driver])))
 	$available_encodings_options[] = array("value" => $authentication_db_encoding, "label" => $authentication_db_encoding . " - DEPRECATED");
 
 //preparing ignore db options

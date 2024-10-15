@@ -48,7 +48,7 @@ if (!empty($continue_function) || !empty($back_function)) {
 	$main_content_aux .= '<input class="cancel" type="button" name="cancel" value="Cancel" onClick="return cancelSetup();" />
 	</div>';
 }
-$main_content_aux .= $main_content . '
+$main_content_aux .= (isset($main_content) ? $main_content : "") . '
 </div>';
 
 $main_content = $main_content_aux;

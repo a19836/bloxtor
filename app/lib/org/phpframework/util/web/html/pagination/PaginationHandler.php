@@ -79,7 +79,7 @@ class PaginationHandler {
 		$post_fields = "";
 		
 		if($url === 1) {
-			$get_vars = $_GET;
+			$get_vars = isset($_GET) ? $_GET : null;
 			$page_attr_name = isset($this->data['page_attr_name']) ? $this->data['page_attr_name'] : null;
 			
 			if (isset($page_attr_name))
@@ -91,7 +91,7 @@ class PaginationHandler {
 			$new_url = strpos($url,"?") === false ? $url . "?" : $url;
 		
 		if($with_post)
-			$post_fields = $this->getParsedPostFields($_POST);
+			$post_fields = isset($_POST) ? $this->getParsedPostFields($_POST) : "";
 		
 		return array("url" => $new_url, "post" => $post_fields);
 	}

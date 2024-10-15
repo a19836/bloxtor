@@ -12,7 +12,7 @@ class CookieHandler {
 			$options = array();
 		
 		if (empty($options) || !array_key_exists("domain", $options))
-			$options["domain"] = $_SERVER["HTTP_HOST"]; //Setting the domain is very important so the cookies can be set based in the domain. Note that is not possible to set different cookies for the same domain but with different ports. Cookies are only based on hostname.
+			$options["domain"] = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : null; //Setting the domain is very important so the cookies can be set based in the domain. Note that is not possible to set different cookies for the same domain but with different ports. Cookies are only based on hostname.
 		
 		self::setSafeCookie($name, $value, $expires, $path, $options);
 	}
@@ -50,7 +50,7 @@ class CookieHandler {
 					}
 			}
 			
-			//die($flags);
+			//echo $flags;die();
 			return setcookie($name, $value, $expires, $path . $flags) || setcookie($name, $value, $expires, $path, $domain, $secure, $httponly);
 		}
 		

@@ -115,6 +115,7 @@ class PresentationLayer extends Layer {
 		}
 		
 		$has_cache = false;
+		$html = null;
 		
 		$is_cache_active = $this->isCacheActive();
 		if ($is_cache_active) {

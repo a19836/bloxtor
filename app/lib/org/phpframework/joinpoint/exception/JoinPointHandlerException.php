@@ -13,7 +13,7 @@ class JoinPointHandlerException extends Exception {
 				parent::__construct($e, $error_num, null);
 			}
 			else {
-				parent::__construct($e->problem ? $e->problem : $e->getMessage(), $error_num, $e);
+				parent::__construct(!empty($e->problem) ? $e->problem : $e->getMessage(), $error_num, $e);
 			}
 			//$this->problem .= "<br><br>EXCEPTION: " . $e;
 		}

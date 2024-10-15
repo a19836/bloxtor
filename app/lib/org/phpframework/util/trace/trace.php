@@ -24,7 +24,7 @@ function print_code_trace() {
 		if (is_object($object)) 
 			$object = 'CONVERTED OBJECT OF CLASS '.get_class($object);
 		
-		if (is_array($args)) {
+		if (is_array($args))
 		    foreach ($args as &$arg)
 			if (is_object($arg)) 
 				$arg = 'CONVERTED OBJECT OF CLASS '.get_class($arg);

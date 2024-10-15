@@ -8,10 +8,10 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -32,7 +32,7 @@ if ($bean_name) {
 		$layer_path = $P->getLayerPathSetting();
 		$folder_path = $layer_path . $path;//it should be a folder.
 
-		if ($path && (is_dir($folder_path) || $do_not_check_if_path_exists)) { //$do_not_check_if_path_exists comes from the file: create_page_presentation_uis_diagram_block.php
+		if ($path && (is_dir($folder_path) || !empty($do_not_check_if_path_exists))) { //$do_not_check_if_path_exists comes from the file: create_page_presentation_uis_diagram_block.php
 			$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($folder_path, "layer", "access");
 			
 			//Prepare drivers
@@ -42,12 +42,12 @@ if ($bean_name) {
 			$LayoutTypeProjectHandler->filterLayerBrokersDBDriversPropsFromLayoutName($layer_db_drivers, $filter_by_layout); //filter db_drivers by $filter_by_layout
 			
 			$db_drivers = array_keys($layer_db_drivers);
-			$default_db_driver = $GLOBALS["default_db_driver"];
+			$default_db_driver = isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null;
 			
 			if ($layer_db_drivers) {
 				if ($default_db_driver && array_key_exists($default_db_driver, $layer_db_drivers))
 					$selected_db_driver = $default_db_driver;
-				else if (!$selected_db_driver) {
+				else if (empty($selected_db_driver)) {
 					$first_db_driver = null;
 					
 					foreach ($layer_db_drivers as $db_driver_name => $db_driver_props) {
@@ -58,7 +58,7 @@ if ($bean_name) {
 					}
 					
 					//if no local db driver, sets the first db driver
-					if (!$selected_db_driver)
+					if (empty($selected_db_driver))
 						$selected_db_driver = $first_db_driver;
 				}
 			}
@@ -68,7 +68,7 @@ if ($bean_name) {
 			$WorkFlowTaskHandler->setCacheRootPath(LAYER_CACHE_PATH);
 			$WorkFlowTaskHandler->setAllowedTaskFolders(array("presentation/"));
 			
-			$workflow_path_id = $do_not_load_or_save_workflow ? null : "presentation_ui&path_extra=_{$bean_name}_" . md5($path); //$do_not_load_or_save_workflow comes from the file: create_page_presentation_uis_diagram_block.php
+			$workflow_path_id = !empty($do_not_load_or_save_workflow) ? null : "presentation_ui&path_extra=_{$bean_name}_" . md5($path); //$do_not_load_or_save_workflow comes from the file: create_page_presentation_uis_diagram_block.php
 			
 			//Prepare brokers allowed tasks
 			$brokers = $P->getBrokers();
@@ -104,20 +104,20 @@ if ($bean_name) {
 			$presentation_brokers[] = array(WorkFlowBeansFileHandler::getLayerNameFromBeanObject($bean_name, $P) . " (Self)", $bean_file_name, $bean_name);
 			$presentation_brokers_obj = array("default" => '$EVC->getPresentationLayer()');
 			
-			$business_logic_brokers = $layer_brokers_settings["business_logic_brokers"];
-			$business_logic_brokers_obj = $layer_brokers_settings["business_logic_brokers_obj"];
+			$business_logic_brokers = isset($layer_brokers_settings["business_logic_brokers"]) ? $layer_brokers_settings["business_logic_brokers"] : null;
+			$business_logic_brokers_obj = isset($layer_brokers_settings["business_logic_brokers_obj"]) ? $layer_brokers_settings["business_logic_brokers_obj"] : null;
 			
-			$data_access_brokers = $layer_brokers_settings["data_access_brokers"];
-			$data_access_brokers_obj = $layer_brokers_settings["data_access_brokers_obj"];
+			$data_access_brokers = isset($layer_brokers_settings["data_access_brokers"]) ? $layer_brokers_settings["data_access_brokers"] : null;
+			$data_access_brokers_obj = isset($layer_brokers_settings["data_access_brokers_obj"]) ? $layer_brokers_settings["data_access_brokers_obj"] : null;
 
-			$ibatis_brokers = $layer_brokers_settings["ibatis_brokers"];
-			$ibatis_brokers_obj = $layer_brokers_settings["ibatis_brokers_obj"];
+			$ibatis_brokers = isset($layer_brokers_settings["ibatis_brokers"]) ? $layer_brokers_settings["ibatis_brokers"] : null;
+			$ibatis_brokers_obj = isset($layer_brokers_settings["ibatis_brokers_obj"]) ? $layer_brokers_settings["ibatis_brokers_obj"] : null;
 
-			$hibernate_brokers = $layer_brokers_settings["hibernate_brokers"];
-			$hibernate_brokers_obj = $layer_brokers_settings["hibernate_brokers_obj"];
+			$hibernate_brokers = isset($layer_brokers_settings["hibernate_brokers"]) ? $layer_brokers_settings["hibernate_brokers"] : null;
+			$hibernate_brokers_obj = isset($layer_brokers_settings["hibernate_brokers_obj"]) ? $layer_brokers_settings["hibernate_brokers_obj"] : null;
 			
-			$db_brokers = $layer_brokers_settings["db_brokers"];
-			$db_brokers_obj = $layer_brokers_settings["db_brokers_obj"];
+			$db_brokers = isset($layer_brokers_settings["db_brokers"]) ? $layer_brokers_settings["db_brokers"] : null;
+			$db_brokers_obj = isset($layer_brokers_settings["db_brokers_obj"]) ? $layer_brokers_settings["db_brokers_obj"] : null;
 			
 			//prepare allowed tasks
 			$allowed_tasks = array();

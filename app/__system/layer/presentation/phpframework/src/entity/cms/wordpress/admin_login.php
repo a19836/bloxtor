@@ -4,10 +4,10 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$db_driver = $_GET["db_driver"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$db_driver = isset($_GET["db_driver"]) ? $_GET["db_driver"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -40,8 +40,8 @@ if ($bean_name && $bean_file_name) {
 				include $default_admin_credentials_path;
 				
 				$user_data = array(
-					"username" => $admin_user,
-					"password" => $admin_pass,
+					"username" => isset($admin_user) ? $admin_user : null,
+					"password" => isset($admin_pass) ? $admin_pass : null,
 				);
 				
 				//prepare wordpress base url
@@ -76,6 +76,12 @@ if ($bean_name && $bean_file_name) {
 						$new_url_parts = parse_url($wordpress_url);
 						$old_url_parts = parse_url($wordpress_url != $wp_home_url ? $wp_home_url : $wp_site_url);
 						
+						$new_url_parts["host"] = isset($new_url_parts["host"]) ? $new_url_parts["host"] : null;						
+						$new_url_parts["path"] = isset($new_url_parts["path"]) ? $new_url_parts["path"] : null;
+											
+						$old_url_parts["host"] = isset($old_url_parts["host"]) ? $old_url_parts["host"] : null;
+						$old_url_parts["path"] = isset($old_url_parts["path"]) ? $old_url_parts["path"] : null;
+						
 						//remove last slash so the paths be sanitized
 						if (substr($new_url_parts["path"], -1) == "/")
 							$new_url_parts["path"] = substr($new_url_parts["path"], 0, -1);
@@ -105,7 +111,7 @@ if ($bean_name && $bean_file_name) {
 						die();
 					}
 					else {
-						$url = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+						$url = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . "://" . ($_SERVER["HTTP_HOST"] ? $_SERVER["HTTP_HOST"] : "") . (isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : null);
 						header("Location: $url");
 						die();
 					}
@@ -117,7 +123,7 @@ if ($bean_name && $bean_file_name) {
 				
 				// Redirect to HTTPS login if forced to use SSL.
 				if (force_ssl_admin() && !is_ssl()) {
-					$url = "https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+					$url = "https://" . ($_SERVER["HTTP_HOST"] ? $_SERVER["HTTP_HOST"] : "") . (isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : null);
 					header("Location: $url");
 					die();
 				}
@@ -143,7 +149,7 @@ if ($bean_name && $bean_file_name) {
 				
 				//if ($user) //login successfully
 				
-				$url = $wordpress_url . "/wp-admin/" . $_GET["wordpress_admin_file_to_open"];
+				$url = $wordpress_url . "/wp-admin/" . (isset($_GET["wordpress_admin_file_to_open"]) ? $_GET["wordpress_admin_file_to_open"] : null);
 			}
 			else
 				$url = $project_url_prefix . "phpframework/cms/wordpress/install?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path&db_driver=$db_driver";

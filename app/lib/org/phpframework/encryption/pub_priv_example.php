@@ -16,7 +16,6 @@ echo "String to test: $text\n\n\n";
 $encoded_string = $PublicPrivateKeyHandler->encryptString($text, $private_key_file, $passphrase);
 echo "Encoded string: $encoded_string\n\n\n";
 
-$public_pem_key = openssl_get_publickey($pub_key);
 $decoded_string = $PublicPrivateKeyHandler->decryptString($encoded_string, $public_key_file);
 echo "Decoded string: $decoded_string\n";
 ?>

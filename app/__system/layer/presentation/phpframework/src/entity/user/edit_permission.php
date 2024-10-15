@@ -1,20 +1,21 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$permission_id = $_GET["permission_id"];
+$permission_id = isset($_GET["permission_id"]) ? $_GET["permission_id"] : null;
 
 if ($permission_id) {
 	$permission_data = $UserAuthenticationHandler->getPermission($permission_id);
 }
 
-if ($_POST["permission_data"]) {
-	$new_permission_data = $_POST["permission_data"];
+if (!empty($_POST["permission_data"])) {
+	$new_permission_data = isset($_POST["permission_data"]) ? $_POST["permission_data"] : null;
 	
-	if ($_POST["delete"]) {
+	if (!empty($_POST["delete"])) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "delete");
 
 		if ($permission_id && !in_array($permission_id, $UserAuthenticationHandler->getReservedPermissions()) && $UserAuthenticationHandler->deletePermission($permission_id)) {
-			die("<script>alert('Permission deleted successfully'); document.location = '$project_url_prefix/user/manage_permissions';</script>");
+			echo "<script>alert('Permission deleted successfully'); document.location = '$project_url_prefix/user/manage_permissions';</script>";
+			die();
 		}
 		else {
 			$permission_data = $new_permission_data;
@@ -27,19 +28,21 @@ if ($_POST["permission_data"]) {
 	}
 	else {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
-
+		
+		$permission_name = isset($permission_data["name"]) ? $permission_data["name"] : null;
 		$new_permission_data["name"] = strtolower($new_permission_data["name"]);
 		
-		if ($permission_data["name"] != $new_permission_data["name"]) {
+		if ($permission_name != $new_permission_data["name"]) {
 			$results = $UserAuthenticationHandler->searchPermissions(array("name" => $new_permission_data["name"]));
-			if ($results[0]) {
+			
+			if (!empty($results[0])) {
 				$permission_data = $new_permission_data;
 				$error_message = "Error: Repeated Name";
 			}
 		}
 		
-		if (!$error_message) {
-			if ($permission_data) {
+		if (empty($error_message)) {
+			if (!empty($permission_data)) {
 				$permission_data = array_merge($permission_data, $new_permission_data);
 				
 				if (in_array($permission_id, $UserAuthenticationHandler->getReservedPermissions())) {
@@ -58,7 +61,8 @@ if ($_POST["permission_data"]) {
 				$status = $UserAuthenticationHandler->insertPermission($permission_data);
 				
 				if ($status) {
-					die("<script>alert('Permission inserted successfully'); document.location = '?permission_id=" . $status . "';</script>");
+					echo "<script>alert('Permission inserted successfully'); document.location = '?permission_id=" . $status . "';</script>";
+					die();
 				}
 				else {
 					$error_message = "There was an error trying to insert this permission. Please try again...";

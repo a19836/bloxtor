@@ -18,7 +18,7 @@ class RESTHibernateDataAccessBrokerServer extends RESTBrokerServer {
 		if (strtolower($function) == "callobject") {
 			$obj = $this->LocalBrokerServer->callObject($module, $service, $this->options);
 			
-			return $this->getWebServiceResponse("callObject", array("module" => $module, "service" => $service, "options" => $options), $obj, $this->response_type);
+			return $this->getWebServiceResponse("callObject", array("module" => $module, "service" => $service, "options" => $this->options), $obj, $this->response_type);
 		}
 		else {
 			$part_0 = isset($parts_cloned[0]) ? $parts_cloned[0] : null;
@@ -68,7 +68,7 @@ class RESTHibernateDataAccessBrokerServer extends RESTBrokerServer {
 					break;
 				case "insertobject": 
 					$func = "insertObject";
-					$func_args = array("parameters" => $this->parameters, "options" => $options);
+					$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 					$result = $this->LocalBrokerServer->insertObject(
 						isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 						isset($this->parameters["attributes"]) ? $this->parameters["attributes"] : null,
@@ -77,7 +77,7 @@ class RESTHibernateDataAccessBrokerServer extends RESTBrokerServer {
 					break;
 				case "updateobject": 
 					$func = "updateObject";
-					$func_args = array("parameters" => $this->parameters, "options" => $options);
+					$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 					$result = $this->LocalBrokerServer->updateObject(
 						isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 						isset($this->parameters["attributes"]) ? $this->parameters["attributes"] : null,
@@ -87,7 +87,7 @@ class RESTHibernateDataAccessBrokerServer extends RESTBrokerServer {
 					break;
 				case "deleteobject": 
 					$func = "deleteObject";
-					$func_args = array("parameters" => $this->parameters, "options" => $options);
+					$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 					$result = $this->LocalBrokerServer->deleteObject(
 						isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 						isset($this->parameters["conditions"]) ? $this->parameters["conditions"] : null,
@@ -96,7 +96,7 @@ class RESTHibernateDataAccessBrokerServer extends RESTBrokerServer {
 					break;
 				case "findobjects": 
 					$func = "findObjects";
-					$func_args = array("parameters" => $this->parameters, "options" => $options);
+					$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 					$result = $this->LocalBrokerServer->findObjects(
 						isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 						isset($this->parameters["attributes"]) ? $this->parameters["attributes"] : null,
@@ -106,7 +106,7 @@ class RESTHibernateDataAccessBrokerServer extends RESTBrokerServer {
 					break;
 				case "countobjects": 
 					$func = "countObjects";
-					$func_args = array("parameters" => $this->parameters, "options" => $options);
+					$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 					$result = $this->LocalBrokerServer->countObjects(
 						isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 						isset($this->parameters["conditions"]) ? $this->parameters["conditions"] : null,
@@ -115,7 +115,7 @@ class RESTHibernateDataAccessBrokerServer extends RESTBrokerServer {
 					break;
 				case "findrelationshipobjects": 
 					$func = "findRelationshipObjects";
-					$func_args = array("parameters" => $this->parameters, "options" => $options);
+					$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 					$result = $this->LocalBrokerServer->findRelationshipObjects(
 						isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 						isset($this->parameters["rel_elm"]) ? $this->parameters["rel_elm"] : null,
@@ -125,7 +125,7 @@ class RESTHibernateDataAccessBrokerServer extends RESTBrokerServer {
 					break;
 				case "countrelationshipobjects": 
 					$func = "countRelationshipObjects";
-					$func_args = array("parameters" => $this->parameters, "options" => $options);
+					$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 					$result = $this->LocalBrokerServer->countRelationshipObjects(
 						isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 						isset($this->parameters["rel_elm"]) ? $this->parameters["rel_elm"] : null,
@@ -135,7 +135,7 @@ class RESTHibernateDataAccessBrokerServer extends RESTBrokerServer {
 					break;
 				case "findObjectsColumnMax": 
 					$func = "findObjectsColumnMax";
-					$func_args = array("parameters" => $this->parameters, "options" => $options);
+					$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 					$result = $this->LocalBrokerServer->findObjectsColumnMax(
 						isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 						isset($this->parameters["attribute_name"]) ? $this->parameters["attribute_name"] : null,
@@ -144,10 +144,10 @@ class RESTHibernateDataAccessBrokerServer extends RESTBrokerServer {
 					break;
 				
 				default: 
-					$arguments = $_GET["args"];
+					$arguments = isset($_GET["args"]) ? $_GET["args"] : null;
 					
 					$func = "callObjectMethod";
-					$func_args = array("module" => $module, "service" => $service, "options" => $options, "function" => $function, "func_args" => array("arguments" => $arguments, "parameters" => $this->parameters, "options" => $this->options));
+					$func_args = array("module" => $module, "service" => $service, "options" => $this->options, "function" => $function, "func_args" => array("arguments" => $arguments, "parameters" => $this->parameters, "options" => $this->options));
 					
 					$args = !empty($arguments) && is_array($arguments) ? "'".(implode("','", $arguments))."', \$this->parameters,\$this->options" : "\$this->parameters,\$this->options";
 					$obj = $this->LocalBrokerServer->callObject($module, $service, $this->options);

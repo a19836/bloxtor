@@ -76,7 +76,7 @@ global $phpframework_wp_request_uri;
 
 if ($phpframework_wp_request_uri) {
 	$protocol = !empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] !== "off" ? "https" : "http";
-	$url = $protocol . "://" . $_SERVER["HTTP_HOST"] . $phpframework_wp_request_uri;
+	$url = $protocol . "://" . (isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "") . $phpframework_wp_request_uri;
 	define("WP_HOME", $url);
 	define("WP_SITEURL", $url);
 }

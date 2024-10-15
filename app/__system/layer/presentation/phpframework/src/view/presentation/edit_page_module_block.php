@@ -1,6 +1,9 @@
 <?php
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$file_path = isset($file_path) ? $file_path : null;
+$P = isset($P) ? $P : null;
+
 $title = 'Add Block in ' . BreadCrumbsUIHandler::getFilePathBreadCrumbsHtml($file_path, $P, true);
 $title_icons = '<li class="go_back" title="Go Back"><a href="javascript:history.back();"><i class="icon go_back"></i> Go Back</a></li>';
 $save_url = $project_url_prefix . "phpframework/presentation/save_page_module_block?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";

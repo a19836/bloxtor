@@ -8,12 +8,12 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_POST ? $_POST["project"] : $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"]; //optional
-$on_success_js_func = $_GET["on_success_js_func"]; //used by the choose_available_template.js
-$popup = $_GET["popup"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = !empty($_POST) ? (isset($_POST["project"]) ? $_POST["project"] : null) : (isset($_GET["path"]) ? $_GET["path"] : null);
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null; //optional
+$on_success_js_func = isset($_GET["on_success_js_func"]) ? $_GET["on_success_js_func"] : null; //used by the choose_available_template.js
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -32,51 +32,56 @@ if ($bean_name && $bean_file_name && $path) {
 		$P = $PEVC->getPresentationLayer();
 		$selected_project = $P->getSelectedPresentationId();
 		
-		if ($_POST["project"] && ($_FILES["zip_file"] || trim($_POST["zip_url"]))) {
+		if (!empty($_POST["project"]) && (!empty($_FILES["zip_file"]) || (isset($_POST["zip_url"]) && trim($_POST["zip_url"])))) {
 			$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 			$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($PEVC->getTemplatesPath(), "layer", "access");
 			
-			$is_zip_url = !$_FILES["zip_file"] && trim($_POST["zip_url"]);
+			$is_zip_url = empty($_FILES["zip_file"]) && isset($_POST["zip_url"]) && trim($_POST["zip_url"]);
 			
 			//download zip_url
 			if ($is_zip_url) {
-				$zip_url = $_POST["zip_url"];
+				$zip_url = isset($_POST["zip_url"]) ? $_POST["zip_url"] : null;
 				//echo "<pre>zip_url:$zip_url\n";die();
 				
 				$downloaded_file = MyCurl::downloadFile($zip_url, $fp);
 				
-				if ($downloaded_file && stripos($downloaded_file["type"], "zip") !== false)
+				if ($downloaded_file && isset($downloaded_file["type"]) && stripos($downloaded_file["type"], "zip") !== false)
 					$_FILES["zip_file"] = $downloaded_file;
 			}
 			
 			//install zip file
-			if ($_FILES["zip_file"] && trim($_FILES["zip_file"]["name"])) {
-				//echo "<pre>";print_r($_FILES["zip_file"]);die();
-				$dest_folder_path = CMSTemplateInstallationHandler::getTmpFolderPath();
+			if (!empty($_FILES["zip_file"]) && isset($_FILES["zip_file"]["name"]) && trim($_FILES["zip_file"]["name"]) && !empty($_FILES["zip_file"]["tmp_name"])) {
+				$name = $_FILES["zip_file"]["name"];
 				
-				if (!$dest_folder_path)
-					$error_message = "Error: trying to create tmp folder to upload '" . $_FILES["zip_file"]["name"] . "' file!";
+				//echo "<pre>";print_r($_FILES["zip_file"]);die();
+				$templates_temp_folder_path = CMSTemplateInstallationHandler::getTmpRootFolderPath();
+				$zipped_file_path = $templates_temp_folder_path . $name;
+				$dest_file_path = substr($zipped_file_path, 0, -4) . "/";
+				$extension = strtolower( pathinfo($name, PATHINFO_EXTENSION) );
+				$template_id = pathinfo($name, PATHINFO_FILENAME);
+				
+				if ($extension != "zip") {
+					$status = false;
+					$messages["all"][] = array("msg" => "STATUS: FALSE: File '$name' must be a zip file!", "type" => "alert");
+				}
+				else if (!is_dir($templates_temp_folder_path) && !mkdir($templates_temp_folder_path, 0755, true))
+					$error_message = "Error: trying to create tmp folder to upload '$name' file!";
 				else {
-					$zipped_file_path = $dest_folder_path . $_FILES["zip_file"]["name"];
-					$dest_file_path = substr($zipped_file_path, 0, -4) . "/";
-					$template_id = pathinfo($_FILES["zip_file"]["name"], PATHINFO_FILENAME);
-					
-					if ($template_id)
-						$continue = $is_zip_url ? rename($_FILES["zip_file"]["tmp_name"], $zipped_file_path) : move_uploaded_file($_FILES["zip_file"]["tmp_name"], $zipped_file_path);
+					$continue = $is_zip_url ? rename($_FILES["zip_file"]["tmp_name"], $zipped_file_path) : move_uploaded_file($_FILES["zip_file"]["tmp_name"], $zipped_file_path);
 					
 					if ($continue) {
 						//Delete folder in case it exists before, bc we are uploading a new zip and we dont want the old zip files.
 						CacheHandlerUtil::deleteFolder($dest_file_path);
 						
 						//unzip
-						$unzipped_folder_path = CMSTemplateInstallationHandler::unzipTemplateFile($zipped_file_path, $dest_file_path);
+						$unzipped_folder_path = CMSTemplateInstallationHandler::unzipTemplateFile($zipped_file_path, $dest_file_path); //unzipped_module_path is the same than dest_file_path if unzip successfully
 						
 						if ($unzipped_folder_path) {
 							//get template info
 							$info = CMSTemplateInstallationHandler::getUnzippedTemplateInfo($unzipped_folder_path);
 							
 							//set new template id
-							if ($info && $info["tag"] && $template_id != $info["tag"])
+							if ($info && !empty($info["tag"]) && $template_id != $info["tag"])
 								$template_id = $info["tag"];
 							
 							//install template
@@ -95,17 +100,18 @@ if ($bean_name && $bean_file_name && $path) {
 								$status = false;
 								$messages[$path][] = array("msg" => "STATUS: FALSE", "type" => "error");
 								$messages[$path][] = array("msg" => "ERROR MESSAGE: " . $e->getMessage(), "type" => "exception");
-								$messages[$path][] = array("msg" => $e->problem, "type" => "exception");
+								
+								if (!empty($e->problem))
+									$messages[$path][] = array("msg" => $e->problem, "type" => "exception");
 							}
 							
-							CMSModuleUtil::deleteFolder($unzipped_folder_path);
+							CacheHandlerUtil::deleteFolder($unzipped_folder_path); //unzipped_module_path is the same than dest_file_path
 						}
+						
+						unlink($zipped_file_path);
 					}
 					else 
 						$error_message = "Error: Could not upload file. Please try again...";
-			
-					unlink($zipped_file_path);
-					CMSModuleUtil::deleteFolder($dest_folder_path);
 				}
 			}
 			else 

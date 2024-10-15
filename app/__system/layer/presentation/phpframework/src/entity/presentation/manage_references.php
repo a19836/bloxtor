@@ -5,11 +5,11 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$popup = $_GET["popup"];
-$on_success_js_func = $_GET["on_success_js_func"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
+$on_success_js_func = isset($_GET["on_success_js_func"]) ? $_GET["on_success_js_func"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -38,15 +38,15 @@ if ($bean_name && $bean_file_name && $path) {
 			else if ($LayoutTypeProjectHandler->existsLayoutFromProjectPath($file_path) || $LayoutTypeProjectHandler->createNewLayoutFromProjectPath($file_path, false)) { //creates new layout type if not exists
 				$layout_type_data = $LayoutTypeProjectHandler->getLayoutFromProjectPath($file_path);
 					
-				if ($layout_type_data && $layout_type_data["layout_type_id"]) {
+				if ($layout_type_data && !empty($layout_type_data["layout_type_id"])) {
 					//echo "<pre>";print_r($layout_type_data);die();
 					$layout_type_id = $layout_type_data["layout_type_id"];
 					
 					//save new references
-					if ($_POST) {
+					if (!empty($_POST)) {
 						$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 						
-						$permissions_by_objects = $_POST["permissions_by_objects"];
+						$permissions_by_objects = isset($_POST["permissions_by_objects"]) ? $_POST["permissions_by_objects"] : null;
 						//echo "<pre>";print_r($permissions_by_objects);die();
 						
 						if ($layout_type_id && $UserAuthenticationHandler->updateLayoutTypePermissionsByObjectsPermissions($layout_type_id, $permissions_by_objects))
@@ -58,7 +58,7 @@ if ($bean_name && $bean_file_name && $path) {
 					//preparing UI
 					$permissions = $UserAuthenticationHandler->getAvailablePermissions();
 					$object_types = $UserAuthenticationHandler->getAvailableObjectTypes();
-					$layer_object_type_id = $object_types["layer"];
+					$layer_object_type_id = isset($object_types["layer"]) ? $object_types["layer"] : null;
 					
 					//preparing UI - preparing layers
 					$raw_layers = getLayers($EVC, $UserAuthenticationHandler, $user_global_variables_file_path, $user_beans_folder_path);
@@ -78,15 +78,15 @@ if ($bean_name && $bean_file_name && $path) {
 					$presentation_projects = array();
 
 					foreach ($layers_to_show as $layer_type_name) {
-						$layer_type = $raw_layers[$layer_type_name];
+						$layer_type = isset($raw_layers[$layer_type_name]) ? $raw_layers[$layer_type_name] : null;
 						
 						if ($layer_type) //filter by layers
 							foreach ($layer_type as $layer_name => $layer) {
 								$lln = strtolower($layer_name);
 								$layers[$layer_type_name][$lln] = array();
 								$layers_label[$layer_type_name][$lln] = isset($layer["properties"]["item_label"]) ? $layer["properties"]["item_label"] : $lln;
-								$layers_object_id[$layer_type_name][$lln] = $layer["properties"]["layer_bean_folder_name"];
-								$layers_props[$layer_type_name][$lln] = $layer["properties"];
+								$layers_object_id[$layer_type_name][$lln] = isset($layer["properties"]["layer_bean_folder_name"]) ? $layer["properties"]["layer_bean_folder_name"] : null;
+								$layers_props[$layer_type_name][$lln] = isset($layer["properties"]) ? $layer["properties"] : null;
 							}
 					}
 					//echo "<pre>";print_r($layers);die();

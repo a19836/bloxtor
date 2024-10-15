@@ -12,8 +12,9 @@ else {
 	$project_common_relative_url_prefix = "/" . (strpos($document_root, "/__system/") !== false ? "" : "__system/") . $EVC->getCommonProjectName() . "/"; //if is a direct domain to the project, the vhosts need to have the /common/ path defined to the right folder, otherwise this won't work correctly.
 }
 
-$project_url_prefix = $project_protocol . $_SERVER["HTTP_HOST"] . $project_relative_url_prefix;
-$project_common_url_prefix = $project_protocol . $_SERVER["HTTP_HOST"] . $project_common_relative_url_prefix;
+$http_host = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : null;
+$project_url_prefix = $project_protocol . $http_host . $project_relative_url_prefix;
+$project_common_url_prefix = $project_protocol . $http_host . $project_common_relative_url_prefix;
 //echo $_SERVER["DOCUMENT_ROOT"]."|$project_url_prefix|$project_common_url_prefix";die();
 
 $presentation_webroot_path = $EVC->getPresentationLayer()->getSelectedPresentationSetting("presentation_webroot_path");
@@ -81,7 +82,8 @@ $dependency_wordpress_zip_file_url = $dependencies_repo_url . "wordpress.zip";
 $send_email_action_url = "https://bloxtor.com/send_email";
 
 $include_js_plumb = false;
-$is_localhost = strpos($_SERVER["HTTP_HOST"], "localhost") !== false || strpos($_SERVER["HTTP_HOST"], "127.0.0.1") !== false || in_array($_SERVER['REMOTE_ADDR'], array("127.0.0.1", "::1"));
+$remote_addr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+$is_localhost = strpos($http_host, "localhost") !== false || strpos($http_host, "127.0.0.1") !== false || in_array($remote_addr, array("127.0.0.1", "::1"));
 $external_libs_url_prefix = array(
 	"jsplumb" => $include_js_plumb ? "//jamapconsult.pt/gpl_js/jqueryjsplumb/" : null,
 	"taskflowchart" => ($is_localhost || !$include_js_plumb ? $project_url_prefix . "lib/" : "//jplpinto.com/others/onlineitframework/proprietary_js/") . "jquerytaskflowchart/",

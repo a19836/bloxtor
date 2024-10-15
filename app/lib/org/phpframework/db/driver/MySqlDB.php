@@ -17,7 +17,7 @@ class MySqlDB extends DB {
 	public function __construct() {
 		if (!$this->default_php_extension_type) {
 			$exts = self::getAvailablePHPExtensionTypes();
-			$this->default_php_extension_type = $exts[0];
+			$this->default_php_extension_type = isset($exts[0]) ? $exts[0] : null;
 		}
 	}
 	
@@ -144,7 +144,7 @@ class MySqlDB extends DB {
 						$pdo_settings[PDO::ATTR_PERSISTENT] = true;
 					
 					//prepare extra settings
-					$extra_pdo_settings = self::parseExtraSettingsAsPDOSettings($this->options["extra_settings"]);
+					$extra_pdo_settings = isset($this->options["extra_settings"]) ? self::parseExtraSettingsAsPDOSettings($this->options["extra_settings"]) : null;
 					
 					if ($extra_pdo_settings)
 						foreach ($extra_pdo_settings as $pdos_name => $pdos_value)
@@ -228,7 +228,7 @@ class MySqlDB extends DB {
 					break;
 				
 				case "mysql":
-					$host = !empty($this->options["host"]) ? $this->options["host"] . ($this->options["port"] ? ":" . $this->options["port"] : "") : null;
+					$host = !empty($this->options["host"]) ? $this->options["host"] . (!empty($this->options["port"]) ? ":" . $this->options["port"] : "") : null;
 					
 					if(!empty($this->options["persistent"]) && empty($this->options["new_link"]))
 						$this->link = mysql_pconnect(
@@ -317,7 +317,7 @@ class MySqlDB extends DB {
 					switch ($this->default_php_extension_type) {
 						case "mysqli": $closed = mysqli_close($this->link); break;
 						case "mysql": $closed = mysql_close($this->link); break;
-						case "odbc": $closed = odbc_close($this->link); break;
+						case "odbc": odbc_close($this->link); $closed = true; break;
 					}
 				
 				if ($closed) {
@@ -552,7 +552,7 @@ class MySqlDB extends DB {
 	public function freeResult($result) {
 		try {
 			switch ($this->default_php_extension_type) {
-				case "mysqli": return mysqli_free_result($result);
+				case "mysqli": mysqli_free_result($result); return true;
 				case "mysql": return mysql_free_result($result);
 				case "pdo": return $result->closeCursor();
 				case "odbc": return odbc_free_result($result);
@@ -626,13 +626,19 @@ class MySqlDB extends DB {
 					
 					return $records;
 			}
-		}catch(Exception $e) {
+		}
+		catch(Exception $e) {
+			return launch_exception(new SQLException(8, $e, array($result, $array_type)));
+		}
+		catch(Error $e) {
 			return launch_exception(new SQLException(8, $e, array($result, $array_type)));
 		}
 	} 
 	
 	public function fetchField($result, $offset) {
 		try {
+			$field = null;
+			
 			try {
 				switch ($this->default_php_extension_type) {
 					case "mysqli": 
@@ -773,7 +779,7 @@ class MySqlDB extends DB {
 			case "pdo": return is_a($result, "PDOStatement");
 		}
 		
-		return is_resource($result);
+		return is_resource($result) || is_object($result);
 	}
 	
 	public function listDBs($options = false, $column_name = "name") {

@@ -393,7 +393,8 @@ class CMSHtmlParserLayer {
 		//error_log("\n\n\nbufferLengthCallback->parseTemplateHtml($flags|".strlen($buffer)."):$buffer\n\n", 3, $GLOBALS["log_file_path"] ? $GLOBALS["log_file_path"] : "/var/www/html/livingroop/default/tmp/phpframework.log");
 		
 		//Warning from php.net: Some web servers (e.g. Apache) change the working directory of a script when calling the callback function. You can change it back by e.g. chdir(dirname($_SERVER['SCRIPT_FILENAME'])) in the callback function.
-		chdir(dirname($_SERVER['SCRIPT_FILENAME']));
+		if (isset($_SERVER['SCRIPT_FILENAME']))
+			chdir(dirname($_SERVER['SCRIPT_FILENAME']));
 		
 		//prepare internal vars
 		//more flags in https://www.php.net/manual/en/outcontrol.constants.php
@@ -641,56 +642,57 @@ class CMSHtmlParserLayer {
 		$blocks = array_merge($blocks, $views);
 		
 		if ($blocks)
-			foreach ($blocks as $block_id => $block_html)
-				if (is_string($block_html)) {
-					if ($this->existsHtmlWidgetsInHtml($block_html))
-						$this->entities_html_props["has_widget"] = true;
-					
-					if ($this->existsHtmlWidgetsPermissionsInHtml($block_html))
-						$this->entities_html_props["has_widget_permission"] = true;
-					
-					if ($this->existsMyJSLibHtmlAttributesInHtml($block_html))
-						$this->entities_html_props["has_my_js_lib_html_attributes"] = true;
-					
-					if ($this->existsMyJSLibUrlInHtml($block_html))
-						$this->entities_html_props["has_my_js_lib_url"] = true;
-					
-					if ($this->existsWidgetResourceLibJSUrlInHtml($block_html))
-						$this->entities_html_props["has_widget_resource_lib_js_url"] = true;
-					
-					if ($this->existsWidgetResourceLibCSSUrlInHtml($block_html))
-						$this->entities_html_props["has_widget_resource_lib_css_url"] = true;
-					
-					if ($this->existsHashTagInHtml($block_html))
-						$this->entities_html_props["has_hash_tag"] = true;
-					
-					if ($this->existsSuperGlobalHashTagInHtml($block_html))
-						$this->entities_html_props["has_global_hash_tag"] = true;
-					
-					if ($this->existsPTLInHtml($block_html))
-						$this->entities_html_props["has_ptl"] = true;
-					
-					if (
-						!empty($this->entities_html_props["has_widget"]) && 
-						!empty($this->entities_html_props["has_hash_tag"]) && 
-						!empty($this->entities_html_props["has_ptl"]) && 
-						!empty($this->entities_html_props["has_widget_permission"]) && 
-						!empty($this->entities_html_props["has_my_js_lib_html_attributes"]) && 
-						(
-							!$this->my_js_lib_url || 
-							!empty($this->entities_html_props["has_my_js_lib_url"])
-						) && 
-						(
-							!$this->widget_resource_lib_js_url || 
-							!empty($this->entities_html_props["has_widget_resource_lib_js_url"])
-						) && 
-						(
-							!$this->widget_resource_lib_css_url || 
-							!empty($this->entities_html_props["has_widget_resource_lib_css_url"])
+			foreach ($blocks as $block_id => $block_htmls) 
+				foreach ($block_htmls as $block_html)
+					if (is_string($block_html)) {
+						if ($this->existsHtmlWidgetsInHtml($block_html))
+							$this->entities_html_props["has_widget"] = true;
+						
+						if ($this->existsHtmlWidgetsPermissionsInHtml($block_html))
+							$this->entities_html_props["has_widget_permission"] = true;
+						
+						if ($this->existsMyJSLibHtmlAttributesInHtml($block_html))
+							$this->entities_html_props["has_my_js_lib_html_attributes"] = true;
+						
+						if ($this->existsMyJSLibUrlInHtml($block_html))
+							$this->entities_html_props["has_my_js_lib_url"] = true;
+						
+						if ($this->existsWidgetResourceLibJSUrlInHtml($block_html))
+							$this->entities_html_props["has_widget_resource_lib_js_url"] = true;
+						
+						if ($this->existsWidgetResourceLibCSSUrlInHtml($block_html))
+							$this->entities_html_props["has_widget_resource_lib_css_url"] = true;
+						
+						if ($this->existsHashTagInHtml($block_html))
+							$this->entities_html_props["has_hash_tag"] = true;
+						
+						if ($this->existsSuperGlobalHashTagInHtml($block_html))
+							$this->entities_html_props["has_global_hash_tag"] = true;
+						
+						if ($this->existsPTLInHtml($block_html))
+							$this->entities_html_props["has_ptl"] = true;
+						
+						if (
+							!empty($this->entities_html_props["has_widget"]) && 
+							!empty($this->entities_html_props["has_hash_tag"]) && 
+							!empty($this->entities_html_props["has_ptl"]) && 
+							!empty($this->entities_html_props["has_widget_permission"]) && 
+							!empty($this->entities_html_props["has_my_js_lib_html_attributes"]) && 
+							(
+								!$this->my_js_lib_url || 
+								!empty($this->entities_html_props["has_my_js_lib_url"])
+							) && 
+							(
+								!$this->widget_resource_lib_js_url || 
+								!empty($this->entities_html_props["has_widget_resource_lib_js_url"])
+							) && 
+							(
+								!$this->widget_resource_lib_css_url || 
+								!empty($this->entities_html_props["has_widget_resource_lib_css_url"])
+							)
 						)
-					)
-						break;
-				}
+							break;
+					}
 		
 		if (
 			empty($this->entities_html_props["has_widget"]) || 
@@ -1117,8 +1119,8 @@ class CMSHtmlParserLayer {
 	
 	//return number of bytes usage by a sla result item
 	private function getSLAResultUsageMemory($sla_result) {
-		if ($is_object)
-			return $this->getObjectUsageMemory($is_object);
+		if (is_object($sla_result))
+			return $this->getObjectUsageMemory($sla_result);
 		
 		$mem = memory_get_usage();
 		
@@ -1142,7 +1144,7 @@ class CMSHtmlParserLayer {
 			$mem = memory_get_usage();
 			$obj_tmp = clone $obj;
 			$mem = memory_get_usage() - $mem;
-			unset($obj_tmp_tmp);
+			unset($obj_tmp);
 			
 			return $mem;
 		}
@@ -1204,7 +1206,7 @@ class CMSHtmlParserLayer {
 	 *			user_type_id
 	 *			[user_type_id_x, user_type_id_y]
 	 */
-	private function getWidgetPermissions(DOMNode $node) {
+	private function getWidgetPermissions(DOMElement $node) {
 		$show = true;
 		$hide = false;
 		$remove = false;
@@ -1361,7 +1363,7 @@ class CMSHtmlParserLayer {
 	}
 	
 	private static function getSLAResult($sla_results, $resource_name) {
-		if (strpos($m, "[") !== false || strpos($m, "]") !== false) {
+		if (strpos($resource_name, "[") !== false || strpos($resource_name, "]") !== false) {
 			preg_match_all("/([^\[\]]+)/u", trim($resource_name), $sub_matches, PREG_PATTERN_ORDER);
 			
 			if (!empty($sub_matches[1])) {
@@ -1386,7 +1388,7 @@ class CMSHtmlParserLayer {
 			}
 		}
 		
-		return $sla_results[$resource_name];
+		return isset($sla_results[$resource_name]) ? $sla_results[$resource_name] : null;
 	}
 	
 	private static function existsSLAResult($sla_results, $resource_name) {
@@ -1422,7 +1424,7 @@ class CMSHtmlParserLayer {
 	}
 	
 	private function debug_log($msg, $log_type = "error") {
-		$url = $_SERVER["HTTP_HOST"] . (isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : null);
+		$url = (isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "") . (isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : null);
 		debug_log("[Page: '{$this->entity_code}' from url: $url] $msg", $log_type);
 	}
 }

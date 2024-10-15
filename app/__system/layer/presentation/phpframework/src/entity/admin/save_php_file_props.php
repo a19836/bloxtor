@@ -3,16 +3,16 @@ include_once get_lib("org.phpframework.util.MyArray");
 include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 include_once $EVC->getUtilPath("WorkFlowPHPFileHandler");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$item_type = $_GET["item_type"];
-$class_id = $_GET["class"];
-$method_id = $_GET["method"];
-$function_id = $_GET["function"];
-$remove_file_if_no_class = $_GET["remove_file_if_no_class"]; //is set in the entity/businesslogic/remove_service.php
-$rename_file_with_class = $_GET["rename_file_with_class"]; //is set in the view/businesslogic/edit_service.php
-$file_modified_time = $_GET["file_modified_time"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$item_type = isset($_GET["item_type"]) ? $_GET["item_type"] : null;
+$class_id = isset($_GET["class"]) ? $_GET["class"] : null;
+$method_id = isset($_GET["method"]) ? $_GET["method"] : null;
+$function_id = isset($_GET["function"]) ? $_GET["function"] : null;
+$remove_file_if_no_class = isset($_GET["remove_file_if_no_class"]) ? $_GET["remove_file_if_no_class"] : null; //is set in the entity/businesslogic/remove_service.php
+$rename_file_with_class = isset($_GET["rename_file_with_class"]) ? $_GET["rename_file_with_class"] : null; //is set in the view/businesslogic/edit_service.php
+$file_modified_time = isset($_GET["file_modified_time"]) ? $_GET["file_modified_time"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -34,7 +34,7 @@ else {
 		$layer_path = $obj->getLayerPathSetting();
 }
 	
-if ($layer_path && $_POST) { //bc of hackings, like trying to know the code for libs or system files or other files...
+if ($layer_path && !empty($_POST)) { //bc of hackings, like trying to know the code for libs or system files or other files...
 	$file_path = $layer_path . $path;
 	
 	if ($path && file_exists($file_path)) {
@@ -43,7 +43,7 @@ if ($layer_path && $_POST) { //bc of hackings, like trying to know the code for 
 		UserAuthenticationHandler::checkUsersMaxNum($UserAuthenticationHandler);
 		UserAuthenticationHandler::checkActionsMaxNum($UserAuthenticationHandler);
 		
-		$object = $_POST["object"];
+		$object = isset($_POST["object"]) ? $_POST["object"] : null;
 		
 		$folder_path = substr($file_path, strlen($file_path) - 1) == "/" ? $file_path : dirname($file_path);
 		if (!is_dir($folder_path))
@@ -63,8 +63,9 @@ if ($layer_path && $_POST) { //bc of hackings, like trying to know the code for 
 				$file_was_changed = file_exists($file_path) && $file_modified_time && $file_modified_time < filemtime($file_path);
 				
 				//check if syntax is correct
-				$status = PHPScriptHandler::isValidPHPContents("<? " . $object["code"] . " ?>", $error);
 				$ret = null;
+				$error = null;
+				$status = !isset($object["code"]) || PHPScriptHandler::isValidPHPContents("<? " . $object["code"] . " ?>", $error);
 				
 				if ($status) {
 					if ($file_was_changed) {
@@ -99,7 +100,7 @@ if ($layer_path && $_POST) { //bc of hackings, like trying to know the code for 
 						);
 					}
 				}
-				else if ($error)
+				else if (!empty($error))
 					$ret = $error;
 				
 				$status = json_encode($ret);
@@ -115,11 +116,13 @@ if ($layer_path && $_POST) { //bc of hackings, like trying to know the code for 
 				break;
 		}
 		
-		if ($status)
+		if (!empty($status))
 			$UserAuthenticationHandler->incrementUsedActionsTotal();
 	}
 }
 
-if (!$do_not_die_on_save)
-	die($status);
+if (empty($do_not_die_on_save)) {
+	echo isset($status) ? $status : null;
+	die();
+}
 ?>

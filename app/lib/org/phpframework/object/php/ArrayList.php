@@ -29,7 +29,14 @@ class ArrayList extends ObjType {
 	}
 	
 	public function each() {
-		list($key, $value) = each($this->data);
+		if (version_compare(PHP_VERSION, '7', '>')) {
+			$key = key($this->data);
+			$value = current($this->data);
+			next($this->data);
+		}
+		else
+			list($key, $value) = each($this->data); //function 'each' only exists in php 7
+		
 		return $value;
 	}
 	
@@ -40,6 +47,5 @@ class ArrayList extends ObjType {
 	public function getAllValues() {
 		return $this->getData();
 	}
-	
 }
 ?>

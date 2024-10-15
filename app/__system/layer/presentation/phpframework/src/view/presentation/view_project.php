@@ -1,5 +1,5 @@
 <?php
-$post_vars = $_GET["post_vars"];
+$post_vars = isset($_GET["post_vars"]) ? $_GET["post_vars"] : null;
 
 $main_content = '
 <form method="' . ($post_vars ? "post" : "get") . '" action="' . str_replace('"', '%22', $url) . '" style="display:none">';

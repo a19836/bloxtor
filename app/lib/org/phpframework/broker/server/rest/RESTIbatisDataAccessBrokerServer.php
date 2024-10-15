@@ -18,6 +18,7 @@ class RESTIbatisDataAccessBrokerServer extends RESTBrokerServer {
 		$module = implode("/", $parts);
 		
 		$type_exists = true;
+		$func = $func_args = $result = null;
 		
 		//error_log("\nRESTIbatisDataAccessBrokerServer\nurl:{$this->url}\nservice:{$service}!\ntype:{$type}!\nmodule:{$module}!\nparts_cloned:".print_r($parts_cloned, 1)."\nparameters:".print_r($this->parameters, 1)."\noptions:".print_r($this->options, 1)."\n\n", 3, "/var/www/html/livingroop/default/tmp/test.log");
 		
@@ -102,7 +103,7 @@ class RESTIbatisDataAccessBrokerServer extends RESTBrokerServer {
 						break;
 					case "insertobject": 
 						$func = "insertObject";
-						$func_args = array("parameters" => $this->parameters, "options" => $options);
+						$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 						$result = $this->LocalBrokerServer->insertObject(
 							isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 							isset($this->parameters["attributes"]) ? $this->parameters["attributes"] : null,
@@ -111,7 +112,7 @@ class RESTIbatisDataAccessBrokerServer extends RESTBrokerServer {
 						break;
 					case "updateobject": 
 						$func = "updateObject";
-						$func_args = array("parameters" => $this->parameters, "options" => $options);
+						$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 						$result = $this->LocalBrokerServer->updateObject(
 							isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 							isset($this->parameters["attributes"]) ? $this->parameters["attributes"] : null,
@@ -121,7 +122,7 @@ class RESTIbatisDataAccessBrokerServer extends RESTBrokerServer {
 						break;
 					case "deleteobject": 
 						$func = "deleteObject";
-						$func_args = array("parameters" => $this->parameters, "options" => $options);
+						$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 						$result = $this->LocalBrokerServer->deleteObject(
 							isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 							isset($this->parameters["conditions"]) ? $this->parameters["conditions"] : null,
@@ -130,7 +131,7 @@ class RESTIbatisDataAccessBrokerServer extends RESTBrokerServer {
 						break;
 					case "findobjects": 
 						$func = "findObjects";
-						$func_args = array("parameters" => $this->parameters, "options" => $options);
+						$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 						$result = $this->LocalBrokerServer->findObjects(
 							isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 							isset($this->parameters["attributes"]) ? $this->parameters["attributes"] : null,
@@ -140,7 +141,7 @@ class RESTIbatisDataAccessBrokerServer extends RESTBrokerServer {
 						break;
 					case "countobjects": 
 						$func = "countObjects";
-						$func_args = array("parameters" => $this->parameters, "options" => $options);
+						$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 						$result = $this->LocalBrokerServer->countObjects(
 							isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 							isset($this->parameters["conditions"]) ? $this->parameters["conditions"] : null,
@@ -149,7 +150,7 @@ class RESTIbatisDataAccessBrokerServer extends RESTBrokerServer {
 						break;
 					case "findrelationshipobjects": 
 						$func = "findRelationshipObjects";
-						$func_args = array("parameters" => $this->parameters, "options" => $options);
+						$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 						$result = $this->LocalBrokerServer->findRelationshipObjects(
 							isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 							isset($this->parameters["rel_elm"]) ? $this->parameters["rel_elm"] : null,
@@ -159,7 +160,7 @@ class RESTIbatisDataAccessBrokerServer extends RESTBrokerServer {
 						break;
 					case "countrelationshipobjects": 
 						$func = "countRelationshipObjects";
-						$func_args = array("parameters" => $this->parameters, "options" => $options);
+						$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 						$result = $this->LocalBrokerServer->countRelationshipObjects(
 							isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 							isset($this->parameters["rel_elm"]) ? $this->parameters["rel_elm"] : null,
@@ -169,7 +170,7 @@ class RESTIbatisDataAccessBrokerServer extends RESTBrokerServer {
 						break;
 					case "findObjectsColumnMax": 
 						$func = "findObjectsColumnMax";
-						$func_args = array("parameters" => $this->parameters, "options" => $options);
+						$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 						$result = $this->LocalBrokerServer->findObjectsColumnMax(
 							isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 							isset($this->parameters["attribute_name"]) ? $this->parameters["attribute_name"] : null,

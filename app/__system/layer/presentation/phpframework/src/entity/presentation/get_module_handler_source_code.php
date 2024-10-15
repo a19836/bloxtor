@@ -4,11 +4,11 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$project = $_GET["project"];
-$module_id = $_GET["module"];
-$block = $_GET["block"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$project = isset($_GET["project"]) ? $_GET["project"] : null;
+$module_id = isset($_GET["module"]) ? $_GET["module"] : null;
+$block = isset($_GET["block"]) ? $_GET["block"] : null;
 
 if ($project && ($module_id || $block)) {
 	$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
@@ -22,7 +22,7 @@ if ($project && ($module_id || $block)) {
 			$block_path = $PEVC->getBlockPath($block);
 			if ($block_path) {
 				$block_params = CMSFileHandler::getFileCreateBlockParams($block_path);
-				$module_id = $block_params[0]["module_type"] == "string" ? $block_params[0]["module"] : "";
+				$module_id = isset($block_params[0]["module_type"]) && $block_params[0]["module_type"] == "string" ? $block_params[0]["module"] : "";
 			}
 			
 		}
@@ -34,7 +34,7 @@ if ($project && ($module_id || $block)) {
 			$PCMSModuleLayer = $PEVC->getCMSLayer()->getCMSModuleLayer();
 			$PCMSModuleLayer->loadModules(getProjectCommonUrlPrefix($PEVC, $selected_project_id) . "module/");
 			$module = $PCMSModuleLayer->getLoadedModule($module_id);
-			$module_handler_impl_file_path = $module["module_handler_impl_file_path"];
+			$module_handler_impl_file_path = isset($module["module_handler_impl_file_path"]) ? $module["module_handler_impl_file_path"] : null;
 		
 			if ($module_handler_impl_file_path) 
 				$contents = file_get_contents($module_handler_impl_file_path);
@@ -44,7 +44,7 @@ if ($project && ($module_id || $block)) {
 	}
 }
 
-echo $contents;
+echo isset($contents) ? $contents : null;
 die();
 
 function getProjectCommonUrlPrefix($EVC, $selected_project_id) {

@@ -98,6 +98,8 @@ class SSHHandler {
 				launch_exception(new Exception('Autentication rejected by server!'));
 		}
 		else if (($this->ssh_auth_pub_file || $this->ssh_auth_pub_string) && ($this->ssh_auth_priv_file || $this->ssh_auth_priv_string)) {
+			$ssh_auth_pub_file = $ssh_auth_priv_file = null;
+			
 			if ($this->ssh_auth_pub_file)
 				$ssh_auth_pub_file = $this->ssh_auth_pub_file;
 			else if ($this->ssh_auth_pub_string)

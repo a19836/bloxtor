@@ -5,16 +5,16 @@ include_once $EVC->getUtilPath("WorkFlowDataAccessHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-if ($_POST) {
-	$bean_name = $_GET["bean_name"];
-	$bean_file_name = $_GET["bean_file_name"];
-	$global_default_db_driver_broker = $_GET["global_default_db_driver_broker"]; //in case of form module in the presentation layers
+if (!empty($_POST)) {
+	$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+	$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+	$global_default_db_driver_broker = isset($_GET["global_default_db_driver_broker"]) ? $_GET["global_default_db_driver_broker"] : null; //in case of form module in the presentation layers
 	
-	$db_broker = $_POST["db_broker"]; //if bean name is a presentation layer, the db_broker becomes a dal_broker
-	$db_driver = $_POST["db_driver"];
-	$type = $_POST["type"];
-	$db_table = $_POST["db_table"];
-	$detailed_info = $_POST["detailed_info"];
+	$db_broker = isset($_POST["db_broker"]) ? $_POST["db_broker"] : null; //if bean name is a presentation layer, the db_broker becomes a dal_broker
+	$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
+	$type = isset($_POST["type"]) ? $_POST["type"] : null;
+	$db_table = isset($_POST["db_table"]) ? $_POST["db_table"] : null;
+	$detailed_info = isset($_POST["detailed_info"]) ? $_POST["detailed_info"] : null;
 	
 	$user_global_variables_files_path = array($user_global_variables_file_path);
 	$PHPVariablesFileHandler = new PHPVariablesFileHandler($user_global_variables_files_path);
@@ -24,6 +24,8 @@ if ($_POST) {
 	$obj = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
 	
 	if ($obj && (is_a($obj, "Layer") || is_a($obj, "DB"))) {
+		$tables = $db_driver_props = $items = $fks = null;
+		
 		if ($type == "diagram") {
 			$tasks_file_path = WorkFlowTasksFileHandler::getDBDiagramTaskFilePath($workflow_paths_id, "db_diagram", $db_driver);
 			$WorkFlowDataAccessHandler = new WorkFlowDataAccessHandler();
@@ -84,15 +86,15 @@ if ($_POST) {
 					if (is_array($fks))
 						foreach ($fks as $fk)
 							if (!empty($fk)) {
-								$child_column = $fk["child_column"];
+								$child_column = isset($fk["child_column"]) ? $fk["child_column"] : null;
 								
 								if ($child_column && $items[$child_column]) {
-									if (!$items[$child_column]["fk"])
+									if (empty($items[$child_column]["fk"]))
 										$items[$child_column]["fk"] = array();
 									
 									$items[$child_column]["fk"][] = array(
-										"attribute" => $fk["parent_column"],
-										"table" => $fk["parent_table"]
+										"attribute" => isset($fk["parent_column"]) ? $fk["parent_column"] : null,
+										"table" => isset($fk["parent_table"]) ? $fk["parent_table"] : null
 									);
 								}
 							}
@@ -115,7 +117,7 @@ if ($_POST) {
 				$items = array();
 				if ($tables)
 					foreach ($tables as $table) 
-						$items[] = $table["name"];
+						$items[] = isset($table["name"]) ? $table["name"] : null;
 			}
 		}
 	}

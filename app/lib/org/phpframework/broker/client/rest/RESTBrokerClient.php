@@ -69,11 +69,11 @@ abstract class RESTBrokerClient extends BrokerClient {
 				$global_variables = array();
 				
 				foreach ($this->global_variables_name as $var_name)
-					$global_variables[$var_name] = $GLOBALS[$var_name];
+					$global_variables[$var_name] = isset($GLOBALS[$var_name]) ? $GLOBALS[$var_name] : null;
 				
 				//encrypt global_variables
 				if ($request_encryption_key && $global_variables) {
-					$key = $key ? $key : CryptoKeyHandler::hexToBin($request_encryption_key);
+					$key = !isset($key) ? $key : CryptoKeyHandler::hexToBin($request_encryption_key);
 					$cipher_bin = CryptoKeyHandler::encryptSerializedObject($global_variables, $key);
 					$global_variables = CryptoKeyHandler::binToHex($cipher_bin);
 				}
@@ -85,9 +85,9 @@ abstract class RESTBrokerClient extends BrokerClient {
 			
 			//prepare cookies
 			$url_host = parse_url($url, PHP_URL_HOST);
-			$current_host = explode(":", $_SERVER["HTTP_HOST"]); //maybe it contains the port
-			$current_host = $current_host[0];
-			$cookies = $current_host == $url_host ? $_COOKIE : null;
+			$current_host = isset($_SERVER["HTTP_HOST"]) ? explode(":", $_SERVER["HTTP_HOST"]) : null; //maybe it contains the port
+			$current_host = isset($current_host[0]) ? $current_host[0] : null;
+			$cookies = $current_host == $url_host && isset($_COOKIE) ? $_COOKIE : null;
 			
 			//send request
 			debug_log_function(get_class($this) . "->requestResponse", array($url, $settings));
@@ -141,7 +141,7 @@ abstract class RESTBrokerClient extends BrokerClient {
 			
 			//return response
 			if ($response && isset($response["method"]))
-				return $response["result"];
+				return isset($response["result"]) ? $response["result"] : null;
 			
 			launch_exception(new Exception("Error connecting to REST broker with url: $url"));
 			return null;

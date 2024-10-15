@@ -139,7 +139,7 @@ if (!class_exists("' . $class_name . '")) {
 		
 		if ($matches)
 			foreach ($matches as $m) 
-				if ($m[1])
+				if (!empty($m[1]))
 					$query = str_replace($m[0], '" . $data["' . $m[1] . '"] . "', $query);
 		
 		$code = 'return "' . $query . '";';

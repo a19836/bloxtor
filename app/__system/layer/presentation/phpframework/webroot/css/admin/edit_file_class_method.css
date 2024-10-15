@@ -380,7 +380,7 @@
 /* CODE */
 .file_class_method_obj #code > textarea,
   .file_class_method_obj #code .ace_editor {
-	height:calc(100vh - 70px) !important;
+	height:calc(100vh - 85px) !important;
 }
 .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu > .tasks_menu:not(.task_properties_shown):not(.connection_properties_shown), 
   .file_class_method_obj > #ui > .taskflowchart.with_top_bar_menu > .tasks_menu_hide:not(.task_properties_shown):not(.connection_properties_shown), 

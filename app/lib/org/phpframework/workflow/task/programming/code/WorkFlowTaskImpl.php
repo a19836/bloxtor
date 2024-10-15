@@ -20,23 +20,24 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"code" => $raw_data["childs"]["properties"][0]["childs"]["code"][0]["value"],
+			"code" => isset($raw_data["childs"]["properties"][0]["childs"]["code"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["code"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$code = $prefix_tab . str_replace("\n", "\n$prefix_tab", $properties["code"]) . "\n";
+		$code = isset($properties["code"]) ? $prefix_tab . str_replace("\n", "\n$prefix_tab", $properties["code"]) . "\n" : null;
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

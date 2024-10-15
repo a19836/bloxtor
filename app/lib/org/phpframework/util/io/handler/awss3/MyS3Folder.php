@@ -161,10 +161,14 @@ class MyS3Folder extends MyS3Handler {
 		$this->delimiter = $delimiter_aux;
 	
 		$folder_type = $this->getFolderType();
+		$folder_type_id = isset($folder_type["id"]) ? $folder_type["id"] : null;
 		
 		$status = true;
 		foreach($files["files"] as $value) {
-			$path = $value["type"] == $folder_type["id"] ? $value["path"] . "/." : $value["path"];
+			$value_type = isset($value["type"]) ? $value["type"] : null;
+			$value_path = isset($value["path"]) ? $value["path"] : null;
+			
+			$path = $value_type == $folder_type_id ? $value_path . "/." : $value_path;
 			
 			if(!$this->MyS3File->delete($bucket, $path))
 				$status = false;
@@ -186,16 +190,17 @@ class MyS3Folder extends MyS3Handler {
 		$status = true;
 		
 		$files = $this->getFilesRecursevly($src_bucket, $src_uri);
-		$files = $files["files"];
+		$files = isset($files["files"]) ? $files["files"] : null;
 		$keys = array_keys($files);
 		$t = count($keys);
 		for($i = 0; $i < $t; $i++) {
 			$file = $files[ $keys[$i] ];
-		
-			$sub_file_name = substr($file["path"], strlen($src_uri));
+			$file_path = isset($file["path"]) ? $file["path"] : null;
+			
+			$sub_file_name = substr($file_path, strlen($src_uri));
 			$sub_dest_key = $dest_uri . $sub_file_name;
 	
-			if(!$this->MyS3File->copy($src_bucket, $file["path"], $dest_bucket, $sub_dest_key, $perm))
+			if(!$this->MyS3File->copy($src_bucket, $file_path, $dest_bucket, $sub_dest_key, $perm))
 				$status = false;
 		}
 		return $status;
@@ -209,6 +214,7 @@ class MyS3Folder extends MyS3Handler {
 		
 		if(is_array($files)) {
 			$folder_type = $this->getFolderType();
+			$folder_type_id = isset($folder_type["id"]) ? $folder_type["id"] : null;
 			
 			$keys = array_keys($files);
 			$t = count($keys);
@@ -218,8 +224,9 @@ class MyS3Folder extends MyS3Handler {
 				
 				if($dir_name == $parent_dir_name) {
 					$value = $files[$keys[$i]];
+					$value_type = isset($value["type"]) ? $value["type"] : null;
 					
-					if($value["type"] == $folder_type["id"]) {
+					if($value_type == $folder_type_id) {
 						$value["subfiles"] = $this->prepareFilesArray($files, $file_name, $i + 1);
 					}
 					

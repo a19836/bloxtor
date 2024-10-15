@@ -50,6 +50,22 @@ class PHPCodePrintingHandler {
 	public static function getPHPClassesFromTokens($tokens) {
 		$methods = array();
 		
+		if (version_compare(PHP_VERSION, '8', '<=')) {
+			if (!defined("T_NAME_FULLY_QUALIFIED"))
+				define("T_NAME_FULLY_QUALIFIED", null);
+			
+			if (!defined("T_NAME_QUALIFIED"))
+				define("T_NAME_QUALIFIED", null);
+			
+			if (!defined("T_NAME_RELATIVE"))
+				define("T_NAME_RELATIVE", null);
+		}
+		
+		if (version_compare(PHP_VERSION, '8.1', '<=')) {
+			if (!defined("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG"))
+				define("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG", null);
+		}
+		
 		//print_r($tokens);die();
 		$count = count($tokens);
 		$start_function = false;
@@ -59,6 +75,8 @@ class PHPCodePrintingHandler {
 		$class_path = $namespace = "";
 		$include_token_types = array(T_INCLUDE, T_INCLUDE_ONCE, T_REQUIRE, T_REQUIRE_ONCE);
 		$include_token_types_once = array(T_INCLUDE_ONCE, T_REQUIRE_ONCE);
+		$extends_implements_token_types = T_NAME_FULLY_QUALIFIED ? array(T_NAME_FULLY_QUALIFIED, T_NAME_QUALIFIED, T_NAME_RELATIVE) : array(); //only for php > 8.0
+		$ampersand_followed_by_var_token_types = T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG ? array(T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG) : array(); //only for php > 8.1
 		
 		for ($i = 1; $i < $count; $i++) {
 			if ($tokens[$i] == "{" || $tokens[$i][0] == T_CURLY_OPEN || $tokens[$i][0] == T_DOLLAR_OPEN_CURLY_BRACES)
@@ -120,7 +138,7 @@ class PHPCodePrintingHandler {
 				$class_data = array();
 				$class_name = "";
 				$class_path = "";
-				$line_index = $tokens[$i][2];
+				$line_index = isset($tokens[$i][2]) ? $tokens[$i][2] : null;
 				$interface = $tokens[$i][0] == T_INTERFACE;
 				$abstract = false;
 				$start_function = $start_extends = $start_implements = false;
@@ -137,7 +155,7 @@ class PHPCodePrintingHandler {
 						break;
 					else if ($token[0] == T_ABSTRACT) {
 						$abstract = true;
-						$line_index = $token[2];
+						$line_index = isset($token[2]) ? $token[2] : null;
 						$class_idx = $j;
 						break;
 					}
@@ -208,7 +226,7 @@ class PHPCodePrintingHandler {
 							else
 								$implements_index++;
 						}
-						else if ( ($start_extends || $start_implements) && ($token[0] == T_STRING || $token[0] == T_NS_SEPARATOR)) {
+						else if ( ($start_extends || $start_implements) && ($token[0] == T_NS_SEPARATOR || $token[0] == T_STRING || in_array($token[0], $extends_implements_token_types))) {
 							$type = $start_extends ? "extends" : "implements";
 							$type_index = $start_extends ? $extends_index : $implements_index;
 							
@@ -319,7 +337,7 @@ class PHPCodePrintingHandler {
 					$class_path = "";
 				
 				$method_name = $tokens[$i][1];
-				$line_index = $tokens[$i][2];
+				$line_index = isset($tokens[$i][2]) ? $tokens[$i][2] : null;
 				$method = array();
 				
 				//echo "$class_path::$method_name:$open_brackets_count\n";
@@ -338,31 +356,31 @@ class PHPCodePrintingHandler {
 						break;
 					else if ($token[0] == T_PUBLIC) {
 						$type = "public";
-						$line_index = $token[2];
+						$line_index = isset($token[2]) ? $token[2] : null;
 						$function_idx = $j;
 					}
 					else if ($token[0] == T_PRIVATE) {
 						$type = "private";
-						$line_index = $token[2];
+						$line_index = isset($token[2]) ? $token[2] : null;
 						$function_idx = $j;
 					}
 					else if ($token[0] == T_PROTECTED) {
 						$type = "protected";
-						$line_index = $token[2];
+						$line_index = isset($token[2]) ? $token[2] : null;
 						$function_idx = $j;
 					}
 					else if ($token[0] == T_FUNCTION) {
-						$line_index = $token[2];
+						$line_index = isset($token[2]) ? $token[2] : null;
 						$function_idx = $j;
 					}
 					else if ($token[0] == T_STATIC) {
 						$is_static = true;
-						$line_index = $token[2];
+						$line_index = isset($token[2]) ? $token[2] : null;
 						$function_idx = $j;
 					}
 					else if ($token[0] == T_ABSTRACT) {
 						$abstract = true;
-						$line_index = $token[2];
+						$line_index = isset($token[2]) ? $token[2] : null;
 						$function_idx = $j;
 					}
 					else if ($token[0] != T_WHITESPACE)
@@ -412,20 +430,28 @@ class PHPCodePrintingHandler {
 							$start_arg_value = false;
 							$arg_name = $token[1];
 							
-							$j = $i;
-							
-							while (true) {
-								$token = $j - 1 >= 0 ? $tokens[--$j] : null;
+							//check if variable is passed by reference
+							if ($arg_class && preg_match("/&\s*$/", $arg_class)) { //remove '&' in $arg_class and add it to $arg_name, bc this happens in PHP 8, where the $arg_class ends with '&'
+								$arg_class = preg_replace("/\s*&\s*$/", "", $arg_class); //erase & at the end of string
+								$arg_name = "&" . $arg_name;
+							}
+							else { //check if prev char is &
+								$j = $i;
 								
-								if (!isset($token) || $token == "," || $token == ")")
-									break;
-								else if ($token == "&") {
-									$arg_name = "&" . $arg_name;
-									break;
+								while (true) {
+									$token = $j - 1 >= 0 ? $tokens[--$j] : null;
+									
+									if (!isset($token) || $token == "," || $token == ")")
+										break;
+									else if ($token == "&" || (isset($token[1]) && $token[1] == "&") || (isset($token[0]) && in_array($token[0], $ampersand_followed_by_var_token_types))) {
+										$arg_name = "&" . $arg_name;
+										break;
+									}
 								}
 							}
 							
-							if (trim($arg_class))
+							//add class to arg name
+							if ($arg_class && trim($arg_class))
 								$arg_name = trim($arg_class) . " " . $arg_name;
 							
 							$arguments[ $arg_name ] = null;
@@ -477,7 +503,7 @@ class PHPCodePrintingHandler {
 							}
 						}
 						//before $arg_name is defined, get the arg class if exists
-						else if ($token[0] == T_NS_SEPARATOR || $token[0] == T_STRING || strlen($token[1])) {
+						else if (isset($token[1]) && ($token[0] == T_NS_SEPARATOR || $token[0] == T_STRING || in_array($token[0], $extends_implements_token_types) || strlen($token[1]))) {
 							$arg_class .= $token[1];
 						}
 					}
@@ -493,12 +519,12 @@ class PHPCodePrintingHandler {
 					$token = $i + 1 < $count ? $tokens[++$i] : null;
 					
 					if (is_array($token))
-						$last_line_index = $token[2];
+						$last_line_index = isset($token[2]) ? $token[2] : null;
 					
 					if (!isset($token))
 						break;
 					else if ($token == "{" || $token[0] == T_CURLY_OPEN || $token[0] == T_DOLLAR_OPEN_CURLY_BRACES) {
-						$method["start_brackets_line_index"] = is_numeric($tokens[$i][2]) ? $tokens[$i][2] : $tokens[$i + 1][2];
+						$method["start_brackets_line_index"] = isset($tokens[$i][2]) && is_numeric($tokens[$i][2]) ? $tokens[$i][2] : (isset($tokens[$i + 1][2]) ? $tokens[$i + 1][2] : null);
 						$method["start_brackets_token_index"] = $i;
 						
 						++$open_brackets_count;
@@ -564,26 +590,26 @@ class PHPCodePrintingHandler {
 			if (is_array($token) && ($token[0] == T_COMMENT || $token[0] == T_DOC_COMMENT || $token[0] == T_WHITESPACE)) {
 				if ($token[0] == T_COMMENT) {
 					if (!isset($start_comments_line_index)) {
-						$end_comments_line_index = $token[2] + substr_count($token[1], "\n");
+						$end_comments_line_index = isset($token[2]) ? $token[2] : null + substr_count($token[1], "\n");
 						$end_comments_token_index = $idx;
 					}
 					
 					$comments[] = trim($token[1]);
-					$start_comments_line_index = $token[2];
+					$start_comments_line_index = isset($token[2]) ? $token[2] : null;
 					$start_comments_token_index = $idx;
 				}
 				else if ($token[0] == T_DOC_COMMENT) {
 					if (!isset($start_comments_line_index)) {
-						$end_comments_line_index = $token[2] + substr_count($token[1], "\n");
+						$end_comments_line_index = isset($token[2]) ? $token[2] : null + substr_count($token[1], "\n");
 						$end_comments_token_index = $idx;
 					}
 					
 					$doc_comments[] = trim($token[1]);
-					$start_comments_line_index = $token[2];
+					$start_comments_line_index = isset($token[2]) ? $token[2] : null;
 					$start_comments_token_index = $idx;
 				}
 				else if (!isset($start_comments_line_index)) {
-					$end_comments_line_index = $token[2];
+					$end_comments_line_index = isset($token[2]) ? $token[2] : null;
 					$end_comments_token_index = $idx;
 				}
 			}
@@ -918,7 +944,7 @@ class PHPCodePrintingHandler {
 						$abstract = $tokens[$i][0] == T_ABSTRACT;
 						$var_name = "";
 						$var_value = null;
-						$var_start_line_index = $tokens[$i][2];
+						$var_start_line_index = isset($tokens[$i][2]) ? $tokens[$i][2] : null;
 						$var_start_token_index = $i;
 						
 						while(true) {
@@ -958,12 +984,13 @@ class PHPCodePrintingHandler {
 							//getting var value
 							$has_value = false;
 							$var_last_line_index = $var_start_line_index;
+							$var_end_line_index = $var_end_token_index = null;
 							
 							while(true) {
 								$token = $i + 1 < $count ? $tokens[++$i] : null;
 								
 								if (is_array($token))
-									$var_last_line_index = $token[2];
+									$var_last_line_index = isset($token[2]) ? $token[2] : null;
 								
 								if (!isset($token))
 									break;
@@ -972,10 +999,10 @@ class PHPCodePrintingHandler {
 									$var_end_token_index = $i;
 									break;
 								}
-								else if ($token == "=" || $token[1] == "=")
+								else if ($token == "=" || (isset($token[1]) && $token[1] == "="))
 									$has_value = true;
 								else if ($has_value)
-									$var_value .= is_array($token) ? $token[1] : $token;
+									$var_value .= is_array($token) ? (isset($token[1]) ? $token[1] : null) : $token;
 							}
 							
 							$var_value = trim($var_value);
@@ -1676,7 +1703,7 @@ class PHPCodePrintingHandler {
 			$count = count($tokens);
 			
 			//editing comments
-			if (is_numeric($c["start_comments_token_index"]) && is_numeric($c["end_comments_token_index"])) {
+			if (isset($c["start_comments_token_index"]) && is_numeric($c["start_comments_token_index"]) && isset($c["end_comments_token_index"]) && is_numeric($c["end_comments_token_index"])) {
 				$st = $c["start_comments_token_index"];
 				$et = $c["end_comments_token_index"] + 1;
 			}
@@ -1729,7 +1756,7 @@ class PHPCodePrintingHandler {
 			$suffix = "";
 			
 			//editing comments
-			if (is_numeric($f["start_comments_token_index"]) && is_numeric($f["end_comments_token_index"])) {
+			if (isset($f["start_comments_token_index"]) && is_numeric($f["start_comments_token_index"]) && isset($f["end_comments_token_index"]) && is_numeric($f["end_comments_token_index"])) {
 				$st = $f["start_comments_token_index"];
 				$et = $f["end_comments_token_index"] + 1;
 			}
@@ -1903,7 +1930,7 @@ class PHPCodePrintingHandler {
 					if (stripos($trimmed, $type) === 0) {
 						$fc = substr($trimmed, strlen($type), 1);
 						
-						if ($fc == " " || $fc == "$" || $fc == "'" || $fc == '"' || $fc == ";") {
+						if ($fc == " " || $fc == '$' || $fc == "'" || $fc == '"' || $fc == ";") {
 							$exists = true;
 							break;
 						}
@@ -2018,7 +2045,7 @@ class PHPCodePrintingHandler {
 			}
 			
 			$intervals[] = array($start_token_index, $sti - 1);
-			$start_token_index = $properties[$i]["end_token_index"] + 1;
+			$start_token_index = (isset($properties[$i]["end_token_index"]) ? $properties[$i]["end_token_index"] : null) + 1;
 		}
 		
 		$intervals[] = array($start_token_index, $count - 1);
@@ -2250,7 +2277,7 @@ class PHPCodePrintingHandler {
 			
 			$code = $code ? trim($code) : "";
 			
-			$token = $tokens[ $f["start_brackets_token_index"] ];
+			$token = isset($tokens[ $f["start_brackets_token_index"] ]) ? $tokens[ $f["start_brackets_token_index"] ] : null;
 			$is_abstract_or_interface = $token == ";";
 			
 			if ($code || !$is_abstract_or_interface) {
@@ -2742,10 +2769,10 @@ class PHPCodePrintingHandler {
 		$static = isset($function_settings["static"]) ? $function_settings["static"] : null;
 		$args = isset($function_settings["arguments"]) ? $function_settings["arguments"] : null;
 		$comments = isset($function_settings["comments"]) ? trim($function_settings["comments"]) : "";
+		$args_str = "";
 		
 		//prepare args
-		if (is_array($args)) {
-			$args_str = ""; 
+		if (is_array($args))
 			foreach ($args as $arg_name => $arg_value) {
 				if ($arg_name) {
 					$arg_name = trim($arg_name);
@@ -2755,14 +2782,13 @@ class PHPCodePrintingHandler {
 					
 					$arg_name = substr($arg_name, 0, 1) == '$' ? $arg_name : (
 						substr($arg_name, 0, 1) == '&' ? (
-							substr($arg_name, 1, 1) == '$' ? $arg_name : "&\$" . substr($arg_name, 1) //allows cases like: "&name" => "&$name"
+							substr($arg_name, 1, 1) == '$' ? $arg_name : '&$' . substr($arg_name, 1) //allows cases like: "&name" => "&$name"
 						) : "\$$arg_name"
 					);
 					
 					$args_str .= ($args_str ? ", " : "") . ($arg_class_name ? "$arg_class_name " : "") . $arg_name . (isset($arg_value) ? " = $arg_value" : ""); //Note that the $arg_value could be equal to the string "null", which will be the default value for this argument.
 				}
 			}
-		}
 		
 		$prefix = $class_name ? "\t" : "";
 		
@@ -2824,6 +2850,8 @@ class PHPCodePrintingHandler {
 			$value = $var_type == "string" ? '"' . addcslashes($value, '"') . '"' : $value;
 			
 			if ($comments) {
+				$prefix = "\t";
+		
 				if (substr($comments, 0, 2) != "/*")
 					$str .= "$prefix/**\n$prefix * " . str_replace("\n", "\n$prefix * ", $comments) . "\n$prefix */\n";
 				else 

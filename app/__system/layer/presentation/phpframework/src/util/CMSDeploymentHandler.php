@@ -262,7 +262,7 @@ class CMSDeploymentHandler {
 		
 			foreach ($actions as $item)
 				foreach ($item as $action_type => $action)
-					if (!empty($action["active"]) && !$stop)
+					if (!empty($action["active"]) && empty($stop))
 						switch($action_type) {
 							case "run_test_units":
 								//Do nothing bc it doesn't apply to redeploy action! The reddeploy action only works with files in the server
@@ -468,7 +468,6 @@ class CMSDeploymentHandler {
 	private function executeServerFlushCacheRemoteAction($deployment_folder_path, $template_id, $deployment_id, $server_template, $SSHHandler, $remote_relative_files_to_remove, &$error_messages = null) {	
 		$server_installation_url = isset($server_template["properties"]["server_installation_url"]) ? $server_template["properties"]["server_installation_url"] : null;
 		$server_installation_folder_path = isset($server_template["properties"]["server_installation_folder_path"]) ? $server_template["properties"]["server_installation_folder_path"] : null;
-		$server_relative_folder_path = isset($action["server_relative_folder_path"]) ? $action["server_relative_folder_path"] : null;
 		
 		if ($server_installation_folder_path && substr($server_installation_folder_path, -1) != "/")
 			$server_installation_folder_path .= "/";
@@ -486,9 +485,9 @@ class CMSDeploymentHandler {
 		else if (!$this->createRemoteServerSetCachePermissionsPHPFile($server_installation_folder_path, $permissions_php_file, $remote_relative_files_to_remove, $error_messages)) //create file
 			$error_messages[] = "Error: Could not create flush cache php file!";
 		else if (!$SSHHandler->copyLocalToRemoteFile($remove_php_file, $remove_remote_file_path, true)) //copy server to remote server
-			$error_messages[] = "Error: Could not scp '$remove_php_file_name' to remote server folder: '$server_relative_folder_path'!";
+			$error_messages[] = "Error: Could not scp '$remove_php_file_name' to remote server file: '$remove_remote_file_path'!";
 		else if (!$SSHHandler->copyLocalToRemoteFile($permissions_php_file, $permissions_remote_file_path, true)) //copy server to remote server
-			$error_messages[] = "Error: Could not scp '$permissions_php_file_name' to remote server folder: '$server_relative_folder_path'!";
+			$error_messages[] = "Error: Could not scp '$permissions_php_file_name' to remote server file: '$permissions_remote_file_path'!";
 		else { //sets 777 permission to all files that have apache as owner, via curl with the apache user
 			$server_installation_url = (strpos($server_installation_url, "://") === false ? "http://" : "") . $server_installation_url;
 			$parsed_url = parse_url($server_installation_url);
@@ -796,7 +795,7 @@ class CMSDeploymentHandler {
 		$deployment_folder_path = $this->getDeploymentFolderPath("backup", $server_name, $template_id, $deployment_id);
 		$this->deployments_files[] = $deployment_folder_path;
 		
-		$this->executeBackupLocalAction($deployment_folder_path, $server_template, $error_messages);
+		$this->executeBackupLocalAction($deployment_folder_path, $error_messages);
 		$this->executeBackupRemoteAction($deployment_folder_path, $template_id, $deployment_id, $server_template, $SSHHandler, $error_messages);
 		
 		$this->removeFile($deployment_folder_path);
@@ -1037,7 +1036,7 @@ class CMSDeploymentHandler {
 		else { //if no sysadmin panel
 			//Creating deployment package without the workflow/task lib files, bc there are no needed in the projects side.
 			//Delete lib/org/phpframework/workflow/task folder
-			//Cannot delete the lib/org/phpframework/workflow/ folder because the lib/org/phpframework/workflow/PHPParserPrettyPrinter.php and lib/org/phpframework/workflow/PHPParserTraverserNodeVisitor.php are used in other lib files.
+			//Cannot delete the lib/org/phpframework/workflow/ folder because the lib/org/phpframework/phpscript/phpparser/PHPParserPrettyPrinter.php and lib/org/phpframework/phpscript/phpparser/PHPParserTraverserNodeVisitor.php are used in other lib files.
 			if (!$this->removeFile($deployment_folder_path . "app/lib/org/phpframework/workflow/task/")) 
 				$error_messages[] = "Error: Could not delete 'app/lib/org/phpframework/workflow/task/' folder!";
 		}
@@ -2061,7 +2060,7 @@ if (file_exists(\$dump_file_path)) {
 	}
 
 	if (!\$connected || \$exception) {
-		\$msg = \$exception ? (\$exception->problem ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
+		\$msg = \$exception ? (!empty(\$exception->problem) ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
 		exitScript(\"Error (1): Could not connect to \$db_type DB Driver: '$task_label'!\" . (\$msg ? \"\\n\" . \$msg : \"\"));
 	}
 	
@@ -2078,7 +2077,7 @@ if (file_exists(\$dump_file_path)) {
 	}
 	
 	if (!\$imported || \$exception) {
-		\$msg = \$exception ? (\$exception->problem ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
+		\$msg = \$exception ? (!empty(\$exception->problem) ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
 		exitScript(\"Error: Could not import schema to DB '$task_label'!\" . (\$msg ? \"\\n\" . \$msg : \"\"));
 	}
 	
@@ -2432,7 +2431,7 @@ if (!\$connected || \$exception) {
 }
 
 if (!\$connected || \$exception) {
-	\$msg = \$exception ? (\$exception->problem ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
+	\$msg = \$exception ? (!empty(\$exception->problem) ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
 	exitScript(\"Error (2): Could not connect to \$db_type DB Driver: '$task_label'!\" . (\$msg ? \"\\n\" . \$msg : \"\"));
 }
 
@@ -2501,7 +2500,7 @@ catch (Exception \$e) {
 }
 
 if (!\$connected || \$exception) {
-	\$msg = \$exception ? (\$exception->problem ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
+	\$msg = \$exception ? (!empty(\$exception->problem) ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
 	exitScript(\"Error (3): Could not connect to \$db_type DB Driver: '$task_label'!\" . (\$msg ? \"\\n\" . \$msg : \"\"));
 }
 ";
@@ -2861,7 +2860,7 @@ catch(Exception \$e) {
 }
 
 if (!\$imported || \$exception) {
-	\$msg = \$exception ? PHP_EOL . (\$exception->problem ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
+	\$msg = \$exception ? PHP_EOL . (!empty(\$exception->problem) ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
 	exitScript(\"\\nError: Could not migrate schema for DB '$task_label'!\" . (\$msg ? \"\\n\" . \$msg : \"\"));
 }
 ";
@@ -2885,7 +2884,7 @@ catch(Exception \$e) {
 }
 
 if (!\$imported || \$exception) {
-	\$msg = \$exception ? PHP_EOL . (\$exception->problem ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
+	\$msg = \$exception ? PHP_EOL . (!empty(\$exception->problem) ? \$exception->problem . PHP_EOL : \"\") . \$exception->getMessage() : \"\";
 	exitScript(\"\\nError: Could not migrate data for DB '$task_label'!\" . (\$msg ? \"\\n\" . \$msg : \"\"));
 }
 ";

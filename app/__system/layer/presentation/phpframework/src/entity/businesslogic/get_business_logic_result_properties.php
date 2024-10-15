@@ -7,11 +7,11 @@ include_once $EVC->getUtilPath("CodeResultGuesser");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$module_id = $_GET["module_id"];
-$service_id = $_GET["service"];
-$db_driver = $_GET["db_driver"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$module_id = isset($_GET["module_id"]) ? $_GET["module_id"] : null;
+$service_id = isset($_GET["service"]) ? $_GET["service"] : null;
+$db_driver = isset($_GET["db_driver"]) ? $_GET["db_driver"] : null;
 
 $path = str_replace(".", "/", $module_id);
 $path = str_replace("../", "", $path);//for security reasons
@@ -58,13 +58,13 @@ if ($obj && is_a($obj, "BusinessLogicLayer") && $path) {
 		//echo "$class_path:\n$code";die();
 		
 		if ($code) {
-			$db_driver = $db_driver ? $db_driver : $GLOBALS["default_db_driver"];
+			$db_driver = $db_driver ? $db_driver : (isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null);
 			
 			$CodeResultGuesser = new CodeResultGuesser($obj, $UserAuthenticationHandler, $user_global_variables_file_path, $user_beans_folder_path, $project_url_prefix, $db_driver);
 			$props = $CodeResultGuesser->getCodeResultAttributes($code);
 		}
 		
-		if (!$props) {
+		if (empty($props)) {
 			$get_service_possible_names = array("get", "getall", "gets");
 			$methods_to_search = array("insert");
 			$methods_to_search_second = array("update");
@@ -86,7 +86,7 @@ if ($obj && is_a($obj, "BusinessLogicLayer") && $path) {
 			
 			if (in_array($mnl, $get_service_possible_names)) {
 				$bean_objs = $obj->getPHPFrameWork()->getObjects();
-				$vars = is_array($bean_objs["vars"]) ? array_merge($bean_objs["vars"], $obj->settings) : $obj->settings;
+				$vars = isset($bean_objs["vars"]) && is_array($bean_objs["vars"]) ? array_merge($bean_objs["vars"], $obj->settings) : $obj->settings;
 				$vars["current_business_logic_module_path"] = $file_path;
 				$vars["current_business_logic_module_id"] = $module_id;
 				
@@ -100,7 +100,8 @@ if ($obj && is_a($obj, "BusinessLogicLayer") && $path) {
 					$found_class_data = PHPCodePrintingHandler::searchClassFromPHPClasses($classes, $class_name);
 					
 					if ($found_class_data) {
-						$found_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($found_class_data["name"], $found_class_data["namespace"]);
+						$found_class_name = isset($found_class_data["name"]) ? $found_class_data["name"] : null;
+						$found_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($found_class_name, isset($found_class_data["namespace"]) ? $found_class_data["namespace"] : null);
 						$class_name = $found_class_name;
 						//echo $found_class_name;print_r($found_class_data);
 					}
@@ -134,7 +135,7 @@ if ($obj && is_a($obj, "BusinessLogicLayer") && $path) {
 								if (strpos($name, "[") !== false) {
 									preg_match_all("/^([^\[]*)\[([^\[]*)\]/u", $name, $matches, PREG_PATTERN_ORDER); //'/u' means converts to unicode.
 									
-									if ($matches[0]) 
+									if (!empty($matches[0])) 
 										$name = $matches[2][0];
 								}
 								

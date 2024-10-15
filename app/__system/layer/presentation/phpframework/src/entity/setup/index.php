@@ -1,7 +1,7 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$step = $_GET["step"];
+$step = isset($_GET["step"]) ? $_GET["step"] : null;
 $is_inside_of_iframe = !empty($_GET["iframe"]);
 
 switch ($step) {

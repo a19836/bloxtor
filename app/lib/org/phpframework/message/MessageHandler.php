@@ -127,7 +127,7 @@ class MessageHandler {
 				$first_node_name = isset($first_node_name[0]) ? $first_node_name[0] : null;
 				
 				$childs = $first_node_name && isset($nodes[$first_node_name][0]["childs"]) ? $nodes[$first_node_name][0]["childs"] : null;
-				$module_messages = self::loadNodeMessages($childs);
+				$module_messages = self::loadNodeMessages($module_id, $childs);
 				
 				if ($this->ServiceCacheHandler)
 					$this->ServiceCacheHandler->create($this->modules_messages_cache_folder_path, $module_id, $module_messages);
@@ -137,7 +137,7 @@ class MessageHandler {
 		}
 	}
 	
-	private static function loadNodeMessages($nodes, $prefix_id = "") {
+	private static function loadNodeMessages($module_id, $nodes, $prefix_id = "") {
 		$module_messages = array();
 		
 		foreach ($nodes as $key => $sub_nodes) {
@@ -164,7 +164,7 @@ class MessageHandler {
 					$sub_node_name = isset($sub_nodes[$i]["name"]) ? $sub_nodes[$i]["name"] : null;
 					$sub_node_childs = isset($sub_nodes[$i]["childs"]) ? $sub_nodes[$i]["childs"] : null;
 					
-					$sub_module_messages = self::loadNodeMessages($sub_node_childs, $sub_node_name . "/");
+					$sub_module_messages = self::loadNodeMessages($module_id, $sub_node_childs, $sub_node_name . "/");
 					$module_messages = array_merge($module_messages, $sub_module_messages);
 				}
 			}

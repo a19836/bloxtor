@@ -342,8 +342,11 @@ abstract class Annotation {
 				
 					if (\ObjectHandler::checkIfObjType($obj) && $obj->setInstance($value))
 						return true;
-				} 
-				catch (\Exception $e) {
+				}
+				catch (\Throwable $e) { //includes Exception, Error, ParseError, etc...
+					//$message = "[Annotation::checkType] Exception: " . $e->getMessage() . "\n   In file " . $e->getFile() . ":" . $e->getLine() . "\n   With code traces:\n\t" . str_replace("\n", "\n\t", $e->getTraceAsString());
+					//debug_log($message, "exception");
+					
 					global $GlobalErrorHandler;
 					$GlobalErrorHandler && $GlobalErrorHandler->start();
 					
@@ -407,7 +410,7 @@ abstract class Annotation {
 			
 			if ($fc == "[" || $fc == "{")
 				$value = json_decode($value);
-			else if ($fc == '$')
+			else if ($fc == '$' || substr($value, 0, 2) == '@$')
 				eval ('$value = ' . $value . ';');
 			else if (($fc == '"' && $lc == '"') || ($fc == "'" && $lc == "'"))
 				$value = substr($value, 1, -1);
@@ -434,11 +437,14 @@ abstract class Annotation {
 			} 
 			catch (Exception $e) {
 				$status = false;
+				$n = $this->is_input ? 'param: ' . (isset($this->args["name"]) ? $this->args["name"] : "") : 'return';
 				launch_exception(new AnnotationException(1, $e, array($n, substr($value, 1))));
 			}
 			
 			if (!$status) {
-				$n = $this->is_input ? 'param: ' . $this->args["name"] : 'return';
+				if (empty($n))
+					$n = $this->is_input ? 'param: ' . (isset($this->args["name"]) ? $this->args["name"] : "") : 'return';
+				
 				$this->errors[] = "Error in annotation ' . $n . ', when executing php function: " . substr($value, 1);
 			}
 		}

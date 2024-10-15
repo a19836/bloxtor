@@ -3,6 +3,10 @@
 
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$selected_project = isset($selected_project) ? $selected_project : null;
+$P = isset($P) ? $P : null;
+$layers_projects = isset($layers_projects) ? $layers_projects : null;
+
 $head = '
 <!-- Add Fontawsome Icons CSS -->
 <link rel="stylesheet" href="' . $project_common_url_prefix . 'vendor/fontawesome/css/all.min.css">
@@ -20,7 +24,7 @@ $head = '
 <script>
 var get_store_templates_url = "' . $project_url_prefix . "phpframework/admin/get_store_type_content?type=templates" . '"; //This is a global var
 var is_popup = ' . ($popup ? 1 : 0) . ';
-var is_zip_file = ' . ($_FILES["zip_file"] ? 1 : 0) . ';
+var is_zip_file = ' . (!empty($_FILES["zip_file"]) ? 1 : 0) . ';
 </script>';
 
 $main_content = '
@@ -34,17 +38,17 @@ $main_content = '
 		</header>
 	</div>';
 
-if ($_POST) {
-	if (!$status) {
-		$error_message = $error_message ? $error_message : "There was an error trying to install this template. Please try again...";
+if (!empty($_POST)) {
+	if (empty($status)) {
+		$error_message = !empty($error_message) ? $error_message : "There was an error trying to install this template. Please try again...";
 		
-		if ($messages) {
+		if (!empty($messages)) {
 			$main_content .= '<ul class="messages">';
 			foreach ($messages as $project_name => $msgs) {
 				if ($msgs) {
 					$main_content .= '<li><label>' . ucfirst($project_name) . ' project\'s installation:</label><ul>';
 					foreach ($msgs as $msg) {
-						$main_content .= '<li class="' . $msg["type"] . '">' . $msg["msg"] . '</li>';
+						$main_content .= '<li class="' . (isset($msg["type"]) ? $msg["type"] : "") . '">' . (isset($msg["msg"]) ? $msg["msg"] : "") . '</li>';
 					}
 					$main_content .= '</ul></li>';
 				}
@@ -66,16 +70,16 @@ $main_content .= '<div class="install_template">
 		<select onChange="onChangeLayer(this)">';
 
 foreach ($layers_projects as $bn => $layer)
-	$main_content .= '<option' . ($bean_name == $bn ? ' selected' : '') . ' value="' . $bn . '">' . $layer["item_label"] . '</option>';
+	$main_content .= '<option' . ($bean_name == $bn ? ' selected' : '') . ' value="' . $bn . '">' . (isset($layer["item_label"]) ? $layer["item_label"] : "") . '</option>';
 
 $main_content .= '</select>
 	</div>';
 
 foreach ($layers_projects as $bn => $layer) {
-	$projects = $layer["projects"];
+	$projects = isset($layer["projects"]) ? $layer["projects"] : null;
 	
 	$main_content .= '
-	<div id="project_' . $bn . '" class="project' . ($bean_name == $bn && $selected_project && $projects[$selected_project] ? ' hidden' : '') . '">
+	<div id="project_' . $bn . '" class="project' . ($bean_name == $bn && $selected_project && !empty($projects[$selected_project]) ? ' hidden' : '') . '">
 		<label>Install in Project: </label>
 		<select onChange="onChangeProject(this)">';
 		
@@ -112,9 +116,9 @@ $main_content .= '
 		<div class="title">Install a local template from your computer (.zip file)</div>';
 
 foreach ($layers_projects as $bn => $layer) {
-	$bfn = $layer["bean_file_name"];
-	$projects = $layer["projects"];
-	$query_str = $_SERVER["QUERY_STRING"];
+	$bfn = isset($layer["bean_file_name"]) ? $layer["bean_file_name"] : null;
+	$projects = isset($layer["projects"]) ? $layer["projects"] : null;
+	$query_str = isset($_SERVER["QUERY_STRING"]) ? $_SERVER["QUERY_STRING"] : null;
 	$query_str = preg_replace("/(^|&)(bean_name|bean_file_name)=[^&]*/", "", $query_str);
 	
 	$main_content .= '

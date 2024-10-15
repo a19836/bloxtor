@@ -9,7 +9,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$props = $WorkFlowTaskCodeParser->getNewObjectProps($stmt);
 		
 		if ($props) {
-			$props["label"] = "New " . self::prepareTaskPropertyValueLabelFromCodeStmt($props["class_name"]);
+			$class_name = isset($props["class_name"]) ? $props["class_name"] : null;
+			$props["label"] = "New " . self::prepareTaskPropertyValueLabelFromCodeStmt($class_name);
 			
 			$props["exits"] = array(
 				self::DEFAULT_EXIT_ID => array(
@@ -22,11 +23,11 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"class_name" => $raw_data["childs"]["properties"][0]["childs"]["class_name"][0]["value"],
-			"class_args" => $raw_data["childs"]["properties"][0]["childs"]["class_args"],
+			"class_name" => isset($raw_data["childs"]["properties"][0]["childs"]["class_name"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["class_name"][0]["value"] : null,
+			"class_args" => isset($raw_data["childs"]["properties"][0]["childs"]["class_args"]) ? $raw_data["childs"]["properties"][0]["childs"]["class_args"] : null,
 		);
 		
 		$properties = self::parseResultVariableProperties($raw_data, $properties);
@@ -35,19 +36,21 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$code = "";
-		if (trim($properties["class_name"])) {
+		if (isset($properties["class_name"]) && trim($properties["class_name"])) {
 			$var_name = self::getPropertiesResultVariableCode($properties);
 			
-			$args = self::getParametersString($properties["class_args"]);
+			$args = isset($properties["class_args"]) ? $properties["class_args"] : null;
+			$args = self::getParametersString($args);
 			$code = $prefix_tab . $var_name . "new " . $properties["class_name"] . "($args);\n";
 		}
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

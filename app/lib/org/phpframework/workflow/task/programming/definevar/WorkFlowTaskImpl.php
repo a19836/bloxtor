@@ -9,15 +9,17 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$props = $WorkFlowTaskCodeParser->getFunctionProps($stmt);
 		
 		if ($props) {
-			$func_name = $props["func_name"];
-			$args = $props["func_args"];
+			$func_name = isset($props["func_name"]) ? $props["func_name"] : null;
+			$args = isset($props["func_args"]) ? $props["func_args"] : null;
 			
-			if ($func_name && strtolower($func_name) == "define" && $args[0]["type"] == "string") {
+			if ($func_name && strtolower($func_name) == "define" && isset($args[0]["type"]) && $args[0]["type"] == "string") {
+				$arg_value_0 = isset($args[0]["value"]) ? $args[0]["value"] : null;
+				
 				return array(
-					"name" => $args[0]["value"],
-					"value" => $args[1]["value"],
-					"type" => self::getConfiguredParsedType($args[1]["type"]),
-					"label" => "Init " . self::prepareTaskPropertyValueLabelFromCodeStmt($args[0]["value"]),
+					"name" => $arg_value_0,
+					"value" => isset($args[1]["value"]) ? $args[1]["value"] : null,
+					"type" => isset($args[1]["type"]) ? self::getConfiguredParsedType($args[1]["type"]) : null,
+					"label" => "Init " . self::prepareTaskPropertyValueLabelFromCodeStmt($arg_value_0),
 					"exits" => array(
 						self::DEFAULT_EXIT_ID => array(
 							"color" => "#426efa",
@@ -29,28 +31,29 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"name" => $raw_data["childs"]["properties"][0]["childs"]["name"][0]["value"],
-			"value" => $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"],
-			"type" => $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"],
+			"name" => isset($raw_data["childs"]["properties"][0]["childs"]["name"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["name"][0]["value"] : null,
+			"value" => isset($raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"] : null,
+			"type" => isset($raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$var_name = $properties["name"] ? trim($properties["name"]) : false;
+		$var_name = !empty($properties["name"]) ? trim($properties["name"]) : false;
 		$value = self::getVariableValueCode($properties["value"], $properties["type"]);
 		
 		$code = $var_name ? $prefix_tab . "define(\"" . $var_name . "\", $value);\n" : "";
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

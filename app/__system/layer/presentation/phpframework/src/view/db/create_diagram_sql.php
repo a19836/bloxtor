@@ -17,7 +17,7 @@ $head = '
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/db/create_diagram_sql.css" charset="utf-8" />
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/db/create_diagram_sql.js"></script>';
 
-$main_content .= '<div class="create_diagram_sql">
+$main_content = '<div class="create_diagram_sql">
 	<div class="top_bar' . ($popup ? " in_popup" : "") . '">
 		<header>
 			<div class="title">DB Diagram\'s SQL for DB: \'' . $bean_name . '\'</div>
@@ -27,16 +27,16 @@ $main_content .= '<div class="create_diagram_sql">
 		</header>
 	</div>';
 
-if ($_POST) {
+if (!empty($_POST)) {
 	$main_content .= '
-	<div class="status_' . ($status ? 'ok' : 'error') . '">' . ($status ? 'SQL executed successfully' : 'SQL executed unssuccessfully') . '</div>
+	<div class="status_' . (!empty($status) ? 'ok' : 'error') . '">' . (!empty($status) ? 'SQL executed successfully' : 'SQL executed unssuccessfully') . '</div>
 	';
 }
 
-if (!$_POST || !$status) {
+if (empty($_POST) || empty($status)) {
 	$main_content .= '
 	<div class="sql_text_area">
-		<textarea>' . "\n" . htmlspecialchars($sql, ENT_NOQUOTES) . '</textarea>
+		<textarea>' . "\n" . (isset($sql) ? htmlspecialchars($sql, ENT_NOQUOTES) : "") . '</textarea>
 	</div>';
 }
 

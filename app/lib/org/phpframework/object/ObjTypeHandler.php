@@ -187,14 +187,6 @@ class ObjTypeHandler {
 		return $name && in_array($name, self::getDBAttributeNameModifiedDateAvailableValues());
 	}
 	
-	public static function isDBAttributeNameACreatedUserId($name) {
-		return $name && in_array($name, self::getDBAttributeNameCreatedUserIdAvailableValues());
-	}
-	
-	public static function isDBAttributeNameAModifiedUserId($name) {
-		return $name && in_array($name, self::getDBAttributeNameModifiedUserIdAvailableValues());
-	}
-	
 	public static function isDBAttributeValueACurrentTimestamp($value) {
 		if ($value) {
 			$values = self::getDBCurrentTimestampAvailableValues();
@@ -210,6 +202,14 @@ class ObjTypeHandler {
 		}
 		
 		return false;
+	}
+	
+	public static function isDBAttributeNameACreatedUserId($name) {
+		return $name && in_array($name, self::getDBAttributeNameCreatedUserIdAvailableValues());
+	}
+	
+	public static function isDBAttributeNameAModifiedUserId($name) {
+		return $name && in_array($name, self::getDBAttributeNameModifiedUserIdAvailableValues());
 	}
 }
 ?>

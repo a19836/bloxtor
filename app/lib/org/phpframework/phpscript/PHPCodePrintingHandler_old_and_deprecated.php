@@ -1313,7 +1313,7 @@ class PHPCodePrintingHandler {
 					if (stripos($trimmed, $type) === 0) {
 						$fc = substr($trimmed, strlen($type), 1);
 						
-						if ($fc == " " || $fc == "$" || $fc == "'" || $fc == '"' || $fc == ";") {
+						if ($fc == " " || $fc == '$' || $fc == "'" || $fc == '"' || $fc == ";") {
 							$exists = true;
 							break;
 						}

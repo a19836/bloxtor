@@ -61,7 +61,7 @@
 .taskflowchart .edit_function_code > #code,
   .taskflowchart .edit_function_code > #ui {
 	height:80%;
-	height:calc(100% - 80px);
+	height:calc(100% - 150px);
 	padding:0;
 }
 .taskflowchart .edit_function_code > #code .code_menu.top_bar_menu,

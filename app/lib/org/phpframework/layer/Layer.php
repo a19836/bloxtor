@@ -164,7 +164,7 @@ abstract class Layer implements ILayer {
 				$alias_path = substr($alias_path, strlen($alias_path) - 1) == "/" ? substr($alias_path, 0, strlen($alias_path) - 1) : $alias_path;
 		
 				if ($alias_path != $alias_id) 
-					$aliases[ $path . $alias_path ][] = $alias_id;
+					$aliases[ $alias_path ][] = $alias_id;
 			}
 		}
 		
@@ -188,7 +188,7 @@ abstract class Layer implements ILayer {
 		
 		if (empty($broker_name) && $broker_name !== 0) {
 			$keys = array_keys($this->brokers);
-			$broker_name = isset($keys) ? $keys[0] : null;
+			$broker_name = isset($keys[0]) ? $keys[0] : null;
 		}
 		else if (is_numeric($broker_name) && !isset($this->brokers[$broker_name])) {
 			$keys = array_keys($this->brokers);

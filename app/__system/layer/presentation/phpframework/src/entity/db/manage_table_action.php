@@ -4,11 +4,11 @@ include_once $EVC->getUtilPath("WorkFlowDBHandler");
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$action = $_GET["action"];
-$extra = $_GET["extra"];
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$action = isset($_GET["action"]) ? $_GET["action"] : null;
+$extra = isset($_GET["extra"]) ? $_GET["extra"] : null;
 
 $status = false;
 
@@ -23,7 +23,7 @@ if ($bean_name && $action) {
 	
 	switch($action) {
 		case "remove_table":
-			$table = $_GET["table"];
+			$table = isset($_GET["table"]) ? $_GET["table"] : null;
 			$diagram_tables_to_be_updated[] = $table;
 			
 			if ($table)
@@ -33,8 +33,8 @@ if ($bean_name && $action) {
 			break;
 		
 		case "remove_attribute":
-			$table = $_GET["table"];
-			$attribute = $_GET["attribute"];
+			$table = isset($_GET["table"]) ? $_GET["table"] : null;
+			$attribute = isset($_GET["attribute"]) ? $_GET["attribute"] : null;
 			
 			if ($table && $attribute) {
 				$sql = array();
@@ -50,19 +50,22 @@ if ($bean_name && $action) {
 					for ($i = 0, $t = count($fks); $i < $t; $i++) {
 						$fk = $fks[$i];
 					
-						if ($fk["child_column"] == $attribute)
-							if ($fk["constraint_name"] && !in_array($fk["constraint_name"], $repeated_constraints_name)) {
+						if (isset($fk["child_column"]) && $fk["child_column"] == $attribute)
+							if (!empty($fk["constraint_name"]) && !in_array($fk["constraint_name"], $repeated_constraints_name)) {
 								$repeated_constraints_name[] = $fk["constraint_name"];
 								$sql[] = $DBDriver->getDropTableForeignConstraintStatement($table, $fk["constraint_name"]);
+								
+								$fk_parent_table = isset($fk["parent_table"]) ? $fk["parent_table"] : null;
 								
 								//add foreign key for the other attributes, if apply
 								for ($j = 0; $j < $t; $j++) 
 									if ($j != $i) {
 										$sub_fk = $fks[$j];
+										$sub_fk_child_column = isset($sub_fk["child_column"]) ? $sub_fk["child_column"] : null;
+										$sub_fk_parent_table = isset($sub_fk["parent_table"]) ? $sub_fk["parent_table"] : null;
 										
-										if ($sub_fk["parent_table"] == $fk["parent_table"] && $sub_fk["child_column"] != $attribute) {
-											$fks_to_add[ $fk["parent_table"] ][ $sub_fk["child_column"] ] = $sub_fk["parent_column"];
-										}
+										if ($sub_fk_parent_table == $fk_parent_table && $sub_fk_child_column != $attribute)
+											$fks_to_add[$fk_parent_table][$sub_fk_child_column] = isset($sub_fk["parent_column"]) ? $sub_fk["parent_column"] : null;
 									}
 							}
 					}
@@ -73,8 +76,8 @@ if ($bean_name && $action) {
 				//must be after the getDropTableAttributeStatement
 				if ($fks_to_add)
 					foreach ($fks_to_add as $fk_table => $fks_attr_name_to_add) {
-						if (!empty($fks_attr_name_to_add)) {
-							$constraint_name = $repeated_constraints_name[0];
+						if ($fks_attr_name_to_add) {
+							$constraint_name = isset($repeated_constraints_name[0]) ? $repeated_constraints_name[0] : null;
 							$fk = array(
 								"child_column" => array_keys($fks_attr_name_to_add),
 								"parent_column" => array_values($fks_attr_name_to_add),
@@ -98,17 +101,17 @@ if ($bean_name && $action) {
 			if ($extra) {
 				$diagram_tables_to_be_updated[] = $extra;
 				$php_to_db_column_types = $DBDriver->getPHPToDBColumnTypes();
-				$db_column_date_type = $php_to_db_column_types["timestamp"];
+				$db_column_date_type = isset($php_to_db_column_types["timestamp"]) ? $php_to_db_column_types["timestamp"] : null;
 				
 				$db_column_simple_types = $DBDriver->getDBColumnSimpleTypes();
-				$db_column_simple_type_pk = $db_column_simple_types && $db_column_simple_types["simple_auto_primary_key"] ? $db_column_simple_types["simple_auto_primary_key"] : null;
+				$db_column_simple_type_pk = $db_column_simple_types && !empty($db_column_simple_types["simple_auto_primary_key"]) ? $db_column_simple_types["simple_auto_primary_key"] : null;
 				
 				if (!$db_column_simple_type_pk) {
 					$db_column_mandatory_length_types = $DBDriver->getDBColumnMandatoryLengthTypes();
 					
 					$db_column_simple_type_pk = array(
-						"type" => $php_to_db_column_types["bigint"], 
-						"length" => $db_column_mandatory_length_types["bigint"] ? $db_column_mandatory_length_types["bigint"] : 20, 
+						"type" => isset($php_to_db_column_types["bigint"]) ? $php_to_db_column_types["bigint"] : null, 
+						"length" => !empty($db_column_mandatory_length_types["bigint"]) ? $db_column_mandatory_length_types["bigint"] : 20, 
 						"null" => false, 
 						"primary_key" => true, 
 						"auto_increment" => true, 
@@ -121,12 +124,12 @@ if ($bean_name && $action) {
 					"attributes" => array(
 						array(
 							"name" => $extra . "_id",
-							"type" => $db_column_simple_type_pk["type"] ? $db_column_simple_type_pk["type"] : "int",
-							"length" => $db_column_simple_type_pk["length"] ? $db_column_simple_type_pk["length"] : 20,
-							"primary_key" => empty($db_column_simple_type_pk) || $db_column_simple_type_pk["primary_key"] ? 1 : "",
-							"auto_increment" => empty($db_column_simple_type_pk) || $db_column_simple_type_pk["auto_increment"] ? 1 : "",
-							"unsigned" => empty($db_column_simple_type_pk) || $db_column_simple_type_pk["unsigned"] ? 1 : "",
-							"null" => $db_column_simple_type_pk["null"] ? 1 : "",
+							"type" => !empty($db_column_simple_type_pk["type"]) ? $db_column_simple_type_pk["type"] : "int",
+							"length" => !empty($db_column_simple_type_pk["length"]) ? $db_column_simple_type_pk["length"] : 20,
+							"primary_key" => !$db_column_simple_type_pk || !empty($db_column_simple_type_pk["primary_key"]) ? 1 : "",
+							"auto_increment" => !$db_column_simple_type_pk || !empty($db_column_simple_type_pk["auto_increment"]) ? 1 : "",
+							"unsigned" => !$db_column_simple_type_pk || !empty($db_column_simple_type_pk["unsigned"]) ? 1 : "",
+							"null" => !empty($db_column_simple_type_pk["null"]) ? 1 : "",
 						),
 					),
 				);
@@ -141,9 +144,9 @@ if ($bean_name && $action) {
 					
 					$table_data["attributes"][] = array(
 						"name" => "created_user_id",
-						"type" => $db_column_simple_type_pk["type"] ? $db_column_simple_type_pk["type"] : "int",
-						"length" => $db_column_simple_type_pk["length"] ? $db_column_simple_type_pk["length"] : 20,
-						"unsigned" => empty($db_column_simple_type_pk) || $db_column_simple_type_pk["unsigned"] ? 1 : "",
+						"type" => !empty($db_column_simple_type_pk["type"]) ? $db_column_simple_type_pk["type"] : "int",
+						"length" => !empty($db_column_simple_type_pk["length"]) ? $db_column_simple_type_pk["length"] : 20,
+						"unsigned" => !$db_column_simple_type_pk || !empty($db_column_simple_type_pk["unsigned"]) ? 1 : "",
 						"null" => 1,
 					);
 					
@@ -156,9 +159,9 @@ if ($bean_name && $action) {
 					
 					$table_data["attributes"][] = array(
 						"name" => "modified_user_id",
-						"type" => $db_column_simple_type_pk["type"] ? $db_column_simple_type_pk["type"] : "int",
-						"length" => $db_column_simple_type_pk["length"] ? $db_column_simple_type_pk["length"] : 20,
-						"unsigned" => empty($db_column_simple_type_pk) || $db_column_simple_type_pk["unsigned"] ? 1 : "",
+						"type" => !empty($db_column_simple_type_pk["type"]) ? $db_column_simple_type_pk["type"] : "int",
+						"length" => !empty($db_column_simple_type_pk["length"]) ? $db_column_simple_type_pk["length"] : 20,
+						"unsigned" => !$db_column_simple_type_pk || !empty($db_column_simple_type_pk["unsigned"]) ? 1 : "",
 						"null" => 1,
 					);
 				}
@@ -170,7 +173,7 @@ if ($bean_name && $action) {
 			break;
 		
 		case "add_attribute":
-			$table = $_GET["table"];
+			$table = isset($_GET["table"]) ? $_GET["table"] : null;
 			
 			if ($table && $extra) {
 				$diagram_tables_to_be_updated[] = $table;
@@ -181,9 +184,9 @@ if ($bean_name && $action) {
 				
 				$attribute_data = array(
 					"name" => $extra,
-					"type" => $php_to_db_column_types["varchar"],
-					"length" => $db_column_mandatory_length_types["varchar"],
-					"default" => $db_column_default_values_by_type["varchar"],
+					"type" => isset($php_to_db_column_types["varchar"]) ? $php_to_db_column_types["varchar"] : null,
+					"length" => isset($db_column_mandatory_length_types["varchar"]) ? $db_column_mandatory_length_types["varchar"] : null,
+					"default" => isset($db_column_default_values_by_type["varchar"]) ? $db_column_default_values_by_type["varchar"] : null,
 					"null" => 1,
 				);
 				
@@ -194,10 +197,10 @@ if ($bean_name && $action) {
 				
 				if ($attrs)
 					foreach ($attrs as $attr) {
-						if ($attr["primary_key"])
+						if (!empty($attr["primary_key"]))
 							$exists_pk = true;
 						
-						if ($attr["auto_increment"])
+						if (!empty($attr["auto_increment"]))
 							$exists_auto_increment = true;
 						
 						if ($exists_pk && $exists_auto_increment)
@@ -220,10 +223,10 @@ if ($bean_name && $action) {
 								$length = strlen($n);
 								
 								if ($max_length === null || $length > $max_length || $length == $an_length) {
-									if ($exists_pk && $simple_props["primary_key"])
+									if ($exists_pk && !empty($simple_props["primary_key"]))
 										continue; //if there is already a primary key, don't set another one automatically, so skip this prop
 									
-									if ($exists_auto_increment && $simple_props["auto_increment"])
+									if ($exists_auto_increment && !empty($simple_props["auto_increment"]))
 										continue; //it can only be one attribute with auto_increment prop, so we need to skip this simple prop
 									
 									$max_length = $length;
@@ -256,12 +259,12 @@ if ($bean_name && $action) {
 			break;
 		
 		case "add_fk_attribute":
-			$table = $_GET["table"];
-			$fk_table = $_GET["fk_table"];
-			$fk_attribute = $_GET["fk_attribute"];
-			$previous_attribute = $_GET["previous_attribute"];
-			$next_attribute = $_GET["next_attribute"];
-			$attribute_index = $_GET["attribute_index"];
+			$table = isset($_GET["table"]) ? $_GET["table"] : null;
+			$fk_table = isset($_GET["fk_table"]) ? $_GET["fk_table"] : null;
+			$fk_attribute = isset($_GET["fk_attribute"]) ? $_GET["fk_attribute"] : null;
+			$previous_attribute = isset($_GET["previous_attribute"]) ? $_GET["previous_attribute"] : null;
+			$next_attribute = isset($_GET["next_attribute"]) ? $_GET["next_attribute"] : null;
+			$attribute_index = isset($_GET["attribute_index"]) ? $_GET["attribute_index"] : null;
 			
 			if ($table && $fk_table) {
 				$diagram_tables_to_be_updated[] = $table;
@@ -276,10 +279,10 @@ if ($bean_name && $action) {
 						$is_same_table = $table == $fk_table;
 						
 						foreach ($fk_attrs as $attr_name => $attr) 
-							if ($attr["primary_key"])
+							if (!empty($attr["primary_key"]))
 								$attrs_to_add[$attr_name] = $attr;
 					}
-					else if ($fk_attrs[$fk_attribute])
+					else if (!empty($fk_attrs[$fk_attribute]))
 						$attrs_to_add[$fk_attribute] = $fk_attrs[$fk_attribute];
 					else
 						$status = "Foreign attribute '$fk_attribute' does not exist anymore in table '$fk_table'!";
@@ -290,8 +293,8 @@ if ($bean_name && $action) {
 						
 						//preparing sorting attribute
 						$r = prepareSortingAttributeSettings($previous_attribute, $next_attribute, $attribute_index, $attrs);
-						$is_first_attribute = $r["is_first_attribute"];
-						$previous_attribute = $r["previous_attribute"];
+						$is_first_attribute = isset($r["is_first_attribute"]) ? $r["is_first_attribute"] : null;
+						$previous_attribute = isset($r["previous_attribute"]) ? $r["previous_attribute"] : null;
 						
 						//preparing sql
 						$sql = array();
@@ -303,7 +306,7 @@ if ($bean_name && $action) {
 							$new_attr_name = $attr_name;
 							
 							//if table and fk_table are the same, then add attribute name with parent_ prefix, because we want to add another attribute pointing to the same table it-self.
-							if ($is_same_table)
+							if (!empty($is_same_table))
 								do {
 									$new_attr_name = "parent_" . $new_attr_name;
 								}
@@ -311,15 +314,15 @@ if ($bean_name && $action) {
 							
 							//prepare attribute sorting. If not previous_attribute neither next_attribute, appends new attributes which is the default behaviour.
 							//add attribute, if not exists yet
-							if (!$attrs[$new_attr_name]) {
+							if (empty($attrs[$new_attr_name])) {
 								$attribute_data = array(
 									"name" => $new_attr_name,
-									"type" => $attr["type"],
-									"length" => $attr["length"],
+									"type" => isset($attr["type"]) ? $attr["type"] : null,
+									"length" => isset($attr["length"]) ? $attr["length"] : null,
 									"null" => 1,
-									"unsigned" => $attr["unsigned"],
-									"charset" => $attr["charset"],
-									"collation" => $attr["collation"],
+									"unsigned" => isset($attr["unsigned"]) ? $attr["unsigned"] : null,
+									"charset" => isset($attr["charset"]) ? $attr["charset"] : null,
+									"collation" => isset($attr["collation"]) ? $attr["collation"] : null,
 								);
 								
 								//insert after attribute
@@ -341,20 +344,26 @@ if ($bean_name && $action) {
 							$fk_exists = false;
 							
 							if ($fks)
-								foreach ($fks as $fk)
-									if ($fk["child_column"] == $new_attr_name && $fk["parent_table"] == $fk_table && $fk["parent_column"] == $attr_name) {
+								foreach ($fks as $fk) {
+									$fk_child_column = isset($fk["child_column"]) ? $fk["child_column"] : null;
+									$fk_parent_table = isset($fk["parent_table"]) ? $fk["parent_table"] : null;
+									$fk_parent_column = isset($fk["parent_column"]) ? $fk["parent_column"] : null;
+									
+									if ($fk_child_column == $new_attr_name && $fk_parent_table == $fk_table && $fk_parent_column == $attr_name) {
 										$fk_exists = true;
 										break;
 									}
+								}
 							
 							//Note that I cannot have separate foreign keys sets for the same foreign table, so I must delete first all foreign keys related with the $fk_table and then add them again with the new $new_attr_name
 							if (!$fk_exists) {
 								if ($fks) {
 									foreach ($fks as $fk)
-										if ($fk["parent_table"] == $fk_table) {
-											$fks_attr_name_to_add[ $fk["child_column"] ] = $fk["parent_column"];
+										if (isset($fk["parent_table"]) && $fk["parent_table"] == $fk_table) {
+											$fk_child_column = isset($fk["child_column"]) ? $fk["child_column"] : null;
+											$fks_attr_name_to_add[$fk_child_column] = isset($fk["parent_column"]) ? $fk["parent_column"] : null;
 											
-											if ($fk["constraint_name"] && !in_array($fk["constraint_name"], $repeated_constraints_name)) {
+											if (!empty($fk["constraint_name"]) && !in_array($fk["constraint_name"], $repeated_constraints_name)) {
 												$repeated_constraints_name[] = $fk["constraint_name"];
 												$sql[] = $DBDriver->getDropTableForeignConstraintStatement($table, $fk["constraint_name"]);
 											}
@@ -366,7 +375,7 @@ if ($bean_name && $action) {
 						}
 						
 						if (!empty($fks_attr_name_to_add)) {
-							$constraint_name = $repeated_constraints_name[0];
+							$constraint_name = isset($repeated_constraints_name[0]) ? $repeated_constraints_name[0] : null;
 							$fk = array(
 								"child_column" => array_keys($fks_attr_name_to_add),
 								"parent_column" => array_values($fks_attr_name_to_add),
@@ -391,7 +400,7 @@ if ($bean_name && $action) {
 			break;
 		
 		case "rename_table":
-			$table = $_GET["table"];
+			$table = isset($_GET["table"]) ? $_GET["table"] : null;
 			
 			if ($table && $extra) {
 				$diagram_tables_to_be_updated[$table] = $extra;
@@ -402,8 +411,8 @@ if ($bean_name && $action) {
 			break;
 		
 		case "rename_attribute":
-			$table = $_GET["table"];
-			$attribute = $_GET["attribute"];
+			$table = isset($_GET["table"]) ? $_GET["table"] : null;
+			$attribute = isset($_GET["attribute"]) ? $_GET["attribute"] : null;
 			
 			if ($table && $attribute && $extra) {
 				$diagram_tables_to_be_updated[] = $table;
@@ -418,22 +427,22 @@ if ($bean_name && $action) {
 			break;
 		
 		case "sort_attribute":
-			$table = $_GET["table"];
-			$attribute = $_GET["attribute"];
-			$previous_attribute = $_GET["previous_attribute"];
-			$next_attribute = $_GET["next_attribute"];
-			$attribute_index = $_GET["attribute_index"];
+			$table = isset($_GET["table"]) ? $_GET["table"] : null;
+			$attribute = isset($_GET["attribute"]) ? $_GET["attribute"] : null;
+			$previous_attribute = isset($_GET["previous_attribute"]) ? $_GET["previous_attribute"] : null;
+			$next_attribute = isset($_GET["next_attribute"]) ? $_GET["next_attribute"] : null;
+			$attribute_index = isset($_GET["attribute_index"]) ? $_GET["attribute_index"] : null;
 			
 			if ($DBDriver->allowTableAttributeSorting()) {
 				$diagram_tables_to_be_updated[] = $table;
 				$attrs = $DBDriver->listTableFields($table);
-				$attr = $attrs[$attribute];
+				$attr = isset($attrs[$attribute]) ? $attrs[$attribute] : null;
 				
 				if ($attr) {
 					//preparing sorting attribute
 					$r = prepareSortingAttributeSettings($previous_attribute, $next_attribute, $attribute_index, $attrs);
-					$is_first_attribute = $r["is_first_attribute"];
-					$previous_attribute = $r["previous_attribute"];
+					$is_first_attribute = isset($r["is_first_attribute"]) ? $r["is_first_attribute"] : null;
+					$previous_attribute = isset($r["previous_attribute"]) ? $r["previous_attribute"] : null;
 					
 					//insert after attribute
 					if ($previous_attribute || $is_first_attribute) {
@@ -453,17 +462,17 @@ if ($bean_name && $action) {
 			break;
 		
 		case "set_primary_key":
-			$table = $_GET["table"];
-			$attribute = $_GET["attribute"];
+			$table = isset($_GET["table"]) ? $_GET["table"] : null;
+			$attribute = isset($_GET["attribute"]) ? $_GET["attribute"] : null;
 			
 			if ($table && $attribute) {
 				$diagram_tables_to_be_updated[] = $table;
-				$properties = json_decode($_GET["properties"], true);
-				$primary_key = $properties["primary_key"];
+				$properties = isset($_GET["properties"]) ? json_decode($_GET["properties"], true) : null;
+				$primary_key = isset($properties["primary_key"]) ? $properties["primary_key"] : null;
 				
 				$attrs = $DBDriver->listTableFields($table);
-				$attr = $attrs[$attribute];
-				$is_different = $primary_key && !$attr["primary_key"] || !$primary_key && $attr["primary_key"]; //check if primary key is different
+				$attr = isset($attrs[$attribute]) ? $attrs[$attribute] : null;
+				$is_different = ($primary_key && empty($attr["primary_key"])) || (!$primary_key && !empty($attr["primary_key"])); //check if primary key is different
 				
 				if ($is_different)
 					$sql = getPrimaryKeySQLs($DBDriver, $table, $attrs, $attribute, $primary_key);
@@ -476,28 +485,28 @@ if ($bean_name && $action) {
 		
 		case "set_null":
 		case "set_type":
-			$table = $_GET["table"];
-			$attribute = $_GET["attribute"];
+			$table = isset($_GET["table"]) ? $_GET["table"] : null;
+			$attribute = isset($_GET["attribute"]) ? $_GET["attribute"] : null;
 			
 			if ($table && $attribute) {
 				$diagram_tables_to_be_updated[] = $table;
-				$properties = json_decode($_GET["properties"], true);
-				$type = trim($properties["type"]);
+				$properties = isset($_GET["properties"]) ? json_decode($_GET["properties"], true) : null;
+				$type = isset($properties["type"]) ? trim($properties["type"]) : null;
 				
 				$attrs = $DBDriver->listTableFields($table);
-				$attr = $attrs[$attribute];
+				$attr = isset($attrs[$attribute]) ? $attrs[$attribute] : null;
 				
 				if ($attr) {
 					$is_different = false;
 					$is_new_pk = false;
 					
 					if ($action == "set_type") {
-						if (!$properties["length"]) {
+						if (empty($properties["length"])) {
 							$db_column_mandatory_length_types = $DBDriver->getDBColumnMandatoryLengthTypes();
-							$properties["length"] = $db_column_mandatory_length_types[$type];
+							$properties["length"] = isset($db_column_mandatory_length_types[$type]) ? $db_column_mandatory_length_types[$type] : null;
 						}
 						
-						$is_new_pk = $properties["primary_key"] && !$attr["primary_key"]; //check if primary_key is different
+						$is_new_pk = !empty($properties["primary_key"]) && empty($attr["primary_key"]); //check if primary_key is different
 						
 						//if type is a simple type there will be other properties to replace in $attr
 						foreach ($properties as $k => $v)
@@ -507,9 +516,9 @@ if ($bean_name && $action) {
 							}
 					}
 					else if ($action == "set_null") {
-						$type = $attr["type"];
-						$is_different = $properties["null"] && !$attr["null"] || !$properties["null"] && $attr["null"]; //check if null is different
-						$attr["null"] = $properties["null"];
+						$type = isset($attr["type"]) ? $attr["type"] : null;
+						$is_different = (!empty($properties["null"]) && empty($attr["null"])) || (empty($properties["null"]) && !empty($attr["null"])); //check if null is different
+						$attr["null"] = isset($properties["null"]) ? $properties["null"] : null;
 					}
 					
 					if ($is_different) {
@@ -537,7 +546,7 @@ if ($bean_name && $action) {
 			break;
 	}
 	
-	if ($sql) {
+	if (!empty($sql)) {
 		//execute sql by order
 		$sql = is_array($sql) ? $sql : array($sql);
 		
@@ -549,7 +558,7 @@ if ($bean_name && $action) {
 					$statements[] = preg_replace("/;$/", "", trim($statement)) . ";"; //Do not remove the space before the ; because if we have this sql "DELIMITER ;", it will convert it to "DELIMITER;" which will not be recognized.
 		}
 		
-		if ($statements) {
+		if (!empty($statements)) {
 			//print_r($statements);die();
 			$exception = null;
 			
@@ -563,13 +572,13 @@ if ($bean_name && $action) {
 			
 			if ($status) {
 				//update correspondent in diagram if it exists for table: $diagram_tables_to_be_updated
-				if ($diagram_tables_to_be_updated) {
+				if (!empty($diagram_tables_to_be_updated)) {
 					$tasks_file_path = WorkFlowTasksFileHandler::getDBDiagramTaskFilePath($workflow_paths_id, "db_diagram", $bean_name);
 					
 					//only update diagram if diagram settings is to sync with server
 					$diagram_settings = WorkFlowDBHandler::getTaskDBDiagramSettings($tasks_file_path);
 					
-					if ($diagram_settings["sync_with_db_server"] || !array_key_exists("sync_with_db_server", $diagram_settings)) {
+					if (!empty($diagram_settings["sync_with_db_server"]) || !array_key_exists("sync_with_db_server", $diagram_settings)) {
 						$WorkFlowDBHandler = new WorkFlowDBHandler($user_beans_folder_path, $user_global_variables_file_path);
 						
 						if ($action == "remove_table")
@@ -583,7 +592,7 @@ if ($bean_name && $action) {
 			}
 			else {
 				//execute rollback sql
-				if ($rollback_sql) {
+				if (!empty($rollback_sql)) {
 					try {
 						$DBDriver->setSQL($rollback_sql);
 					}
@@ -596,7 +605,7 @@ if ($bean_name && $action) {
 				$status = array(
 					"sql" => $sql,
 					"error" => $DBDriver->error(),
-					"rollback_sql" => $rollback_sql
+					"rollback_sql" => isset($rollback_sql) ? $rollback_sql : null
 				);
 				
 				//if exception, launch it
@@ -617,26 +626,26 @@ die();
 
 function prepareSortingAttributeSettings($previous_attribute, $next_attribute, $attribute_index, $attrs) {
 	$is_first_attribute = false;
-	$previous_attribute = $previous_attribute && $attrs[$previous_attribute] ? $previous_attribute : null;
+	$previous_attribute = $previous_attribute && !empty($attrs[$previous_attribute]) ? $previous_attribute : null;
 	
 	if (!$previous_attribute) {
 		$attrs_keys = array_keys($attrs);
 		$attrs_indexes_by_keys = array_flip($attrs_keys);
 		
-		if ($next_attribute && $attrs[$next_attribute]) {
+		if ($next_attribute && !empty($attrs[$next_attribute])) {
 			$index = $attrs_indexes_by_keys[$next_attribute];
 			$index--;
 			
 			if ($index >= 0)
-				$previous_attribute = $attrs_keys[$index];
+				$previous_attribute = isset($attrs_keys[$index]) ? $attrs_keys[$index] : null;
 			else
 				$is_first_attribute = true;
 		}
-		else if ($attribute_index && $attrs_keys[$attribute_index]) {
+		else if ($attribute_index && !empty($attrs_keys[$attribute_index])) {
 			$index = $attribute_index - 1;
 			
 			if ($index >= 0)
-				$previous_attribute = $attrs_keys[$index];
+				$previous_attribute = isset($attrs_keys[$index]) ? $attrs_keys[$index] : null;
 			else
 				$is_first_attribute = true;
 		}
@@ -655,10 +664,10 @@ function getPrimaryKeySQLs($DBDriver, $table, $attrs, $attribute, $primary_key) 
 	
 	if ($attrs)
 		foreach ($attrs as $attr_name => $attr) 
-			if ($attr["primary_key"]) {
+			if (!empty($attr["primary_key"])) {
 				$pks[$attr_name] = $attr_name;
 				
-				if ($attr["auto_increment"]) 
+				if (!empty($attr["auto_increment"]))
 					$auto_increment_attrs[$attr_name] = $attr;
 			}
 	
@@ -686,7 +695,7 @@ function getPrimaryKeySQLs($DBDriver, $table, $attrs, $attribute, $primary_key) 
 	//Add auto_increment attributes again if still primary keys
 	if ($auto_increment_attrs)
 		foreach ($auto_increment_attrs as $attr_name => $attr) 
-			if ($pks[$attr_name]) {
+			if (!empty($pks[$attr_name])) {
 				$attr["auto_increment"] = true;
 				$sql[] = $DBDriver->getModifyTableAttributeStatement($table, $attr);
 			}

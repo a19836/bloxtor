@@ -31,9 +31,9 @@ $main_content = '
 $t = count($modules);
 for ($i = 0; $i < $t; $i++) {
 	$m = $modules[$i];
-	$is_selected = $default_presentation_layer_name && $default_presentation_layer_name == $m["bean_name"];
+	$is_selected = $default_presentation_layer_name && isset($m["bean_name"]) && $default_presentation_layer_name == $m["bean_name"];
 	
-	$main_content .= '<option modules_id="layer_modules_' . $i . '"' . ($is_selected ? " selected" : "") . '>' . $m["item_label"] . '</option>';
+	$main_content .= '<option modules_id="layer_modules_' . $i . '"' . ($is_selected ? " selected" : "") . '>' . (isset($m["item_label"]) ? $m["item_label"] : "") . '</option>';
 }
 
 $main_content .= '		
@@ -42,9 +42,9 @@ $main_content .= '
 
 for ($i = 0; $i < $t; $i++) {
 	$m = $modules[$i];
-	$bean_name = $m["bean_name"];
-	$bean_file_name = $m["bean_file_name"];
-	$project_loaded_modules = $m["modules"];
+	$bean_name = isset($m["bean_name"]) ? $m["bean_name"] : null;
+	$bean_file_name = isset($m["bean_file_name"]) ? $m["bean_file_name"] : null;
+	$project_loaded_modules = isset($m["modules"]) ? $m["modules"] : null;
 	$is_selected = $default_presentation_layer_name && $default_presentation_layer_name == $bean_name;
 	
 	$delete_module_url = $project_url_prefix . "phpframework/admin/manage_module?bean_name=$bean_name&bean_file_name=$bean_file_name&action=uninstall&module_id=#module_id#";
@@ -82,31 +82,33 @@ for ($i = 0; $i < $t; $i++) {
 			$sub_main_content = "";
 			
 			foreach ($loaded_modules_by_group as $module_id => $loaded_module) 
-				if ($project_loaded_modules[$module_id]) { //only show if any, this is, if there is any module installed in the correspodent layer
-					$enable = CMSModuleEnableHandler::isModuleEnabled($project_loaded_modules[$module_id]["path"]);
+				if (!empty($project_loaded_modules[$module_id])) { //only show if any, this is, if there is any module installed in the correspodent layer
+					$enable = isset($project_loaded_modules[$module_id]["path"]) && CMSModuleEnableHandler::isModuleEnabled($project_loaded_modules[$module_id]["path"]);
 				
-					$admin_url = $loaded_module["admin_path"] ? $project_url_prefix . "phpframework/admin/module_admin?bean_name=$bean_name&bean_file_name=$bean_file_name" . ($is_selected ? '&filter_by_layout=' . $filter_by_layout : '') . "&group_module_id=$group_module_id" . ($popup ? "&popup=$popup" : '') : null;
+					$admin_url = !empty($loaded_module["admin_path"]) ? $project_url_prefix . "phpframework/admin/module_admin?bean_name=$bean_name&bean_file_name=$bean_file_name" . ($is_selected ? '&filter_by_layout=' . $filter_by_layout : '') . "&group_module_id=$group_module_id" . ($popup ? "&popup=$popup" : '') : null;
 					
 					$image = ''; //'No Photo'
 					
-					if ($loaded_module["images"][0]["url"]) {
-						if (preg_match("/\.svg$/i", $loaded_module["images"][0]["url"]) && file_exists($loaded_module["images"][0]["path"]))
+					if (!empty($loaded_module["images"][0]["url"])) {
+						if (preg_match("/\.svg$/i", $loaded_module["images"][0]["url"]) && !empty($loaded_module["images"][0]["path"]) && file_exists($loaded_module["images"][0]["path"]))
 							$image = file_get_contents($loaded_module["images"][0]["path"]);
 						else
 							$image = '<img src="' . $loaded_module["images"][0]["url"] . '" />';
 					}
 					
+					$loaded_module_id = isset($loaded_module["id"]) ? $loaded_module["id"] : null;
+					
 					$sub_main_content .= '<tr class="group_module_item" group_module_id="' . $group_module_id . '">
 						<td class="group"></td>
 						<td class="status"><span class="icon ' . ($enable ? 'enable' : 'disable') . '" title="This module is currently ' . ($enable ? 'enabled' : 'disabled') . '"></span></td>
 						<td class="photo">' . $image . '</td>
-						<td class="label">' . $loaded_module["label"] . '</td>
-						<td class="module_id">' . $loaded_module["id"] . '</td>
-						<td class="description">' . str_replace("\n", "<br>", $loaded_module["description"]) . '</td>
+						<td class="label">' . (isset($loaded_module["label"]) ? $loaded_module["label"] : "") . '</td>
+						<td class="module_id">' . $loaded_module_id . '</td>
+						<td class="description">' . (isset($loaded_module["description"]) ? str_replace("\n", "<br>", $loaded_module["description"]) : "") . '</td>
 						<td class="buttons">
-							<span class="icon disable" ' . ($enable ? '' : 'style="display:none;"') . ' onClick="disableModule(this, \'' . str_replace("#module_id#", $loaded_module["id"], $disable_module_url) . '\')" title="Click here to disable this module"></span>
-							<span class="icon enable" ' . ($enable ? 'style="display:none;"' : '') . ' onClick="enableModule(this, \'' . str_replace("#module_id#", $loaded_module["id"], $enable_module_url) . '\')" title="Click here to enable this module"></span>
-							' . (!$loaded_module["is_reserved_module"] ? '<span class="icon delete" onClick="deleteModule(this, \'' . str_replace("#module_id#", $group_module_id, $delete_module_url) . '\', \'' . $module_id . '\', \'' . $group_module_id . '\')" title="Click here to delete this module permanently"></span>' : '') . '
+							<span class="icon disable" ' . ($enable ? '' : 'style="display:none;"') . ' onClick="disableModule(this, \'' . str_replace("#module_id#", $loaded_module_id, $disable_module_url) . '\')" title="Click here to disable this module"></span>
+							<span class="icon enable" ' . ($enable ? 'style="display:none;"' : '') . ' onClick="enableModule(this, \'' . str_replace("#module_id#", $loaded_module_id, $enable_module_url) . '\')" title="Click here to enable this module"></span>
+							' . (empty($loaded_module["is_reserved_module"]) ? '<span class="icon delete" onClick="deleteModule(this, \'' . str_replace("#module_id#", $group_module_id, $delete_module_url) . '\', \'' . $module_id . '\', \'' . $group_module_id . '\')" title="Click here to delete this module permanently"></span>' : '') . '
 							' . ($is_module_admin_allowed && $admin_url ? '<a href="' . $admin_url . '" class="icon settings" title="Go to this module\'s Admin Panel"></a>' : '') . '
 						</td>
 					</tr>';

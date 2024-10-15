@@ -559,12 +559,12 @@ class DBDumperHandler {
 		for ($i = 0; $i < count($this->tables); $i++) {
 			$table = $this->tables[$i];
 
-			if ($this->tables_fks[$table]) {
+			if (!empty($this->tables_fks[$table])) {
 				//echo "\nParsing $table";
 				//echo "\nAll fks for $table";print_r($this->tables_fks[$table]);
         		
 				foreach ($this->tables_fks[$table] as $fk) {
-					$parent_table = $fk["parent_table"]; //no need for isset here, bc it was checked before
+					$parent_table = isset($fk["parent_table"]) ? $fk["parent_table"] : null; //no need for isset here, bc it was checked before
 					$found_index = array_search($parent_table, $this->tables);
 					//echo "\n$table: $i\n$parent_table:$found_index\nis parent parsed:" . $parsed[$table]."\n";
 
@@ -573,7 +573,7 @@ class DBDumperHandler {
 						//if (in_array($table, array("item", "sub_item"))){ echo "\nfk for $table:";print_r($fk);}
 
 						//If a table as already parsed and if $i < $found_index, it means that this parsed table was already moved automatically bc of another table, which has a foreign key to it. In this case, we should not move it, otherwise we can have an infinity loop. We should register this table so we can have the correspondent foreign key sql separated from the created table sql.
-						if ($parsed[$table]) {
+						if (!empty($parsed[$table])) {
 							$this->tables_outside_fks[$table][] = $fk;
 							//echo "add outside fk:";print_r($fk);
 						}
@@ -695,7 +695,7 @@ class DBDumperHandler {
 
 		if (is_array($patterns)) {
 			foreach ($patterns as $pattern) {
-				if ($pattern[0] != '/')
+				if (!isset($pattern[0]) || $pattern[0] != '/')
 					continue;
 				
 				if (preg_match($pattern, $table) == 1)
@@ -1011,7 +1011,7 @@ class DBDumperHandler {
 		
 		foreach ($rows as $row) {
 			if (!empty($this->db_dumper_settings['add-drop-event']))
-				$this->FileCompressionHandler->write( $this->DBDriverDumper->getDropEventStmt($function_name) );
+				$this->FileCompressionHandler->write( $this->DBDriverDumper->getDropEventStmt($event_name) );
 			
 			$this->FileCompressionHandler->write( $this->DBDriverDumper->createEvent($row) );
 			
@@ -1021,7 +1021,7 @@ class DBDumperHandler {
 
 	public function prepareTableRowAttributes($table_name, array $row) {
 		$ret = array();
-		$attr_props = $this->tables_attributes_types[$table_name];
+		$attr_props = isset($this->tables_attributes_types[$table_name]) ? $this->tables_attributes_types[$table_name] : null;
 
 		if ($this->callable_when_parsing_table_row)
 			$row = call_user_func($this->callable_when_parsing_table_row, $table_name, $row);
@@ -1030,7 +1030,7 @@ class DBDumperHandler {
 			if ($this->callable_when_parsing_table_row_attribute)
 				$attr_value = call_user_func($this->callable_when_parsing_table_row_attribute, $table_name, $attr_name, $attr_value, $row);
 			
-			$ret[] = $this->escape($attr_value, $attr_props[$attr_name]);
+			$ret[] = $this->escape($attr_value, isset($attr_props[$attr_name]) ? $attr_props[$attr_name] : null);
 		}
 
 		return $ret;
@@ -1059,10 +1059,10 @@ class DBDumperHandler {
 	 * Quotes a string to produce a result that can be used as a properly escaped data value in an SQL statement. The string is returned enclosed by single quotation marks and with each instance of backslash (\), single quote ('), ASCII NUL, and Control+Z preceded by a backslash. If the argument is NULL, the return value is the word “NULL” without enclosing single quotation marks.
 	 */
 	public function quote($str) {
-		if ($this->link)
-			switch ($this->extension) {
+		if ($this->DBDriver)
+			switch ($this->DBDriver->getConnectionPHPExtensionType()) {
 				case "pdo": 
-					$ret = $this->link->quote($str); //if server doesn't support this feature will return false.
+					$ret = $this->DBDriver->quote($str); //if server doesn't support this feature will return false.
 					
 					if ($ret !== false)
 						return $ret;

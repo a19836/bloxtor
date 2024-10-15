@@ -3,6 +3,25 @@ include $EVC->getUtilPath("WorkFlowUIHandler");
 include $EVC->getUtilPath("WorkFlowPresentationHandler");
 include $EVC->getUtilPath("WorkFlowBrokersSelectedDBVarsHandler");
 
+$db_drivers_options = isset($db_drivers_options) ? $db_drivers_options : null;
+$available_projects = isset($available_projects) ? $available_projects : null;
+
+$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+$business_logic_brokers = isset($business_logic_brokers) ? $business_logic_brokers : null;
+$data_access_brokers = isset($data_access_brokers) ? $data_access_brokers : null;
+$ibatis_brokers = isset($ibatis_brokers) ? $ibatis_brokers : null;
+$hibernate_brokers = isset($hibernate_brokers) ? $hibernate_brokers : null;
+$db_brokers = isset($db_brokers) ? $db_brokers : null;
+
+$presentation_brokers_obj = isset($presentation_brokers_obj) ? $presentation_brokers_obj : null;
+$presentation_evc_brokers_obj = isset($presentation_evc_brokers_obj) ? $presentation_evc_brokers_obj : null;
+$presentation_evc_template_brokers_obj = isset($presentation_evc_template_brokers_obj) ? $presentation_evc_template_brokers_obj : null;
+$business_logic_brokers_obj = isset($business_logic_brokers_obj) ? $business_logic_brokers_obj : null;
+$data_access_brokers_obj = isset($data_access_brokers_obj) ? $data_access_brokers_obj : null;
+$ibatis_brokers_obj = isset($ibatis_brokers_obj) ? $ibatis_brokers_obj : null;
+$hibernate_brokers_obj = isset($hibernate_brokers_obj) ? $hibernate_brokers_obj : null;
+$db_brokers_obj = isset($db_brokers_obj) ? $db_brokers_obj : null;
+
 $is_obj_valid = !empty($obj_data);
 
 $WorkFlowUIHandler = new WorkFlowUIHandler($WorkFlowTaskHandler, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
@@ -13,7 +32,7 @@ $WorkFlowUIHandler->setTasksGroupsByTag(array(
 	"DB" => array("getdbdriver", "setquerydata", "getquerydata", "dbdaoaction", "callibatisquery", "callhibernateobject", "callhibernatemethod"),
 	"Layers" => array("callbusinesslogic", "callpresentationlayerwebservice", "setpresentationview", "addpresentationview", "setpresentationtemplate"),
 	"HTML" => array("inlinehtml", "createform"),
-	"CMS" => array("setblockparams", "settemplateregionblockparam", "includeblock", "addtemplateregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam"),
+	"CMS" => array("setblockparams", "settemplateregionblockparam", "includeblock", "addregionhtml", "addregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam"),
 ));
 $WorkFlowUIHandler->addFoldersTasksToTasksGroups($code_workflow_editor_user_tasks_folders_path);
 
@@ -61,17 +80,17 @@ $head .= '
 		"all" => $db_drivers_options
 	)
 )) . '
-var db_driver_brokers = ' . json_encode($db_driver_brokers) . ';
+var db_driver_brokers = ' . (isset($db_driver_brokers) ? json_encode($db_driver_brokers) : "null") . ';
 </script>
 
 <script>
 var is_obj_valid = ' . ($is_obj_valid ? "true" : "false") . ';
 var layer_type = null;
 var selected_project_id = null;
-var file_modified_time = ' . $file_modified_time . '; //for version control
+var file_modified_time = ' . (isset($file_modified_time) ? $file_modified_time : "null") . '; //for version control
 
-var layer_brokers_settings = ' . json_encode($layer_brokers_settings) . ';
-var layers_projects_urls = ' . json_encode($layers_projects_urls) . ';
+var layer_brokers_settings = ' . (isset($layer_brokers_settings) ? json_encode($layer_brokers_settings) : "null") . ';
+var layers_projects_urls = ' . (isset($layers_projects_urls) ? json_encode($layers_projects_urls) : "null") . ';
 
 var get_workflow_file_url = \'' . $get_workflow_file_url . '\';
 var save_object_url = \'' . $save_url . '\';
@@ -104,7 +123,7 @@ if (typeof FunctionUtilObj != "undefined" && FunctionUtilObj)
 	FunctionUtilObj.on_function_task_edit_method_code_callback = onFunctionTaskEditMethodCode;
 
 GetBeanObjectTaskPropertyObj.phpframeworks_options = ' . json_encode($phpframeworks_options) . ';
-GetBeanObjectTaskPropertyObj.bean_names_options = ' . json_encode($bean_names_options) . ';
+GetBeanObjectTaskPropertyObj.bean_names_options = ' . (isset($bean_names_options) ? json_encode($bean_names_options) : "null") . ';
 
 CreateFormTaskPropertyObj.editor_ready_func = initLayoutUIEditorWidgetResourceOptionsInEditTest;
 CreateFormTaskPropertyObj.layout_ui_editor_menu_widgets_elm_selector = \'.ui-menu-widgets-backup\';
@@ -138,8 +157,8 @@ if (typeof SetTemplateParamTaskPropertyObj != "undefined" && SetTemplateParamTas
 if (typeof RenderTemplateRegionTaskPropertyObj != "undefined" && RenderTemplateRegionTaskPropertyObj)
 	RenderTemplateRegionTaskPropertyObj.brokers_options = ' . json_encode($presentation_evc_template_brokers_obj) . ';
 
-if (typeof AddTemplateRegionBlockTaskPropertyObj != "undefined" && AddTemplateRegionBlockTaskPropertyObj)
-	AddTemplateRegionBlockTaskPropertyObj.brokers_options = ' . json_encode($presentation_evc_template_brokers_obj) . ';
+if (typeof AddRegionBlockTaskPropertyObj != "undefined" && AddRegionBlockTaskPropertyObj)
+	AddRegionBlockTaskPropertyObj.brokers_options = ' . json_encode($presentation_evc_template_brokers_obj) . ';
 
 if (typeof IncludeBlockTaskPropertyObj != "undefined" && IncludeBlockTaskPropertyObj) {
 	IncludeBlockTaskPropertyObj.on_choose_file_callback = onIncludeBlockTaskChooseFile;
@@ -226,7 +245,7 @@ if ($is_obj_valid) {
 			</div>
 			<div class="enabled">
 				<label>Is Enabled:</label>
-				<input type="checkbox" value="1" ' . ($enabled ? "checked" : "") . ' />
+				<input type="checkbox" value="1" ' . (!empty($enabled) ? "checked" : "") . ' />
 			</div>
 			<div class="global_variables_files_path">
 				<label>Global Variables Files Path:</label>
@@ -274,7 +293,7 @@ if ($is_obj_valid) {
 			<div class="comments">
 				<label>Comments:</label>';
 		
-		$comments = is_array($obj_data["comments"]) ? implode("\n", $obj_data["comments"]) : "";
+		$comments = isset($obj_data["comments"]) && is_array($obj_data["comments"]) ? implode("\n", $obj_data["comments"]) : "";
 		$comments .= $method_comments ? trim($method_comments) : "";
 		$comments = str_replace(array("/*", "*/", "//"), "", $comments);
 		
@@ -287,7 +306,7 @@ if ($is_obj_valid) {
 			<div class="code_menu top_bar_menu" onClick="openSubmenu(this)">
 				' . WorkFlowPresentationHandler::getCodeEditorMenuHtml(array("save_func" => "saveTest")) . '
 			</div>
-			<textarea>' . "<?php\n" . htmlspecialchars($obj_data["code"], ENT_NOQUOTES) . "\n?>" . '</textarea>
+			<textarea>' . "<?php\n" . (isset($obj_data["code"]) ? htmlspecialchars($obj_data["code"], ENT_NOQUOTES) : "") . "\n?>" . '</textarea>
 		</div>
 		
 		<div id="ui">' . WorkFlowPresentationHandler::getTaskFlowContentHtml($WorkFlowUIHandler, array("save_func" => "saveTest")) . '</div>

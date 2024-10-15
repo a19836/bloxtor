@@ -5,11 +5,11 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$item_type = $_GET["item_type"];
-$folder_type = $_GET["folder_type"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$item_type = isset($_GET["item_type"]) ? $_GET["item_type"] : null;
+$folder_type = isset($_GET["folder_type"]) ? $_GET["folder_type"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -48,10 +48,11 @@ if ($path && $file_exists) {
 	
 	if (is_dir($file_path)) {
 		$tmp_file = tmpfile();
-		$tmp_file_path = stream_get_meta_data($tmp_file)['uri']; // eg: /tmp/phpFx0513a
+		$tmp_file_path = stream_get_meta_data($tmp_file);
+		$tmp_file_path = isset($tmp_file_path['uri']) ? $tmp_file_path['uri'] : null; //eg: /tmp/phpFx0513a
 		
 		if (ZipHandler::zip($file_path, $tmp_file_path)) {
-			if ($folder_type == "template_folder" && $PEVC) {
+			if ($folder_type == "template_folder" && !empty($PEVC)) {
 				$webroot_template_path = $PEVC->getWebrootPath() . "template/" . substr($file_path, strlen($PEVC->getTemplatesPath()));
 				
 				if (file_exists($webroot_template_path) && is_dir($webroot_template_path))

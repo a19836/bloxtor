@@ -2,6 +2,10 @@
 .install_wordpress {
 	text-align:center;
 }
+.install_wordpress .php_version {
+	margin-bottom:20px;
+	color:var(--link-color);
+}
 .install_wordpress label {
 	display:block;
 	width:100%;

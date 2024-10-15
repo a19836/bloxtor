@@ -1,4 +1,9 @@
 <?php
+$files = isset($files) ? $files : null;
+$default_layer = isset($default_layer) ? $default_layer : null;
+$default_project = isset($default_project) ? $default_project : null;
+$bean_folder = isset($bean_folder) ? $bean_folder : null;
+
 $admin_home_project_page_url = $project_url_prefix . "admin/admin_home_project?filter_by_layout=#filter_by_layout#";
 
 $head = '
@@ -33,8 +38,10 @@ $main_content = '
 
 if (is_array($files))
 	foreach ($files as $bn => $layer_props) {
+		$layer_bean_file_name = isset($layer_props["bean_file_name"]) ? $layer_props["bean_file_name"] : null;
+		$layer_item_label = isset($layer_props["item_label"]) ? $layer_props["item_label"] : null;
 		
-		$main_content .= '<option' . ($bn == $bean_name && $layer_props["bean_file_name"] == $bean_file_name ? " selected" : "") . ' bean_name="' . $bn . '" bean_file_name="' . $layer_props["bean_file_name"] . '">' . $layer_props["item_label"] . '</option>';
+		$main_content .= '<option' . ($bn == $bean_name && $layer_bean_file_name == $bean_file_name ? " selected" : "") . ' bean_name="' . $bn . '" bean_file_name="' . $layer_bean_file_name . '">' . $layer_item_label . '</option>';
 	}
 	
 $main_content .= '		
@@ -51,10 +58,12 @@ $main_content .= '
 $exists = false;
 
 if (is_array($files))
-	foreach ($files as $bn => $layer_props) 
-		if ($bn == $bean_name && $layer_props["bean_file_name"] == $bean_file_name) {
+	foreach ($files as $bn => $layer_props) {
+		$layer_bean_file_name = isset($layer_props["bean_file_name"]) ? $layer_props["bean_file_name"] : null;
+		
+		if ($bn == $bean_name && $layer_bean_file_name == $bean_file_name) {
 			$exists = true;
-			$projects = $layer_props["projects"];
+			$projects = isset($layer_props["projects"]) ? $layer_props["projects"] : null;
 			
 			$add_url = $project_url_prefix . "phpframework/presentation/create_project?bean_name=$bean_name&bean_file_name=$bean_file_name&path=#path#&popup=1&on_success_js_func=onSuccessfullAddProject";
 			$edit_url = $project_url_prefix . "phpframework/presentation/edit_project_details?bean_name=$bean_name&bean_file_name=$bean_file_name&path=#path#&popup=1&on_success_js_func=onSuccessfullEditProject";
@@ -90,20 +99,23 @@ if (is_array($files))
 					$projects_options_html .= '<option' . ($default_project == $project_name ? " selected" : "") . ' value="' . $project_name . '">' . str_repeat("&nbsp;&nbsp;&nbsp;", substr_count($project_name, '/')) . basename($project_name) . '</option>';
 					
 					//prepare table_html
+					$project_element_type_path = isset($project_props["element_type_path"]) ? $project_props["element_type_path"] : "";
+					$project_item_type = isset($project_props["item_type"]) ? $project_props["item_type"] : null;
+					
 					$table_html .= '
 					<tr>
 						<td class="project">' . $project_name . '</td>
-						<td class="path">' . $project_props["element_type_path"] . '</td>
+						<td class="path">' . $project_element_type_path . '</td>
 						<td class="buttons">';
-					
-					if ($project_props["item_type"] != "project_common") {
+						
+					if ($project_item_type != "project_common") {
 						$table_html .= '<span class="icon edit" onClick="editProject(this, \'' . str_replace("#path#", $project_name, $edit_url) . '\');" title="Click here to edit the project details"></span>
-							<span class="icon edit_project_global_variables" onClick="goToUrl(this, \'' . str_replace("#project#", $project_props["element_type_path"], $edit_global_vars_url) . '\');" title="Click here to edit the project global variables"></span>
-							<span class="icon edit_config" onClick="goToUrl(this, \'' . str_replace("#project#", $project_props["element_type_path"], $edit_config_url) . '\');" title="Click here to edit the project config file"></span>
-							<span class="icon edit_init" onClick="goToUrl(this, \'' . str_replace("#project#", $project_props["element_type_path"], $edit_init_url) . '\');" title="Click here to edit the project init file"></span>
-							<span class="icon manage_references" onClick="goToUrl(this, \'' . str_replace("#project#", $project_props["element_type_path"], $manage_references_url) . '\');" title="Click here to manage the references for this project"></span>
-							<span class="icon view" onClick="openWindow(this, \'' . str_replace("#project#", $project_props["element_type_path"], $view_project_url) . '\', \'project\');" title="Click here to view project"></span>
-							<span class="icon delete" onClick="deleteProject(this, \'' . str_replace("#path#", $project_props["element_type_path"], $remove_url) . '\')" title="Click here to delete this project permanently"></span>';
+							<span class="icon edit_project_global_variables" onClick="goToUrl(this, \'' . str_replace("#project#", $project_element_type_path, $edit_global_vars_url) . '\');" title="Click here to edit the project global variables"></span>
+							<span class="icon edit_config" onClick="goToUrl(this, \'' . str_replace("#project#", $project_element_type_path, $edit_config_url) . '\');" title="Click here to edit the project config file"></span>
+							<span class="icon edit_init" onClick="goToUrl(this, \'' . str_replace("#project#", $project_element_type_path, $edit_init_url) . '\');" title="Click here to edit the project init file"></span>
+							<span class="icon manage_references" onClick="goToUrl(this, \'' . str_replace("#project#", $project_element_type_path, $manage_references_url) . '\');" title="Click here to manage the references for this project"></span>
+							<span class="icon view" onClick="openWindow(this, \'' . str_replace("#project#", $project_element_type_path, $view_project_url) . '\', \'project\');" title="Click here to view project"></span>
+							<span class="icon delete" onClick="deleteProject(this, \'' . str_replace("#path#", $project_element_type_path, $remove_url) . '\')" title="Click here to delete this project permanently"></span>';
 					}
 					
 					$table_html .= '</td>
@@ -135,13 +147,14 @@ if (is_array($files))
 			</table>
 			</div>';
 			
-			if ($save_message)
+			if (!empty($save_message))
 				$main_content .= '<script>
 					$(function () {
 						StatusMessageHandler.showMessage(\'' . $save_message . '\');
 					});
 				</script>';
 		}
+	}
 
 if (!$files)
 	$main_content .= '<div class="error">No available layers</div>';

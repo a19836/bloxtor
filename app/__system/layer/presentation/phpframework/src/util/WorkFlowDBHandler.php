@@ -39,10 +39,10 @@ class WorkFlowDBHandler {
 		$tasks = $WorkFlowTasksFileHandler->getTasksByLayerTag("dbdriver");
 		
 		foreach ($tasks as $task)
-			if (!$only_active_dbs || $task["properties"]["active"]) {
+			if (!$only_active_dbs || !empty($task["properties"]["active"])) {
 				if (!$this->isTaskDBDriverSettingsValid($task, $create_db_if_not_exists, $only_active_dbs)) {
 					$status = false;
-					$invalid_task_label = $task["label"];
+					$invalid_task_label = isset($task["label"]) ? $task["label"] : null;
 					break;
 				}
 			}
@@ -54,8 +54,10 @@ class WorkFlowDBHandler {
 		$status = false;
 		
 		$task_layer_tags = WorkFlowTasksFileHandler::getTaskLayerTags();
+		$task_layer_tags_dbdriver = isset($task_layer_tags["dbdriver"]) ? $task_layer_tags["dbdriver"] : null;
+		$task_tag = isset($task["tag"]) ? $task["tag"] : null;
 		
-		if ($task && $task["tag"] == $task_layer_tags["dbdriver"] && (!$only_active_dbs || $task["properties"]["active"]))
+		if ($task && $task_tag == $task_layer_tags_dbdriver && (!$only_active_dbs || !empty($task["properties"]["active"])))
 			return $this->isDBDriverSettingsValid($task["properties"], $create_db_if_not_exists);
 		
 		return $status;
@@ -64,9 +66,10 @@ class WorkFlowDBHandler {
 	public function isDBDriverSettingsValid($settings, $create_db_if_not_exists) {
 		$status = false;
 		
-		if ($settings && $settings["type"]) {
+		if ($settings && !empty($settings["type"])) {
 			$is_ok = $GLOBALS["GlobalErrorHandler"]->ok();
 			$exception_lanched = false;
+			$e = null;
 			
 			try {
 				$PHPVariablesFileHandler = new PHPVariablesFileHandler($this->user_global_variables_file_path);
@@ -81,7 +84,13 @@ class WorkFlowDBHandler {
 							$global_var_name = substr(trim($setting_value), 1);
 							
 							if ($global_var_name)
-								$settings[$setting_key] = $GLOBALS[$global_var_name];
+								$settings[$setting_key] = isset($GLOBALS[$global_var_name]) ? $GLOBALS[$global_var_name] : null;
+						}
+						else if (substr(trim($setting_value), 0, 2) == '@$') {
+							$global_var_name = substr(trim($setting_value), 2);
+							
+							if ($global_var_name)
+								$settings[$setting_key] = isset($GLOBALS[$global_var_name]) ? $GLOBALS[$global_var_name] : null;
 						}
 					}
 					
@@ -98,7 +107,7 @@ class WorkFlowDBHandler {
 					if (!$status && $create_db_if_not_exists) {
 						try {
 							$options = $DBDriver->getOptions();
-							$status = @$DBDriver->createDB($options["db_name"]) && @$DBDriver->connect(); //If the connect options are invalid it will give a PHP warning, so all the connect methods must have @.
+							$status = isset($options["db_name"]) && @$DBDriver->createDB($options["db_name"]) && @$DBDriver->connect(); //If the connect options are invalid it will give a PHP warning, so all the connect methods must have @.
 						}
 						catch (Exception $e) {
 							$exception_lanched = true;
@@ -133,10 +142,10 @@ class WorkFlowDBHandler {
 		$tasks = $WorkFlowTasksFileHandler->getTasksByLayerTag("dbdriver");
 		
 		foreach ($tasks as $task)
-			if (!$only_active_dbs || $task["properties"]["active"]) {
+			if (!$only_active_dbs || !empty($task["properties"]["active"])) {
 				if (!$this->isTaskDBDriverBeanValid($task, $create_db_if_not_exists, $only_active_dbs)) {
 					$status = false;
-					$invalid_task_label = $task["label"];
+					$invalid_task_label = isset($task["label"]) ? $task["label"] : null;
 					break;
 				}
 			}
@@ -148,14 +157,18 @@ class WorkFlowDBHandler {
 		$status = false;
 		
 		$task_layer_tags = WorkFlowTasksFileHandler::getTaskLayerTags();
+		$task_layer_tags_dbdriver = isset($task_layer_tags["dbdriver"]) ? $task_layer_tags["dbdriver"] : null;
+		$task_tag = isset($task["tag"]) ? $task["tag"] : null;
 		
-		if ($task && $task["tag"] == $task_layer_tags["dbdriver"] && (!$only_active_dbs || $task["properties"]["active"])) {
-			$beans_file_name = WorkFlowBeansConverter::getFileNameFromRawLabel($task["label"]) . "_dbdriver.xml";
-			$object = $this->getBeanObject($beans_file_name, $task["label"]);
+		if ($task && $task_tag == $task_layer_tags_dbdriver && (!$only_active_dbs || !empty($task["properties"]["active"]))) {
+			$task_label = isset($task["label"]) ? $task["label"] : null;
+			$beans_file_name = WorkFlowBeansConverter::getFileNameFromRawLabel($task_label) . "_dbdriver.xml";
+			$object = $this->getBeanObject($beans_file_name, $task_label);
 			
 			if ($object) {
 				$is_ok = $GLOBALS["GlobalErrorHandler"]->ok();
 				$exception_lanched = false;
+				$e = null;
 				
 				try {
 					$status = @$object->connect(); //if $create_db_if_not_exists is true and DB doesn't exists yet, the $object->connect() will give a php error, so we add the @to avoid the error. Then bellow the DB will be created and reconnected to the DB again without @. From the other hand, if the connect options are invalid it will give a PHP warning, so all the connect methods must have @.
@@ -168,7 +181,7 @@ class WorkFlowDBHandler {
 				if (!$status && $create_db_if_not_exists) {
 					try {
 						$options = $object->getOptions();
-						$status = @$object->createDB($options["db_name"]) && @$object->connect(); //If the connect options are invalid it will give a PHP warning, so all the connect methods must have @.
+						$status = isset($options["db_name"]) && @$object->createDB($options["db_name"]) && @$object->connect(); //If the connect options are invalid it will give a PHP warning, so all the connect methods must have @.
 					}
 					catch (Exception $e) {
 						$exception_lanched = true;
@@ -195,7 +208,7 @@ class WorkFlowDBHandler {
 		$task = $this->getFirstTaskDBDriver($tasks_file_path);
 		
 		if ($task)
-			if (is_array($task["properties"]))
+			if (isset($task["properties"]) && is_array($task["properties"]))
 				foreach ($task["properties"] as $k => $v) 
 					if ($k != "exits")
 						$properties[$attr_prefix . $k] = $v;
@@ -207,7 +220,7 @@ class WorkFlowDBHandler {
 		$WorkFlowTasksFileHandler = new WorkFlowTasksFileHandler($tasks_file_path);
 		$WorkFlowTasksFileHandler->init();
 		$tasks = $WorkFlowTasksFileHandler->getTasksByLayerTag("dbdriver", 1);
-		return $tasks[0];
+		return isset($tasks[0]) ? $tasks[0] : null;
 	}
 	
 	public function getBeanObject($beans_file_name, $bean_name) {
@@ -249,58 +262,86 @@ class WorkFlowDBHandler {
 			$WorkFlowTasksFileHandler = new WorkFlowTasksFileHandler($tasks_file_path);
 			$WorkFlowTasksFileHandler->init();
 			$tasks = $WorkFlowTasksFileHandler->getWorkflowData();
-			$tasks = $tasks["tasks"];
+			$tasks = isset($tasks["tasks"]) ? $tasks["tasks"] : null;
 			//print_r($tasks);
 		
 			if (is_array($tasks)) {
 				foreach ($tasks as $task_id => $task) {
-					$properties = $task["properties"];
+					$properties = isset($task["properties"]) ? $task["properties"] : null;
 				
 					$table_data = array(
-						"table_name" => $task["label"],
-						"charset" => $properties["table_charset"],
-						"collation" => $properties["table_collation"],
-						"table_storage_engine" => $properties["table_storage_engine"],
+						"table_name" => isset($task["label"]) ? $task["label"] : null,
+						"charset" => isset($properties["table_charset"]) ? $properties["table_charset"] : null,
+						"collation" => isset($properties["table_collation"]) ? $properties["table_collation"] : null,
+						"table_storage_engine" => isset($properties["table_storage_engine"]) ? $properties["table_storage_engine"] : null,
 						"attributes" =>array(),
 					);
 				
-					$attrs = $properties["table_attr_names"];
+					$attrs = isset($properties["table_attr_names"]) ? $properties["table_attr_names"] : null;
 					if ($attrs) {
 						if (is_array($attrs)) {
 							$t = count($attrs);
 							for ($i = 0; $i < $t; $i++) {
+								$primary_key = isset($properties["table_attr_primary_keys"][$i]) ? $properties["table_attr_primary_keys"][$i] : null;
+								$type = isset($properties["table_attr_types"][$i]) ? $properties["table_attr_types"][$i] : null;
+								$length = isset($properties["table_attr_lengths"][$i]) ? $properties["table_attr_lengths"][$i] : null;
+								$null = isset($properties["table_attr_nulls"][$i]) ? $properties["table_attr_nulls"][$i] : null;
+								$unsigned = isset($properties["table_attr_unsigneds"][$i]) ? $properties["table_attr_unsigneds"][$i] : null;
+								$unique = isset($properties["table_attr_uniques"][$i]) ? $properties["table_attr_uniques"][$i] : null;
+								$auto_increment = isset($properties["table_attr_auto_increments"][$i]) ? $properties["table_attr_auto_increments"][$i] : null;
+								$has_defaults = isset($properties["table_attr_has_defaults"][$i]) ? $properties["table_attr_has_defaults"][$i] : null;
+								$default = isset($properties["table_attr_defaults"][$i]) ? $properties["table_attr_defaults"][$i] : null;
+								$extra = isset($properties["table_attr_extras"][$i]) ? $properties["table_attr_extras"][$i] : null;
+								$charset = isset($properties["table_attr_charsets"][$i]) ? $properties["table_attr_charsets"][$i] : null;
+								$collation = isset($properties["table_attr_collations"][$i]) ? $properties["table_attr_collations"][$i] : null;
+								$comment = isset($properties["table_attr_comments"][$i]) ? $properties["table_attr_comments"][$i] : null;
+								
 								$table_data["attributes"][] = array(
 									"name" => $attrs[$i],
-									"primary_key" => strtolower($properties["table_attr_primary_keys"][$i]) == "true" || $properties["table_attr_primary_keys"][$i] == "1",
-									"type" => $properties["table_attr_types"][$i],
-									"length" => $properties["table_attr_lengths"][$i],
-									"null" => strtolower($properties["table_attr_nulls"][$i]) == "true" || $properties["table_attr_nulls"][$i] == "1",
-									"unsigned" => strtolower($properties["table_attr_unsigneds"][$i]) == "true" || $properties["table_attr_unsigneds"][$i] == "1",
-									"unique" => strtolower($properties["table_attr_uniques"][$i]) == "true" || $properties["table_attr_uniques"][$i] == "1",
-									"auto_increment" => strtolower($properties["table_attr_auto_increments"][$i]) == "true" || $properties["table_attr_auto_increments"][$i] == "1",
-									"default" => strtolower($properties["table_attr_has_defaults"][$i]) == "true" || $properties["table_attr_has_defaults"][$i] == "1" ? $properties["table_attr_defaults"][$i] : null,
-									"extra" => $properties["table_attr_extras"][$i],
-									"charset" => $properties["table_attr_charsets"][$i],
-									"collation" => $properties["table_attr_collations"][$i],
-									"comment" => $properties["table_attr_comments"][$i],
+									"primary_key" => strtolower($primary_key) == "true" || $primary_key == "1",
+									"type" => $type,
+									"length" => $length,
+									"null" => strtolower($null) == "true" || $null == "1",
+									"unsigned" => strtolower($unsigned) == "true" || $unsigned == "1",
+									"unique" => strtolower($unique) == "true" || $unique == "1",
+									"auto_increment" => strtolower($auto_increment) == "true" || $auto_increment == "1",
+									"default" => strtolower($has_defaults) == "true" || $has_defaults == "1" ? $default : null,
+									"extra" => $extra,
+									"charset" => $charset,
+									"collation" => $collation,
+									"comment" => $comment,
 								);
 							}
 						}
 						else {
+							$primary_key = isset($properties["table_attr_primary_keys"]) ? $properties["table_attr_primary_keys"] : null;
+							$type = isset($properties["table_attr_types"]) ? $properties["table_attr_types"] : null;
+							$length = isset($properties["table_attr_lengths"]) ? $properties["table_attr_lengths"] : null;
+							$null = isset($properties["table_attr_nulls"]) ? $properties["table_attr_nulls"] : null;
+							$unsigned = isset($properties["table_attr_unsigneds"]) ? $properties["table_attr_unsigneds"] : null;
+							$unique = isset($properties["table_attr_uniques"]) ? $properties["table_attr_uniques"] : null;
+							$auto_increment = isset($properties["table_attr_auto_increments"]) ? $properties["table_attr_auto_increments"] : null;
+							$has_defaults = isset($properties["table_attr_has_defaults"]) ? $properties["table_attr_has_defaults"] : null;
+							$default = isset($properties["table_attr_defaults"]) ? $properties["table_attr_defaults"] : null;
+							$extra = isset($properties["table_attr_extras"]) ? $properties["table_attr_extras"] : null;
+							$charset = isset($properties["table_attr_charsets"]) ? $properties["table_attr_charsets"] : null;
+							$collation = isset($properties["table_attr_collations"]) ? $properties["table_attr_collations"] : null;
+							$comment = isset($properties["table_attr_comments"]) ? $properties["table_attr_comments"] : null;
+							
 							$table_data["attributes"][] = array(
 								"name" => $attrs,
-								"primary_key" => strtolower($properties["table_attr_primary_keys"]) == "true" || $properties["table_attr_primary_keys"] == "1",
-								"type" => $properties["table_attr_types"],
-								"length" => $properties["table_attr_lengths"],
-								"null" => strtolower($properties["table_attr_nulls"]) == "true" || $properties["table_attr_nulls"] == "1",
-								"unsigned" => strtolower($properties["table_attr_unsigneds"]) == "true" || $properties["table_attr_unsigneds"] == "1",
-								"unique" => strtolower($properties["table_attr_uniques"]) == "true" || $properties["table_attr_uniques"] == "1",
-								"auto_increment" => strtolower($properties["table_attr_auto_increments"]) == "true" || $properties["table_attr_auto_increments"] == "1",
-								"default" => strtolower($properties["table_attr_has_defaults"]) == "true" || $properties["table_attr_has_defaults"] == "1" ? $properties["table_attr_defaults"] : null,
-								"extra" => $properties["table_attr_extras"],
-								"charset" => $properties["table_attr_charsets"],
-								"collation" => $properties["table_attr_collations"],
-								"comment" => $properties["table_attr_comments"],
+								"primary_key" => strtolower($primary_key) == "true" || $primary_key == "1",
+								"type" => $type,
+								"length" => $length,
+								"null" => strtolower($null) == "true" || $null == "1",
+								"unsigned" => strtolower($unsigned) == "true" || $unsigned == "1",
+								"unique" => strtolower($unique) == "true" || $unique == "1",
+								"auto_increment" => strtolower($auto_increment) == "true" || $auto_increment == "1",
+								"default" => strtolower($has_defaults) == "true" || $has_defaults == "1" ? $default : null,
+								"extra" => $extra,
+								"charset" => $charset,
+								"collation" => $collation,
+								"comment" => $comment,
 							);
 						}
 					}
@@ -315,15 +356,16 @@ class WorkFlowDBHandler {
 		return $sql;
 	}
 	
-	public function getTaskDBDiagramSettings($tasks_file_path, $filter_by_setting = null) {
+	public static function getTaskDBDiagramSettings($tasks_file_path, $filter_by_setting = null) {
 		$WorkFlowTasksFileHandler = new WorkFlowTasksFileHandler($tasks_file_path);
 		$WorkFlowTasksFileHandler->init();
 		$data = $WorkFlowTasksFileHandler->getWorkflowData();
+		$settings = isset($data["settings"]) ? $data["settings"] : null;
 		
-		if ($data["settings"] && $filter_by_setting)
-			return $data["settings"][$filter_by_setting];
+		if ($settings && $filter_by_setting)
+			return $settings[$filter_by_setting];
 		
-		return $data["settings"];
+		return $settings;
 	}
 	
 	public function getUpdateTaskDBDiagram($bean_file_name, $bean_name, $tasks_file_path = false) {
@@ -341,7 +383,7 @@ class WorkFlowDBHandler {
 		for ($i = 0; $i < $total; $i++) {
 			$table = $tables[$i];
 			
-			if (!empty($table)) {
+			if (isset($table["name"])) {
 				$attrs = $DBDriver ? $DBDriver->listTableFields($table["name"]) : array();
 				$fks = $DBDriver ? $DBDriver->listForeignKeys($table["name"]) : array();
 				
@@ -354,7 +396,7 @@ class WorkFlowDBHandler {
 	
 	public function updateFileTasksDBDiagramTablesFromServer($bean_file_name, $bean_name, $tasks_file_path, $filter_by_tables = null) {
 		$workflow_data = $this->getUpdateTaskDBDiagram($bean_file_name, $bean_name, $tasks_file_path);
-		$tasks_details = $workflow_data["tasks"];
+		$tasks_details = isset($workflow_data["tasks"]) ? $workflow_data["tasks"] : null;
 		
 		//filter tasks_details by $filter_by_tables
 		if ($tasks_details && $filter_by_tables) {
@@ -362,7 +404,7 @@ class WorkFlowDBHandler {
 			$tasks_by_table_name = array();
 			
 			foreach ($tasks_details as $task_id => $task)
-				if ($task["label"])
+				if (!empty($task["label"]))
 					$tasks_by_table_name[ $task["label"] ] = $task_id;
 			
 			//prepare filter_by_tasks_ids
@@ -371,7 +413,7 @@ class WorkFlowDBHandler {
 			
 			foreach ($filter_by_tables as $table_name) {
 				$task_table_name = self::getTableTaskRealNameFromTasks($tasks_by_table_name, $table_name);
-				$task_id = $tasks_by_table_name[$task_table_name];
+				$task_id = isset($tasks_by_table_name[$task_table_name]) ? $tasks_by_table_name[$task_table_name] : null;
 				
 				if ($task_id)
 					$filter_by_tasks_ids[] = $task_id;
@@ -381,7 +423,7 @@ class WorkFlowDBHandler {
 			$new_tasks_details = array();
 			
 			foreach ($filter_by_tasks_ids as $task_id)
-				$new_tasks_details[$task_id] = $tasks_details[$task_id];
+				$new_tasks_details[$task_id] = isset($tasks_details[$task_id]) ? $tasks_details[$task_id] : null;
 			
 			$tasks_details = $new_tasks_details;
 			$workflow_data["tasks"] = $tasks_details;
@@ -397,29 +439,32 @@ class WorkFlowDBHandler {
 			$updated = false;
 			
 			foreach ($tasks_details as $task) {
-				$task_id = $task["id"];
+				$task_id = isset($task["id"]) ? $task["id"] : null;
 				$exists = false;
 				
-				foreach ($tasks["tasks"] as $old_task)
-					if ($old_task["id"] == $task_id) {
+				foreach ($tasks["tasks"] as $old_task) {
+					$old_task_id = isset($old_task["id"]) ? $old_task["id"] : null;
+					
+					if ($old_task_id == $task_id) {
 						$updated = true;
 						$exists = true;
 						
 						//update exits from old_task
 						if (empty($task["exits"]))
-							$task["exits"] = $old_task["exits"];
+							$task["exits"] = isset($old_task["exits"]) ? $old_task["exits"] : null;
 						
 						$tasks["tasks"][$task_id] = $task;
 						
 						//update settings[old_tables_names] and settings[old_tables_attributes_names]
-						if ($tasks["settings"]) {
-							if (is_array($tasks["settings"]["old_tables_names"]) && $tasks["settings"]["old_tables_names"][$task_id])
-								$tasks["settings"]["old_tables_names"][$task_id] = $task["label"];
+						if (!empty($tasks["settings"])) {
+							if (isset($tasks["settings"]["old_tables_names"]) && is_array($tasks["settings"]["old_tables_names"]) && !empty($tasks["settings"]["old_tables_names"][$task_id]))
+								$tasks["settings"]["old_tables_names"][$task_id] = isset($task["label"]) ? $task["label"] : null;
 							
-							if (is_array($tasks["settings"]["old_tables_attributes_names"]) && $tasks["settings"]["old_tables_attributes_names"][$task_id])
-								$tasks["settings"]["old_tables_attributes_names"][$task_id] = $task["properties"]["table_attr_names"];
+							if (isset($tasks["settings"]["old_tables_attributes_names"]) && is_array($tasks["settings"]["old_tables_attributes_names"]) && !empty($tasks["settings"]["old_tables_attributes_names"][$task_id]))
+								$tasks["settings"]["old_tables_attributes_names"][$task_id] = isset($task["properties"]["table_attr_names"]) ? $task["properties"]["table_attr_names"] : null;
 						}
 					}
+				}
 				
 				if (!$exists) {
 					$tasks["tasks"][] = $task;
@@ -446,7 +491,7 @@ class WorkFlowDBHandler {
 			$tasks_by_table_name = array();
 			
 			foreach ($tasks["tasks"] as $idx => $task)
-				if ($task["label"])
+				if (!empty($task["label"]))
 					$tasks_by_table_name[ $task["label"] ] = $idx;
 			
 			//rename tasks
@@ -454,17 +499,17 @@ class WorkFlowDBHandler {
 			
 			foreach ($renamed_tables as $old_table_name => $new_table_name) {
 				$task_table_name = self::getTableTaskRealNameFromTasks($tasks_by_table_name, $old_table_name);
-				$idx = $tasks_by_table_name[$task_table_name];
+				$idx = isset($tasks_by_table_name[$task_table_name]) ? $tasks_by_table_name[$task_table_name] : null;
 				
 				if (array_key_exists($idx, $tasks["tasks"])) {
 					$renamed = true;
 					$tasks["tasks"][$idx]["label"] = $new_table_name;
 					
 					//update settings[old_tables_names]
-					if ($tasks["settings"]) {
-						$task_id = $tasks["tasks"][$idx]["id"];
+					if (!empty($tasks["settings"])) {
+						$task_id = isset($tasks["tasks"][$idx]["id"]) ? $tasks["tasks"][$idx]["id"] : null;
 						
-						if (is_array($tasks["settings"]["old_tables_names"]) && $tasks["settings"]["old_tables_names"][$task_id])
+						if (isset($tasks["settings"]["old_tables_names"]) && is_array($tasks["settings"]["old_tables_names"]) && !empty($tasks["settings"]["old_tables_names"][$task_id]))
 							$tasks["settings"]["old_tables_names"][$task_id] = $new_table_name;
 					}
 				}
@@ -489,7 +534,7 @@ class WorkFlowDBHandler {
 			$tasks_by_table_name = array();
 			
 			foreach ($tasks["tasks"] as $idx => $task)
-				if ($task["label"])
+				if (!empty($task["label"]))
 					$tasks_by_table_name[ $task["label"] ] = $idx;
 			
 			//remove tasks
@@ -497,19 +542,19 @@ class WorkFlowDBHandler {
 			
 			foreach ($removed_tables as $table_name) {
 				$task_table_name = self::getTableTaskRealNameFromTasks($tasks_by_table_name, $table_name);
-				$idx = $tasks_by_table_name[$task_table_name];
+				$idx = isset($tasks_by_table_name[$task_table_name]) ? $tasks_by_table_name[$task_table_name] : null;
 				
 				if (array_key_exists($idx, $tasks["tasks"])) {
 					$removed = true;
 					
 					//update settings[old_tables_names] and settings[old_tables_attributes_names]
-					if ($tasks["settings"]) {
-						$task_id = $tasks["tasks"][$idx]["id"];
+					if (!empty($tasks["settings"])) {
+						$task_id = isset($tasks["tasks"][$idx]["id"]) ? $tasks["tasks"][$idx]["id"] : null;
 						
-						if (is_array($tasks["settings"]["old_tables_names"]) && $tasks["settings"]["old_tables_names"][$task_id])
+						if (isset($tasks["settings"]["old_tables_names"]) && is_array($tasks["settings"]["old_tables_names"]) && !empty($tasks["settings"]["old_tables_names"][$task_id]))
 							unset($tasks["settings"]["old_tables_names"][$task_id]);
 						
-						if (is_array($tasks["settings"]["old_tables_attributes_names"]) && $tasks["settings"]["old_tables_attributes_names"][$task_id])
+						if (isset($tasks["settings"]["old_tables_attributes_names"]) && is_array($tasks["settings"]["old_tables_attributes_names"]) && !empty($tasks["settings"]["old_tables_attributes_names"][$task_id]))
 							unset($tasks["settings"]["old_tables_attributes_names"][$task_id]);
 					}
 					
@@ -529,7 +574,7 @@ class WorkFlowDBHandler {
 		
 		if ($statements)
 			foreach ($statements as $table_name => $table_statements) {
-				$sql_statements = $table_statements["sql_statements"];
+				$sql_statements = isset($table_statements["sql_statements"]) ? $table_statements["sql_statements"] : null;
 				
 				if ($sql_statements)
 					foreach ($sql_statements as $sql) 
@@ -566,9 +611,9 @@ class WorkFlowDBHandler {
 		
 		if ($statements)
 			foreach ($statements as $table_name => $table_statements) {
-				$sql_statements = $table_statements["sql_statements"];
+				$sql_statements = isset($table_statements["sql_statements"]) ? $table_statements["sql_statements"] : null;
 				$parsed_data[$table_name]["sql_statements"] = $sql_statements;
-				$parsed_data[$table_name]["sql_statements_labels"] = $table_statements["sql_statements_labels"];
+				$parsed_data[$table_name]["sql_statements_labels"] = isset($table_statements["sql_statements_labels"]) ? $table_statements["sql_statements_labels"] : null;
 				
 				if ($sql_statements)
 					foreach ($sql_statements as $sql) 
@@ -603,30 +648,31 @@ class WorkFlowDBHandler {
 			$tasks_by_table_name = array();
 			$new_tables_names = array();
 			
-			if ($tasks && $tasks["tasks"])
+			if ($tasks && !empty($tasks["tasks"]))
 				foreach ($tasks["tasks"] as $task_id => $task) {
-					$table_name = $task["old_label"] ? $task["old_label"] : $task["label"];
+					$task_label = isset($task["label"]) ? $task["label"] : null;
+					$table_name = !empty($task["old_label"]) ? $task["old_label"] : $task_label;
 					
 					$tasks_by_table_name[$table_name] = $task;
 					
 					//prepare new tables name
-					if ($table_name != $task["label"])
-						$new_tables_names[$table_name] = $task["label"];
+					if ($table_name != $task_label)
+						$new_tables_names[$table_name] = $task_label;
 				}
 			
 			$tasks_tables = self::getTasksAsTables($tasks_by_table_name);
 			
 			//prepare new attributes name
 			foreach ($tasks_tables as $table_name => $attrs) {
-				$task = $tasks_by_table_name[$table_name];
-				$table_attr_names = $task["properties"]["table_attr_names"];
-				$table_attr_old_names = $task["properties"]["table_attr_old_names"];
+				$task = isset($tasks_by_table_name[$table_name]) ? $tasks_by_table_name[$table_name] : null;
+				$table_attr_names = isset($task["properties"]["table_attr_names"]) ? $task["properties"]["table_attr_names"] : null;
+				$table_attr_old_names = isset($task["properties"]["table_attr_old_names"]) ? $task["properties"]["table_attr_old_names"] : null;
 				
 				foreach ($attrs as $attr_name => $attr) {
 					$index = array_search($attr_name, $table_attr_names);
 					
 					if (is_numeric($index)) {
-						$old_name = $table_attr_old_names[$index];
+						$old_name = isset($table_attr_old_names[$index]) ? $table_attr_old_names[$index] : null;
 						
 						if ($old_name)
 							$tasks_tables[$table_name][$attr_name]["old_name"] = $old_name;
@@ -643,7 +689,7 @@ class WorkFlowDBHandler {
 				$table = $tables[$i];
 				
 				if (!empty($table)) {
-					$table_name = $table["name"];
+					$table_name = isset($table["name"]) ? $table["name"] : null;
 					$task_table = self::getTableFromTables($tasks_tables, $table_name);
 					
 					if ($task_table) {
@@ -654,15 +700,15 @@ class WorkFlowDBHandler {
 						if (is_array($fks))
 							foreach ($fks as $fk)
 								if (!empty($fk)) {
-									$child_column = $fk["child_column"];
+									$child_column = isset($fk["child_column"]) ? $fk["child_column"] : null;
 									
 									if ($child_column && $attrs[$child_column]) {
-										if (!$attrs[$child_column]["fk"])
+										if (empty($attrs[$child_column]["fk"]))
 											$attrs[$child_column]["fk"] = array();
 										
 										$attrs[$child_column]["fk"][] = array(
-											"attribute" => $fk["parent_column"],
-											"table" => $fk["parent_table"]
+											"attribute" => isset($fk["parent_column"]) ? $fk["parent_column"] : null,
+											"table" => isset($fk["parent_table"]) ? $fk["parent_table"] : null
 										);
 									}
 								}
@@ -692,10 +738,10 @@ class WorkFlowDBHandler {
 			$real_table_name = self::getTableTaskRealNameFromTasks($new_tables, $table_name);
 			
 			//get new table name
-			$new_table_name = $new_tables_names[$real_table_name];
+			$new_table_name = isset($new_tables_names[$real_table_name]) ? $new_tables_names[$real_table_name] : null;
 			
 			//get task attributes
-			$new_attrs = $new_tables[$real_table_name];
+			$new_attrs = isset($new_tables[$real_table_name]) ? $new_tables[$real_table_name] : null;
 			
 			//get statements
 			$statements[$table_name] = self::getTableUpdateSQLStatements($DBDriver, $table_name, $old_attrs, $new_attrs, $new_table_name, $table_parsed_data);
@@ -707,7 +753,7 @@ class WorkFlowDBHandler {
 			$real_table_name = self::getTableTaskRealNameFromTasks($old_tables, $table_name);
 			
 			//get new table name
-			$new_table_name = $new_tables_names[$table_name];
+			$new_table_name = isset($new_tables_names[$table_name]) ? $new_tables_names[$table_name] : null;
 			
 			//check if table already exists in server
 			$table_already_exists = array_key_exists($real_table_name, $old_tables);
@@ -722,7 +768,7 @@ class WorkFlowDBHandler {
 					
 					if ($new_table_already_exists) {
 						//get task attributes
-						$old_attrs = $old_tables[$real_new_table_name];
+						$old_attrs = isset($old_tables[$real_new_table_name]) ? $old_tables[$real_new_table_name] : null;
 						
 						//get statements
 						$statements[$real_new_table_name] = self::getTableUpdateSQLStatements($DBDriver, $real_new_table_name, $old_attrs, $new_attrs, null, $table_parsed_data);
@@ -757,9 +803,12 @@ class WorkFlowDBHandler {
 		$new_attrs = is_array($new_attrs) ? $new_attrs : array();
 		
 		//remove all attributes without name
-		foreach ($new_attrs as $idx => $new_attr) 
-			if (!trim($new_attr["name"]))
+		foreach ($new_attrs as $idx => $new_attr) {
+			$new_attr_name = isset($new_attr["name"]) ? $new_attr["name"] : null;
+			
+			if (!trim($new_attr_name))
 				unset($new_attrs[$idx]);
+		}
 		
 		//prepare attributes with array_values. This will be usefull to sort the attributes.
 		$new_attrs = array_values($new_attrs);
@@ -800,13 +849,19 @@ class WorkFlowDBHandler {
 		$new_attrs = is_array($new_attrs) ? $new_attrs : array();
 		
 		//remove all attributes without name
-		foreach ($old_attrs as $idx => $old_attr) 
-			if (!trim($old_attr["name"]))
+		foreach ($old_attrs as $idx => $old_attr) {
+			$old_attr_name = isset($old_attr["name"]) ? $old_attr["name"] : null;
+			
+			if (!trim($old_attr_name))
 				unset($old_attrs[$idx]);
+		}
 		
-		foreach ($new_attrs as $idx => $new_attr) 
-			if (!trim($new_attr["name"]))
+		foreach ($new_attrs as $idx => $new_attr) { 
+			$new_attr_name = isset($new_attr["name"]) ? $new_attr["name"] : null;
+			
+			if (!trim($new_attr_name))
 				unset($new_attrs[$idx]);
+		}
 		
 		//prepare attributes with array_values. This will be usefull to sort the attributes.
 		$old_attrs = array_values($old_attrs);
@@ -858,20 +913,31 @@ class WorkFlowDBHandler {
 					$new_attr["name"] = $old_attr["name"];
 					
 					//prepare non-editable attributes in $new_attr. Sets the defaults from $old_attr.
-					if (is_array($column_types_ignored_props[ $old_attr["type"] ]))
+					if (isset($old_attr["type"]) && isset($column_types_ignored_props[ $old_attr["type"] ]) && is_array($column_types_ignored_props[ $old_attr["type"] ]))
 						foreach ($column_types_ignored_props[ $old_attr["type"] ] as $attr_to_ignore) {
+							$new_attr_type = isset($new_attr["type"]) ? $new_attr["type"] : null;
+							
 							//but only update the old defaults if the type is the same or if is not the length, this is, if the type is different and the length exists in new_attr, then the length should be from the new_attr. Example: If I change an attribute with type=text to a type=varchar(50), I want to have the new length of 50 chars.
-							if ($new_attr["type"] == $old_attr["type"] || $attr_to_ignore != "length")
-								$new_attr[$attr_to_ignore] = $old_attr[$attr_to_ignore];
+							if ($new_attr_type == $old_attr["type"] || $attr_to_ignore != "length")
+								$new_attr[$attr_to_ignore] = isset($old_attr[$attr_to_ignore]) ? $old_attr[$attr_to_ignore] : null;
 						}
 					
-					$was_auto_increment_pk = $old_attr["primary_key"] && ($old_attr["auto_increment"] || stripos($old_attr["extra"], "auto_increment") !== false);
+					$was_auto_increment_pk = !empty($old_attr["primary_key"]) && (
+						!empty($old_attr["auto_increment"]) || 
+						(!empty($old_attr["extra"]) && stripos($old_attr["extra"], "auto_increment") !== false)
+					);
 					
-					if ($new_attr["extra"] && stripos($new_attr["extra"], "auto_increment") !== false)
+					if (!empty($new_attr["extra"]) && stripos($new_attr["extra"], "auto_increment") !== false)
 						$new_attr["extra"] = trim(preg_replace("/\s+/i", " ", preg_replace("/(^|\s)auto_increment(\s|$)/i", " ", $new_attr["extra"])));
 					
-					if ($old_attr["extra"] && stripos($old_attr["extra"], "auto_increment") !== false)
+					if (!empty($old_attr["extra"]) && stripos($old_attr["extra"], "auto_increment") !== false)
 						$old_attr["extra"] = trim(preg_replace("/\s+/i", " ", preg_replace("/(^|\s)auto_increment(\s|$)/i", " ", $old_attr["extra"])));
+					
+					if (!isset($new_attr["has_default"]))
+						$new_attr["has_default"] = isset($new_attr["default"]);
+					
+					if (!isset($old_attr["has_default"]))
+						$old_attr["has_default"] = isset($old_attr["default"]);
 					
 					//check if old attribute is auto increment pk
 					if ($was_auto_increment_pk) 
@@ -879,18 +945,19 @@ class WorkFlowDBHandler {
 					
 					//check if there is something different
 					if (
-						$new_attr["primary_key"] != $old_attr["primary_key"] || 
-						$new_attr["type"] != $old_attr["type"] || 
-						$new_attr["length"] != $old_attr["length"] || 
-						$new_attr["null"] != $old_attr["null"] || 
-						$new_attr["unsigned"] != $old_attr["unsigned"] || 
-						$new_attr["unique"] != $old_attr["unique"] || 
-						$new_attr["auto_increment"] != $old_attr["auto_increment"] || 
-						$new_attr["default"] != $old_attr["default"] || 
-						$new_attr["extra"] != $old_attr["extra"] || 
-						($new_attr["charset"] && $new_attr["charset"] != $old_attr["charset"]) || 
-						($new_attr["collation"] && $new_attr["collation"] != $old_attr["collation"]) || 
-						$new_attr["comment"] != $old_attr["comment"]
+						@$new_attr["primary_key"] != @$old_attr["primary_key"] || 
+						@$new_attr["type"] != @$old_attr["type"] || 
+						@$new_attr["length"] != @$old_attr["length"] || 
+						@$new_attr["null"] != @$old_attr["null"] || 
+						@$new_attr["unsigned"] != @$old_attr["unsigned"] || 
+						@$new_attr["unique"] != @$old_attr["unique"] || 
+						@$new_attr["auto_increment"] != @$old_attr["auto_increment"] || 
+						@$new_attr["default"] != @$old_attr["default"] || 
+						@$new_attr["has_default"] != @$old_attr["has_default"] || 
+						@$new_attr["extra"] != @$old_attr["extra"] || 
+						(!empty($new_attr["charset"]) && $new_attr["charset"] != @$old_attr["charset"]) || 
+						(!empty($new_attr["collation"]) && $new_attr["collation"] != @$old_attr["collation"]) || 
+						@$new_attr["comment"] != @$old_attr["comment"]
 					)
 						$is_different = true;
 				}
@@ -908,7 +975,7 @@ class WorkFlowDBHandler {
 						$is_different = true;
 				}
 				else if ($new_attr_idx - $sort_index_inc != $old_attr_idx) { //fix the sort bc all the attributes after the sorted attributes are getting sorted again and they don't need it.
-					$new_attr["after"] = $new_attrs[$previous_idx]["name"];
+					$new_attr["after"] = isset($new_attrs[$previous_idx]["name"]) ? $new_attrs[$previous_idx]["name"] : null;
 					$sort_index_inc++;
 					
 					if ($exists)
@@ -921,12 +988,12 @@ class WorkFlowDBHandler {
 			else if ($is_different)
 				$attributes_to_modify[] = $new_attr;
 			
-			if ($new_attr["primary_key"]) {
+			if (!empty($new_attr["primary_key"])) {
 				$new_pks[] = $new_attr["name"];
 				$new_pks_attrs[] = $new_attr;
 			}
 			
-			if ($exists && $old_attr["primary_key"])
+			if ($exists && !empty($old_attr["primary_key"]))
 				$old_pks[] = $old_attr["name"];
 		}
 		
@@ -965,7 +1032,7 @@ class WorkFlowDBHandler {
 						$attr["auto_increment"] = false;
 						$attr["extra"] = preg_replace("/(^|\s)auto_increment($|\s)/i", "", $attr["extra"]);
 						
-						$sql_statements[] = $DBDriver->getModifyTableAttributeStatement($table, $attr);
+						$sql_statements[] = $DBDriver->getModifyTableAttributeStatement($table_name, $attr);
 						$sql_statements_labels[] = "Remove auto_increment prop from primary key in table $table_name";
 					}
 				
@@ -977,7 +1044,7 @@ class WorkFlowDBHandler {
 			
 			foreach ($attributes_to_add as $attr) {
 				//remove auto_increment property bc it can only be added to a KEY (primary key or other key)
-				if ($attr["auto_increment"] || stripos($attr["extra"], "auto_increment") !== false) {
+				if (!empty($attr["auto_increment"]) || (isset($attr["extra"]) && stripos($attr["extra"], "auto_increment") !== false)) {
 					$attrs_with_auto_increment_to_modify[] = $attr;
 					
 					$attr["extra"] = preg_replace("/(^|\s)auto_increment(\s|$)/i", " ", $attr["extra"]);
@@ -990,7 +1057,7 @@ class WorkFlowDBHandler {
 			
 			foreach ($attributes_to_modify as $attr) {
 				//remove auto_increment property bc it can only be added to a KEY (primary key or other key)
-				if ($pks_dropped && ($attr["auto_increment"] || stripos($attr["extra"], "auto_increment") !== false)) {
+				if ($pks_dropped && (!empty($attr["auto_increment"]) || (isset($attr["extra"]) && stripos($attr["extra"], "auto_increment") !== false))) {
 					$attrs_with_auto_increment_to_modify[] = $attr;
 					
 					$attr["extra"] = preg_replace("/(^|\s)auto_increment(\s|$)/i", " ", $attr["extra"]);
@@ -1019,16 +1086,18 @@ class WorkFlowDBHandler {
 				$fks_to_add = array();
 				$repeated_constraints_name = array();
 				
-				if ($attr["fk"]) {
-					$fks = $fks ? $fks : $DBDriver->listForeignKeys($table_name);
+				if (!empty($attr["fk"])) {
+					$fks = !empty($fks) ? $fks : $DBDriver->listForeignKeys($table_name);
 					
 					if ($fks) {
 						//print_r($fks);
 						for ($i = 0, $t = count($fks); $i < $t; $i++) {
 							$fk = $fks[$i];
-						
-							if ($fk["child_column"] == $attr["name"])
-								if ($fk["constraint_name"] && !in_array($fk["constraint_name"], $repeated_constraints_name)) {
+							$fk_child_column = isset($fk["child_column"]) ? $fk["child_column"] : null;
+							$fk_parent_table = isset($fk["parent_table"]) ? $fk["parent_table"] : null;
+							
+							if ($fk_child_column == $attr["name"])
+								if (!empty($fk["constraint_name"]) && !in_array($fk["constraint_name"], $repeated_constraints_name)) {
 									$repeated_constraints_name[] = $fk["constraint_name"];
 									$sql_statements[] = $DBDriver->getDropTableForeignConstraintStatement($table_name, $fk["constraint_name"]);
 									$sql_statements_labels[] = "Drop foreign key for " . $attr["name"] . " in table $table_name";
@@ -1037,9 +1106,11 @@ class WorkFlowDBHandler {
 									for ($j = 0; $j < $t; $j++) 
 										if ($j != $i) {
 											$sub_fk = $fks[$j];
+											$sub_fk_child_column = isset($sub_fk["child_column"]) ? $sub_fk["child_column"] : null;
+											$sub_fk_parent_table = isset($sub_fk["parent_table"]) ? $sub_fk["parent_table"] : null;
 											
-											if ($sub_fk["parent_table"] == $fk["parent_table"] && $sub_fk["child_column"] != $attr["name"]) {
-												$fks_to_add[ $fk["parent_table"] ][ $sub_fk["child_column"] ] = $sub_fk["parent_column"];
+											if ($sub_fk_parent_table == $fk_parent_table && $sub_fk_child_column != $attr["name"]) {
+												$fks_to_add[$fk_parent_table][$sub_fk_child_column] = isset($sub_fk["parent_column"]) ? $sub_fk["parent_column"] : null;
 											}
 										}
 								}
@@ -1053,8 +1124,8 @@ class WorkFlowDBHandler {
 				//must be after the getDropTableAttributeStatement
 				if ($fks_to_add)
 					foreach ($fks_to_add as $fk_table => $fks_attr_name_to_add) {
-						if (!empty($fks_attr_name_to_add)) {
-							$constraint_name = $repeated_constraints_name[0];
+						if ($fks_attr_name_to_add) {
+							$constraint_name = isset($repeated_constraints_name[0]) ? $repeated_constraints_name[0] : null;
 							$fk = array(
 								"child_column" => array_keys($fks_attr_name_to_add),
 								"parent_column" => array_values($fks_attr_name_to_add),
@@ -1069,7 +1140,7 @@ class WorkFlowDBHandler {
 			}
 			
 			foreach ($attributes_to_rename as $old_name => $new_name) {
-				$attr = $attributes_data_to_rename[$old_name];
+				$attr = isset($attributes_data_to_rename[$old_name]) ? $attributes_data_to_rename[$old_name] : null;
 				$sql_statements[] = $DBDriver->getRenameTableAttributeStatement($table_name, $old_name, $new_name, $attr, $sql_options);
 				$sql_statements_labels[] = "Rename attribute $old_name in table $table_name";
 			}
@@ -1117,17 +1188,17 @@ class WorkFlowDBHandler {
 	public static function getTableFromTables($tables, $table_name) {
 		$real_table_name = self::getTableTaskRealNameFromTasks($tables, $table_name);
 		
-		return $tables[$real_table_name];
+		return isset($tables[$real_table_name]) ? $tables[$real_table_name] : null;
 	}
 	
 	public static function getTableAttributes($tasks, $table_name) {
 		$table = self::getTableFromTables($tasks, $table_name);
-		return $table["properties"]["table_attr_names"];
+		return isset($table["properties"]["table_attr_names"]) ? $table["properties"]["table_attr_names"] : null;
 	}
 	
 	public static function getTablePrimaryKeys($tasks, $table_name) {
 		$table = self::getTableFromTables($tasks, $table_name);
-		$table_attr_primary_keys = $table["properties"]["table_attr_primary_keys"];
+		$table_attr_primary_keys = isset($table["properties"]["table_attr_primary_keys"]) ? $table["properties"]["table_attr_primary_keys"] : null;
 		
 		$pks = array();
 		
@@ -1137,7 +1208,7 @@ class WorkFlowDBHandler {
 				$is_pk = $table_attr_primary_keys[$i];
 				
 				if ($is_pk == "1" || strtolower($is_pk) == "true")
-					$pks[] = $table["properties"]["table_attr_names"][$i];
+					$pks[] = isset($table["properties"]["table_attr_names"][$i]) ? $table["properties"]["table_attr_names"][$i] : null;
 			}
 		}
 		
@@ -1151,26 +1222,30 @@ class WorkFlowDBHandler {
 		$new_tasks = array();
 		$tasks_by_table_name = array();
 		
-		if ($tasks && $tasks["tasks"])
-			foreach ($tasks["tasks"] as $task_id => $task)
-				if ($task["label"])
-					$tasks_by_table_name[ $task["label"] ] = $task_id;
-		
-		if (isset($tasks["containers"])) {
-			$new_tasks["containers"] = $tasks["containers"];
+		if ($tasks) {
+			foreach ($tasks as $k => $v) {
+				if ($k == "tasks") {
+					if (!empty($v))
+						foreach ($v as $task_id => $task)
+							if (!empty($task["label"]))
+								$tasks_by_table_name[ $task["label"] ] = $task_id;
+				}
+				else //add containers and settings to new_tasks var
+					$new_tasks[$k] = $tasks[$k];
+			}
 		}
 		
 		foreach ($tables_data as $table => $table_data) {
-			$attrs = $table_data[0];
-			$fks = $table_data[1];
-			$table_info = is_array($table_data[2]) ? $table_data[2] : array();
+			$attrs = isset($table_data[0]) ? $table_data[0] : null;
+			$fks = isset($table_data[1]) ? $table_data[1] : null;
+			$table_info = isset($table_data[2]) && is_array($table_data[2]) ? $table_data[2] : array();
 			
 			$task_table_name = self::getTableTaskRealNameFromTasks($tasks_by_table_name, $table);
-			$task_id = $tasks_by_table_name[$task_table_name];
+			$task_id = isset($tasks_by_table_name[$task_table_name]) ? $tasks_by_table_name[$task_table_name] : null;
 			
 			if (!empty($task_id)) {
-				$task_left = $tasks["tasks"][$task_id]["offset_left"];
-				$task_top = $tasks["tasks"][$task_id]["offset_top"];
+				$task_left = isset($tasks["tasks"][$task_id]["offset_left"]) ? $tasks["tasks"][$task_id]["offset_left"] : null;
+				$task_top = isset($tasks["tasks"][$task_id]["offset_top"]) ? $tasks["tasks"][$task_id]["offset_top"] : null;
 			}
 			else {
 				$left += 250;
@@ -1201,9 +1276,9 @@ class WorkFlowDBHandler {
 							"overlay" => "No Arrows",
 						)
 					),
-					"table_charset" => $table_info["charset"],
-					"table_collation" => $table_info["collation"],
-					"table_storage_engine" => $table_info["engine"],
+					"table_charset" => isset($table_info["charset"]) ? $table_info["charset"] : null,
+					"table_collation" => isset($table_info["collation"]) ? $table_info["collation"] : null,
+					"table_storage_engine" => isset($table_info["engine"]) ? $table_info["engine"] : null,
 					"table_attr_primary_keys" => array(),
 					"table_attr_names" => array(),
 					"table_attr_types" => array(),
@@ -1223,23 +1298,23 @@ class WorkFlowDBHandler {
 			if (is_array($attrs)) {
 				foreach ($attrs as $attr_name => $attr) {
 					if (!empty($attr_name)) {
-						$idx = $new_tasks["tasks"][$real_task_id]["properties"]["table_attr_names"] ? count($new_tasks["tasks"][$real_task_id]["properties"]["table_attr_names"]) : 0;
+						$idx = !empty($new_tasks["tasks"][$real_task_id]["properties"]["table_attr_names"]) ? count($new_tasks["tasks"][$real_task_id]["properties"]["table_attr_names"]) : 0;
 						
 						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_primary_keys"][$idx] = !empty($attr["primary_key"]) ? "1" : ""; //must be 1 or empty string bc the DB diagram saves the diagram with this values. Do not add true or false to the DB diagram xml.
 						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_names"][$idx] = $attr_name;
-						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_types"][$idx] = $attr["type"];
-						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_lengths"][$idx] = $attr["length"];
+						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_types"][$idx] = isset($attr["type"]) ? $attr["type"] : null;
+						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_lengths"][$idx] = isset($attr["length"]) ? $attr["length"] : null;
 						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_nulls"][$idx] = !empty($attr["null"]) ? "1" : "";
 						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_unsigneds"][$idx] = !empty($attr["unsigned"]) ? "1" : "";
 						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_uniques"][$idx] = !empty($attr["unique"]) ? "1" : "";
 						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_auto_increments"][$idx] = !empty($attr["auto_increment"]) ? "1" : "";
 						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_has_defaults"][$idx] = isset($attr["default"]) && empty($attr["primary_key"]) ? "1" : "";
-						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_defaults"][$idx] = $attr["default"];
+						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_defaults"][$idx] = isset($attr["default"]) ? $attr["default"] : null;
 					
-						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_extras"][$idx] = $attr["extra"];
-						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_charsets"][$idx] = $attr["charset"];
-						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_collations"][$idx] = $attr["collation"];		
-						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_comments"][$idx] = $attr["comment"];
+						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_extras"][$idx] = isset($attr["extra"]) ? $attr["extra"] : null;
+						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_charsets"][$idx] = isset($attr["charset"]) ? $attr["charset"] : null;
+						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_collations"][$idx] = isset($attr["collation"]) ? $attr["collation"] : null;		
+						$new_tasks["tasks"][$real_task_id]["properties"]["table_attr_comments"][$idx] = isset($attr["comment"]) ? $attr["comment"] : null;
 					}
 				}
 			}
@@ -1248,7 +1323,7 @@ class WorkFlowDBHandler {
 				$fks_by_table = array();
 				
 				foreach ($fks as $fk)
-					if (!empty($fk))
+					if (!empty($fk) && isset($fk["parent_table"]))
 						$fks_by_table[ $fk["parent_table"] ][] = $fk;
 				
 				foreach ($fks_by_table as $parent_table => $parent_fks) {
@@ -1256,19 +1331,21 @@ class WorkFlowDBHandler {
 					$overlay = "Many To One";
 					
 					if ($parent_fks) {
-						$parent_attrs = $tables_data[$parent_table][0];
+						$parent_attrs = isset($tables_data[$parent_table][0]) ? $tables_data[$parent_table][0] : null;
 						$child_columns_pks_count = 0;
 						
 						$t = count($parent_fks);
 						for ($i = 0; $i < $t; $i++) {
 							$parent_fk = $parent_fks[$i];
+							$parent_fk_child_column = isset($parent_fk["child_column"]) ? $parent_fk["child_column"] : null;
+							$parent_fk_parent_column = isset($parent_fk["parent_column"]) ? $parent_fk["parent_column"] : null;
 							
 							//$properties["source_tables"][] = $table;
-							$properties["source_columns"][] = $parent_fk["child_column"];
+							$properties["source_columns"][] = $parent_fk_child_column;
 							//$properties["target_tables"][] = $parent_table;
-							$properties["target_columns"][] = $parent_fk["parent_column"];
+							$properties["target_columns"][] = $parent_fk_parent_column;
 							
-							$child_attr = $attrs[ $parent_fk["child_column"] ];
+							$child_attr = isset($attrs[$parent_fk_child_column]) ? $attrs[$parent_fk_child_column] : null;
 							
 							if ($child_attr && !empty($child_attr["primary_key"]))
 								$child_columns_pks_count++;
@@ -1300,39 +1377,39 @@ class WorkFlowDBHandler {
 			$tables_foreign_keys = self::getTablesForeignKeys($tasks);
 			
 			foreach ($tasks as $table_name => $task) {
-				$properties = $task["properties"];
+				$properties = isset($task["properties"]) ? $task["properties"] : null;
 				
-				$table_attr_primary_keys = $properties["table_attr_primary_keys"];
-				$table_attr_names = $properties["table_attr_names"];
-				$table_attr_types = $properties["table_attr_types"];
-				$table_attr_lengths = $properties["table_attr_lengths"];
-				$table_attr_nulls = $properties["table_attr_nulls"];
-				$table_attr_unsigneds = $properties["table_attr_unsigneds"];
-				$table_attr_uniques = $properties["table_attr_uniques"];
-				$table_attr_auto_increments = $properties["table_attr_auto_increments"];
-				$table_attr_has_defaults = $properties["table_attr_has_defaults"];
-				$table_attr_defaults = $properties["table_attr_defaults"];
-				$table_attr_extras = $properties["table_attr_extras"];
-				$table_attr_charsets = $properties["table_attr_charsets"];
-				$table_attr_comments = $properties["table_attr_comments"];
+				$table_attr_primary_keys = isset($properties["table_attr_primary_keys"]) ? $properties["table_attr_primary_keys"] : null;
+				$table_attr_names = isset($properties["table_attr_names"]) ? $properties["table_attr_names"] : null;
+				$table_attr_types = isset($properties["table_attr_types"]) ? $properties["table_attr_types"] : null;
+				$table_attr_lengths = isset($properties["table_attr_lengths"]) ? $properties["table_attr_lengths"] : null;
+				$table_attr_nulls = isset($properties["table_attr_nulls"]) ? $properties["table_attr_nulls"] : null;
+				$table_attr_unsigneds = isset($properties["table_attr_unsigneds"]) ? $properties["table_attr_unsigneds"] : null;
+				$table_attr_uniques = isset($properties["table_attr_uniques"]) ? $properties["table_attr_uniques"] : null;
+				$table_attr_auto_increments = isset($properties["table_attr_auto_increments"]) ? $properties["table_attr_auto_increments"] : null;
+				$table_attr_has_defaults = isset($properties["table_attr_has_defaults"]) ? $properties["table_attr_has_defaults"] : null;
+				$table_attr_defaults = isset($properties["table_attr_defaults"]) ? $properties["table_attr_defaults"] : null;
+				$table_attr_extras = isset($properties["table_attr_extras"]) ? $properties["table_attr_extras"] : null;
+				$table_attr_charsets = isset($properties["table_attr_charsets"]) ? $properties["table_attr_charsets"] : null;
+				$table_attr_comments = isset($properties["table_attr_comments"]) ? $properties["table_attr_comments"] : null;
 				
 				if ($table_attr_names) {
 					if (is_array($table_attr_names)) {
 						$t = count($table_attr_names);
 						for ($i = 0; $i < $t; $i++) {
-							$is_pk = strtolower($table_attr_primary_keys[$i]) == "true" || $table_attr_primary_keys[$i] == "1";
-							$attr_name = $table_attr_names[$i];
-							$attr_type = strtolower($table_attr_types[$i]);
-							$attr_length = $table_attr_lengths[$i];
-							$is_null = strtolower($table_attr_nulls[$i]) == "true" || $table_attr_nulls[$i] == "1";
-							$is_unsigned = strtolower($table_attr_unsigneds[$i]) == "true" || $table_attr_unsigneds[$i] == "1";
-							$is_unique = strtolower($table_attr_uniques[$i]) == "true" || $table_attr_uniques[$i] == "1";
-							$is_auto_increment = strtolower($table_attr_auto_increments[$i]) == "true" || $table_attr_auto_increments[$i] == "1";
-							$has_defaults = strtolower($table_attr_has_defaults[$i]) == "true" || $table_attr_has_defaults[$i] == "1";
-							$attr_default = $table_attr_defaults[$i];
-							$attr_extra = $table_attr_extras[$i];
-							$attr_charset = $table_attr_charsets[$i];
-							$attr_comment = $table_attr_comments[$i];
+							$is_pk = isset($table_attr_primary_keys[$i]) && (strtolower($table_attr_primary_keys[$i]) == "true" || $table_attr_primary_keys[$i] == "1");
+							$attr_name = isset($table_attr_names[$i]) ? $table_attr_names[$i] : null;
+							$attr_type = isset($table_attr_types[$i]) ? strtolower($table_attr_types[$i]) : "";
+							$attr_length = isset($table_attr_lengths[$i]) ? $table_attr_lengths[$i] : null;
+							$is_null = isset($table_attr_nulls[$i]) && (strtolower($table_attr_nulls[$i]) == "true" || $table_attr_nulls[$i] == "1");
+							$is_unsigned = isset($table_attr_unsigneds[$i]) && (strtolower($table_attr_unsigneds[$i]) == "true" || $table_attr_unsigneds[$i] == "1");
+							$is_unique = isset($table_attr_uniques[$i]) && (strtolower($table_attr_uniques[$i]) == "true" || $table_attr_uniques[$i] == "1");
+							$is_auto_increment = isset($table_attr_auto_increments[$i]) && (strtolower($table_attr_auto_increments[$i]) == "true" || $table_attr_auto_increments[$i] == "1");
+							$has_defaults = isset($table_attr_has_defaults[$i]) && (strtolower($table_attr_has_defaults[$i]) == "true" || $table_attr_has_defaults[$i] == "1");
+							$attr_default = isset($table_attr_defaults[$i]) ? $table_attr_defaults[$i] : null;
+							$attr_extra = isset($table_attr_extras[$i]) ? $table_attr_extras[$i] : null;
+							$attr_charset = isset($table_attr_charsets[$i]) ? $table_attr_charsets[$i] : null;
+							$attr_comment = isset($table_attr_comments[$i]) ? $table_attr_comments[$i] : null;
 							
 							$tables[$table_name][$attr_name] = array(
 								"name" => $attr_name,
@@ -1388,8 +1465,10 @@ class WorkFlowDBHandler {
 					$t2 = count($foreign_keys);
 					for ($j = 0; $j < $t2; $j++) {
 						$fk = $foreign_keys[$j];
-						$type = $fk["type"];
-						$keys = $fk["keys"];
+						$fk_child_table = isset($fk["child_table"]) ? $fk["child_table"] : null;
+						$fk_parent_table = isset($fk["parent_table"]) ? $fk["parent_table"] : null;
+						$type = isset($fk["type"]) ? $fk["type"] : null;
+						$keys = isset($fk["keys"]) ? $fk["keys"] : null;
 						$t3 = $keys ? count($keys) : 0;
 						
 						switch($type) {
@@ -1400,16 +1479,19 @@ class WorkFlowDBHandler {
 								 */
 								for ($w = 0; $w < $t3; $w++) {
 									$key = $keys[$w];
-									$attr_name = $fk["child_table"] == $table_name ? $key["child"] : $key["parent"];
+									$key_child = isset($key["child"]) ? $key["child"] : null;
+									$key_parent = isset($key["parent"]) ? $key["parent"] : null;
+									
+									$attr_name = $fk_child_table == $table_name ? $key_child : $key_parent;
 									$attr_fk_props = array(
-										"table" => $fk["child_table"] == $table_name ? $fk["parent_table"] : $fk["child_table"],
-										"attribute" => $fk["child_table"] == $table_name ? $key["parent"] : $key["child"],
+										"table" => $fk_child_table == $table_name ? $fk_parent_table : $fk_child_table,
+										"attribute" => $fk_child_table == $table_name ? $key_parent : $key_child,
 									);
 									
-									if ($fk["source"])
+									if (!empty($fk["source"]))
 										$attr_fk_props["source"] = $fk["source"]; //it means the connection was done FROM $table_name
 									
-									if ($fk["target"])
+									if (!empty($fk["target"]))
 										$attr_fk_props["target"] = $fk["target"]; //it means the connection was done TO $table_name
 									
 									$tables[$table_name][$attr_name]["fk"][] = $attr_fk_props;
@@ -1418,25 +1500,32 @@ class WorkFlowDBHandler {
 							
 							case "*-1":
 								//For external conections and inner connections too
-								if ($fk["child_table"] == $table_name)
+								if ($fk_child_table == $table_name)
 									for ($w = 0; $w < $t3; $w++) {
 										$key = $keys[$w];
-										$attr_name = $key["child"];
+										$key_child = isset($key["child"]) ? $key["child"] : null;
+										$key_parent = isset($key["parent"]) ? $key["parent"] : null;
+										
+										$attr_name = $key_child;
 										$attr_fk_props = array(
-											"table" => $fk["parent_table"],
-											"attribute" => $key["parent"],
+											"table" => $fk_parent_table,
+											"attribute" => $key_parent,
 										);
 										
 										//in case of inner connection
-										if ($fk["parent_table"] == $table_name) {
+										if ($fk_parent_table == $table_name) {
 											$exists = false;
 											
-											if ($tables[$table_name][$attr_name]["fk"])
-												foreach ($tables[$table_name][$attr_name]["fk"] as $attr_fk_props)
-													if ($attr_fk_props["table"] == $table_name && $attr_fk_props["attribute"] == $key["parent"]) {
+											if (!empty($tables[$table_name][$attr_name]["fk"]))
+												foreach ($tables[$table_name][$attr_name]["fk"] as $attr_fk_props) {
+													$attr_fk_props_table = isset($attr_fk_props["table"]) ? $attr_fk_props["table"] : null;
+													$attr_fk_props_attribute = isset($attr_fk_props["attribute"]) ? $attr_fk_props["attribute"] : null;
+													
+													if ($attr_fk_props_table == $table_name && $attr_fk_props_attribute == $key_parent) {
 														$exists = true;
 														break;
 													}
+												}
 											
 											//only add if not added yet
 											if (!$exists)
@@ -1449,27 +1538,34 @@ class WorkFlowDBHandler {
 							
 							case "1-*": 
 								/*
-								 * Doesn't do anything unless is an inner connection, this is, 1-* means the $table_name is the parent table so we don't need to do anything ($fk["child_table"] != $table_name && $fk["parent_table"] == $table_name).
-								 * However if is an inner connection ($fk["child_table"] == $table_name && $fk["parent_table"] == $table_name), then update the fks...
+								 * Doesn't do anything unless is an inner connection, this is, 1-* means the $table_name is the parent table so we don't need to do anything ($fk_child_table != $table_name && $fk_parent_table == $table_name).
+								 * However if is an inner connection ($fk_child_table == $table_name && $fk_parent_table == $table_name), then update the fks...
 								 */
-								 if ($fk["child_table"] == $table_name && $fk["parent_table"] == $table_name) 
+								 if ($fk_child_table == $table_name && $fk_parent_table == $table_name) 
 									for ($w = 0; $w < $t3; $w++) {
 										$key = $keys[$w];
-										$attr_name = $key["child"];
+										$key_child = isset($key["child"]) ? $key["child"] : null;
+										$key_parent = isset($key["parent"]) ? $key["parent"] : null;
+										
+										$attr_name = $key_child;
 										$exists = false;
 										
-										if ($tables[$table_name][$attr_name]["fk"])
-											foreach ($tables[$table_name][$attr_name]["fk"] as $attr_fk_props)
-												if ($attr_fk_props["table"] == $table_name && $attr_fk_props["attribute"] == $key["parent"]) {
+										if (!empty($tables[$table_name][$attr_name]["fk"]))
+											foreach ($tables[$table_name][$attr_name]["fk"] as $attr_fk_props) {
+												$attr_fk_props_table = isset($attr_fk_props["table"]) ? $attr_fk_props["table"] : null;
+												$attr_fk_props_attribute = isset($attr_fk_props["attribute"]) ? $attr_fk_props["attribute"] : null;
+												
+												if ($attr_fk_props_table == $table_name && $attr_fk_props_attribute == $key_parent) {
 													$exists = true;
 													break;
 												}
+											}
 										
 										//only add if not added yet
 										if (!$exists)
 											$tables[$table_name][$attr_name]["fk"][] = array(
 												"table" => $table_name,
-												"attribute" => $key["parent"],
+												"attribute" => $key_parent,
 											);
 									}
 								break;
@@ -1488,22 +1584,25 @@ class WorkFlowDBHandler {
 		
 		if (is_array($tasks)) {
 			foreach ($tasks as $table_name => $table) {
-				$exits = $table["exits"]["layer_exit"];
+				$exits = isset($table["exits"]["layer_exit"]) ? $table["exits"]["layer_exit"] : null;
 				
 				$properties = self::getTableExitsProperties($tasks, $table_name, $exits, $foreign_keys);
 				
 				$t = count($properties);
 				for ($i = 0; $i < $t; $i++) {
 					$props = $properties[$i];
+					$props_child_table = isset($props["child_table"]) ? $props["child_table"] : null;
+					$props_parent_table = isset($props["parent_table"]) ? $props["parent_table"] : null;
+					$props_type = isset($props["type"]) ? $props["type"] : null;
 					
 					$foreign_keys[$table_name][] = $props;
 					
-					$foreign_table_name = $props["child_table"] == $table_name ? $props["parent_table"] : $props["child_table"];
+					$foreign_table_name = $props_child_table == $table_name ? $props_parent_table : $props_child_table;
 					if ($foreign_table_name) {
 						//for the "1-*" connections set the FKs in the foreign table too, otherwise the FKs won't be fully done. This is, the "1-*" connector should not exist! There should be instead the "*-1" connector like it happens in the Relational diagrams, so we need to create the correspondent FKs in the right table. This is, if a table has a "1-*" connection, it means that the child table will have this table FK and not the parent. So the FK should be in the child table. So we need to set this in the right table, which is the child table. Otherwise when we create the automatically Queries and UIs, the system won't create the files correctly.
 						//However only set this FKs if the tables names are different or if is an inner connection to the same table, (this is if tables are the same and the connection is 1-*)
-						if ($foreign_table_name != $table_name || $props["type"] == "1-*") {
-							$props["type"] = $props["type"] == "*-1" ? "1-*" : ($props["type"] == "1-*" ? "*-1" : $props["type"]);
+						if ($foreign_table_name != $table_name || $props_type == "1-*") {
+							$props["type"] = $props_type == "*-1" ? "1-*" : ($props_type == "1-*" ? "*-1" : $props_type);
 							$props["target"] = true; //target means that the connection is connected from this $table_name to the $foreign_table_name.
 							unset($props["source"]); //remove source in case exists bc now is a target connection and not a source connection.
 							
@@ -1527,17 +1626,18 @@ class WorkFlowDBHandler {
 			$t = count($exits);
 			for ($i = 0; $i < $t; $i++) {
 				$exit = $exits[$i];
-				$properties = $exit["properties"];
+				$properties = isset($exit["properties"]) ? $exit["properties"] : null;
+				$overlay = isset($exit["overlay"]) ? $exit["overlay"] : null;
 				
-				$type = $tables_connection_types[ $exit["overlay"] ];
+				$type = isset($tables_connection_types[$overlay]) ? $tables_connection_types[$overlay] : null;
 				$type = $type ? $type : "1-1";
 				
-				$foreign_table_name = self::getTableNameFromTaskId($tasks, $exit["task_id"]);
+				$foreign_table_name = self::getTableNameFromTaskId($tasks, isset($exit["task_id"]) ? $exit["task_id"] : null);
 				
 				if ($foreign_table_name) {
 					$keys = array();//$keys is an assoc array where the array keys correspond to the child_table's attributes and the values to the parent_table's attributes
 				
-					if (!$properties || !$properties["source_columns"]) {
+					if (!$properties || empty($properties["source_columns"])) {
 						$properties = array();
 				
 						$table_attrs = self::getTableAttributes($tasks, $table_name);
@@ -1556,7 +1656,7 @@ class WorkFlowDBHandler {
 						else if ($type == "1-*")
 							$fks = $table_fks;
 						
-						if ($fks) {//prepare keys based in the similar attributes key of both tables
+						if (!empty($fks)) {//prepare keys based in the similar attributes key of both tables
 							$t2 = count($fks);
 							for ($j = 0; $j < $t2; $j++)
 								$keys[] = array("child" => $fks[$j], "parent" => $fks[$j]);
@@ -1564,26 +1664,26 @@ class WorkFlowDBHandler {
 						else if ($type == "*-1") {//prepare keys based in the primary keys of both tables
 							$t2 = count($table_pks);
 							for ($j = 0; $j < $t2; $j++)
-								if ($foreign_table_pks[$j])
+								if (!empty($foreign_table_pks[$j]))
 									$keys[] = array("child" => $table_pks[$j], "parent" => $foreign_table_pks[$j]);
 						}
 						else {
 							$t2 = count($table_pks);
 							for ($j = 0; $j < $t2; $j++)
-								if ($foreign_table_pks[$j])
+								if (!empty($foreign_table_pks[$j]))
 									$keys[] = array("child" => $foreign_table_pks[$j], "parent" => $table_pks[$j]);
 						}
 					}
 					else {
-						$source_columns = $properties["source_columns"];
-						$target_columns = $properties["target_columns"];
-				
+						$source_columns = isset($properties["source_columns"]) ? $properties["source_columns"] : null;
+						$target_columns = isset($properties["target_columns"]) ? $properties["target_columns"] : null;
+						
 						if ($source_columns) {
 							if (!is_array($source_columns)) {
 								$source_columns = array($source_columns);
 								$target_columns = array($target_columns);
 							}
-					
+							
 							if ($type == "*-1") {
 								$t2 = count($source_columns);
 								for ($j = 0; $j < $t2; $j++)
@@ -1636,8 +1736,8 @@ class WorkFlowDBHandler {
 		foreach ($tasks as $table_name => $task) {
 			if ($task_id == $table_name)
 				return $table_name;
-			else if ($task["id"] == $task_id) 
-				return $task["label"];
+			else if (isset($task["id"]) && $task["id"] == $task_id) 
+				return isset($task["label"]) ? $task["label"] : null;
 		}
 		
 		return null;

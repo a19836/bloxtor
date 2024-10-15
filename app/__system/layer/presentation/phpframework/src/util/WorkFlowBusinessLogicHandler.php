@@ -11,9 +11,9 @@ class WorkFlowBusinessLogicHandler {
 			unset($classes[0]);
 			
 			$aux = PHPCodePrintingHandler::decoupleClassNameWithNameSpace($class_path);
-			$class_name = $aux["name"];
+			$class_name = isset($aux["name"]) ? $aux["name"] : null;
 			
-			if (count($classes) == 1 && $classes[$class_path] && $class_name == pathinfo($file_path, PATHINFO_FILENAME))
+			if (count($classes) == 1 && !empty($classes[$class_path]) && $class_name == pathinfo($file_path, PATHINFO_FILENAME))
 				$rename = true;
 		}
 		
@@ -21,8 +21,8 @@ class WorkFlowBusinessLogicHandler {
 	}
 	
 	public static function prepareServiceObjectForsaving(&$object, $options = null) {
-		$default_include = $options && $options["default_include"] ? $options["default_include"] : "";
-		$default_extend = $options && $options["default_extend"] ? $options["default_extend"] : "";
+		$default_include = $options && !empty($options["default_include"]) ? $options["default_include"] : "";
+		$default_extend = $options && !empty($options["default_extend"]) ? $options["default_extend"] : "";
 		
 		//PREPARING INCLUDES
 		$object["includes"] = empty($object["includes"]) ? array() : $object["includes"];
@@ -33,12 +33,11 @@ class WorkFlowBusinessLogicHandler {
 		
 		for ($i = 0; $i < $t; $i++) {
 			$include = $object["includes"][$i];
-			
-			$value = $include["path"];
+			$value = isset($include["path"]) ? $include["path"] : null;
 			
 			if ($default_include && str_replace("'", '"', $value) == $default_include) 
 				$exists_business_logic_modules_service_common_file_path_include = true;
-			else if ($include["var_type"] == "string") {
+			else if (isset($include["var_type"]) && $include["var_type"] == "string") {
 				$include["path"] = '$vars["business_logic_path"] . "/' . $value . '"';
 				$include["var_type"] = "";
 				
@@ -55,15 +54,15 @@ class WorkFlowBusinessLogicHandler {
 		
 		//PREPARING EXTENDS
 		if ($default_extend && empty($object["extends"]))
-			$object["extends"] = ($object["namespace"] && substr($default_extend, 0, 1) != '\\' ? '\\' : '') . $default_extend;
+			$object["extends"] = (!empty($object["namespace"]) && substr($default_extend, 0, 1) != '\\' ? '\\' : '') . $default_extend;
 	}
 	
 	public static function isBusinessLogicService($object) {
-		return strtolower($object["type"]) == "public" && !$object["abstract"] && !$object["static"] && is_array($object["arguments"]) && count($object["arguments"]) == 1 && ( array_key_exists('data', $object["arguments"]) || array_key_exists('$data', $object["arguments"]) );
+		return isset($object["type"]) && strtolower($object["type"]) == "public" && empty($object["abstract"]) && empty($object["static"]) && isset($object["arguments"]) && is_array($object["arguments"]) && count($object["arguments"]) == 1 && ( array_key_exists('data', $object["arguments"]) || array_key_exists('$data', $object["arguments"]) );
 	}
 	
 	public static function prepareObjectIfIsBusinessLogicService(&$object) {
-		if ($object["is_business_logic_service"]) {
+		if (!empty($object["is_business_logic_service"])) {
 			$object["type"] = "public";
 			$object["abstract"] = 0;
 			$object["static"] = 0;
@@ -78,12 +77,12 @@ class WorkFlowBusinessLogicHandler {
 					$t = $annotations ? count($annotations) : 0;
 					for ($i = 0; $i < $t; $i++) {
 						$annotation = $annotations[$i];
-						$name = trim($annotation["name"]);
+						$name = isset($annotation["name"]) ? trim($annotation["name"]) : "";
 						
 						//for the cases: article[id]
 						$name = str_replace(array('"', "'"), "", $name);
 						preg_match_all("/([^\[\]]+)/u", $name, $matches, PREG_PATTERN_ORDER); //'/u' means converts to unicode.
-						$name = "data[" . implode('][', $matches[1]) . "]";
+						$name = "data[" . (isset($matches[1]) ? implode('][', $matches[1]) : "") . "]";
 						
 						$object["annotations"][$annotation_type][$i]["name"] = $name;
 					}
@@ -101,7 +100,7 @@ class WorkFlowBusinessLogicHandler {
 			//echo "<pre>";print_r($parameters);die();
 			
 			foreach ($parameters as $name => $parameter) {
-				$parameter["name"] = $parameter["name"] ? $parameter["name"] : $name;
+				$parameter["name"] = !empty($parameter["name"]) ? $parameter["name"] : $name;
 				
 				$annotations .= self::getAnnotationsFromParameter($parameter, $with_ids, $with_attrs, $with_not_nulls, $with_defaults, $with_max_length, $is_update, $is_conditions, $prefix, $logged_user_id_annotation);
 			}
@@ -116,49 +115,52 @@ class WorkFlowBusinessLogicHandler {
 	public static function getAnnotationsFromParameter($parameter, $with_ids = false, $with_attrs = false, $with_not_nulls = false, $with_defaults = false, $with_max_length = false, $is_update = false, $is_conditions = false, $prefix = "\t", &$logged_user_id_annotation = null) {
 		$annotations = "";
 		
-		if ( ($parameter["primary_key"] && $with_ids) || (!$parameter["primary_key"] && $with_attrs) ) {
-			$name = $parameter["name"];
+		if ( (!empty($parameter["primary_key"]) && $with_ids) || (empty($parameter["primary_key"]) && $with_attrs) ) {
+			$name = isset($parameter["name"]) ? $parameter["name"] : null;
+			$type = isset($parameter["type"]) ? $parameter["type"] : null;
 			
 			if ($name) {
-				if ($is_update && !$parameter["primary_key"] && (ObjTypeHandler::isDBAttributeNameACreatedDate($name) || ObjTypeHandler::isDBAttributeNameACreatedUserId($name))) //if is an update action and is a create_date or create_by attribute, ignore attribute
+				if ($is_update && empty($parameter["primary_key"]) && (ObjTypeHandler::isDBAttributeNameACreatedDate($name) || ObjTypeHandler::isDBAttributeNameACreatedUserId($name))) //if is an update action and is a create_date or create_by attribute, ignore attribute
 					return "";
 				
-				$is_numeric = ObjTypeHandler::isPHPTypeNumeric($parameter["type"]);
+				$is_numeric = ObjTypeHandler::isPHPTypeNumeric($type);
 				$is_logged_user_id_attribute = (ObjTypeHandler::isDBAttributeNameACreatedUserId($name) || ObjTypeHandler::isDBAttributeNameAModifiedUserId($name)) && $is_numeric;
 				
 				$conditions_prefix_name = $is_conditions ? "[conditions]" : "";
-				$annotations .= "$prefix * @param (name=data{$conditions_prefix_name}[" . $name . "], type=" . ($is_conditions ? 'array|' : '') . $parameter["type"];
+				$annotations .= "$prefix * @param (name=data{$conditions_prefix_name}[" . $name . "], type=" . ($is_conditions ? 'array|' : '') . $type;
 				
-				if (!$parameter["primary_key"] || $with_ids !== 2) {
+				$default = isset($parameter["default"]) ? $parameter["default"] : null;
+				
+				if (empty($parameter["primary_key"]) || $with_ids !== 2) {
 					$allow_null = !isset($parameter["null"]) || $parameter["null"];
 					
 					$annotations .= $with_not_nulls && !isset($parameter["mandatory"]) && !$allow_null ? ", not_null=1" : "";
-					$annotations .= $with_not_nulls && $parameter["mandatory"] && ($parameter["primary_key"] || (!strlen($parameter["default"]) && !$allow_null)) ? ", not_null=1" : "";
+					$annotations .= $with_not_nulls && !empty($parameter["mandatory"]) && (!empty($parameter["primary_key"]) || (!strlen($default) && !$allow_null)) ? ", not_null=1" : "";
 				}
 				
-				if (trim(strtolower($parameter["default"])) == "null")
-					$parameter["default"] = "@null";
-				else if (ObjTypeHandler::isDBAttributeValueACurrentTimestamp( trim($parameter["default"]) ))
-					$parameter["default"] = "@date('Y-m-d H:i:s')";
-				else if ((empty($parameter["default"]) || trim($parameter["default"]) == "0000-00-00 00:00:00" || ObjTypeHandler::isDBAttributeValueACurrentTimestamp( trim($parameter["default"]) )) && (ObjTypeHandler::isDBAttributeNameACreatedDate($name) || ObjTypeHandler::isDBAttributeNameAModifiedDate($name)))
-					$parameter["default"] = "@date('Y-m-d H:i:s')";
+				if (trim(strtolower($default)) == "null")
+					$default = "@null";
+				else if (ObjTypeHandler::isDBAttributeValueACurrentTimestamp( trim($default) ))
+					$default = "@date('Y-m-d H:i:s')";
+				else if ((!$default || trim($default) == "0000-00-00 00:00:00" || ObjTypeHandler::isDBAttributeValueACurrentTimestamp( trim($default) )) && (ObjTypeHandler::isDBAttributeNameACreatedDate($name) || ObjTypeHandler::isDBAttributeNameAModifiedDate($name)))
+					$default = "@date('Y-m-d H:i:s')";
 				
-				$exists_min = $parameter["primary_key"] && !$is_numeric;
-				$is_default_func = substr($parameter["default"], 0, 1) == "@";
-				$annotations .= $with_defaults && (!$is_numeric || is_numeric($parameter["default"])) ? ", default=" . ($is_default_func || is_numeric($parameter["default"]) ? '' : '"') . $parameter["default"] . ($is_default_func || is_numeric($parameter["default"]) ? '' : '"') : "";
+				$exists_min = !empty($parameter["primary_key"]) && !$is_numeric;
+				$is_default_func = substr($default, 0, 1) == "@";
+				$annotations .= $with_defaults && (!$is_numeric || is_numeric($default)) ? ", default=" . ($is_default_func || is_numeric($default) ? '' : '"') . $default . ($is_default_func || is_numeric($default) ? '' : '"') : "";
 				$annotations .= $exists_min ? ", min_length=1" : "";
-				$annotations .= $with_max_length && is_numeric($parameter["length"]) && $parameter["length"] ? ", " . ($exists_min ? "max_" : "") . "length=" . $parameter["length"] : "";
+				$annotations .= $with_max_length && !empty($parameter["length"]) && is_numeric($parameter["length"]) ? ", " . ($exists_min ? "max_" : "") . "length=" . $parameter["length"] : "";
 				
 				$add_sql_slashes = !isset($parameter["add_sql_slashes"]) || $parameter["add_sql_slashes"] ? true : false; //This is used by the module/common/system_settings/admin/CommonModuleAdminTableExtraAttributesUtil.php. All other cases and by default always includes the add_sql_slashes.
-				$annotations .= $add_sql_slashes && ObjTypeHandler::convertCompositeTypeIntoSimpleType($parameter["type"]) != "no_string" && !ObjTypeHandler::isPHPTypeNumeric($parameter["type"]) ? ", add_sql_slashes=1" : "";
+				$annotations .= $add_sql_slashes && ObjTypeHandler::convertCompositeTypeIntoSimpleType($type) != "no_string" && !ObjTypeHandler::isPHPTypeNumeric($type) ? ", add_sql_slashes=1" : "";
 				
 				$sanitize_html = !isset($parameter["sanitize_html"]) || $parameter["sanitize_html"] ? true : false; //This is used by the module/common/system_settings/admin/CommonModuleAdminTableExtraAttributesUtil.php. All other cases and by default always includes the sanitize_html.
-				$annotations .= $sanitize_html && ObjTypeHandler::isDBTypeText($parameter["type"]) ? ", sanitize_html=1" : "";
+				$annotations .= $sanitize_html && ObjTypeHandler::isDBTypeText($type) ? ", sanitize_html=1" : "";
 				
-				$annotations .= ") " . $parameter["comment"] . " \n";
+				$annotations .= ") " . (isset($parameter["comment"]) ? $parameter["comment"] : "") . " \n";
 				
 				if ($is_logged_user_id_attribute && !$is_conditions)
-					$logged_user_id_annotation = "$prefix * @param (name=data[logged_user_id], type=" . $parameter["type"] . ($with_max_length && is_numeric($parameter["length"]) && $parameter["length"] ? ", " . ($exists_min ? "max_" : "") . "length=" . $parameter["length"] : "") . ") \n";
+					$logged_user_id_annotation = "$prefix * @param (name=data[logged_user_id], type=" . $type . ($with_max_length && !empty($parameter["length"]) && is_numeric($parameter["length"]) ? ", " . ($exists_min ? "max_" : "") . "length=" . $parameter["length"] : "") . ") \n";
 			}
 		}
 		
@@ -179,8 +181,8 @@ class WorkFlowBusinessLogicHandler {
 			$code = "";
 			
 			foreach ($parameters as $attr_name => $attr) {
-				$name = $attr["name"] ? $attr["name"] : $attr_name;
-				$type = $attr["type"];
+				$name = !empty($attr["name"]) ? $attr["name"] : $attr_name;
+				$type = isset($attr["type"]) ? $attr["type"] : null;
 				
 				if (ObjTypeHandler::convertCompositeTypeIntoSimpleType($type) != "no_string" && !ObjTypeHandler::isPHPTypeNumeric($type)) {
 					$code .= '
@@ -207,18 +209,18 @@ class WorkFlowBusinessLogicHandler {
 		
 		if (is_array($parameters))
 			foreach ($parameters as $name => $parameter)
-				if (!$parameter["primary_key"]) {
-					$type = $parameter["type"];
+				if (empty($parameter["primary_key"])) {
+					$type = isset($parameter["type"]) ? $parameter["type"] : null;
 					$allow_null = !isset($parameter["null"]) || $parameter["null"];
 					$is_numeric = ObjTypeHandler::isDBTypeNumeric($type);
 					
-					if ($allow_null && ($parameter["mandatory"] || ObjTypeHandler::isDBTypeDate($type) || $is_numeric)) {
+					if ($allow_null && (!empty($parameter["mandatory"]) || ObjTypeHandler::isDBTypeDate($type) || $is_numeric)) {
 						//if is an update action and is a create_date or create_by attribute, ignore attribute
 						if ($is_update && (ObjTypeHandler::isDBAttributeNameACreatedDate($name) || ObjTypeHandler::isDBAttributeNameACreatedUserId($name))) 
 							continue;
 						
 						$is_logged_user_id_attribute = (ObjTypeHandler::isDBAttributeNameACreatedUserId($name) || ObjTypeHandler::isDBAttributeNameAModifiedUserId($name)) && $is_numeric;
-						$default = $parameter["default"];
+						$default = isset($parameter["default"]) ? $parameter["default"] : null;
 						
 						if (ObjTypeHandler::isDBAttributeValueACurrentTimestamp($default))
 							$default = 'date("Y-m-d H:i:s")';
@@ -257,7 +259,7 @@ class WorkFlowBusinessLogicHandler {
 		
 		if (is_array($parameters))
 			foreach ($parameters as $name => $parameter) {
-				$type = $parameter["type"];
+				$type = isset($parameter["type"]) ? $parameter["type"] : null;
 				$is_numeric = ObjTypeHandler::isDBTypeNumeric($type);
 				
 				if ($is_numeric) { //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.

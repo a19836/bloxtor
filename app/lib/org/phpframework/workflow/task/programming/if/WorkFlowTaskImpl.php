@@ -11,10 +11,10 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$stmt_type = strtolower($stmt->getType());
 		
 		if ($stmt_type == "stmt_if") {
-			$if_cond = $stmt->cond;
-			$if_stmts = $stmt->stmts;
-			$else_stmts = $stmt->else->stmts;
-			$elseifs = $stmt->elseifs;
+			$if_cond = isset($stmt->cond) ? $stmt->cond : null;
+			$if_stmts = isset($stmt->stmts) ? $stmt->stmts : null;
+			$else_stmts = isset($stmt->else->stmts) ? $stmt->else->stmts : null;
+			$elseifs = isset($stmt->elseifs) ? $stmt->elseifs : null;
 			
 			$if_cond_props = $WorkFlowTaskCodeParser->getConditions($if_cond);
 			if (!isset($if_cond_props)) {
@@ -40,7 +40,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$exits = array();
 			$inner_tasks = array();
 			
-			if ($if_inner_tasks && $if_inner_tasks[0]["id"]) {
+			if ($if_inner_tasks && !empty($if_inner_tasks[0]["id"])) {
 				$exits["true"][] = array("task_id" => $if_inner_tasks[0]["id"]);
 				
 				$WorkFlowTaskCodeParser->addNextTaskToUndefinedTaskExits($if_inner_tasks[count($if_inner_tasks) - 1]);
@@ -53,7 +53,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			
 			$false_task_id = null;
 			if ($else_inner_tasks) {
-				$false_task_id = $else_inner_tasks[0]["id"];
+				$false_task_id = isset($else_inner_tasks[0]["id"]) ? $else_inner_tasks[0]["id"] : null;
 				
 				$WorkFlowTaskCodeParser->addNextTaskToUndefinedTaskExits($else_inner_tasks[count($else_inner_tasks) - 1]);
 				
@@ -67,8 +67,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				for ($i = count($elseifs) - 1; $i >= 0; --$i) {
 					$elseif = $elseifs[$i];
 			
-					$elseif_cond = $elseif->cond;
-					$elseif_stmts = $elseif->stmts;
+					$elseif_cond = isset($elseif->cond) ? $elseif->cond : null;
+					$elseif_stmts = isset($elseif->stmts) ? $elseif->stmts : null;
 			
 					$elseif_cond_props = $WorkFlowTaskCodeParser->getConditions($elseif_cond);
 					if (!isset($elseif_cond_props)) {
@@ -90,7 +90,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					);
 					
 					$sub_exits = array();
-					if ($elseif_inner_tasks && $elseif_inner_tasks[0]["id"]) {
+					if ($elseif_inner_tasks && !empty($elseif_inner_tasks[0]["id"])) {
 						$sub_exits["true"][] = array("task_id" => $elseif_inner_tasks[0]["id"]);
 					}
 					else {
@@ -107,7 +107,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					$elseif_task = $WorkFlowTaskCodeParser->createXMLTask($this_task_info, $sub_props, $sub_exits);
 					
 					if ($elseif_task) {
-						$false_task_id = $elseif_task["id"];
+						$false_task_id = isset($elseif_task["id"]) ? $elseif_task["id"] : null;
 						
 						$inner_tasks[] = array($elseif_task);
 					}
@@ -137,9 +137,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
-		$first_group = $raw_data["childs"]["properties"][0]["childs"]["group"][0];
+		$first_group = isset($raw_data["childs"]["properties"][0]["childs"]["group"][0]) ? $raw_data["childs"]["properties"][0]["childs"]["group"][0] : null;
 		
 		$properties = self::parseGroup($first_group);
 		
@@ -147,12 +147,12 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		//error_log("task id:".$data["id"]."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
-		$common_exit_task_id = self::getCommonTaskExitIdFromTaskPaths($tasks, $data["id"]);
+		$common_exit_task_id = self::getCommonTaskExitIdFromTaskPaths($tasks, isset($data["id"]) ? $data["id"] : null);
 		//error_log("common_exit_task_id:".$common_exit_task_id."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 		
 		$stops_id = array();
@@ -161,8 +161,11 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		if ($common_exit_task_id) 
 			$stops_id[] = $common_exit_task_id;
 		
-		$if_code = self::printTask($tasks, $data["exits"]["true"], $stops_id, $prefix_tab . "\t", $options);
-		$else_code = self::printTask($tasks, $data["exits"]["false"], $stops_id, $prefix_tab . "\t", $options);
+		$true_task_id = isset($data["exits"]["true"]) ? $data["exits"]["true"] : null;
+		$false_task_id = isset($data["exits"]["false"]) ? $data["exits"]["false"] : null;
+		
+		$if_code = self::printTask($tasks, $true_task_id, $stops_id, $prefix_tab . "\t", $options);
+		$else_code = self::printTask($tasks, $false_task_id, $stops_id, $prefix_tab . "\t", $options);
 		
 		$if_code = $if_code ? $if_code : "\n\n";
 		$else_code = $else_code ? $else_code : "\n\n";

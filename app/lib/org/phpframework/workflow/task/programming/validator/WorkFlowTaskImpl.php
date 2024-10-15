@@ -10,25 +10,25 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	public function createTaskPropertiesFromCodeStmt($stmt, $WorkFlowTaskCodeParser, &$exits = null, &$inner_tasks = null) {
 		$props = $WorkFlowTaskCodeParser->getObjectMethodProps($stmt);
 		
-		if ($props && $props["method_name"] && $props["method_static"] && ($props["method_obj"] == "TextValidator" || $props["method_obj"] == "ObjTypeHandler")) {
+		if ($props && !empty($props["method_name"]) && !empty($props["method_static"]) && isset($props["method_obj"]) && ($props["method_obj"] == "TextValidator" || $props["method_obj"] == "ObjTypeHandler")) {
 			$method_name = $props["method_name"];
 			$available_methods_1 = get_class_methods('TextValidator');
 			$available_methods_2 = get_class_methods('ObjTypeHandler');
 			
 			if (in_array($method_name, $available_methods_1) || in_array($method_name, $available_methods_2)) {
-				$args = $props["method_args"];
+				$args = isset($props["method_args"]) ? $props["method_args"] : null;
 				
 				$props["method"] = $props["method_obj"] . "::$method_name";
 				
-				$value = $args[0]["value"];
-				$value_type = $args[0]["type"];
+				$value = isset($args[0]["value"]) ? $args[0]["value"] : null;
+				$value_type = isset($args[0]["type"]) ? $args[0]["type"] : null;
 				
 				$props["value"] = $value;
 				$props["value_type"] = self::getConfiguredParsedType($value_type);
 				
 				if ($props["method_obj"] == "TextValidator" && substr($method_name, 0, 5) == "check") {
-					$offset = $args[1]["value"];
-					$offset_type = $args[1]["type"];
+					$offset = isset($args[1]["value"]) ? $args[1]["value"] : null;
+					$offset_type = isset($args[1]["type"]) ? $args[1]["type"] : null;
 					
 					$props["offset"] = $offset;
 					$props["offset_type"] = self::getConfiguredParsedType($offset);
@@ -53,14 +53,14 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"method" => $raw_data["childs"]["properties"][0]["childs"]["method"][0]["value"],
-			"value" => $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"],
-			"value_type" => $raw_data["childs"]["properties"][0]["childs"]["value_type"][0]["value"],
-			"offset" => $raw_data["childs"]["properties"][0]["childs"]["offset"][0]["value"],
-			"offset_type" => $raw_data["childs"]["properties"][0]["childs"]["offset_type"][0]["value"],
+			"method" => isset($raw_data["childs"]["properties"][0]["childs"]["method"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["method"][0]["value"] : null,
+			"value" => isset($raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"] : null,
+			"value_type" => isset($raw_data["childs"]["properties"][0]["childs"]["value_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value_type"][0]["value"] : null,
+			"offset" => isset($raw_data["childs"]["properties"][0]["childs"]["offset"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["offset"][0]["value"] : null,
+			"offset_type" => isset($raw_data["childs"]["properties"][0]["childs"]["offset_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["offset_type"][0]["value"] : null,
 		);
 		
 		$properties = self::parseResultVariableProperties($raw_data, $properties);
@@ -69,14 +69,19 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$var_name = self::getPropertiesResultVariableCode($properties);
-		$method = $properties["method"];
-		$value = self::getVariableValueCode($properties["value"], $properties["value_type"]);
-		$offset = self::getVariableValueCode($properties["offset"], $properties["offset_type"]);
+		$method = isset($properties["method"]) ? $properties["method"] : null;
+		$value = isset($properties["value"]) ? $properties["value"] : null;
+		$value_type = isset($properties["value_type"]) ? $properties["value_type"] : null;
+		$offset = isset($properties["offset"]) ? $properties["offset"] : null;
+		$offset_type = isset($properties["offset_type"]) ? $properties["offset_type"] : null;
+		
+		$value = self::getVariableValueCode($value, $value_type);
+		$offset = self::getVariableValueCode($offset, $offset_type);
 		$code = "";
 		
 		if ($method) {
@@ -88,7 +93,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$code .= ");\n";
 		}
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

@@ -3,7 +3,7 @@ namespace __system\businesslogic;
  
 /**
  * The Bar function
- * @return varchar Whether or not something is true
+ * @return string Whether or not something is true
  * @params (
  * 	@param mixed function_vars,
  * 	@param (name=value, tYPe=varchar, NotNull, @Min(1), default="This is only a test from Annotations"),

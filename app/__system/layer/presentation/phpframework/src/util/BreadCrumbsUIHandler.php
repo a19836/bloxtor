@@ -53,7 +53,7 @@ class BreadCrumbsUIHandler {
 		
 		//echo $layer_path."<br>".$file_path."<br>".$path;die();
 		
-		if ($layer_folder_path)
+		if (!empty($layer_folder_path))
 			$html .= '<span class="breadcrumb-item' . ($item_class ? " $item_class" : "") . '">' . $layer_folder_path . '</span>';
 		
 		$path = preg_replace("/^[\/]+/", "", $path); //remove start /

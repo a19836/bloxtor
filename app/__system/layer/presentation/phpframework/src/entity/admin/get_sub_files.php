@@ -3,13 +3,13 @@ include_once $EVC->getUtilPath("AdminMenuHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$item_type = $_GET["item_type"];
-$folder_type = $_GET["folder_type"];
-$filter_by_layout = $_GET["filter_by_layout"];
-$filter_by_layout_permission = $_GET["filter_by_layout_permission"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$item_type = isset($_GET["item_type"]) ? $_GET["item_type"] : null;
+$folder_type = isset($_GET["folder_type"]) ? $_GET["folder_type"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
+$filter_by_layout_permission = isset($_GET["filter_by_layout_permission"]) ? $_GET["filter_by_layout_permission"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -114,7 +114,7 @@ if (empty($layers)) {*/
 				}
 				
 				//if layer root path with belonging files, add the referenced folder
-				if ($add_referenced_folder) {
+				if (!empty($add_referenced_folder)) {
 					$js_url_handler = LayoutTypeProjectUIHandler::getJavascriptHandlerToParseGetSubFilesUrlWithOnlyBelongingFiles();
 					addParseGetSubFilesURLHandlerPropertyToSubFiles($sub_files, $js_url_handler);
 					
@@ -136,7 +136,7 @@ function prepareSubFiles(&$sub_files, $UserAuthenticationHandler, $layer_object_
 	if (is_array($sub_files))
 		foreach ($sub_files as $sub_file_name => $sub_file) 
 			if ($sub_file_name != "aliases" && $sub_file_name != "properties") {
-				if ($sub_file["properties"]["item_type"] == "properties") { //inside of each project we have a folder called others which has the item_type==properties
+				if (isset($sub_file["properties"]["item_type"]) && $sub_file["properties"]["item_type"] == "properties") { //inside of each project we have a folder called others which has the item_type==properties
 					prepareSubFiles($sub_files[$sub_file_name], $UserAuthenticationHandler, $layer_object_id, $layer_path_object_id, $filter_by_layout, $filter_by_layout_permission);
 					
 					//if others folder, is empty, then remove the others folder.
@@ -148,7 +148,7 @@ function prepareSubFiles(&$sub_files, $UserAuthenticationHandler, $layer_object_
 						unset($sub_files[$sub_file_name]);
 				}
 				else {
-					if ($sub_file["properties"]["path"])
+					if (!empty($sub_file["properties"]["path"]))
 						$object_id = $layer_object_id . $sub_file["properties"]["path"];
 					else
 						$object_id = $layer_path_object_id . $sub_file_name;
@@ -171,7 +171,7 @@ function addParseGetSubFilesURLHandlerPropertyToSubFiles(&$sub_files, $js_url_ha
 	if (is_array($sub_files))
 		foreach ($sub_files as $sub_file_name => $sub_file) 
 			if ($sub_file_name != "aliases" && $sub_file_name != "properties") {
-				if ($sub_file["properties"])
+				if (!empty($sub_file["properties"]))
 					$sub_files[$sub_file_name]["properties"]["parse_get_sub_files_url_handler"] = $js_url_handler;
 				
 				addParseGetSubFilesURLHandlerPropertyToSubFiles($sub_files[$sub_file_name], $js_url_handler);

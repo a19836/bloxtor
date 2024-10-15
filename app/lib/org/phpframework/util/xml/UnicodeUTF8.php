@@ -19,7 +19,7 @@ class UnicodeUTF8 {
 			
 				if (count($values) == $lookingFor) {
 					$number = ($lookingFor == 3) ?
-						(($values[0] % 16) * 4096) + (($values[1] % 64) * 64) + ($values[2] % 64):
+						(($values[0] % 16) * 4096) + (($values[1] % 64) * 64) + ($values[2] % 64) :
 						(($values[0] % 32) * 64) + ($values[1] % 64);
 					
 					$unicode[] = $number;
@@ -325,12 +325,15 @@ class UnicodeUTF8 {
 		$keys = array_keys($entity_to_decimal);
 		$t = count($keys);
 		
-		for($i = 0; $i < $t; $i++) 
-			if(substr($keys[$i], 0, 1) == "&") {
-				$code = "&amp;".substr($keys[$i], 1);
-				$entities[$code] = $keys[$i];
+		for($i = 0; $i < $t; $i++) {
+			$key = $keys[$i];
+			
+			if(substr($key, 0, 1) == "&") {
+				$code = "&amp;".substr($key, 1);
+				$entities[$code] = $key;
 			}
-
+		}
+		
 	  	//return preg_replace("/&[A-Za-z]+;/", " ", strtr($string,$entity_to_decimal) );
 		$string = str_replace(array_keys($entities), array_values($entities), $string);
 		$string = str_replace(array_keys($entity_to_decimal), array_values($entity_to_decimal), $string);

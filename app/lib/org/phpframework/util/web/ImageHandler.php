@@ -59,6 +59,7 @@ class ImageHandler {
 		if (!$this->isImageBinaryValid($src_path))
 			return false;
 		
+		$status = false;
 		$extension = $this->getFileExtension($src_path);
 		
 		switch($extension){
@@ -138,7 +139,8 @@ class ImageHandler {
 								break; 
 						}
 				      
-			   		@imagedestroy($new);
+			   		if (function_exists("imagedestroy"))
+			   			@imagedestroy($new);
 			   	}
 			   	else //if is smaller than the user width/height, simply copy image to $dst_path
 			   		$status = copy($src_path, $dst_path);
@@ -146,7 +148,8 @@ class ImageHandler {
 			else //if width and height are the same, simply copy image to $dst_path
 				$status = copy($src_path, $dst_path);
 			
-			@imagedestroy($img); 
+			if (function_exists("imagedestroy"))
+				@imagedestroy($img); 
 		} 
 	   	
 		return $status;

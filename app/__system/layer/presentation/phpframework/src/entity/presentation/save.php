@@ -3,14 +3,14 @@ include_once get_lib("org.phpframework.util.MyArray");
 include_once $EVC->getUtilPath("SequentialLogicalActivitySettingsCodeCreator");
 include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$file_modified_time = $_GET["file_modified_time"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$file_modified_time = isset($_GET["file_modified_time"]) ? $_GET["file_modified_time"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 	$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
 	$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($bean_name, $path);
 	
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 			
 			$file_was_changed = file_exists($file_path) && $file_modified_time && $file_modified_time < filemtime($file_path);
 			
-			$object = $_POST["object"] ? $_POST["object"] : array();
+			$object = !empty($_POST["object"]) ? $_POST["object"] : array();
 			
 			switch ($file_type) {
 				case "save_entity_advanced":
@@ -43,11 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 				case "save_template":
 				case "save_block_advanced":
 				case "save_util":
-					$code = $object["code"];
+					$code = isset($object["code"]) ? $object["code"] : null;
 					$status = save($PEVC, $file_type, $file_path, $file_was_changed, $code);
 					
 					//remove resource cache if exists
-					if (($file_type == "save_entity_advanced" || $file_type == "save_template") && is_array($status) && $status["status"] === true) {
+					if (($file_type == "save_entity_advanced" || $file_type == "save_template") && is_array($status) && isset($status["status"]) && $status["status"] === true) {
 						$UserCacheHandler = $PEVC->getPresentationLayer()->getPHPFrameWork()->getObject("UserCacheHandler");
 						
 						if ($UserCacheHandler) {
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 					break;
 				
 				case "save_config":
-					$code = $object["code"];
+					$code = isset($object["code"]) ? $object["code"] : null;;
 					$is_config_file = substr($file_path, -22) == "/src/config/config.php";
 					
 					//Be sure that these variables exist!
@@ -83,13 +83,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 					break;
 				
 				case "save_entity_simple":
-					if ($object["sla_settings"] && !$object["sla_settings_code"])
+					if (!empty($object["sla_settings"]) && empty($object["sla_settings_code"]))
 						$object["sla_settings_code"] = SequentialLogicalActivitySettingsCodeCreator::getActionsCode($webroot_cache_folder_path, $webroot_cache_folder_url, $object["sla_settings"], "\t");
 					
 					$code = CMSPresentationLayerHandler::createEntityCode($object, $selected_project_id, $default_extension);
 					$status = save($PEVC, $file_type, $file_path, $file_was_changed, $code);
 					
-					if (is_array($status) && $status["status"] === true) {
+					if (is_array($status) && isset($status["status"]) && $status["status"] === true) {
 						$SysUserCacheHandler = $PHPFrameWork->getObject("UserCacheHandler"); //$PHPFrameWork is the same than $EVC->getPresentationLayer()->getPHPFrameWork(); //Use EVC instead of PEVC, bc is relative to the __system admin panel
 						CMSPresentationLayerHandler::cacheEntitySaveActionTime($PEVC, $SysUserCacheHandler, $cms_page_cache_path_prefix, $file_path, true, $workflow_paths_id, $bean_name);
 						
@@ -113,9 +113,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 				case "save_project_default_template":
 					$original_code = file_get_contents($file_path);
 					$status = true;
+					$code = null;
 					
 					if ($file_type == "save_project_global_variables_advanced")
-						$code = $object["code"];
+						$code = isset($object["code"]) ? $object["code"] : null;
 					else if ($file_type == "save_project_default_template") {
 						//Remove reserved code from $obj_data["code"]
 						$find = '$presentation_id = substr($project_path, strlen($layer_path), -1);';
@@ -128,15 +129,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 						
 						if ($is_code_valid) {
 							$vars = PHPVariablesFileHandler::getVarsFromContent($code_aux);
-							$vars["project_default_template"] = $object["project_default_template"];
+							$vars["project_default_template"] = isset($object["project_default_template"]) ? $object["project_default_template"] : null;
 							$code = PHPVariablesFileHandler::getVarsCode($vars);
 						}
 						else
 							$status = false;
 					}
 					else {
-						$vars_name = $object["vars_name"];
-						$vars_value = $object["vars_value"];
+						$vars_name = isset($object["vars_name"]) ? $object["vars_name"] : null;
+						$vars_value = isset($object["vars_value"]) ? $object["vars_value"] : null;
 						
 						$global_variables = array();
 						
@@ -193,6 +194,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 				case "save_page_module_block":
 				case "save_block_simple":
 					if ($file_type == "save_page_module_block") {
+						if (empty($P->settings["presentation_blocks_path"]))
+							launch_exception(new Exception("'PresentationLayer->settings[presentation_blocks_path]' cannot be undefined!"));
+						
+						if (empty($P->settings["presentation_entities_path"]))
+							launch_exception(new Exception("'PresentationLayer->settings[presentation_entities_path]' cannot be undefined!"));
+						
 						$new_path = str_replace("//", "/", "$selected_project_id/" . $P->settings["presentation_blocks_path"] . "/");
 						$entity_path_prefix = str_replace("//", "/", "$selected_project_id/" . $P->settings["presentation_entities_path"] . "/");
 						$entity_path_pos = strpos($path, $entity_path_prefix);
@@ -203,7 +210,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 						}
 						
 						//sets file name with the name of the module
-						$file_path = trim($layer_path . $new_path) . trim(strtolower(str_replace("/", "_", $object["module_id"]))) . ".php";
+						$object_module_id = isset($object["module_id"]) ? $object["module_id"] : null;
+						$file_path = trim($layer_path . $new_path) . trim(strtolower(str_replace("/", "_", $object_module_id))) . ".php";
 						
 						//check if file folder exists, and if not create it
 						$folder_path = dirname($file_path);
@@ -220,13 +228,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 					
 					$status = save($PEVC, $file_type, $file_path, $file_was_changed, $code);
 					
-					if ($file_type == "save_page_module_block" && is_array($status) && $status["status"] === true) 
+					if ($file_type == "save_page_module_block" && is_array($status) && isset($status["status"]) && $status["status"] === true) 
 						$status["block_id"] = substr(str_replace($PEVC->getBlocksPath(), "", $file_path), 0, (strlen($default_extension) + 1) * -1);
 					
 					break;
 			}
 			
-			if ($status && is_array($status) && $status["status"] === true)
+			if (!empty($status) && is_array($status) && isset($status["status"]) && $status["status"] === true)
 				$UserAuthenticationHandler->incrementUsedActionsTotal();
 		}
 		
@@ -234,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 	}
 }
 
-echo json_encode($status);
+echo json_encode(isset($status) ? $status : null);
 die();
 
 function save($PEVC, $file_type, $file_path, $file_was_changed, $code) {

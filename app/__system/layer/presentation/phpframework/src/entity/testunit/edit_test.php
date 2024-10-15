@@ -5,8 +5,8 @@ include_once $EVC->getUtilPath("WorkFlowTestUnitHandler");
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 UserAuthenticationHandler::checkUsersMaxNum($UserAuthenticationHandler);
 
-$path = $_GET["path"];
-$file_name = $_GET["file_name"];
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$file_name = isset($_GET["file_name"]) ? $_GET["file_name"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -105,7 +105,7 @@ if ($path && file_exists($file_path)) {
 	
 	if ($presentation_evc_brokers_obj) {
 		$aux = array(
-			"setblockparams", "settemplateregionblockparam", "includeblock", "addtemplateregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam",
+			"setblockparams", "settemplateregionblockparam", "includeblock", "addregionhtml", "addregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam",
 		);
 		$allowed_tasks_tag = array_merge($allowed_tasks_tag, $aux);
 	}
@@ -117,14 +117,14 @@ if ($path && file_exists($file_path)) {
 	$WorkFlowTaskHandler->addAllowedTaskTagsFromFolders($code_workflow_editor_user_tasks_folders_path);
 	
 	//PREPARING DOC-BLOCK COMMENTS
-	$comments = $obj_data["doc_comments"] ? implode("\n", $obj_data["doc_comments"]) : "";
+	$comments = !empty($obj_data["doc_comments"]) ? implode("\n", $obj_data["doc_comments"]) : "";
 	$DocBlockParser = new DocBlockParser();
 	$DocBlockParser->ofComment($comments);
 	$objects = $DocBlockParser->getObjects();
 	$method_comments = $DocBlockParser->getDescription();
 	$enabled = !empty($objects["enabled"][0]);
-	$global_variables_files_path = $objects["global_variables_files_path"];
-	$depends = $objects["depends"];
+	$global_variables_files_path = isset($objects["global_variables_files_path"]) ? $objects["global_variables_files_path"] : null;
+	$depends = isset($objects["depends"]) ? $objects["depends"] : null;
 	//echo "<pre>";print_r($objects);die();
 }
 else {
@@ -137,8 +137,8 @@ function getLayerProjectsUrls($user_global_variables_file_path, $user_beans_fold
 	
 	if ($presentation_brokers)
 		foreach ($presentation_brokers as $presentation_broker) {
-			$bean_file_name = $presentation_broker[1];
-			$bean_name = $presentation_broker[2];
+			$bean_file_name = isset($presentation_broker[1]) ? $presentation_broker[1] : null;
+			$bean_name = isset($presentation_broker[2]) ? $presentation_broker[2] : null;
 			
 			$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
 			$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($bean_name);

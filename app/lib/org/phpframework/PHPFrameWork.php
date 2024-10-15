@@ -138,7 +138,7 @@ class PHPFrameWork {
 				
 				//if time doesn't exist, deletes the lib/ and __system/ folders, bc it means someone try to hack the licence.
 				//Note: Only delete fiels if someone hacks the code or licence, otherwise only show a simple message saying "licence expired"
-				if (!$t) {
+				if (empty($t)) {
 					//LEAVE THIS CODE COMMENTED, otherwise I'm shooting my own foot. Only uncomment if I would like to share my framework with some other programmer.
 					//self::hackingConsequence();
 				}
@@ -254,7 +254,9 @@ class PHPFrameWork {
 	private function activateLicence(&$status, $projects_maximum_number) {
 		$status = $status ? $this->licence_returned_status . $projects_maximum_number : '[a-b]';
 		$la_regex = 'L' . chr(65) . '_RE' . chr(71) . 'EX'; //LA_REGEX
-		define($la_regex, $status); //a-b is false. This string faking that is a regex is only to confuse the hacker.
+		
+		if (!defined($la_regex))
+			define($la_regex, $status); //a-b is false. This string faking that is a regex is only to confuse the hacker.
 	}
 	
 	private static function getLicenceFilePath() {

@@ -7,10 +7,10 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -32,36 +32,36 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 	//PREPARING DATA ACCESS BROKERS (This will be used in the step 0 and in step 1)
 	$brokers = $obj->getBrokers();
 	$layer_brokers_settings = WorkFlowBeansFileHandler::getLayerBrokersSettings($user_global_variables_file_path, $user_beans_folder_path, $brokers);
-	$data_access_brokers = $layer_brokers_settings["data_access_brokers"] ? $layer_brokers_settings["data_access_brokers"] : array();
-	$db_brokers = $layer_brokers_settings["db_brokers"] ? $layer_brokers_settings["db_brokers"] : array();
+	$data_access_brokers = !empty($layer_brokers_settings["data_access_brokers"]) ? $layer_brokers_settings["data_access_brokers"] : array();
+	$db_brokers = !empty($layer_brokers_settings["db_brokers"]) ? $layer_brokers_settings["db_brokers"] : array();
 	
 	$related_brokers = array_merge($db_brokers, $data_access_brokers);
 	
-	if ($_POST["step_1"]) {
+	if (!empty($_POST["step_1"])) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 		UserAuthenticationHandler::checkUsersMaxNum($UserAuthenticationHandler);
 		UserAuthenticationHandler::checkActionsMaxNum($UserAuthenticationHandler);
 		
 		//echo "<pre>";print_r($_POST);die();
-		$files = $_POST["files"];
-		$aliases = $_POST["aliases"];
-		$db_driver = $_POST["db_driver"];
-		$include_db_driver = $_POST["include_db_driver"];
-		$db_type = $_POST["type"];
-		$overwrite = $_POST["overwrite"];
-		$namespace = trim($_POST["namespace"]);
-		$json = $_POST["json"];
+		$files = isset($_POST["files"]) ? $_POST["files"] : null;
+		$aliases = isset($_POST["aliases"]) ? $_POST["aliases"] : null;
+		$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
+		$include_db_driver = isset($_POST["include_db_driver"]) ? $_POST["include_db_driver"] : null;
+		$db_type = isset($_POST["type"]) ? $_POST["type"] : null;
+		$overwrite = isset($_POST["overwrite"]) ? $_POST["overwrite"] : null;
+		$namespace = isset($_POST["namespace"]) ? trim($_POST["namespace"]) : "";
+		$json = isset($_POST["json"]) ? $_POST["json"] : null;
 		
 		//echo "<pre>";print_r($_POST);die();
 		
 		$reserved_sql_keywords = array();
 		$common_namespace = null;
-		$common_service_file_path = $obj->settings["business_logic_modules_service_common_file_path"];
+		$common_service_file_path = isset($obj->settings["business_logic_modules_service_common_file_path"]) ? $obj->settings["business_logic_modules_service_common_file_path"] : null;
 		if ($common_service_file_path && file_exists($common_service_file_path)) {
 			include_once $common_service_file_path;
 			
 			$common_namespace = PHPCodePrintingHandler::getNamespacesFromFile($common_service_file_path);
-			$common_namespace = $common_namespace[0];
+			$common_namespace = isset($common_namespace[0]) ? $common_namespace[0] : null;
 			$common_namespace = substr($common_namespace, 0, 1) == "\\" ? substr($common_namespace, 1) : $common_namespace;
 			$common_namespace = substr($common_namespace, -1) == "\\" ? substr($common_namespace, 0, -1) : $common_namespace;
 			
@@ -86,7 +86,7 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 						for ($i = 0; $i < $t; $i++) {
 							$b = $related_brokers[$i];
 							
-							if ($b[0] == $broker_name) {
+							if (isset($b[0]) && $b[0] == $broker_name) {
 								$bfn = $b[1];
 								$bn = $b[2];
 							}
@@ -98,7 +98,7 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 							
 							$tasks_file_path = $db_type == "diagram" ? WorkFlowTasksFileHandler::getDBDiagramTaskFilePath($workflow_paths_id, "db_diagram", $db_driver) : null;
 							
-							$alias = trim($aliases[$file][$node_id]);
+							$alias = isset($aliases[$file][$node_id]) ? trim($aliases[$file][$node_id]) : null;
 							$broker_code_prefix = '$this->getBusinessLogicLayer()->getBroker("' . $broker_name . '")';
 							
 							if (!$layer_obj)
@@ -121,20 +121,25 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 									
 									$db_broker = WorkFlowBeansFileHandler::getLayerLocalDBBrokerNameForChildBrokerDBDriver($user_global_variables_file_path, $user_beans_folder_path, $layer_obj, $db_driver);
 									if ($layer_obj->getType() == "hibernate") {
-										$xml_data = $node_id != "all" ? array($node_id => $xml_data["class"][$node_id]) : $xml_data["class"];
+										if ($node_id != "all")
+											$xml_data = array(
+												$node_id => isset($xml_data["class"][$node_id]) ? $xml_data["class"][$node_id] : null
+											);
+										else
+											$xml_data = isset($xml_data["class"]) ? $xml_data["class"] : null;
 										//echo "<pre>";print_r($xml_data);echo "</pre>";die();
 									
 										if (is_array($xml_data)) {
 											foreach ($xml_data as $obj_id => $obj_data) {
 												$d = createHibernateBusinessLogicFile($layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $dst_file_path, $obj_id, $module_id, $obj_data, $broker_code_prefix, $reserved_sql_keywords, $overwrite, $common_namespace, $namespace, $alias);
-												$d[0] = substr($d[0], strlen($layer_path));
+												$d[0] = isset($d[0]) ? substr($d[0], strlen($layer_path)) : "";
 												$statuses[] = $d;
 											}
 										}
 									}
 									else {
 										$d = createIbatisBusinessLogicFile($layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $dst_file_path, $module_id, $xml_data, $broker_code_prefix, $reserved_sql_keywords, $overwrite, $common_namespace, $namespace, $alias);
-										$d[0] = substr($d[0], strlen($layer_path));
+										$d[0] = isset($d[0]) ? substr($d[0], strlen($layer_path)) : "";
 										$statuses[] = $d;
 									}
 								}
@@ -159,10 +164,11 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 										$table = $tables[$i];
 							
 										if (!empty($table)) {
-											$attrs = $layer_obj->getFunction("listTableFields", $table["name"], array("db_driver" => $db_driver));
-											$fks = $layer_obj->getFunction("listForeignKeys", $table["name"], array("db_driver" => $db_driver));
-								
-											$tables_data[ $table["name"] ] = array($attrs, $fks, $table);
+											$table_name = isset($table["name"]) ? $table["name"] : null;
+											$attrs = $layer_obj->getFunction("listTableFields", $table_name, array("db_driver" => $db_driver));
+											$fks = $layer_obj->getFunction("listForeignKeys", $table_name, array("db_driver" => $db_driver));
+											
+											$tables_data[$table_name] = array($attrs, $fks, $table);
 										}
 									}
 									
@@ -171,11 +177,13 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 								}
 								
 								$nodes = $WorkFlowDataAccessHandler->getQueryObjectsArrayFromDBTaskFlow($file);
-								$xml_data = SQLMapClient::getDataAccessNodesConfigured($nodes["queries"][0]["childs"]);
+								$xml_data = SQLMapClient::getDataAccessNodesConfigured(isset($nodes["queries"][0]["childs"]) ? $nodes["queries"][0]["childs"]: null);
 								//echo "<pre>";print_r($xml_data);die();
 								
+								$db_broker = WorkFlowBeansFileHandler::getLayerLocalDBBrokerNameForChildBrokerDBDriver($user_global_variables_file_path, $user_beans_folder_path, $layer_obj, $db_driver);
+								
 								$d = createTableBusinessLogicFile($layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $folder_path, $file, $xml_data, $broker_code_prefix, $reserved_sql_keywords, $overwrite, $common_namespace, $namespace, $alias);
-								$d[0] = substr($d[0], strlen($layer_path));
+								$d[0] = isset($d[0]) ? substr($d[0], strlen($layer_path)) : null;
 								$statuses[] = $d;
 								
 								//check if $folder_path belongs to filter_by_layout and if not, add it.
@@ -204,9 +212,9 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 				$LayoutTypeProjectHandler->filterLayerBrokersDBDriversPropsFromLayoutName($brokers_db_drivers_name[$broker_name], $filter_by_layout); //filter db_drivers by $filter_by_layout
 			}
 		
-		$default_broker_name = $related_brokers[0][0];
+		$default_broker_name = isset($related_brokers[0][0]) ? $related_brokers[0][0] : null;
 		
-		$db_drivers = $brokers_db_drivers_name[$default_broker_name];
+		$db_drivers = isset($brokers_db_drivers_name[$default_broker_name]) ? $brokers_db_drivers_name[$default_broker_name] : null;
 		$default_db_driver = key($db_drivers);
 		
 		$WBFH = new WorkFlowBeansFileHandler($user_beans_folder_path . $related_brokers[0][1], $user_global_variables_file_path);
@@ -215,12 +223,15 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 		
 		if ($is_db_layer) {
 			$db_driver_tables = $layer_obj->getFunction("listTables", null, array("db_driver" => $default_db_driver));
-			$default_db_driver_table = $db_driver_tables[0]["name"];
+			$default_db_driver_table = isset($db_driver_tables[0]["name"]) ? $db_driver_tables[0]["name"] : null;
 		}
 		
 		$db_brokers_bean_file_by_bean_name = array();
-		foreach ($db_brokers as $b)
-			$db_brokers_bean_file_by_bean_name[ $b[2] ] = $b[1];
+		foreach ($db_brokers as $b) {
+			$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+			$b_bean_name = isset($b[2]) ? $b[2] : null;
+			$db_brokers_bean_file_by_bean_name[$b_bean_name] = $b_bean_file_name;
+		}
 	}
 }
 
@@ -250,8 +261,9 @@ function createHibernateBusinessLogicFile($data_access_obj, $db_broker, $db_driv
 		}
 		
 		//PREPARING RELATIONSHIPS PARAMETER MAP
-		if ($obj_data["childs"]["parameter_map"][0]) {
-			$map_id = $obj_data["childs"]["parameter_map"][0]["attrib"]["id"];
+		if (!empty($obj_data["childs"]["parameter_map"][0])) {
+			$map_id = isset($obj_data["childs"]["parameter_map"][0]["attrib"]["id"]) ? $obj_data["childs"]["parameter_map"][0]["attrib"]["id"] : null;
+			
 			if (!$map_id) {
 				$map_id = "MainParameterMap";
 				$obj_data["childs"]["parameter_map"][0]["attrib"]["id"] = $map_id;
@@ -261,8 +273,8 @@ function createHibernateBusinessLogicFile($data_access_obj, $db_broker, $db_driv
 		}
 		
 		//echo "<pre>";print_r($obj_data);echo "</pre>";
-		$rels = $obj_data["childs"]["relationships"];
-		$queries = $obj_data["childs"]["queries"];
+		$rels = isset($obj_data["childs"]["relationships"]) ? $obj_data["childs"]["relationships"] : null;
+		$queries = isset($obj_data["childs"]["queries"]) ? $obj_data["childs"]["queries"] : null;
 		
 		//prepare hbn parameters and other variables
 		$hbn_obj_parameters = WorkFlowDataAccessHandler::getHbnObjParameters($data_access_obj, $db_broker, $db_driver, $tasks_file_path, $obj_data, $tables_props);
@@ -292,8 +304,8 @@ function createHibernateBusinessLogicFile($data_access_obj, $db_broker, $db_driv
 		
 		if (is_array($hbn_obj_parameters))
 			foreach ($hbn_obj_parameters as $param_name => $param_props)
-				if ($param_props["primary_key"]) {
-					$pn = $param_props["name"] ? $param_props["name"] : $param_name;
+				if (!empty($param_props["primary_key"])) {
+					$pn = !empty($param_props["name"]) ? $param_props["name"] : $param_name;
 					
 					$hbn_obj_parameters_for_update_pks["new_$param_name"] = $param_props;
 					$hbn_obj_parameters_for_update_pks["new_$param_name"]["name"] = "new_$pn";
@@ -307,7 +319,7 @@ function createHibernateBusinessLogicFile($data_access_obj, $db_broker, $db_driv
 		if ($no_pks)
 			foreach ($hbn_obj_parameters_for_update as $param_name => $param_props)
 				if (!ObjTypeHandler::isDBAttributeNameACreatedDate($param_name) && !ObjTypeHandler::isDBAttributeNameACreatedUserId($param_name) && !ObjTypeHandler::isDBAttributeNameAModifiedDate($param_name) && !ObjTypeHandler::isDBAttributeNameAModifiedUserId($param_name)) {
-					$pn = $param_props["name"] ? $param_props["name"] : $param_name;
+					$pn = !empty($param_props["name"]) ? $param_props["name"] : $param_name;
 					
 					$hbn_obj_parameters_for_update["new_$param_name"] = $param_props;
 					$hbn_obj_parameters_for_update["new_$param_name"]["name"] = "new_$pn";
@@ -354,7 +366,7 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 
 ' . WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters, $with_ids, true, true, true, true, false, false) . '
 	public function insert($data) {
-		$options = $data["options"];
+		$options = isset($data["options"]) ? $data["options"] : null;
 		$this->mergeOptionsWithBusinessLogicLayer($options);
 		unset($data["options"]);
 		
@@ -365,14 +377,14 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 		if ($obj)
 			$status = $obj->insert($data, $ids, $options);
 		
-		' . ($auto_increment_pk_name ? '$id = $status ? $ids["' . $auto_increment_pk_name . '"] : false; //hibernate->insert method already returns the getInsertedId in: $ids[xxx]. This code supposes that there is only 1 auto increment pk.' : '$id = $status;') . '
+		' . ($auto_increment_pk_name ? '$id = $status ? (isset($ids["' . $auto_increment_pk_name . '"]) ? $ids["' . $auto_increment_pk_name . '"] : null) : false; //hibernate->insert method already returns the getInsertedId in: $ids[xxx]. This code supposes that there is only 1 auto increment pk.' : '$id = $status;') . '
 		
 		return $id;
 	}
 
 ' . WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters_for_update, true, true, true, true, true, true, false) . '
 	public function update($data) {
-		$options = $data["options"];
+		$options = isset($data["options"]) ? $data["options"] : null;
 		$this->mergeOptionsWithBusinessLogicLayer($options);
 		unset($data["options"]);
 		
@@ -388,8 +400,8 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 
 ' . $update_all_annotations . '
 	public function updateAll($data) {
-		if ($data && ($data["conditions"] || $data["all"])) {
-			$options = $data["options"];
+		if ($data && (!empty($data["conditions"]) || !empty($data["all"]))) {
+			$options = isset($data["options"]) ? $data["options"] : null;
 			$this->mergeOptionsWithBusinessLogicLayer($options);
 			unset($data["options"]);
 			
@@ -412,9 +424,9 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 				
 				$status = $obj->updateByConditions(array(
 					"attributes" => $attributes,
-					"conditions" => $data["conditions"],
-					"conditions_join" => $data["conditions_join"],
-					"all" => $data["all"],
+					"conditions" => isset($data["conditions"]) ? $data["conditions"] : null,
+					"conditions_join" => isset($data["conditions_join"]) ? $data["conditions_join"] : null,
+					"all" => isset($data["all"]) ? $data["all"] : null,
 				), $options);
 			}
 			
@@ -424,7 +436,7 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 	
 ' . ($no_pks ? WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters_for_update_pks, true, true, true, false, true, true, false) : WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters_for_update_pks, true, false, true, false, true, true, false)) . '
 	public function updatePrimaryKeys($data) {
-		$options = $data["options"];
+		$options = isset($data["options"]) ? $data["options"] : null;
 		$this->mergeOptionsWithBusinessLogicLayer($options);
 		unset($data["options"]);
 		
@@ -440,7 +452,7 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 
 ' . ($no_pks ? WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters_for_get_and_delete, true, true, true, false, true, false, false) : WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters_for_get_and_delete, true, false, true, false, true, false, false)) . '
 	public function delete($data) {
-		$options = $data["options"];
+		$options = isset($data["options"]) ? $data["options"] : null;
 		$this->mergeOptionsWithBusinessLogicLayer($options);
 		unset($data["options"]);
 		
@@ -456,8 +468,8 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 	
 ' . WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters, true, true, false, false, true, false, true) . '
 	public function deleteAll($data) {
-		if ($data && ($data["conditions"] || $data["all"])) {
-			$options = $data["options"];
+		if ($data && (!empty($data["conditions"]) || !empty($data["all"]))) {
+			$options = isset($data["options"]) ? $data["options"] : null;
 			$this->mergeOptionsWithBusinessLogicLayer($options);
 			unset($data["options"]);
 			
@@ -474,7 +486,7 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 
 ' . ($no_pks ? WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters_for_get_and_delete, true, true, true, false, true, false, false) : WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters_for_get_and_delete, true, false, true, false, true, false, false)) . '
 	public function get($data) {
-		$options = $data["options"];
+		$options = isset($data["options"]) ? $data["options"] : null;
 		$this->mergeOptionsWithBusinessLogicLayer($options);
 		unset($data["options"]);
 		
@@ -490,7 +502,7 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 
 ' . WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters, true, true, false, false, true, false, true) . '
 	public function getAll($data) {
-		$options = $data["options"];
+		$options = isset($data["options"]) ? $data["options"] : null;
 		$this->mergeOptionsWithBusinessLogicLayer($options);
 		unset($data["options"]);
 		
@@ -506,7 +518,7 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 
 ' . WorkFlowBusinessLogicHandler::getAnnotationsFromParameters($hbn_obj_parameters, true, true, false, false, true, false, true) . '
 	public function countAll($data) {
-		$options = $data["options"];
+		$options = isset($data["options"]) ? $data["options"] : null;
 		$this->mergeOptionsWithBusinessLogicLayer($options);
 		unset($data["options"]);
 		
@@ -605,16 +617,20 @@ function createTableBusinessLogicFile($db_layer_obj, $db_broker, $db_driver, $in
 		
 		if ($attrs) {
 			foreach ($attrs as $attr) {
-				$attributes[] = $attr["name"];
+				$attr_name = isset($attr["name"]) ? $attr["name"] : null;
+				$attributes[] = $attr_name;
 				
-				if ($attr["primary_key"])
-					$pks[] = $attr["name"];
+				if (!empty($attr["primary_key"]))
+					$pks[] = $attr_name;
 			}
 		
 			if (empty($pks)) //if talbe has no pks
-				foreach ($attrs as $attr) 
-					if (!ObjTypeHandler::isDBAttributeNameACreatedDate($attr["name"]) && !ObjTypeHandler::isDBAttributeNameACreatedUserId($attr["name"]) && !ObjTypeHandler::isDBAttributeNameAModifiedDate($attr["name"]) && !ObjTypeHandler::isDBAttributeNameAModifiedUserId($attr["name"]))
-						$pks[] = $attr["name"];
+				foreach ($attrs as $attr) {
+					$attr_name = isset($attr["name"]) ? $attr["name"] : null;
+					
+					if (!ObjTypeHandler::isDBAttributeNameACreatedDate($attr_name) && !ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name) && !ObjTypeHandler::isDBAttributeNameAModifiedDate($attr_name) && !ObjTypeHandler::isDBAttributeNameAModifiedUserId($attr_name))
+						$pks[] = $attr_name;
+				}
 		}
 		
 		$with_ids = count($pks) > 0 ? (count($auto_increment_pks) > 0 ? 2 : 1) : false;
@@ -722,10 +738,10 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//get right query to set the correct parameters for the annotations
 						if (substr($rel_id, - strlen("_with_ai_pk")) == "_with_ai_pk") {
 							//ignore insert_with_ai_pk, bc it will be already included in the insert query, but only if simple insert exists. Otherwise it will execute this code twice.
-							if ($rel[ substr($rel_id, 0, - strlen("_with_ai_pk")) ])
+							if (!empty($rel[ substr($rel_id, 0, - strlen("_with_ai_pk")) ]))
 								continue 2; 
 						}
-						else if ($rel[$rel_id . "_with_ai_pk"]) {
+						else if (!empty($rel[$rel_id . "_with_ai_pk"])) {
 							$name = getFunctionName($rel_id); //before it changes the rel_id with "_with_ai_pk" string
 							$rel_id = $rel_id . "_with_ai_pk";
 							$rel_data = $rel[$rel_id];
@@ -745,9 +761,9 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//check if table has pks
 						$no_pks = true;
 						
-						if ($tables_props[$table_name])
+						if (!empty($tables_props[$table_name]))
 							foreach ($tables_props[$table_name] as $attr)
-								if ($attr["primary_key"]) {
+								if (!empty($attr["primary_key"])) {
 									$no_pks = false;
 									break;
 								}
@@ -780,7 +796,7 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 			
 			//This code supposes that there is only 1 auto increment pk
 			foreach (\$ai_pks as \$pk_name) 
-				if (\$data[\$pk_name]) {
+				if (!empty(\$data[\$pk_name])) {
 					\$set_ai_pk = \$pk_name;
 					break;
 				}
@@ -788,16 +804,16 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 			if (\$set_ai_pk || empty(\$ai_pks)) {
 				\$options[\"hard_coded_ai_pk\"] = true;
 				\$result = {$db_broker_prefix_code}->insertObject(\$this->getTableName(), \$attributes, \$options);
-				//\$result = \$result ? \$data[\$set_ai_pk] : false;
+				//\$result = \$result && isset(\$data[\$set_ai_pk]) ? \$data[\$set_ai_pk] : false;
 				
 				if (\$result) {
 		    			if (\$set_ai_pk)
-		    			    \$result = \$data[\$set_ai_pk];
+		    			    \$result = isset(\$data[\$set_ai_pk]) ? \$data[\$set_ai_pk] : null;
 		    			else { //in case of primary keys with no auto increment.
 		    			    \$pks = \$this->getTablePrimaryKeys();
 		    			    
 		    			    foreach (\$pks as \$pk_name) 
-				  			if (\$data[\$pk_name]) {
+				  			if (!empty(\$data[\$pk_name])) {
 				  				\$result = \$data[\$pk_name];
 				  				break;
 				  			}
@@ -833,9 +849,9 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//check if table has pks
 						$no_pks = true;
 						
-						if ($tables_props[$table_name])
+						if (!empty($tables_props[$table_name]))
 							foreach ($tables_props[$table_name] as $attr)
-								if ($attr["primary_key"]) {
+								if (!empty($attr["primary_key"])) {
 									$no_pks = false;
 									break;
 								}
@@ -898,16 +914,16 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						
 						if ($name == "updateAll")
 							$func_code .= "\$attributes = \$this->filterDataByTableAttributes(\$data);
-		\$conditions = \$data[\"conditions\"];
-		\$options[\"all\"] = \$data[\"all\"];
+		\$conditions = isset(\$data[\"conditions\"]) ? \$data[\"conditions\"] : null;
+		\$options[\"all\"] = isset(\$data[\"all\"]) ? \$data[\"all\"] : null;
 		\$result = {$db_broker_prefix_code}->updateObject(\$this->getTableName(), \$attributes, \$conditions, \$options);";
 						else if ($name == "updatePrimaryKeys")
 							$func_code .= "\$attributes = \$conditions = array();
 		\$pks = self::getTablePrimaryKeys();
 		
 		foreach (\$pks as \$pk) {
-			\$attributes[\$pk] = \$data[\"new_\" . \$pk];
-			\$conditions[\$pk] = \$data[\"old_\" . \$pk];
+			\$attributes[\$pk] = isset(\$data[\"new_\" . \$pk]) ? \$data[\"new_\" . \$pk] : null;
+			\$conditions[\$pk] = isset(\$data[\"old_\" . \$pk]) ? \$data[\"old_\" . \$pk] : null;
 		}
 		
 		\$result = {$db_broker_prefix_code}->updateObject(\$this->getTableName(), \$attributes, \$conditions, \$options);";
@@ -950,9 +966,9 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//check if table has pks
 						$no_pks = true;
 						
-						if ($tables_props[$table_name])
+						if (!empty($tables_props[$table_name]))
 							foreach ($tables_props[$table_name] as $attr)
-								if ($attr["primary_key"]) {
+								if (!empty($attr["primary_key"])) {
 									$no_pks = false;
 									break;
 								}
@@ -982,8 +998,8 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						
 						//prepare code
 						if ($name == "deleteAll")
-							$func_code .= "\$conditions = \$data[\"conditions\"];
-		\$options[\"all\"] = \$data[\"all\"];
+							$func_code .= "\$conditions = isset(\$data[\"conditions\"]) ? \$data[\"conditions\"] : null;
+		\$options[\"all\"] = isset(\$data[\"all\"]) ? \$data[\"all\"] : null;
 		\$result = {$db_broker_prefix_code}->deleteObject(\$this->getTableName(), \$conditions, \$options);";
 						else
 							$func_code .= "\$conditions = \$this->filterDataByTablePrimaryKeys(\$data);
@@ -1009,9 +1025,9 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//check if table has pks
 						$no_pks = true;
 						
-						if ($tables_props[$table_name])
+						if (!empty($tables_props[$table_name]))
 							foreach ($tables_props[$table_name] as $attr)
-								if ($attr["primary_key"]) {
+								if (!empty($attr["primary_key"])) {
 									$no_pks = false;
 									break;
 								}
@@ -1040,7 +1056,7 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//prepare code
 						$func_code .= "self::prepareInputData(\$data);
 		
-		if (\$data[\"searching_condition\"])
+		if (!empty(\$data[\"searching_condition\"]))
 			\$options[\"sql_conditions\"] = \"1=1\" . \$data[\"searching_condition\"];
 		
 		";
@@ -1054,22 +1070,25 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						else if ($name == "getAll")
 							$func_code .= "\$result = {$db_broker_prefix_code}->findObjects(\$this->getTableName(), null, null, \$options);";
 						else {
-							$sql = $rel_data["value"];
+							$sql = isset($rel_data["value"]) ? $rel_data["value"] : null;
 							$sql_data = $db_layer_obj->getFunction("convertDefaultSQLToObject", $sql, array("db_driver" => $db_driver));
 							//echo"<pre>";print_r($sql_data);die();
 							$keys = array();
 							
-							if ($sql_data["keys"])
-								foreach ($sql_data["keys"] as $key)
-									$keys[] = $key["ptable"] == $table_name ? $key : array(
-										"ptable" => $key["ftable"],
-										"pcolumn" => $key["fcolumn"],
-										"ftable" => $key["ptable"],
-										"fcolumn" => $key["pcolumn"],
-										"value" => $key["value"],
-										"join" => $key["join"],
-										"operator" => $key["operator"],
+							if (!empty($sql_data["keys"]))
+								foreach ($sql_data["keys"] as $key) {
+									$ptable = isset($key["ptable"]) ? $key["ptable"] : null;
+									
+									$keys[] = $ptable == $table_name ? $key : array(
+										"ptable" => isset($key["ftable"]) ? $key["ftable"] : null,
+										"pcolumn" => isset($key["fcolumn"]) ? $key["fcolumn"] : null,
+										"ftable" => $ptable,
+										"fcolumn" => isset($key["pcolumn"]) ? $key["pcolumn"] : null,
+										"value" => isset($key["value"]) ? $key["value"] : null,
+										"join" => isset($key["join"]) ? $key["join"] : null,
+										"operator" => isset($key["operator"]) ? $key["operator"] : null,
 									);
+								}
 							
 							$keys_code = str_replace("'$table_name'", '$this->getTableName()', str_replace("\n", "\n\t\t", var_export($keys, 1)));
 							
@@ -1119,10 +1138,10 @@ function prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $inclu
 						
 						if (substr($rel_id, - strlen("_with_ai_pk")) == "_with_ai_pk") {
 							//ignore insert_with_ai_pk, bc it will be already included in the insert query, but only if simple insert exists. Otherwise it will execute this code twice.
-							if ($rel[ substr($rel_id, 0, - strlen("_with_ai_pk")) ])
+							if (!empty($rel[ substr($rel_id, 0, - strlen("_with_ai_pk")) ]))
 								continue 2; 
 						}
-						else if ($rel[$rel_id . "_with_ai_pk"]) {
+						else if (!empty($rel[$rel_id . "_with_ai_pk"])) {
 							$rel_data = $rel[$rel_id . "_with_ai_pk"];
 							$exists_insert_without_pk = true;
 						}
@@ -1135,7 +1154,7 @@ function prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $inclu
 						$parameters_code = prepareSQLStatementCode($rel_data, $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, $reserved_sql_keywords, $parameters);
 						$addcslashes_code = WorkFlowBusinessLogicHandler::prepareAddcslashesCode($parameters);
 						$with_ids = checkTypeOfExistentPrimaryKeys($parameters, $auto_increment_pk_name);
-						$default_value_code .= WorkFlowBusinessLogicHandler::prepareAttributesDefaultValueCode($parameters, true);
+						$default_value_code = WorkFlowBusinessLogicHandler::prepareAttributesDefaultValueCode($parameters, true);
 						
 						//check if table has pks
 						$no_pks = empty($with_ids);
@@ -1160,10 +1179,10 @@ function prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $inclu
 							$rel_id_with_pk = $rel_id . "_with_ai_pk";
 							
 							$func_code .= "//This code supposes that there is only 1 auto increment pk and that '$rel_id_with_pk' is a sql with the auto increment pk, and that '$rel_id' is a sql without auto increment pks.
-		if (\$data[\"$auto_increment_pk_name\"]) {
+		if (!empty(\$data[\"$auto_increment_pk_name\"])) {
 			\$options[\"hard_coded_ai_pk\"] = true;
 			\$result = {$data_access_broker_prefix_code}->callInsert({$module_id_code}'$rel_id_with_pk', \$data, \$options);
-			\$result = \$result ? \$data[\"$auto_increment_pk_name\"] : false;
+			\$result = \$result && isset(\$data[\"$auto_increment_pk_name\"]) ? \$data[\"$auto_increment_pk_name\"] : false;
 		}
 		else {
 			\$result = {$data_access_broker_prefix_code}->callInsert({$module_id_code}'$rel_id', \$data, \$options);
@@ -1182,7 +1201,7 @@ function prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $inclu
 								$func_code .= "//This code supposes that there is only 1 auto increment pk
 		\$options[\"hard_coded_ai_pk\"] = true;
 		
-		if (!\$data[\"$auto_increment_pk_name\"])
+		if (empty(\$data[\"$auto_increment_pk_name\"]))
 			\$data[\"$auto_increment_pk_name\"] = {$data_access_broker_prefix_code}->findObjectsColumnMax(\"$table_name\", \"$auto_increment_pk_name\") + 1; //DO NOT SET IT TO 'DEFAULT' BC IT WON'T WORK IN MS-SQL-SERVER. 'DEFAULT' ONLY WORKS IN MYSQL AND POSTGRES!
 		";
 							
@@ -1190,7 +1209,7 @@ function prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $inclu
 		";
 							
 							if ($auto_increment_pk_name)
-								$func_code .= "\$result = \$result ? \$data[\"$auto_increment_pk_name\"] : false;
+								$func_code .= "\$result = \$result && isset(\$data[\"$auto_increment_pk_name\"]) ? \$data[\"$auto_increment_pk_name\"] : false;
 		";
 							else { //if there is not any auto_increment PK in the sql query, but the DB table has a auto increment PK, we must get the last inserted id.
 								$table_props = WorkFlowDBHandler::getTableFromTables($tables_props, $table_name);
@@ -1273,7 +1292,7 @@ function prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $inclu
 		";
 						
 						if ($name == "updateAll")
-							$func_code .= "if (\$data[\"conditions\"] || \$data[\"all\"]) {
+							$func_code .= "if (!empty(\$data[\"conditions\"]) || !empty(\$data[\"all\"])) {
 			self::prepareInputData(\$data);
 			\$result = {$data_access_broker_prefix_code}->callUpdate({$module_id_code}'$rel_id', \$data, \$options);
 		}";
@@ -1323,7 +1342,7 @@ function prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $inclu
 		";
 						
 						if ($name == "deleteAll")
-							$func_code .= "if (\$data[\"conditions\"] || \$data[\"all\"]) {
+							$func_code .= "if (!empty(\$data[\"conditions\"]) || !empty(\$data[\"all\"])) {
 			self::prepareInputData(\$data);
 			\$result = {$data_access_broker_prefix_code}->callDelete({$module_id_code}'$rel_id', \$data, \$options);
 		}";
@@ -1383,7 +1402,7 @@ function prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $inclu
 		\$result = \$result ? \$result[0] : null;";
 						else if ($is_count)
 							$func_code .= "
-		\$result = \$result && \$result[0] ? \$result[0][\"total\"] : null;";
+		\$result = \$result && isset(\$result[0][\"total\"]) ? \$result[0][\"total\"] : null;";
 						
 						$code .= getBusinessLogicServiceFunctionCode($name, $parameters, $addcslashes_code, $parameters_code, $func_code, $annotations, $options_code);
 						break;
@@ -1454,8 +1473,9 @@ function getBusinessLogicServiceFunctionCode($name, $parameters, $addcslashes_co
 		$code .= '
 ' . $annotations . '
 	public function ' . $name . '($data) {
-		$options = $data["options"];
+		$options = isset($data["options"]) ? $data["options"] : null;
 		$this->mergeOptionsWithBusinessLogicLayer($options);
+		$result = null;
 		';
 		
 		if ($options_code)
@@ -1471,8 +1491,7 @@ function getBusinessLogicServiceFunctionCode($name, $parameters, $addcslashes_co
 			$code .= '
 		' . $parameters_code . '
 		
-		$result = null;
-		if ($status) {
+		if (!empty($status)) {
 			' . str_replace("\n", "\n\t", $func_code) . '
 		}';
 		}
@@ -1499,7 +1518,7 @@ function prepareRelationshipCode(&$rel_data, $rels, $data_access_obj, $db_broker
 	WorkFlowDataAccessHandler::prepareRelationshipParameters($rel_data, $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, $hbn_obj_data, $parameters);
 	
 	$code = prepareParametersCode($rel_data, $rels, $parameters);
-	//die("<pre>$code!</pre>");
+	//echo "<pre>$code!</pre>";die();
 	
 	return $code;
 }
@@ -1511,7 +1530,7 @@ function prepareSQLStatementCode($obj_data, $rels, $data_access_obj, $db_broker,
 	WorkFlowDataAccessHandler::prepareSQLStatementParameters($obj_data, $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, $reserved_sql_keywords, $parameters);
 	
 	$code = prepareParametersCode($obj_data, $rels, $parameters);
-	//die("<pre>$code!</pre>");
+	//echo "<pre>$code!</pre>";die();
 	
 	return $code;
 }
@@ -1519,15 +1538,15 @@ function prepareSQLStatementCode($obj_data, $rels, $data_access_obj, $db_broker,
 function prepareSelectAllSQLParameters($obj_data, $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, &$tables_props, $reserved_sql_keywords, &$parameters, $table_name) {
 	if ($table_name) {
 		//get parameters from insert query if exists
-		if ($rels["insert"]["insert_" . $table_name . "_with_ai_pk"]) {
+		if (!empty($rels["insert"]["insert_" . $table_name . "_with_ai_pk"])) {
 			prepareSQLStatementCode($rels["insert"]["insert_" . $table_name . "_with_ai_pk"], $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, $reserved_sql_keywords, $parameters);
 		}
-		else if ($rels["insert"]["insert_" . $table_name]) {
+		else if (!empty($rels["insert"]["insert_" . $table_name])) {
 			prepareSQLStatementCode($rels["insert"]["insert_" . $table_name], $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, $reserved_sql_keywords, $parameters);
 		}
 		//create dummy sql to get the parameters
 		else {
-			$attrs = $tables_props[$table_name];
+			$attrs = isset($tables_props[$table_name]) ? $tables_props[$table_name] : null;
 			//echo "$table_name";print_r($attrs);die();
 			
 			if (!$attrs)
@@ -1537,7 +1556,7 @@ function prepareSelectAllSQLParameters($obj_data, $rels, $data_access_obj, $db_b
 				$sql = "select * from $table_name where 1=1";
 				
 				foreach ($attrs as $attr_name => $attr)
-					if (ObjTypeHandler::isDBTypeNumeric($attr["type"]))
+					if (isset($attr["type"]) && ObjTypeHandler::isDBTypeNumeric($attr["type"]))
 						$sql .= " and $attr_name=#$attr_name#";
 					else
 						$sql .= " and $attr_name='#$attr_name#'";
@@ -1554,8 +1573,8 @@ function prepareSelectAllSQLParameters($obj_data, $rels, $data_access_obj, $db_b
 //This items should be removed because we don't want to do the validation twice, this is, one in the business logic layer and another in the data access layer, so we need to remove the duplicated entries from the $parameters array.
 function removeMapEntriesFromParameters($obj_data, $rels, &$parameters) {
 	if (empty($obj_data["@"]["parameter_class"])) {
-		$parameter_map = $obj_data["@"]["parameter_map"];
-		$map_entries = $parameter_map ? $rels["parameter_map"][$parameter_map]["parameter"] : null;
+		$parameter_map = isset($obj_data["@"]["parameter_map"]) ? $obj_data["@"]["parameter_map"] : null;
+		$map_entries = $parameter_map && isset($rels["parameter_map"][$parameter_map]["parameter"]) ? $rels["parameter_map"][$parameter_map]["parameter"] : null;
 		//echo "<pre>";print_r($map_entries);echo "</pre>";
 	
 		if ($map_entries) {
@@ -1563,13 +1582,13 @@ function removeMapEntriesFromParameters($obj_data, $rels, &$parameters) {
 			
 			$inputs = array();
 			for ($i = 0; $i < $t; $i++) 
-				$inputs[] = $map_entries[$i]["input_name"];
+				$inputs[] = isset($map_entries[$i]["input_name"]) ? $map_entries[$i]["input_name"] : null;
 			
 			for ($i = 0; $i < $t; $i++) {
 				$entry = $map_entries[$i];
-			
-				$on = $entry["output_name"];
-				if ($on && isset($parameters[$on]) && !in_array($on, $inputs) && ($entry["input_type"] || $entry["output_type"]))
+				$on = isset($entry["output_name"]) ? $entry["output_name"] : null;
+				
+				if ($on && isset($parameters[$on]) && !in_array($on, $inputs) && (!empty($entry["input_type"]) || !empty($entry["output_type"])))
 					unset($parameters[$on]);
 			}
 		}
@@ -1585,12 +1604,12 @@ function prepareParametersCode($obj_data, $rels, $parameters) {
 		
 		$types = array();
 		foreach ($parameters as $attr_name => $attr) {
-			$name = $attr["name"] ? $attr["name"] : $attr_name;
-			$type = $attr["type"];
-			$mandatory = $attr["mandatory"];
+			$name = !empty($attr["name"]) ? $attr["name"] : $attr_name;
+			$type = isset($attr["type"]) ? $attr["type"] : null;
+			$mandatory = isset($attr["mandatory"]) ? $attr["mandatory"] : null;
 			
 			if ($type) {
-				if ($types[$type]) {
+				if (!empty($types[$type])) {
 					$rand = $types[$type];
 				}
 				else {
@@ -1643,7 +1662,7 @@ function getTableAutoIncrementedPrimaryKeys($table_attrs) {
 	
 	if ($table_attrs)
 		foreach ($table_attrs as $att_name => $att)
-			if ($att["primary_key"] && WorkFlowDataAccessHandler::isAutoIncrementedAttribute($att))
+			if (!empty($att["primary_key"]) && WorkFlowDataAccessHandler::isAutoIncrementedAttribute($att))
 				$pks[$att_name] = $att;
 	
 	return $pks;
@@ -1656,10 +1675,10 @@ function checkTypeOfExistentPrimaryKeys($parameters, &$auto_increment_pk_name) {
 	
 	if (is_array($parameters))
 		foreach ($parameters as $name => $parameter)
-			if ($parameter["primary_key"]) {
+			if (!empty($parameter["primary_key"])) {
 				if (WorkFlowDataAccessHandler::isAutoIncrementedAttribute($parameter)) {
 					$pks_type = 2;
-					$auto_increment_pk_name = $parameter["name"] ? $parameter["name"] : $name;
+					$auto_increment_pk_name = !empty($parameter["name"]) ? $parameter["name"] : $name;
 				}
 				else
 					$pks_type = 1;

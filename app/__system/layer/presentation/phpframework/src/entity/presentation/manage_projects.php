@@ -3,27 +3,29 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
 
 $files = CMSPresentationLayerHandler::getPresentationLayersProjectsFiles($user_global_variables_file_path, $user_beans_folder_path);
 //echo "<pre>";print_r($files);die();
 
 if ($files) {
-	if ($bean_name && !$files[$bean_name]) 
+	if ($bean_name && empty($files[$bean_name]))
 		$bean_name = $bean_file_name = null;
 	
 	if (!$bean_name) {
 		$bean_name = array_keys($files)[0];
-		$bean_file_name = $files[$bean_name]["bean_file_name"];
+		$bean_file_name = isset($files[$bean_name]["bean_file_name"]) ? $files[$bean_name]["bean_file_name"] : null;
 	}
-	else if (!$bean_file_name || $bean_file_name != $files[$bean_name]["bean_file_name"])
+	else if (!$bean_file_name)
+		$bean_file_name = $files[$bean_name]["bean_file_name"];
+	else if (isset($files[$bean_name]["bean_file_name"]) && $bean_file_name != $files[$bean_name]["bean_file_name"])
 		$bean_file_name = $files[$bean_name]["bean_file_name"];
 }
 
 if ($bean_name && $bean_file_name) {
 	$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
-	$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($bean_name, $path);
+	$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($bean_name, null);
 	
 	if ($PEVC) {
 		$P = $PEVC->getPresentationLayer();
@@ -35,7 +37,7 @@ if ($bean_name && $bean_file_name) {
 		$htaccess_path = $layer_path . ".htaccess";
 		
 		//save default project
-		if ($_POST && $_POST["default_project"]) {
+		if (!empty($_POST) && !empty($_POST["default_project"])) {
 			$contents = file_get_contents($htaccess_path);
 			
 			//'\w' means all words with '_' and 'u' means with accents and ç too. '/u' converts unicode to accents chars.

@@ -61,13 +61,13 @@
 	  gtag('config', 'G-9SW8102J7B');
 	</script>
 	
-	<? echo $head; ?>
+	<? echo isset($head) ? $head : ""; ?>
 </head>
 <body<?= ' class="' . (isset($_COOKIE["theme_layout"]) ? $_COOKIE["theme_layout"] : "") . ' ' . (isset($_COOKIE["main_navigator_side"]) ? $_COOKIE["main_navigator_side"] : "") . (!empty($_GET["popup"]) ? " in_popup" : "") . '"'; ?>>
 	<div id="main_column"><? 
 		include $EVC->getTemplatePath("message");
 		
-		echo $main_content;
+		echo isset($main_content) ? $main_content : "";
 	?></div>
 </body>
 </html>

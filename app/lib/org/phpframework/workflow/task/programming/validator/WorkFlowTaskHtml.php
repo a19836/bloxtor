@@ -7,6 +7,7 @@
 		<label>Check if:</label>
 		<select class="task_property_field" name="method" onChange="ValidatorTaskPropertyObj.onChangeMethodName(this)">
 			<optgroup label="Value Validations">
+				<option value="TextValidator::isBinary">value is an binary</option>
 				<option value="TextValidator::isEmail">value is an email</option>
 				<option value="TextValidator::isDomain">value is a domain</option>
 				<option value="TextValidator::isPhone">value is a phone number</option>
@@ -36,11 +37,14 @@
 				<option value="ObjTypeHandler::isDBTypeNumeric">type is db numeric</option>
 				<option value="ObjTypeHandler::isDBTypeDate">type is db date</option>
 				<option value="ObjTypeHandler::isDBTypeText">type is db text</option>
+				<option value="ObjTypeHandler::isDBTypeBlob">type is db blob</option>
 				<option value="ObjTypeHandler::isDBTypeBoolean">type is db boolean</option>
 				<option value="ObjTypeHandler::isDBAttributeNameATitle">attribute name is a db title</option>
 				<option value="ObjTypeHandler::isDBAttributeNameACreatedDate">attribute name is a db created date</option>
 				<option value="ObjTypeHandler::isDBAttributeNameAModifiedDate">attribute name is a db modified date</option>
 				<option value="ObjTypeHandler::isDBAttributeValueACurrentTimestamp">attribute value is a db current timestamp</option>
+				<option value="ObjTypeHandler::isDBAttributeNameACreatedUserId">attribute value is a db created user id</option>
+				<option value="ObjTypeHandler::isDBAttributeNameAModifiedUserId">attribute value is a db modified user id</option>
 			</optgroup>
 		</select>
 	</div>

@@ -132,7 +132,7 @@ if ($bean_name) {
 	$main_content .= $WorkFlowUIHandler->getContent();
 	
 	//set task properties, like charsets and storage engines
-	if ($DBDriver)
+	if (!empty($DBDriver))
 		$main_content .= '<script>
 			taskFlowChartObj.TaskFlow.default_connection_line_width = 2;
 			taskFlowChartObj.TaskFlow.default_connection_from_target = true;

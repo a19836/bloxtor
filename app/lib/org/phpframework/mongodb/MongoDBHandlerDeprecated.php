@@ -159,7 +159,7 @@ class MongoDBHandlerDeprecated implements IMongoDBHandler {
 		if ($this->ok && !empty($collection_name) && !empty($regex)) {
 			$collection = $this->db_link->selectCollection($collection_name);
 			
-			if (!empty($collection) && !empty($regex)) {
+			if (!empty($collection)) {
 				//If remove by regex does NOT exist in the Mongo engine, please use the following code:
 				/*$docs = $this->getByRegex($collection_name, $regex);
 				

@@ -85,7 +85,7 @@ class WorkFlowPresentationHandler {
 		//include CKEDITOR to be used in the app/lib/org/phpframework/workflow/task/programming/inlinehtml/webroot/js/WorkFlowTask.js, if the LayoutUIEditor is not included. 
 		//Note that this case should never happem, bc the LayoutUIEditor is always included.
 		if ($include_html_editor) {
-			$EVC = $GLOBALS["EVC"];
+			$EVC = isset($GLOBALS["EVC"]) ? $GLOBALS["EVC"] : null;
 			$js_file = $EVC->getWebrootPath($EVC->getCommonProjectName()) . "vendor/ckeditor/ckeditor.js";
 			
 			if (file_exists($js_file))
@@ -152,7 +152,7 @@ class WorkFlowPresentationHandler {
 			"priority_files" => getDefaultWidgetsPriorityFiles()
 		));
 		$widgets = filterWidgets($widgets, $widgets_root_path, $widgets_root_url, $options);
-		$menu_widgets_html .= getMenuWidgetsHTML($widgets, $widgets_root_path, $widgets_root_url, $widgets_webroot_cache_folder_path, $widgets_webroot_cache_folder_url);
+		$menu_widgets_html = getMenuWidgetsHTML($widgets, $widgets_root_path, $widgets_root_url, $widgets_webroot_cache_folder_path, $widgets_webroot_cache_folder_url);
 		
 		return $menu_widgets_html;
 	}
@@ -260,7 +260,7 @@ class WorkFlowPresentationHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$b = $presentation_brokers[$i];
 				
-				if ($b[2]) {
+				if (!empty($b[2])) {
 					$get_sub_files_url = str_replace("#bean_file_name#", $b[1], str_replace("#bean_name#", $b[2], $choose_bean_layer_files_from_file_manager_url)) . '&item_type=presentation&folder_type=#folder_type#';
 					$upload_url = $upload_bean_layer_files_from_file_manager_url ? str_replace("#bean_file_name#", $b[1], str_replace("#bean_name#", $b[2], $upload_bean_layer_files_from_file_manager_url)) . '&item_type=presentation' : "";
 					
@@ -346,7 +346,7 @@ class WorkFlowPresentationHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$b = $business_logic_brokers[$i];
 				
-				if ($b[2]) {
+				if (!empty($b[2])) {
 					$get_sub_files_url = str_replace("#bean_file_name#", $b[1], str_replace("#bean_name#", $b[2], $choose_bean_layer_files_from_file_manager_url));
 					
 					$html .= 'main_layers_properties.' . $b[2] . ' = {ui: {
@@ -508,7 +508,7 @@ class WorkFlowPresentationHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$b = $data_access_brokers[$i];
 				
-				if ($b[2]) {
+				if (!empty($b[2])) {
 					$get_sub_files_url = str_replace("#bean_file_name#", $b[1], str_replace("#bean_name#", $b[2], $choose_bean_layer_files_from_file_manager_url));
 					
 					$html .= 'main_layers_properties.' . $b[2] . ' = {ui: {
@@ -592,7 +592,11 @@ class WorkFlowPresentationHandler {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$b = $arr[$i];
-				$html .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '">' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>'; //bean_file_name and bean_name are used by the testunits and in onChooseDBTableAndAttributes and updateDBTablesOnBrokerDBDriverChange functions
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
+				$html .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '">' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>'; //bean_file_name and bean_name are used by the testunits and in onChooseDBTableAndAttributes and updateDBTablesOnBrokerDBDriverChange functions
 			}
 			$html .= '
 					</select>
@@ -630,7 +634,11 @@ class WorkFlowPresentationHandler {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$b = $data_access_brokers[$i];
-				$html .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '">' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>'; //bean_file_name and bean_name are used by the testunits
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
+				$html .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '">' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>'; //bean_file_name and bean_name are used by the testunits
 			}
 			$html .= '
 					</select>
@@ -656,7 +664,11 @@ class WorkFlowPresentationHandler {
 					
 			for ($i = 0; $i < $t; $i++) {
 				$b = $ibatis_brokers[$i];
-				$html .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '">' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>';
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
+				$html .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '">' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>';
 			}
 			$html .= '
 					</select>
@@ -696,7 +708,11 @@ class WorkFlowPresentationHandler {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$b = $hibernate_brokers[$i];
-				$html .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '">' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>';
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
+				$html .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '">' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>';
 			}
 			$html .= '
 					</select>
@@ -724,7 +740,11 @@ class WorkFlowPresentationHandler {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$b = $hibernate_brokers[$i];
-				$html .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '">' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>';
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
+				$html .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '">' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>';
 			}
 			$html .= '
 					</select>
@@ -764,7 +784,11 @@ class WorkFlowPresentationHandler {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$b = $business_logic_brokers[$i];
-				$html .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '">' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>';
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
+				$html .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '">' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>';
 			}
 			$html .= '
 					</select>
@@ -796,7 +820,11 @@ class WorkFlowPresentationHandler {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$b = $presentation_brokers[$i];
-				$html .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '">' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>';
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
+				$html .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '">' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>';
 			}
 			$html .= '
 					</select>
@@ -918,19 +946,27 @@ class WorkFlowPresentationHandler {
 		
 		if (isset($business_logic_brokers))
 			foreach ($business_logic_brokers as $b) {
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
 				$my_tree_html .= '
 				<li>
-					<label>' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</label>
-					<ul url="' . str_replace("#bean_file_name#", $b[1], str_replace("#bean_name#", $b[2], $choose_bean_layer_files_from_file_manager_url)) . '"></ul>
+					<label>' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</label>
+					<ul url="' . str_replace("#bean_file_name#", $b_bean_file_name, str_replace("#bean_name#", $b_bean_name, $choose_bean_layer_files_from_file_manager_url)) . '"></ul>
 				</li>';
 			}
 		
 		if (isset($presentation_brokers))
 			foreach ($presentation_brokers as $b) {
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
 				$my_tree_html .= '
 				<li>
-					<label>' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</label>
-					<ul url="' . str_replace("#bean_file_name#", $b[1], str_replace("#bean_name#", $b[2], $choose_bean_layer_files_from_file_manager_url)) . '"></ul>
+					<label>' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</label>
+					<ul url="' . str_replace("#bean_file_name#", $b_bean_file_name, str_replace("#bean_name#", $b_bean_name, $choose_bean_layer_files_from_file_manager_url)) . '"></ul>
 				</li>';
 			}
 		
@@ -997,10 +1033,14 @@ class WorkFlowPresentationHandler {
 		
 		if (isset($presentation_brokers))
 			foreach ($presentation_brokers as $b) {
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
 				$html .= '
 					<li>
-						<label>' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</label>
-						<ul url="' . str_replace("#bean_file_name#", $b[1], str_replace("#bean_name#", $b[2], $choose_bean_layer_files_from_file_manager_url)) . '"></ul>
+						<label>' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</label>
+						<ul url="' . str_replace("#bean_file_name#", $b_bean_file_name, str_replace("#bean_name#", $b_bean_name, $choose_bean_layer_files_from_file_manager_url)) . '"></ul>
 					</li>';
 			}
 		
@@ -1017,10 +1057,14 @@ class WorkFlowPresentationHandler {
 		
 		if (isset($presentation_brokers))
 			foreach ($presentation_brokers as $b) {
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
 				$html .= '
 					<li>
-						<label>' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</label>
-						<ul url="' . str_replace("#bean_file_name#", $b[1], str_replace("#bean_name#", $b[2], $choose_bean_layer_files_from_file_manager_url)) . '"></ul>
+						<label>' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</label>
+						<ul url="' . str_replace("#bean_file_name#", $b_bean_file_name, str_replace("#bean_name#", $b_bean_name, $choose_bean_layer_files_from_file_manager_url)) . '"></ul>
 					</li>';
 			}
 		
@@ -1102,9 +1146,9 @@ class WorkFlowPresentationHandler {
 		foreach ($types_brokers as $type_brokers)
 			if ($type_brokers)
 				foreach ($type_brokers as $broker_props) {
-					$broker_name = $broker_props[0];
-					$broker_bean_file_name = $broker_props[1];
-					$broker_bean_name = $broker_props[2];
+					$broker_name = isset($broker_props[0]) ? $broker_props[0] : null;
+					$broker_bean_file_name = isset($broker_props[1]) ? $broker_props[1] : null;
+					$broker_bean_name = isset($broker_props[2]) ? $broker_props[2] : null;
 					
 					if ($broker_bean_file_name == $bean_file_name && $broker_bean_name == $bean_name)
 						return $broker_name;
@@ -1127,8 +1171,13 @@ class WorkFlowPresentationHandler {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$b = $presentation_brokers[$i];
-				$html .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '">' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>';
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
+				$html .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '">' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>';
 			}
+			
 			$html .= '
 					</select>
 				</div>
@@ -1157,7 +1206,11 @@ class WorkFlowPresentationHandler {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$b = $presentation_brokers[$i];
-				$html .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '">' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>';
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
+				$html .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '">' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>';
 			}
 			$html .= '
 					</select>
@@ -1181,7 +1234,11 @@ class WorkFlowPresentationHandler {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$b = $presentation_brokers[$i];
-				$html .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '">' . $b[0] . ($b[2] ? '' : ' (Rest)') . '</option>';
+				$b_broker_name = isset($b[0]) ? $b[0] : null;
+				$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+				$b_bean_name = isset($b[2]) ? $b[2] : null;
+				
+				$html .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '">' . $b_broker_name . ($b_bean_name ? '' : ' (Rest)') . '</option>';
 			}
 			$html .= '
 					</select>
@@ -1202,13 +1259,15 @@ class WorkFlowPresentationHandler {
 	}
 	
 	public static function getCodeEditorMenuHtml($options) {
-		$show_pretty_print = $options["show_pretty_print"] ? $options["show_pretty_print"] : true;
+		$show_pretty_print = !empty($options["show_pretty_print"]) ? $options["show_pretty_print"] : true;
 		
-		$generate_tasks_flow_from_code_label = $options["generate_tasks_flow_from_code_label"] ? $options["generate_tasks_flow_from_code_label"] : "Generate Diagram from Code";
-		$generate_tasks_flow_from_code_func = $options["generate_tasks_flow_from_code_func"] ? $options["generate_tasks_flow_from_code_func"] : "generateTasksFlowFromCode";
+		$generate_tasks_flow_from_code_label = !empty($options["generate_tasks_flow_from_code_label"]) ? $options["generate_tasks_flow_from_code_label"] : "Generate Diagram from Code";
+		$generate_tasks_flow_from_code_func = !empty($options["generate_tasks_flow_from_code_func"]) ? $options["generate_tasks_flow_from_code_func"] : "generateTasksFlowFromCode";
 		
-		$generate_code_from_tasks_flow_label = $options["generate_code_from_tasks_flow_label"] ? $options["generate_code_from_tasks_flow_label"] : "Generate Code From Diagram";
-		$generate_code_from_tasks_flow_func = $options["generate_code_from_tasks_flow_func"] ? $options["generate_code_from_tasks_flow_func"] : "generateCodeFromTasksFlow";
+		$generate_code_from_tasks_flow_label = !empty($options["generate_code_from_tasks_flow_label"]) ? $options["generate_code_from_tasks_flow_label"] : "Generate Code From Diagram";
+		$generate_code_from_tasks_flow_func = !empty($options["generate_code_from_tasks_flow_func"]) ? $options["generate_code_from_tasks_flow_func"] : "generateCodeFromTasksFlow";
+		
+		$save_func = !empty($options["save_func"]) ? $options["save_func"] : null;
 		
 		return '<ul>
 			<li class="editor_settings" title="Open Editor Setings"><a onClick="openEditorSettings()"><i class="icon settings"></i> Open Editor Setings</a></li>
@@ -1222,15 +1281,15 @@ class WorkFlowPresentationHandler {
 			<li class="separator"></li>
 			<li class="auto_save_activation" title="Is Auto Save Active" onClick="toggleAutoSaveCheckbox(this, onTogglePHPCodeAutoSave)"><i class="icon auto_save_activation"></i> <span>Enable Auto Save</span> <input type="checkbox" value="1" /></li>
 			<li class="auto_convert_activation" title="Is Auto Convert Active" onClick="toggleAutoConvertCheckbox(this, onTogglePHPCodeAutoConvert)"><i class="icon auto_convert_activation"></i> <span>Enable Auto Convert</span> <input type="checkbox" value="1" /></li>
-			<li class="save" title="Save"><a onClick="' . $options["save_func"] . '()"><i class="icon save"></i> Save</a></li>
+			<li class="save" title="Save"><a onClick="' . $save_func . '()"><i class="icon save"></i> Save</a></li>
 		</ul>';
 	}
 	
 	public static function getCodeEditorHtml($code, $menu_options, $ui_menu_widgets_html, $user_global_variables_file_path, $user_beans_folder_path, $PEVC, $UserAuthenticationHandler, $bean_name, $bean_file_name, $db_drivers, $choose_bean_layer_files_from_file_manager_url, $get_db_data_url, $create_page_presentation_uis_diagram_block_url, $js_tree_obj_name, $is_full_source = false, $options = null) {
 		//echo "<pre>";print_r($_COOKIE);die();
-		$reverse_class = $_COOKIE["main_navigator_side"] == "main_navigator_reverse" || $_COOKIE["admin_type"] == "simple" ? "" : "reverse";
-		$layout_ui_editor_html = $options["layout_ui_editor_html"];
-		$layout_ui_editor_class = $options["layout_ui_editor_class"];
+		$reverse_class = (isset($_COOKIE["main_navigator_side"]) && $_COOKIE["main_navigator_side"] == "main_navigator_reverse") || (isset($_COOKIE["admin_type"]) && $_COOKIE["admin_type"] == "simple") ? "" : "reverse";
+		$layout_ui_editor_html = isset($options["layout_ui_editor_html"]) ? $options["layout_ui_editor_html"] : null;
+		$layout_ui_editor_class = isset($options["layout_ui_editor_class"]) ? $options["layout_ui_editor_class"] : null;
 		
 		$html = '
 			<div class="code_menu" onClick="openSubmenu(this)">
@@ -1268,6 +1327,10 @@ class WorkFlowPresentationHandler {
 	
 	public static function getTabContentTemplateLayoutTreeHtml($user_global_variables_file_path, $user_beans_folder_path, $EVC, $UserAuthenticationHandler, $bean_name, $bean_file_name, $choose_bean_layer_files_from_file_manager_url, $js_tree_obj_name) {
 		$P = $EVC->getPresentationLayer();
+		
+		if (empty($P->settings["presentation_modules_path"])) //used in edit_entity_advanced.php
+			launch_exception(new Exception("'PresentationLayer->settings[presentation_modules_path]' cannot be undefined!"));
+		
 		$modules_path = $EVC->getCommonProjectName() . "/" . $P->settings["presentation_modules_path"];
 		
 		$html = '<script>
@@ -1295,6 +1358,7 @@ class WorkFlowPresentationHandler {
 	}
 	
 	public static function getTabContentTemplateLayoutDBDriversTreeHtml($user_global_variables_file_path, $user_beans_folder_path, $EVC, $UserAuthenticationHandler, $bean_name, $bean_file_name, $db_drivers, $choose_bean_layer_files_from_file_manager_url, $get_db_data_url, $js_tree_obj_name) {
+		$html = '';
 		$P = $EVC->getPresentationLayer();
 		
 		if (!$db_drivers) {
@@ -1308,21 +1372,25 @@ class WorkFlowPresentationHandler {
 		
 		//prepare db_driver tree attributes
 		if ($db_drivers) {
-			$html = '<script>';
+			$html .= '<script>';
 		
 			foreach ($db_drivers as $db_driver_name => $db_driver_props)
-				if ($db_driver_props) //only show local db drivers. The rest db drivers will be ignored.
+				if ($db_driver_props) { //only show local db drivers. The rest db drivers will be ignored.
+					$db_driver_props_bean_file_name = isset($db_driver_props[1]) ? $db_driver_props[1] : null;
+					$db_driver_props_bean_name = isset($db_driver_props[2]) ? $db_driver_props[2] : null;
+					
 					$html .= '
-			main_layers_properties["' . $db_driver_props[2] . '"] = {
+			main_layers_properties["' . $db_driver_props_bean_name . '"] = {
 				ui: {
 					table: {
 						attributes: {
 							table: "#name#",
 						},
-						get_sub_files_url: "' . str_replace("#type#", "", str_replace("#bean_file_name#", $db_driver_props[1], str_replace("#bean_name#", $db_driver_props[2], $get_db_data_url))) . '&table=#table#"
+						get_sub_files_url: "' . str_replace("#type#", "", str_replace("#bean_file_name#", $db_driver_props_bean_file_name, str_replace("#bean_name#", $db_driver_props_bean_name, $get_db_data_url))) . '&table=#table#"
 					},
 				},
 			};';
+				}
 			
 			$html .= '
 			</script>
@@ -1334,7 +1402,8 @@ class WorkFlowPresentationHandler {
 			foreach ($db_drivers as $db_driver_name => $db_driver_props) {
 				if ($db_driver_props) { //only show local db drivers. The rest db drivers will be ignored.
 					//find correspondent db broker folder name
-					$broker_name = $brokers_by_db_driver_name[$db_driver_name];
+					$broker_name = isset($brokers_by_db_driver_name[$db_driver_name]) ? $brokers_by_db_driver_name[$db_driver_name] : null;
+					$broker_folder_name = null;
 					
 					if (!$broker_name) {
 						$broker_name = WorkFlowBeansFileHandler::getLayerLocalDBBrokerNameForChildBrokerDBDriver($user_global_variables_file_path, $user_beans_folder_path, $P, $db_driver_name, $found_broker_obj, $found_broker_props);
@@ -1343,7 +1412,7 @@ class WorkFlowPresentationHandler {
 							$broker_layer_props = WorkFlowBeansFileHandler::getLocalBeanLayerFromBroker($user_global_variables_file_path, $user_beans_folder_path, $found_broker_obj);
 							
 							if ($broker_layer_props) {
-								$broker_folder_name = WorkFlowBeansFileHandler::getLayerObjFolderName($broker_layer_props[2]);
+								$broker_folder_name = WorkFlowBeansFileHandler::getLayerObjFolderName(isset($broker_layer_props[2]) ? $broker_layer_props[2] : null);
 								
 								//cache broker folder name for next time
 								$brokers_folder_name[$broker_name] = $broker_folder_name;
@@ -1355,13 +1424,16 @@ class WorkFlowPresentationHandler {
 						}
 					}
 					else
-						$broker_folder_name = $brokers_folder_name[$broker_name];
+						$broker_folder_name = isset($brokers_folder_name[$broker_name]) ? $brokers_folder_name[$broker_name] : null;
 					
 					//print db driver
+					$db_driver_props_bean_file_name = isset($db_driver_props[1]) ? $db_driver_props[1] : null;
+					$db_driver_props_bean_name = isset($db_driver_props[2]) ? $db_driver_props[2] : null;
+					
 					$html .= '
-						<li data-jstree="{\'icon\':\'db_driver\'}" db_driver_name="' . $db_driver_name . '" db_driver_bean_name="' . $db_driver_props[2] . '" db_driver_bean_file_name="' . $db_driver_props[1] . '" db_driver_type="db" db_driver_broker="' . $broker_name . '" db_driver_broker_folder="' . $broker_folder_name . '">
+						<li data-jstree="{\'icon\':\'db_driver\'}" db_driver_name="' . $db_driver_name . '" db_driver_bean_name="' . $db_driver_props_bean_name . '" db_driver_bean_file_name="' . $db_driver_props_bean_file_name . '" db_driver_type="db" db_driver_broker="' . $broker_name . '" db_driver_broker_folder="' . $broker_folder_name . '">
 							<label>' . ucwords(str_replace("_", " ", $db_driver_name)) . '</label>
-							<ul url="' . str_replace("#type#", "", str_replace("#bean_file_name#", $db_driver_props[1], str_replace("#bean_name#", $db_driver_props[2], $get_db_data_url))) . '"></ul>
+							<ul url="' . str_replace("#type#", "", str_replace("#bean_file_name#", $db_driver_props_bean_file_name, str_replace("#bean_name#", $db_driver_props_bean_name, $get_db_data_url))) . '"></ul>
 						</li>';
 				}
 				else
@@ -1378,11 +1450,13 @@ class WorkFlowPresentationHandler {
 	}
 	
 	public static function getTaskFlowContentHtml($WorkFlowUIHandler, $options) {
-		$generate_tasks_flow_from_code_label = $options["generate_tasks_flow_from_code_label"] ? $options["generate_tasks_flow_from_code_label"] : "Generate Diagram from Code";
-		$generate_tasks_flow_from_code_func = $options["generate_tasks_flow_from_code_func"] ? $options["generate_tasks_flow_from_code_func"] : "generateTasksFlowFromCode";
+		$generate_tasks_flow_from_code_label = !empty($options["generate_tasks_flow_from_code_label"]) ? $options["generate_tasks_flow_from_code_label"] : "Generate Diagram from Code";
+		$generate_tasks_flow_from_code_func = !empty($options["generate_tasks_flow_from_code_func"]) ? $options["generate_tasks_flow_from_code_func"] : "generateTasksFlowFromCode";
 		
-		$generate_code_from_tasks_flow_label = $options["generate_code_from_tasks_flow_label"] ? $options["generate_code_from_tasks_flow_label"] : "Generate Code From Diagram";
-		$generate_code_from_tasks_flow_func = $options["generate_code_from_tasks_flow_func"] ? $options["generate_code_from_tasks_flow_func"] : "generateCodeFromTasksFlow";
+		$generate_code_from_tasks_flow_label = !empty($options["generate_code_from_tasks_flow_label"]) ? $options["generate_code_from_tasks_flow_label"] : "Generate Code From Diagram";
+		$generate_code_from_tasks_flow_func = !empty($options["generate_code_from_tasks_flow_func"]) ? $options["generate_code_from_tasks_flow_func"] : "generateCodeFromTasksFlow";
+		
+		$save_func = isset($options["save_func"]) ? $options["save_func"] : null;
 		
 		$menus = array(
 			"Sort Tasks" => array(
@@ -1485,7 +1559,7 @@ class WorkFlowPresentationHandler {
 			),
 			"Save" => array(
 				"class" => "save", 
-				"html" => '<a onClick="' . $options["save_func"] . '();return false;"><i class="icon save"></i> Save</a>',
+				"html" => '<a onClick="' . $save_func . '();return false;"><i class="icon save"></i> Save</a>',
 			),
 		);
 		$WorkFlowUIHandler->setMenus($menus);
@@ -1498,7 +1572,7 @@ class WorkFlowPresentationHandler {
 		
 		//check if there is any php code inside of the style and script tags
 		preg_match_all("/(<style|<\/style|<script|<\/script|<\?|\?>)/i", $code, $matches);
-		$matches = $matches[0];
+		$matches = isset($matches[0]) ? $matches[0] : null;
 		
 		$open_php = $open_css = $open_js = false;
 		
@@ -1639,7 +1713,7 @@ class WorkFlowPresentationHandler {
 			}
 		}
 	
-		if ($options["get_inline_code"]) {
+		if (!empty($options["get_inline_code"])) {
 			if ($start_pos !== false && $end_pos !== false) {
 				$close_pos = strripos($code, "</$tag_name>", $end_pos + 1);
 				

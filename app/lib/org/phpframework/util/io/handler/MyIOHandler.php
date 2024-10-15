@@ -41,9 +41,11 @@ abstract class MyIOHandler implements IMyIOHandler {
 		$type = false;
 		$keys = array_keys($types);
 		for($i = count($keys) - 1; $i >= 0; --$i) {
-			$type_id = $types[ $keys[$i] ]["id"];
+			$key = $keys[$i];
+			$type_id = isset($types[$key]["id"]) ? $types[$key]["id"] : null;
+			
 			if(self::getFileMimeTypeByExtension($extension, $type_id)) {
-				$type = $keys[$i];
+				$type = $key;
 				break;
 			}
 		}
@@ -56,7 +58,7 @@ abstract class MyIOHandler implements IMyIOHandler {
 	 */
 	public static function getFolderType() {
 		$types = self::getFileTypes();
-		return $types["folder"];
+		return isset($types["folder"]) ? $types["folder"] : null;
 	}
 	
 	/*

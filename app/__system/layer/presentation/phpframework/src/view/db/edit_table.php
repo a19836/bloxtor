@@ -2,6 +2,12 @@
 include_once get_lib("org.phpframework.db.DB");
 include $EVC->getUtilPath("WorkFlowUIHandler");
 
+$with_advanced_options = isset($with_advanced_options) ? $with_advanced_options : null;
+$table_exists = isset($table_exists) ? $table_exists : null;
+$e = isset($e) ? $e : null;
+$action = isset($action) ? $action : null;
+$data = isset($data) ? $data : null;
+
 //get task table workflow settings
 $WorkFlowUIHandler = new WorkFlowUIHandler($WorkFlowTaskHandler, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
 $tasks_settings = $WorkFlowTaskHandler->getLoadedTasksSettings();
@@ -11,7 +17,7 @@ $task_contents = array();
 foreach ($tasks_settings as $group_id => $group_tasks)
 	foreach ($group_tasks as $task_type => $task_settings)
 		if (is_array($task_settings))
-			$task_contents = $task_settings["task_properties_html"];
+			$task_contents = isset($task_settings["task_properties_html"]) ? $task_settings["task_properties_html"] : null;
 
 //prepare DBTableTaskPropertyObj properties 
 $charsets = $obj ? $obj->getTableCharsets() : array();
@@ -72,7 +78,7 @@ DBTableTaskPropertyObj.on_update_table_attributes_html_with_simple_attributes_ca
 
 var task_property_values = ' . json_encode($data) . ';
 
-var step = ' . ($step ? $step : 0) . ';
+var step = ' . (!empty($step) ? $step : 0) . ';
 var with_advanced_options = ' . ($with_advanced_options ? $with_advanced_options : 0) . ';
 </script>';
 
@@ -102,7 +108,7 @@ if ($table && !$table_exists)
 else if ($action == "delete" && $e === true) 
 	$main_content .= '<div class="message">Table deleted successfully!</div>';
 else if ($obj) {
-	//$allow_sort = $obj->allowTableAttributeSorting() && (!$table || !$data["table_attr_names"]); //if no attributes, then allow sort attributes
+	//$allow_sort = $obj->allowTableAttributeSorting() && (!$table || empty($data["table_attr_names"])); //if no attributes, then allow sort attributes
 	$allow_sort = $obj->allowTableAttributeSorting();
 	
 	$main_content .= '
@@ -133,10 +139,10 @@ else if ($obj) {
 			<textarea class="hidden" name="data">' . json_encode($data) . '</textarea>
 			';
 		
-	if ($sql_statements) {
+	if (!empty($sql_statements)) {
 		foreach ($sql_statements as $idx => $sql)
 			$main_content .= '<div class="sql_statement">
-				<label>' . $sql_statements_labels[$idx] . '</label>
+				<label>' . (isset($sql_statements_labels[$idx]) ? $sql_statements_labels[$idx] : "") . '</label>
 				<textarea class="hidden" name="sql_statements[]">' . htmlspecialchars($sql, ENT_NOQUOTES) . '</textarea>
 				<textarea class="editor">' . htmlspecialchars($sql, ENT_NOQUOTES) . '</textarea>
 			</div>';
@@ -148,7 +154,7 @@ else if ($obj) {
 			</div>';
 	}
 	else
-		$main_content .= '<div>' . $status_message . '</div>		
+		$main_content .= '<div>' . (isset($status_message) ? $status_message : "") . '</div>		
 			<div class="save_button">
 				<input class="back" type="button" name="back" value="Back" onClick="return onBackButton(this, 0);" />
 			</div>';
@@ -160,12 +166,12 @@ else if ($obj) {
 	<h3 class="table_errors_header">Execution Status</h3>
 	<div class="table_errors">';
 	
-	if ($error_message)
-		$main_content .= '<div class="error">' . $error_message . ($errors ? '<br/>Please see errors bellow...' : '') . '</div>';
+	if (!empty($error_message))
+		$main_content .= '<div class="error">' . $error_message . (!empty($errors) ? '<br/>Please see errors bellow...' : '') . '</div>';
 	else
 		$main_content .= '<div>SQL executed successfully!</div>'; //Should not show bc we are always refreshing this page on success.
 	
-	if ($errors)
+	if (!empty($errors))
 		$main_content .= '<div class="errors">
 			<label>Errors:</label>
 			<ul>

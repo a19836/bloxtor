@@ -1676,9 +1676,11 @@ class AdminMenuUIHandler {
 		
 		$url = false;
 		if (isset($main_layer_properties["ui"][$item_type]["get_sub_files_url"])) {
+			$folder_type = isset($properties["folder_type"]) ? $properties["folder_type"] : null;
+
 			$url = $main_layer_properties["ui"][$item_type]["get_sub_files_url"];
 			$url = str_replace("#path#", $file_path, $url);
-			$url = str_replace("#folder_type#", $properties["folder_type"], $url);
+			$url = str_replace("#folder_type#", $folder_type, $url);
 		
 			if ($item_type == "db_driver" || $item_type == "db_management" || $item_type == "db_diagram" || $item_type == "table") {
 				$bean_name = !empty($properties["bean_name"]) ? $properties["bean_name"] : "";

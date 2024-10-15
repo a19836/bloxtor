@@ -26,7 +26,7 @@ class MySqlDBDumper extends DBDumper {
 	}
 
 	public function createTable($res, $table_name, $foreign_keys_to_ignore = false) {
-		$row = $res[0];
+		$row = isset($res[0]) ? $res[0] : null;
 		$db_dumper_settings = $this->DBDumperHandler->getDBDumperSettings();
 
 		if (!isset($row['Create Table']))
@@ -99,7 +99,7 @@ class MySqlDBDumper extends DBDumper {
 			   	  	$parent_table = $sub_matches[2][0];
 			   	  	$parent_column = $sub_matches[3][0];
 			   	  	
-			   	  	if ($child_column && $parent_table && $parent_column && $fks_to_ignore[ $child_column ][ $parent_table ][ $parent_column ]) {
+			   	  	if ($child_column && $parent_table && $parent_column && !empty($fks_to_ignore[ $child_column ][ $parent_table ][ $parent_column ])) {
 			   	  		$fk_sql = $match;
 			   	  		$fk_sql = substr($fk_sql, 0, 1) == "," ? substr($fk_sql, 1) : $fk_sql; //remove first colon
 			   	  		$fk_sql = substr($fk_sql, -1) == "," ? substr($fk_sql, 0, -1) : $fk_sql; //remove last colon
@@ -177,7 +177,7 @@ class MySqlDBDumper extends DBDumper {
 
 	public function createStandInTableForView($view_name, $inner_sql) {
 		return "CREATE TABLE IF NOT EXISTS " . $this->escapeTable($view_name) . " (".
-		  PHP_EOL . $innerSql . PHP_EOL . ");" . PHP_EOL;
+		  PHP_EOL . $inner_sql . PHP_EOL . ");" . PHP_EOL;
 	}
 
 	public function getTableAttributeProperties($attr_type) {
@@ -229,7 +229,7 @@ class MySqlDBDumper extends DBDumper {
 		$view_stmt = $row['Create View'];
 
 		$db_dumper_settings = $this->DBDumperHandler->getDBDumperSettings();
-		$definer_str = $db_dumper_settings['skip-definer'] ? '' : '/*!50013 \2 */' . PHP_EOL;
+		$definer_str = !empty($db_dumper_settings['skip-definer']) ? '' : '/*!50013 \2 */' . PHP_EOL;
 
 		if ($view_stmt_replaced = preg_replace('/^(CREATE(?:\s+ALGORITHM=(?:UNDEFINED|MERGE|TEMPTABLE))?)\s+('.self::REGEX.'(?:\s+SQL SECURITY DEFINER|INVOKER)?)?\s+(VIEW .+)$/', '/*!50001 \1 */' . PHP_EOL . $definer_str . '/*!50001 \3 */', $view_stmt, 1))
 			$view_stmt = $view_stmt_replaced;

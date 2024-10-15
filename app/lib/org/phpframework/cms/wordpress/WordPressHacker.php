@@ -79,8 +79,8 @@ class WordPressHacker {
 		$current_phpframework_result_key_label = ucwords(str_replace('_', ' ', $current_phpframework_result_key));
 		$obgc = "<!-- phpframework:template:region: \"Before $current_phpframework_result_key_label\" -->$obgc<!-- phpframework:template:region: \"After $current_phpframework_result_key_label\" -->";
 		
-		$phpframework_results[$current_phpframework_result_key] .= $obgc;
-		$phpframework_results["full_page_html"] .= $obgc;
+		$phpframework_results[$current_phpframework_result_key] = $obgc;
+		$phpframework_results["full_page_html"] = $obgc;
 		
 		ob_end_clean();
 		
@@ -158,7 +158,7 @@ class WordPressHacker {
 											$post_id = null;
 											
 											if (isset($v["comments"]["pretty"]) && is_array($v["comments"]["pretty"])) {
-												$comments_from_theme = $v["comments"]["pretty"]["comments_from_theme"];
+												$comments_from_theme = isset($v["comments"]["pretty"]["comments_from_theme"]) ? $v["comments"]["pretty"]["comments_from_theme"] : null;
 												$post_id = self::getCurrentPostId();
 											}
 											
@@ -187,7 +187,7 @@ class WordPressHacker {
 										$post_id = null;
 										
 										if (isset($v["comments"]["pretty"]) && is_array($v["comments"]["pretty"])) {
-											$comments_from_theme = $v["comments"]["pretty"]["comments_from_theme"];
+											$comments_from_theme = isset($v["comments"]["pretty"]["comments_from_theme"]) ? $v["comments"]["pretty"]["comments_from_theme"] : null;
 											$post_id = self::getCurrentPostId();
 										}
 										
@@ -374,7 +374,7 @@ class WordPressHacker {
 		//only call functions if $this->user_authenticated is true
 		if ($functions && $this->user_authenticated) {
 			$functions = is_array($functions) ? $functions : array($functions);
-			$curr_class = get_class();
+			$curr_class = get_class($this);
 			
 			foreach ($functions as $function) {
 				if ($function && !empty($function["name"]) && method_exists($curr_class, $function["name"])) {
@@ -382,10 +382,12 @@ class WordPressHacker {
 					
 					if (!isset($function["args"]))
 						$results[] = call_user_func($callback);
-					else if (is_array($function["args"]))
-						$results[] = call_user_func_array($callback, $function["args"]);
+					else if (is_array($function["args"])) {
+						$function["args"] = array_values($function["args"]);
+						$results[] = @call_user_func_array($callback, $function["args"]); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
+					}
 					else
-						$results[] = call_user_func($callback, $function["args"]);
+						$results[] = @call_user_func($callback, $function["args"]);
 				}
 				else 
 					$results[] = null;
@@ -462,7 +464,7 @@ class WordPressHacker {
 				"SCRIPT_URI", 
 				"SCRIPT_URL", 
 			);
-			$current_request_uri = $_SERVER["REQUEST_URI"];
+			$current_request_uri = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : null;
 			$wordpress_request_uri = $this->wordpress_request_uri . preg_replace("/^\/+/", "", $url_query);
 			
 			$pos = strpos($current_request_uri, "?");
@@ -487,7 +489,7 @@ class WordPressHacker {
 				"SCRIPT_NAME", 
 				"PHP_SELF",
 			);
-			$current_request_file = $_SERVER["SCRIPT_NAME"];
+			$current_request_file = isset($_SERVER["SCRIPT_NAME"]) ? $_SERVER["SCRIPT_NAME"] : null;
 			$wordpress_request_file = $this->wordpress_request_file;
 			foreach ($arr as $item)
 				if (isset($_SERVER[$item])) {
@@ -778,7 +780,7 @@ class WordPressHacker {
 	public static function getWidgetIdByClass($class) {
 		global $wp_widget_factory;
 
-		$widget_obj = $wp_widget_factory->widgets[ $class ];
+		$widget_obj = isset($wp_widget_factory->widgets[$class]) ? $wp_widget_factory->widgets[$class] : null;
 
 		return $widget_obj ? $widget_obj->id : null;
 	}
@@ -786,7 +788,7 @@ class WordPressHacker {
 	public static function getWidgetCallbackObjById($widget_id) {
 		global $wp_registered_widgets;
 
-		$control = $wp_registered_widgets[$widget_id]; //to show widget form options to insert new widget
+		$control = isset($wp_registered_widgets[$widget_id]) ? $wp_registered_widgets[$widget_id] : null; //to show widget form options to insert new widget
 
 		if (isset($control['callback']))
 			return $control['callback'][0];
@@ -806,7 +808,7 @@ class WordPressHacker {
 		global $wp_widget_factory;
 		
 		if ($widget_class) {
-			$widget_obj = $wp_widget_factory->widgets[ $widget_class ];
+			$widget_obj = isset($wp_widget_factory->widgets[$widget_class]) ? $wp_widget_factory->widgets[$widget_class] : null;
 			
 			if ($widget_obj) {
 				$number = $widget_obj->number;
@@ -829,7 +831,7 @@ class WordPressHacker {
 	public static function getWidgetControlOptionsById($widget_id, $instance = null) {
 		global $wp_registered_widget_controls;
 
-		$control = $wp_registered_widget_controls[$widget_id]; //to show widget form options to insert new widget
+		$control = isset($wp_registered_widget_controls[$widget_id]) ? $wp_registered_widget_controls[$widget_id] : null; //to show widget form options to insert new widget
 		$html = "";
 
 		if (isset($control['callback'])) {
@@ -911,7 +913,7 @@ class WordPressHacker {
 		
 		$status = false;	
 
-		if (isset( $_POST['savewidget'] ) && $_POST['widget-id'] && $_POST['id_base']) {
+		if (isset( $_POST['savewidget'] ) && !empty($_POST['widget-id']) && !empty($_POST['id_base'])) {
 			$id_base = $_POST['id_base'];
 			$control = $wp_registered_widget_updates[ $id_base ]; //to show widget form options to update existent widget
 			

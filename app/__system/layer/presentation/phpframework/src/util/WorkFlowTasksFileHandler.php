@@ -28,12 +28,12 @@ class WorkFlowTasksFileHandler {
 			$MyXML = new MyXML($xml_content);
 			$arr = $MyXML->toArray();
 			$new_arr = $MyXML->complexArrayToBasicArray($arr, array("lower_case_keys" => true, "trim" => true));
-			$this->tasks = $new_arr["tasks"];
+			$this->tasks = isset($new_arr["tasks"]) ? $new_arr["tasks"] : null;
 			
-			if ($this->tasks["container"] && isset($this->tasks["container"]["id"]))
+			if (!empty($this->tasks["container"]) && isset($this->tasks["container"]["id"]))
 				$this->tasks["container"] = array($this->tasks["container"]);
 			
-			if ($this->tasks["task"] && isset($this->tasks["task"]["id"]))
+			if (!empty($this->tasks["task"]) && isset($this->tasks["task"]["id"]))
 				$this->tasks["task"] = array($this->tasks["task"]);
 		}
 	}
@@ -49,12 +49,12 @@ class WorkFlowTasksFileHandler {
 	public function getTasksByLayerTag($tag, $limit = -1) {
 		$tasks = array();
 		
-		if (is_array($this->tasks["task"])) {
+		if (isset($this->tasks["task"]) && is_array($this->tasks["task"])) {
 			foreach ($this->tasks["task"] as $task) {
 				if ($limit == 0)
 					break;
 				
-				if ($task["tag"] == self::$task_layer_tags[$tag]) {
+				if (isset($task["tag"]) && $task["tag"] == self::$task_layer_tags[$tag]) {
 					$tasks[] = $task;
 					
 					if ($limit > 0) {
@@ -77,7 +77,7 @@ class WorkFlowTasksFileHandler {
 	public function getWorkflowDataWithInnerTasks() {
 		$tasks = self::getWorkflowDataByTasks($this->tasks);
 		
-		if ($tasks && $tasks["tasks"])
+		if ($tasks && !empty($tasks["tasks"]))
 			foreach ($tasks["tasks"] as $task_id => $task) {
 				$task = self::getTaskWithInnerTasks($tasks["tasks"], $task_id);
 				
@@ -89,10 +89,10 @@ class WorkFlowTasksFileHandler {
 	}
 	
 	private function getTaskWithInnerTasks(&$tasks, $task_id) {
-		if ($tasks && $tasks[$task_id]) {
-			if ($tasks[$task_id]["tasks"])
+		if ($tasks && !empty($tasks[$task_id])) {
+			if (!empty($tasks[$task_id]["tasks"]))
 				foreach ($tasks[$task_id]["tasks"] as $inner_task_id => $html_selector) 
-					if ($inner_task_id != $task_id && $tasks[$inner_task_id]) {
+					if ($inner_task_id != $task_id && !empty($tasks[$inner_task_id])) {
 						$tasks[$task_id]["tasks"][$inner_task_id] = self::getTaskWithInnerTasks($tasks, $inner_task_id);
 						unset($tasks[$inner_task_id]);
 					}
@@ -104,7 +104,10 @@ class WorkFlowTasksFileHandler {
 	}
 	
 	public static function getWorkflowDataByTasks($tasks) {
+		$tasks["container"] = isset($tasks["container"]) ? $tasks["container"] : null;
 		$tasks["container"] = isset($tasks["container"]["id"]) ? array($tasks["container"]) : $tasks["container"];
+		
+		$tasks["task"] = isset($tasks["task"]) ? $tasks["task"] : null;
 		$tasks["task"] = isset($tasks["task"]["id"]) ? array($tasks["task"]) : $tasks["task"];
 		
 		$parsed_tasks = array();
@@ -112,7 +115,7 @@ class WorkFlowTasksFileHandler {
 		$parsed_tasks["containers"] = array();
 		$parsed_tasks["tasks"] = array();
 		
-		if ($tasks["settings"])
+		if (!empty($tasks["settings"]))
 			foreach ($tasks["settings"] as $key => $value) {
 				if (
 					(substr($value, 0, 1) == "{" && substr($value, -1) == "}") || 
@@ -129,8 +132,9 @@ class WorkFlowTasksFileHandler {
 		
 		foreach ($tasks as $key => $value)
 			if (($key == "container" || $key == "task") && is_array($value)) {
-				foreach ($value as $obj) 
-					$parsed_tasks[$key . "s"][ $obj["id"] ] = $obj;
+				foreach ($value as $obj)
+					if (isset($obj["id"])) 
+						$parsed_tasks[$key . "s"][ $obj["id"] ] = $obj;
 			}
 		
 		return $parsed_tasks;
@@ -161,7 +165,7 @@ class WorkFlowTasksFileHandler {
 		$xml .= "<tasks>\n";
 		
 		if (is_array($data)) {
-			if (is_array($data["settings"])) {
+			if (isset($data["settings"]) && is_array($data["settings"])) {
 				$settings_xml = "";
 				
 				foreach ($data["settings"] as $settings_name => $settings_value)
@@ -201,7 +205,7 @@ class WorkFlowTasksFileHandler {
 						$xml .= "\t<$node_name";
 						
 						if ($key == "tasks") {
-							if ($obj["start"] > 0) 
+							if (isset($obj["start"]) && $obj["start"] > 0) 
 								$xml .= " start=\"" . $obj["start"] . "\"";
 							
 							unset($obj["start"]);
@@ -266,7 +270,7 @@ class WorkFlowTasksFileHandler {
 			}
 		}
 		else {
-			$xml .= is_numeric($arr) || is_bool($value) ? $arr : (!empty($arr) ? "<![CDATA[$arr]]>" : "");
+			$xml .= is_numeric($arr) || is_bool($arr) ? $arr : (!empty($arr) ? "<![CDATA[$arr]]>" : "");
 		}
 
 		return $xml;
@@ -280,21 +284,24 @@ class WorkFlowTasksFileHandler {
 		$changed = false;
 		//echo "<pre>$task_label:";print_r($tasks);die();
 		
-		if (is_array($tasks["tasks"][0]["childs"]["task"])) {
+		if (isset($tasks["tasks"][0]["childs"]["task"]) && is_array($tasks["tasks"][0]["childs"]["task"])) {
+			$task_label_lower = strtolower($task_label);
+			
 			$t = count($tasks["tasks"][0]["childs"]["task"]);
 			for ($i = 0; $i < $t; $i++) {
 				$task = $tasks["tasks"][0]["childs"]["task"][$i];
+				$tll = isset($task["childs"]["label"][0]["value"]) ? strtolower($task["childs"]["label"][0]["value"]) : null;
 				
-				if (strtolower($task["childs"]["label"][0]["value"]) == strtolower($task_label)) {
+				if ($tll == $task_label_lower) {
 					//echo "<pre>$task_label:";print_r($new_properties);print_r($task);die();
 					
 					foreach ($new_properties as $var_name => $var_value) {
 						$task_var_name = strtolower($var_name);
-						$value = $task["childs"]["properties"][0]["childs"][$task_var_name][0]["value"];
+						$value = isset($task["childs"]["properties"][0]["childs"][$task_var_name][0]["value"]) ? $task["childs"]["properties"][0]["childs"][$task_var_name][0]["value"] : null;
 						
 						if (isset($value)) {
 							//if (!self::isPHPVariable($value)) {//Edit even if it is a variable
-								$task["childs"]["properties"][0]["childs"][$task_var_name][0]["value"] = $new_properties[$var_name];
+								$task["childs"]["properties"][0]["childs"][$task_var_name][0]["value"] = isset($new_properties[$var_name]) ? $new_properties[$var_name] : null;
 				
 								$changed = true;
 							//}
@@ -322,10 +329,10 @@ class WorkFlowTasksFileHandler {
 	}
 	
 	public static function getTaskFilePathByPath($workflow_paths_id, $path, $extra = false) {
-		$path = $workflow_paths_id[$path] ? $workflow_paths_id[$path] : $path;
+		$path = !empty($workflow_paths_id[$path]) ? $workflow_paths_id[$path] : $path;
 		
 		$path_parts = pathinfo($path);
-		$path = $path_parts['dirname'] . "/" . $path_parts['filename'] . $extra . ($path_parts['extension'] ? "." . $path_parts['extension'] : "");
+		$path = $path_parts['dirname'] . "/" . $path_parts['filename'] . $extra . (!empty($path_parts['extension']) ? "." . $path_parts['extension'] : "");
 		
 		return $path;
 	}

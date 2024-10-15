@@ -9,7 +9,7 @@ class SubTestService {
 	
 	/**
 	 * The Bar function
-	 * @return varchar Whether or not something is true
+	 * @return string Whether or not something is true
 	 * @param (name=value[0][name], tYPe=varchar, NotNull, default="This is only a test from Annotations"),
 	 */
 	public function executeBusinessLogicSubTest($value) {

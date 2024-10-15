@@ -4,14 +4,14 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 $choose_available_project_url = "{$project_url_prefix}admin/choose_available_project?redirect_path=admin";
 
-$default_page = $_GET["default_page"];
+$default_page = isset($_GET["default_page"]) ? $_GET["default_page"] : null;
 //print_r($_GET);die();
 
 $layers_beans = AdminMenuHandler::getLayers($user_global_variables_file_path);
 //echo "<pre>";print_r($layers_beans);die();
 
-if ($layers_beans && $layers_beans["presentation_layers"]) {
-	if (array_key_exists("filter_by_layout", $_GET) && $_GET["filter_by_layout"]) {
+if ($layers_beans && !empty($layers_beans["presentation_layers"])) {
+	if (!empty($_GET["filter_by_layout"])) {
 		foreach ($layers_beans["presentation_layers"] as $bn => $bfn) {
 			$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $bfn, $bn, $user_global_variables_file_path);
 			
@@ -29,7 +29,7 @@ if ($layers_beans && $layers_beans["presentation_layers"]) {
 	else {
 		if ($default_page)
 			CookieHandler::setCurrentDomainEternalRootSafeCookie("default_page", $default_page);
-		else
+		else if (!empty($_COOKIE["default_page"]))
 			$default_page = $_COOKIE["default_page"];
 
 		if (!empty($_GET["bean_name"])) {
@@ -55,11 +55,12 @@ if ($layers_beans && $layers_beans["presentation_layers"]) {
 	}
 }
 
-if (!$bean_name || !$bean_file_name || !$project) {
+if (empty($bean_name) || empty($bean_file_name) || empty($project)) {
 	header("Location: $choose_available_project_url");
-	die("<script>document.location = '$choose_available_project_url';</script>");
+	echo "<script>document.location = '$choose_available_project_url';</script>";
+	die();
 }
-else if ($layers_beans["presentation_layers"][$bean_name] == $bean_file_name) { //preparing filter_by_layout
+else if (!empty($layers_beans["presentation_layers"][$bean_name]) && $layers_beans["presentation_layers"][$bean_name] == $bean_file_name) { //preparing filter_by_layout
 	$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $bean_file_name, $bean_name, $user_global_variables_file_path);
 	
 	$filter_by_layout = "$layer_bean_folder_name/" . preg_replace("/\/+$/", "", $project); //remove last slash from $path
@@ -78,16 +79,16 @@ include $EVC->getUtilPath("admin_uis_layers_and_permissions");
 
 $projects = null;
 	
-if ($layers["presentation_layers"])
+if (!empty($layers["presentation_layers"]))
 	foreach ($layers["presentation_layers"] as $layer_name => $layer)
-		if ($layer["properties"]["bean_name"] == $bean_name && $layer["properties"]["bean_file_name"] == $bean_file_name) {
+		if (isset($layer["properties"]["bean_name"]) && $layer["properties"]["bean_name"] == $bean_name && isset($layer["properties"]["bean_file_name"]) && $layer["properties"]["bean_file_name"] == $bean_file_name) {
 			$projects = $presentation_projects[$layer_name];
 			//echo "<pre>";print_r($projects);die();
 			break;
 		}
 
 //if project doesn't exist, forward it to choose project.
-if (!$projects || !$projects[$project]) {
+if (!$projects || empty($projects[$project])) {
 	header("Location: $choose_available_project_url");
 	echo "<script>document.location='$choose_available_project_url';</script>";
 	die();

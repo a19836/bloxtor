@@ -17,10 +17,13 @@ class WorkFlowDataAccessHandler {
 		$WorkFlowTasksFileHandler->init();
 		$tasks = $WorkFlowTasksFileHandler->getWorkflowData();
 		
-		$this->tasks = array("containers" => $tasks["containers"]);
+		$this->tasks = array(
+			"containers" => isset($tasks["containers"]) ? $tasks["containers"] : null
+		);
 		
-		foreach ($tasks["tasks"] as $task_id => $task)
-			$this->tasks["tasks"][ $task["label"] ] = $task;
+		if (!empty($tasks["tasks"]))
+			foreach ($tasks["tasks"] as $task_id => $task)
+				$this->tasks["tasks"][ $task["label"] ] = $task;
 		
 		$this->foreign_keys = WorkFlowDBHandler::getTablesForeignKeys($this->tasks["tasks"]);
 		//print_r($this->foreign_keys);
@@ -30,8 +33,10 @@ class WorkFlowDataAccessHandler {
 		$this->tasks = $tasks;
 		
 		$tasks = array();
-		foreach ($this->tasks["tasks"] as $task_id => $task) {
-			$tasks[ $task["label"] ] = $task;
+		
+		if (!empty($this->tasks["tasks"]))
+			foreach ($this->tasks["tasks"] as $task_id => $task) {
+				$tasks[ $task["label"] ] = $task;
 		}
 		$this->tasks["tasks"] = $tasks;
 		
@@ -48,7 +53,7 @@ class WorkFlowDataAccessHandler {
 	}
 	
 	public function getTasksAsTables() {
-		$tasks = $this->tasks && $this->tasks["tasks"] ? $this->tasks["tasks"] : array();
+		$tasks = $this->tasks && !empty($this->tasks["tasks"]) ? $this->tasks["tasks"] : array();
 		
 		return WorkFlowDBHandler::getTasksAsTables($tasks);
 	}
@@ -57,7 +62,7 @@ class WorkFlowDataAccessHandler {
 		$props = array();
 		
 		preg_match_all("/([\"']?)" . HashTagParameter::SQL_HASH_TAG_PARAMETER_PARTIAL_REGEX . "([\"']?)/u", $sql, $out); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars.
-		$out = $out[0];
+		$out = isset($out[0]) ? $out[0] : null;
 		
 		$t = count($out);
 		for ($i = 0; $i < $t; $i++) {
@@ -79,7 +84,7 @@ class WorkFlowDataAccessHandler {
 		if (!empty($xml_content)) {
 			$arr = self::getXmlContentArray($xml_content);
 			
-			return $arr["sql_mapping"][0]["childs"]["import"];
+			return isset($arr["sql_mapping"][0]["childs"]["import"]) ? $arr["sql_mapping"][0]["childs"]["import"] : null;
 		}
 		
 		return false;
@@ -95,19 +100,22 @@ class WorkFlowDataAccessHandler {
 			if (!empty($xml_content)) {
 				$arr = self::getXmlContentArray($xml_content);
 				
-				$classes = $arr["sql_mapping"][0]["childs"]["class"];
+				$classes = isset($arr["sql_mapping"][0]["childs"]["class"]) ? $arr["sql_mapping"][0]["childs"]["class"] : null;
 				
 				if ($classes) {
 					$t = count($classes);
-					for ($i = 0; $i < $t; $i++)
-						if ($classes[$i]["@"]["name"] == $obj_id) {
+					for ($i = 0; $i < $t; $i++) {
+						$class_obj_id = isset($classes[$i]["@"]["name"]) ? $classes[$i]["@"]["name"] : null;
+						
+						if ($class_obj_id == $obj_id) {
 							$obj_data = $classes[$i];
 							
-							$obj_data["childs"]["relationships"] = XMLFileParser::combineMultipleNodesInASingleNode($obj_data["childs"]["relationships"]);
-							$obj_data["childs"]["queries"] = XMLFileParser::combineMultipleNodesInASingleNode($obj_data["childs"]["queries"]);
+							$obj_data["childs"]["relationships"] = XMLFileParser::combineMultipleNodesInASingleNode(isset($obj_data["childs"]["relationships"]) ? $obj_data["childs"]["relationships"] : null);
+							$obj_data["childs"]["queries"] = XMLFileParser::combineMultipleNodesInASingleNode(isset($obj_data["childs"]["queries"]) ? $obj_data["childs"]["queries"] : null);
 							
 							return $obj_data;
 						}
+					}
 				}
 			}
 		}
@@ -123,21 +131,24 @@ class WorkFlowDataAccessHandler {
 			
 			$arr = self::getXmlContentArray($xml_content);
 			
-			$classes = $arr["sql_mapping"][0]["childs"]["class"];
+			$classes = isset($arr["sql_mapping"][0]["childs"]["class"]) ? $arr["sql_mapping"][0]["childs"]["class"] : null;
 			
 			if ($classes) {
 				$t = count($classes);
-				for ($i = 0; $i < $t; $i++)
-					if ($classes[$i]["@"]["name"] == $obj_id) {
+				for ($i = 0; $i < $t; $i++) {
+					$class_obj_id = isset($classes[$i]["@"]["name"]) ? $classes[$i]["@"]["name"] : null;
+					
+					if ($class_obj_id == $obj_id) {
 						$obj_data = $classes[$i];
 						
-						$nodes = XMLFileParser::combineMultipleNodesInASingleNode($obj_data["childs"][$relationship_type]);
-						$nodes_types = $nodes[0]["childs"];
+						$nodes = XMLFileParser::combineMultipleNodesInASingleNode(isset($obj_data["childs"][$relationship_type]) ? $obj_data["childs"][$relationship_type] : null);
+						$nodes_types = isset($nodes[0]["childs"]) ? $nodes[0]["childs"] : null;
 						
 						$available_types = $available_types ? $available_types : array("insert", "update", "delete", "select", "procedure", "parameter_map", "result_map", "one_to_one", "one_to_many", "many_to_one", "many_to_many");
 						
 						return self::getDataAccessObjFromData($nodes_types, $query_or_map_id, $available_types);
 					}
+				}
 			}
 		}
 		
@@ -151,9 +162,9 @@ class WorkFlowDataAccessHandler {
 			$arr = self::getXmlContentArray($xml_content);
 			
 			$keys = array_keys($arr);
-			$first_key = $keys[0];
+			$first_key = isset($keys[0]) ? $keys[0] : null;
 			
-			$nodes_types = $arr[$first_key][0]["childs"];
+			$nodes_types = isset($arr[$first_key][0]["childs"]) ? $arr[$first_key][0]["childs"] : null;
 			
 			$available_types = $available_types ? $available_types : array("insert", "update", "delete", "select", "procedure", "parameter_map", "result_map", "one_to_one", "one_to_many", "many_to_one", "many_to_many");
 					
@@ -169,7 +180,7 @@ class WorkFlowDataAccessHandler {
 				if ($items && (empty($available_types) || in_array($type, $available_types))) {
 					$t = count($items);
 					for ($j = 0; $j < $t; $j++) {
-						$id = $items[$j]["@"]["id"] ? $items[$j]["@"]["id"] : $items[$j]["@"]["name"];
+						$id = !empty($items[$j]["@"]["id"]) ? $items[$j]["@"]["id"] : (isset($items[$j]["@"]["name"]) ? $items[$j]["@"]["name"] : null);
 						
 						if ($id == $obj_id) {
 							return $items[$j];
@@ -194,8 +205,11 @@ class WorkFlowDataAccessHandler {
 		if ($nodes) {
 			foreach ($nodes as $node_id => $node) {
 				if ($node_id != "properties") {
-					if ($node["properties"]["item_type"] == $type) {
-						$path_parts = pathinfo($node["properties"]["path"]);
+					$node_type = isset($node["properties"]["item_type"]) ? $node["properties"]["item_type"] : null;
+					
+					if ($node_type == $type) {
+						$node_path = isset($node["properties"]["path"]) ? $node["properties"]["path"] : null;
+						$path_parts = pathinfo($node_path);
 						
 						$daos[] = "vendor.dao." . str_replace("/", ".", $path_parts["dirname"] . "/" . $path_parts["filename"]);
 					}
@@ -221,12 +235,12 @@ class WorkFlowDataAccessHandler {
 		$value = XMLFileParser::getAttribute($node, $attr_name);
 		
 		if (!isset($value) && isset($node["childs"]) && isset($node["childs"][$attr_name])) {
-			$value = XMLFileParser::getAttribute($node["childs"][$attr_name][0], $attr_type);
+			$value = XMLFileParser::getAttribute(isset($node["childs"][$attr_name][0]) ? $node["childs"][$attr_name][0] : null, $attr_type);
 		}
 		
 		//in case of the Hibernate object:
 		//	<condition column="object_type"><![CDATA[#object_type#]]></condition>
-		if ($attr_name == "value" && $node["value"]) {
+		if ($attr_name == "value" && !empty($node["value"])) {
 			return $node["value"];
 		}
 		
@@ -241,9 +255,9 @@ class WorkFlowDataAccessHandler {
 			$arr = self::getXmlContentArray($xml_content);
 			
 			$keys = array_keys($arr);
-			$first_key = $keys[0];
+			$first_key = isset($keys[0]) ? $keys[0] : null;
 			
-			$imports = $data["queries"][0]["childs"]["import"];
+			$imports = isset($data["queries"][0]["childs"]["import"]) ? $data["queries"][0]["childs"]["import"] : null;
 			if ($imports) {
 				$arr[$first_key][0]["childs"]["import"] = $imports;
 			}
@@ -265,7 +279,7 @@ class WorkFlowDataAccessHandler {
 		$status = false;
 		
 		if ($file_path) {
-			$obj_id = $hbn_obj_id ? $hbn_obj_id : $data["class"][0]["@"]["name"];
+			$obj_id = $hbn_obj_id ? $hbn_obj_id : (isset($data["class"][0]["@"]["name"]) ? $data["class"][0]["@"]["name"] : null);
 			$obj_exists = self::getXmlHibernateObjData($file_path, $obj_id);
 			
 			$obj_id = $obj_exists && !$overwrite ? $obj_id . "_" . rand(0, 1000) : $obj_id;
@@ -277,14 +291,16 @@ class WorkFlowDataAccessHandler {
 				$xml_content = file_get_contents($file_path);
 				$arr = self::getXmlContentArray($xml_content);
 				
-				$classes = $arr["sql_mapping"][0]["childs"]["class"];
+				$classes = isset($arr["sql_mapping"][0]["childs"]["class"]) ? $arr["sql_mapping"][0]["childs"]["class"] : null;
 				$new_classes = array();
 				
 				if ($classes) {
 					$t = count($classes);
 					for ($i = 0; $i < $t; $i++) {
-						if ($classes[$i]["@"]["name"] == $obj_id) {
-							$new_class = $data["class"][0];
+						$class_obj_name = isset($classes[$i]["@"]["name"]) ? $classes[$i]["@"]["name"] : null;
+						
+						if ($class_obj_name == $obj_id) {
+							$new_class = isset($data["class"][0]) ? $data["class"][0] : null;
 							
 							if ($new_class) {
 								$new_classes[] = $new_class;
@@ -354,7 +370,7 @@ class WorkFlowDataAccessHandler {
 		if ($file_path && file_exists($file_path) && $hbn_obj_id) {
 			$relationship_type = $relationship_type ? $relationship_type : "queries";
 			
-			$oarr = $data["queries"][0]["childs"] ? $data["queries"][0]["childs"] : array();
+			$oarr = !empty($data["queries"][0]["childs"]) ? $data["queries"][0]["childs"] : array();
 			
 			if (!$nodes_ids) {
 				$nodes_ids = array();
@@ -362,7 +378,7 @@ class WorkFlowDataAccessHandler {
 					if ($nodes) {
 						$t = count($nodes);
 						for ($i = 0; $i < $t; $i++) {
-							$node_id = $nodes[$i]["@"]["id"] ? $nodes[$i]["@"]["id"] : $nodes[$i]["@"]["name"];
+							$node_id = !empty($nodes[$i]["@"]["id"]) ? $nodes[$i]["@"]["id"] : (isset($nodes[$i]["@"]["name"]) ? $nodes[$i]["@"]["name"] : null);
 							$nodes_ids[$node_type][$node_id] = $i;
 						}
 					}
@@ -372,15 +388,17 @@ class WorkFlowDataAccessHandler {
 				$xml_content = file_get_contents($file_path);
 				$arr = self::getXmlContentArray($xml_content);
 				
-				$classes = $arr["sql_mapping"][0]["childs"]["class"];
+				$classes = isset($arr["sql_mapping"][0]["childs"]["class"]) ? $arr["sql_mapping"][0]["childs"]["class"] : null;
 				
 				if ($classes) {
 					$t = count($classes);
 					for ($i = 0; $i < $t; $i++) {
-						if ($classes[$i]["@"]["name"] == $hbn_obj_id) {
-							$hbn_obj = $arr["sql_mapping"][0]["childs"]["class"][$i];
-							$hbn_obj_nodes = $hbn_obj["childs"][$relationship_type][0]["childs"];
-					
+						$class_obj_name = isset($classes[$i]["@"]["name"]) ? $classes[$i]["@"]["name"] : null;
+						
+						if ($class_obj_name == $hbn_obj_id) {
+							$hbn_obj = isset($arr["sql_mapping"][0]["childs"]["class"][$i]) ? $arr["sql_mapping"][0]["childs"]["class"][$i] : null;
+							$hbn_obj_nodes = isset($hbn_obj["childs"][$relationship_type][0]["childs"]) ? $hbn_obj["childs"][$relationship_type][0]["childs"] : null;
+							
 							if ($hbn_obj_nodes) {
 								foreach ($hbn_obj_nodes as $node_type => $nodes) {
 									$new_nodes = array();
@@ -389,12 +407,12 @@ class WorkFlowDataAccessHandler {
 										$t2 = count($nodes);
 										for ($j = 0; $j < $t2; $j++) {
 											$node = $nodes[$j];
-											$node_id = $node["@"]["id"] ? $node["@"]["id"] : $node["@"]["name"];
+											$node_id = !empty($node["@"]["id"]) ? $node["@"]["id"] : (isset($node["@"]["name"]) ? $node["@"]["name"] : null);
 											
 											if ($node_id && isset($nodes_ids[$node_type][$node_id])) {
 												$idx = $nodes_ids[$node_type][$node_id];
 												
-												$new_node = $oarr[$node_type][$idx];
+												$new_node = isset($oarr[$node_type][$idx]) ? $oarr[$node_type][$idx] : null;
 												if ($new_node)
 													$new_nodes[] = $new_node;
 												
@@ -411,7 +429,7 @@ class WorkFlowDataAccessHandler {
 							
 							foreach ($nodes_ids as $node_type => $rs)
 								foreach ($rs as $node_id => $idx) {
-									$new_node = $oarr[$node_type][$idx];
+									$new_node = isset($oarr[$node_type][$idx]) ? $oarr[$node_type][$idx] : null;
 									if ($new_node)
 										$hbn_obj_nodes[$node_type][] = $new_node;
 								}
@@ -437,7 +455,7 @@ class WorkFlowDataAccessHandler {
 		$status = false;
 		
 		if ($file_path) {
-			$oarr = $data["queries"][0]["childs"] ? $data["queries"][0]["childs"] : array();
+			$oarr = !empty($data["queries"][0]["childs"]) ? $data["queries"][0]["childs"] : array();
 			
 			$first_key = $import_tag ? "import" : "sql_mapping";//This works for the SQL_MAPPING and IMPORT tags. This works for the import files or the ibatis files
 			
@@ -451,7 +469,7 @@ class WorkFlowDataAccessHandler {
 						if ($nodes) {
 							$t = count($nodes);
 							for ($i = 0; $i < $t; $i++) {
-								$node_id = $nodes[$i]["@"]["id"] ? $nodes[$i]["@"]["id"] : $nodes[$i]["@"]["name"];
+								$node_id = !empty($nodes[$i]["@"]["id"]) ? $nodes[$i]["@"]["id"] : $nodes[$i]["@"]["name"];
 								$nodes_ids[$node_type][$node_id] = $i;
 							}
 						}
@@ -461,7 +479,7 @@ class WorkFlowDataAccessHandler {
 					$xml_content = file_get_contents($file_path);
 					$arr = self::getXmlContentArray($xml_content);
 					
-					if ($arr[$first_key][0]["childs"]) 
+					if (!empty($arr[$first_key][0]["childs"])) 
 						foreach ($arr[$first_key][0]["childs"] as $node_type => $nodes) {
 							$new_nodes = array();
 							
@@ -469,12 +487,12 @@ class WorkFlowDataAccessHandler {
 								$t = count($nodes);
 								for ($i = 0; $i < $t; $i++) {
 									$node = $nodes[$i];
-									$node_id = $node["@"]["id"] ? $node["@"]["id"] : $node["@"]["name"];
+									$node_id = !empty($node["@"]["id"]) ? $node["@"]["id"] : (!empty($node["@"]["name"]) ? $node["@"]["name"] : null);
 							
 									if ($node_id && isset($nodes_ids[$node_type][$node_id])) {
 										$idx = $nodes_ids[$node_type][$node_id];
 									
-										$new_node = $oarr[$node_type][$idx];
+										$new_node = isset($oarr[$node_type][$idx]) ? $oarr[$node_type][$idx] : null;
 										if ($new_node) 
 											$new_nodes[] = $new_node;
 									
@@ -490,7 +508,7 @@ class WorkFlowDataAccessHandler {
 					
 					foreach ($nodes_ids as $node_type => $rs)
 						foreach ($rs as $node_id => $idx) {
-							$new_node = $oarr[$node_type][$idx];
+							$new_node = isset($oarr[$node_type][$idx]) ? $oarr[$node_type][$idx] : null;
 							if ($new_node)
 								$arr[$first_key][0]["childs"][$node_type][] = $new_node;
 						}
@@ -568,164 +586,171 @@ class WorkFlowDataAccessHandler {
 	private function getHibernateObjectFromDBTaskFlow($task, $obj_id, $with_maps) {
 		$xml = '';
 		
-		if (!empty($task)) {
-			if (strtolower($task["tag"] == "table")) {
-				$properties = $task["properties"];
-				
-				$table_name = $task["label"];
-				
-				$table_attr_primary_keys = $properties["table_attr_primary_keys"];
-				$table_attr_names = $properties["table_attr_names"];
-				$table_attr_types = $properties["table_attr_types"];
-				$table_attr_lengths = $properties["table_attr_lengths"];
-				$table_attr_nulls = $properties["table_attr_nulls"];
-				$table_attr_unsigneds = $properties["table_attr_unsigneds"];
-				$table_attr_uniques = $properties["table_attr_uniques"];
-				$table_attr_auto_increments = $properties["table_attr_auto_increments"];
-				$table_attr_has_defaults = $properties["table_attr_has_defaults"];
-				$table_attr_defaults = $properties["table_attr_defaults"];
-				$table_attr_extras = $properties["table_attr_extras"];
-				$table_attr_charsets = $properties["table_attr_charsets"];
-				$table_attr_comments = $properties["table_attr_comments"];
-				
-				$foreign_keys = WorkFlowDBHandler::getTableFromTables($this->foreign_keys, $table_name);
-				
-				$xml .= '
+		if (!empty($task) && isset($task["tag"]) && strtolower($task["tag"] == "table")) {
+			$properties = isset($task["properties"]) ? $task["properties"] : null;
+			$table_name = isset($task["label"]) ? $task["label"] : null;
+			
+			$table_attr_primary_keys = isset($properties["table_attr_primary_keys"]) ? $properties["table_attr_primary_keys"] : null;
+			$table_attr_names = isset($properties["table_attr_names"]) ? $properties["table_attr_names"] : null;
+			$table_attr_types = isset($properties["table_attr_types"]) ? $properties["table_attr_types"] : null;
+			$table_attr_lengths = isset($properties["table_attr_lengths"]) ? $properties["table_attr_lengths"] : null;
+			$table_attr_nulls = isset($properties["table_attr_nulls"]) ? $properties["table_attr_nulls"] : null;
+			$table_attr_unsigneds = isset($properties["table_attr_unsigneds"]) ? $properties["table_attr_unsigneds"] : null;
+			$table_attr_uniques = isset($properties["table_attr_uniques"]) ? $properties["table_attr_uniques"] : null;
+			$table_attr_auto_increments = isset($properties["table_attr_auto_increments"]) ? $properties["table_attr_auto_increments"] : null;
+			$table_attr_has_defaults = isset($properties["table_attr_has_defaults"]) ? $properties["table_attr_has_defaults"] : null;
+			$table_attr_defaults = isset($properties["table_attr_defaults"]) ? $properties["table_attr_defaults"] : null;
+			$table_attr_extras = isset($properties["table_attr_extras"]) ? $properties["table_attr_extras"] : null;
+			$table_attr_charsets = isset($properties["table_attr_charsets"]) ? $properties["table_attr_charsets"] : null;
+			$table_attr_comments = isset($properties["table_attr_comments"]) ? $properties["table_attr_comments"] : null;
+			
+			$foreign_keys = WorkFlowDBHandler::getTableFromTables($this->foreign_keys, $table_name);
+			
+			$xml .= '
 	<class name="' . $obj_id . '" table="' . $table_name . '">';
-				
-				if ($table_attr_names) {
-					$t = count($table_attr_names);
-					for ($i = 0; $i < $t; $i++) {
-						$attr_name = $table_attr_names[$i];
-						$attr_type = strtolower($table_attr_types[$i]);
+			
+			if ($table_attr_names) {
+				$t = count($table_attr_names);
+				for ($i = 0; $i < $t; $i++) {
+					$attr_name = $table_attr_names[$i];
+					$attr_type = isset($table_attr_types[$i]) ? strtolower($table_attr_types[$i]) : "";
+					
+					$is_pk = isset($table_attr_primary_keys[$i]) && (strtolower($table_attr_primary_keys[$i]) == "true" || $table_attr_primary_keys[$i] == "1");
+					
+					if ($is_pk) {
+						$is_auto_increment = isset($table_attr_auto_increments[$i]) && (strtolower($table_attr_auto_increments[$i]) == "true" || $table_attr_auto_increments[$i] == "1");
+						$is_auto_increment = self::isAutoIncrementedAttribute(array(
+							"type" => $attr_type, 
+							"extra" => isset($table_attr_extras[$i]) ? $table_attr_extras[$i] : null, 
+							"auto_increment" => $is_auto_increment
+						));
 						
-						$is_pk = strtolower($table_attr_primary_keys[$i]) == "true" || $table_attr_primary_keys[$i] == "1";
-						
-						if ($is_pk) {
-							$is_auto_increment = strtolower($table_attr_auto_increments[$i]) == "true" || $table_attr_auto_increments[$i] == "1";
-							$is_auto_increment = self::isAutoIncrementedAttribute(array("type" => $attr_type, "extra" => $table_attr_extras[$i], "auto_increment" => $is_auto_increment));
-							
-							if ($is_auto_increment)
-								$xml .= '
+						if ($is_auto_increment)
+							$xml .= '
 			<id column="' . $attr_name . '" />
 			';
-							else
-								$xml .= '
+						else
+							$xml .= '
 			<id column="' . $attr_name . '">
 				<generator type="increment" />
 			</id>
 			';
-						}
 					}
 				}
+			}
+			
+			if ($with_maps) {
+				$xml .= self::getTableParameterMap($table_attr_names, $table_attr_types, self::getVarName($table_name) . "ParameterMap", "\t");
+				$xml .= self::getTableResultMap($table_attr_names, $table_attr_types, self::getVarName($table_name) . "ResultMap", "\t");
+			}
+			
+			if (!empty($foreign_keys)) {
+				$xml .= '
+		<relationships>';
+				
+				$types = array_flip(WorkFlowDBHandler::getTablesConnectionTypes());
 				
 				if ($with_maps) {
-					$xml .= self::getTableParameterMap($table_attr_names, $table_attr_types, self::getVarName($table_name) . "ParameterMap", "\t");
-					$xml .= self::getTableResultMap($table_attr_names, $table_attr_types, self::getVarName($table_name) . "ResultMap", "\t");
-				}
-				
-				if (!empty($foreign_keys)) {
-					$xml .= '
-		<relationships>';
-					
-					$types = array_flip(WorkFlowDBHandler::getTablesConnectionTypes());
-					
-					if ($with_maps) {
-						$foreign_table_names = array();
-						$t = count($foreign_keys);
-						for ($j = 0; $j < $t; $j++) {
-							$relationship = $foreign_keys[$j];
-						
-							$foreign_table_names[] = $relationship["child_table"] == $table_name ? $relationship["parent_table"] : $relationship["child_table"];
-						}
-					
-						$foreign_table_names = array_unique($foreign_table_names);
-						$t = count($foreign_table_names);
-						for ($j = 0; $j < $t; $j++) {
-							$foreign_table_name = $foreign_table_names[$j];
-						
-							$result_map_id = self::getVarName($foreign_table_name) . "ResultMap";
-							
-							$foreign_task = $this->tasks["tasks"][$foreign_table_name];
-							
-							$xml .= self::getTableResultMap($foreign_task["properties"]["table_attr_names"], $foreign_task["properties"]["table_attr_types"], $result_map_id, "\t\t");
-						}
-					}
-								
-					$t = count($foreign_keys);	
+					$foreign_table_names = array();
+					$t = count($foreign_keys);
 					for ($j = 0; $j < $t; $j++) {
 						$relationship = $foreign_keys[$j];
+						$child_table = isset($relationship["child_table"]) ? $relationship["child_table"] : null;
+						$parent_table = isset($relationship["parent_table"]) ? $relationship["parent_table"] : null;
 						
-						$type = $relationship["type"];
-						$relationship_node_name = $types[$type];
-						
-						if ($relationship_node_name) {
-							$relationship_node_name = str_replace(" ", "_", strtolower($relationship_node_name));
-							
-							$foreign_table_name = $relationship["child_table"] == $table_name ? $relationship["parent_table"] : $relationship["child_table"];
-							
-							$result_map_id = $with_maps ? self::getVarName($foreign_table_name) . "ResultMap" : null;
-							
-							$table_alias = $task["alias"];
-							$foreign_table_alias = $this->tasks["tasks"][$foreign_table_name]["alias"];
-							$name = self::getForeignTableQueryName($table_alias ? $table_alias : $table_name, $foreign_table_alias ? $foreign_table_alias : $foreign_table_name, $type);
-							$name = $name ? substr($name, strlen("get_")) : $name;//remove get_
-							
-							$xml_pks = '';
-							
-							if ($relationship["keys"]) {
-								$t2 = count($relationship["keys"]);
-								for ($w = 0; $w < $t2; $w++) {
-									$r = $relationship["keys"][$w];
-									$ftable = $foreign_table_name;
-									
-									if ($relationship["child_table"] == $table_name) {
-										$pcolumn = $r["child"];
-										$fcolumn = $r["parent"];
-									}
-									else {
-										$pcolumn = $r["parent"];
-										$fcolumn = $r["child"];
-									}
-									
-									$xml_pks .= '
-					<key pcolumn="' . $pcolumn . '" fcolumn="' . $fcolumn . '" ftable="' . $ftable . '" />';
-								}
-							}
-								
-							$attrs = WorkFlowDBHandler::getTableAttributes($this->tasks["tasks"], $foreign_table_name);
-							
-							$xml_attrs = '';
-							
-							if ($attrs) {
-								$t2 = count($attrs);
-								for ($w = 0; $w < $t2; $w++)
-									$xml_attrs .= '
-					<attribute column="' . $attrs[$w] . '" table="' . $foreign_table_name . '" />';
-							}
-							
-							$result_map_xml = $result_map_id ? " result_map=\"" . $result_map_id . "\"" : "";
-							
-							$xml .= "
-			<$relationship_node_name name=\"$name\"$result_map_xml>$xml_pks\n$xml_attrs
-			</$relationship_node_name>\n";
-						} 
+						$foreign_table_names[] = $relationship["child_table"] == $table_name ? $parent_table : $child_table;
 					}
+				
+					$foreign_table_names = array_unique($foreign_table_names);
+					$t = count($foreign_table_names);
+					for ($j = 0; $j < $t; $j++) {
+						$foreign_table_name = $foreign_table_names[$j];
 					
-					$xml .= '
-		</relationships>
-		';
+						$result_map_id = self::getVarName($foreign_table_name) . "ResultMap";
+						
+						$foreign_task = isset($this->tasks["tasks"][$foreign_table_name]) ? $this->tasks["tasks"][$foreign_table_name] : null;
+						$foreign_table_attr_names = isset($foreign_task["properties"]["table_attr_names"]) ? $foreign_task["properties"]["table_attr_names"] : null;
+						$foreign_table_attr_types = isset($foreign_task["properties"]["table_attr_types"]) ? $foreign_task["properties"]["table_attr_types"] : null;
+						
+						$xml .= self::getTableResultMap($foreign_table_attr_names, $foreign_table_attr_types, $result_map_id, "\t\t");
+					}
 				}
 				
-				$xml .= "
+				$t = count($foreign_keys);	
+				for ($j = 0; $j < $t; $j++) {
+					$relationship = $foreign_keys[$j];
+					
+					$type = isset($relationship["type"]) ? $relationship["type"] : null;
+					$relationship_node_name = $types[$type];
+					
+					if ($relationship_node_name) {
+						$relationship_node_name = str_replace(" ", "_", strtolower($relationship_node_name));
+						
+						$relationship_child_table = isset($relationship["child_table"]) ? $relationship["child_table"] : null;
+						$relationship_parent_table = isset($relationship["parent_table"]) ? $relationship["parent_table"] : null;
+						$foreign_table_name = $relationship_child_table == $table_name ? $relationship_parent_table : $relationship_child_table;
+						
+						$result_map_id = $with_maps ? self::getVarName($foreign_table_name) . "ResultMap" : null;
+						
+						$table_alias = isset($task["alias"]) ? $task["alias"] : null;
+						$foreign_table_alias = isset($this->tasks["tasks"][$foreign_table_name]["alias"]) ? $this->tasks["tasks"][$foreign_table_name]["alias"] : null;
+						$name = self::getForeignTableQueryName($table_alias ? $table_alias : $table_name, $foreign_table_alias ? $foreign_table_alias : $foreign_table_name, $type);
+						$name = $name ? substr($name, strlen("get_")) : $name;//remove get_
+						
+						$xml_pks = '';
+						
+						if (!empty($relationship["keys"])) {
+							$t2 = count($relationship["keys"]);
+							for ($w = 0; $w < $t2; $w++) {
+								$r = $relationship["keys"][$w];
+								$ftable = $foreign_table_name;
+								
+								if ($relationship_child_table == $table_name) {
+									$pcolumn = isset($r["child"]) ? $r["child"] : null;
+									$fcolumn = isset($r["parent"]) ? $r["parent"] : null;
+								}
+								else {
+									$pcolumn = isset($r["parent"]) ? $r["parent"] : null;
+									$fcolumn = isset($r["child"]) ? $r["child"] : null;
+								}
+								
+								$xml_pks .= '
+					<key pcolumn="' . $pcolumn . '" fcolumn="' . $fcolumn . '" ftable="' . $ftable . '" />';
+							}
+						}
+							
+						$attrs = WorkFlowDBHandler::getTableAttributes($this->tasks["tasks"], $foreign_table_name);
+						
+						$xml_attrs = '';
+						
+						if ($attrs) {
+							$t2 = count($attrs);
+							for ($w = 0; $w < $t2; $w++)
+								$xml_attrs .= '
+					<attribute column="' . $attrs[$w] . '" table="' . $foreign_table_name . '" />';
+						}
+						
+						$result_map_xml = $result_map_id ? " result_map=\"" . $result_map_id . "\"" : "";
+						
+						$xml .= "
+			<$relationship_node_name name=\"$name\"$result_map_xml>$xml_pks\n$xml_attrs
+			</$relationship_node_name>\n";
+					} 
+				}
+				
+				$xml .= '
+		</relationships>
+		';
+			}
+			
+			$xml .= "
 		<queries>
 			<!-- You can insert here new sql queries... -->
 		" . /*$this->getTableQueriesFromDBTaskFlow($task, $with_maps, "\t\t") .*/ "
 		</queries>";
 				
-				$xml .= '
+			$xml .= '
 	</class>';
-			}
 		}
 		
 		return $xml;
@@ -734,144 +759,143 @@ class WorkFlowDataAccessHandler {
 	private function getTableQueriesFromDBTaskFlow($task, $with_maps, $prefix_tab = false) {
 		$xml = '';
 		
-		if (!empty($task)) {
-			if (strtolower($task["tag"] == "table")) {
-				$properties = $task["properties"];
+		if (!empty($task) && isset($task["tag"]) && strtolower($task["tag"] == "table")) {
+			$properties = $task["properties"];
+			
+			$table_name = $task["label"];
+			$table_alias = $task["alias"];
+			$query_id = str_replace(array(" ", "."), "_", strtolower($table_alias ? $table_alias : $table_name)); //"." bc the table_name can have the schema
+			
+			$table_attr_names = $properties["table_attr_names"];
+			if ($table_attr_names) {
+				$numeric_types = ObjTypeHandler::getDBNumericTypes();
+				$table_attr_primary_keys = $properties["table_attr_primary_keys"];
+				$table_attr_types = $properties["table_attr_types"];
+				$table_attr_auto_increments = $properties["table_attr_auto_increments"];
+				$table_attr_extras = $properties["table_attr_extras"];
 				
-				$table_name = $task["label"];
-				$table_alias = $task["alias"];
-				$query_id = str_replace(array(" ", "."), "_", strtolower($table_alias ? $table_alias : $table_name)); //"." bc the table_name can have the schema
+				//check if table contains any pk
+				$no_pks = true;
+				$t = count($table_attr_primary_keys);
 				
-				$table_attr_names = $properties["table_attr_names"];
-				if ($table_attr_names) {
-					$numeric_types = ObjTypeHandler::getDBNumericTypes();
-					$table_attr_primary_keys = $properties["table_attr_primary_keys"];
-					$table_attr_types = $properties["table_attr_types"];
-					$table_attr_auto_increments = $properties["table_attr_auto_increments"];
-					$table_attr_extras = $properties["table_attr_extras"];
+				for ($i = 0; $i < $t; $i++) {
+					$is_pk = $table_attr_primary_keys[$i];
+					$is_pk = $is_pk && ($is_pk == "1" || strtolower($is_pk) == "true");
 					
-					//check if table contains any pk
-					$no_pks = true;
-					$t = count($table_attr_primary_keys);
-					
-					for ($i = 0; $i < $t; $i++) {
-						$is_pk = $table_attr_primary_keys[$i];
-						$is_pk = $is_pk && ($is_pk == "1" || strtolower($is_pk) == "true");
-						
-						if ($is_pk) {
-							$no_pks = false;
-							break;
-						}
+					if ($is_pk) {
+						$no_pks = false;
+						break;
 					}
+				}
+				
+				//prepare sqls
+				$insert_attributes = $insert_with_ai_pk_attributes = $update_attributes = $update_all_attributes = $update_pks_attributes = $update_pks_conditions = $update_conditions = $conditions = $columns = array();
+				$t = count($table_attr_names);
+				
+				for ($i = 0; $i < $t; $i++) {
+					$attr_name = $table_attr_names[$i];
+					$is_pk = $table_attr_primary_keys[$i];
+					$is_pk = $is_pk && ($is_pk == "1" || strtolower($is_pk) == "true");
 					
-					//prepare sqls
-					$insert_attributes = $insert_with_ai_pk_attributes = $update_attributes = $update_all_attributes = $update_pks_attributes = $update_pks_conditions = $update_conditions = $conditions = $columns = array();
-					$t = count($table_attr_names);
+					$is_auto_increment = $table_attr_auto_increments[$i];
+					$is_auto_increment = $is_auto_increment == "1" || strtolower($is_auto_increment) == "true";
 					
-					for ($i = 0; $i < $t; $i++) {
-						$attr_name = $table_attr_names[$i];
-						$is_pk = $table_attr_primary_keys[$i];
-						$is_pk = $is_pk && ($is_pk == "1" || strtolower($is_pk) == "true");
+					$columns[$attr_name] = $attr_name;
+					
+					$insert_with_ai_pk_attributes[$attr_name] = "#$attr_name#"; //includes all attributes, including the auto_increment keys. This gives the change to the user to hard code the primary keys.
+					
+					if (!$is_pk || !self::isAutoIncrementedAttribute(array("type" => $table_attr_types[$i], "extra" => $table_attr_extras[$i], "auto_increment" => $is_auto_increment))) //This will not include the auto_increment keys, bc the DB will take care then automatically.
+						$insert_attributes[$attr_name] = "#$attr_name#";
+					
+					if ($is_pk) {
+						$conditions[$attr_name] = "#$attr_name#";
+						$update_conditions[$attr_name] = "#$attr_name#";
+						$update_pks_attributes[$attr_name] = "#new_$attr_name#";
+						$update_pks_conditions[$attr_name] = "#old_$attr_name#";
+					}
+					else if (!ObjTypeHandler::isDBAttributeNameACreatedDate($attr_name) && !ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name)) { //if attr_name == created_date, ignore it, because we don't want to update this attr. The attr created_date is only changed in the insert query.
+						$update_attributes[$attr_name] = "#$attr_name#";
+						$update_all_attributes[$attr_name] = "#$attr_name#";
 						
-						$is_auto_increment = $table_attr_auto_increments[$i];
-						$is_auto_increment = $is_auto_increment == "1" || strtolower($is_auto_increment) == "true";
-						
-						$columns[$attr_name] = $attr_name;
-						
-						$insert_with_ai_pk_attributes[$attr_name] = "#$attr_name#"; //includes all attributes, including the auto_increment keys. This gives the change to the user to hard code the primary keys.
-						
-						if (!$is_pk || !self::isAutoIncrementedAttribute(array("type" => $table_attr_types[$i], "extra" => $table_attr_extras[$i], "auto_increment" => $is_auto_increment))) //This will not include the auto_increment keys, bc the DB will take care then automatically.
-							$insert_attributes[$attr_name] = "#$attr_name#";
-						
-						if ($is_pk) {
+						if ($no_pks && !ObjTypeHandler::isDBAttributeNameAModifiedDate($attr_name) && !ObjTypeHandler::isDBAttributeNameAModifiedUserId($attr_name)) {
 							$conditions[$attr_name] = "#$attr_name#";
-							$update_conditions[$attr_name] = "#$attr_name#";
+							$update_conditions[$attr_name] = "#old_$attr_name#";
+							$update_attributes[$attr_name] = "#new_$attr_name#";
 							$update_pks_attributes[$attr_name] = "#new_$attr_name#";
 							$update_pks_conditions[$attr_name] = "#old_$attr_name#";
 						}
-						else if (!ObjTypeHandler::isDBAttributeNameACreatedDate($attr_name) && !ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name)) { //if attr_name == created_date, ignore it, because we don't want to update this attr. The attr created_date is only changed in the insert query.
-							$update_attributes[$attr_name] = "#$attr_name#";
-							$update_all_attributes[$attr_name] = "#$attr_name#";
-							
-							if ($no_pks && !ObjTypeHandler::isDBAttributeNameAModifiedDate($attr_name) && !ObjTypeHandler::isDBAttributeNameAModifiedUserId($attr_name)) {
-								$conditions[$attr_name] = "#$attr_name#";
-								$update_conditions[$attr_name] = "#old_$attr_name#";
-								$update_attributes[$attr_name] = "#new_$attr_name#";
-								$update_pks_attributes[$attr_name] = "#new_$attr_name#";
-								$update_pks_conditions[$attr_name] = "#old_$attr_name#";
-							}
+					}
+				}
+				
+				$insert_sql = DB::buildDefaultTableInsertSQL($table_name, $insert_attributes);
+				$insert_with_ai_pk_sql = DB::buildDefaultTableInsertSQL($table_name, $insert_with_ai_pk_attributes);
+				$update_sql = DB::buildDefaultTableUpdateSQL($table_name, $update_attributes, $update_conditions);
+				$update_all_sql = DB::buildDefaultTableUpdateSQL($table_name, $update_all_attributes, null, array("all" => true));
+				$update_pks_sql = DB::buildDefaultTableUpdateSQL($table_name, $update_pks_attributes, $update_pks_conditions);
+				$delete_sql = DB::buildDefaultTableDeleteSQL($table_name, $conditions);
+				$delete_all_sql = DB::buildDefaultTableDeleteSQL($table_name, null, array("all" => true));
+				$get_sql = DB::buildDefaultTableFindSQL($table_name, $columns, $conditions);
+				$get_all_sql = DB::buildDefaultTableFindSQL($table_name, $columns);
+				$count_sql = DB::buildDefaultTableCountSQL($table_name);
+				
+				//remove single quotes in sqls for numeric attributes, this is, replace "'#attr_name#'" by "#attr_name#"
+				for ($i = 0; $i < $t; $i++) {
+					$attr_name = $table_attr_names[$i];
+					$attr_type = $table_attr_types[$i];
+					
+					if (in_array($attr_type, $numeric_types)) {
+						$insert_sql = str_replace("'#$attr_name#'", "#$attr_name#", $insert_sql);
+						$insert_with_ai_pk_sql = str_replace("'#$attr_name#'", "#$attr_name#", $insert_with_ai_pk_sql);
+						$update_sql = str_replace("'#$attr_name#'", "#$attr_name#", $update_sql);
+						$update_all_sql = str_replace("'#$attr_name#'", "#$attr_name#", $update_all_sql);
+						$delete_sql = str_replace("'#$attr_name#'", "#$attr_name#", $delete_sql);
+						$get_sql = str_replace("'#$attr_name#'", "#$attr_name#", $get_sql);
+						
+						$is_pk = $table_attr_primary_keys[$i];
+						$is_pk = $is_pk == "1" || strtolower($is_pk) == "true";
+						
+						if ($is_pk) {
+							$update_pks_sql = str_replace("'#new_$attr_name#'", "#new_$attr_name#", $update_pks_sql);
+							$update_pks_sql = str_replace("'#old_$attr_name#'", "#old_$attr_name#", $update_pks_sql);
+						}
+						else if ($no_pks) {
+							$update_sql = str_replace("'#new_$attr_name#'", "#new_$attr_name#", $update_sql);
+							$update_sql = str_replace("'#old_$attr_name#'", "#old_$attr_name#", $update_sql);
+							$update_pks_sql = str_replace("'#new_$attr_name#'", "#new_$attr_name#", $update_pks_sql);
+							$update_pks_sql = str_replace("'#old_$attr_name#'", "#old_$attr_name#", $update_pks_sql);
 						}
 					}
+				}
+				
+				//prepare maps
+				if ($with_maps) {
+					$parameter_map_id = self::getVarName($table_name) . "ParameterMap";
+					$parameter_pks_map_id = self::getVarName($table_name) . "PksParameterMap";
+					$result_map_id = self::getVarName($table_name) . "ResultMap";
+				
+					$table_pks_attr_names = $table_pks_attr_types = array();
 					
-					$insert_sql = DB::buildDefaultTableInsertSQL($table_name, $insert_attributes);
-					$insert_with_ai_pk_sql = DB::buildDefaultTableInsertSQL($table_name, $insert_with_ai_pk_attributes);
-					$update_sql = DB::buildDefaultTableUpdateSQL($table_name, $update_attributes, $update_conditions);
-					$update_all_sql = DB::buildDefaultTableUpdateSQL($table_name, $update_all_attributes, null, array("all" => true));
-					$update_pks_sql = DB::buildDefaultTableUpdateSQL($table_name, $update_pks_attributes, $update_pks_conditions);
-					$delete_sql = DB::buildDefaultTableDeleteSQL($table_name, $conditions);
-					$delete_all_sql = DB::buildDefaultTableDeleteSQL($table_name, null, array("all" => true));
-					$get_sql = DB::buildDefaultTableFindSQL($table_name, $columns, $conditions);
-					$get_all_sql = DB::buildDefaultTableFindSQL($table_name, $columns);
-					$count_sql = DB::buildDefaultTableCountSQL($table_name);
-					
-					//remove single quotes in sqls for numeric attributes, this is, replace "'#attr_name#'" by "#attr_name#"
 					for ($i = 0; $i < $t; $i++) {
-						$attr_name = $table_attr_names[$i];
-						$attr_type = $table_attr_types[$i];
+						$is_pk = $table_attr_primary_keys[$i];
+						$is_pk = $is_pk == "1" || strtolower($is_pk) == "true";
 						
-						if (in_array($attr_type, $numeric_types)) {
-							$insert_sql = str_replace("'#$attr_name#'", "#$attr_name#", $insert_sql);
-							$insert_with_ai_pk_sql = str_replace("'#$attr_name#'", "#$attr_name#", $insert_with_ai_pk_sql);
-							$update_sql = str_replace("'#$attr_name#'", "#$attr_name#", $update_sql);
-							$update_all_sql = str_replace("'#$attr_name#'", "#$attr_name#", $update_all_sql);
-							$delete_sql = str_replace("'#$attr_name#'", "#$attr_name#", $delete_sql);
-							$get_sql = str_replace("'#$attr_name#'", "#$attr_name#", $get_sql);
-							
-							$is_pk = $table_attr_primary_keys[$i];
-							$is_pk = $is_pk == "1" || strtolower($is_pk) == "true";
-							
-							if ($is_pk) {
-								$update_pks_sql = str_replace("'#new_$attr_name#'", "#new_$attr_name#", $update_pks_sql);
-								$update_pks_sql = str_replace("'#old_$attr_name#'", "#old_$attr_name#", $update_pks_sql);
-							}
-							else if ($no_pks) {
-								$update_sql = str_replace("'#new_$attr_name#'", "#new_$attr_name#", $update_sql);
-								$update_sql = str_replace("'#old_$attr_name#'", "#old_$attr_name#", $update_sql);
-								$update_pks_sql = str_replace("'#new_$attr_name#'", "#new_$attr_name#", $update_pks_sql);
-								$update_pks_sql = str_replace("'#old_$attr_name#'", "#old_$attr_name#", $update_pks_sql);
-							}
+						if ($is_pk) {
+							$table_pks_attr_names[] = $table_attr_names[$i];
+							$table_pks_attr_types[] = $table_attr_types[$i];
 						}
 					}
 					
-					//prepare maps
-					if ($with_maps) {
-						$parameter_map_id = self::getVarName($table_name) . "ParameterMap";
-						$parameter_pks_map_id = self::getVarName($table_name) . "PksParameterMap";
-						$result_map_id = self::getVarName($table_name) . "ResultMap";
-					
-						$table_pks_attr_names = $table_pks_attr_types = array();
-						
-						for ($i = 0; $i < $t; $i++) {
-							$is_pk = $table_attr_primary_keys[$i];
-							$is_pk = $is_pk == "1" || strtolower($is_pk) == "true";
-							
-							if ($is_pk) {
-								$table_pks_attr_names[] = $table_attr_names[$i];
-								$table_pks_attr_types[] = $table_attr_types[$i];
-							}
-						}
-						
-						$xml .= self::getTableParameterMap($table_attr_names, $table_attr_types, $parameter_map_id, $prefix_tab);
-						$xml .= self::getTableParameterMap($table_pks_attr_names, $table_pks_attr_types, $parameter_pks_map_id, $prefix_tab);
-						$xml .= self::getTableResultMap($table_attr_names, $table_attr_types, $result_map_id, $prefix_tab);
-					}
-					
-					$parameter_map_xml = $parameter_map_id ? " parameter_map=\"" . $parameter_map_id . "\"" : "";
-					$parameter_pks_map_xml = $parameter_pks_map_id ? " parameter_map=\"" . $parameter_pks_map_id . "\"" : "";
-					$result_map_xml = $result_map_id ? " result_map=\"" . $result_map_id . "\"" : "";
-					
-					//prepare xml
-					$xml .= "
+					$xml .= self::getTableParameterMap($table_attr_names, $table_attr_types, $parameter_map_id, $prefix_tab);
+					$xml .= self::getTableParameterMap($table_pks_attr_names, $table_pks_attr_types, $parameter_pks_map_id, $prefix_tab);
+					$xml .= self::getTableResultMap($table_attr_names, $table_attr_types, $result_map_id, $prefix_tab);
+				}
+				
+				$parameter_map_xml = !empty($parameter_map_id) ? " parameter_map=\"" . $parameter_map_id . "\"" : "";
+				$parameter_pks_map_xml = !empty($parameter_pks_map_id) ? " parameter_map=\"" . $parameter_pks_map_id . "\"" : "";
+				$result_map_xml = !empty($result_map_id) ? " result_map=\"" . $result_map_id . "\"" : "";
+				
+				//prepare xml
+				$xml .= "
 	$prefix_tab<insert id=\"insert_" . $query_id . "\">
 	$prefix_tab	$insert_sql
 	$prefix_tab</insert>
@@ -880,9 +904,9 @@ class WorkFlowDataAccessHandler {
 	$prefix_tab	$insert_with_ai_pk_sql
 	$prefix_tab</insert>
 	$prefix_tab";
-	
-					if ($update_sql) {
-						$xml .= "
+
+				if ($update_sql) {
+					$xml .= "
 	$prefix_tab<update id=\"update_" . $query_id . "\">
 	$prefix_tab	$update_sql
 	$prefix_tab</update>
@@ -891,51 +915,50 @@ class WorkFlowDataAccessHandler {
 	$prefix_tab	$update_pks_sql
 	$prefix_tab</update>
 	$prefix_tab";
-					}
-			
-					$xml .= "
+				}
+		
+				$xml .= "
 	$prefix_tab<update id=\"update_all_" . $query_id . "_items\">
 	$prefix_tab	$update_all_sql WHERE 1=1 #searching_condition#
 	$prefix_tab</update>
 	$prefix_tab";
-					
-					if ($delete_sql) {
-						$xml .= "
+				
+				if ($delete_sql) {
+					$xml .= "
 	$prefix_tab<delete id=\"delete_" . $query_id . "\">
 	$prefix_tab	$delete_sql
 	$prefix_tab</delete>
 	$prefix_tab";
-					}
-					
-					$xml .= "
+				}
+				
+				$xml .= "
 	$prefix_tab<delete id=\"delete_all_" . $query_id . "_items\">
 	$prefix_tab	$delete_all_sql WHERE 1=1 #searching_condition#
 	$prefix_tab</delete>
 	$prefix_tab";
-	
-					if ($get_sql) {
-						$xml .= "
+
+				if ($get_sql) {
+					$xml .= "
 	$prefix_tab<select id=\"get_" . $query_id . "\"$parameter_pks_map_xml$result_map_xml>
 	$prefix_tab	$get_sql
 	$prefix_tab</select>
 	$prefix_tab";
-					}
-					
-					$xml .= "
+				}
+				
+				$xml .= "
 	$prefix_tab<select id=\"get_" . $query_id . "_items\"$parameter_map_xml$result_map_xml>
 	$prefix_tab	$get_all_sql WHERE 1=1 #searching_condition#
 	$prefix_tab</select>
 	$prefix_tab";
-					
-					$xml .= "
+				
+				$xml .= "
 	$prefix_tab<select id=\"count_" . $query_id . "_items\">
 	$prefix_tab	$count_sql WHERE 1=1 #searching_condition#
 	$prefix_tab</select>
 	$prefix_tab";
-					
-					//PREPARING FOREIGN QUERIES
-					$xml .= $this->getTableForeignQueriesFromDBTaskFlow($task, $with_maps, $prefix_tab);
-				}
+				
+				//PREPARING FOREIGN QUERIES
+				$xml .= $this->getTableForeignQueriesFromDBTaskFlow($task, $with_maps, $prefix_tab);
 			}
 		}
 		
@@ -950,13 +973,17 @@ class WorkFlowDataAccessHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$fk = $foreign_keys[$i];
 				
-				if ($fk["keys"]) {
-					$key = $fk["child_table"] == $table_name ? "child" : "parent";
+				if (!empty($fk["keys"])) {
+					$fk_child_table = isset($fk["child_table"]) ? $fk["child_table"] : null;
+					$key = $fk_child_table == $table_name ? "child" : "parent";
 					
 					$t2 = count($fk["keys"]);
-					for ($j = 0; $j < $t2; $j++)
-						if ($fk["keys"][$j][$key] == $attr_name)
+					for ($j = 0; $j < $t2; $j++) {
+						$fk_attr_name = isset($fk["keys"][$j][$key]) ? $fk["keys"][$j][$key] : null;
+						
+						if ($fk_attr_name == $attr_name)
 							return true;
+					}
 				}
 			}
 		}
@@ -967,134 +994,140 @@ class WorkFlowDataAccessHandler {
 	private function getTableForeignQueriesFromDBTaskFlow($task, $with_maps = false, $prefix_tab = false) {
 		$xml = "";
 		
-		if (!empty($task)) {
-			if (strtolower($task["tag"] == "table")) {
-				$properties = $task["properties"];
+		if (!empty($task) && isset($task["tag"]) && strtolower($task["tag"] == "table")) {
+			$properties = isset($task["properties"]) ? $task["properties"] : null;
+			
+			$table_name = isset($task["label"]) ? $task["label"] : null;
+			$table_attr_names = isset($properties["table_attr_names"]) ? $properties["table_attr_names"] : null;
+			
+			if ($table_attr_names) {
+				$numeric_types = ObjTypeHandler::getDBNumericTypes();
+				$table_attr_primary_keys = isset($properties["table_attr_primary_keys"]) ? $properties["table_attr_primary_keys"] : null;
+				$table_attr_types = isset($properties["table_attr_types"]) ? $properties["table_attr_types"] : null;
+				$foreign_keys = WorkFlowDBHandler::getTableFromTables($this->foreign_keys, $table_name);
 				
-				$table_name = $task["label"];
-				$table_attr_names = $properties["table_attr_names"];
-				
-				if ($table_attr_names) {
-					$numeric_types = ObjTypeHandler::getDBNumericTypes();
-					$table_attr_primary_keys = $properties["table_attr_primary_keys"];
-					$table_attr_types = $properties["table_attr_types"];
-					$foreign_keys = WorkFlowDBHandler::getTableFromTables($this->foreign_keys, $table_name);
-					
-					$parent_conditions = array();
-					$numeric_parent_conditions_attrs_name = array();
-					$t = count($table_attr_names);
-					for ($j = 0; $j < $t; $j++) {
-						$attr_name = $table_attr_names[$j];
-						$attr_type = $table_attr_types[$j];
-						$is_pk = $table_attr_primary_keys[$j];
+				$parent_conditions = array();
+				$numeric_parent_conditions_attrs_name = array();
+				$t = count($table_attr_names);
+				for ($j = 0; $j < $t; $j++) {
+					$attr_name = $table_attr_names[$j];
+					$attr_type = isset($table_attr_types[$j]) ? $table_attr_types[$j] : null;
+					$is_pk = isset($table_attr_primary_keys[$j]) ? $table_attr_primary_keys[$j] : null;
 
-						if ($is_pk == "1" || strtolower($is_pk) == "true") {
-							$parent_conditions[$attr_name] = "#$attr_name#";
-							
-							if (in_array($attr_type, $numeric_types))
-								$numeric_parent_conditions_attrs_name[] = $attr_name;
-						}
-					}
-					
-					if (count($parent_conditions) && !empty($foreign_keys)) {
-						//PREPARING FOREIGN PARAMETER/RESULT MAPS
-						if ($with_maps) {
-							$foreign_table_names = array();
-							$t = count($foreign_keys);
-							for ($j = 0; $j < $t; $j++) {
-								$relationship = $foreign_keys[$j];
-					
-								$foreign_table_names[] = $relationship["child_table"] == $table_name ? $relationship["parent_table"] : $relationship["child_table"];
-							}
-				
-							$foreign_table_names = array_unique($foreign_table_names);
-							$t = count($foreign_table_names);
-							for ($j = 0; $j < $t; $j++) {
-								$foreign_table_name = $foreign_table_names[$j];
-							
-								$parameter_map_id = self::getVarName($foreign_table_name) . "ParameterMap";
-								$result_map_id = self::getVarName($foreign_table_name) . "ResultMap";
-								
-								$foreign_task = $this->tasks["tasks"][$foreign_table_name];
-								
-								$xml .= self::getTableParameterMap($foreign_task["properties"]["table_attr_names"], $foreign_task["properties"]["table_attr_types"], $parameter_map_id, $prefix_tab);
-								$xml .= self::getTableResultMap($foreign_task["properties"]["table_attr_names"], $foreign_task["properties"]["table_attr_types"], $result_map_id, $prefix_tab);
-							}
-						}
+					if ($is_pk == "1" || strtolower($is_pk) == "true") {
+						$parent_conditions[$attr_name] = "#$attr_name#";
 						
-						//PREPARING FOREIGN SQL
+						if (in_array($attr_type, $numeric_types))
+							$numeric_parent_conditions_attrs_name[] = $attr_name;
+					}
+				}
+				
+				if (count($parent_conditions) && !empty($foreign_keys)) {
+					//PREPARING FOREIGN PARAMETER/RESULT MAPS
+					if ($with_maps) {
+						$foreign_table_names = array();
 						$t = count($foreign_keys);
 						for ($j = 0; $j < $t; $j++) {
 							$relationship = $foreign_keys[$j];
+							$relationship_child_table = isset($relationship["child_table"]) ? $relationship["child_table"] : null;
+							$relationship_parent_table = isset($relationship["parent_table"]) ? $relationship["parent_table"] : null;
 							
-							$type = $relationship["type"];
-							$foreign_table_name = $relationship["child_table"] == $table_name ? $relationship["parent_table"] : $relationship["child_table"];
+							$foreign_table_names[] = $relationship_child_table == $table_name ? $relationship_parent_table : $relationship_child_table;
+						}
+			
+						$foreign_table_names = array_unique($foreign_table_names);
+						$t = count($foreign_table_names);
+						for ($j = 0; $j < $t; $j++) {
+							$foreign_table_name = $foreign_table_names[$j];
+						
+							$parameter_map_id = self::getVarName($foreign_table_name) . "ParameterMap";
+							$result_map_id = self::getVarName($foreign_table_name) . "ResultMap";
 							
-							$parameter_map_id = $with_maps ? self::getVarName($foreign_table_name) . "ParameterMap" : null;
-							$result_map_id = $with_maps ? self::getVarName($foreign_table_name) . "ResultMap" : null;
+							$foreign_task = isset($this->tasks["tasks"][$foreign_table_name]) ? $this->tasks["tasks"][$foreign_table_name] : null;
+							$foreign_table_attr_names = isset($foreign_task["properties"]["table_attr_names"]) ? $foreign_task["properties"]["table_attr_names"] : null;
+							$foreign_table_attr_types = isset($foreign_task["properties"]["table_attr_types"]) ? $foreign_task["properties"]["table_attr_types"] : null;
 							
-							$table_alias = $task["alias"];
-							$foreign_table_alias = $this->tasks["tasks"][$foreign_table_name]["alias"];
-							$name = self::getForeignTableQueryName($table_alias ? $table_alias : $table_name, $foreign_table_alias ? $foreign_table_alias : $foreign_table_name, $type);
+							$xml .= self::getTableParameterMap($foreign_table_attr_names, $foreign_table_attr_types, $parameter_map_id, $prefix_tab);
+							$xml .= self::getTableResultMap($foreign_table_attr_names, $foreign_table_attr_types, $result_map_id, $prefix_tab);
+						}
+					}
+					
+					//PREPARING FOREIGN SQL
+					$t = count($foreign_keys);
+					for ($j = 0; $j < $t; $j++) {
+						$relationship = $foreign_keys[$j];
+						
+						$type = isset($relationship["type"]) ? $relationship["type"] : null;
+						$relationship_child_table = isset($relationship["child_table"]) ? $relationship["child_table"] : null;
+						$relationship_parent_table = isset($relationship["parent_table"]) ? $relationship["parent_table"] : null;
+						
+						$foreign_table_name = $relationship_child_table == $table_name ? $relationship_parent_table : $relationship_child_table;
+						
+						$parameter_map_id = $with_maps ? self::getVarName($foreign_table_name) . "ParameterMap" : null;
+						$result_map_id = $with_maps ? self::getVarName($foreign_table_name) . "ResultMap" : null;
+						
+						$table_alias = isset($task["alias"]) ? $task["alias"] : null;
+						$foreign_table_alias = isset($this->tasks["tasks"][$foreign_table_name]["alias"]) ? $this->tasks["tasks"][$foreign_table_name]["alias"] : null;
+						$name = self::getForeignTableQueryName($table_alias ? $table_alias : $table_name, $foreign_table_alias ? $foreign_table_alias : $foreign_table_name, $type);
+						
+						$attrs = WorkFlowDBHandler::getTableAttributes($this->tasks["tasks"], $foreign_table_name);
+						
+						if ($attrs) {
+							//prepare sqls
+							$attrs = is_array($attrs) ? $attrs : array($attrs); //if only one attribute, then $attrs is the attr_name, so we need to convert it to an array
+							$attributes = $keys = array();
 							
-							$attrs = WorkFlowDBHandler::getTableAttributes($this->tasks["tasks"], $foreign_table_name);
+							$t2 = count($attrs);
+							for ($w = 0; $w < $t2; $w++) {
+								$attributes[] = array(
+									"table" => $foreign_table_name,
+									"column" => $attrs[$w],
+								);
+							}
 							
-							if ($attrs) {
-								//prepare sqls
-								$attrs = is_array($attrs) ? $attrs : array($attrs); //if only one attribute, then $attrs is the attr_name, so we need to convert it to an array
-								$attributes = $keys = array();
+							if (!empty($relationship["keys"])) {
+								$t2 = count($relationship["keys"]);
 								
-								$t2 = count($attrs);
 								for ($w = 0; $w < $t2; $w++) {
-									$attributes[] = array(
-										"table" => $foreign_table_name,
-										"column" => $attrs[$w],
+									$r = $relationship["keys"][$w];
+									
+									if ($relationship_child_table == $table_name) {
+										$pcolumn = isset($r["child"]) ? $r["child"] : null;
+										$fcolumn = isset($r["parent"]) ? $r["parent"] : null;
+									}
+									else {
+										$pcolumn = isset($r["parent"]) ? $r["parent"] : null;
+										$fcolumn = isset($r["child"]) ? $r["child"] : null;
+									}
+									
+									$keys[] = array(
+										"ptable" => $table_name,
+										"pcolumn" => $pcolumn,
+										"ftable" => $foreign_table_name,
+										"fcolumn" => $fcolumn,
 									);
 								}
-								
-								if ($relationship["keys"]) {
-									$t2 = count($relationship["keys"]);
-									
-									for ($w = 0; $w < $t2; $w++) {
-										$r = $relationship["keys"][$w];
-									
-										if ($relationship["child_table"] == $table_name) {
-											$pcolumn = $r["child"];
-											$fcolumn = $r["parent"];
-										}
-										else {
-											$pcolumn = $r["parent"];
-											$fcolumn = $r["child"];
-										}
-										
-										$keys[] = array(
-											"ptable" => $table_name,
-											"pcolumn" => $pcolumn,
-											"ftable" => $foreign_table_name,
-											"fcolumn" => $fcolumn,
-										);
-									}
-								}
-								
-								$get_all_relationship_sql = DB::buildDefaultTableFindRelationshipSQL($table_name, array(
-									"keys" => $keys,
-									"attributes" => $attributes,
-								), $parent_conditions);
-								$count_relationship_sql = DB::buildDefaultTableCountRelationshipSQL($table_name, array(
-									"keys" => $keys,
-								), $parent_conditions);
-								
-								//remove single quotes in sqls for numeric attributes, this is, replace "'#attr_name#'" by "#attr_name#"
-								foreach ($numeric_parent_conditions_attrs_name as $attr_name) {
-									$get_all_relationship_sql = str_replace("'#$attr_name#'", "#$attr_name#", $get_all_relationship_sql);
-									$count_relationship_sql = str_replace("'#$attr_name#'", "#$attr_name#", $count_relationship_sql);
-								}
-								
-								//prepare xml
-								$parameter_map_xml = $parameter_map_id ? " parameter_map=\"" . $parameter_map_id . "\"" : "";
-								$result_map_xml = $result_map_id ? " result_map=\"" . $result_map_id . "\"" : "";
-								
-								$xml .= "
+							}
+							
+							$get_all_relationship_sql = DB::buildDefaultTableFindRelationshipSQL($table_name, array(
+								"keys" => $keys,
+								"attributes" => $attributes,
+							), $parent_conditions);
+							$count_relationship_sql = DB::buildDefaultTableCountRelationshipSQL($table_name, array(
+								"keys" => $keys,
+							), $parent_conditions);
+							
+							//remove single quotes in sqls for numeric attributes, this is, replace "'#attr_name#'" by "#attr_name#"
+							foreach ($numeric_parent_conditions_attrs_name as $attr_name) {
+								$get_all_relationship_sql = str_replace("'#$attr_name#'", "#$attr_name#", $get_all_relationship_sql);
+								$count_relationship_sql = str_replace("'#$attr_name#'", "#$attr_name#", $count_relationship_sql);
+							}
+							
+							//prepare xml
+							$parameter_map_xml = $parameter_map_id ? " parameter_map=\"" . $parameter_map_id . "\"" : "";
+							$result_map_xml = $result_map_id ? " result_map=\"" . $result_map_id . "\"" : "";
+							
+							$xml .= "
 	$prefix_tab<select id=\"$name\"$parameter_map_xml$result_map_xml>
 	$prefix_tab	$get_all_relationship_sql #searching_condition#
 	$prefix_tab</select>
@@ -1102,8 +1135,7 @@ class WorkFlowDataAccessHandler {
 	$prefix_tab<select id=\"" . self::getForeignTableQueryCountName($table_alias ? $table_alias : $table_name, $foreign_table_alias ? $foreign_table_alias : $foreign_table_name, $type) . "\"$parameter_map_xml>
 	$prefix_tab	$count_relationship_sql #searching_condition#
 	$prefix_tab</select>
-	$prefix_tab";
-							}
+$prefix_tab";
 						}
 					}
 				}
@@ -1122,7 +1154,7 @@ class WorkFlowDataAccessHandler {
 			$t = count($table_attr_names);
 			for ($i = 0; $i < $t; $i++) {
 				$attr_name = $table_attr_names[$i];
-				$attr_type = strtolower($table_attr_types[$i]);
+				$attr_type = isset($table_attr_types[$i]) ? strtolower($table_attr_types[$i]) : "";
 			
 				$parameter_map .= '
 		' . $prefix_tab . '<parameter input_name="' . $attr_name . '" output_name="' . $attr_name . '" input_type="org.phpframework.object.php.Primitive(' . ObjTypeHandler::convertDBToPHPType($attr_type) . ')" output_type="org.phpframework.object.db.DBPrimitive(' . $attr_type . ')" mandatory="0" />'; 
@@ -1147,7 +1179,7 @@ class WorkFlowDataAccessHandler {
 			$t = count($table_attr_names);
 			for ($i = 0; $i < $t; $i++) {
 				$attr_name = $table_attr_names[$i];
-				$attr_type = strtolower($table_attr_types[$i]);
+				$attr_type = isset($table_attr_types[$i]) ? strtolower($table_attr_types[$i]) : "";
 			
 				$result_map .= '
 		' . $prefix_tab . '<result output_name="' . $attr_name . '" input_name="' . $attr_name . '" output_type="org.phpframework.object.php.Primitive(' . ObjTypeHandler::convertDBToPHPType($attr_type) . ')" input_type="org.phpframework.object.db.DBPrimitive(' . $attr_type . ')" mandatory="0" />';
@@ -1166,6 +1198,7 @@ class WorkFlowDataAccessHandler {
 	public static function getForeignTableQueryName($table_name, $foreign_table_name, $type) {
 		$ltn = str_replace(".", "_", strtolower($table_name)); //bc table_name can have the schema
 		$lftn = str_replace(".", "_", strtolower($foreign_table_name)); //bc foreign_table_name can have the schema
+		$name = null;
 		
 		if ($type == "1-*")
 			$name = "get_" . $ltn . "_" . $lftn . "_childs";
@@ -1228,31 +1261,31 @@ class WorkFlowDataAccessHandler {
 	public static function getHbnObjParameters($data_access_obj, $db_broker, $db_driver, $tasks_file_path, $obj_data, &$tables_props = null) {
 		$parameters = array();
 		
-		if ($obj_data["childs"]["parameter_map"][0]["parameter"]) {
+		if (!empty($obj_data["childs"]["parameter_map"][0]["parameter"])) {
 			$t = count($obj_data["childs"]["parameter_map"][0]["parameter"]);
 			
 			for ($i = 0; $i < $t; $i++) {
 				$p = $obj_data["childs"]["parameter_map"][0]["parameter"][$i];
 				
-				if ($p["output_name"] && $p["input_name"])
+				if (!empty($p["output_name"]) && !empty($p["input_name"]))
 					$parameters[ $p["output_name"] ] = array(
 						"name" => $p["input_name"], 
-						"type" => $p["input_type"]
+						"type" => isset($p["input_type"]) ? $p["input_type"] : null
 					);
 			}
 		}
 		
-		$table_name = trim($obj_data["@"]["table"]);
+		$table_name = isset($obj_data["@"]["table"]) ? trim($obj_data["@"]["table"]) : "";
 		if ($table_name) {
 			self::prepareTableProps($data_access_obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, array($table_name));
 			$table_name = strpos($table_name, " ") !== false ? strstr($table_name, " ", true) : $table_name;
 			$tn = strtolower($table_name);
-			$attrs = $tables_props[$tn];
+			$attrs = isset($tables_props[$tn]) ? $tables_props[$tn] : null;
 			
 			foreach ($attrs as $attr_name => $attr) {
 				$parameters[$attr_name] = isset($parameters[$attr_name]) ? array_merge($attr, $parameters[$attr_name]) : $attr;
 				
-				if ($parameters[$attr_name]["type"])
+				if (!empty($parameters[$attr_name]["type"]))
 					$parameters[$attr_name]["type"] = "org.phpframework.object.db.DBPrimitive(" . $parameters[$attr_name]["type"] . ")";
 			}
 		}
@@ -1271,7 +1304,7 @@ class WorkFlowDataAccessHandler {
 				include_once $file_path;
 		
 				$class = explode(".", $parameter_class);
-				$class = $class[ count($class) - 1 ];
+				$class = isset($class[ count($class) - 1 ]) ? $class[ count($class) - 1 ] : null;
 		
 				eval ("\$obj = new $class();");
 				if ($obj && method_exists($obj, "getData")) {
@@ -1288,7 +1321,7 @@ class WorkFlowDataAccessHandler {
 							"name" => $k,
 						);
 						
-						if ($parameters[$k])
+						if (!empty($parameters[$k]))
 							$params[$k] = array_merge($parameters[$k], $params[$k]);
 					}
 					
@@ -1300,7 +1333,7 @@ class WorkFlowDataAccessHandler {
 
 	public static function addPrimaryKeysToParameters($hbn_obj_parameters, &$parameters) {
 		foreach ($hbn_obj_parameters as $name => $param) {
-			if ($param["primary_key"] && !isset($parameters[$name])) {
+			if (!empty($param["primary_key"]) && !isset($parameters[$name])) {
 				$parameters[$name] = $param;
 			}
 		}
@@ -1309,7 +1342,7 @@ class WorkFlowDataAccessHandler {
 
 	public static function removePrimaryKeysFromParameters($hbn_obj_parameters, &$parameters) {
 		foreach ($hbn_obj_parameters as $name => $param) {
-			if ($param["primary_key"] && isset($parameters[$name])) {
+			if (!empty($param["primary_key"]) && isset($parameters[$name])) {
 				unset($parameters[$name]);
 			}
 		}
@@ -1319,7 +1352,7 @@ class WorkFlowDataAccessHandler {
 	public static function getPrimaryKeysFromParameters($hbn_obj_parameters, $parameters) {
 		$pks = array();
 		foreach ($hbn_obj_parameters as $name => $param) {
-			if ($param["primary_key"] && isset($parameters[$name])) {
+			if (!empty($param["primary_key"]) && isset($parameters[$name])) {
 				$pks[$name] = $parameters[$name];
 			}
 		}
@@ -1331,25 +1364,31 @@ class WorkFlowDataAccessHandler {
 	public static function prepareRelationshipParameters(&$rel_data, $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, &$tables_props, $hbn_obj_data, &$parameters) {
 		$parameters = array();
 		$tables = array();
-		$table_name = $hbn_obj_data["@"]["table"];
+		$table_name = isset($hbn_obj_data["@"]["table"]) ? $hbn_obj_data["@"]["table"] : null;
 		
 		if ($table_name)
 			$tables[$table_name] = true;
 		
-		self::prepareSQLColumnProps($rel_data["attribute"], $tables, $parameters, "table", "column");
-		self::prepareSQLColumnProps($rel_data["key"], $tables, $parameters, "ptable", "pcolumn", "value");
-		self::prepareSQLColumnProps($rel_data["key"], $tables, $parameters, "ftable", "fcolumn", "value");
-		self::prepareSQLColumnProps($rel_data["condition"], $tables, $parameters, "table", "column", "value");
-		self::prepareSQLColumnProps($rel_data["group_by"], $tables, $parameters, "table", "column");
-		self::prepareSQLColumnProps($rel_data["sort"], $tables, $parameters, "table", "column");
+		$rel_data_attribute = isset($rel_data["attribute"]) ? $rel_data["attribute"] : null;
+		$rel_data_key = isset($rel_data["key"]) ? $rel_data["key"] : null;
+		$rel_data_condition = isset($rel_data["condition"]) ? $rel_data["condition"] : null;
+		$rel_data_group_by = isset($rel_data["group_by"]) ? $rel_data["group_by"] : null;
+		$rel_data_sort = isset($rel_data["sort"]) ? $rel_data["sort"] : null;
+		
+		self::prepareSQLColumnProps($rel_data_attribute, $tables, $parameters, "table", "column");
+		self::prepareSQLColumnProps($rel_data_key, $tables, $parameters, "ptable", "pcolumn", "value");
+		self::prepareSQLColumnProps($rel_data_key, $tables, $parameters, "ftable", "fcolumn", "value");
+		self::prepareSQLColumnProps($rel_data_condition, $tables, $parameters, "table", "column", "value");
+		self::prepareSQLColumnProps($rel_data_group_by, $tables, $parameters, "table", "column");
+		self::prepareSQLColumnProps($rel_data_sort, $tables, $parameters, "table", "column");
 	
 		//PREPARING PARAMETER MAP/CLASS
-		$rel_data["@"]["parameter_map"] = $hbn_obj_data["childs"]["parameter_map"][0]["attrib"]["id"];
+		$rel_data["@"]["parameter_map"] = isset($hbn_obj_data["childs"]["parameter_map"][0]["attrib"]["id"]) ? $hbn_obj_data["childs"]["parameter_map"][0]["attrib"]["id"] : null;
 		
 		self::prepareParameters($rel_data, $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, $tables, $parameters, $table_name);
 		//echo "<pre>";print_r($parameters);die();
 	
-		$limit = $rel_data["limit"];
+		$limit = isset($rel_data["limit"]) ? $rel_data["limit"] : null;
 		if (strpos($limit, "#") !== false) {
 			$name = str_replace("#", "", $limit);
 			$parameters[$name] = array(
@@ -1358,7 +1397,7 @@ class WorkFlowDataAccessHandler {
 			);
 		}
 	
-		$start = $rel_data["start"];
+		$start = isset($rel_data["start"]) ? $rel_data["start"] : null;
 		if (strpos($start, "#") !== false) {
 			$name = str_replace("#", "", $start);
 			$parameters[$name] = array(
@@ -1372,22 +1411,23 @@ class WorkFlowDataAccessHandler {
 	}
 	
 	public static function getSQLStatementTable($query_data, $data_access_obj, $db_broker, $db_driver) {
-		$sql = $query_data["value"];
+		$sql = isset($query_data["value"]) ? $query_data["value"] : null;
 		if ($sql) {
 			$data = $data_access_obj ? $data_access_obj->getBroker($db_broker)->getFunction("convertSQLToObject", $sql, array("db_driver" => $db_driver)) : DB::convertDefaultSQLToObject($sql);
-			$sql_type = $data["type"];
+			$sql_type = isset($data["type"]) ? $data["type"] : null;
+			$table = isset($data["table"]) ? $data["table"] : null;
 			
 			if ($sql_type == "insert" || $sql_type == "update" || $sql_type == "delete")
-				return strpos($data["table"], "#") === false ? $data["table"] : null;
+				return strpos($table, "#") === false ? $table : null;
 			else if ($sql_type == "select")
-				return $data["attributes"][0]["table"] ? $data["attributes"][0]["table"] : $data["table"];
+				return !empty($data["attributes"][0]["table"]) ? $data["attributes"][0]["table"] : $table;
 		}
 	}
 
 	public static function prepareSQLStatementParameters($query_data, $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, &$tables_props, $reserved_sql_keywords, &$parameters) {
 		$parameters = array();
 	
-		$sql = $query_data["value"];
+		$sql = isset($query_data["value"]) ? $query_data["value"] : null;
 		if ($sql) {
 			//PREPARING SQL
 			if (is_array($reserved_sql_keywords))
@@ -1396,7 +1436,7 @@ class WorkFlowDataAccessHandler {
 			
 			//PARSEING SQL
 			$data = $data_access_obj ? $data_access_obj->getBroker($db_broker)->getFunction("convertSQLToObject", $sql, array("db_driver" => $db_driver)) : DB::convertDefaultSQLToObject($sql);
-			$sql_type = $data["type"];
+			$sql_type = isset($data["type"]) ? $data["type"] : null;
 			//echo $sql;echo "<pre>";print_r($data);echo "</pre>";
 			
 			//PREPARING SQL TYPES
@@ -1414,7 +1454,7 @@ class WorkFlowDataAccessHandler {
 			$table_name = "";
 		
 			if ($sql_type == "insert" || $sql_type == "update" || $sql_type == "delete") {
-				$table_name = $data["table"];
+				$table_name = isset($data["table"]) ? $data["table"] : null;
 				if (strpos($table_name, "#") !== false) {
 					$table_name = str_replace("#", "", $table_name);
 					$parameters[$table_name] = array(
@@ -1424,25 +1464,34 @@ class WorkFlowDataAccessHandler {
 				}
 				else
 					$tables[$table_name] = true;
-		
-				self::prepareSQLColumnProps($data["attributes"], $tables, $parameters, "table", "column", "value");
-				self::prepareSQLColumnProps($data["conditions"], $tables, $parameters, "table", "column", "value");
+				
+				$data_attributes = isset($data["attributes"]) ? $data["attributes"] : null;
+				$data_conditions = isset($data["conditions"]) ? $data["conditions"] : null;
+				
+				self::prepareSQLColumnProps($data_attributes, $tables, $parameters, "table", "column", "value");
+				self::prepareSQLColumnProps($data_conditions, $tables, $parameters, "table", "column", "value");
 			}
 			else if ($sql_type == "select") {
-				$table_name = $data["attributes"][0]["table"] ? $data["attributes"][0]["table"] : $data["table"];
+				$table_name = !empty($data["attributes"][0]["table"]) ? $data["attributes"][0]["table"] : (isset($data["table"]) ? $data["table"] : null);
 				$tables[$table_name] = true;
 				
-				self::prepareSQLColumnProps($data["attributes"], $tables, $parameters, "table", "column");
-				self::prepareSQLColumnProps($data["keys"], $tables, $parameters, "ptable", "pcolumn", "value");
-				self::prepareSQLColumnProps($data["keys"], $tables, $parameters, "ftable", "fcolumn", "value");
-				self::prepareSQLColumnProps($data["conditions"], $tables, $parameters, "table", "column", "value");
-				self::prepareSQLColumnProps($data["groups_by"], $tables, $parameters, "table", "column");
-				self::prepareSQLColumnProps($data["sorts"], $tables, $parameters, "table", "column");
+				$data_attributes = isset($data["attributes"]) ? $data["attributes"] : null;
+				$data_keys = isset($data["keys"]) ? $data["keys"] : null;
+				$data_conditions = isset($data["conditions"]) ? $data["conditions"] : null;
+				$data_groups_by = isset($data["groups_by"]) ? $data["groups_by"] : null;
+				$data_sorts = isset($data["sorts"]) ? $data["sorts"] : null;
+				
+				self::prepareSQLColumnProps($data_attributes, $tables, $parameters, "table", "column");
+				self::prepareSQLColumnProps($data_keys, $tables, $parameters, "ptable", "pcolumn", "value");
+				self::prepareSQLColumnProps($data_keys, $tables, $parameters, "ftable", "fcolumn", "value");
+				self::prepareSQLColumnProps($data_conditions, $tables, $parameters, "table", "column", "value");
+				self::prepareSQLColumnProps($data_groups_by, $tables, $parameters, "table", "column");
+				self::prepareSQLColumnProps($data_sorts, $tables, $parameters, "table", "column");
 			}
 			
 			self::prepareParameters($query_data, $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, $tables, $parameters, $table_name);
 			
-			self::prepareParametersFromClass($query_data["@"]["parameter_class"], $parameters);
+			self::prepareParametersFromClass(isset($query_data["@"]["parameter_class"]) ? $query_data["@"]["parameter_class"] : null, $parameters);
 		}
 	}
 	
@@ -1453,7 +1502,7 @@ class WorkFlowDataAccessHandler {
 					$table_name = strpos($table_name, " ") !== false ? strstr($table_name, " ", true) : $table_name;
 					$tn = strtolower($table_name);
 					
-					if (!$tables_props[$tn])
+					if (empty($tables_props[$tn]))
 						$tables_props[$tn] = $data_access_obj->getFunction("listTableFields", $table_name, array("db_broker" => $db_broker, "db_driver" => $db_driver));
 				}
 			
@@ -1466,11 +1515,11 @@ class WorkFlowDataAccessHandler {
 					foreach ($tasks_tables as $table_name => $attrs) {
 						$tn = strtolower($table_name);
 						
-						if (!$tables_props[$tn])
+						if (empty($tables_props[$tn]))
 							$tables_props[$tn] = $attrs;
 						else
 							foreach ($attrs as $attr_name => $attr) 
-								if (!$tables_props[$tn][$attr_name])
+								if (empty($tables_props[$tn][$attr_name]))
 									$tables_props[$tn][$attr_name] = $attr;
 								else if ($attr)
 									foreach ($attr as $k => $v)
@@ -1494,14 +1543,14 @@ class WorkFlowDataAccessHandler {
 		$dtn = strtolower($default_table_name);
 		
 		foreach ($parameters as $name => $param) {
-			if ($param["parameter_type"] == "table_column") {
-				$tn = strtolower($param["parameter_table"]);
-				$cn = strtolower($param["parameter_column"]);
+			if (isset($param["parameter_type"]) && $param["parameter_type"] == "table_column") {
+				$tn = isset($param["parameter_table"]) ? strtolower($param["parameter_table"]) : "";
+				$cn = isset($param["parameter_column"]) ? strtolower($param["parameter_column"]) : "";
 				
 				$db_attr = null;
-				if ($tables_props[$tn][$cn])
+				if (!empty($tables_props[$tn][$cn]))
 					$db_attr = $tables_props[$tn][$cn];
-				else if ($dtn && $tables_props[$dtn][$cn])
+				else if ($dtn && !empty($tables_props[$dtn][$cn]))
 					$db_attr = $tables_props[$dtn][$cn];
 				else 
 					foreach ($tables_props as $table_name => $fields) {
@@ -1517,15 +1566,15 @@ class WorkFlowDataAccessHandler {
 					}
 				
 				if ($db_attr) {
-					$db_type = $db_attr["type"];
-			
+					$db_type = isset($db_attr["type"]) ? $db_attr["type"] : null;
+					
 					$db_attr["name"] = $name;
-					$db_attr["type"] = $param["type"];
-					$db_attr["mandatory"] = $param["mandatory"];
+					$db_attr["type"] = isset($param["type"]) ? $param["type"] : null;
+					$db_attr["mandatory"] = isset($param["mandatory"]) ? $param["mandatory"] : null;
 			
-					if (strpos($param["type"], "(no_string)") !== false && in_array($db_type, $numeric_types)) 
+					if (strpos($db_attr["type"], "(no_string)") !== false && in_array($db_type, $numeric_types)) 
 						$db_attr["type"] = "org.phpframework.object.db.DBPrimitive($db_type)";
-					else if (strpos($param["type"], "(no_string)") === false)
+					else if (strpos($db_attr["type"], "(no_string)") === false)
 					//else if (!$param["type"] || strpos($param["type"], "(string)"))
 						$db_attr["type"] = "org.phpframework.object.db.DBPrimitive($db_type)";
 			
@@ -1539,17 +1588,17 @@ class WorkFlowDataAccessHandler {
 		}
 
 		//PREPARING PARAMETER MAP TYPES
-		$parameter_map = $query_data["@"]["parameter_map"];
-		$map_entries = $parameter_map ? $rels["parameter_map"][$parameter_map]["parameter"] : null;
+		$parameter_map = isset($query_data["@"]["parameter_map"]) ? $query_data["@"]["parameter_map"] : null;
+		$map_entries = $parameter_map && isset($rels["parameter_map"][$parameter_map]["parameter"]) ? $rels["parameter_map"][$parameter_map]["parameter"] : null;
 		//echo "<pre>";print_r($map_entries);echo "</pre>";
 
 		if ($map_entries) {
 			$t = count($map_entries);
 			for ($i = 0; $i < $t; $i++) {
 				$entry = $map_entries[$i];
-				$on = $entry["output_name"];
+				$on = isset($entry["output_name"]) ? $entry["output_name"] : null;
 		
-				$parameters[$on]["name"] = $entry["input_name"];
+				$parameters[$on]["name"] = isset($entry["input_name"]) ? $entry["input_name"] : null;
 		
 				if (isset($entry["input_type"]))
 					$parameters[$on]["type"] = $entry["input_type"];
@@ -1584,11 +1633,11 @@ class WorkFlowDataAccessHandler {
 				}
 			
 				if ($column_attr_name && isset($attr[$column_attr_name]) && strpos($attr[$column_attr_name], "#") !== false) {
-					$op = strtolower($attr["operator"]);
+					$op = isset($attr["operator"]) ? strtolower($attr["operator"]) : "";
 					$type = $op == "in" || $op == "not in" ? "array_str" : "name";
 					$column = str_replace("#", "", $attr[$column_attr_name]);
-					$table = $attr[$table_attr_name];
-				
+					$table = isset($attr[$table_attr_name]) ? $attr[$table_attr_name] : null;
+					
 					$parameters[$column] = array(
 						"type" =>"org.phpframework.object.php.Primitive($type)", 
 						"mandatory" => true
@@ -1602,12 +1651,12 @@ class WorkFlowDataAccessHandler {
 				}
 			
 				if ($value_attr_name && isset($attr[$value_attr_name]) && strpos($attr[$value_attr_name], "#") !== false) {
-					$op = strtolower($attr["operator"]);
+					$op = isset($attr["operator"]) ? strtolower($attr["operator"]) : "";
 					$value = $attr[$value_attr_name];
 					$value = str_replace(array("'", '"', "#"), "", $value);
 					$value_type = $op == "in" || $op == "not in" ? "org.phpframework.object.php.Primitive(array_str)" : $parameters[$value]["type"];
-					$column = $parameters[$value]["parameter_column"] ? $parameters[$value]["parameter_column"] : $attr[$column_attr_name];//Because of the PCOLUMN and FCOLUMN, otherwise it will overwrite with empty values
-					$table = $parameters[$value]["parameter_column"] ? $parameters[$value]["parameter_table"] : $attr[$table_attr_name];
+					$column = !empty($parameters[$value]["parameter_column"]) ? $parameters[$value]["parameter_column"] : (isset($attr[$column_attr_name]) ? $attr[$column_attr_name] : null);//Because of the PCOLUMN and FCOLUMN, otherwise it will overwrite with empty values
+					$table = !empty($parameters[$value]["parameter_column"]) ? $parameters[$value]["parameter_table"] : $attr[$table_attr_name];
 				
 					$parameters[$value] = array(
 						"type" => $value_type, 
@@ -1626,7 +1675,10 @@ class WorkFlowDataAccessHandler {
 	
 	//used here and in the create_business_logic_objs_automatically.php too
 	public static function isAutoIncrementedAttribute($att) {
-		return $att["auto_increment"] || stripos($att["extra"], "auto_increment") !== false || stripos($att["extra"], "nextval") !== false || in_array($att["type"], DB::getAllColumnAutoIncrementTypes());
+		$type = isset($att["type"]) ? $att["type"] : null;
+		$extra = isset($att["extra"]) ? $att["extra"] : null;
+		
+		return !empty($att["auto_increment"]) || stripos($extra, "auto_increment") !== false || stripos($extra, "nextval") !== false || in_array($type, DB::getAllColumnAutoIncrementTypes());
 	}
 	
 	public static function getTableAttrTitle($attrs, $table_name = false) {
@@ -1639,7 +1691,7 @@ class WorkFlowDataAccessHandler {
 			
 			if (preg_match("/^(" . implode("|", $available_attr_names) . ")$/iu", $lan) || ($ltn && preg_match("/^(" . implode("|", $available_attr_names) . ")([ \-_]*)$ltn$/iu", $lan)) || ($ltn && preg_match("/^$ltn([ \-_]*)(" . implode("|", $available_attr_names) . ")$/iu", $lan)))
 				$title_attr = $attr_name;
-			else if (empty($title_attr) && strpos($attr["type"], "char") !== false && empty($attr["primary_key"]))
+			else if (empty($title_attr) && isset($attr["type"]) && strpos($attr["type"], "char") !== false && empty($attr["primary_key"]))
 				$title_attr = $attr_name;
 		}
 		
@@ -1652,13 +1704,13 @@ class WorkFlowDataAccessHandler {
 			$minimum_pks_count = -1;
 			
 			foreach ($attr_fks as $i => $attr_fk) {
-				$fk_table = $attr_fk["table"];
+				$fk_table = isset($attr_fk["table"]) ? $attr_fk["table"] : null;
 				$attrs = WorkFlowDBHandler::getTableFromTables($tables, $fk_table);
 				
 				if (self::getTableAttrTitle($attrs, $fk_table)) {
 					$pks_count = 0;
 					foreach ($attrs as $attr)
-						if ($attr["primary_key"])
+						if (!empty($attr["primary_key"]))
 							$pks_count++;
 					
 					if ($minimum_pks_count == -1 || $minimum_pks_count > $pks_count) {
@@ -1668,7 +1720,7 @@ class WorkFlowDataAccessHandler {
 				}
 			}
 			
-			return $selected_fk_table ? $selected_fk_table : $attr_fks[0];
+			return $selected_fk_table ? $selected_fk_table : (isset($attr_fks[0]) ? $attr_fks[0] : null);
 		}
 	}
 }

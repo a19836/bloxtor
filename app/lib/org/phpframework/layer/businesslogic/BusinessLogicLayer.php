@@ -99,7 +99,7 @@ class BusinessLogicLayer extends Layer {
 		$this->initModuleServices($module_id);
 		
 		if($this->getErrorHandler()->ok()) {
-			$module = $this->modules[$module_id];
+			$module = isset($this->modules[$module_id]) ? $this->modules[$module_id] : null;
 			//echo "<pre>";print_r($module);die();
 			//error_log(print_r($module["beans"],1)."\n\n", 3, $GLOBALS["log_file_path"] ? $GLOBALS["log_file_path"] : "/var/www/html/livingroop/default/tmp/phpframework.log");
 			//if ($constructor=="\__system\businesslogic\TestExtendCommonServiceWithDiferentName"){echo "<pre>";print_r($this->getBeanObjs());die();}
@@ -188,7 +188,7 @@ class BusinessLogicLayer extends Layer {
 		
 		//if new_module_id is different. this happens bc the module_id can be "test.Item" where Item is a php file called Item.php
 		if ($new_module_id != $module_id)
-			$this->modules_path[$module_id] = $this->modules_path[$new_module_id];
+			$this->modules_path[$module_id] = isset($this->modules_path[$new_module_id]) ? $this->modules_path[$new_module_id] : null;
 		
 		return $path;
 	}
@@ -210,7 +210,7 @@ class BusinessLogicLayer extends Layer {
 		
 		if($this->getErrorHandler()->ok()) {
 			$objs = $this->bean_objs;
-			$vars = $this->bean_objs["vars"];
+			$vars = isset($this->bean_objs["vars"]) ? $this->bean_objs["vars"] : null;
 			$vars["current_business_logic_module_path"] = $module_path && !$is_module_path_a_folder ? dirname($module_path) . "/" : $module_path;
 			$vars["current_business_logic_module_id"] = $module_id;
 			$this->modules_vars[$module_id] = $vars;
@@ -274,7 +274,7 @@ class BusinessLogicLayer extends Layer {
 				//echo "<br>module_id:$module_id:$is_module_path_a_folder<br>";
 				//print_r($this->modules[$module_id]);die();
 				
-				$this->getModuleCacheLayer()->setCachedModule($module_id, $this->modules[$module_id]);
+				$this->getModuleCacheLayer()->setCachedModule($module_id, isset($this->modules[$module_id]) ? $this->modules[$module_id] : null);
 			}
 			
 			//execute consequence if licence was hacked
@@ -329,7 +329,7 @@ class BusinessLogicLayer extends Layer {
 		foreach ($files as $file_path => $file_data)
 			foreach ($file_data as $class_path => $class_data)
 				if (!empty($class_path) || ($class_path === 0 && !empty($class_data["methods"]))) { //[0] == MAIN FUNCTIONS WITHOUT CLASS OBJECT
-					if ($file_system_paths_by_class_path[$class_path])
+					if (!empty($file_system_paths_by_class_path[$class_path]))
 						launch_exception(new BusinessLogicLayerException(7, array($class_path, $file_path)));
 					else
 						$file_system_paths_by_class_path[$class_path] = $file_path;
@@ -349,7 +349,7 @@ class BusinessLogicLayer extends Layer {
 				for ($j = 0; $j < $functions_total; $j++) {
 					$function_data = $class_data["methods"][$j];
 				
-					if ($function_data["type"] == "public") {
+					if (isset($function_data["type"]) && $function_data["type"] == "public") {
 						$function_name = isset($function_data["name"]) ? $function_data["name"] : null;
 				
 						$code = $function_name;
@@ -451,7 +451,7 @@ class BusinessLogicLayer extends Layer {
 						else if (empty($bean["namespace"])) //if extended_class_path is a root class, remove first back-slash but only if no namespace
 							$extended_class_path = substr($extended_class_path, 0, 1) == "\\" && strpos($extended_class_path, "\\", 1) === false ? substr($extended_class_path, 1) : $extended_class_path; //remove first back slash from CommonService if exist
 						
-						$extended_file_path = $file_system_paths_by_class_path[$extended_class_path];
+						$extended_file_path = isset($file_system_paths_by_class_path[$extended_class_path]) ? $file_system_paths_by_class_path[$extended_class_path] : null;
 					
 						if (!empty($extended_file_path) && !empty($files[$extended_file_path][$extended_class_path]["methods"])){
 							$functions = $files[$extended_file_path][$extended_class_path]["methods"];
@@ -460,19 +460,19 @@ class BusinessLogicLayer extends Layer {
 							for ($t = 0; $t < $functions_total; $t++) {
 								$function_data = $functions[$t];
 						
-								if ($function_data["type"] == "public") {
+								if (isset($function_data["type"]) && $function_data["type"] == "public") {
 									$function_name = isset($function_data["name"]) ? $function_data["name"] : null;
 									
 									//Note that if exists 2 class_names with the same methods and the same module_id, the methods will be overwrited with the methods of the first read class
 									$code = $class_name . "." . $function_name;
 									if (!isset($this->modules[$module_id]["services"][$code]) || $class_path == $class_name) //gives priority to the class_names without namespace, bc are the correct $code.
-										$this->modules[$module_id]["services"][$code] = array($function_name, $class_name, 1, $class_data["namespace"]);
+										$this->modules[$module_id]["services"][$code] = array($function_name, $class_name, 1, isset($class_data["namespace"]) ? $class_data["namespace"] : null);
 									
 									//in case of namespace, add the services with namespace too
 									if ($class_name != $class_path) {
 										$code = $class_path . "." . $function_name;
 										if (!isset($this->modules[$module_id]["services"][$code]))
-											$this->modules[$module_id]["services"][$code] = array($function_name, $class_name, 1, $class_data["namespace"]);
+											$this->modules[$module_id]["services"][$code] = array($function_name, $class_name, 1, isset($class_data["namespace"]) ? $class_data["namespace"] : null);
 									}
 									
 									//Add services to the Beans with diferent names but the same class.
@@ -501,19 +501,19 @@ class BusinessLogicLayer extends Layer {
 				for ($j = 0; $j < $functions_total; $j++) {
 					$function_data = $class_data["methods"][$j];
 				
-					if ($function_data["type"] == "public") {
+					if (isset($function_data["type"]) && $function_data["type"] == "public") {
 						$function_name = isset($function_data["name"]) ? $function_data["name"] : null;
 						
 						//Note that if exists 2 class_names with the same methods and the same module_id, the methods will be overwrited with the methods of the last read class
 						$code = $class_name . "." . $function_name;
 						if (!isset($this->modules[$module_id]["services"][$code]) || $class_path == $class_name) //gives priority to the class_names without namespace, bc are the correct $code.
-							$this->modules[$module_id]["services"][$code] = array($function_name, $class_name, 1, $class_data["namespace"]);
+							$this->modules[$module_id]["services"][$code] = array($function_name, $class_name, 1, isset($class_data["namespace"]) ? $class_data["namespace"] : null);
 						
 						//in case of namespace, add the services with namespace too
 						if ($class_name != $class_path) {
 							$code = $class_path . "." . $function_name;
 							if (!isset($this->modules[$module_id]["services"][$code]))
-								$this->modules[$module_id]["services"][$code] = array($function_name, $class_name, 1, $class_data["namespace"]);
+								$this->modules[$module_id]["services"][$code] = array($function_name, $class_name, 1, isset($class_data["namespace"]) ? $class_data["namespace"] : null);
 						}
 						
 						//Add services to the Beans with diferent names but the same class.
@@ -540,7 +540,7 @@ class BusinessLogicLayer extends Layer {
 		//error_log(print_r($file_system_paths_by_class_path,1)."\n\n", 3, $GLOBALS["log_file_path"] ? $GLOBALS["log_file_path"] : "/var/www/html/livingroop/default/tmp/phpframework.log");
 	}
 	
-	private function callService($module_id, $service_id, $parameters, $options) {
+	private function callService($module_id, $service_id, $parameters, $options = null) {
 		$module = $this->modules[$module_id];
 		//echo "<pre>";print_r($module);die();
 		//error_log(print_r($module["beans"],1)."\n\n", 3, $GLOBALS["log_file_path"] ? $GLOBALS["log_file_path"] : "/var/www/html/livingroop/default/tmp/phpframework.log");
@@ -656,7 +656,7 @@ class BusinessLogicLayer extends Layer {
 		$obj = false;
 		
 		if ($constructor) {
-			$module = $this->modules[$module_id];
+			$module = isset($this->modules[$module_id]) ? $this->modules[$module_id] : null;
 			$full_constructor = ($namespace ? (substr($namespace, 0, 1) == '\\' ? '' : '\\') . $namespace . '\\' : '') . $constructor;
 			
 			if (!empty($module["objects"][$full_constructor]))  //from cache

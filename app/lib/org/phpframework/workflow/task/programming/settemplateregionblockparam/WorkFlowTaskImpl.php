@@ -19,7 +19,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$props = $WorkFlowTaskCodeParser->getVariableNameProps($stmt);
 			$props = $props ? $props : array();
 			
-			preg_match_all('/^' . self::MAIN_VARIABLE_NAME . '([ ]*)\[([^\]]*)\]([ ]*)\[([^\]]*)\]([ ]*)\[([^\]]*)\]([ ]*)$/iu', trim($props["result_var_name"]), $matches, PREG_PATTERN_ORDER);  //'/u' means with accents and ç too.
+			$result_var_name = isset($props["result_var_name"]) ? $props["result_var_name"] : null;
+			preg_match_all('/^' . self::MAIN_VARIABLE_NAME . '([ ]*)\[([^\]]*)\]([ ]*)\[([^\]]*)\]([ ]*)\[([^\]]*)\]([ ]*)$/iu', trim($result_var_name), $matches, PREG_PATTERN_ORDER);  //'/u' means with accents and ç too.
 			
 			if (empty($matches[0][0])) {
 				return null;
@@ -37,8 +38,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$param_name_type = \CMSFileHandler::getArgumentType($param_name);
 			$param_name = \CMSFileHandler::prepareArgument($param_name, $param_name_type);
 			
-			$expr = $stmt->expr;
-			$expr_type = strtolower($expr->getType());
+			$expr = isset($stmt->expr) ? $stmt->expr : null;
+			$expr_type = $expr ? strtolower($expr->getType()) : "";
 			
 			$code = $WorkFlowTaskCodeParser->printCodeExpr($expr);
 			$code = $WorkFlowTaskCodeParser->getStmtValueAccordingWithType($code, $expr_type);
@@ -67,33 +68,43 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"main_variable_name" => $raw_data["childs"]["properties"][0]["childs"]["main_variable_name"][0]["value"],
-			"region" => $raw_data["childs"]["properties"][0]["childs"]["region"][0]["value"],
-			"region_type" => $raw_data["childs"]["properties"][0]["childs"]["region_type"][0]["value"],
-			"block" => $raw_data["childs"]["properties"][0]["childs"]["block"][0]["value"],
-			"block_type" => $raw_data["childs"]["properties"][0]["childs"]["block_type"][0]["value"],
-			"param_name" => $raw_data["childs"]["properties"][0]["childs"]["param_name"][0]["value"],
-			"param_name_type" => $raw_data["childs"]["properties"][0]["childs"]["param_name_type"][0]["value"],
-			"param_value" => $raw_data["childs"]["properties"][0]["childs"]["param_value"][0]["value"],
-			"param_value_type" => $raw_data["childs"]["properties"][0]["childs"]["param_value_type"][0]["value"],
+			"main_variable_name" => isset($raw_data["childs"]["properties"][0]["childs"]["main_variable_name"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["main_variable_name"][0]["value"] : null,
+			"region" => isset($raw_data["childs"]["properties"][0]["childs"]["region"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["region"][0]["value"] : null,
+			"region_type" => isset($raw_data["childs"]["properties"][0]["childs"]["region_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["region_type"][0]["value"] : null,
+			"block" => isset($raw_data["childs"]["properties"][0]["childs"]["block"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["block"][0]["value"] : null,
+			"block_type" => isset($raw_data["childs"]["properties"][0]["childs"]["block_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["block_type"][0]["value"] : null,
+			"param_name" => isset($raw_data["childs"]["properties"][0]["childs"]["param_name"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["param_name"][0]["value"] : null,
+			"param_name_type" => isset($raw_data["childs"]["properties"][0]["childs"]["param_name_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["param_name_type"][0]["value"] : null,
+			"param_value" => isset($raw_data["childs"]["properties"][0]["childs"]["param_value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["param_value"][0]["value"] : null,
+			"param_value_type" => isset($raw_data["childs"]["properties"][0]["childs"]["param_value_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["param_value_type"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$main_var_name = '$' . ($properties["main_variable_name"] ? $properties["main_variable_name"] : self::MAIN_VARIABLE_NAME);
+		$main_var_name = '$' . (!empty($properties["main_variable_name"]) ? $properties["main_variable_name"] : self::MAIN_VARIABLE_NAME);
 		
-		$code  = $prefix_tab . $main_var_name . "[" . self::getVariableValueCode($properties["region"], $properties["region_type"]) . "][" . self::getVariableValueCode($properties["block"], $properties["block_type"]) . "][" . self::getVariableValueCode($properties["param_name"], $properties["param_name_type"]) . "] = " . self::getVariableValueCode($properties["param_value"], $properties["param_value_type"]) . ";\n";
+		$region = isset($properties["region"]) ? $properties["region"] : null;
+		$region_type = isset($properties["region_type"]) ? $properties["region_type"] : null;
+		$block = isset($properties["block"]) ? $properties["block"] : null;
+		$block_type = isset($properties["block_type"]) ? $properties["block_type"] : null;
+		$param_name = isset($properties["param_name"]) ? $properties["param_name"] : null;
+		$param_name_type = isset($properties["param_name_type"]) ? $properties["param_name_type"] : null;
+		$param_value = isset($properties["param_value"]) ? $properties["param_value"] : null;
+		$param_value_type = isset($properties["param_value_type"]) ? $properties["param_value_type"] : null;
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$code  = $prefix_tab . $main_var_name . "[" . self::getVariableValueCode($region, $region_type) . "][" . self::getVariableValueCode($block, $block_type) . "][" . self::getVariableValueCode($param_name, $param_name_type) . "] = " . self::getVariableValueCode($param_value, $param_value_type) . ";\n";
+		
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

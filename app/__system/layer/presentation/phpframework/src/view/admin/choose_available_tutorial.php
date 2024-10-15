@@ -55,28 +55,36 @@ $main_content .= '
 </div>';
 
 function getTutorialHtml($tutorial) {
-	if ($tutorial["video"] || $tutorial["items"]) {
+	$html = '';
+	
+	if (!empty($tutorial["video"]) || !empty($tutorial["items"])) {
 		$attrs = '';
 		$collapse_icon = '';
 		//$tutorial["image"] = "http://jplpinto.localhost/__system/img/logo_full_white.svg";
 		
-		if ($tutorial["items"]) {
+		$tutorial_video = isset($tutorial["video"]) ? $tutorial["video"] : null;
+		$tutorial_image = isset($tutorial["image"]) ? $tutorial["image"] : null;
+		$tutorial_items = isset($tutorial["items"]) ? $tutorial["items"] : null;
+		$tutorial_title = isset($tutorial["title"]) ? $tutorial["title"] : null;
+		$tutorial_description = isset($tutorial["description"]) ? $tutorial["description"] : null;
+		
+		if ($tutorial_items) {
 			$attrs = 'onClick="toggleSubTutorials(this)"';
 			$collapse_icon = '<span class="icon dropdown_arrow"></span>';
 		}
 		else
-			$attrs = 'onClick="openVideoPopup(this)" video_url="' . $tutorial["video"] . '" image_url="' . $tutorial["image"] . '"';
+			$attrs = 'onClick="openVideoPopup(this)" video_url="' . $tutorial_video . '" image_url="' . $tutorial_image . '"';
 		
-		$html = '<li' . ($tutorial["items"] ? ' class="with_sub_tutorials"' : '') . '>
+		$html = '<li' . ($tutorial_items ? ' class="with_sub_tutorials"' : '') . '>
 					<div class="tutorial_header" ' . $attrs . '>
-						<div class="tutorial_title"' . ($tutorial["description"] ? ' title="' . str_replace('"', '&quot;', strip_tags($tutorial["description"])) . '"' : '') . '><span class="icon video"></span>' . $tutorial["title"] . $collapse_icon . '</div>
-						' . ($tutorial["description"] ? '<div class="tutorial_description">' . $tutorial["description"] . '</div>' : '') . '
+						<div class="tutorial_title"' . ($tutorial_description ? ' title="' . str_replace('"', '&quot;', strip_tags($tutorial_description)) . '"' : '') . '><span class="icon video"></span>' . $tutorial_title . $collapse_icon . '</div>
+						' . ($tutorial_description ? '<div class="tutorial_description">' . $tutorial_description . '</div>' : '') . '
 					</div>';
 		
-		if ($tutorial["items"]) {
+		if ($tutorial_items) {
 			$html .= '<ul class="sub_tutorials">';
 			
-			foreach ($tutorial["items"] as $sub_tutorial)
+			foreach ($tutorial_items as $sub_tutorial)
 				$html .= getTutorialHtml($sub_tutorial);
 			
 			$html .= '</ul>';

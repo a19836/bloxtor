@@ -101,7 +101,7 @@ $form_settings = array(
 								"type" => "password",
 								"name" => "data[db_password]",
 								"value" => "#db_password#",
-								"next_html" => '<span class="icon switch toggle_password" onclick="toggleDBPasswordField(this)"></span>' . ($db_settings_variables["password"] ? '<span>...with the global value: "***"</span>' : ''),
+								"next_html" => '<span class="icon switch toggle_password" onclick="toggleDBPasswordField(this)"></span>' /*. (!empty($db_settings_variables["password"]) ? '<span>...with the global value: "***"</span>' : '')*/,
 								"extra_attributes" => array(
 									array("name" => "autocomplete", "value" => "new-password")
 								),
@@ -250,7 +250,7 @@ $main_content = '
 <div class="db_settings">
 		<h1>DataBase Settings</h1>
 		<div class="info">
-			If you are an advanced user, please click <a class="advanced" href="?step=3.1&iframe=' . $is_inside_of_iframe . '">here</a>, otherwise please fill the fields bellow.<br/>
+			If you are an advanced user, please click <a class="advanced" href="?step=3.1&iframe=' . (isset($is_inside_of_iframe) ? $is_inside_of_iframe : "") . '">here</a>, otherwise please fill the fields bellow.<br/>
 			If you need a DataBase in your project, please choose the DataBase\'s type and correspondent settings, otherwise click continue...<br/>
 			Note that if you previously set any db settings, you will need to do it again.
 		</div>';
@@ -262,7 +262,7 @@ if ($diagram_already_exists && $already_did_setup)
 		<div class="warning">
 			Note that: if you did some changes from the advanced layers panel (as an advanced user), these changes will be overwritten and lost. <br/>
 			Do you still wish to proceed with this simple ui? <br/>
-			To edit as an advanced user, please click <a class="advanced" href="?step=3.1&iframe=' . $is_inside_of_iframe . '">here</a>.
+			To edit as an advanced user, please click <a class="advanced" href="?step=3.1&iframe=' . (isset($is_inside_of_iframe) ? $is_inside_of_iframe : "") . '">here</a>.
 		</div>';
 	
 $main_content .= '

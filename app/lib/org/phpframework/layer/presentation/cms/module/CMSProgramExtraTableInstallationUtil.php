@@ -3,6 +3,22 @@ class CMSProgramExtraTableInstallationUtil {
 	
 	const EXTRA_ATTRIBUTES_TABLE_NAME_SUFFIX = "extra";
 	
+	protected $user_global_variables_file_path;
+	protected $db_drivers;
+	protected $projects_evcs;
+	protected $program_id;
+	protected $unzipped_program_path;
+	protected $user_settings;
+	protected $UserAuthenticationHandler;
+	
+	protected $presentation_modules_paths;
+	protected $business_logic_modules_paths;
+	protected $ibatis_modules_paths;
+	protected $hibernate_modules_paths;
+	
+	protected $messages;
+	protected $errors;
+	
 	public function renameProjectsTableExtraAttributesCallsInPresentationFilesBasedInDefaultDBDriver($table_alias) {
 		$status = true;
 		
@@ -129,7 +145,7 @@ class CMSProgramExtraTableInstallationUtil {
 							$this->addError("Could not copy $basename to '" . $relative_module_path . "'!");
 							$status = false;
 						}
-						else if (!$exists || $bkp_fp) { //if old file does not exist or if exists and is different
+						else if (!$exists || !empty($bkp_fp)) { //if old file does not exist or if exists and is different
 							if (!self::updateBusinessLogicServiceClassNameInFile($dst_fp, $src_object_name, $dst_object_name)) {
 								$this->addError("Could not rename business logic class name in '" . $relative_module_path . $basename . "'!");
 								$status = false;
@@ -169,8 +185,8 @@ class CMSProgramExtraTableInstallationUtil {
 								$this->addError("Could not copy $basename to '" . $relative_module_path . "'!");
 								$status = false;
 							}
-							else if (!$exists || $bkp_fp) { //if old file does not exist or if exists and is different
-								if ($bkp_fp) {
+							else if (!$exists || !empty($bkp_fp)) { //if old file does not exist or if exists and is different
+								if (!empty($bkp_fp)) {
 									$bkp_frp = str_replace(LAYER_PATH, "", $bkp_fp);
 									$this->addMessage("Note that this program added new attributes to the Article module and replace the previous Business Logic Service in '{$relative_module_path}$basename'. If you wish to have the '$basename' with your old attributes too, please merge this file with the '$bkp_frp' file.");
 								}
@@ -217,8 +233,8 @@ class CMSProgramExtraTableInstallationUtil {
 								$this->addError("Could not copy $basename to '" . $relative_module_path . "'!");
 								$status = false;
 							}
-							else if (!$exists || $bkp_fp) { //if old file does not exist or if exists and is different
-								if ($bkp_fp) {
+							else if (!$exists || !empty($bkp_fp)) { //if old file does not exist or if exists and is different
+								if (!empty($bkp_fp)) {
 									$bkp_frp = str_replace(LAYER_PATH, "", $bkp_fp);
 									$this->addMessage("Note that this program added new attributes to the Article module and replace the previous Ibatis Rules in '{$relative_module_path}$basename'. If you wish to have the '$basename' with your old attributes too, please merge this file with the '$bkp_frp' file.");
 								}
@@ -261,8 +277,8 @@ class CMSProgramExtraTableInstallationUtil {
 								$this->addError("Could not copy $basename to '" . $relative_module_path . "'!");
 								$status = false;
 							}
-							else if (!$exists || $bkp_fp) { //if old file does not exist or if exists and is different
-								if ($bkp_fp) {
+							else if (!$exists || !empty($bkp_fp)) { //if old file does not exist or if exists and is different
+								if (!empty($bkp_fp)) {
 									$bkp_frp = str_replace(LAYER_PATH, "", $bkp_fp);
 									$this->addMessage("Note that this program added new attributes to the Article module and replace the previous Hibernate Rules in '{$relative_module_path}$basename'. If you wish to have the '$basename' with your old attributes too, please merge this file with the '$bkp_frp' file.");
 								}
@@ -284,7 +300,7 @@ class CMSProgramExtraTableInstallationUtil {
 			//insert table_extra into DBs
 			include $src_files["attributes_settings"];
 			
-			if ($table_extra_attributes_settings) {
+			if (!empty($table_extra_attributes_settings)) {
 				$sub_status = true;
 				
 				//save this table into our internal register so we can detect later if a db table belongs to a module. Leave this code before the next if method, bc if the table already exists it won't not insert it in the UserAuthenticationHandler.
@@ -357,7 +373,7 @@ class CMSProgramExtraTableInstallationUtil {
 		if (trim($orig_code) != trim($new_code)) {
 			include $new_file;
 			
-			if ($table_extra_attributes_settings) {
+			if (!empty($table_extra_attributes_settings)) {
 				$bkp = $table_extra_attributes_settings;
 				
 				include $orig_file;
@@ -486,6 +502,52 @@ class CMSProgramExtraTableInstallationUtil {
 	
 	private static function getObjectName($name) {
 		return str_replace(" ", "", ucwords(str_replace("_", " ", strtolower($name))));
+	}
+	
+	protected function getFolderPagesList($abs_path, $rel_path = "") {
+		$pages = array();
+		$files = array_diff(scandir($abs_path), array('..', '.'));
+		
+		foreach ($files as $f) {
+			$fp = $abs_path . $f;
+			
+			if (is_dir($fp))
+				$pages = array_merge($pages, $this->getFolderPagesList($abs_path . $f . "/", $rel_path . $f . "/"));
+			else
+				$pages[] = $rel_path . $f;
+		}
+		
+		return $pages;
+	}
+	
+	/* DBS FUNCTIONS */
+	
+	protected function existsDBs() {
+		return count($this->db_drivers);
+	}
+	
+	/* ERRORS FUNCTIONS */
+	
+	public function addError($error) {
+		return $this->errors[] = $error;
+	}
+	
+	public function getErrors() {
+		return $this->errors;
+	}
+	
+	/* MESSAGES FUNCTIONS */
+	
+	public function addMessage($message) {
+		return $this->messages[] = $message;
+	}
+	
+	public function getMessages() {
+		return $this->messages;
+	}
+	
+	public function existsMessage($message) {
+		return in_array($message, $this->messages);
 	}
 }
 ?>

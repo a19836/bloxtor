@@ -27,9 +27,9 @@ $form_settings = array(
 							"input" => array(
 								"type" => "select",
 								"name" => "data[type]",
-								"value" => ($db_settings_variables["type"] ? '$' . $db_settings_variables["type"] : "#type#"),
-								"options" => $available_types_options,
-								"next_html" => ($db_settings_variables["type"] ? '<span>...with the global value: "#type#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["type"]) ? '$' . $db_settings_variables["type"] : "#type#"),
+								"options" => isset($available_types_options) ? $available_types_options : null,
+								"next_html" => (!empty($db_settings_variables["type"]) ? '<span>...with the global value: "#type#"</span>' : ''),
 								"extra_attributes" => array(
 									array("name" => "onChange", "value" => "onChangeDBType(this)")
 								),
@@ -45,9 +45,9 @@ $form_settings = array(
 							"input" => array(
 								"type" => "select",
 								"name" => "data[extension]",
-								"value" => ($db_settings_variables["extension"] ? '$' . $db_settings_variables["extension"] : "#extension#"),
-								"options" => $available_extensions_options,
-								"next_html" => ($db_settings_variables["extension"] ? '<span>...with the global value: "#extension#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["extension"]) ? '$' . $db_settings_variables["extension"] : "#extension#"),
+								"options" => isset($available_extensions_options) ? $available_extensions_options : null,
+								"next_html" => (!empty($db_settings_variables["extension"]) ? '<span>...with the global value: "#extension#"</span>' : ''),
 								"extra_attributes" => array(
 									array("name" => "onChange", "value" => "onChangeDBExtension(this)")
 								),
@@ -63,8 +63,8 @@ $form_settings = array(
 							"input" => array(
 								"type" => "text",
 								"name" => "data[host]",
-								"value" => ($db_settings_variables["host"] ? '$' . $db_settings_variables["host"] : "#host#"),
-								"next_html" => ($db_settings_variables["host"] ? '<span>...with the global value: "#host#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["host"]) ? '$' . $db_settings_variables["host"] : "#host#"),
+								"next_html" => (!empty($db_settings_variables["host"]) ? '<span>...with the global value: "#host#"</span>' : ''),
 							)
 						)
 					),
@@ -77,8 +77,8 @@ $form_settings = array(
 							"input" => array(
 								"type" => "text",
 								"name" => "data[db_name]",
-								"value" => ($db_settings_variables["db_name"] ? '$' . $db_settings_variables["db_name"] : "#db_name#"),
-								"next_html" => ($db_settings_variables["db_name"] ? '<span>...with the global value: "#db_name#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["db_name"]) ? '$' . $db_settings_variables["db_name"] : "#db_name#"),
+								"next_html" => (!empty($db_settings_variables["db_name"]) ? '<span>...with the global value: "#db_name#"</span>' : ''),
 							)
 						)
 					),
@@ -91,8 +91,8 @@ $form_settings = array(
 							"input" => array(
 								"type" => "text",
 								"name" => "data[username]",
-								"value" => ($db_settings_variables["username"] ? '$' . $db_settings_variables["username"] : "#username#"),
-								"next_html" => ($db_settings_variables["username"] ? '<span>...with the global value: "#username#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["username"]) ? '$' . $db_settings_variables["username"] : "#username#"),
+								"next_html" => (!empty($db_settings_variables["username"]) ? '<span>...with the global value: "#username#"</span>' : ''),
 								"extra_attributes" => array(
 									array("name" => "autocomplete", "value" => "new-password")
 								),
@@ -106,10 +106,10 @@ $form_settings = array(
 								"value" => "Password: ",
 							),
 							"input" => array(
-								"type" => $db_settings_variables["password"] ? "text" : "password",
+								"type" => !empty($db_settings_variables["password"]) ? "text" : "password",
 								"name" => "data[password]",
-								"value" => ($db_settings_variables["password"] ? '$' . $db_settings_variables["password"] : "#password#"),
-								"next_html" => '<span class="icon switch toggle_password" onClick="toggleDBPasswordField(this)" title="Toggle password and text field">Toggle password field</span>' . ($db_settings_variables["password"] ? '<span>...with the global value: "***"</span>' : ''),
+								"value" => (!empty($db_settings_variables["password"]) ? '$' . $db_settings_variables["password"] : "#password#"),
+								"next_html" => '<span class="icon switch toggle_password" onClick="toggleDBPasswordField(this)" title="Toggle password and text field">Toggle password field</span>' . (!empty($db_settings_variables["password"]) ? '<span>...with the global value: "***"</span>' : ''),
 								"extra_attributes" => array(
 									array("name" => "autocomplete", "value" => "new-password")
 								),
@@ -135,8 +135,8 @@ $form_settings = array(
 								"type" => "text",
 								"name" => "data[port]",
 								"value" => "#port#",
-								"value" => ($db_settings_variables["port"] ? '$' . $db_settings_variables["port"] : "#port#"),
-								"next_html" => ($db_settings_variables["port"] ? '<span>...with the global value: "#port#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["port"]) ? '$' . $db_settings_variables["port"] : "#port#"),
+								"next_html" => (!empty($db_settings_variables["port"]) ? '<span>...with the global value: "#port#"</span>' : ''),
 							)
 						)
 					),
@@ -147,10 +147,10 @@ $form_settings = array(
 								"value" => "Persistent: ",
 							),
 							"input" => array(
-								"type" => $db_settings_variables["persistent"] ? "text" : "checkbox",
+								"type" => !empty($db_settings_variables["persistent"]) ? "text" : "checkbox",
 								"name" => "data[persistent]",
-								"value" => ($db_settings_variables["persistent"] ? '$' . $db_settings_variables["persistent"] : "#persistent#"),
-								"next_html" => ($db_settings_variables["persistent"] ? '<span>...with the global value: "#persistent#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["persistent"]) ? '$' . $db_settings_variables["persistent"] : "#persistent#"),
+								"next_html" => (!empty($db_settings_variables["persistent"]) ? '<span>...with the global value: "#persistent#"</span>' : ''),
 							)
 						)
 					),
@@ -161,10 +161,10 @@ $form_settings = array(
 								"value" => "New Link: ",
 							),
 							"input" => array(
-								"type" => $db_settings_variables["new_link"] ? "text" : "checkbox",
+								"type" => !empty($db_settings_variables["new_link"]) ? "text" : "checkbox",
 								"name" => "data[new_link]",
-								"value" => ($db_settings_variables["new_link"] ? '$' . $db_settings_variables["new_link"] : "#new_link#"),
-								"next_html" => ($db_settings_variables["new_link"] ? '<span>...with the global value: "#new_link#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["new_link"]) ? '$' . $db_settings_variables["new_link"] : "#new_link#"),
+								"next_html" => (!empty($db_settings_variables["new_link"]) ? '<span>...with the global value: "#new_link#"</span>' : ''),
 							)
 						)
 					),
@@ -177,9 +177,9 @@ $form_settings = array(
 							"input" => array(
 								"type" => "select",
 								"name" => "data[encoding]",
-								"value" => ($db_settings_variables["encoding"] ? '$' . $db_settings_variables["encoding"] : "#encoding#"),
-								"options" => $available_encodings_options,
-								"next_html" => ($db_settings_variables["encoding"] ? '<span>...with the global value: "#encoding#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["encoding"]) ? '$' . $db_settings_variables["encoding"] : "#encoding#"),
+								"options" => isset($available_encodings_options) ? $available_encodings_options : null,
+								"next_html" => (!empty($db_settings_variables["encoding"]) ? '<span>...with the global value: "#encoding#"</span>' : ''),
 							)
 						)
 					),
@@ -192,8 +192,8 @@ $form_settings = array(
 							"input" => array(
 								"type" => "text",
 								"name" => "data[schema]",
-								"value" => ($db_settings_variables["schema"] ? '$' . $db_settings_variables["schema"] : "#schema#"),
-								"next_html" => ($db_settings_variables["schema"] ? '<span>...with the global value: "#schema#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["schema"]) ? '$' . $db_settings_variables["schema"] : "#schema#"),
+								"next_html" => (!empty($db_settings_variables["schema"]) ? '<span>...with the global value: "#schema#"</span>' : ''),
 							)
 						)
 					),
@@ -206,8 +206,8 @@ $form_settings = array(
 							"input" => array(
 								"type" => "text",
 								"name" => "data[odbc_data_source]",
-								"value" => ($db_settings_variables["odbc_data_source"] ? '$' . $db_settings_variables["odbc_data_source"] : "#odbc_data_source#"),
-								"next_html" => ($db_settings_variables["odbc_data_source"] ? '<span>...with the global value: "#odbc_data_source#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["odbc_data_source"]) ? '$' . $db_settings_variables["odbc_data_source"] : "#odbc_data_source#"),
+								"next_html" => (!empty($db_settings_variables["odbc_data_source"]) ? '<span>...with the global value: "#odbc_data_source#"</span>' : ''),
 								"title" => "A Data Source Name (DSN) is the logical name that is used by Open Database Connectivity (ODBC) to refer to the driver and other information that is required to access data from a data source. Data sources are usually defined in /etc/odbc.ini",
 							)
 						)
@@ -221,8 +221,8 @@ $form_settings = array(
 							"input" => array(
 								"type" => "text",
 								"name" => "data[odbc_driver]",
-								"value" => ($db_settings_variables["odbc_driver"] ? '$' . $db_settings_variables["odbc_driver"] : "#odbc_driver#"),
-								"next_html" => ($db_settings_variables["odbc_driver"] ? '<span>...with the global value: "#odbc_driver#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["odbc_driver"]) ? '$' . $db_settings_variables["odbc_driver"] : "#odbc_driver#"),
+								"next_html" => (!empty($db_settings_variables["odbc_driver"]) ? '<span>...with the global value: "#odbc_driver#"</span>' : ''),
 								"title" => "Is the file path of the installed driver that connects to a data-base from ODBC protocol. Or the name of an ODBC instance that was defined in /etc/odbcinst.ini",
 							)
 						)
@@ -236,8 +236,8 @@ $form_settings = array(
 							"input" => array(
 								"type" => "text",
 								"name" => "data[extra_dsn]",
-								"value" => ($db_settings_variables["extra_dsn"] ? '$' . $db_settings_variables["extra_dsn"] : "#extra_dsn#"),
-								"next_html" => ($db_settings_variables["extra_dsn"] ? '<span>...with the global value: "#extra_dsn#"</span>' : ''),
+								"value" => (!empty($db_settings_variables["extra_dsn"]) ? '$' . $db_settings_variables["extra_dsn"] : "#extra_dsn#"),
+								"next_html" => (!empty($db_settings_variables["extra_dsn"]) ? '<span>...with the global value: "#extra_dsn#"</span>' : ''),
 								"title" => "Other DSN attributes. Each attribute must be splitted by comma.",
 							)
 						)
@@ -292,10 +292,10 @@ $head = '
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/db_driver_connection_props.js"></script>
 
 <script>
-	var drivers_encodings = ' . json_encode($drivers_encodings) . ';
-	var drivers_extensions = ' . json_encode($drivers_extensions) . ';
-	var drivers_ignore_connection_options = ' . json_encode($drivers_ignore_connection_options) . ';
-	var drivers_ignore_connection_options_by_extension = ' . json_encode($drivers_ignore_connection_options_by_extension) . ';
+	var drivers_encodings = ' . (isset($drivers_encodings) ? json_encode($drivers_encodings) : "null") . ';
+	var drivers_extensions = ' . (isset($drivers_extensions) ? json_encode($drivers_extensions) : "null") . ';
+	var drivers_ignore_connection_options = ' . (isset($drivers_ignore_connection_options) ? json_encode($drivers_ignore_connection_options) : "null") . ';
+	var drivers_ignore_connection_options_by_extension = ' . (isset($drivers_ignore_connection_options_by_extension) ? json_encode($drivers_ignore_connection_options_by_extension) : "null") . ';
 </script>';
 
 $main_content = '<div class="db_settings">
@@ -307,7 +307,7 @@ $main_content = '<div class="db_settings">
 			</ul>
 		</header>
 	</div>';
-$main_content .= !empty($error) ? "<h2>$error</h2>" : HtmlFormHandler::createHtmlForm($form_settings, $db_settings);
+$main_content .= !empty($error) ? "<h2>$error</h2>" : HtmlFormHandler::createHtmlForm($form_settings, isset($db_settings) ? $db_settings : null);
 $main_content .= '</div>';
 $main_content .= '<script>
 	var form_fields = $(".db_settings .form_fields");

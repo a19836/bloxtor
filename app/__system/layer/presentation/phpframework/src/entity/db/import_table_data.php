@@ -4,11 +4,11 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$type = $_GET["type"];
-$table = str_replace("/", "", $_GET["table"]);
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
+$table = isset($_GET["table"]) ? str_replace("/", "", $_GET["table"]) : null;
 
 $PHPVariablesFileHandler = new PHPVariablesFileHandler($user_global_variables_file_path);
 $PHPVariablesFileHandler->startUserGlobalVariables();
@@ -24,22 +24,22 @@ if ($obj && is_a($obj, "DB")) {
 	$table_attrs = $obj->listTableFields($table);
 	$table_attrs = array_keys($table_attrs);
 	
-	if ($_POST) {
+	if (!empty($_POST)) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 		
-		$file = $_FILES["file"];
-		$file_type = $_POST["file_type"];
-		$rows_delimiter = $_POST["rows_delimiter"];
-		$columns_delimiter = $_POST["columns_delimiter"];
-		$enclosed_by = $_POST["enclosed_by"];
-		$ignore_rows_number = trim($_POST["ignore_rows_number"]);
-		$insert_ignore = trim($_POST["insert_ignore"]);
-		$update_existent = trim($_POST["update_existent"]);
-		$force = trim($_POST["force"]);
-		$columns_attributes = $_POST["columns_attributes"];
-		$uploaded_file_path = TMP_PATH . $file["name"];
+		$file = isset($_FILES["file"]) ? $_FILES["file"] : null;
+		$file_type = isset($_POST["file_type"]) ? $_POST["file_type"] : null;
+		$rows_delimiter = isset($_POST["rows_delimiter"]) ? $_POST["rows_delimiter"] : null;
+		$columns_delimiter = isset($_POST["columns_delimiter"]) ? $_POST["columns_delimiter"] : null;
+		$enclosed_by = isset($_POST["enclosed_by"]) ? $_POST["enclosed_by"] : null;
+		$ignore_rows_number = isset($_POST["ignore_rows_number"]) ? trim($_POST["ignore_rows_number"]) : null;
+		$insert_ignore = isset($_POST["insert_ignore"]) ? trim($_POST["insert_ignore"]) : null;
+		$update_existent = isset($_POST["update_existent"]) ? trim($_POST["update_existent"]) : null;
+		$force = isset($_POST["force"]) ? trim($_POST["force"]) : null;
+		$columns_attributes = isset($_POST["columns_attributes"]) ? $_POST["columns_attributes"] : null;
+		$uploaded_file_path = isset($file["name"]) ? TMP_PATH . $file["name"] : null;
 		
-		if ($file["tmp_name"]) {
+		if (!empty($file["tmp_name"])) {
 			if (move_uploaded_file($file["tmp_name"], $uploaded_file_path)) {
 				if ($file_type == "csv") {
 					$rows_delimiter = "\n";

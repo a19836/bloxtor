@@ -4,11 +4,11 @@ include_once $EVC->getUtilPath("WorkFlowDataAccessHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$type = $_GET["type"];
-$table = str_replace("/", "", $_GET["table"]);
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
+$table = isset($_GET["table"]) ? str_replace("/", "", $_GET["table"]) : null;
 
 $layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$bean_name";
 $UserAuthenticationHandler->checkInnerFilePermissionAuthentication($layer_object_id, "layer", "access");
@@ -42,7 +42,7 @@ if (empty($layers)) {*/
 		
 		if ($reserved_db_table_names_res)
 			foreach ($reserved_db_table_names_res as $item)
-				if ($item["name"])
+				if (!empty($item["name"]))
 					$reserved_db_table_names[] = $item["name"];
 		
 		//TRYING TO GET THE DB TABLES FROM THE TASK FLOW
@@ -52,7 +52,7 @@ if (empty($layers)) {*/
 			
 			$tasks = $WorkFlowDataAccessHandler->getTasks();
 			
-			if ($tasks["tasks"])
+			if (!empty($tasks["tasks"]))
 				foreach ($tasks["tasks"] as $table_name => $task) 
 					$db_data[ $table_name ] = array("properties" => array(
 						"bean_file_name" => $bean_file_name,
@@ -67,7 +67,7 @@ if (empty($layers)) {*/
 			
 			$t = count($tables);
 			for ($i = 0; $i < $t; $i++) {
-				$table_name = $tables[$i]["name"];
+				$table_name = isset($tables[$i]["name"]) ? $tables[$i]["name"] : null;
 				
 				$db_data[ $table_name ] = array("properties" => array(
 					"bean_file_name" => $bean_file_name,
@@ -117,7 +117,7 @@ AdminMenuHandler::getItemId("$bean_file_name/$bean_name/$table/$name");
 				$attr["item_menu"] = $attr_menu;
 				$attr["table"] = $table;
 				
-				if ($attr["primary_key"])
+				if (!empty($attr["primary_key"]))
 					$attr["item_class"] = "primary_key";
 				
 				$db_data[$name] = array("properties" => $attr);

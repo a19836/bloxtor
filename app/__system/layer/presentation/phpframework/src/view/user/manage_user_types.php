@@ -41,12 +41,12 @@ for ($i = 0; $i < $t; $i++) {
 	$user_type = $user_types[$i];
 	
 	$main_content .= '<tr>
-		<td class="user_type_id">' . $user_type["user_type_id"] . '</td>
-		<td class="name">' . $user_type["name"] . '</td>
-		<td class="created_date">' . $user_type["created_date"] . '</td>
-		<td class="modified_date">' . $user_type["modified_date"] . '</td>
+		<td class="user_type_id">' . (isset($user_type["user_type_id"]) ? $user_type["user_type_id"] : "") . '</td>
+		<td class="name">' . (isset($user_type["name"]) ? $user_type["name"] : "") . '</td>
+		<td class="created_date">' . (isset($user_type["created_date"]) ? $user_type["created_date"] : "") . '</td>
+		<td class="modified_date">' . (isset($user_type["modified_date"]) ? $user_type["modified_date"] : "") . '</td>
 		<td class="buttons">
-			<a class="icon edit" href="' . $project_url_prefix . 'user/edit_user_type?user_type_id=' . $user_type["user_type_id"] . '" title="Edit">Edit</a>
+			<a class="icon edit" href="' . $project_url_prefix . 'user/edit_user_type?user_type_id=' . (isset($user_type["user_type_id"]) ? $user_type["user_type_id"] : "") . '" title="Edit">Edit</a>
 		</td>
 	</tr>';
 }

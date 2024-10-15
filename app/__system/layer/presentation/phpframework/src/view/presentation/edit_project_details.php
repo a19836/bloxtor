@@ -5,6 +5,11 @@ include_once get_lib("org.phpframework.util.web.html.HtmlFormHandler");
 include_once $EVC->getUtilPath("AdminMenuUIHandler");
 include_once $EVC->getUtilPath("WorkFlowPresentationHandler");
 
+$file_path = isset($file_path) ? $file_path : null;
+$P = isset($P) ? $P : null;
+$project_layout_type_id = isset($project_layout_type_id) ? $project_layout_type_id : null;
+$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+
 $manage_project_url = $project_url_prefix . "phpframework/presentation/manage_file?bean_name=#bean_name#&bean_file_name=#bean_file_name#&action=#action#&item_type=presentation&extra=#extra#&path=#path#&folder_type=project";
 
 $choose_bean_layer_files_from_file_manager_url = $project_url_prefix . "phpframework/admin/get_sub_files?bean_name=#bean_name#&bean_file_name=#bean_file_name#&path=#path#";
@@ -35,37 +40,37 @@ var manage_project_url = \'' . $manage_project_url . '\';
 var is_popup = ' . ($popup ? "true" : "false") . ';
 </script>';
 
-if (!$is_existent_project || ($_POST && !$status))
+if (empty($is_existent_project) || (!empty($_POST) && empty($status)))
 	$head .= '
 	<script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/db_driver_connection_props.js"></script>
 	<script>
-		var drivers_encodings = ' . json_encode($drivers_encodings) . ';
-		var drivers_extensions = ' . json_encode($drivers_extensions) . ';
-		var drivers_ignore_connection_options = ' . json_encode($drivers_ignore_connection_options) . ';
-		var drivers_ignore_connection_options_by_extension = ' . json_encode($drivers_ignore_connection_options_by_extension) . ';
+		var drivers_encodings = ' . (isset($drivers_encodings) ? json_encode($drivers_encodings) : "null") . ';
+		var drivers_extensions = ' . (isset($drivers_extensions) ? json_encode($drivers_extensions) : "null") . ';
+		var drivers_ignore_connection_options = ' . (isset($drivers_ignore_connection_options) ? json_encode($drivers_ignore_connection_options) : "null") . ';
+		var drivers_ignore_connection_options_by_extension = ' . (isset($drivers_ignore_connection_options_by_extension) ? json_encode($drivers_ignore_connection_options_by_extension) : "null") . ';
 	</script>';
 
 $main_content = '';
 
-if ($_POST) {
-	if (!$status) { //This should never happen, bc the javascript already takes care of this and it only submits the form if project is successfull created.
-		$error_message = ($extra_message ? $extra_message . "<br/>" : "") . ($error_message ? $error_message : "There was an error trying to " . ($is_rename_project ? "rename" : "create") . " project. Please try again...");
+if (!empty($_POST)) {
+	if (empty($status)) { //This should never happen, bc the javascript already takes care of this and it only submits the form if project is successfull created.
+		$error_message = (!empty($extra_message) ? $extra_message . "<br/>" : "") . (!empty($error_message) ? $error_message : "There was an error trying to " . (!empty($is_rename_project) ? "rename" : "create") . " project. Please try again...");
 	}
 	else {
-		$status_message = ($extra_message ? $extra_message . "<br/>" : "") . "Project " . ($is_rename_project ? "renamed" : ($_POST["is_existent_project"] ? "saved" : "created")) . " successfully!";
+		$status_message = (!empty($extra_message) ? $extra_message . "<br/>" : "") . "Project " . (!empty($is_rename_project) ? "renamed" : (!empty($_POST["is_existent_project"]) ? "saved" : "created")) . " successfully!";
 		$on_success_js_func_opts = null;
 		
 		if ($on_success_js_func) {
 			$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerObjFolderName( $PEVC->getPresentationLayer() ); //get layer_bean_folder_name
 			
-			$old_filter_by_layout = "$layer_bean_folder_name/" . (trim($_POST["old_project_folder"]) ? trim($_POST["old_project_folder"]) . "/" : "") . trim($_POST["old_name"]);
+			$old_filter_by_layout = "$layer_bean_folder_name/" . (isset($_POST["old_project_folder"]) && trim($_POST["old_project_folder"]) ? trim($_POST["old_project_folder"]) . "/" : "") . (isset($_POST["old_name"]) ? trim($_POST["old_name"]) : "");
 			$old_filter_by_layout = preg_replace("/[\/]+/", "/", $old_filter_by_layout); //remove duplicates /
 			$old_filter_by_layout = preg_replace("/[\/]+$/", "", $old_filter_by_layout); //remove end /
 			
 			$new_filter_by_layout = "$layer_bean_folder_name/$path"; //$path already has duplicates and end / removed
 			
 			$on_success_js_func_opts = array(
-				"is_rename_project" => $is_rename_project,
+				"is_rename_project" => isset($is_rename_project) ? $is_rename_project : null,
 				"layer_bean_folder_name" => $layer_bean_folder_name,
 				"old_filter_by_layout" => $old_filter_by_layout,
 				"new_filter_by_layout" => $new_filter_by_layout,
@@ -94,13 +99,13 @@ if ($_POST) {
 $main_content .= '
 <div class="top_bar' . ($popup ? " in_popup" : "") . '">
 	<header>
-		<div class="title">' . ($is_existent_project ? 'Edit' : 'Create') . ' Project</div>
+		<div class="title">' . (!empty($is_existent_project) ? 'Edit' : 'Create') . ' Project</div>
 		<ul>
 			<li class="save" data-title="Save Project"><a onclick="submitForm(this)"><i class="icon save"></i> Save Project</a>
 		</ul>
 	</header>
 </div>
-<div class="edit_project_details' . (count($layers_projects) == 1 ? ' single_presentation_layer' : '') . ($is_existent_project ? ' existent_project' : '') . '">';
+<div class="edit_project_details' . (isset($layers_projects) && count($layers_projects) == 1 ? ' single_presentation_layer' : '') . (!empty($is_existent_project) ? ' existent_project' : '') . '">';
 
 //prepare choose project template popup
 $main_content .= '
@@ -110,11 +115,16 @@ $main_content .= '
 			<label>Broker:</label>
 			<select onChange="updateLayerUrlFileManager(this)">'; //We left the onChange but it doesn't matter bc this field is hidden and only sets the default bean_name from the GET url
 
-$t = count($presentation_brokers);
-for ($i = 0; $i < $t; $i++) {
-	$b = $presentation_brokers[$i];
-	
-	$main_content .= '<option bean_file_name="' . $b[1] . '" bean_name="' . $b[2] . '" value="' . $b[0] . '"' . ($bn == $bean_name && $bean_file_name == $layer_props["bean_file_name"] ? " selected" : "") . '>' . $b[0] . '</option>';
+if (isset($presentation_brokers)) {
+	$t = count($presentation_brokers);
+	for ($i = 0; $i < $t; $i++) {
+		$b = $presentation_brokers[$i];
+		$b_broker_name = isset($b[0]) ? $b[0] : null;
+		$b_bean_file_name = isset($b[1]) ? $b[1] : null;
+		$b_bean_name = isset($b[2]) ? $b[2] : null;
+		
+		$main_content .= '<option bean_file_name="' . $b_bean_file_name . '" bean_name="' . $b_bean_name . '" value="' . $b_broker_name . '"' . ($b_bean_name == $bean_name && $b_bean_file_name == $bean_file_name ? " selected" : "") . '>' . $b_broker_name . '</option>';
+	}
 }
 
 $main_content .= '
@@ -131,28 +141,28 @@ $main_content .= '
 		</div>
 	</div>
 	
-	<form method="post" enctype="multipart/form-data" onSubmit="return addProject(this);" project_created="' . ($is_existent_project ? 1 : 0) . '">
-		<input type="hidden" name="is_existent_project" value="' . ($is_existent_project ? 1 : 0) . '" />
-		<input type="hidden" name="is_previous_project_creation_with_errors" value="' . ($_POST && !$status ? 1 : 0) . '" />
+	<form method="post" enctype="multipart/form-data" onSubmit="return addProject(this);" project_created="' . (!empty($is_existent_project) ? 1 : 0) . '">
+		<input type="hidden" name="is_existent_project" value="' . (!empty($is_existent_project) ? 1 : 0) . '" />
+		<input type="hidden" name="is_previous_project_creation_with_errors" value="' . (!empty($_POST) && empty($status) ? 1 : 0) . '" />
 		
 		<div class="left_content">
-			' . ($project_image ? '<img src="' . $project_image . '" alt="No Image" onClick="$(this).parent().children(\'input[type=file]\').trigger(\'click\')" />' : '<div class="no_logo" onClick="$(this).parent().children(\'input[type=file]\').trigger(\'click\')"></div>') . '
+			' . (!empty($project_image) ? '<img src="' . $project_image . '" alt="No Image" onClick="$(this).parent().children(\'input[type=file]\').trigger(\'click\')" />' : '<div class="no_logo" onClick="$(this).parent().children(\'input[type=file]\').trigger(\'click\')"></div>') . '
 			
 			<label>Change logo:</label>
 			<input type="file" name="image" />
 			
 			<div class="project_folder advanced_option" title="Create your project inside of an existent or new folder...">
 				<label>Assign this project to a folder?</label>
-				<input type="hidden" name="old_project_folder" value="' . $old_project_folder . '" />
-				<input name="project_folder" placeHolder="Type folder name" value="' . $project_folder . '" autocomplete="new-password" />
+				<input type="hidden" name="old_project_folder" value="' . (isset($old_project_folder) ? $old_project_folder : null) . '" />
+				<input name="project_folder" placeHolder="Type folder name" value="' . (isset($project_folder) ? $project_folder : null) . '" autocomplete="new-password" />
 				<span class="icon search" onClick="onChooseProjectFolder(this)"></span>
 			</div>
 		</div>
 		<div class="right_content">
 			<div class="name" title="Please write your new project\'s folder name">
 				<label>Name your project:</label>
-				<input type="hidden" name="old_name" value="' . $old_project . '" />
-				<input name="name" placeHolder="Type a name" value="' . $project . '" required autocomplete="new-password" />
+				<input type="hidden" name="old_name" value="' . (isset($old_project) ? $old_project : null) . '" />
+				<input name="name" placeHolder="Type a name" value="' . (isset($project) ? $project : null) . '" required autocomplete="new-password" />
 				
 				<div class="auto_normalize">
 					<input type="checkbox" checked /> Normalize name automatically
@@ -160,20 +170,20 @@ $main_content .= '
 			</div>
 			<div class="description">
 				<label>Description:</label>
-				<textarea name="description" placeHolder="Type some description">' . $project_description . '</textarea>
+				<textarea name="description" placeHolder="Type some description">' . (isset($project_description) ? $project_description : null) . '</textarea>
 			</div>';
 
-if ($db_brokers_exist) {
-	if (!$is_existent_project || ($_POST && !$status)) {
+if (!empty($db_brokers_exist)) {
+	if (empty($is_existent_project) || (!empty($_POST) && empty($status))) {
 		$main_content .= '
 			<div class="project_db_driver advanced_option" title="If you wish this project to access a DB, please activate this option and fill the DB details below...">
 				<label>Want to assign a default DB?</label>
 				<select name="project_db_driver" onChange="onChangeProjectWithDB(this)">
 					<option value="0" title="Allow this project to connect with all the DB defined">-- default --</option>
-					<option value="1"' . (is_numeric($project_db_driver) && intval($project_db_driver) === 1 ? ' checked' : '') . '>New DB - User Defined</option>
+					<option value="1"' . (isset($project_db_driver) && is_numeric($project_db_driver) && intval($project_db_driver) === 1 ? ' checked' : '') . '>New DB - User Defined</option>
 					<option value="" disabled></option>';
 	
-		if ($db_drivers_names) {
+		if (!empty($db_drivers_names)) {
 			$main_content .= '<optgroup label="Existent DBs">';
 			
 			foreach ($db_drivers_names as $db_driver_name)
@@ -193,23 +203,23 @@ if ($db_brokers_exist) {
 				<a href="javascript:void(0);" onClick="goToManageLayoutTypePermissions(this)" url="' . $manage_layout_type_permissions_url . '">Manage this project DBs</a>
 			</div>';
 		
-		if ($db_drivers_names && $default_db_driver)
+		if (!empty($db_drivers_names) && !empty($default_db_driver))
 			$main_content .= '<div class="project_default_db_driver advanced_option">The default DB driver defined is "<span>' . $default_db_driver . '</span>"</div>';
 	}
 }
 
-if (!$db_brokers_exist)
+if (empty($db_brokers_exist))
 	$main_content .= '<div class="no_db_drivers advanced_option">Note that there are no DBs connected to this project, which means you can only use it to build static pages.</div>';
-else if (!$db_drivers_names)
+else if (empty($db_drivers_names))
 	$main_content .= '<div class="no_db_drivers advanced_option">Note that there are no DBs connected to this project. Please assign a New DB, otherwise you can only use this project to build static pages.</div>';
 
 $main_content .= '
 		</div>';
 
-if ($db_brokers_exist && $db_drivers_names && $is_existent_project && !$default_db_driver)
-	$main_content .= '<div class="no_project_default_db_driver advanced_option">This project doesn\'t have any default database driver defined, which means the system will use the first connected database, this is, the database driver "<span>' . $db_drivers_names[0] . '</span>"</div>';
+if (!empty($db_brokers_exist) && !empty($db_drivers_names) && !empty($is_existent_project) && empty($default_db_driver))
+	$main_content .= '<div class="no_project_default_db_driver advanced_option">This project doesn\'t have any default database driver defined, which means the system will use the first connected database, this is, the database driver "<span>' . (isset($db_drivers_names[0]) ? $db_drivers_names[0] : null) . '</span>"</div>';
 
-if (!$is_existent_project || ($_POST && !$status)) {
+if (empty($is_existent_project) || (!empty($_POST) && empty($status))) {
 	$form_elements_settings = array(
 		0 => array(
 			"field" => array(
@@ -221,7 +231,7 @@ if (!$is_existent_project || ($_POST && !$status)) {
 					"type" => "select",
 					"name" => "db_details[type]",
 					"value" => "#type#",
-					"options" => $available_db_types, 
+					"options" => isset($available_db_types) ? $available_db_types : null, 
 					"extra_attributes" => array(
 						array("name" => "onChange", "value" => "onChangeDBType(this)")
 					),
@@ -238,7 +248,7 @@ if (!$is_existent_project || ($_POST && !$status)) {
 					"type" => "select",
 					"name" => "db_details[extension]",
 					"value" => "#extension#",
-					"options" => $available_extensions_options,
+					"options" => isset($available_extensions_options) ? $available_extensions_options : null,
 					"extra_attributes" => array(
 						array("name" => "onChange", "value" => "onChangeDBExtension(this)")
 					),
@@ -297,7 +307,7 @@ if (!$is_existent_project || ($_POST && !$status)) {
 					"type" => "password",
 					"name" => "db_details[password]",
 					"value" => "#password#",
-					"next_html" => '<span class="icon switch toggle_password" onclick="toggleDBPasswordField(this)"></span>' . ($db_settings_variables["password"] ? '<span>...with the global value: "***"</span>' : ''),
+					"next_html" => '<span class="icon switch toggle_password" onclick="toggleDBPasswordField(this)"></span>' . (!empty($db_settings_variables["password"]) ? '<span>...with the global value: "***"</span>' : ''),
 					"extra_attributes" => array(
 						array("name" => "autocomplete", "value" => "new-password")
 					),
@@ -365,7 +375,7 @@ if (!$is_existent_project || ($_POST && !$status)) {
 					"type" => "select",
 					"name" => "db_details[encoding]",
 					"value" => "#encoding#",
-					"options" => $available_encodings_options
+					"options" => isset($available_encodings_options) ? $available_encodings_options : null
 				)
 			)
 		),
@@ -428,9 +438,9 @@ if (!$is_existent_project || ($_POST && !$status)) {
 	
 	$HtmlFormHandler = new HtmlFormHandler();
 	$main_content .= '
-		<div class="db_details advanced_option" title="DB Details to assign to this project"' . (is_numeric($project_db_driver) && intval($project_db_driver) === 1 ? '' : ' style="display:none;"') . '>
+		<div class="db_details advanced_option" title="DB Details to assign to this project"' . (isset($project_db_driver) && is_numeric($project_db_driver) && intval($project_db_driver) === 1 ? '' : ' style="display:none;"') . '>
 			<div class="form_fields">
-				' . $HtmlFormHandler->createElements($form_elements_settings, $db_details) . '
+				' . $HtmlFormHandler->createElements($form_elements_settings, isset($db_details) ? $db_details : null) . '
 			</div>
 		</div>';
 }
@@ -438,7 +448,7 @@ if (!$is_existent_project || ($_POST && !$status)) {
 $main_content .= '
 		<div class="toggle_advanced_options" onClick="toggleAdvancedOptions(this)">Show Advanced Mode</div>
 		<div class="buttons">
-			<input type="submit" name="save" value="' . ($is_existent_project ? "Save" : "Add") . ' Project" />
+			<input type="submit" name="save" value="' . (!empty($is_existent_project) ? "Save" : "Add") . ' Project" />
 		</div>
 	</form>
 </div>';

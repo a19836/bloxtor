@@ -49,7 +49,7 @@ class PHPCodeObfuscator {
 		if ($this->files_settings) 
 			foreach ($this->files_settings as $settings)
 				if (!empty($settings[0]))
-					$this->files_settings[0] = is_array($this->files_settings[0]) ? array_merge($this->files_settings[0], $settings[0]) : $settings[0];
+					$this->files_settings[0] = isset($this->files_settings[0]) && is_array($this->files_settings[0]) ? array_merge($this->files_settings[0], $settings[0]) : $settings[0];
 		
 		//set all native functions as reserved functions that cannot be obfuscated
 		$defined_functions = get_defined_functions();
@@ -233,6 +233,22 @@ class PHPCodeObfuscator {
 			
 			$this->initClassesMethodsAndVariables($file_path, $tokens);
 			
+			if (version_compare(PHP_VERSION, '8', '<=')) {
+				if (!defined("T_NAME_FULLY_QUALIFIED"))
+					define("T_NAME_FULLY_QUALIFIED", null);
+				
+				if (!defined("T_NAME_QUALIFIED"))
+					define("T_NAME_QUALIFIED", null);
+				
+				if (!defined("T_NAME_RELATIVE"))
+					define("T_NAME_RELATIVE", null);
+			}
+			
+			if (version_compare(PHP_VERSION, '8.1', '<=')) {
+				if (!defined("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG"))
+					define("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG", null);
+			}
+			
 			$i = 0;
 			while ($i < $tokens_count) {
 				$token = $tokens[$i++];
@@ -257,7 +273,7 @@ class PHPCodeObfuscator {
 							$current_variables = array(); //this is only used for the classes' properties/vars and for the global variables
 						
 						$cfc = count($current_funcs_classes) ? $current_funcs_classes[ count($current_funcs_classes) - 1 ] : null;
-						if ($current_class && $cfc && $cfc[0] == T_FUNCTION && $cfc[2] > $brackets) //in case of being an Interface or abstract class where the functions are not set, something like: "public function getName();"
+						if ($current_class && $cfc && $cfc[0] == T_FUNCTION && isset($cfc[2]) && $cfc[2] > $brackets) //in case of being an Interface or abstract class where the functions are not set, something like: "public function getName();"
 							$clear_current_func = true;
 					}
 				} 
@@ -300,6 +316,14 @@ class PHPCodeObfuscator {
 							break;
 						case T_GLOBAL:
 							$global_fnd = true;
+							break;
+						
+						case T_NAME_FULLY_QUALIFIED:
+						case T_NAME_QUALIFIED:
+						case T_NAME_RELATIVE:
+							if ($implements_extends_found) { //prepare const variable inside of a class
+								$txt = $this->obfuscateClassName($file_path, $txt) ? $this->encode('F', $txt) : $txt;
+							}
 							break;
 						
 						case T_STRING:
@@ -414,7 +438,7 @@ class PHPCodeObfuscator {
 											}
 											break;
 										}
-										else if (!in_array($next_token[0], $this->delimiters))
+										else if (!isset($next_token[0]) || !in_array($next_token[0], $this->delimiters))
 											break;
 									}
 							}
@@ -628,7 +652,7 @@ class PHPCodeObfuscator {
 				else if ($token == ";") {
 					$cfc = count($current_funcs_classes) ? $current_funcs_classes[ count($current_funcs_classes) - 1 ] : null;
 					
-					if ($current_class && $cfc && $cfc[0] == T_FUNCTION && $cfc[2] > $brackets) //in case of being an Interface or abstract class where the functions are not set, something like: "public function getName();"
+					if ($current_class && $cfc && $cfc[0] == T_FUNCTION && isset($cfc[2]) && $cfc[2] > $brackets) //in case of being an Interface or abstract class where the functions are not set, something like: "public function getName();"
 						$clear_current_func = true;
 				}
 			} 
@@ -769,6 +793,7 @@ class PHPCodeObfuscator {
 				$is_static = strpos($m, '::') !== false;
 				$is_obj_mv = strpos($m, '->') !== false;
 				$is_encapsulate_var = false;
+				$aux = null;
 				
 				//Preparing $this->variable or $this->method or $xx->method or $xx->variable
 				if ($is_obj_mv) {
@@ -1360,10 +1385,15 @@ class PHPCodeObfuscator {
 	// Returns hashed text
 	private function encode($type, $text) {
 		$type = strtolower($type);
+		$prefix = "";
 		
 		if ($type == "v" && substr($text, 0, 1) == '$') {
 			$prefix = '$';
 			$text = substr($text, 1);
+		}
+		else if ($type == "v" && substr($text, 0, 2) == '@$') {
+			$prefix = '@$';
+			$text = substr($text, 2);
 		}
 		
 		$hash = hash("md4", $text);

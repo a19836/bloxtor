@@ -1,25 +1,29 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$user_id = $_GET["user_id"];
+$user_id = isset($_GET["user_id"]) ? $_GET["user_id"] : null;
 
 if ($user_id) {
 	$user_data = $UserAuthenticationHandler->getUser($user_id);
 	unset($user_data["password"]);
 }
 
-$is_own_user = $UserAuthenticationHandler->auth["user_data"]["username"] == $user_data["username"];
+$logged_username = isset($UserAuthenticationHandler->auth["user_data"]["username"]) ? $UserAuthenticationHandler->auth["user_data"]["username"] : null;
+$username = isset($user_data["username"]) ? $user_data["username"] : null;
+$is_own_user = $logged_username == $username;
 $is_user_editable = $UserAuthenticationHandler->isCurrentPagePermissionAllowed("write");
 $is_user_deletable = $UserAuthenticationHandler->isCurrentPagePermissionAllowed("delete");
 
-if ($_POST["user_data"]) {
-	$new_user_data = $_POST["user_data"];
+if (!empty($_POST["user_data"])) {
+	$new_user_data = isset($_POST["user_data"]) ? $_POST["user_data"] : null;
 	
-	if ($_POST["delete"]) {
+	if (!empty($_POST["delete"])) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "delete");
 
-		if ($user_id && $UserAuthenticationHandler->deleteUser($user_id) && $UserAuthenticationHandler->deleteUserUserTypesByConditions(array("user_id" => $user_id)))
-			die("<script>alert('User deleted successfully'); document.location = '$project_url_prefix/user/manage_users';</script>");
+		if ($user_id && $UserAuthenticationHandler->deleteUser($user_id) && $UserAuthenticationHandler->deleteUserUserTypesByConditions(array("user_id" => $user_id))) {
+			echo "<script>alert('User deleted successfully'); document.location = '$project_url_prefix/user/manage_users';</script>";
+			die();
+		}
 		else {
 			$user_data = $new_user_data;
 			$error_message = "There was an error trying to delete this user. Please try again...";
@@ -41,30 +45,32 @@ if ($_POST["user_data"]) {
 		$error_message = "Error: User undefined!";
 	else {
 		if ($is_own_user)
-			$new_user_data["user_type_id"] = $user_data["user_type_id"];
+			$new_user_data["user_type_id"] = isset($user_data["user_type_id"]) ? $user_data["user_type_id"] : null;
 		else if (!$is_user_editable)
 			$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 		
 		$new_user_data["username"] = strtolower($new_user_data["username"]);
 		
-		if ($user_data["username"] != $new_user_data["username"]) {
+		if ($username != $new_user_data["username"]) {
 			$results = $UserAuthenticationHandler->searchUsers(array("username" => $new_user_data["username"]));
-			if ($results[0]) {
+			
+			if (!empty($results[0])) {
 				$user_data = $new_user_data;
 				$error_message = "Error: Repeated Username";
 			}
 		}
 		
-		if (!$error_message) {
-			if ($user_data) {
-				$old_username = $user_data["username"];
+		if (empty($error_message)) {
+			if (!empty($user_data)) {
+				$old_username = $username;
 				$user_data = array_merge($user_data, $new_user_data);
 				
 				if ($UserAuthenticationHandler->updateUser($user_data)) {
-					if ($old_username != $user_data["username"] && $is_own_user) {
-						$UserAuthenticationHandler->login($user_data["username"], $user_data["password"]);
+					if ($old_username != $username && $is_own_user) {
+						$UserAuthenticationHandler->login($username, $user_data["password"]);
 					
-						die("<script>alert('User updated successfully'); document.location = '?user_id=" . $user_data["user_id"] . "';</script>");
+						echo "<script>alert('User updated successfully'); document.location = '?user_id=" . $user_data["user_id"] . "';</script>";
+						die();
 					}
 					
 					$status_message = "User updated successfully...";
@@ -78,8 +84,10 @@ if ($_POST["user_data"]) {
 				$user_data = $new_user_data;
 				$user_id = $UserAuthenticationHandler->insertUser($user_data);
 				
-				if ($user_id)
-					die("<script>alert('User inserted successfully'); document.location = '?user_id=" . $user_id . "';</script>");
+				if ($user_id) {
+					echo "<script>alert('User inserted successfully'); document.location = '?user_id=" . $user_id . "';</script>";
+					die();
+				}
 				else
 					$error_message = "There was an error trying to insert this user. Please try again...";
 			}

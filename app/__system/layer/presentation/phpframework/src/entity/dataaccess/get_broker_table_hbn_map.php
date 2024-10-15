@@ -5,15 +5,15 @@ include_once $EVC->getUtilPath("WorkFlowDataAccessHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-if ($_POST) {
-	$bean_name = $_GET["bean_name"];
-	$bean_file_name = $_GET["bean_file_name"];
+if (!empty($_POST)) {
+	$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+	$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
 
-	$db_broker = $_POST["db_broker"];
-	$db_driver = $_POST["db_driver"];
-	$type = $_POST["type"];
-	$db_table = $_POST["db_table"];
-	$map_type = $_POST["map_type"];
+	$db_broker = isset($_POST["db_broker"]) ? $_POST["db_broker"] : null;
+	$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
+	$type = isset($_POST["type"]) ? $_POST["type"] : null;
+	$db_table = isset($_POST["db_table"]) ? $_POST["db_table"] : null;
+	$map_type = isset($_POST["map_type"]) ? $_POST["map_type"] : null;
 
 	$PHPVariablesFileHandler = new PHPVariablesFileHandler($user_global_variables_file_path);
 	$PHPVariablesFileHandler->startUserGlobalVariables();
@@ -30,8 +30,8 @@ if ($_POST) {
 			$WorkFlowDataAccessHandler->setTasksFilePath($tasks_file_path);
 			$tasks = $WorkFlowDataAccessHandler->getTasks();
 			
-			$table_attr_names = $tasks["tasks"][$db_table]["properties"]["table_attr_names"];
-			$table_attr_types = $tasks["tasks"][$db_table]["properties"]["table_attr_types"];
+			$table_attr_names = isset($tasks["tasks"][$db_table]["properties"]["table_attr_names"]) ? $tasks["tasks"][$db_table]["properties"]["table_attr_names"] : null;
+			$table_attr_types = isset($tasks["tasks"][$db_table]["properties"]["table_attr_types"]) ? $tasks["tasks"][$db_table]["properties"]["table_attr_types"] : null;
 		}
 		else {
 			$fields = $obj->getBroker($db_broker)->getFunction("listTableFields", $db_table, array("db_driver" => $db_driver));
@@ -41,13 +41,13 @@ if ($_POST) {
 				$table_attr_types = array();
 		
 				foreach ($fields as $field) {
-					$table_attr_names[] = $field["name"];
-					$table_attr_types[] = $field["type"];
+					$table_attr_names[] = isset($field["name"]) ? $field["name"] : null;
+					$table_attr_types[] = isset($field["type"]) ? $field["type"] : null;
 				}
 			}
 		}
 		
-		if ($table_attr_names && $table_attr_types) {
+		if (!empty($table_attr_names) && !empty($table_attr_types)) {
 			if ($map_type == "parameter") 
 				$xml = WorkFlowDataAccessHandler::getTableParameterMap($table_attr_names, $table_attr_types);
 			else 
@@ -58,7 +58,7 @@ if ($_POST) {
 				$arr = $MyXML->toArray();
 				$new_arr = $MyXML->complexArrayToBasicArray($arr);
 
-				$items = $new_arr["main_node"];
+				$items = isset($new_arr["main_node"]) ? $new_arr["main_node"] : null;
 				//print_r($items);
 			}
 		}

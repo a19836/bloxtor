@@ -28,7 +28,7 @@ class CMSPresentationLayerHandler {
 			}
 			
 			$path_info = pathinfo($file_name);
-			$extension = $path_info["extension"] ? "." . $path_info["extension"] : "";
+			$extension = !empty($path_info["extension"]) ? "." . $path_info["extension"] : "";
 			$fn = $path_info["filename"];
 			$pos = strrpos($fn, "_");
 			$file_name = $pos !== false && is_numeric(substr($fn, $pos + 1)) ? substr($fn, 0, $pos) : $fn;
@@ -80,16 +80,20 @@ class CMSPresentationLayerHandler {
 				$WorkFlowTasksFileHandler->init();
 				$tasks = $WorkFlowTasksFileHandler->getWorkflowData();
 				
-				if ($tasks && $tasks["tasks"]) //just in case the workflow_path does not exist
-					foreach ($tasks["tasks"] as $task)
-						if ($task["properties"]["file_name"] == $file_name) {
+				if ($tasks && !empty($tasks["tasks"])) //just in case the workflow_path does not exist
+					foreach ($tasks["tasks"] as $task) {
+						$task_file_name = isset($task["properties"]["file_name"]) ? $task["properties"]["file_name"] : null;
+						
+						if ($task_file_name == $file_name) {
 							$file_id = self::getFilePathId($EVC, $file_path); //file_1824044789
+							$task_modified_date = isset($task["properties"]["created_files"][$file_id]) ? $task["properties"]["created_files"][$file_id] : null;
 							
-							if ($task["properties"]["created_files"][$file_id] == $modified_date)
+							if ($task_modified_date == $modified_date)
 								$hard_coded = false;
 							
 							break;
 						}
+					}
 			}
 			
 			return $hard_coded;
@@ -120,18 +124,21 @@ class CMSPresentationLayerHandler {
 			$tasks = $WorkFlowTasksFileHandler->getWorkflowData();
 			$exists = false;
 			
-			if ($tasks && $tasks["tasks"]) //just in case the workflow_path does not exist
-				foreach ($tasks["tasks"] as $task_id => $task)
-					if ($task["properties"]["file_name"] == $file_name) {
+			if ($tasks && !empty($tasks["tasks"])) //just in case the workflow_path does not exist
+				foreach ($tasks["tasks"] as $task_id => $task) {
+					$task_file_name = isset($task["properties"]["file_name"]) ? $task["properties"]["file_name"] : null;
+					
+					if ($task_file_name == $file_name) {
 						$exists = true;
 						$file_id = self::getFilePathId($EVC, $file_path); //file_1824044789
 						
-						if (!$task["properties"]["created_files"])
+						if (empty($task["properties"]["created_files"]))
 							$tasks["tasks"][$task_id]["properties"]["created_files"] = array();
 						
 						$tasks["tasks"][$task_id]["properties"]["created_files"][$file_id] = $modified_date;
 						break;
 					}
+				}
 			
 			if ($exists)
 				WorkFlowTasksFileHandler::createTasksFile($workflow_path, $tasks);
@@ -152,7 +159,7 @@ class CMSPresentationLayerHandler {
 		$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($bean_name, $selected_project_id);
 		
 		//backup original vars
-		$original_presentation_id = $GLOBALS["presentation_id"];
+		$original_presentation_id = isset($GLOBALS["presentation_id"]) ? $GLOBALS["presentation_id"] : null;
 		
 		//set new project vars
 		$GLOBALS["presentation_id"] = $selected_project_id;
@@ -160,7 +167,7 @@ class CMSPresentationLayerHandler {
 		$EVC = $PEVC;
 		@include $EVC->getConfigPath("config", $selected_project_id); //config file may not exist
 		
-		if ($project_url_prefix) {
+		if (!empty($project_url_prefix)) {
 			$url = $project_url_prefix;
 		}
 		
@@ -178,7 +185,7 @@ class CMSPresentationLayerHandler {
 		$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($bean_name, $selected_project_id);
 		
 		//backup original vars
-		$original_presentation_id = $GLOBALS["presentation_id"];
+		$original_presentation_id = isset($GLOBALS["presentation_id"]) ? $GLOBALS["presentation_id"] : null;
 		
 		//set new project vars
 		$GLOBALS["presentation_id"] = $selected_project_id;
@@ -186,7 +193,7 @@ class CMSPresentationLayerHandler {
 		$EVC = $PEVC;
 		@include $EVC->getConfigPath("config", $selected_project_id); //config file may not exist
 		
-		if ($project_url_prefix) {
+		if (!empty($project_url_prefix)) {
 			//get project icon
 			$webroot_path = $PEVC->getWebrootPath();
 			$folders = array(
@@ -211,9 +218,14 @@ class CMSPresentationLayerHandler {
 							$favicon_path = "$folder_path$file";
 							break 2;
 						}
+						else if (in_array($file, $images_available_names) && is_file("$folder_path/$file") && !is_dir("$folder_path/$file")) {
+							$favicon_url = "$project_url_prefix$folder_url$file";
+							$favicon_path = "$folder_path$file";
+							break 2;
+						}
 					}
 					
-					if ($favicon_file)
+					if ($favicon_url)
 						break 1;
 				}
 		}
@@ -242,10 +254,10 @@ class CMSPresentationLayerHandler {
 	public static function getPresentationLayersProjectsFiles($user_global_variables_file_path, $user_beans_folder_path, $type = false, $only_folders = false, $recursive_level = -1, $include_empty_project_folders = false, $filter_by_parent_folder = null, $with_project_details = false) {
 		$layers = AdminMenuHandler::getLayers($user_global_variables_file_path);
 		
-		$presentation_layers = $layers["presentation_layers"];
+		$presentation_layers = isset($layers["presentation_layers"]) ? $layers["presentation_layers"] : null;
+		$files = array();
+		
 		if (is_array($presentation_layers)) {
-			$files = array();
-			
 			if ($filter_by_parent_folder) {
 				$filter_by_parent_folder .= "/";
 				$filter_by_parent_folder = preg_replace("/\/+/", "/", $filter_by_parent_folder); //remove duplicated "/"
@@ -310,7 +322,7 @@ class CMSPresentationLayerHandler {
 				}
 				
 				foreach ($projects as $project_name)
-					$files[$project_name] = self::getPresentationLayerProjectFiles($user_global_variables_file_path, $user_beans_folder_path, $bean_file_name, $bean_name, $layer_path, $project_name, $prefix_path, $only_folders, $recursive_level, $with_project_details);
+					$files[$project_name] = self::getPresentationLayerProjectFiles($user_global_variables_file_path, $user_beans_folder_path, $bean_file_name, $bean_name, $layer_path, $project_name, $prefix_path, $only_folders, $recursive_level, $with_project_details, $common_project_name);
 			}
 		}
 		
@@ -318,8 +330,18 @@ class CMSPresentationLayerHandler {
 		return $files;
 	}
 	
-	public static function getPresentationLayerProjectFiles($user_global_variables_file_path, $user_beans_folder_path, $bean_file_name, $bean_name, $layer_path, $project_name, $prefix_path = false, $only_folders = false, $recursive_level = -1, $with_project_details = false) {
+	public static function getPresentationLayerProjectFiles($user_global_variables_file_path, $user_beans_folder_path, $bean_file_name, $bean_name, $layer_path, $project_name, $prefix_path = false, $only_folders = false, $recursive_level = -1, $with_project_details = false, $common_project_name = false) {
 		$project_path = $layer_path . $project_name;
+		
+		if (!$common_project_name) {
+			$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
+			$obj = $WorkFlowBeansFileHandler->getEVCBeanObject($bean_name);
+			
+			if ($obj) {
+				$P = $obj->getPresentationLayer();
+				$common_project_name = $P->getCommonProjectName();
+			}
+		}
 		
 		$project = array(
 			"path" => $project_path,
@@ -344,13 +366,13 @@ class CMSPresentationLayerHandler {
 	
 	public static function getPresentationLayerPrefixPath($Layer, $type) {
 		switch ($type) {
-			case "entity": return $Layer->settings["presentation_entities_path"];
-			case "view": return $Layer->settings["presentation_views_path"];
-			case "template": return $Layer->settings["presentation_templates_path"];
-			case "util": return $Layer->settings["presentation_utils_path"];
-			case "block": return $Layer->settings["presentation_blocks_path"];
-			case "webroot": return $Layer->settings["presentation_webroot_path"];
-			case "config": return $Layer->settings["presentation_configs_path"];
+			case "entity": return isset($Layer->settings["presentation_entities_path"]) ? $Layer->settings["presentation_entities_path"] : null;
+			case "view": return isset($Layer->settings["presentation_views_path"]) ? $Layer->settings["presentation_views_path"] : null;
+			case "template": return isset($Layer->settings["presentation_templates_path"]) ? $Layer->settings["presentation_templates_path"] : null;
+			case "util": return isset($Layer->settings["presentation_utils_path"]) ? $Layer->settings["presentation_utils_path"] : null;
+			case "block": return isset($Layer->settings["presentation_blocks_path"]) ? $Layer->settings["presentation_blocks_path"] : null;
+			case "webroot": return isset($Layer->settings["presentation_webroot_path"]) ? $Layer->settings["presentation_webroot_path"] : null;
+			case "config": return isset($Layer->settings["presentation_configs_path"]) ? $Layer->settings["presentation_configs_path"] : null;
 		}
 		return "";
 	}
@@ -381,14 +403,15 @@ class CMSPresentationLayerHandler {
 					}
 					else if (!$only_folders) {
 						$path_info = pathinfo($file);
+						$extension = isset($path_info["extension"]) ? $path_info["extension"] : null;
 						
-						if ($path_info["extension"] == "php")
+						if ($extension == "php")
 							$file_type = "php_file";
-						else if ($path_info["extension"] == "css")
+						else if ($extension == "css")
 							$file_type = "css_file";
-						else if ($path_info["extension"] == "js")
+						else if ($extension == "js")
 							$file_type = "js_file";
-						else if ($path_info["extension"] == "zip")
+						else if ($extension == "zip")
 							$file_type = "zip_file";
 						else if (exif_imagetype($fp)) 
 							$file_type = "img_file";
@@ -396,7 +419,7 @@ class CMSPresentationLayerHandler {
 							$file_type = "undefined_file";
 						
 						$files[$file] = array(
-							"name" => $path_info["filename"],
+							"name" => isset($path_info["filename"]) ? $path_info["filename"]: null,
 							"type" => $file_type,
 							"path" => $path,
 						);
@@ -436,7 +459,7 @@ class CMSPresentationLayerHandler {
 						
 						$files[$path] = array(
 							"type" => "file",
-							"name" => $path_info["filename"],
+							"name" => isset($path_info["filename"]) ? $path_info["filename"]: null,
 						);
 					}
 				}
@@ -460,7 +483,7 @@ class CMSPresentationLayerHandler {
 		$sorted_files = array();
 		
 		foreach ($files as $file_path => $file) {
-			if ($file["type"] == "folder" && file_exists($templates_path . $file_path . "/template.xml")) { //Note that the main folders will be always first than the sub-files
+			if (isset($file["type"]) && $file["type"] == "folder" && file_exists($templates_path . $file_path . "/template.xml")) { //Note that the main folders will be always first than the sub-files
 				//parse template.xml
 				$arr = XMLFileParser::parseXMLFileToArray($templates_path . $file_path . "/template.xml");
 				$arr = MyXML::complexArrayToBasicArray($arr, array("lower_case_keys" => true, "trim" => true));
@@ -491,7 +514,7 @@ class CMSPresentationLayerHandler {
 						
 						if (in_array($file_path, $layouts_paths) && !isset($sorted_files[$file_path]))
 							foreach ($layouts_paths as $layout_path)
-								$sorted_files[$layout_path] = $files[$layout_path];
+								$sorted_files[$layout_path] = isset($files[$layout_path]) ? $files[$layout_path] : null;
 						
 						break 1;
 					}
@@ -507,7 +530,9 @@ class CMSPresentationLayerHandler {
 		
 		$templates = array();
 		foreach ($files as $file_path => $file) {
-			if ($file["type"] != "folder") {
+			$file_type = isset($file["type"]) ? $file["type"] : null;
+			
+			if ($file_type != "folder") {
 				$is_reserved = !in_array(pathinfo($file_path, PATHINFO_EXTENSION), $available_extensions);
 				
 				//ignore the region folder bc is a reserved folder that contains the samples html code for the template regions
@@ -535,7 +560,7 @@ class CMSPresentationLayerHandler {
 		for ($i = 0; $i < count($templates_to_show_first); $i++) {
 			$fp = $templates_to_show_first[$i];
 			
-			if ($templates[$fp]) {
+			if (!empty($templates[$fp])) {
 				$default_templates[$fp] = $templates[$fp];
 				unset($templates[$fp]);
 			}
@@ -595,13 +620,13 @@ class CMSPresentationLayerHandler {
 		
 		if ($regions_blocks_list)
 			foreach ($regions_blocks_list as $region_block) {
-				$type = $region_block[3];
+				$type = isset($region_block[3]) ? $region_block[3] : null;
 				$is_block = $type == 2 || $type == 3;
 				
 				if ($is_block) { //is block
-					$region = $region_block[0];
-					$block = $region_block[1];
-					$proj = $region_block[2];
+					$region = isset($region_block[0]) ? $region_block[0] : null;
+					$block = isset($region_block[1]) ? $region_block[1] : null;
+					$proj = isset($region_block[2]) ? $region_block[2] : null;
 					
 					$region = substr($region, 0, 1) == '"' ? str_replace('"', '', $region) : $region;
 					$block = substr($block, 0, 1) == '"' ? str_replace('"', '', $block) : $block;
@@ -626,13 +651,16 @@ class CMSPresentationLayerHandler {
 		
 		$projects = $PEVC->getProjectsId();
 		
-		if ($projects[0] != $selected_project_name || $projects[1] != $common_project_name) {
+		if (count($projects) < 2 || $projects[0] != $selected_project_name || $projects[1] != $common_project_name) {
 			$projects = array_flip($projects);
 			unset($projects[$selected_project_name]);
 			unset($projects[$common_project_name]);
 			
 			$projects = array_merge(array($selected_project_name, $common_project_name), array_flip($projects));
 		}
+		
+		if (empty($P->settings["presentation_blocks_path"])) //used in edit_entity_advanced.php
+			launch_exception(new Exception("'PresentationLayer->settings[presentation_blocks_path]' cannot be undefined!"));
 		
 		$t = count($projects);
 		for ($i = 0; $i < $t; $i++) {
@@ -643,9 +671,12 @@ class CMSPresentationLayerHandler {
 			$available_blocks = self::getFolderFilesList($blocks_path, $blocks_path);
 			ksort($available_blocks);
 			
-			foreach ($available_blocks as $fp => $file) 
-				if ($file["type"] != "folder")
+			foreach ($available_blocks as $fp => $file) {
+				$file_type = isset($file["type"]) ? $file["type"] : null;
+				
+				if ($file_type != "folder")
 					$available_blocks_list[$project_name][] = substr($fp, strlen($fp) - strlen($default_extension)) == $default_extension ? substr($fp, 0, strlen($fp) - strlen($default_extension)) : $fp;
+			}
 		}
 		
 		//echo "<pre>";print_r($available_blocks_list);die();
@@ -661,18 +692,21 @@ class CMSPresentationLayerHandler {
 		$selected_project_id = $P->getSelectedPresentationId();
 		
 		if ($regions_blocks) {
+			if (empty($P->settings["presentation_blocks_path"])) //used in edit_entity_advanced.php
+				launch_exception(new Exception("'PresentationLayer->settings[presentation_blocks_path]' cannot be undefined!"));
+			
 			$t = count($regions_blocks);
 			for ($i = 0; $i < $t; $i++) {
 				$region_block = $regions_blocks[$i];
-				$type = $region_block["type"];
+				$type = isset($region_block["type"]) ? $region_block["type"] : null;
 				$is_block = $type == 2 || $type == 3;
 				
-				if ($is_block && $region_block["block_type"] == "string") {
-					$block_id = $region_block["block"];
-					$project = $region_block["block_project"];
+				if ($is_block && isset($region_block["block_type"]) && $region_block["block_type"] == "string") {
+					$block_id = isset($region_block["block"]) ? $region_block["block"] : null;
+					$project = isset($region_block["block_project"]) ? $region_block["block_project"] : null;
 					$project = $project ? $project : $selected_project_id;
 					
-					if (!$available_blocks_list[$project] || !in_array($block_id, $available_blocks_list[$project])) {
+					if (empty($available_blocks_list[$project]) || !in_array($block_id, $available_blocks_list[$project])) {
 						$project = self::getBlockProject($block_id, $available_blocks_list);
 						$project = $project ? $project : $selected_project_id;
 					}
@@ -680,8 +714,8 @@ class CMSPresentationLayerHandler {
 					$block_path = $layer_path . "$project/" . $P->settings["presentation_blocks_path"] . "$block_id$default_extension";
 					
 					if (file_exists($block_path)) {
-						$region = PHPUICodeExpressionHandler::getArgumentCode($region_block["region"], $region_block["region_type"]);
-						$block = PHPUICodeExpressionHandler::getArgumentCode($region_block["block"], $region_block["block_type"]);
+						$region = PHPUICodeExpressionHandler::getArgumentCode(isset($region_block["region"]) ? $region_block["region"] : null, isset($region_block["region_type"]) ? $region_block["region_type"] : null);
+						$block = PHPUICodeExpressionHandler::getArgumentCode(isset($region_block["block"]) ? $region_block["block"] : null, isset($region_block["block_type"]) ? $region_block["block_type"] : null);
 					
 						$available_block_params[ $region ][ $block ] = CMSFileHandler::getFileBlockParams($block_path);
 					}
@@ -710,7 +744,7 @@ class CMSPresentationLayerHandler {
 					for ($i = 0; $i < $t; $i++) {
 						$p = $params[$i];
 					
-						$available_block_params_list[$region][$block][] = PHPUICodeExpressionHandler::getArgumentCode($p["param"], $p["param_type"]);
+						$available_block_params_list[$region][$block][] = PHPUICodeExpressionHandler::getArgumentCode(isset($p["param"]) ? $p["param"] : null, isset($p["param_type"]) ? $p["param_type"] : null);
 					}
 				}
 		
@@ -725,12 +759,12 @@ class CMSPresentationLayerHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$bpv = $block_params_values[$i];
 				
-				$region = PHPUICodeExpressionHandler::getArgumentCode($bpv["region"], $bpv["region_type"]);
-				$block = PHPUICodeExpressionHandler::getArgumentCode($bpv["block"], $bpv["block_type"]);
-				$param = PHPUICodeExpressionHandler::getArgumentCode($bpv["param"], $bpv["param_type"]);
-				$index = is_numeric($bpv["region_block_index"]) ? $bpv["region_block_index"] : 0;
+				$region = PHPUICodeExpressionHandler::getArgumentCode(isset($bpv["region"]) ? $bpv["region"] : null, isset($bpv["region_type"]) ? $bpv["region_type"] : null);
+				$block = PHPUICodeExpressionHandler::getArgumentCode(isset($bpv["block"]) ? $bpv["block"] : null, isset($bpv["block_type"]) ? $bpv["block_type"] : null);
+				$param = PHPUICodeExpressionHandler::getArgumentCode(isset($bpv["param"]) ? $bpv["param"] : null, isset($bpv["param_type"]) ? $bpv["param_type"] : null);
+				$index = isset($bpv["region_block_index"]) && is_numeric($bpv["region_block_index"]) ? $bpv["region_block_index"] : 0;
 				
-				$block_params_values_list[$region][$block][$index][$param] = PHPUICodeExpressionHandler::getArgumentCode($bpv["value"], $bpv["value_type"]);
+				$block_params_values_list[$region][$block][$index][$param] = PHPUICodeExpressionHandler::getArgumentCode(isset($bpv["value"]) ? $bpv["value"] : null, isset($bpv["value_type"]) ? $bpv["value_type"] : null);
 			}
 		}
 		
@@ -761,14 +795,15 @@ class CMSPresentationLayerHandler {
 		
 		$trbl = array();
 		foreach ($template_regions_blocks_list as $rb) {
-			$trbl[ $rb[0] ] = true;
+			$k = isset($rb[0]) ? $rb[0] : null;
+			$trbl[$k] = true;
 		}
 		
 		$t = count($template_regions);
 		for ($i = 0; $i < $t; $i++) {
 			$str = $template_regions[$i];
 	
-			$region = PHPUICodeExpressionHandler::getArgumentCode($str["region"], $str["region_type"]);
+			$region = PHPUICodeExpressionHandler::getArgumentCode(isset($str["region"]) ? $str["region"] : null, isset($str["region_type"]) ? $str["region_type"] : null);
 			
 			if (!$only_not_init_region || !isset($trbl[$region]))
 				$available_regions_list[] = $region;
@@ -784,11 +819,11 @@ class CMSPresentationLayerHandler {
 			$t = count($regions_blocks);
 			for ($i = 0; $i < $t; $i++) {
 				$region_block = $regions_blocks[$i];
-				$type = $region_block["type"];
+				$type = isset($region_block["type"]) ? $region_block["type"] : null;
 				
-				$r = PHPUICodeExpressionHandler::getArgumentCode($region_block["region"], $region_block["region_type"]);
-				$b = PHPUICodeExpressionHandler::getArgumentCode($region_block["block"], $region_block["block_type"]);
-				$bp = $region_block["block_project"] ? PHPUICodeExpressionHandler::getArgumentCode($region_block["block_project"], $region_block["block_project_type"]) : '"' . $selected_project_id . '"';
+				$r = PHPUICodeExpressionHandler::getArgumentCode(isset($region_block["region"]) ? $region_block["region"] : null, isset($region_block["region_type"]) ? $region_block["region_type"] : null);
+				$b = PHPUICodeExpressionHandler::getArgumentCode(isset($region_block["block"]) ? $region_block["block"] : null, isset($region_block["block_type"]) ? $region_block["block_type"] : null);
+				$bp = $region_block["block_project"] ? PHPUICodeExpressionHandler::getArgumentCode(isset($region_block["block_project"]) ? $region_block["block_project"] : null, isset($region_block["block_project_type"]) ? $region_block["block_project_type"] : null) : '"' . $selected_project_id . '"';
 				
 				$regions_blocks_list[] = array($r, $b, $bp, $type);
 			}
@@ -812,7 +847,7 @@ class CMSPresentationLayerHandler {
 		for ($i = 0; $i < $t; $i++) {
 			$p = $params[$i];
 			
-			$name = PHPUICodeExpressionHandler::getArgumentCode($p["param"], $p["param_type"]);
+			$name = PHPUICodeExpressionHandler::getArgumentCode(isset($p["param"]) ? $p["param"] : null, isset($p["param_type"]) ? $p["param_type"] : null);
 			
 			if (!$only_not_init_params || !isset($available_params_values_list[$name]))
 				$available_params_list[] = $name;
@@ -830,8 +865,8 @@ class CMSPresentationLayerHandler {
 		for ($i = 0; $i < $t; $i++) {
 			$p = $params[$i];
 			
-			$name = PHPUICodeExpressionHandler::getArgumentCode($p["param"], $p["param_type"]);
-			$value = PHPUICodeExpressionHandler::getArgumentCode($p["value"], $p["value_type"]);
+			$name = PHPUICodeExpressionHandler::getArgumentCode(isset($p["param"]) ? $p["param"] : null, isset($p["param_type"]) ? $p["param_type"] : null);
+			$value = PHPUICodeExpressionHandler::getArgumentCode(isset($p["value"]) ? $p["value"] : null, isset($p["value_type"]) ? $p["value_type"] : null);
 			
 			$available_params_values_list[$name] = $value;
 		}
@@ -857,11 +892,11 @@ class CMSPresentationLayerHandler {
 	public static function getFileCodeSetTemplate($code) {
 		$templates = CMSFileHandler::getTemplates($code);
 		
-		if ($templates[0]) {
-			$template_code = $templates[0]["template"];
-			$template_params = $templates[0]["template_params"];
+		if (!empty($templates[0])) {
+			$template_code = isset($templates[0]["template"]) ? $templates[0]["template"] : null;
+			$template_params = isset($templates[0]["template_params"]) ? $templates[0]["template_params"] : null;
 			
-			if ($templates[0]["template_params_type"] == "array" && is_array($template_params))
+			if (isset($templates[0]["template_params_type"]) && $templates[0]["template_params_type"] == "array" && is_array($template_params))
 				$template_params = CMSPresentationLayerJoinPointsUIHandler::convertBlockSettingsArrayToObj($template_params);
 			
 			return array(
@@ -875,22 +910,22 @@ class CMSPresentationLayerHandler {
 		if (!$set_template)
 			return false;
 		
-		$selected_template = $set_template["template_code"];
-		$selected_template_params = $set_template["template_params"];
+		$selected_template = isset($set_template["template_code"]) ? $set_template["template_code"] : null;
+		$selected_template_params = isset($set_template["template_params"]) ? $set_template["template_params"] : null;
 		
 		if (is_array($selected_template_params)) {
-			$selected_template_param_type = $selected_template_params["type"];
-			$selected_template_param_project_id = $selected_template_params["project_id"];
+			$selected_template_param_type = isset($selected_template_params["type"]) ? $selected_template_params["type"] : null;
+			$selected_template_param_project_id = isset($selected_template_params["project_id"]) ? $selected_template_params["project_id"] : null;
 		}
 		
 		if (isset($selected_template_params) && ( //if selected_template_params exists
 			($selected_template && $selected_template != "parse_php_code") || //and if is different than parse_php_code
-			($selected_template_param_type && $selected_template_param_type["value"] && $selected_template_param_type["value_type"] != 'string') || //or if selected_template_param_type is not a string. If not a string we cannot know if type is correct! This check is done in other methods, but this method makes sure the selected_template_param_type is a string, so we can use this in other methods!
-			($selected_template_param_type && $selected_template_param_type["value"] && (
-				!$selected_template_param_project_id || //or if selected_template_param_project_id is empty
-				!$selected_template_param_project_id["value"] || //or if selected_template_param_project_id is empty
-				($selected_template_param_project_id["value_type"] == "string" && $selected_template_param_project_id["value"] != $EVC->getCommonProjectName()) || //or if selected_template_param_project_id is not equal to common
-				($selected_template_param_project_id["value_type"] != "string" && preg_replace("/\s+/", "", $selected_template_param_project_id["value"]) != '$EVC->getCommonProjectName()') //or if selected_template_param_project_id is not equal to $PEVC->getCommonProjectName()
+			(!empty($selected_template_param_type) && !empty($selected_template_param_type["value"]) && (!isset($selected_template_param_type["value_type"]) || $selected_template_param_type["value_type"] != 'string')) || //or if selected_template_param_type is not a string. If not a string we cannot know if type is correct! This check is done in other methods, but this method makes sure the selected_template_param_type is a string, so we can use this in other methods!
+			(!empty($selected_template_param_type) && !empty($selected_template_param_type["value"]) && (
+				empty($selected_template_param_project_id) || //or if selected_template_param_project_id is empty
+				empty($selected_template_param_project_id["value"]) || //or if selected_template_param_project_id is empty
+				(isset($selected_template_param_project_id["value_type"]) && $selected_template_param_project_id["value_type"] == "string" && $selected_template_param_project_id["value"] != $EVC->getCommonProjectName()) || //or if selected_template_param_project_id is not equal to common
+				((!isset($selected_template_param_project_id["value_type"]) || $selected_template_param_project_id["value_type"] != "string") && preg_replace("/\s+/", "", $selected_template_param_project_id["value"]) != '$EVC->getCommonProjectName()') //or if selected_template_param_project_id is not equal to $PEVC->getCommonProjectName()
 			))
 		) )
 			return false;
@@ -899,17 +934,19 @@ class CMSPresentationLayerHandler {
 	}
 	
 	public static function isSetTemplateExternalTemplate($EVC, $set_template) {
-		$selected_template = $set_template["template_code"];
-		$set_template_params = $set_template["template_params"];
-		$set_template_param_project_id = is_array($set_template_params) ? $set_template_params["project_id"] : null;
+		$selected_template = isset($set_template["template_code"]) ? $set_template["template_code"] : null;
+		$set_template_params = isset($set_template["template_params"]) ? $set_template["template_params"] : null;
+		$set_template_param_project_id = is_array($set_template_params) && isset($set_template_params["project_id"]) ? $set_template_params["project_id"] : null;
 		
-		return $selected_template == "parse_php_code" && $set_template_param_project_id && (
-			($set_template_param_project_id["value_type"] == "string" && $set_template_param_project_id["value"] == $EVC->getCommonProjectName()) || //or if set_template_param_project_id is not equal to common
-			($set_template_param_project_id["value_type"] != "string" && preg_replace("/\s+/", "", $set_template_param_project_id["value"]) == '$EVC->getCommonProjectName()') //or if set_template_param_project_id is not equal to $EVC->getCommonProjectName()
+		return $selected_template == "parse_php_code" && $set_template_param_project_id && isset($set_template_param_project_id["value"]) && (
+			(isset($set_template_param_project_id["value_type"]) && $set_template_param_project_id["value_type"] == "string" && $set_template_param_project_id["value"] == $EVC->getCommonProjectName()) || //or if set_template_param_project_id is not equal to common
+			((!isset($set_template_param_project_id["value_type"]) || $set_template_param_project_id["value_type"] != "string") && preg_replace("/\s+/", "", $set_template_param_project_id["value"]) == '$EVC->getCommonProjectName()') //or if set_template_param_project_id is not equal to $EVC->getCommonProjectName()
 		);
 	}
 	
 	public static function getSetTemplateCode($EVC, $is_external_template, $template, $set_template_params, $template_includes) {
+		$code = null;
+		
 		if ($is_external_template) {
 			//prepare external vars
 			$before_defined_vars = get_defined_vars();
@@ -922,7 +959,7 @@ class CMSPresentationLayerHandler {
 			//convert $set_template_params into real array
 			$set_template_params_arr_code = '<?php return ' . WorkFlowTask::getArrayString($set_template_params) . '; ?>';
 			PHPScriptHandler::parseContent($set_template_params_arr_code, $external_vars, $return_values);
-			$template_params = $return_values[0];
+			$template_params = isset($return_values[0]) ? $return_values[0] : null;
 			//print_r($template_params);die();
 			
 			//include external files
@@ -930,11 +967,11 @@ class CMSPresentationLayerHandler {
 			
 			if ($template_includes)
 				foreach ($template_includes as $include) 
-					if ($include["path"])
-						eval("include" . ($include["once"] ? "_once" : "") . " " . $include["path"] . ";");
+					if (!empty($include["path"]))
+						eval("include" . (!empty($include["once"]) ? "_once" : "") . " " . $include["path"] . ";");
 			
 			//set the CMSExternalTemplateLayer to replica dynamically the regions and blocks from the project template.
-			if ($template_params && $template_params["type"] == "project")
+			if ($template_params && isset($template_params["type"]) && $template_params["type"] == "project")
 				$template_params["add_template_xml_regions_and_params"] = true;
 			
 			//get template code
@@ -960,7 +997,7 @@ class CMSPresentationLayerHandler {
 		
 		if (is_array($block_join_points)) {
 			foreach ($block_join_points as $block_join_point) {
-				$block = PHPUICodeExpressionHandler::getArgumentCode($block_join_point["block"], $block_join_point["block_type"]);
+				$block = PHPUICodeExpressionHandler::getArgumentCode(isset($block_join_point["block"]) ? $block_join_point["block"] : null, isset($block_join_point["block_type"]) ? $block_join_point["block_type"] : null);
 				
 				$jps[$block][] = $block_join_point;
 			}
@@ -979,9 +1016,9 @@ class CMSPresentationLayerHandler {
 		
 		if (is_array($block_join_points))
 			foreach ($block_join_points as $block_join_point) {
-				$region = PHPUICodeExpressionHandler::getArgumentCode($block_join_point["region"], $block_join_point["region_type"]);
-				$block = PHPUICodeExpressionHandler::getArgumentCode($block_join_point["block"], $block_join_point["block_type"]);
-				$index = is_numeric($block_join_point["region_block_index"]) ? $block_join_point["region_block_index"] : 0;
+				$region = PHPUICodeExpressionHandler::getArgumentCode(isset($block_join_point["region"]) ? $block_join_point["region"] : null, isset($block_join_point["region_type"]) ? $block_join_point["region_type"] : null);
+				$block = PHPUICodeExpressionHandler::getArgumentCode(isset($block_join_point["block"]) ? $block_join_point["block"] : null, isset($block_join_point["block_type"]) ? $block_join_point["block_type"] : null);
+				$index = isset($block_join_point["region_block_index"]) && is_numeric($block_join_point["region_block_index"]) ? $block_join_point["region_block_index"] : 0;
 				
 				$jps[$region][$block][$index][] = $block_join_point;
 			}
@@ -996,7 +1033,7 @@ class CMSPresentationLayerHandler {
 		
 		if (is_array($block_join_points))
 			foreach ($block_join_points as $block_join_point) {
-				$block = PHPUICodeExpressionHandler::getArgumentCode($block_join_point["block"], $block_join_point["block_type"]);
+				$block = PHPUICodeExpressionHandler::getArgumentCode(isset($block_join_point["block"]) ? $block_join_point["block"] : null, isset($block_join_point["block_type"]) ? $block_join_point["block_type"] : null);
 				
 				$jps[$block][] = $block_join_point;
 			}
@@ -1011,12 +1048,14 @@ class CMSPresentationLayerHandler {
 		
 		if (is_array($file_props))
 			foreach ($file_props as $file_prop) {
-				$name = $file_prop["prop_name"];
+				$name = isset($file_prop["prop_name"]) ? $file_prop["prop_name"] : null;
+				$prop_value = isset($file_prop["prop_value"]) ? $file_prop["prop_value"] : null;
+				$prop_value_type = isset($file_prop["prop_value_type"]) ? $file_prop["prop_value_type"] : null;
 				
-				if ($file_prop["prop_value"] === null && $file_prop["prop_value_type"] === null) //means that there are no param value
-					$value = PHPUICodeExpressionHandler::getArgumentCode($file_prop["prop_default_value"], $file_prop["prop_default_value_type"]);
+				if ($prop_value === null && $prop_value_type === null) //means that there are no param value
+					$value = PHPUICodeExpressionHandler::getArgumentCode(isset($file_prop["prop_default_value"]) ? $file_prop["prop_default_value"] : null, isset($file_prop["prop_default_value_type"]) ? $file_prop["prop_default_value_type"] : null);
 				else
-					$value = PHPUICodeExpressionHandler::getArgumentCode($file_prop["prop_value"], $file_prop["prop_value_type"]);
+					$value = PHPUICodeExpressionHandler::getArgumentCode($prop_value, $prop_value_type);
 				
 				//note that $value will always be a string, due to the getArgumentCode method
 				$v = $value !== null ? strtolower($value) : "";
@@ -1035,8 +1074,8 @@ class CMSPresentationLayerHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$include = $includes[$i];
 			
-				if ($include["path"]) {
-					$code .= 'include' . ($include["once"] ? '_once' : '') . ' ' . PHPUICodeExpressionHandler::getArgumentCode($include["path"], $include["path_type"]) . ';' . "\n";
+				if (!empty($include["path"])) {
+					$code .= 'include' . (!empty($include["once"]) ? '_once' : '') . ' ' . PHPUICodeExpressionHandler::getArgumentCode($include["path"], isset($include["path_type"]) ? $include["path_type"] : null) . ';' . "\n";
 				}
 			}
 			
@@ -1054,34 +1093,48 @@ class CMSPresentationLayerHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$region_block = $regions_blocks[$i];
 				
-				if ($region_block["region"] && $region_block["block"]) {
-					$type = $region_block["type"];
-					$region_id = PHPUICodeExpressionHandler::getArgumentCode($region_block["region"], $region_block["region_type"]);
+				if (!empty($region_block["region"]) && !empty($region_block["block"])) {
+					$rb_type = isset($region_block["type"]) ? $region_block["type"] : null;
+					$rb_region = isset($region_block["region"]) ? $region_block["region"] : null;
+					$rb_region_type = isset($region_block["region_type"]) ? $region_block["region_type"] : null;
+					$rb_block = isset($region_block["block"]) ? $region_block["block"] : null;
+					$rb_block_type = isset($region_block["block_type"]) ? $region_block["block_type"] : null;
+					$rb_block_project = isset($region_block["block_project"]) ? $region_block["block_project"] : null;
+					
+					$region_id = PHPUICodeExpressionHandler::getArgumentCode($rb_region, $rb_region_type);
 					
 					$code .= "\n";
 					
 					//Note that this addRegionHtml($region_id, $block_id) must be called before the 'include $EVC->getBlockPath("block_id");', otherwise the $CMSBlockLayer->stopBlockRegions($block_id) won't work because it doesn't know the regions for the correspondent block.
-					if ($type == 1) { //if html
-						$block_type = PHPUICodeExpressionHandler::getValueType($region_block["block"], array("empty_string_type" => "string", "non_set_type" => "string"));
-						$html = PHPUICodeExpressionHandler::getArgumentCode($region_block["block"], $block_type);
+					if ($rb_type == 1) { //if html
+						$block_type = PHPUICodeExpressionHandler::getValueType($rb_block, array("empty_string_type" => "string", "non_set_type" => "string"));
+						$html = PHPUICodeExpressionHandler::getArgumentCode($rb_block, $block_type);
 						$code .= '$EVC->getCMSLayer()->getCMSTemplateLayer()->addRegionHtml(' . $region_id . ', ' . $html . ');' . "\n";
 					}
-					else if ($type == 2 || $type == 3) { //if block
-						$block_id = PHPUICodeExpressionHandler::getArgumentCode($region_block["block"], $region_block["block_type"]);
-						$block_project_type = PHPUICodeExpressionHandler::getValueType($region_block["block_project"], array("empty_string_type" => "string", "non_set_type" => "string"));
-						$block_project = $block_project_type == "" ? str_replace('"', '', $region_block["block_project"]) : $region_block["block_project"]; //The block_project from the edit_simple_template_layout contains quotes in some cases when coming from the .
+					else if ($rb_type == 2 || $rb_type == 3) { //if block
+						$block_id = PHPUICodeExpressionHandler::getArgumentCode($rb_block, $rb_block_type);
+						$block_project_type = PHPUICodeExpressionHandler::getValueType($rb_block_project, array("empty_string_type" => "string", "non_set_type" => "string"));
+						$block_project = $block_project_type == "" && $rb_block_project ? str_replace('"', '', $rb_block_project) : $rb_block_project; //The block_project from the edit_simple_template_layout contains quotes in some cases when coming from the .
 						$bp = !$block_project || $block_project == $selected_project_id ? "" : ", \"$block_project\"";
 						
 						$exists = false;
 						
-						if ($regions_blocks_params[$i]) {
+						if (!empty($regions_blocks_params[$i])) {
 							$t2 = count($regions_blocks_params[$i]);
 							for ($j = 0; $j < $t2; $j++) {
 								$region_block_param = $regions_blocks_params[$i][$j];
-						
-								if (PHPUICodeExpressionHandler::getArgumentCode($region_block_param["region"], $region_block_param["region_type"]) == $region_id && PHPUICodeExpressionHandler::getArgumentCode($region_block_param["block"], $region_block_param["block_type"]) == $block_id && $region_block_param["name"] && strlen($region_block_param["value"])) {
+								$rbp_region = isset($region_block_param["region"]) ? $region_block_param["region"] : null;
+								$rbp_region_type = isset($region_block_param["region_type"]) ? $region_block_param["region_type"] : null;
+								$rbp_block = isset($region_block_param["block"]) ? $region_block_param["block"] : null;
+								$rbp_block_type = isset($region_block_param["block_type"]) ? $region_block_param["block_type"] : null;
+								$rbp_name = isset($region_block_param["name"]) ? $region_block_param["name"] : null;
+								$rbp_name_type = isset($region_block_param["name_type"]) ? $region_block_param["name_type"] : null;
+								$rbp_value = isset($region_block_param["value"]) ? $region_block_param["value"] : null;
+								$rbp_value_type = isset($region_block_param["value_type"]) ? $region_block_param["value_type"] : null;
+								
+								if (PHPUICodeExpressionHandler::getArgumentCode($rbp_region, $rbp_region_type) == $region_id && PHPUICodeExpressionHandler::getArgumentCode($rbp_block, $rbp_block_type) == $block_id && $rbp_name && strlen($rbp_value)) {
 							
-									$code .= '$region_block_local_variables[' . $region_id . '][' . $block_id . '][' . PHPUICodeExpressionHandler::getArgumentCode($region_block_param["name"], $region_block_param["name_type"]) . '] = ' . PHPUICodeExpressionHandler::getArgumentCode($region_block_param["value"], $region_block_param["value_type"]) . ';' . "\n";
+									$code .= '$region_block_local_variables[' . $region_id . '][' . $block_id . '][' . PHPUICodeExpressionHandler::getArgumentCode($rbp_name, $rbp_name_type) . '] = ' . PHPUICodeExpressionHandler::getArgumentCode($rbp_value, $rbp_value_type) . ';' . "\n";
 							
 									$exists = true;
 								}
@@ -1093,16 +1146,17 @@ class CMSPresentationLayerHandler {
 						else 
 							$code .= '$block_local_variables = array();' . "\n";
 						
-						$code .= self::createCMSLayerCodeForRegionBLockJoinPoints($region_id, $block_id, $regions_blocks_join_points[$i]);
+						$regions_blocks_join_point = isset($regions_blocks_join_points[$i]) ? $regions_blocks_join_points[$i] : null;
+						$code .= self::createCMSLayerCodeForRegionBLockJoinPoints($region_id, $block_id, $regions_blocks_join_point);
 						$code .= '$EVC->getCMSLayer()->getCMSTemplateLayer()->addRegionBlock(' . $region_id . ', ' . $block_id . $bp . ');' . "\n";
 						
 						//This code must be executed after the addRegionHtml($region_id, $block_id), otherwise the $CMSBlockLayer->stopBlockRegions($block_id) won't work correctly.
 						$code .= 'include $EVC->getBlockPath(' . $block_id . $bp . ');' . "\n";
 					}
-					else if ($type == 4 || $type == 5) { //if view
-						$block_id = PHPUICodeExpressionHandler::getArgumentCode($region_block["block"], $region_block["block_type"]);
-						$block_project_type = PHPUICodeExpressionHandler::getValueType($region_block["block_project"], array("empty_string_type" => "string", "non_set_type" => "string"));
-						$block_project = $block_project_type == "" ? str_replace('"', '', $region_block["block_project"]) : $region_block["block_project"]; //The block_project from the edit_simple_template_layout contains quotes in some cases when coming from the .
+					else if ($rb_type == 4 || $rb_type == 5) { //if view
+						$block_id = PHPUICodeExpressionHandler::getArgumentCode($rb_block, $rb_block_type);
+						$block_project_type = PHPUICodeExpressionHandler::getValueType($rb_block_project, array("empty_string_type" => "string", "non_set_type" => "string"));
+						$block_project = $block_project_type == "" && $rb_block_project ? str_replace('"', '', $rb_block_project) : $rb_block_project; //The block_project from the edit_simple_template_layout contains quotes in some cases when coming from the .
 						$bp = !$block_project || $block_project == $selected_project_id ? "" : ", \"$block_project\"";
 						
 						$code .= 'include $EVC->getCMSLayer()->getCMSTemplateLayer()->includeRegionViewPathOutput(' . $region_id . ', ' . $block_id . $bp . ');' . "\n";
@@ -1124,10 +1178,15 @@ class CMSPresentationLayerHandler {
 		
 		if (is_array($regions_blocks_join_points)) {
 			foreach ($regions_blocks_join_points as $region_block_join_points) {
-				$r_id = PHPUICodeExpressionHandler::getArgumentCode($region_block_join_points["region"], $region_block_join_points["region_type"]);
-				$b_id = PHPUICodeExpressionHandler::getArgumentCode($region_block_join_points["block"], $region_block_join_points["block_type"]);
+				$rb_region = isset($region_block_join_points["region"]) ? $region_block_join_points["region"] : null;
+				$rb_region_type = isset($region_block_join_points["region_type"]) ? $region_block_join_points["region_type"] : null;
+				$rb_block = isset($region_block_join_points["block"]) ? $region_block_join_points["block"] : null;
+				$rb_block_type = isset($region_block_join_points["block_type"]) ? $region_block_join_points["block_type"] : null;
 				
-				if ($r_id == $region_id && $b_id == $block_id && $region_block_join_points["join_points"])
+				$r_id = PHPUICodeExpressionHandler::getArgumentCode($rb_region, $rb_region_type);
+				$b_id = PHPUICodeExpressionHandler::getArgumentCode($rb_block, $rb_block_type);
+				
+				if ($r_id == $region_id && $b_id == $block_id && !empty($region_block_join_points["join_points"]))
 					foreach ($region_block_join_points["join_points"] as $join_point_name => $join_point) {
 						foreach ($join_point as $idx => $item) {
 							if (is_numeric($idx)) {//just in case
@@ -1153,9 +1212,9 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addRegionBlockJoinPoint(' . $region
 			for ($i = 0; $i < $t; $i++) {
 				$p = $template_params[$i];
 				
-				if ($p["param"] && strlen($p["value"])) {
-					$param = PHPUICodeExpressionHandler::getArgumentCode($p["param"], $p["param_type"]);
-					$value = PHPUICodeExpressionHandler::getArgumentCode($p["value"], $p["value_type"]);
+				if (!empty($p["param"]) && isset($p["value"]) && strlen($p["value"])) {
+					$param = PHPUICodeExpressionHandler::getArgumentCode($p["param"], isset($p["param_type"]) ? $p["param_type"] : null);
+					$value = PHPUICodeExpressionHandler::getArgumentCode($p["value"], isset($p["value_type"]) ? $p["value_type"] : null);
 					
 					$code .= '$EVC->getCMSLayer()->getCMSTemplateLayer()->setParam(' . $param . ', ' . $value . ');' . "\n";
 				}
@@ -1175,11 +1234,13 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addRegionBlockJoinPoint(' . $region
 			for ($i = 0; $i < $t; $i++) {
 				$template = $templates[$i];
 				
-				if ($template["template"]) {
-					$template_args_code = self::createArrayCode($template["template_args"]);
+				if (!empty($template["template"])) {
+					$template_type = isset($template["template_type"]) ? $template["template_type"] : null;
+					$template_args = isset($template["template_args"]) ? $template["template_args"] : null;
+					$template_args_code = self::createArrayCode($template_args);
 					$template_args_code = $template_args_code ? ", $template_args_code" : "";
 					
-					$code .= '$EVC->setTemplate(' . PHPUICodeExpressionHandler::getArgumentCode($template["template"], $template["template_type"]) . $template_args_code . ');' . "\n";
+					$code .= '$EVC->setTemplate(' . PHPUICodeExpressionHandler::getArgumentCode($template["template"], $template_type) . $template_args_code . ');' . "\n";
 				}
 			}
 			
@@ -1202,7 +1263,7 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addRegionBlockJoinPoint(' . $region
 				
 				if (substr($method_name, 0, 3) == "set") {
 					$params = $ReflectionMethod->getParameters();
-					$ReflectionParameter = $params[0];
+					$ReflectionParameter = isset($params[0]) ? $params[0] : null;
 					
 					$available_page_properties[ $ReflectionParameter->getName() ] = $method_name;
 				}
@@ -1215,7 +1276,7 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addRegionBlockJoinPoint(' . $region
 					else if ($v === 2 || $v === "2")
 						$code .= "\$EVC->getCMSLayer()->getCMSPagePropertyLayer()->setParseRegionsHtml(true);\n";
 				}
-				else if ($available_page_properties[$k] && $v !== "") { //$v can be: 0, 1 or empty string (this is: ""). if $v === "", it means "auto" flag which is the default, so we should not add it to the code, bc "auto" is the default value in CMSPagePropertyLayer. This is, only add property which are 1 (true) or 0 (false).
+				else if (!empty($available_page_properties[$k]) && $v !== "") { //$v can be: 0, 1 or empty string (this is: ""). if $v === "", it means "auto" flag which is the default, so we should not add it to the code, bc "auto" is the default value in CMSPagePropertyLayer. This is, only add property which are 1 (true) or 0 (false).
 					$method_name = $available_page_properties[$k];
 					$v = $v === 0 || $v === "0" ? "false" : ($v === 1 || $v === "1" ? "true" : $v);
 					$code .= "\$EVC->getCMSLayer()->getCMSPagePropertyLayer()->$method_name($v);\n";
@@ -1240,12 +1301,14 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addRegionBlockJoinPoint(' . $region
 		return $code;
 	}
 	
-	public static function checkIfEntityCodeContainsSimpleUISettings($code, $selected_template, $includes, $regions_blocks) {
+	public static function checkIfEntityCodeContainsSimpleUISettings($code, $selected_template, $includes, $regions_blocks, $selected_project_id) {
 		if ($code) {
 			if ($selected_template) {
 				$templates = CMSFileHandler::getTemplates($code);
+				$template = isset($templates[0]["template"]) ? $templates[0]["template"] : null;
+				$template_type = isset($templates[0]["template_type"]) ? $templates[0]["template_type"] : null;
 				
-				$to_check = '$EVC->setTemplate(' . PHPUICodeExpressionHandler::getArgumentCode($templates[0]["template"], $templates[0]["template_type"]);
+				$to_check = '$EVC->setTemplate(' . PHPUICodeExpressionHandler::getArgumentCode($template, $template_type);
 				
 				if (strpos($code, $to_check) === false)
 					return false;
@@ -1258,8 +1321,8 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addRegionBlockJoinPoint(' . $region
 				for ($i = 0; $i < $t; $i++) {
 					$include = $includes[$i];
 				
-					if ($include["path"]) {
-						$to_check .= 'include' . ($include["once"] ? '_once' : '') . ' ' . PHPUICodeExpressionHandler::getArgumentCode($include["path"], $include["path_type"]) . ';' . "\n";
+					if (!empty($include["path"])) {
+						$to_check .= 'include' . (!empty($include["once"]) ? '_once' : '') . ' ' . PHPUICodeExpressionHandler::getArgumentCode($include["path"], isset($include["path_type"]) ? $include["path_type"] : null) . ';' . "\n";
 					}
 				}
 				
@@ -1272,26 +1335,33 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addRegionBlockJoinPoint(' . $region
 				for ($i = 0; $i < $t; $i++) {
 					$region_block = $regions_blocks[$i];
 					
-					if ($region_block["region"] && $region_block["block"]) {
-						$type = $region_block["type"];
-						$region_id = PHPUICodeExpressionHandler::getArgumentCode($region_block["region"], $region_block["region_type"]);
+					if (!empty($region_block["region"]) && !empty($region_block["block"])) {
+						$rb_type = $region_block["type"];
+						$rb_region = isset($region_block["region"]) ? $region_block["region"] : null;
+						$rb_region_type = isset($region_block["region_type"]) ? $region_block["region_type"] : null;
+						$rb_block = isset($region_block["block"]) ? $region_block["block"] : null;
+						$rb_block_type = isset($region_block["block_type"]) ? $region_block["block_type"] : null;
+						$rb_block_project = isset($region_block["block_project"]) ? $region_block["block_project"] : null;
 						
-						if ($type == 1) { //if html
-							$block_type = PHPUICodeExpressionHandler::getValueType($region_block["block"], array("empty_string_type" => "string", "non_set_type" => "string"));
-							$html = PHPUICodeExpressionHandler::getArgumentCode($region_block["block"], $block_type);
+						$region_id = PHPUICodeExpressionHandler::getArgumentCode($rb_region, $rb_region_type);
+						$to_check = null;
+						
+						if ($rb_type == 1) { //if html
+							$block_type = PHPUICodeExpressionHandler::getValueType($rb_block, array("empty_string_type" => "string", "non_set_type" => "string"));
+							$html = PHPUICodeExpressionHandler::getArgumentCode($rb_block, $block_type);
 							$to_check = '$EVC->getCMSLayer()->getCMSTemplateLayer()->addRegionHtml(' . $region_id . ', ' . $html . ');' . "\n";
 						}
-						else if ($type == 2 || $type == 3) { //if block
-							$block_id = PHPUICodeExpressionHandler::getArgumentCode($region_block["block"], $region_block["block_type"]);
-							$block_project = $region_block["block_project"];
+						else if ($rb_type == 2 || $rb_type == 3) { //if block
+							$block_id = PHPUICodeExpressionHandler::getArgumentCode($rb_block, $rb_block_type);
+							$block_project = $rb_block_project;
 							$bp = !$block_project || $block_project == $selected_project_id ? "" : ", \"$block_project\"";
 							
 							$to_check = '$EVC->getCMSLayer()->getCMSTemplateLayer()->addRegionBlock(' . $region_id . ', ' . $block_id . $bp . ');' . "\n";
 							$to_check .= 'include $EVC->getBlockPath(' . $block_id . $bp . ');' . "\n";
 						}
-						else if ($type == 4 || $type == 5) { //if view
-							$block_id = PHPUICodeExpressionHandler::getArgumentCode($region_block["block"], $region_block["block_type"]);
-							$block_project = $region_block["block_project"];
+						else if ($rb_type == 4 || $rb_type == 5) { //if view
+							$block_id = PHPUICodeExpressionHandler::getArgumentCode($rb_block, $rb_block_type);
+							$block_project = $rb_block_project;
 							$bp = !$block_project || $block_project == $selected_project_id ? "" : ", \"$block_project\"";
 							
 							$to_check = 'include $EVC->getCMSLayer()->getCMSTemplateLayer()->includeRegionViewPathOutput(' . $region_id . ', ' . $block_id . $bp . ');' . "\n";
@@ -1308,19 +1378,19 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addRegionBlockJoinPoint(' . $region
 	}
 	
 	public static function createEntityCode($object, $selected_project_id, $default_extension) {
-		$regions_blocks_join_points = $object["regions_blocks_join_points"];//get this before the arrKeysToLowerCase because there are keys that we want to maintain case sensitive
+		$regions_blocks_join_points = isset($object["regions_blocks_join_points"]) ? $object["regions_blocks_join_points"] : null;//get this before the arrKeysToLowerCase because there are keys that we want to maintain case sensitive
 		
 		MyArray::arrKeysToLowerCase($object, true);//I belieev this is not necessary anymore, but confirm before delete this line.
 		
-		$templates = $object["templates"];
-		$regions_blocks = $object["regions_blocks"];
-		$other_regions_blocks = $object["other_regions_blocks"];
-		$regions_blocks_params = $object["regions_blocks_params"];
-		$includes = $object["includes"];
-		$template_params = $object["template_params"];
-		$other_template_params = $object["other_template_params"];
-		$advanced_settings = $object["advanced_settings"];
-		$sla_settings_code = $object["sla_settings_code"];
+		$templates = isset($object["templates"]) ? $object["templates"] : null;
+		$regions_blocks = isset($object["regions_blocks"]) ? $object["regions_blocks"] : null;
+		$other_regions_blocks = isset($object["other_regions_blocks"]) ? $object["other_regions_blocks"] : null;
+		$regions_blocks_params = isset($object["regions_blocks_params"]) ? $object["regions_blocks_params"] : null;
+		$includes = isset($object["includes"]) ? $object["includes"] : null;
+		$template_params = isset($object["template_params"]) ? $object["template_params"] : null;
+		$other_template_params = isset($object["other_template_params"]) ? $object["other_template_params"] : null;
+		$advanced_settings = isset($object["advanced_settings"]) ? $object["advanced_settings"] : null;
+		$sla_settings_code = isset($object["sla_settings_code"]) ? $object["sla_settings_code"] : null;
 		
 		$includes_code = self::createCMSLayerCodeForIncludes($includes);
 		$page_properties_code = self::createCMSLayerCodeForPagePropertiesCode($advanced_settings);
@@ -1363,17 +1433,18 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addRegionBlockJoinPoint(' . $region
 	}
 	
 	public static function createBlockCode($obj) {
+		$module_id = isset($obj["module_id"]) ? $obj["module_id"] : null;
 		$code = isset($obj["settings"]) ? self::createArrayCode($obj["settings"], "") : (isset($obj["code"]) ? $obj["code"] : "");
 		$code = trim($code);
 		
-		$join_points = self::createBlockJoinPointsCode($obj["join_points"]);
+		$join_points = isset($obj["join_points"]) ? self::createBlockJoinPointsCode($obj["join_points"]) : "";
 		
 		return '<?php
 $block_id = $EVC->getCMSLayer()->getCMSBlockLayer()->getBlockIdFromFilePath(__FILE__);//must be the same than this file name.
 
 $block_settings[$block_id] = ' . ($code ? $code : "null") . ';
 ' . $join_points . '
-$EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("' . $obj["module_id"] . '", $block_id, $block_settings[$block_id]);
+$EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("' . $module_id . '", $block_id, $block_settings[$block_id]);
 ?>';
 	}
 	
@@ -1384,7 +1455,7 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("' . $obj["module_id"] . '"
 		
 		if (is_array($join_points)) {
 			foreach ($join_points as $join_point_name => $join_point) {
-				if ($join_point["active"]) {
+				if (!empty($join_point["active"])) {
 					if ($join_point["active"] == 2)
 						$code .= '
 $block_local_join_points[$block_id]["' . $join_point_name . '"] = 1;
@@ -1408,15 +1479,18 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addBlockJoinPoint($block_id, "' . $
 	//This is called in src/entity/presentation/get_page_block_simulated_html.php
 	public static function getJoinPointPropertiesCode($item) {
 		//Replace $input by \$input, because the $input var needs to be escaped becuase is an internal variable of the join points.
-		if ($item["method_args"]) {
+		if (!empty($item["method_args"])) {
 			//echo"<pre>";print_r($item["method_args"]);die();
 			
 			foreach ($item["method_args"] as $i => $method_arg) {
-				//This code is very important, because the $method_arg["value"] will only be used in the JoinPointHandler.php, in the eval() function, so it must be inside of ".
-				$is_outside_variable = substr($method_arg["value"], 0, 1) == '$' && substr($method_arg["value"], 0, 6) != '$input';
+				$method_arg_value = isset($method_arg["value"]) ? $method_arg["value"] : null;
 				
-				if (!$is_outside_variable && (substr($method_arg["value"], 0, 1) != '"' || substr($method_arg["value"], -1, 1) != '"')) {
-					$method_arg["value"] = '"' . addcslashes($method_arg["value"], '"') . '"';//do not add the slashes like: addcslashes($method_arg["value"], '\\"') otherwise it will create weird php code. 
+				//This code is very important, because the $method_arg_value will only be used in the JoinPointHandler.php, in the eval() function, so it must be inside of ".
+				$is_outside_variable = substr($method_arg_value, 0, 1) == '$' && substr($method_arg_value, 0, 6) != '$input';
+				$is_outside_variable = !$is_outside_variable ? substr($method_arg_value, 0, 2) == '@$' && substr($method_arg_value, 0, 7) != '@$input' : $is_outside_variable;
+				
+				if (!$is_outside_variable && (substr($method_arg_value, 0, 1) != '"' || substr($method_arg_value, -1, 1) != '"')) {
+					$method_arg_value = '"' . addcslashes($method_arg_value, '"') . '"';//do not add the slashes like: addcslashes($method_arg_value, '\\"') otherwise it will create weird php code. 
 				}
 				
 				$item["method_args"][$i]["value"] = preg_replace_callback('/(.*)(\$[\w]+)(.*)/u', function($matches) { //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars.
@@ -1424,7 +1498,7 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addBlockJoinPoint($block_id, "' . $
 							$matches[2] = '\\' . $matches[2];
 					
 						return $matches[1] . $matches[2] . $matches[3];
-					}, $method_arg["value"]);
+					}, $method_arg_value);
 			}
 		}
 		
@@ -1451,14 +1525,14 @@ $EVC->getCMSLayer()->getCMSJoinPointLayer()->addBlockJoinPoint($block_id, "' . $
 				$code .= $prefix . "\t";
 				
 				if (!$are_all_numeric_sequential_keys) {
-					$key = substr($key, 0, 1) == '$' || strpos($key, '"') !== false || strpos($key, "'") !== false ? $key : '"' . $key . '"';
+					$key = substr($key, 0, 1) == '$' || substr($key, 0, 2) == '@$' || strpos($key, '"') !== false || strpos($key, "'") !== false ? $key : '"' . $key . '"';
 					$code .= $key . " => ";
 				}
 				
 				if (is_array($val))
 					$code .= self::createArrayCode($val, $prefix . "\t");
 				else {
-					/*$type = substr($val, 0, 1) == '$' ? "variable" : (strpos($val, '"') !== false || strpos($val, "'") !== false ? "" : gettype($val));
+					/*$type = substr($val, 0, 1) == '$' || substr($val, 0, 2) == '@$' ? "variable" : (strpos($val, '"') !== false || strpos($val, "'") !== false ? "" : gettype($val));
 					
 					switch(strtolower($type)) {
 						case 'string':

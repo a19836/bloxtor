@@ -42,8 +42,8 @@ class WorkFlowBeansConverter {
 	public function createBeans($UserAuthenticationHandler = null, $options = null) {
 		$status = true;
 		
-		if ($options && $options["tasks_folders"])
-			$status = $this->renameExistentTasksFolders($UserAuthenticationHandler, $options["tasks_folders"], $options["tasks_labels"]);
+		if ($options && !empty($options["tasks_folders"]))
+			$status = $this->renameExistentTasksFolders($UserAuthenticationHandler, $options["tasks_folders"], isset($options["tasks_labels"]) ? $options["tasks_labels"] : null);
 		
 		$new_default_layer_folder = $this->getSelectedDefaultLayerFolder();
 		
@@ -64,14 +64,14 @@ class WorkFlowBeansConverter {
 		$tasks = $this->WorkFlowTasksFileHandler->getWorkflowData();
 		$found_task = null;
 		
-		if ($tasks && $tasks["tasks"])
+		if ($tasks && !empty($tasks["tasks"]))
 			foreach ($tasks["tasks"] as $task_id => $task) 
 				if ($task_id == $task_id_to_search) {
 					$found_task = $task;
 					break;
 				}
 		
-		if ($found_task) {
+		if ($found_task && isset($found_task["tag"])) {
 			switch($found_task["tag"]) {
 				case $this->task_layer_tags["dbdriver"]: 
 					$status = $this->createDBDriverBeans($task_id_to_search);
@@ -102,18 +102,22 @@ class WorkFlowBeansConverter {
 		$db_drivers_by_folders = array();
 		$presentation_layers_folders = array();
 		
-		if ($tasks && $tasks["tasks"])
-			foreach ($tasks["tasks"] as $task)
-				if ($task["tag"] == $this->task_layer_tags["dbdriver"] || $task["tag"] == $this->task_layer_tags["presentation"]) {
+		if ($tasks && !empty($tasks["tasks"]))
+			foreach ($tasks["tasks"] as $task) {
+				$task_tag = isset($task["tag"]) ? $task["tag"] : null;
+				
+				if ($task_tag == $this->task_layer_tags["dbdriver"] || $task_tag == $this->task_layer_tags["presentation"]) {
+					$task["label"] = isset($task["label"]) ? $task["label"] : null;
 					self::prepareLabel($task["label"]);
 					$ll = self::getVariableNameFromLabel($task["label"]);
 					
-					if ($task["tag"] == $this->task_layer_tags["dbdriver"])
+					if ($task_tag == $this->task_layer_tags["dbdriver"])
 						$db_drivers_by_folders[$ll] = $task;
 					else
 						$presentation_layers_folders[] = $ll;
 				}
-		
+			}
+			
 		$non_existent_db_drivers = array();
 		$wrong_db_drivers_credentials = array();
 		
@@ -125,7 +129,7 @@ class WorkFlowBeansConverter {
 			if ($files)
 				foreach ($files as $file)
 					if (is_dir($wordpress_installations_path . $file)) {
-						$task = $db_drivers_by_folders[$file];
+						$task = isset($db_drivers_by_folders[$file]) ? $db_drivers_by_folders[$file] : null;
 						
 						if (!isset($task))
 							$non_existent_db_drivers[] = $file;
@@ -136,26 +140,31 @@ class WorkFlowBeansConverter {
 								$wrong_db_drivers_credentials[] = $file;
 							else {
 								$contents = file_get_contents($wp_config_fp);
+								$orig_db_host = $db_name = null;
 								
 								//get db name
 								if (preg_match("/define\s*\(\s*('|\")DB_NAME('|\")\s*,\s*'([^']*)'\s*\)\s*;/", $contents, $match, PREG_OFFSET_CAPTURE))
-									$db_name = $match[3][0];
+									$db_name = isset($match[3][0]) ? $match[3][0] : null;
 								else if (preg_match("/define\s*\(\s*('|\")DB_NAME('|\")\s*,\s*\"([^\"]*)\"\s*\)\s*;/", $contents, $match, PREG_OFFSET_CAPTURE))
-									$db_name = $match[3][0];
+									$db_name = isset($match[3][0]) ? $match[3][0] : null;
 								
 								//get db host
 								if (preg_match("/define\s*\(\s*('|\")DB_HOST('|\")\s*,\s*'([^']*)'\s*\)\s*;/", $contents, $match, PREG_OFFSET_CAPTURE))
-									$orig_db_host = $match[3][0];
+									$orig_db_host = isset($match[3][0]) ? $match[3][0] : null;
 								else if (preg_match("/define\s*\(\s*('|\")DB_HOST('|\")\s*,\s*\"([^\"]*)\"\s*\)\s*;/", $contents, $match, PREG_OFFSET_CAPTURE))
-									$orig_db_host = $match[3][0];
+									$orig_db_host = isset($match[3][0]) ? $match[3][0] : null;
 								
 								//get db port
 								$parts = explode(":", $orig_db_host);
 								$db_host = $parts[0];
-								$db_port = $parts[1];
+								$db_port = isset($parts[1]) ? $parts[1] : null;
+								
+								$task_properties_host = isset($task["properties"]["host"]) ? $task["properties"]["host"] : null;
+								$task_properties_port = isset($task["properties"]["port"]) ? $task["properties"]["port"] : null;
+								$task_properties_db_name = isset($task["properties"]["db_name"]) ? $task["properties"]["db_name"] : null;
 								
 								//compare if original db driver task is the same than wordpress installation, and if true, changes config file with new credentials
-								if ($task["properties"]["host"] != $db_host || $task["properties"]["port"] != $db_port || $task["properties"]["db_name"] != $db_name) 
+								if ($task_properties_host != $db_host || $task_properties_port != $db_port || $task_properties_db_name != $db_name) 
 									$wrong_db_drivers_credentials[] = $file;
 							}
 						}
@@ -174,9 +183,10 @@ class WorkFlowBeansConverter {
 		$allowed_task_tags = array($this->task_layer_tags["db"], $this->task_layer_tags["dataaccess"], $this->task_layer_tags["businesslogic"], $this->task_layer_tags["presentation"]);
 		$tasks_folders = array();
 		
-		if ($tasks && $tasks["tasks"])
+		if ($tasks && !empty($tasks["tasks"]))
 			foreach ($tasks["tasks"] as $task)
-				if (in_array($task["tag"], $allowed_task_tags)) {
+				if (isset($task["tag"]) && in_array($task["tag"], $allowed_task_tags)) {
+					$task["label"] = isset($task["label"]) ? $task["label"] : null;
 					self::prepareLabel($task["label"]);
 					$ll = self::getVariableNameFromLabel($task["label"]);
 					
@@ -201,17 +211,18 @@ class WorkFlowBeansConverter {
 		$allowed_task_tags = array($this->task_layer_tags["db"], $this->task_layer_tags["dataaccess"], $this->task_layer_tags["businesslogic"], $this->task_layer_tags["presentation"]);
 		$status = true;
 		
-		if ($tasks && $tasks["tasks"]) {
+		if ($tasks && !empty($tasks["tasks"])) {
 			$db_layers = array();
 			$renamed = false;
 			
 			$LayoutTypeProjectHandler = new LayoutTypeProjectHandler($UserAuthenticationHandler, $this->user_global_variables_file_path, $this->user_beans_folder_path);
 			
 			foreach ($tasks["tasks"] as $task) {
-				if ($task["tag"] == $this->task_layer_tags["db"]) {
-					$task_id = $task["id"];
-					$previous_folder = $tasks_folders[$task_id];
+				if (isset($task["tag"]) && $task["tag"] == $this->task_layer_tags["db"]) {
+					$task_id = isset($task["id"]) ? $task["id"] : null;
+					$previous_folder = isset($tasks_folders[$task_id]) ? $tasks_folders[$task_id] : null;
 					
+					$task["label"] = isset($task["label"]) ? $task["label"] : null;
 					self::prepareLabel($task["label"]);
 					$ll = self::getVariableNameFromLabel($task["label"]);
 					
@@ -220,9 +231,12 @@ class WorkFlowBeansConverter {
 			}
 			
 			foreach ($tasks["tasks"] as $task) {
+				$task["tag"] = isset($task["tag"]) ? $task["tag"] : null;
+				$task["label"] = isset($task["label"]) ? $task["label"] : null;
+				
 				if ($task["tag"] == $this->task_layer_tags["dbdriver"]) {
-					$task_id = $task["id"];
-					$previous_label = $tasks_labels[$task_id];
+					$task_id = isset($task["id"]) ? $task["id"] : null;
+					$previous_label = isset($tasks_labels[$task_id]) ? $tasks_labels[$task_id] : null;
 					
 					if ($previous_label && $task["label"] != $previous_label) {
 						self::prepareLabel($previous_label);
@@ -242,7 +256,7 @@ class WorkFlowBeansConverter {
 					}
 				}
 				else if (in_array($task["tag"], $allowed_task_tags)) {
-					$task_id = $task["id"];
+					$task_id = isset($task["id"]) ? $task["id"] : null;
 					$previous_folder = $tasks_folders[$task_id];
 					
 					if ($previous_folder) {
@@ -284,7 +298,7 @@ class WorkFlowBeansConverter {
 	//get changed db_drivers and check if there are extra_attributes_settings.php in modules
 	public function renameExtraAttributesFiles($options, &$changed = false) {
 		$non_renamed_files = array();
-		$tasks_folders = $options ? $options["tasks_folders"] : null;
+		$tasks_folders = $options && isset($options["tasks_folders"]) ? $options["tasks_folders"] : null;
 		
 		if ($tasks_folders) {
 			$tasks = $this->WorkFlowTasksFileHandler->getTasksByLayerTag("dbdriver");
@@ -296,6 +310,7 @@ class WorkFlowBeansConverter {
 				
 				if ($pres_tasks)
 					foreach ($pres_tasks as $task) {
+						$task["label"] = isset($task["label"]) ? $task["label"] : null;
 						self::prepareLabel($task["label"]);
 						$ll = self::getVariableNameFromLabel($task["label"]);
 						
@@ -317,8 +332,8 @@ class WorkFlowBeansConverter {
 					$changed_db_drivers = $this->getChangedDBDrivers($options);
 					
 					foreach ($changed_db_drivers as $new_db_driver_name => $aux) {
-						$old_db_driver_name = $aux[0];
-						$overlapped_names = $aux[1];
+						$old_db_driver_name = isset($aux[0]) ? $aux[0] : null;
+						$overlapped_names = isset($aux[1]) ? $aux[1] : null;
 						$length = strlen($old_db_driver_name);
 						
 						//change extra_attributes files in $modules_folder_paths
@@ -330,7 +345,7 @@ class WorkFlowBeansConverter {
 									if (!is_dir($folder_path . $file)) {
 										$info = pathinfo($file);
 										
-										if (strtolower($info["extension"]) == "php" && substr($info["filename"], -20) == "_attributes_settings" && substr($info["filename"], 0, $length + 1) == $old_db_driver_name . "_") {
+										if (isset($info["extension"]) && strtolower($info["extension"]) == "php" && substr($info["filename"], -20) == "_attributes_settings" && substr($info["filename"], 0, $length + 1) == $old_db_driver_name . "_") {
 											$belongs_to_this_driver = true;
 											
 											foreach($overlapped_names as $overlapped_name)
@@ -361,6 +376,7 @@ class WorkFlowBeansConverter {
 													//rename business logic file
 													if ($bl_tasks)
 														foreach ($bl_tasks as $task) {
+															$task["label"] = isset($task["label"]) ? $task["label"] : null;
 															self::prepareLabel($task["label"]);
 															$ll = self::getVariableNameFromLabel($task["label"]);
 															
@@ -388,6 +404,7 @@ class WorkFlowBeansConverter {
 													//rename ibatis and hibernate files
 													if ($da_tasks)
 														foreach ($da_tasks as $task) {
+															$task["label"] = isset($task["label"]) ? $task["label"] : null;
 															self::prepareLabel($task["label"]);
 															$ll = self::getVariableNameFromLabel($task["label"]);
 															
@@ -427,7 +444,7 @@ class WorkFlowBeansConverter {
 	public function getChangedDBDrivers($options = null) {
 		$changed_db_drivers = array();
 		
-		$tasks_folders = $options ? $options["tasks_folders"] : null;
+		$tasks_folders = $options && isset($options["tasks_folders"]) ? $options["tasks_folders"] : null;
 		
 		if ($tasks_folders) {
 			$tasks = $this->WorkFlowTasksFileHandler->getTasksByLayerTag("dbdriver");
@@ -437,11 +454,12 @@ class WorkFlowBeansConverter {
 				
 				for ($i = 0; $i < $l; $i++) {
 					$task = $tasks[$i];
-					$task_id = $task["id"];
-					$old_db_driver_name = $tasks_folders[$task_id];
+					$task_id = isset($task["id"]) ? $task["id"] : null;
+					$old_db_driver_name = isset($tasks_folders[$task_id]) ? $tasks_folders[$task_id] : null;
 					
 					//only if existed before
 					if ($old_db_driver_name) {
+						$task["label"] = isset($task["label"]) ? $task["label"] : null;
 						self::prepareLabel($task["label"]);
 						$new_db_driver_name = self::getVariableNameFromLabel($task["label"]);
 						
@@ -453,9 +471,10 @@ class WorkFlowBeansConverter {
 							
 							for ($j = 0; $j < $l; $j++) {
 								$t = $tasks[$j];
-								$t_id = $t["id"];
+								$t_id = isset($t["id"]) ? $t["id"] : null;
 								
 								if ($t_id != $task_id) {
+									$t["label"] = isset($t["label"]) ? $t["label"] : null;
 									self::prepareLabel($t["label"]);
 									$t_name = self::getVariableNameFromLabel($t["label"]);
 									
@@ -476,12 +495,14 @@ class WorkFlowBeansConverter {
 	
 	//check the new tasks and check if any has a different name than previously. If so, rename the old folder with the new name
 	public function removeDeprecatedProjectLayouts($UserAuthenticationHandler, $tasks_folders) {
+		$status = false;
+		
 		if ($tasks_folders) {
 			$tasks = $this->WorkFlowTasksFileHandler->getWorkflowData();
 			$status = true;
 			
 			foreach ($tasks_folders as $task_id => $task_folder) 
-				if ($task_id && $task_folder && (!$tasks || !$tasks["tasks"] || !$tasks["tasks"][$task_id])) {
+				if ($task_id && $task_folder && (!$tasks || empty($tasks["tasks"]) || empty($tasks["tasks"][$task_id]))) {
 					$bean_file_prefix = $task_folder . "_pl";
 					$bean_file_path = $this->getBeansFilePath($bean_file_prefix);
 					//error_log("bean_file_path:$bean_file_path\n", 3, $GLOBALS["log_file_path"]);
@@ -518,9 +539,10 @@ class WorkFlowBeansConverter {
 		//echo "<pre>";print_r($tasks);die();
 		
 		foreach ($tasks as $task) {
-			if (!$task["properties"]["active"]) 
+			if (empty($task["properties"]["active"]))
 				continue 1;
 			
+			$task["label"] = isset($task["label"]) ? $task["label"] : null;
 			self::prepareLabel($task["label"]);
 			$ll = self::getVariableNameFromLabel($task["label"]);
 			$on = self::getObjectNameFromLabel($task["label"]);
@@ -542,9 +564,10 @@ class WorkFlowBeansConverter {
 		$tasks = $this->WorkFlowTasksFileHandler->getWorkflowData();
 		$allowed_task_tags = array($this->task_layer_tags["db"], $this->task_layer_tags["dataaccess"], $this->task_layer_tags["businesslogic"], $this->task_layer_tags["presentation"]);
 		
-		if ($tasks && $tasks["tasks"])
+		if ($tasks && !empty($tasks["tasks"]))
 			foreach ($tasks["tasks"] as $task)
-				if (in_array($task["tag"], $allowed_task_tags) && $task["start"]) {
+				if (isset($task["tag"]) && in_array($task["tag"], $allowed_task_tags) && !empty($task["start"])) {
+					$task["label"] = isset($task["label"]) ? $task["label"] : null;
 					self::prepareLabel($task["label"]);
 					$ll = self::getVariableNameFromLabel($task["label"]);
 					return $ll;
@@ -560,9 +583,10 @@ class WorkFlowBeansConverter {
 		$tasks = $this->WorkFlowTasksFileHandler->getTasksByLayerTag("presentation");
 		
 		foreach ($tasks as $task) {
-			if (!$task["properties"]["active"] || ($task_id_to_filter && !in_array($task["id"], $task_id_to_filter))) 
+			if (empty($task["properties"]["active"]) || ($task_id_to_filter && isset($task["id"]) && !in_array($task["id"], $task_id_to_filter))) 
 				continue 1;
 			
+			$task["label"] = isset($task["label"]) ? $task["label"] : null;
 			self::prepareLabel($task["label"]);
 			$ll = self::getVariableNameFromLabel($task["label"]);
 			$on = self::getObjectNameFromLabel($task["label"]);
@@ -613,15 +637,15 @@ class WorkFlowBeansConverter {
 	<!-- PRESENTATION -->';
 
 			$aux = $this->getBrokerClients($task);
-			$xml .= $aux[0];
-			$add_broker_xml = $aux[1];
+			$xml .= isset($aux[0]) ? $aux[0] : null;
+			$add_broker_xml = isset($aux[1]) ? $aux[1] : null;
 
 			$xml .= '
 			
 	<bean name="' . $on . 'PLayer" path="lib.org.phpframework.layer.presentation.PresentationLayer">
 		<constructor_arg reference="' . $ll . '_p_vars" />
 
-		<property name="isDefaultLayer" value="' . ($task["start"] ? 1 : 0) . '" />
+		<property name="isDefaultLayer" value="' . (!empty($task["start"]) ? 1 : 0) . '" />
 		<property name="cacheLayer" reference="' . $on . 'PCacheLayer" />
 		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
 		' . $add_broker_xml . '
@@ -721,17 +745,18 @@ class WorkFlowBeansConverter {
 		$tasks = $this->WorkFlowTasksFileHandler->getTasksByLayerTag("businesslogic");
 		
 		foreach ($tasks as $task) {
-			if (!$task["properties"]["active"] || ($task_id_to_filter && !in_array($task["id"], $task_id_to_filter))) 
+			if (empty($task["properties"]["active"]) || ($task_id_to_filter && isset($task["id"]) && !in_array($task["id"], $task_id_to_filter))) 
 				continue 1;
 			
+			$task["label"] = isset($task["label"]) ? $task["label"] : null;
 			self::prepareLabel($task["label"]);
 			$ll = self::getVariableNameFromLabel($task["label"]);
 			$on = self::getObjectNameFromLabel($task["label"]);
 			
 			$xml = '<?xml version="1.0" encoding="UTF-8"?>
 <beans>
-	<bean name="CommonService" namespace="' . $ll . '" path="CommonService" path_prefix="<?php echo $vars["business_logic_modules_common_path"];?>" extension="php">
-		<property name="PHPFrameWorkObjName"><?php echo $vars["phpframework_obj_name"] ? $vars["phpframework_obj_name"] : $objs["phpframework_obj_name"]; ?></property>
+	<bean name="CommonService" namespace="' . $ll . '" path="CommonService" path_prefix="<?php echo (isset($vars["business_logic_modules_common_path"]) ? $vars["business_logic_modules_common_path"] : "");?>" extension="php">
+		<property name="PHPFrameWorkObjName"><?php echo (!empty($vars["phpframework_obj_name"]) ? $vars["phpframework_obj_name"] : (!empty($objs["phpframework_obj_name"]) ? $objs["phpframework_obj_name"] : "")); ?></property>
 		<property name="businessLogicLayer" reference="' . $on . 'BLLayer" />
 		<property name="userCacheHandler" reference="UserCacheHandler" />
 	</bean>
@@ -751,9 +776,10 @@ class WorkFlowBeansConverter {
 		$tasks = $this->WorkFlowTasksFileHandler->getTasksByLayerTag("businesslogic");
 		
 		foreach ($tasks as $task) {
-			if (!$task["properties"]["active"] || ($task_id_to_filter && !in_array($task["id"], $task_id_to_filter))) 
+			if (empty($task["properties"]["active"]) || ($task_id_to_filter && isset($task["id"]) && !in_array($task["id"], $task_id_to_filter))) 
 				continue 1;
 			
+			$task["label"] = isset($task["label"]) ? $task["label"] : null;
 			self::prepareLabel($task["label"]);
 			$ll = self::getVariableNameFromLabel($task["label"]);
 			$on = self::getObjectNameFromLabel($task["label"]);
@@ -765,8 +791,8 @@ class WorkFlowBeansConverter {
 	<!-- BUSINESS LOGIC -->';
 
 			$aux = $this->getBrokerClients($task);
-			$xml .= $aux[0];
-			$add_broker_xml = $aux[1];
+			$xml .= isset($aux[0]) ? $aux[0] : null;
+			$add_broker_xml = isset($aux[1]) ? $aux[1] : null;
 			
 			$xml .= '
 
@@ -787,7 +813,7 @@ class WorkFlowBeansConverter {
 	<bean name="' . $on . 'BLLayer" path="lib.org.phpframework.layer.businesslogic.BusinessLogicLayer">
 		<constructor_arg reference="' . $ll . '_business_logic_vars" />
 
-		<property name="isDefaultLayer" value="' . ($task["start"] ? 1 : 0) . '" />
+		<property name="isDefaultLayer" value="' . (!empty($task["start"]) ? 1 : 0) . '" />
 		<property name="cacheLayer" reference="' . $on . 'BLCacheLayer" />
 		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
 		<property name="docBlockParser" reference="' . $on . 'BLDocBlockParser" />
@@ -832,9 +858,10 @@ class WorkFlowBeansConverter {
 		$tasks = $this->WorkFlowTasksFileHandler->getTasksByLayerTag("dataaccess");
 		
 		foreach ($tasks as $task) {
-			if (!$task["properties"]["active"] || ($task_id_to_filter && !in_array($task["id"], $task_id_to_filter))) 
+			if (empty($task["properties"]["active"]) || ($task_id_to_filter && isset($task["id"]) && !in_array($task["id"], $task_id_to_filter))) 
 				continue 1;
 			
+			$task["label"] = isset($task["label"]) ? $task["label"] : null;
 			self::prepareLabel($task["label"]);
 			$ll = self::getVariableNameFromLabel($task["label"]);
 			$on = self::getObjectNameFromLabel($task["label"]);
@@ -845,10 +872,10 @@ class WorkFlowBeansConverter {
 	';
 			
 			$aux = $this->getBrokerClients($task);
-			$xml .= $aux[0];
-			$add_broker_xml = $aux[1];
+			$xml .= isset($aux[0]) ? $aux[0] : null;
+			$add_broker_xml = isset($aux[1]) ? $aux[1] : null;
 
-			if ($task["properties"]["type"] == "ibatis") {
+			if (isset($task["properties"]["type"]) && $task["properties"]["type"] == "ibatis") {
 				$xml .= '
 	<!-- IBATIS -->
 	<bean name="' . $on . 'IClient" path="lib.org.phpframework.sqlmap.ibatis.IBatisClient"></bean>
@@ -865,13 +892,13 @@ class WorkFlowBeansConverter {
 		<constructor_arg reference="' . $on . 'IClient" />
 		<constructor_arg reference="' . $ll . '_ida_vars" />
 
-		<property name="isDefaultLayer" value="' . ($task["start"] ? 1 : 0) . '" />
+		<property name="isDefaultLayer" value="' . (!empty($task["start"]) ? 1 : 0) . '" />
 		<property name="cacheLayer" reference="' . $on . 'IDACacheLayer" />
 		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
 		' . $add_broker_xml . '
 
 		<function name="setDefaultBrokerName">
-			<parameter value="&lt;?php echo $GLOBALS[\'default_db_broker\']; ?>" />
+			<parameter value="&lt;?php echo isset($GLOBALS[\'default_db_broker\']) ? $GLOBALS[\'default_db_broker\'] : \'\'; ?>" />
 		</function>
 	</bean>
 	' . $this->getBrokerServers($task) . '
@@ -907,13 +934,13 @@ class WorkFlowBeansConverter {
 		<constructor_arg reference="' . $on . 'HClient" /> 
 		<constructor_arg reference="' . $ll . '_hda_vars" />
 
-		<property name="isDefaultLayer" value="' . ($task["start"] ? 1 : 0) . '" />
+		<property name="isDefaultLayer" value="' . (!empty($task["start"]) ? 1 : 0) . '" />
 		<property name="cacheLayer" reference="' . $on . 'HDACacheLayer" />
 		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
 		' . $add_broker_xml . '
 
 		<function name="setDefaultBrokerName">
-			<parameter value="&lt;?php echo $GLOBALS[\'default_db_broker\']; ?>" />
+			<parameter value="&lt;?php echo isset($GLOBALS[\'default_db_broker\']) ? $GLOBALS[\'default_db_broker\'] : \'\'; ?>" />
 		</function>
 	</bean>
 	' . $this->getBrokerServers($task) . '
@@ -950,9 +977,10 @@ class WorkFlowBeansConverter {
 		$tasks = $this->WorkFlowTasksFileHandler->getTasksByLayerTag("db");
 		
 		foreach ($tasks as $task) {
-			if (!$task["properties"]["active"] || ($task_id_to_filter && !in_array($task["id"], $task_id_to_filter))) 
+			if (empty($task["properties"]["active"]) || ($task_id_to_filter && isset($task["id"]) && !in_array($task["id"], $task_id_to_filter))) 
 				continue 1;
 			
+			$task["label"] = isset($task["label"]) ? $task["label"] : null;
 			self::prepareLabel($task["label"]);
 			$ll = self::getVariableNameFromLabel($task["label"]);
 			$on = self::getObjectNameFromLabel($task["label"]);
@@ -963,8 +991,8 @@ class WorkFlowBeansConverter {
 
 			//Preparing DB Drivers
 			$aux = $this->getBrokerClients($task);
-			$xml .= $aux[0];
-			$add_broker_xml = $aux[1];
+			$xml .= isset($aux[0]) ? $aux[0] : null;
+			$add_broker_xml = isset($aux[1]) ? $aux[1] : null;
 			
 			//Preparing rest of xml
 			$xml .= '
@@ -979,13 +1007,13 @@ class WorkFlowBeansConverter {
 	<bean name="' . $on . 'DBLayer" path="lib.org.phpframework.layer.db.DBLayer">
 		<constructor_arg reference="' . $ll . '_dbl_vars" />
 		
-		<property name="isDefaultLayer" value="' . ($task["start"] ? 1 : 0) . '" />
+		<property name="isDefaultLayer" value="' . (!empty($task["start"]) ? 1 : 0) . '" />
 		<property name="cacheLayer" reference="' . $on . 'DBCacheLayer" />
 		<property name="PHPFrameWorkObjName" reference="phpframework_obj_name" />
 		' . $add_broker_xml . '
 
 		<function name="setDefaultBrokerName">
-			<parameter value="&lt;?php echo $GLOBALS[\'default_db_driver\']; ?>" />
+			<parameter value="&lt;?php echo isset($GLOBALS[\'default_db_driver\']) ? $GLOBALS[\'default_db_driver\'] : \'\'; ?>" />
 		</function>
 	</bean>
 	' . $this->getBrokerServers($task) . '
@@ -1019,14 +1047,15 @@ class WorkFlowBeansConverter {
 		$tasks = $this->WorkFlowTasksFileHandler->getTasksByLayerTag("dbdriver");
 		
 		foreach ($tasks as $task) {
-			if (!$task["properties"]["active"] || ($task_id_to_filter && !in_array($task["id"], $task_id_to_filter))) 
+			if (empty($task["properties"]["active"]) || ($task_id_to_filter && isset($task["id"]) && !in_array($task["id"], $task_id_to_filter))) 
 				continue 1;
 			
+			$task["label"] = isset($task["label"]) ? $task["label"] : null;
 			self::prepareLabel($task["label"]);
 			$ll = self::getVariableNameFromLabel($task["label"]);
 			$on = self::getObjectNameFromLabel($task["label"]);
 			
-			$class_name = DB::getDriverClassNameByType($task["properties"]["type"]);
+			$class_name = DB::getDriverClassNameByType(isset($task["properties"]["type"]) ? $task["properties"]["type"] : null);
 			$class = "lib.org.phpframework.db.driver." . ($class_name ? $class_name : "MySqlDB");
 		
 			$xml = '<?xml version="1.0" encoding="UTF-8"?>
@@ -1039,9 +1068,10 @@ class WorkFlowBeansConverter {
 			
 			$cdata_props = array("host", "db_name", "username", "password", "schema", "odbc_data_source", "odbc_driver", "extra_dsn");
 			
-			foreach ($task["properties"] as $property_name => $property_value)
-				if (!in_array($property_name, array("type", "active")))
-					$xml .= '
+			if (!empty($task["properties"]))
+				foreach ($task["properties"] as $property_name => $property_value)
+					if (!in_array($property_name, array("type", "active")))
+						$xml .= '
 			<item name="' . $property_name . '">' . (in_array($property_name, $cdata_props) ? '<![CDATA[' . self::prepareValue($property_value) . ']]>' : self::prepareValue($property_value)) . '</item>';
 			
 			$xml .= '
@@ -1053,6 +1083,7 @@ class WorkFlowBeansConverter {
 		</function>
 	</bean>
 </beans>';
+			
 			if (!$this->saveBeansFile(self::getFileNameFromLabel($task["label"]) . "_dbdriver", $xml))
 				$status = false;
 		}
@@ -1091,9 +1122,9 @@ class WorkFlowBeansConverter {
 	
 	<var name="log_vars">
 		<list>
-			<item name="log_level">&lt;?php echo $GLOBALS["log_level"]; ?&gt;</item>
-			<item name="log_echo_active">&lt;?php echo $GLOBALS["log_echo_active"]; ?&gt;</item>
-			<item name="log_file_path">&lt;?php echo $GLOBALS["log_file_path"]; ?&gt;</item>
+			<item name="log_level">&lt;?php echo isset($GLOBALS["log_level"] ) ? $GLOBALS["log_level"] : ""; ?&gt;</item>
+			<item name="log_echo_active">&lt;?php echo isset($GLOBALS["log_echo_active"]) ? $GLOBALS["log_echo_active"] : ""; ?&gt;</item>
+			<item name="log_file_path">&lt;?php echo isset($GLOBALS["log_file_path"]) ? $GLOBALS["log_file_path"] : ""; ?&gt;</item>
 			<item name="log_css"><![CDATA[
 				body {
 					overflow:overlay;
@@ -1164,7 +1195,9 @@ class WorkFlowBeansConverter {
 		$add_broker_xml = '';
 		
 		$allowed_broker_types = array();
-		switch($task["tag"]) {
+		$task_tag = isset($task["tag"]) ? $task["tag"] : null;
+		
+		switch($task_tag) {
 			case $this->task_layer_tags["db"]: 
 				$allowed_broker_types = array( $this->task_layer_tags["dbdriver"] ); 
 				break;
@@ -1181,34 +1214,40 @@ class WorkFlowBeansConverter {
 			$exits = isset($task["exits"]["layer_exit"][0]) ? $task["exits"]["layer_exit"] : array($task["exits"]["layer_exit"]);
 			
 			if ($exits) {
+				$task["label"] = isset($task["label"]) ? $task["label"] : null;
 				$on = self::getObjectNameFromLabel($task["label"]);
 				$tasks = $this->WorkFlowTasksFileHandler->getWorkflowData();
 				$repeated_connection_types = array();
 				
 				$t = count($exits);
 				for ($i = 0; $i < $t; $i++) {
+					$exit_task_id = isset($exits[$i]["task_id"]) ? $exits[$i]["task_id"] : null;
+					
 					foreach ($tasks["tasks"] as $sub_task) {
+						$sub_task_id = isset($sub_task["id"]) ? $sub_task["id"] : null;
+						
 						//preparing brokers
-						if ($sub_task["id"] == $exits[$i]["task_id"] && in_array($sub_task["tag"], $allowed_broker_types) && $sub_task["properties"]["active"]) {
+						if ($sub_task_id == $exit_task_id && isset($sub_task["tag"]) && in_array($sub_task["tag"], $allowed_broker_types) && !empty($sub_task["properties"]["active"])) {
+							$sub_task["label"] = isset($sub_task["label"]) ? $sub_task["label"] : null;
 							self::prepareLabel($sub_task["label"]);
 							$sub_ll = self::getVariableNameFromLabel($sub_task["label"]);
 							$sub_on = self::getObjectNameFromLabel($sub_task["label"]);
 							$sub_broker_name = self::getBrokerNameFromLabel($sub_task["label"]);
 							
 							//preparing connection properties
-							$sub_task_layer_brokers = $sub_task["properties"]["layer_brokers"];
-							$exit_properties = $exits[$i]["properties"];
-							$connection_type = $exit_properties["connection_type"];
+							$sub_task_layer_brokers = isset($sub_task["properties"]["layer_brokers"]) ? $sub_task["properties"]["layer_brokers"] : null;
+							$exit_properties = isset($exits[$i]["properties"]) ? $exits[$i]["properties"] : null;
+							$connection_type = isset($exit_properties["connection_type"]) ? $exit_properties["connection_type"] : null;
 							$lib_prefix = "lib.org.phpframework.broker.client.local.Local";
 							$name_prefix = "";
 							$list = "";
 							
 							//checks if exists any remote broker defined in the sub_task
-							if (!$sub_task_layer_brokers[$connection_type]["active"])
+							if (empty($sub_task_layer_brokers[$connection_type]["active"]))
 								$connection_type = "";
 							
-							if (!$repeated_connection_types[ $sub_task["id"] ] || !in_array($connection_type, $repeated_connection_types[ $sub_task["id"] ])) {
-								$repeated_connection_types[ $sub_task["id"] ][] = $connection_type;
+							if (empty($repeated_connection_types[$sub_task_id]) || !in_array($connection_type, $repeated_connection_types[$sub_task_id])) {
+								$repeated_connection_types[$sub_task_id][] = $connection_type;
 								
 								//if remote broker correctly defined
 								if ($connection_type) {
@@ -1216,9 +1255,9 @@ class WorkFlowBeansConverter {
 									$name_prefix = self::getBrokerServerNamePrefix($connection_type);
 									
 									//prepare connection_settings - converts connection_settings to an associative array
-									if (is_array($exit_properties["connection_settings"]) && $exit_properties["connection_settings"]["vars_name"]) {
+									if (isset($exit_properties["connection_settings"]) && is_array($exit_properties["connection_settings"]) && !empty($exit_properties["connection_settings"]["vars_name"])) {
 										$vars_name = $exit_properties["connection_settings"]["vars_name"];
-										$vars_value = $exit_properties["connection_settings"]["vars_value"];
+										$vars_value = isset($exit_properties["connection_settings"]["vars_value"]) ? $exit_properties["connection_settings"]["vars_value"] : null;
 										$exit_properties["connection_settings"] = array();
 										
 										if (!is_array($vars_name)) {
@@ -1233,21 +1272,21 @@ class WorkFlowBeansConverter {
 									else
 										$exit_properties["connection_settings"] = array();
 									
-									if ($sub_task_layer_brokers[$connection_type]) {
+									if (!empty($sub_task_layer_brokers[$connection_type])) {
 										$exit_properties["connection_settings"] = array_merge($sub_task_layer_brokers[$connection_type], $exit_properties["connection_settings"]);
 										
 										unset($exit_properties["connection_settings"]["active"]);
 										unset($exit_properties["connection_settings"]["other_settings"]); //Note: do not add the $sub_task_layer_brokers[$connection_type]["other_settings"] here bc it doesn't make sense. The $sub_task_layer_brokers[$connection_type]["other_settings"] is correspondent to the $sub_task. Not here!
 									}
 									
-									$exit_properties["connection_settings"]["response_type"] = $exit_properties["connection_response_type"];
+									$exit_properties["connection_settings"]["response_type"] = isset($exit_properties["connection_response_type"]) ? $exit_properties["connection_response_type"] : null;
 									
 									$list = self::getRemoteBrokerBeanExtraConstructArgsXML($exit_properties);
 									$list = $list ? $list . "\n\t" : "";
 								}
 								
 								if ($sub_task["tag"] == $this->task_layer_tags["dataaccess"]) {
-									if ($sub_task["properties"]["type"] == "ibatis") {
+									if (isset($sub_task["properties"]["type"]) && $sub_task["properties"]["type"] == "ibatis") {
 										if ($connection_type)
 											$broker_client_xml .= '
 	<bean name="' . $on . $sub_on . 'IDABrokerClient" path="' . $lib_prefix . 'IbatisDataAccessBrokerClient">' . $list . '</bean>';
@@ -1371,10 +1410,11 @@ class WorkFlowBeansConverter {
 	private function getBrokerServers($task) {
 		$broker_server_xml = '';
 		
-		$task_id = $task["id"];
+		$task_id = isset($task["id"]) ? $task["id"] : null;
+		$task_tag = isset($task["tag"]) ? $task["tag"] : null;
 		
 		$allowed_parent_broker_types = array();
-		switch($task["tag"]) {
+		switch($task_tag) {
 			case $this->task_layer_tags["dbdriver"]: 
 				$allowed_parent_broker_types = array( $this->task_layer_tags["db"], $this->task_layer_tags["businesslogic"], $this->task_layer_tags["presentation"] ); 
 				break;
@@ -1393,39 +1433,44 @@ class WorkFlowBeansConverter {
 		}
 		
 		if ($allowed_parent_broker_types) {
+			$task["label"] = isset($task["label"]) ? $task["label"] : null;
 			$on = self::getObjectNameFromLabel($task["label"]);
 			$tasks = $this->WorkFlowTasksFileHandler->getWorkflowData();
 			$has_local_connection = false;
 			
 			//check if there is any local connection
-			foreach ($tasks["tasks"] as $sub_task)
-				if (!empty($sub_task["exits"]["layer_exit"]) && $sub_task["properties"]["active"]) { 
-					//must be active, otherwise the connection will be ignored, this is, if the $sub_task is disabled, do NOT create Broker Server. Note that $task is always active, otherwise it wouldn't enter in this function!
-					
-					$exits = isset($sub_task["exits"]["layer_exit"][0]) ? $sub_task["exits"]["layer_exit"] : array($sub_task["exits"]["layer_exit"]);
-					
-					if ($exits) {
-						$t = count($exits);
-						for ($i = 0; $i < $t; $i++)
-							if ($exits[$i]["task_id"] == $task_id && in_array($sub_task["tag"], $allowed_parent_broker_types)) {
-								$exit_properties = $exits[$i]["properties"];
-								$connection_type = $exit_properties["connection_type"];
+			if (!empty($tasks["tasks"]))
+				foreach ($tasks["tasks"] as $sub_task)
+					if (!empty($sub_task["exits"]["layer_exit"]) && !empty($sub_task["properties"]["active"])) {
+						//must be active, otherwise the connection will be ignored, this is, if the $sub_task is disabled, do NOT create Broker Server. Note that $task is always active, otherwise it wouldn't enter in this function!
+						
+						$exits = isset($sub_task["exits"]["layer_exit"][0]) ? $sub_task["exits"]["layer_exit"] : array($sub_task["exits"]["layer_exit"]);
+						
+						if ($exits) {
+							$t = count($exits);
+							for ($i = 0; $i < $t; $i++) {
+								$exit_task_id = isset($exits[$i]["task_id"]) ? $exits[$i]["task_id"] : null;
 								
-								if (!$connection_type || !$task["properties"]["layer_brokers"][$connection_type]["active"]) {
-									$has_local_connection = true;
-									break;
+								if ($exit_task_id == $task_id && isset($sub_task["tag"]) && in_array($sub_task["tag"], $allowed_parent_broker_types)) {
+									$exit_properties = isset($exits[$i]["properties"]) ? $exits[$i]["properties"] : null;
+									$connection_type = isset($exit_properties["connection_type"]) ? $exit_properties["connection_type"] : null;
+									
+									if (!$connection_type || empty($task["properties"]["layer_brokers"][$connection_type]["active"])) {
+										$has_local_connection = true;
+										break;
+									}
 								}
 							}
-						
-						if ($has_local_connection)
-							break;
+							
+							if ($has_local_connection)
+								break;
+						}
 					}
-				}
 			
 			//create local broker server
 			if ($has_local_connection) {
-				if ($task["tag"] == $this->task_layer_tags["dataaccess"]) {
-					if ($task["properties"]["type"] == "ibatis")
+				if ($task_tag == $this->task_layer_tags["dataaccess"]) {
+					if (isset($task["properties"]["type"]) && $task["properties"]["type"] == "ibatis")
 						$broker_server_xml .= '
 	<bean name="' . $on . 'IDABrokerServer" path="lib.org.phpframework.broker.server.local.LocalIbatisDataAccessBrokerServer">
 		<constructor_arg reference="' . $on . 'IDALayer" />
@@ -1436,12 +1481,12 @@ class WorkFlowBeansConverter {
 		<constructor_arg reference="' . $on . 'HDALayer" />
 	</bean>';
 				}
-				else if ($task["tag"] == $this->task_layer_tags["businesslogic"])
+				else if ($task_tag == $this->task_layer_tags["businesslogic"])
 					$broker_server_xml .= '
 	<bean name="' . $on . 'BLBrokerServer" path="lib.org.phpframework.broker.server.local.LocalBusinessLogicBrokerServer">
 		<constructor_arg reference="' . $on . 'BLLayer" />
 	</bean>';
-				else if ($task["tag"] == $this->task_layer_tags["db"])
+				else if ($task_tag == $this->task_layer_tags["db"])
 					$broker_server_xml .= '
 	<bean name="' . $on . 'DBBrokerServer" path="lib.org.phpframework.broker.server.local.LocalDBBrokerServer">
 		<constructor_arg reference="' . $on . 'DBLayer" />
@@ -1449,18 +1494,18 @@ class WorkFlowBeansConverter {
 			}
 			
 			//create remote brokers servers
-			$layer_brokers = $task["properties"]["layer_brokers"];
+			$layer_brokers = isset($task["properties"]["layer_brokers"]) ? $task["properties"]["layer_brokers"] : null;
 			
 			if ($layer_brokers)
 				foreach ($layer_brokers as $layer_broker_type => $layer_broker) 
-					if ($layer_broker["active"]) {
+					if (!empty($layer_broker["active"])) {
 						$lib_prefix = "lib.org.phpframework.broker.server.$layer_broker_type." . strtoupper($layer_broker_type);
 						$name_prefix = self::getBrokerServerNamePrefix($layer_broker_type);
 						
 						//merge other_settings with default settings
-						if (is_array($layer_broker["other_settings"]) && $layer_broker["other_settings"]["vars_name"]) { 
-							$vars_name = $layer_broker["other_settings"]["vars_name"];
-							$vars_value = $layer_broker["other_settings"]["vars_value"];
+						if (isset($layer_broker["other_settings"]) && is_array($layer_broker["other_settings"]) && !empty($layer_broker["other_settings"]["vars_name"])) { 
+							$vars_name = isset($layer_broker["other_settings"]["vars_name"]) ? $layer_broker["other_settings"]["vars_name"] : null;
+							$vars_value = isset($layer_broker["other_settings"]["vars_value"]) ? $layer_broker["other_settings"]["vars_value"] : null;
 							
 							if (!is_array($vars_name)) {
 								$vars_name = array($vars_name);
@@ -1482,8 +1527,8 @@ class WorkFlowBeansConverter {
 						
 						$list = self::getRemoteBrokerBeanExtraConstructArgsXML(array("connection_settings" => $layer_broker));
 						
-						if ($task["tag"] == $this->task_layer_tags["dataaccess"]) {
-							if ($task["properties"]["type"] == "ibatis")
+						if ($task_tag == $this->task_layer_tags["dataaccess"]) {
+							if (isset($task["properties"]["type"]) && $task["properties"]["type"] == "ibatis")
 								$broker_server_xml .= '
 	<bean name="' . $name_prefix . $on . 'IDABrokerServer" path="' . $lib_prefix . 'IbatisDataAccessBrokerServer">
 		<constructor_arg reference="' . $on . 'IDALayer" />' . $list . '
@@ -1494,12 +1539,12 @@ class WorkFlowBeansConverter {
 		<constructor_arg reference="' . $on . 'HDALayer" />' . $list . '
 	</bean>';
 						}
-						else if ($task["tag"] == $this->task_layer_tags["businesslogic"]) 
+						else if ($task_tag == $this->task_layer_tags["businesslogic"]) 
 							$broker_server_xml .= '
 	<bean name="' . $name_prefix . $on . 'BLBrokerServer" path="' . $lib_prefix . 'BusinessLogicBrokerServer">
 		<constructor_arg reference="' . $on . 'BLLayer" />' . $list . '
 	</bean>';
-						else if ($task["tag"] == $this->task_layer_tags["db"])
+						else if ($task_tag == $this->task_layer_tags["db"])
 							$broker_server_xml .= '
 	<bean name="' . $name_prefix . $on . 'DBBrokerServer" path="' . $lib_prefix . 'DBBrokerServer">
 		<constructor_arg reference="' . $on . 'DBLayer" />' . $list . '
@@ -1527,8 +1572,8 @@ class WorkFlowBeansConverter {
 	private static function getRemoteBrokerBeanExtraConstructArgsXML($exit_properties) {
 		$xml = "";
 		
-		$connection_settings = $exit_properties["connection_settings"];
-		$connection_global_vars_name = $exit_properties["connection_global_variables_name"];
+		$connection_settings = isset($exit_properties["connection_settings"]) ? $exit_properties["connection_settings"] : null;
+		$connection_global_vars_name = isset($exit_properties["connection_global_variables_name"]) ? $exit_properties["connection_global_variables_name"] : null;
 		$connection_global_vars_name = $connection_global_vars_name && !is_array($connection_global_vars_name) ? array($connection_global_vars_name) : $connection_global_vars_name;
 		
 		if ($connection_settings || $connection_global_vars_name) {
@@ -1604,7 +1649,7 @@ class WorkFlowBeansConverter {
 		
 		preg_match_all('/&lt;\?([^>]*)\?>/u', $label,  $out, PREG_OFFSET_CAPTURE); //'/u' means with accents and ç too. '/u' converts unicode to accents chars.
 		
-		$vars = $out[0];
+		$vars = isset($out[0]) ? $out[0] : null;
 		$start = 0;
 		$new_label = "";
 		
@@ -1635,7 +1680,7 @@ class WorkFlowBeansConverter {
 	private static function prepareValue(&$value) {
 		preg_match_all('/\{?([\\\\]*)\$\{?([\w]+)}?/u', $value,  $out, PREG_PATTERN_ORDER); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 'u' means converts to unicode.
 		
-		$vars = $out[0];
+		$vars = isset($out[0]) ? $out[0] : null;
 		
 		//sort array by item value's length...
 		usort($vars, function($a, $b) {
@@ -1650,12 +1695,12 @@ class WorkFlowBeansConverter {
 			
 			if (preg_match('/^\\\\+\$/', $var_name)) {
 				preg_match_all('/\\\\/', substr($var_name, 0, strpos($var_name, '$')),  $slashes, PREG_PATTERN_ORDER);
-				$is_escaped = $slashes[0] && count($slashes[0]) % 2 != 0;
+				$is_escaped = !empty($slashes[0]) && count($slashes[0]) % 2 != 0;
 			}
 			
 			if (!$is_escaped) {
 				$var_name = preg_replace('/^\\\\*\$/', '', $var_name);
-				$value = str_replace($vars[$i], '<?php echo $GLOBALS[\'' . $var_name . '\']; ?>', $value);
+				$value = str_replace($vars[$i], '<?php echo isset($GLOBALS[\'' . $var_name . '\']) ? $GLOBALS[\'' . $var_name . '\'] : \'\'; ?>', $value);
 			}
 		}
 		

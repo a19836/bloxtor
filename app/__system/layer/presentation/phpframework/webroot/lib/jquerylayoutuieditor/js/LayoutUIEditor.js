@@ -1074,12 +1074,15 @@ function LayoutUIEditor() {
 	
 	me.updateWidgetPositionBasedInParent = function(event, dragged_elm, widget, ui_obj) {
 		if (widget.data("absolute-position")) {
+			var widget_position = widget.css("position");
 			var parent = widget.parent();
-			var position = parent.css("position");
+			var parent_position = parent.css("position");
 			var parent_offset = null;
-			var is_body = parent.is(template_widgets_iframe_body);
+			var is_parent_body = parent.is(template_widgets_iframe_body);
 			
-			if (position == "absolute" || position == "fixed" || position == "relative") {
+			if (parent_position == "absolute" || parent_position == "fixed" || (
+				parent_position == "relative" && (widget_position == "absolute" || widget_position == "fixed" || widget_position == "relative")
+			)) {
 				parent_offset = parent.offset();
 				
 				//add iframe offset in case the panels be flipped.
@@ -1087,15 +1090,16 @@ function LayoutUIEditor() {
 				parent_offset.top = parent_offset.top + o.top;
 				parent_offset.left = parent_offset.left + o.left;
 			}
-			else if (is_body)
+			else if (is_parent_body)
 				parent_offset = template_widgets_iframe.offset();
 			
 			if (parent_offset) {
 				var dragged_elm_offset = ui_obj ? ui_obj.offset : dragged_elm.offset();
 				var top = parseInt(dragged_elm_offset.top - parent_offset.top);
 				var left = parseInt(dragged_elm_offset.left - parent_offset.left);
+				var position = widget_position == "absolute" || widget_position == "fixed" || widget_position == "relative" ? widget_position : "absolute";
 				
-				widget.css({position: "absolute", top: top + "px", left: left + "px"});
+				widget.css({position: position, top: top + "px", left: left + "px"});
 			}
 		}
 	};

@@ -29,16 +29,17 @@ if (!empty($_GET["project"])) {
 else if (!empty($_COOKIE["selected_project"]))
 	$project = $_COOKIE["selected_project"];
 
-if (!$bean_name || !$bean_file_name || !$project) {
+if (empty($bean_name) || empty($bean_file_name) || empty($project)) {
 	header("Location: $choose_available_project_url");
-	die("<script>document.location = '$choose_available_project_url';</script>");
+	echo "<script>document.location = '$choose_available_project_url';</script>";
+	die();
 }
 
 //preparing filter_by_layout
 $layers_beans = AdminMenuHandler::getLayers($user_global_variables_file_path);
 //echo "<pre>";print_r($layers_beans);die();
 
-if ($bean_name && $bean_file_name && $project && $layers_beans && $layers_beans["presentation_layers"] && $layers_beans["presentation_layers"][$bean_name] == $bean_file_name) {
+if ($bean_name && $bean_file_name && $project && $layers_beans && !empty($layers_beans["presentation_layers"][$bean_name]) && $layers_beans["presentation_layers"][$bean_name] == $bean_file_name) {
 	$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $bean_file_name, $bean_name, $user_global_variables_file_path);
 	
 	$filter_by_layout = "$layer_bean_folder_name/" . preg_replace("/\/+$/", "", $project); //remove last slash from $path
@@ -62,16 +63,16 @@ $PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($bean_name, $project);
 $P = $PEVC->getPresentationLayer();
 $projects = null;
 
-if ($layers["presentation_layers"])
+if (!empty($layers["presentation_layers"]))
 	foreach ($layers["presentation_layers"] as $layer_name => $layer)
-		if ($layer["properties"]["bean_name"] == $bean_name && $layer["properties"]["bean_file_name"] == $bean_file_name) {
+		if (isset($layer["properties"]["bean_name"]) && $layer["properties"]["bean_name"] == $bean_name && isset($layer["properties"]["bean_file_name"]) && $layer["properties"]["bean_file_name"] == $bean_file_name) {
 			$projects = $presentation_projects[$layer_name];
 			//echo "<pre>";print_r($projects);die();
 			break;
 		}
 	
 //if project doesn't exist, forward it to choose project.
-if (!$projects || !$projects[$project]) {
+if (!$projects || empty($projects[$project])) {
 	header("Location: $choose_available_project_url");
 	echo "<script>document.location='$choose_available_project_url';</script>";
 	die();
@@ -114,7 +115,7 @@ if ($projects) {
 }
 
 //get the selected DB for the selected project and check if is allowed
-if ($layers["db_layers"]) {
+if (!empty($layers["db_layers"])) {
 	//echo "<pre>";print_r($layers["db_layers"]);die();
 	
 	//get project default db driver
@@ -124,11 +125,11 @@ if ($layers["db_layers"]) {
 	$PHPVariablesFileHandler = new PHPVariablesFileHandler(array($user_global_variables_file_path, $PEVC->getConfigPath("pre_init_config")));
 	$PHPVariablesFileHandler->startUserGlobalVariables();
 	
-	$db_driver_broker_name = $GLOBALS["default_db_driver"] ? $GLOBALS["default_db_driver"] : $pres_db_drivers_bn[0];
+	$db_driver_broker_name = !empty($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : (isset($pres_db_drivers_bn[0]) ? $pres_db_drivers_bn[0] : null);
 	
 	$PHPVariablesFileHandler->endUserGlobalVariables();
 	
-	$db_driver_props = $pres_db_drivers[$db_driver_broker_name];
+	$db_driver_props = isset($pres_db_drivers[$db_driver_broker_name]) ? $pres_db_drivers[$db_driver_broker_name] : null;
 	//echo "<pre>";print_r($db_driver_props);die();
 	
 	//check if project default db driver is allowed
@@ -143,8 +144,8 @@ if ($layers["db_layers"]) {
 			
 			//find 
 			foreach ($layers["db_layers"] as $layer_name => $layer) {
-				$db_data_bean_name = $layer["properties"]["bean_name"];
-				$db_data_bean_file_name = $layer["properties"]["bean_file_name"];
+				$db_data_bean_name = isset($layer["properties"]["bean_name"]) ? $layer["properties"]["bean_name"] : null;
+				$db_data_bean_file_name = isset($layer["properties"]["bean_file_name"]) ? $layer["properties"]["bean_file_name"] : null;
 				
 				$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $db_data_bean_file_name, $user_global_variables_file_path);
 				$db_data_obj = $WorkFlowBeansFileHandler->getBeanObject($db_data_bean_name);
@@ -152,13 +153,13 @@ if ($layers["db_layers"]) {
 				$db_data_broker_name = WorkFlowBeansConverter::getBrokerNameFromRawLabel($db_data_layer_name);
 				
 				if ($db_data_broker_name == $db_data_layer) {
-					if ($layer[$db_driver_props[2]])
+					if (!empty($layer[$db_driver_props[2]]))
 						$is_db_layer_allowed = true;
 					else {
 						$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerObjFolderName($db_data_obj);
 						$layer_object_id = LAYER_PATH . $layer_bean_folder_name;
 						
-						$fn_layer_object_id = "$layer_object_id/" . $db_driver_props[2];
+						$fn_layer_object_id = "$layer_object_id/" . (isset($db_driver_props[2]) ? $db_driver_props[2] : null);
 						//echo "layer_object_id:$layer_object_id";die();
 						//echo "fn_layer_object_id:$fn_layer_object_id";die();
 						$is_db_layer_allowed = $UserAuthenticationHandler->isInnerFilePermissionAllowed($fn_layer_object_id, "layer", "access");
@@ -168,11 +169,11 @@ if ($layers["db_layers"]) {
 			}
 			
 			if ($is_db_layer_allowed) {
-				$db_driver_bean_name = $db_driver_props[2];
-				$db_driver_bean_file_name = $db_driver_props[1];
-				$db_driver_layer_bean_name = $db_data_bean_name;
-				$db_driver_layer_bean_file_name = $db_data_bean_file_name;
-				$db_driver_layer_folder_name = $layer_bean_folder_name;
+				$db_driver_bean_name = isset($db_driver_props[2]) ? $db_driver_props[2] : null;
+				$db_driver_bean_file_name = isset($db_driver_props[1]) ? $db_driver_props[1] : null;
+				$db_driver_layer_bean_name = isset($db_data_bean_name) ? $db_data_bean_name : null;
+				$db_driver_layer_bean_file_name = isset($db_data_bean_file_name) ? $db_data_bean_file_name : null;
+				$db_driver_layer_folder_name = isset($layer_bean_folder_name) ? $layer_bean_folder_name : null;
 				
 				$BeanFactory = new BeanFactory();
 				$BeanFactory->init(array("file" => $user_beans_folder_path . $db_driver_layer_bean_file_name));
@@ -181,7 +182,7 @@ if ($layers["db_layers"]) {
 				//echo "<pre>";print_r($bean_objs[$db_driver_bean_name]);die();
 				
 				$menu_item_properties = array(
-					$db_driver_bean_name => $bean_objs[$db_driver_bean_name]["properties"]["item_menu"]
+					$db_driver_bean_name => isset($bean_objs[$db_driver_bean_name]["properties"]["item_menu"]) ? $bean_objs[$db_driver_bean_name]["properties"]["item_menu"] : null
 				);
 			}
 		}

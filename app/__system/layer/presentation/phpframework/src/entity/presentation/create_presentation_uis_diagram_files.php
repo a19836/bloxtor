@@ -6,19 +6,19 @@ $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "a
 UserAuthenticationHandler::checkUsersMaxNum($UserAuthenticationHandler);
 UserAuthenticationHandler::checkActionsMaxNum($UserAuthenticationHandler);
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"];
-$overwrite = $_GET["overwrite"];
-$users_perms_relative_folder = $_GET["users_perms_relative_folder"];
-$list_and_edit_users = $_GET["list_and_edit_users"];
-$non_authenticated_template = $_GET["non_authenticated_template"];
-$files_date_simulation = $_GET["files_date_simulation"];
-$files_code_validation = $_GET["files_code_validation"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
+$overwrite = isset($_GET["overwrite"]) ? $_GET["overwrite"] : null;
+$users_perms_relative_folder = isset($_GET["users_perms_relative_folder"]) ? $_GET["users_perms_relative_folder"] : null;
+$list_and_edit_users = isset($_GET["list_and_edit_users"]) ? $_GET["list_and_edit_users"] : null;
+$non_authenticated_template = isset($_GET["non_authenticated_template"]) ? $_GET["non_authenticated_template"] : null;
+$files_date_simulation = isset($_GET["files_date_simulation"]) ? $_GET["files_date_simulation"] : null;
+$files_code_validation = isset($_GET["files_code_validation"]) ? $_GET["files_code_validation"] : null;
 
-$do_not_save_vars_file = $_GET["do_not_save_vars_file"];
-$do_not_check_if_path_exists = $_GET["do_not_check_if_path_exists"];
+$do_not_save_vars_file = isset($_GET["do_not_save_vars_file"]) ? $_GET["do_not_save_vars_file"] : null;
+$do_not_check_if_path_exists = isset($_GET["do_not_check_if_path_exists"]) ? $_GET["do_not_check_if_path_exists"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -40,7 +40,7 @@ if ($bean_name) {
 		$extension = $P->getPresentationFileExtension();
 		$folder_path = $layer_path . $path;//it should be a folder.
 
-		if ($path && (is_dir($folder_path) || $do_not_check_if_path_exists)) { //$do_not_check_if_path_exists comes from the file: create_page_presentation_uis_diagram_block.php
+		if ($path && (is_dir($folder_path) || !empty($do_not_check_if_path_exists))) { //$do_not_check_if_path_exists comes from the file: create_page_presentation_uis_diagram_block.php
 			$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($folder_path, "layer", "access");
 			
 			$relative_path = str_replace($PEVC->getEntitiesPath(), "", $folder_path);
@@ -50,7 +50,7 @@ if ($bean_name) {
 			$settings = json_decode($settings, true);
 			//print_r($settings);die();
 			
-			if (strtoupper($_SERVER['REQUEST_METHOD']) === "POST" && is_array($settings) && $settings) {
+			if (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === "POST" && is_array($settings) && $settings) {
 				$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 				$UserAuthenticationHandler->incrementUsedActionsTotal();
 				//print_r($settings);die();
@@ -69,21 +69,23 @@ if ($bean_name) {
 				//print_r($settings["tasks_details"]);die();
 				
 				//prepare tasks files
-				if ($settings && $settings["tasks_details"]) 
+				if ($settings && !empty($settings["tasks_details"]))
 					foreach ($settings["tasks_details"] as $task)
-						if ($task["tag"] == "page") {
+						if (isset($task["tag"]) && $task["tag"] == "page") {
 							//print_r($task["properties"]["page_settings"]["includes"]);
-							$template = $task["properties"]["template"];
+							$template = isset($task["properties"]["template"]) ? $task["properties"]["template"] : null;
 							$authenticated_template = $template;
+							$js_funcs = array();
+							$js_code = "";
 							
-							CMSPresentationUIDiagramFilesHandler::createPageFile($PEVC, $UserCacheHandler, $cms_page_cache_path_prefix, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, $relative_path, $overwrite, $files_creation_type, $vars_file_include_code, $users_perms_relative_folder, $list_and_edit_users, $authenticated_template, $non_authenticated_template, $template, $table_statuses, $js_funcs = array(), $js_code = "", $settings["tasks_details"], $task);
+							CMSPresentationUIDiagramFilesHandler::createPageFile($PEVC, $UserCacheHandler, $cms_page_cache_path_prefix, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, $relative_path, $overwrite, $files_creation_type, $vars_file_include_code, $users_perms_relative_folder, $list_and_edit_users, $authenticated_template, $non_authenticated_template, $template, $table_statuses, $js_funcs, $js_code, $settings["tasks_details"], $task);
 						}
 				
 				$auth_page_and_block_ids = CMSPresentationUIDiagramFilesHandler::getAuthPageAndBlockIds();
 				
 				//prepare vars and save them to file
 				//$do_not_save_vars_file comes from the file: create_page_presentation_uis_diagram_block.php
-				if (!$do_not_save_vars_file) { 
+				if (empty($do_not_save_vars_file)) {
 					$vars = array(
 						"admin_url" => "{\$project_url_prefix}$users_perms_relative_folder",
 						"logout_url" => "{\$project_url_prefix}" . $auth_page_and_block_ids["logout_page_id"],

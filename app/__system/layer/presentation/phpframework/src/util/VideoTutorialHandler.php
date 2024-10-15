@@ -6,21 +6,25 @@ class VideoTutorialHandler {
 		
 		if ($tutorials)
 			foreach ($tutorials as $tutorial) {
-				if ($tutorial["items"])
+				if (!empty($tutorial["items"]))
 					$html .= self::getFeaturedTutorialsHtml($tutorial["items"]);
-				else if ($tutorial["video"]) {
+				else if (!empty($tutorial["video"])) {
 					$parts = explode("/embed/", $tutorial["video"]);
-					$video_id = $parts[1];
+					$video_id = isset($parts[1]) ? $parts[1] : null;
 					
-					if ($video_id)
+					if ($video_id) {
+						$tutorial_title = isset($tutorial["title"]) ? $tutorial["title"] : null;
+						$tutorial_description = isset($tutorial["description"]) ? $tutorial["description"] : null;
+						
 						$html .= '<div class="featured_tutorial">
-										<iframe src="https://www.youtube.com/embed/' . $video_id . '" title="' . str_replace('"', "&quot;", $tutorial["title"]) . '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+										<iframe src="https://www.youtube.com/embed/' . $video_id . '" title="' . str_replace('"', "&quot;", $tutorial_title) . '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 										<div class="tutorial_title">
 											<span class="icon video"></span>
-											' . $tutorial["title"] . '
+											' . $tutorial_title . '
 										</div>
-										' . ($tutorial["description"] ? '<div class="tutorial_description">' . $tutorial["description"] . '</div>' : '') . '
+										' . ($tutorial_description ? '<div class="tutorial_description">' . $tutorial_description . '</div>' : '') . '
 								</div>';
+					}
 				}
 			}
 		
@@ -36,18 +40,18 @@ class VideoTutorialHandler {
 		if ($tutorials) {
 			foreach ($tutorials as $id => $props) 
 				if ($props) {
-					$page_exists = !$page || ($props["pages"] && in_array($page, $props["pages"])); //only get tutorial if page is empty or if is inside of pages (meaning that only the tutorials with pages will be returned)
-					$workspace_exists = !$workspace || !$props["workspaces"] || in_array($workspace, $props["workspaces"]); //only get tutorial if workspace is empty or if tutorial doesn't have any workspaces defined or if inside of workspace (meaning that the tutorials without workspaces defined, will be also returned)
+					$page_exists = !$page || (!empty($props["pages"]) && in_array($page, $props["pages"])); //only get tutorial if page is empty or if is inside of pages (meaning that only the tutorials with pages will be returned)
+					$workspace_exists = !$workspace || empty($props["workspaces"]) || in_array($workspace, $props["workspaces"]); //only get tutorial if workspace is empty or if tutorial doesn't have any workspaces defined or if inside of workspace (meaning that the tutorials without workspaces defined, will be also returned)
 					
 					if ($page_exists && $workspace_exists) {
 						$skip = ($page && $props["pages"]) || ($workspace && $props["workspaces"]);
 						
-						if (!$skip)
+						if (!$skip && !empty($props["items"]))
 							$props["items"] = self::filterTutorials($props["items"], $page, $workspace);
 						
 						$found[$id] = $props;
 					}
-					else if ($props["items"] && $page) {
+					else if (!empty($props["items"]) && $page) {
 						$sub_found = self::filterTutorials($props["items"], $page, $workspace);
 						
 						if ($sub_found)
@@ -215,7 +219,7 @@ class VideoTutorialHandler {
 								"video" => "https://www.youtube.com/embed/0AT_iacudaI", //convert static page to dynamic page_a.webm
 							),
 							"4_3_2_convert static page to dynamic page_b" => array(
-								"title" => "Create a page with dynamic data - part 1",
+								"title" => "Create a page with dynamic data - part 2",
 								"description" => "Learn how to create a table in the database and show its records.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/T2JuI8CEeok", //convert static page to dynamic page_b.webm

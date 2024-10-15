@@ -9,10 +9,10 @@ include_once $EVC->getUtilPath("BreadCrumbsUIHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$db_driver = $_GET["db_driver"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$db_driver = isset($_GET["db_driver"]) ? $_GET["db_driver"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -29,7 +29,7 @@ if ($bean_name && $bean_file_name && $db_driver) {
 		$wordpress_folder_path = $PEVC->getWebrootPath($common_project_name) . $wordpress_folder_suffix;
 		$is_installed = file_exists($wordpress_folder_path . "index.php");
 		
-		if ($_POST) {
+		if (!empty($_POST)) {
 			$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 			
 			$PHPVariablesFileHandler = new PHPVariablesFileHandler($user_global_variables_file_path);
@@ -37,13 +37,13 @@ if ($bean_name && $bean_file_name && $db_driver) {
 			
 			//get available db drivers
 			$db_drivers = WorkFlowBeansFileHandler::getLayerDBDrivers($user_global_variables_file_path, $user_beans_folder_path, $P, true);
-			$db_driver_props = $db_drivers[$db_driver];
-			$db_driver_bean_file_name = $db_driver_props[1];
-			$db_driver_bean_name = $db_driver_props[2];
+			$db_driver_props = isset($db_drivers[$db_driver]) ? $db_drivers[$db_driver] : null;
+			$db_driver_bean_file_name = isset($db_driver_props[1]) ? $db_driver_props[1] : null;
+			$db_driver_bean_name = isset($db_driver_props[2]) ? $db_driver_props[2] : null;
 			
 			$hack_wordpress_installation = true;
 			
-			if ($_POST["install"]) {
+			if (!empty($_POST["install"])) {
 				$zipped_file_path = $EVC->getWebrootPath() . "vendor/wordpress.zip";
 				$download_zip_file = !file_exists($zipped_file_path) && $dependency_wordpress_zip_file_url;
 				
@@ -52,14 +52,14 @@ if ($bean_name && $bean_file_name && $db_driver) {
 					$downloaded_file = MyCurl::downloadFile($dependency_wordpress_zip_file_url, $fp);
 					
 					if (!$downloaded_file) {
-						launch_exception(new Exception("Error: Could not download file: $zip_url. Please try again..."));
+						launch_exception(new Exception("Error: Could not download file: $dependency_wordpress_zip_file_url. Please try again..."));
 						die();
 					}
-					else if (stripos($downloaded_file["type"], "zip") === false) {
-						launch_exception(new Exception("Error: Downloaded file from $zip_url, is not a zip file. Please try again..."));
+					else if (!isset($downloaded_file["type"]) || stripos($downloaded_file["type"], "zip") === false) {
+						launch_exception(new Exception("Error: Downloaded file from $dependency_wordpress_zip_file_url, is not a zip file. Please try again..."));
 						die();
 					}
-					else if (!rename($downloaded_file["tmp_name"], $zipped_file_path)) {
+					else if (!isset($downloaded_file["tmp_name"]) || !rename($downloaded_file["tmp_name"], $zipped_file_path)) {
 						launch_exception(new Exception("Error: Could not move downloaded file to vendor/wordpress.zip. Please try again..."));
 						die();
 					}
@@ -90,7 +90,7 @@ if ($bean_name && $bean_file_name && $db_driver) {
 							
 							if ($tables)
 								foreach ($tables as $table)
-									if (substr($table["table_name"], 0, 3) == "wp_") { //use table_name instead of name bc the "name" contains the schema and table_name doesn't!
+									if (isset($table["table_name"]) && substr($table["table_name"], 0, 3) == "wp_") { //use table_name instead of name bc the "name" contains the schema and table_name doesn't!
 										$sql = $DBDriver->getDropTableStatement($table["name"], $DBDriver->getOptions());
 										
 										if (!$DBDriver->setData($sql))
@@ -98,7 +98,7 @@ if ($bean_name && $bean_file_name && $db_driver) {
 									}
 						}
 						
-						if (!$error_message) {
+						if (empty($error_message)) {
 							//create folder $wordpress_folder_path
 							if (!file_exists($wordpress_folder_path) && !mkdir($wordpress_folder_path, 0755, true)) 
 								$error_message = "Could not create folder: '$wordpress_relative_folder_path'. Please try again...";
@@ -133,7 +133,7 @@ if ($bean_name && $bean_file_name && $db_driver) {
 					die();
 				}
 				
-				if ($error_message)
+				if (!empty($error_message))
 					$hack_wordpress_installation = false;
 				
 				if ($download_zip_file && $fp)
@@ -150,13 +150,13 @@ if ($bean_name && $bean_file_name && $db_driver) {
 				$wordpress_url = getProjectCommonUrlPrefix($PEVC, $selected_project_id ? $selected_project_id : $common_project_name) . $wordpress_folder_suffix;
 				
 				//get current user credentials
-				$user_id = $UserAuthenticationHandler->auth["user_data"]["user_id"];
+				$user_id = isset($UserAuthenticationHandler->auth["user_data"]["user_id"]) ? $UserAuthenticationHandler->auth["user_data"]["user_id"] : null;
 				$user_data = $UserAuthenticationHandler->getUser($user_id);
 				
 				//make changes in the wordpress files - hack wordpress
 				WordPressInstallationHandler::hackWordPress($EVC, $db_driver, $db_settings, $wordpress_folder_path, $wordpress_url, $user_data, $error_message);
 				
-				if (!$error_message) {
+				if (empty($error_message)) {
 					$url = $project_url_prefix . "phpframework/cms/wordpress/admin_login?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path&db_driver=$db_driver";
 					
 					echo '<script>

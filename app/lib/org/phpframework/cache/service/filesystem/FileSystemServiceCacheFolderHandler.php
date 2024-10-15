@@ -134,7 +134,7 @@ class FileSystemServiceCacheFolderHandler {
 					}
 				}
 				
-				$new_folder_settings["type"] = $folder_settings["type"];
+				$new_folder_settings["type"] = isset($folder_settings["type"]) ? $folder_settings["type"] : null;
 				$new_folder_settings["total"] = $new_total;
 				$this->setFolderSettings($new_dir_path, $new_folder_settings);
 				
@@ -221,6 +221,7 @@ class FileSystemServiceCacheFolderHandler {
 		CacheHandlerUtil::configureFolderPath($dir_path);
 		
 		$folder_controller_file_path = $dir_path . self::FOLDER_CONTROLLER_FILE_NAME;
+		$folder_settings = null;
 		
 		if ($this->CacheFileHandler->exists($folder_controller_file_path)) {
 			$cont = $this->CacheFileHandler->get($folder_controller_file_path);
@@ -266,6 +267,9 @@ class FileSystemServiceCacheFolderHandler {
 	
 	public function setMaximumSize($maximum_size) {$this->maximum_size = $maximum_size;}
 	public function getMaximumSize() {return $this->maximum_size;}
+	
+	public function setFolderTotalNumManagerActive($folder_total_num_manager_active) {$this->folder_total_num_manager_active = $folder_total_num_manager_active;}
+	public function getFolderTotalNumManagerActive() {return $this->folder_total_num_manager_active;}
 	
 	public function getCacheFileHandler() {return $this->CacheFileHandler;}
 }

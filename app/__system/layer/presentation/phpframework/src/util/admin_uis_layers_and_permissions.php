@@ -75,13 +75,15 @@ if (!empty($layers["db_layers"])) {
 //echo "<pre>";print_r($layers);die();
 
 //preparing filter_by_layout if valid
-if ($filter_by_layout) {
+if (!empty($filter_by_layout)) {
 	//only allow filter if really exists
 	if (!$UserAuthenticationHandler->searchLayoutTypes(array("name" => $filter_by_layout, "type_id" => UserAuthenticationHandler::$LAYOUTS_TYPE_FROM_PROJECT_ID)))
 		$filter_by_layout = $filter_by_layout_permission = null;
 	else
 		$UserAuthenticationHandler->loadLayoutPermissions($filter_by_layout, UserAuthenticationHandler::$LAYOUTS_TYPE_FROM_PROJECT_ID);
 }
+
+$filter_by_layout_permission = isset($filter_by_layout_permission) ? $filter_by_layout_permission : null;
 //echo "filter_by_layout:$filter_by_layout:$filter_by_layout_permission";die();
 
 //filter layers by user permissions and filter_by_layout permissions
@@ -90,7 +92,7 @@ ksort($layout_types);
 $non_projects_layout_types = $layout_types;
 //echo "<pre>";print_r($layout_types);die();
 
-$filter_layout_by_layers_type = $filter_layout_by_layers_type ? $filter_layout_by_layers_type : array("presentation_layers", "business_logic_layers", "data_access_layers", "db_layers");
+$filter_layout_by_layers_type = !empty($filter_layout_by_layers_type) ? $filter_layout_by_layers_type : array("presentation_layers", "business_logic_layers", "data_access_layers", "db_layers");
 //echo "<pre>";print_r($filter_layout_by_layers_type);die();
 
 $presentation_projects = array();
@@ -115,7 +117,7 @@ foreach ($layers as $layer_type_name => $layer_type)
 		
 		$layers[$layer_type_name][$layer_name]["properties"]["layer_bean_folder_name"] = $layer_bean_folder_name;
 		
-		$do_not_filter_layer_by_layout = $do_not_filter_by_layout && $do_not_filter_by_layout["bean_name"] == $layer_bean_name && $do_not_filter_by_layout["bean_file_name"] == $layer_bean_file_name;
+		$do_not_filter_layer_by_layout = !empty($do_not_filter_by_layout) && $do_not_filter_by_layout["bean_name"] == $layer_bean_name && $do_not_filter_by_layout["bean_file_name"] == $layer_bean_file_name;
 		
 		//check layer permissions
 		if (!$UserAuthenticationHandler->isInnerFilePermissionAllowed($layer_object_id, "layer", "access")) {
@@ -133,7 +135,7 @@ foreach ($layers as $layer_type_name => $layer_type)
 					
 					if (!$UserAuthenticationHandler->isInnerFilePermissionAllowed($fn_layer_object_id, "layer", "access"))
 						unset($layers[$layer_type_name][$layer_name][$fn]);
-					else if ($layer_type_name == "db_layers" && $filter_by_layout) { //if filter_by_layout: check if sub_files belong to selected project
+					else if ($layer_type_name == "db_layers" && !empty($filter_by_layout)) { //if filter_by_layout: check if sub_files belong to selected project
 						if (!$UserAuthenticationHandler->isLayoutInnerFilePermissionAllowed($fn_layer_object_id, $filter_by_layout, "layer", $filter_by_layout_permission))
 							unset($layers[$layer_type_name][$layer_name][$fn]);
 					}
@@ -177,7 +179,7 @@ foreach ($layers as $layer_type_name => $layer_type)
 								$obj[$proj_id] = $file_name;
 							}
 						}
-						else if (!$do_not_filter_by_layout || $do_not_filter_by_layout_project != $project_name)
+						else if (empty($do_not_filter_by_layout) || $do_not_filter_by_layout_project != $project_name)
 							unset($projects[$project_name]);
 					}
 				}
@@ -191,7 +193,7 @@ foreach ($layers as $layer_type_name => $layer_type)
 		}
 		
 		//must be at the end, bc if we have multiple presentation layers, we need to have the projects for each layer, even if the filter_by_layout only shows a specific presentation layer.
-		if ($filter_by_layout && !$do_not_filter_layer_by_layout && in_array($layer_type_name, $filter_layout_by_layers_type) && !$UserAuthenticationHandler->isLayoutInnerFilePermissionAllowed($layer_object_id, $filter_by_layout, "layer", $filter_by_layout_permission)) {
+		if (!empty($filter_by_layout) && empty($do_not_filter_layer_by_layout) && in_array($layer_type_name, $filter_layout_by_layers_type) && !$UserAuthenticationHandler->isLayoutInnerFilePermissionAllowed($layer_object_id, $filter_by_layout, "layer", $filter_by_layout_permission)) {
 			unset($layers[$layer_type_name][$layer_name]);
 			//echo "isLayoutInnerFilePermissionAllowed layer_name:$layer_name";
 		}

@@ -2,13 +2,17 @@
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
 function getVarsHtml($type) {
-	$vars = $_POST ? $_POST[$type . '_vars'] : null;
+	$vars = isset($_POST[$type . '_vars']) ? $_POST[$type . '_vars'] : null;
 	$vars_html = "";
 	
 	if ($vars)
 		foreach ($vars as $i => $var)
-			if ($var["name"] || $var["value"])
-				$vars_html .= getVarHtml($type, $i, $var["name"], $var["value"]);
+			if (!empty($var["name"]) || !empty($var["value"])) {
+				$var_name = isset($var["name"]) ? $var["name"] : null;
+				$var_value = isset($var["value"]) ? $var["value"] : null;
+				
+				$vars_html .= getVarHtml($type, $i, $var_name, $var_value);
+			}
 	
 	$html = '<div class="vars ' . $type . '_vars">
 		<label>' . ucfirst($type) . ' Variables:</label>

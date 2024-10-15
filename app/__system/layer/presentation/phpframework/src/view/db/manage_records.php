@@ -2,6 +2,12 @@
 include_once get_lib("org.phpframework.util.text.TextValidator");
 include_once get_lib("org.phpframework.util.MimeTypeHandler");
 
+$table_fields = isset($table_fields) ? $table_fields : null;
+$table_fields_types = isset($table_fields_types) ? $table_fields_types : null;
+$pks = isset($pks) ? $pks : null;
+$fks = isset($fks) ? $fks : null;
+$extra_fks = isset($extra_fks) ? $extra_fks : null;
+
 $manage_records_url = $project_url_prefix . "phpframework/db/manage_records?layer_bean_folder_name=$layer_bean_folder_name&bean_name=$bean_name&bean_file_name=$bean_file_name&table=#table#&db_type=$db_type";
 $manage_record_url = $project_url_prefix . "phpframework/db/manage_record?layer_bean_folder_name=$layer_bean_folder_name&bean_name=$bean_name&bean_file_name=$bean_file_name&table=$table&db_type=$db_type";
 $manage_record_action_url = $project_url_prefix . "phpframework/db/manage_record_action?layer_bean_folder_name=$layer_bean_folder_name&bean_name=$bean_name&bean_file_name=$bean_file_name&table=$table";
@@ -45,9 +51,9 @@ var new_row_html = \'' . addcslashes(str_replace("\n", "", getRowHtml("#idx#", $
 var new_condition_html = \'' . addcslashes(str_replace("\n", "", getConditionHtml("#field_name#")), "\\'") . '\';
 </script>';
 
-$back_icon = strpos($_SERVER["HTTP_REFERER"], "/db/manage_records?") !== false ? '<li class="back" data-title="Back Page"><a class="icon go_back" onClick="goBackPage(this)">Go Back</a></li>' : ''; //only if is manage_records page
+$back_icon = isset($_SERVER["HTTP_REFERER"]) && strpos($_SERVER["HTTP_REFERER"], "/db/manage_records?") !== false ? '<li class="back" data-title="Back Page"><a class="icon go_back" onClick="goBackPage(this)">Go Back</a></li>' : ''; //only if is manage_records page
 
-$main_content .= '
+$main_content = '
 <div class="top_bar' . ($popup ? " in_popup" : "") . '">
 	<header>
 		<div class="title">
@@ -66,9 +72,9 @@ $main_content .= '
 
 <div class="manage_records with_top_bar_section' . ($popup ? " in_popup" : "") . '">';
 
-if (!$table_exists)
+if (empty($table_exists))
 	$main_content .= '<div class="error">Table does not exist!</tr>';
-else if (!$table_fields)
+else if (empty($table_fields))
 	$main_content .= '<div class="error">Table fields do not exist!</tr>';
 else {
 	//prepare pagination html
@@ -98,9 +104,9 @@ else {
 		</label>
 		<ul>';
 	
-	if ($conditions)
+	if (!empty($conditions))
 		foreach ($conditions as $field_name => $field_value)
-			$main_content .= getConditionHtml($field_name, $field_value, $conditions_operators ? $conditions_operators[$field_name] : null);
+			$main_content .= getConditionHtml($field_name, $field_value, isset($conditions_operators[$field_name]) ? $conditions_operators[$field_name] : null);
 	
 	$main_content .= '	
 		</ul>
@@ -118,14 +124,15 @@ else {
 						<th class="table_header select_item">
 							<input type="checkbox" onClick="toggleAll(this)" />
 						</th>';
-		
+	
 	foreach ($table_fields as $field_name => $field) {
 		$label = ucwords(str_replace(array("_", "-"), " ", strtolower($field_name)));
+		$sorts_field_name = isset($sorts[$field_name]) ? $sorts[$field_name] : null;
 		
 		$main_content .= '	<th class="table_header" attr_name="' . $field_name . '">
 							' . $label . '
-							<span class="icon sort' . ($sorts[$field_name] ? " sort_" . $sorts[$field_name] : "") . '" title="' . ($sorts[$field_name] ? "Sorted " . $sorts[$field_name] : "Not sorted") . '" onClick="sortRecords(this)">Sort</span>
-							' . ($sorts[$field_name] ? '<span class="icon unsort" title="Unsort" onClick="unsortRecords(this)">Unsort</span>' : '') . '
+							<span class="icon sort' . ($sorts_field_name ? " sort_" . $sorts_field_name : "") . '" title="' . ($sorts_field_name ? "Sorted " . $sorts_field_name: "Not sorted") . '" onClick="sortRecords(this)">Sort</span>
+							' . ($sorts_field_name ? '<span class="icon unsort" title="Unsort" onClick="unsortRecords(this)">Unsort</span>' : '') . '
 						</th>';
 	}
 		
@@ -141,7 +148,7 @@ else {
 				</thead>
 				<tbody>';
 	
-	if (!$results)
+	if (empty($results))
 		$main_content .= '<tr><td class="empty" colspan="' . ($table_fields ? count($table_fields) + 2 + ($fks || $extra_fks ? 1 : 0) : 0) . '">Empty results...</tr>';
 	else {
 		$t = count($results);
@@ -200,15 +207,15 @@ function getRowHtml($i, $table_fields, $table_fields_types, $pks = null, $fks = 
 			<input type="checkbox" name="selected_rows[]" value="' . $i . '" title="To remove this record, select this box and then click in the delete button below." />';
 	
 	foreach ($pks as $field_name)
-		$html .= '<input type="hidden" name="selected_pks[' . $i . '][' . $field_name . ']" value="' . $row[$field_name] . '" />';
+		$html .= '<input type="hidden" name="selected_pks[' . $i . '][' . $field_name . ']" value="' . (isset($row[$field_name]) ? $row[$field_name] : "") . '" />';
 	
 	$html .= '
 		</td>';
 	
 	foreach ($table_fields as $field_name => $field) {
-		$field_value = $row[$field_name];
+		$field_value = isset($row[$field_name]) ? $row[$field_name] : null;
 		$is_binary = false;
-		$field_html_type = $table_fields_types[$field_name];
+		$field_html_type = isset($table_fields_types[$field_name]) ? $table_fields_types[$field_name] : null;
 		
 		//prepare results data, converting binary to base64 or images
 		if (TextValidator::isBinary($field_value)) {
@@ -222,8 +229,8 @@ function getRowHtml($i, $table_fields, $table_fields_types, $pks = null, $fks = 
 				$field_value = "<a onClick=\"downloadFile(this, '$field_name')\">Download File</a>";
 		}
 		
-		if (!$is_binary && is_array($field_html_type) && $field_html_type["options"] && array_key_exists($field_value, $field_html_type["options"]))
-			$html .= '<td attr_name="' . str_replace('"', "&quot;", $field_name) . '" attr_value="' . str_replace('"', "&quot;", $field_value) . '">' . $field_html_type["options"][$field_value] . '</td>';
+		if (!$is_binary && is_array($field_html_type) && !empty($field_html_type["options"]) && array_key_exists($field_value, $field_html_type["options"]))
+			$html .= '<td attr_name="' . str_replace('"', "&quot;", $field_name) . '" attr_value="' . str_replace('"', "&quot;", $field_value) . '">' . (isset($field_html_type["options"][$field_value]) ? $field_html_type["options"][$field_value] : "") . '</td>';
 		else
 			$html .= '<td' . ($is_binary && $field_html_type != "file" ? ' class="binary"' : '') . ' attr_name="' . str_replace('"', "&quot;", $field_name) . '">' . ($field_html_type == "file" ? '<div class="file_content">' . $field_value . '</div>' : $field_value) . '</td>';
 	}
@@ -247,7 +254,7 @@ function getRowHtml($i, $table_fields, $table_fields_types, $pks = null, $fks = 
 				$fk_url = str_replace("#table#", $fk_table, $manage_records_url);
 				
 				foreach ($fk_attributes as $fk_attribute => $attribute)
-					$fk_url .= "&conditions[$fk_attribute]=" . $row[$attribute];
+					$fk_url .= "&conditions[$fk_attribute]=" . (isset($row[$attribute]) ? $row[$attribute] : "");
 				
 				$html .= '<a fk_table="' . $fk_table . '" href="' . $fk_url . '">' . $fk_label . '</a>';
 			}
@@ -260,7 +267,7 @@ function getRowHtml($i, $table_fields, $table_fields_types, $pks = null, $fks = 
 				$fk_url = str_replace("#table#", $fk_table, $manage_records_url);
 				
 				foreach ($fk_attributes as $fk_attribute => $attribute)
-					$fk_url .= "&conditions[$fk_attribute]=" . $row[$attribute];
+					$fk_url .= "&conditions[$fk_attribute]=" . (isset($row[$attribute]) ? $row[$attribute] : "");
 				
 				$html .= '<a fk_table="' . $fk_table . '" href="' . $fk_url . '">' . $fk_label . '</a>';
 			}

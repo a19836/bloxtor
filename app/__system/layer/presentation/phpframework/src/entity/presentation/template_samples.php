@@ -3,10 +3,10 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"]; //template path
-$popup = $_GET["popup"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null; //template path
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $sample_files = array();

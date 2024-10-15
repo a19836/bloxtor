@@ -1,4 +1,4 @@
 <?php
-$obj = $statuses;
+$obj = isset($statuses) ? $statuses : null;
 $EVC->setTemplate("json");
 ?>

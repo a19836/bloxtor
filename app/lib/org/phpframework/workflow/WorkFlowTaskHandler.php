@@ -19,6 +19,8 @@ class WorkFlowTaskHandler {
 	private $parsed_tasks_containers;
 	private $tasks_folder_paths_id;
 	
+	private $WorkFlowTaskCache;
+	
 	public function __construct($workflow_webroot_folder_path, $workflow_webroot_url = "/") {
 		$workflow_webroot_folder_path = trim($workflow_webroot_folder_path);
 		$workflow_webroot_url = trim($workflow_webroot_url);
@@ -129,7 +131,7 @@ class WorkFlowTaskHandler {
 				if (!empty($task["path"])) {
 					include_once $task["path"];
 			
-					$class = (isset($task["namespace"]) ? $task["namespace"] : null) . "\\" . $task["class"];
+					$class = (isset($task["namespace"]) ? $task["namespace"] : null) . "\\" . (isset($task["class"]) ? $task["class"] : null);
 					
 					if (class_exists($class)) {
 						$task["prefix"] = $folder_id . "/" . $task_prefix;
@@ -319,13 +321,14 @@ class WorkFlowTaskHandler {
 				$task = $this->parseTask($task_data);
 				
 				if ($task) {
-					$tasks[ $task->data["id"] ] = $task;
+					$task_id = isset($task->data["id"]) ? $task->data["id"] : null;
+					$tasks[$task_id] = $task;
 					
 					if (isset($task->data["start"]) && $task->data["start"]) {
 						if (is_numeric($task->data["start"]))
-							$start_tasks[ $task->data["start"] ] = $task->data["id"];
+							$start_tasks[ $task->data["start"] ] = $task_id;
 						else 
-							$start_tasks_aux[] = $task->data["id"];
+							$start_tasks_aux[] = $task_id;
 					}
 				}
 				else 
@@ -387,9 +390,9 @@ class WorkFlowTaskHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$loop = $loops[$i];
 			
-				$source_task_id = $loop[0];
-				$target_task_id = $loop[1];
-				$is_loop_task = $loop[2];
+				$source_task_id = isset($loop[0]) ? $loop[0] : null;
+				$target_task_id = isset($loop[1]) ? $loop[1] : null;
+				$is_loop_task = isset($loop[2]) ? $loop[2] : null;
 			
 				if (!$is_loop_task) {
 					foreach ($arr["tasks"][0]["childs"]["task"] as $task_idx => $task_data) {
@@ -553,8 +556,11 @@ class WorkFlowTaskHandler {
 				$tasks_settings[$folder_id] = array();
 				
 				foreach ($folder_tasks as $task_type => $task) {
-					$task_folder_path = dirname($task["path"]) . "/";
-					$task_webroot_folder_path = $task["webroot_path"] . "/";
+					$task_path = isset($task["path"]) ? $task["path"] : null;
+					$task_webroot_path = isset($task["webroot_path"]) ? $task["webroot_path"] : null;
+					
+					$task_folder_path = dirname($task_path) . "/";
+					$task_webroot_folder_path = $task_webroot_path . "/";
 					
 					$settings_path = $task_folder_path . "settings.xml";
 					
@@ -669,7 +675,7 @@ class WorkFlowTaskHandler {
 	private function getHtmlFileContent($html_file, $task, $task_folder_path) {
 		if (!empty($html_file)) {
 			if (is_array($html_file))
-				$html_file = $html_file[0];
+				$html_file = isset($html_file[0]) ? $html_file[0] : null;
 
 			if (file_exists($task_folder_path . $html_file)) {
 				$content = file_get_contents($task_folder_path . $html_file);
@@ -731,7 +737,7 @@ class WorkFlowTaskHandler {
 						}
 					}
 					
-					if ($maximum_number_of_finds > 0 && count($selected_tasks) == $maximum_number_of_findings) {
+					if ($maximum_number_of_findings > 0 && count($selected_tasks) == $maximum_number_of_findings) {
 						break;
 					}
 				}
@@ -759,7 +765,7 @@ class WorkFlowTaskHandler {
 						if ($task) {
 							$selected_tasks[] = $task;
 							
-							if ($maximum_number_of_finds > 0 && count($selected_tasks) == $maximum_number_of_findings) {
+							if ($maximum_number_of_findings > 0 && count($selected_tasks) == $maximum_number_of_findings) {
 								break;
 							}
 						}

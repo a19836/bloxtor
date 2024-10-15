@@ -42,15 +42,15 @@ for ($i = 0; $i < $t; $i++) {
 	$login_control = $login_controls[$i];
 	
 	$main_content .= '<tr>
-		<td class="username">' . $login_control["username"] . '</td>
-		<td class="session_id">' . $login_control["session_id"] . '</td>
-		<td class="failed_login_attempts">' . $login_control["failed_login_attempts"] . '</td>
-		<td class="failed_login_time">' . $login_control["failed_login_time"] . '</td>
-		<td class="login_expired_time">' . date("Y-m-d H:i:s", $login_control["login_expired_time"]) . '</td>
-		<td class="created_date">' . $login_control["created_date"] . '</td>
-		<td class="modified_date">' . $login_control["modified_date"] . '</td>
+		<td class="username">' . (isset($login_control["username"]) ? $login_control["username"] : "") . '</td>
+		<td class="session_id">' . (isset($login_control["session_id"]) ? $login_control["session_id"] : "") . '</td>
+		<td class="failed_login_attempts">' . (isset($login_control["failed_login_attempts"]) ? $login_control["failed_login_attempts"] : "") . '</td>
+		<td class="failed_login_time">' . (isset($login_control["failed_login_time"]) ? $login_control["failed_login_time"] : "") . '</td>
+		<td class="login_expired_time">' . (isset($login_control["login_expired_time"]) ? date("Y-m-d H:i:s", $login_control["login_expired_time"]) : "") . '</td>
+		<td class="created_date">' . (isset($login_control["created_date"]) ? $login_control["created_date"] : "") . '</td>
+		<td class="modified_date">' . (isset($login_control["modified_date"]) ? $login_control["modified_date"] : "") . '</td>
 		<td class="buttons">
-			<a class="icon edit" href="' . $project_url_prefix . 'user/edit_login_control?username=' . $login_control["username"] . '" title="Edit">Edit</a>
+			<a class="icon edit" href="' . $project_url_prefix . 'user/edit_login_control?username=' . (isset($login_control["username"]) ? $login_control["username"] : "") . '" title="Edit">Edit</a>
 		</td>
 	</tr>';
 }

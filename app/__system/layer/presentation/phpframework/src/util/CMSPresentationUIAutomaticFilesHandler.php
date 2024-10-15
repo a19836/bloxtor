@@ -85,9 +85,12 @@ class CMSPresentationUIAutomaticFilesHandler {
 				$t = count($fks);
 				for ($i = 0; $i < $t; $i++) {
 					$fk = $fks[$i];
-					$foreign_table_name = $fk["child_table"] == $table_name ? $fk["parent_table"] : $fk["child_table"];
+					$fk_child_table = isset($fk["child_table"]) ? $fk["child_table"] : null;
+					$fk_parent_table = isset($fk["parent_table"]) ? $fk["parent_table"] : null;
 					
-					if (!$repeated[$foreign_table_name])
+					$foreign_table_name = $fk_child_table == $table_name ? $fk_parent_table : $fk_child_table;
+					
+					if (empty($repeated[$foreign_table_name]))
 						$html .= self::getForeignTableRowHtml($table_name, $foreign_table_name, $tasks_contents, $allowed_tasks, $selected_tables_alias);
 					
 					$repeated[$foreign_table_name] = 1;
@@ -105,7 +108,8 @@ class CMSPresentationUIAutomaticFilesHandler {
 	}
 
 	public static function getForeignTableRowHtml($table_name, $foreign_table_name, $tasks_contents, $allowed_tasks, $selected_tables_alias = false) {
-		if ($selected_tables_alias && $selected_tables_alias[$foreign_table_name])
+		$extra = null;
+		if ($selected_tables_alias && !empty($selected_tables_alias[$foreign_table_name]))
 			$extra = " (with table alias: '" . $selected_tables_alias[$foreign_table_name] . "')";
 		
 		$idx = array_search("setquerydata", $allowed_tasks);
@@ -172,17 +176,17 @@ class CMSPresentationUIAutomaticFilesHandler {
 	$block_settings[$block_id] = array(';
 		
 		if ($form_settings) {
-			$form_settings_php_codes_list = $options ? $options["form_settings_php_codes_list"] : null;
+			$form_settings_php_codes_list = $options && isset($options["form_settings_php_codes_list"]) ? $options["form_settings_php_codes_list"] : null;
 			
-			if ($form_settings["actions"])
+			if (!empty($form_settings["actions"]))
 				$code .= '
 		"actions" => ' . self::getFormSettingsActionsBlockCode($form_settings["actions"], "\t\t\t") . ',';
 			
-			if ($form_settings["css"])
+			if (!empty($form_settings["css"]))
 				$code .= '
 		"css" => ' . self::getCodeAttributeValueConfigured($form_settings["css"]) . ',';
 			
-			if ($form_settings["js"]) {
+			if (!empty($form_settings["js"])) {
 				$js = self::getCodeAttributeValueConfigured($form_settings["js"]);
 				$js = self::replaceFormSettingsPHPCodesListInStringVariableValue($js, $form_settings_php_codes_list);
 				
@@ -217,14 +221,14 @@ class CMSPresentationUIAutomaticFilesHandler {
 	 	$form_settings => array(
 		 	"js" => "
 		 		//some js code here...
-		 		var before_insert_html = '...<td class=\"field title\">" . ($_GET["title"]) . "</td>...';
+		 		var before_insert_html = '...<td class=\"field title\">" . (isset($_GET["title"]) ? $_GET["title"] : "") . "</td>...';
 		 		//some other js code here...
 		 	",
 	 	);
 	 */
 	private static function replaceFormSettingsPHPCodesListInStringVariableValue($value, $form_settings_php_codes_list) {
 		//if form_settings_php_codes_list exists and if $value is a php code string.
-		if ($form_settings_php_codes_list && $value[0] == '"' && substr($value, -1) == '"') {
+		if ($form_settings_php_codes_list && strlen($value) && $value[0] == '"' && substr($value, -1) == '"') {
 			//error_log("form_settings_php_codes_list:".print_r($form_settings_php_codes_list, 1)."\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 			
 			foreach ($form_settings_php_codes_list as $php_statement) 
@@ -256,10 +260,17 @@ class CMSPresentationUIAutomaticFilesHandler {
 		$code = "array(";
 		
 		foreach ($actions as $action) {
+			$action["result_var_name"] = isset($action["result_var_name"]) ? $action["result_var_name"] : null;
+			$action["condition_type"] = isset($action["condition_type"]) ? $action["condition_type"] : null;
+			$action["condition_value"] = isset($action["condition_value"]) ? $action["condition_value"] : null;
+			$action["action_type"] = isset($action["action_type"]) ? $action["action_type"] : null;
+			$action["action_value"] = isset($action["action_value"]) ? $action["action_value"] : null;
+			$action_value = null;
+			
 			switch ($action["action_type"]) {
 				case "loop":
 				case "group":
-					if ($action["action_value"] && $action["action_value"]["actions"]) {
+					if ($action["action_value"] && !empty($action["action_value"]["actions"])) {
 						$action_value = 'array(';
 						
 						foreach ($action["action_value"] as $k => $v) {
@@ -386,7 +397,7 @@ class CMSPresentationUIAutomaticFilesHandler {
 					return trim(substr($v, 4, -4));
 				return $v;
 			}
-			else if (substr($v, 0, 1) == '$')
+			else if (substr($v, 0, 1) == '$' || substr($v, 0, 2) == '@$')
 				return $v;
 			else 
 				return '"' . addcslashes($v, '"') . '"';
@@ -404,12 +415,13 @@ class CMSPresentationUIAutomaticFilesHandler {
 	}
 
 	public static function getEntityCode($entity_settings) {
-		$regions_blocks = $entity_settings["regions_blocks"];
+		$regions_blocks = isset($entity_settings["regions_blocks"]) ? $entity_settings["regions_blocks"] : null;
+		$entity_code = null;
 		
 		if ($regions_blocks) {
-			$includes = $entity_settings["includes"];
-			$template_params = $entity_settings["template_params"];
-			$template = $entity_settings["template"];
+			$includes = isset($entity_settings["includes"]) ? $entity_settings["includes"] : null;
+			$template_params = isset($entity_settings["template_params"]) ? $entity_settings["template_params"] : null;
+			$template = isset($entity_settings["template"]) ? $entity_settings["template"] : null;
 			
 			$entity_code = '<?php ';
 			
@@ -422,8 +434,8 @@ class CMSPresentationUIAutomaticFilesHandler {
 					$include_once = false;
 					
 					if (is_array($include)) {
-						$include_path = $include["path"];
-						$include_once = $include["once"];
+						$include_path = isset($include["path"]) ? $include["path"] : null;
+						$include_once = isset($include["once"]) ? $include["once"] : null;
 					}
 					
 					if (trim($include_path))
@@ -449,8 +461,8 @@ $EVC->setTemplate("' . $template . '");
 					$name = $value = "";
 					
 					if (is_array($tp)) {
-						$name = $tp["name"];
-						$value = $tp["value"];
+						$name = isset($tp["name"]) ? $tp["name"] : null;
+						$value = isset($tp["value"]) ? $tp["value"] : null;
 					}
 					else if (!is_numeric($tkey)) {
 						$name = $tkey;
@@ -474,9 +486,9 @@ $EVC->getCMSLayer()->getCMSTemplateLayer()->setParam("' . $name . '", "' . $valu
 				$project_code = "";
 				
 				if (is_array($rb)) {
-					$region = $rb["region"];
-					$block = $rb["block"];
-					$project = $rb["project"];
+					$region = isset($rb["region"]) ? $rb["region"] : null;
+					$block = isset($rb["block"]) ? $rb["block"] : null;
+					$project = isset($rb["project"]) ? $rb["project"] : null;
 					$project_code = $project ? ', "' . $project . '"' : '';
 				}
 				
@@ -557,7 +569,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 			
 			$t = $items ? count($items) : 0;
 			for ($i = 0; $i < $t; $i++)
-				$available_items[ $items[$i]["user_type_id"] ] = $items[$i]["name"];
+				$available_items[ $items[$i]["user_type_id"] ] = isset($items[$i]["name"]) ? $items[$i]["name"] : null;
 		}
 		
 		return $available_items;
@@ -573,7 +585,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 			
 			$t = $items ? count($items) : 0;
 			for ($i = 0; $i < $t; $i++)
-				$available_items[ $items[$i]["activity_id"] ] = $items[$i]["name"];
+				$available_items[ $items[$i]["activity_id"] ] = isset($items[$i]["name"]) ? $items[$i]["name"] : null;
 		}
 		
 		return $available_items;
@@ -600,7 +612,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 			$attrs = array("name" => $name);
 			$activities = UserUtil::getActivitiesByConditions($brokers, $attrs, null);
 			
-			$activity_id = $activities ? $activities[0]["activity_id"] : null;
+			$activity_id = $activities && isset($activities[0]["activity_id"]) ? $activities[0]["activity_id"] : null;
 			
 			if (!$activity_id && $force) {
 				$reserved_activities = UserUtil::getReservedActivities();
@@ -625,7 +637,7 @@ include $EVC->getBlockPath("' . $block . '"' . $project_code . ');
 			$attrs = array("name" => $name);
 			$object_types = ObjectUtil::getObjectTypesByConditions($brokers, $attrs, null);
 			
-			$object_type_id = $object_types ? $object_types[0]["object_type_id"] : null; 
+			$object_type_id = $object_types && isset($object_types[0]["object_type_id"]) ? $object_types[0]["object_type_id"] : null; 
 			
 			if (!$object_type_id && $force) {
 				$reserved_object_types = ObjectUtil::getReservedObjectTypes();

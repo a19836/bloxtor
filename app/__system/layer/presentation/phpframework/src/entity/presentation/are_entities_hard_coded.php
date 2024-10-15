@@ -3,10 +3,10 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$entities = explode(",", $_GET["entities"]);
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$entities = isset($_GET["entities"]) ? explode(",", $_GET["entities"]) : array();
 
 $path = str_replace("../", "", $path);//for security reasons
 

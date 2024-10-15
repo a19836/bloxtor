@@ -50,14 +50,14 @@ class SQLMapQueryHandler extends SQLMap {
 	private static function getSQLParameters($sql) {
 		preg_match_all(HashTagParameter::SQL_HASH_TAG_PARAMETER_FULL_REGEX, $sql, $out); //'\w' means all words with '_' and '/u' means with accents and ç too.
 		//echo "<pre>";print_r($out);die();
-		return $out[0];
+		return isset($out[0]) ? $out[0] : null;
 	}
 	
 	private static function replaceSQLParameterWithArrayList(&$sql, $matches, $parameters, $auto_add_slashes = true) {
 		$t = count($matches);
 		for($i = 0; $i < $t; $i++) {
 			$var_name = str_replace("#", "", $matches[$i]);
-			$value = $parameters[$i];
+			$value = isset($parameters[$i]) ? $parameters[$i] : null;
 			
 			if($auto_add_slashes) {
 				$value = (is_numeric($value) || is_bool($value)) && !is_string($value) ? $value : self::addSlashesToValue($value);
@@ -70,7 +70,7 @@ class SQLMapQueryHandler extends SQLMap {
 		$t = count($matches);
 		for($i = 0; $i < $t; $i++) {
 			$var_name = str_replace("#", "", $matches[$i]);
-			$value = $parameters[$var_name];
+			$value = isset($parameters[$var_name]) ? $parameters[$var_name] : null;
 			
 			if($auto_add_slashes) {
 				$value = (is_numeric($value) || is_bool($value)) && !is_string($value) ? $value : self::addSlashesToValue($value);

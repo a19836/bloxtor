@@ -60,7 +60,7 @@ class HtmlStringHandler {
 					$node_type = isset($element["nodeType"]) ? $element["nodeType"] : null;
 					
 					if ($node_type == 3) { //text node
-						if ($previous_index >= 0 && is_array($new_elements[$previous_index]) && isset($new_elements[$previous_index]["nodeType"]) && $new_elements[$previous_index]["nodeType"] == $node_type)
+						if ($previous_index >= 0 && isset($new_elements[$previous_index]) && is_array($new_elements[$previous_index]) && isset($new_elements[$previous_index]["nodeType"]) && $new_elements[$previous_index]["nodeType"] == $node_type)
 							$new_elements[$previous_index]["nodeValue"] .= isset($element["nodeValue"]) ? $element["nodeValue"] : null;
 						else
 							$new_elements[] = $element;
@@ -69,7 +69,7 @@ class HtmlStringHandler {
 						$new_elements[] = $element;
 				}
 				else {
-					if ($previous_index >= 0 && !is_array($new_elements[$previous_index]))
+					if ($previous_index >= 0 && (!isset($new_elements[$previous_index]) || !is_array($new_elements[$previous_index])))
 						$new_elements[$previous_index] .= $element;
 					else
 						$new_elements[] = $element;
@@ -390,7 +390,7 @@ class HtmlStringHandler {
 		
 		//get attributes
 		$divs = $dom->getElementsByTagName('div');
-		$div = $divs[0];
+		$div = isset($divs[0]) ? $divs[0] : null;
 		
 		if ($div && $div->attributes)
 			foreach ($div->attributes as $attribute)
@@ -640,8 +640,8 @@ class HtmlStringHandler {
 	
 	private static function isOffsetInsideOfIntervalsToJump($intervals, $offset) {
 		foreach ($intervals as $interval) {
-			$start = $interval[0];
-			$end = $interval[1];
+			$start = isset($interval[0]) ? $interval[0] : null;
+			$end = isset($interval[1]) ? $interval[1] : null;
 			
 			if ($offset > $start && $offset < $end)
 				return true;

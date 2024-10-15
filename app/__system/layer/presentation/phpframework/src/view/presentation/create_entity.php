@@ -1,13 +1,15 @@
 <?php
 include_once $EVC->getUtilPath("HeatMapHandler");
 
-$get_bkp = $_GET;
+$get_bkp = isset($_GET) ? $_GET : null;
 unset($get_bkp["creation_step"]);
 $query_string = http_build_query($get_bkp);
 
 $edit_entity_url = $project_url_prefix . "phpframework/presentation/edit_entity?bean_name=$bean_name&bean_file_name=$bean_file_name&filter_by_layout=$filter_by_layout&path=$path";
 
 $top_bar_title = "Create new Page";
+
+$main_content = '';
 
 if (!$creation_step) { //show 2 cards: one with empty page or browse pages
 	$main_content = '
@@ -35,7 +37,7 @@ else if ($creation_step == 1) { //list pages from store
 	//call install_page
 	include_once $EVC->getViewPath("presentation/install_page");
 	
-	/*if ($_POST && $status)
+	/*if (!empty($_POST) && !empty($status))
 		$main_content = '
 		<div class="top_bar create_entity_top_bar popup_with_iframe_left_popup_close popup_with_iframe_popup_close_button' . ($popup ? ' in_popup' : '') . '">
 			<header>
@@ -54,7 +56,7 @@ else if ($creation_step == 1) { //list pages from store
 			<header>
 				<div class="title" title="' . $top_bar_title . '">' . $top_bar_title . '</div>
 				<ul>
-					<li class="continue button" data-title="Continue to next step after selecting a pre-built page"><a' . ($_POST && $status ? ' class="active"' : '') . ' href="javascript:void(0)" onClick="choosePage(this, \'?' . $query_string . '&creation_step=1\')">Continue</a></li>
+					<li class="continue button" data-title="Continue to next step after selecting a pre-built page"><a' . (!empty($_POST) && !empty($status) ? ' class="active"' : '') . ' href="javascript:void(0)" onClick="choosePage(this, \'?' . $query_string . '&creation_step=1\')">Continue</a></li>
 					<li class="back button" data-title="Back to choose a new pre-built page"><a class="active" href="?' . $query_string . '&creation_step=0">Back</a></li>
 					<li class="cancel button" data-title="Close"><a class="active" href="javascript:void(0)" onClick="cancel()">Close</a></li>
 				</ul>
@@ -76,7 +78,7 @@ else if ($creation_step == 2) { //show success message and call on_success_js_fu
 		</header>
 	</div>';
 	
-	if ($from_step_1) 
+	if (!empty($from_step_1))
 		$main_content .= '
 		<div class="message">
 			<div class="title">Your page was created successfully!</div>
@@ -93,7 +95,7 @@ else if ($creation_step == 2) { //show success message and call on_success_js_fu
 		</div>';
 }
 
-$head .= '
+$head = (isset($head) ? $head : "") . '
 <!-- Add Fontawsome Icons CSS -->
 <link rel="stylesheet" href="' . $project_common_url_prefix . 'vendor/fontawesome/css/all.min.css">
 

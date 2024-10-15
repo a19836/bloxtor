@@ -4,15 +4,15 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"];
-$popup = $_GET["popup"];
-$class_id = $_GET["class"];
-$method_id = $_GET["method"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
+$class_id = isset($_GET["class"]) ? $_GET["class"] : null;
+$method_id = isset($_GET["method"]) ? $_GET["method"] : null;
 
-$data = $_POST["data"];
+$data = isset($_POST["data"]) ? $_POST["data"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -41,6 +41,8 @@ if ($bean_name && $bean_file_name && $path && $data) {
 		$PHPVariablesFileHandler->startUserGlobalVariables();
 		
 		try {
+			$task_layer_path = $task_layer_bean_name = $task_layer_bean_file_name = null;
+			
 			//prepare external vars
 			$new_defined_vars = get_defined_vars();
 			$external_vars = array_diff_key($new_defined_vars, $old_defined_vars);
@@ -48,7 +50,7 @@ if ($bean_name && $bean_file_name && $path && $data) {
 			
 			if (is_a($obj, "BusinessLogicLayer")) {
 				$bean_objs = $obj->getPHPFrameWork()->getObjects();
-				$vars = is_array($bean_objs["vars"]) ? array_merge($bean_objs["vars"], $obj->settings) : $obj->settings;
+				$vars = isset($bean_objs["vars"]) && is_array($bean_objs["vars"]) ? array_merge($bean_objs["vars"], $obj->settings) : $obj->settings;
 				$external_vars["vars"] = $vars;
 				//echo "<pre>";print_r($vars);
 			}
@@ -56,12 +58,12 @@ if ($bean_name && $bean_file_name && $path && $data) {
 				$external_vars["EVC"] = $PEVC;
 			
 			//prepare task_layer_obj
-			$method_obj = $data["method_obj"];
+			$method_obj = isset($data["method_obj"]) ? $data["method_obj"] : null;
 			
 			if ($method_obj) {
 				$static_pos = strpos($method_obj, "::");
 				$non_static_pos = strpos($method_obj, "->");
-				$method_obj = substr($method_obj, 0, 1) != '$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $method_obj : $method_obj;
+				$method_obj = substr($method_obj, 0, 1) != '$' && substr($method_obj, 0, 2) != '@$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $method_obj : $method_obj;
 				//echo "method_obj:$method_obj<br>";
 				
 				$task_layer_obj = parseCode($path, $class_id, $method_id, $obj, $external_vars, $method_obj);
@@ -70,8 +72,8 @@ if ($bean_name && $bean_file_name && $path && $data) {
 				if ($task_layer_obj) {
 					if (is_a($task_layer_obj, "LocalBrokerClient")) {
 						$layer_props = WorkFlowBeansFileHandler::getLocalBeanLayerFromBroker($user_global_variables_file_path, $user_beans_folder_path, $task_layer_obj);
-						$task_layer_bean_name = $layer_props[0];
-						$task_layer_bean_file_name = $layer_props[1][0];
+						$task_layer_bean_name = isset($layer_props[0]) ? $layer_props[0] : null;
+						$task_layer_bean_file_name = isset($layer_props[1][0]) ? $layer_props[1][0] : null;
 						//$task_layer_obj = $layer_props[2]; //Do not use this bc it won't have all beans file loaded and when we use the task_layer_obj it will give a Bean exception
 						$task_layer_obj = $task_layer_obj->getBrokerServer()->getBrokerLayer();
 					}
@@ -98,14 +100,14 @@ if ($bean_name && $bean_file_name && $path && $data) {
 			}
 			
 			//prepare url to redirect page
-			$task_tag = $data["task_tag"];
-			$edit_type = $data["edit_type"];
+			$task_tag = isset($data["task_tag"]) ? $data["task_tag"] : null;
+			$edit_type = isset($data["edit_type"]) ? $data["edit_type"] : null;
 			$task_edit_url = null;
 			
 			switch ($task_tag) {
 				case "includefile": 
-					$file_path = $data["file_path"];
-					$file_path_type = $data["type"];
+					$file_path = isset($data["file_path"]) ? $data["file_path"] : null;
+					$file_path_type = isset($data["type"]) ? $data["type"] : null;
 					
 					if ($file_path) {
 						$file_path_code = WorkFlowTask::getVariableValueCode($file_path, $file_path_type);
@@ -117,8 +119,8 @@ if ($bean_name && $bean_file_name && $path && $data) {
 					}
 					break;
 				case "callfunction": 
-					$include_file_path = $data["include_file_path"];
-					$include_file_path_type = $data["include_file_path_type"];
+					$include_file_path = isset($data["include_file_path"]) ? $data["include_file_path"] : null;
+					$include_file_path_type = isset($data["include_file_path_type"]) ? $data["include_file_path_type"] : null;
 					
 					if ($include_file_path) {
 						$include_file_path_code = WorkFlowTask::getVariableValueCode($include_file_path, $include_file_path_type);
@@ -132,11 +134,11 @@ if ($bean_name && $bean_file_name && $path && $data) {
 							if ($edit_type == "file")
 								$task_edit_url = getFilePathLayerPropsUrl($system_project_url_prefix, $filter_by_layout, $props);
 							else if ($edit_type == "function") {
-								$func_name = $data["func_name"]; //function name
+								$func_name = isset($data["func_name"]) ? $data["func_name"] : null; //function name
 								
-								$query_string = "bean_name=" . $props["bean_name"] . "&bean_file_name=" . $props["bean_file_name"] . "&filter_by_layout=$filter_by_layout&item_type=" . $props["item_type"] . "&path=" . $props["path"];
+								$query_string = "bean_name=" . (isset($props["bean_name"]) ? $props["bean_name"] : null) . "&bean_file_name=" . (isset($props["bean_file_name"]) ? $props["bean_file_name"] : null) . "&filter_by_layout=$filter_by_layout&item_type=" . (isset($props["item_type"]) ? $props["item_type"] : null) . "&path=" . (isset($props["path"]) ? $props["path"] : null);
 								
-								if ($props["item_type"] == "businesslogic")
+								if (isset($props["item_type"]) && $props["item_type"] == "businesslogic")
 									$task_edit_url = $system_project_url_prefix . "phpframework/businesslogic/edit_function?$query_string&function=$func_name";
 								else
 									$task_edit_url = $system_project_url_prefix . "phpframework/admin/edit_file_function?$query_string&function=$func_name";
@@ -145,8 +147,8 @@ if ($bean_name && $bean_file_name && $path && $data) {
 					}
 					break;
 				case "callobjectmethod": 
-					$include_file_path = $data["include_file_path"];
-					$include_file_path_type = $data["include_file_path_type"];
+					$include_file_path = isset($data["include_file_path"]) ? $data["include_file_path"] : null;
+					$include_file_path_type = isset($data["include_file_path_type"]) ? $data["include_file_path_type"] : null;
 					
 					if ($include_file_path) {
 						$include_file_path_code = WorkFlowTask::getVariableValueCode($include_file_path, $include_file_path_type);
@@ -163,7 +165,7 @@ if ($bean_name && $bean_file_name && $path && $data) {
 					}
 					
 					//check if class is a ResourceUtil or another Util.
-					if (!$include_file_path && is_a($obj, "PresentationLayer") && $data["method_obj"]) {
+					if (!$include_file_path && is_a($obj, "PresentationLayer") && !empty($data["method_obj"])) {
 						$method_obj = $data["method_obj"]; //class name
 						
 						if (preg_match("/ResourceUtil$/", $method_obj))
@@ -179,7 +181,7 @@ if ($bean_name && $bean_file_name && $path && $data) {
 					//echo "$edit_type<pre>";print_r($props);die();
 					
 					if ($props) {
-						$query_string = "bean_name=" . $props["bean_name"] . "&bean_file_name=" . $props["bean_file_name"] . "&filter_by_layout=$filter_by_layout&item_type=" . $props["item_type"] . "&path=" . $props["path"];
+						$query_string = "bean_name=" . (isset($props["bean_name"]) ? $props["bean_name"] : null) . "&bean_file_name=" . (isset($props["bean_file_name"]) ? $props["bean_file_name"] : null) . "&filter_by_layout=$filter_by_layout&item_type=" . (isset($props["item_type"]) ? $props["item_type"] : null) . "&path=" . (isset($props["path"]) ? $props["path"] : null);
 						
 						if ($edit_type == "file")
 							$task_edit_url = getFilePathLayerPropsUrl($system_project_url_prefix, $filter_by_layout, $props);
@@ -187,16 +189,16 @@ if ($bean_name && $bean_file_name && $path && $data) {
 							$method_obj = $data["method_obj"]; //class name
 							//echo "method_obj:$method_obj";die();
 							
-							if ($props["item_type"] == "businesslogic")
+							if (isset($props["item_type"]) && $props["item_type"] == "businesslogic")
 								$task_edit_url = $system_project_url_prefix . "phpframework/businesslogic/edit_service?$query_string&service=$method_obj";
 							else
 								$task_edit_url = $system_project_url_prefix . "phpframework/admin/edit_file_class?$query_string&class=$method_obj";
 						}
 						else if ($edit_type == "method") {
 							$method_obj = $data["method_obj"]; //class name
-							$method_name = $data["method_name"]; //method name
+							$method_name = isset($data["method_name"]) ? $data["method_name"] : null; //method name
 							
-							if ($props["item_type"] == "businesslogic")
+							if (isset($props["item_type"]) && $props["item_type"] == "businesslogic")
 								$task_edit_url = $system_project_url_prefix . "phpframework/businesslogic/edit_method?$query_string&service=$method_obj&method=$method_name";
 							else
 								$task_edit_url = $system_project_url_prefix . "phpframework/admin/edit_file_class_method?$query_string&class=$method_obj&method=$method_name";
@@ -206,12 +208,12 @@ if ($bean_name && $bean_file_name && $path && $data) {
 					}
 					break;
 				case "callbusinesslogic": 
-					$module_id = $data["module_id"];
-					$module_id_type = $data["module_id_type"];
-					$service_id = $data["service_id"];
-					$service_id_type = $data["service_id_type"];
+					$module_id = isset($data["module_id"]) ? $data["module_id"] : null;
+					$module_id_type = isset($data["module_id_type"]) ? $data["module_id_type"] : null;
+					$service_id = isset($data["service_id"]) ? $data["service_id"] : null;
+					$service_id_type = isset($data["service_id_type"]) ? $data["service_id_type"] : null;
 					
-					if ($task_layer_obj && $module_id && $service_id) {
+					if (!empty($task_layer_obj) && $module_id && $service_id) {
 						$module_id_code = WorkFlowTask::getVariableValueCode($module_id, $module_id_type);
 						eval('$module_id = ' . $module_id_code . ';');
 						//echo "module_id:$module_id<br>";
@@ -222,10 +224,10 @@ if ($bean_name && $bean_file_name && $path && $data) {
 						
 						if ($module_id && $service_id) {
 							$props = $task_layer_obj->getBusinessLogicServiceProps($module_id, $service_id);
-							$class_name = $props["class_name"];
-							$method_name = $props["method_name"];
-							$function_name = $props["function_name"];
-							$service_file_path = $props["service_file_path"];
+							$class_name = isset($props["class_name"]) ? $props["class_name"] : null;
+							$method_name = isset($props["method_name"]) ? $props["method_name"] : null;
+							$function_name = isset($props["function_name"]) ? $props["function_name"] : null;
+							$service_file_path = isset($props["service_file_path"]) ? $props["service_file_path"] : null;
 							//echo "<pre>";print_r($props);
 							
 							$task_layer_file_path = substr($service_file_path, strlen($task_layer_path));
@@ -245,14 +247,14 @@ if ($bean_name && $bean_file_name && $path && $data) {
 					}
 					break;
 				case "callibatisquery": 
-					$module_id = $data["module_id"];
-					$module_id_type = $data["module_id_type"];
-					$service_type = $data["service_type"];
-					$service_type_type = $data["service_type_type"];
-					$service_id = $data["service_id"];
-					$service_id_type = $data["service_id_type"];
+					$module_id = isset($data["module_id"]) ? $data["module_id"] : null;
+					$module_id_type = isset($data["module_id_type"]) ? $data["module_id_type"] : null;
+					$service_type = isset($data["service_type"]) ? $data["service_type"] : null;
+					$service_type_type = isset($data["service_type_type"]) ? $data["service_type_type"] : null;
+					$service_id = isset($data["service_id"]) ? $data["service_id"] : null;
+					$service_id_type = isset($data["service_id_type"]) ? $data["service_id_type"] : null;
 					
-					if ($task_layer_obj && $module_id && $service_type && $service_id) {
+					if (!empty($task_layer_obj) && $module_id && $service_type && $service_id) {
 						$module_id_code = WorkFlowTask::getVariableValueCode($module_id, $module_id_type);
 						eval('$module_id = ' . $module_id_code . ';');
 						//echo "module_id:$module_id<br>";
@@ -267,8 +269,8 @@ if ($bean_name && $bean_file_name && $path && $data) {
 						
 						if ($module_id && $service_type && $service_id) {
 							$props = $task_layer_obj->getQueryProps($module_id, $service_type, $service_id);
-							$query_path = $props["query_path"];
-							$query_id = $props["query_id"];
+							$query_path = isset($props["query_path"]) ? $props["query_path"] : null;
+							$query_id = isset($props["query_id"]) ? $props["query_id"] : null;
 							
 							$task_layer_file_path = substr($query_path, strlen($task_layer_path));
 							$query_string = "bean_name=" . $task_layer_bean_name . "&bean_file_name=" . $task_layer_bean_file_name . "&filter_by_layout=$filter_by_layout&item_type=ibatis&path=" . $task_layer_file_path;
@@ -281,12 +283,12 @@ if ($bean_name && $bean_file_name && $path && $data) {
 					}
 					break;
 				case "callhibernateobject": 
-					$module_id = $data["module_id"];
-					$module_id_type = $data["module_id_type"];
-					$service_id = $data["service_id"]; //object id
-					$service_id_type = $data["service_id_type"];
+					$module_id = isset($data["module_id"]) ? $data["module_id"] : null;
+					$module_id_type = isset($data["module_id_type"]) ? $data["module_id_type"] : null;
+					$service_id = isset($data["service_id"]) ? $data["service_id"] : null; //object id
+					$service_id_type = isset($data["service_id_type"]) ? $data["service_id_type"] : null;
 					
-					if ($task_layer_obj && $module_id && $service_id) {
+					if (!empty($task_layer_obj) && $module_id && $service_id) {
 						$module_id_code = WorkFlowTask::getVariableValueCode($module_id, $module_id_type);
 						eval('$module_id = ' . $module_id_code . ';');
 						//echo "module_id:$module_id<br>";
@@ -297,8 +299,8 @@ if ($bean_name && $bean_file_name && $path && $data) {
 						
 						if ($module_id && $service_id) {
 							$props = $task_layer_obj->getObjectProps($module_id, $service_id);
-							$obj_path = $props["obj_path"];
-							$obj_name = $props["obj_name"];
+							$obj_path = isset($props["obj_path"]) ? $props["obj_path"] : null;
+							$obj_name = isset($props["obj_name"]) ? $props["obj_name"] : null;
 							
 							$task_layer_file_path = substr($obj_path, strlen($task_layer_path));
 							$query_string = "bean_name=" . $task_layer_bean_name . "&bean_file_name=" . $task_layer_bean_file_name . "&filter_by_layout=$filter_by_layout&item_type=hibernate&path=" . $task_layer_file_path;
@@ -311,12 +313,12 @@ if ($bean_name && $bean_file_name && $path && $data) {
 					}
 					break;
 				case "callhibernatemethod": 
-					$module_id = $data["module_id"];
-					$module_id_type = $data["module_id_type"];
-					$service_id = $data["service_id"]; //object
-					$service_id_type = $data["service_id_type"];
+					$module_id = isset($data["module_id"]) ? $data["module_id"] : null;
+					$module_id_type = isset($data["module_id_type"]) ? $data["module_id_type"] : null;
+					$service_id = isset($data["service_id"]) ? $data["service_id"] : null; //object
+					$service_id_type = isset($data["service_id_type"]) ? $data["service_id_type"] : null;
 					
-					if ($task_layer_obj && $module_id && $service_id) {
+					if (!empty($task_layer_obj) && $module_id && $service_id) {
 						$module_id_code = WorkFlowTask::getVariableValueCode($module_id, $module_id_type);
 						eval('$module_id = ' . $module_id_code . ';');
 						//echo "module_id:$module_id<br>";
@@ -327,8 +329,8 @@ if ($bean_name && $bean_file_name && $path && $data) {
 						
 						if ($module_id && $service_id) {
 							$props = $task_layer_obj->getObjectProps($module_id, $service_id);
-							$obj_path = $props["obj_path"];
-							$obj_name = $props["obj_name"];
+							$obj_path = isset($props["obj_path"]) ? $props["obj_path"] : null;
+							$obj_name = isset($props["obj_name"]) ? $props["obj_name"] : null;
 							
 							$task_layer_file_path = substr($obj_path, strlen($task_layer_path));
 							$query_string = "bean_name=" . $task_layer_bean_name . "&bean_file_name=" . $task_layer_bean_file_name . "&filter_by_layout=$filter_by_layout&item_type=hibernate&path=" . $task_layer_file_path;
@@ -338,8 +340,8 @@ if ($bean_name && $bean_file_name && $path && $data) {
 							else if ($edit_type == "object")
 								$task_edit_url = $system_project_url_prefix . "phpframework/dataaccess/edit_hbn_obj?$query_string&obj=$obj_name";
 							else if ($edit_type == "query") {
-								$service_method = $data["service_method"]; //hbn service method to get the query type
-								$service_method_type = $data["service_method_type"];
+								$service_method = isset($data["service_method"]) ? $data["service_method"] : null; //hbn service method to get the query type
+								$service_method_type = isset($data["service_method_type"]) ? $data["service_method_type"] : null;
 								
 								$service_method_code = WorkFlowTask::getVariableValueCode($service_method, $service_method_type);
 								eval('$service_method = ' . $service_method_code . ';');
@@ -348,8 +350,8 @@ if ($bean_name && $bean_file_name && $path && $data) {
 								switch ($service_method) {
 									case "callQuerySQL":
 									case "callQuery":
-										$sma_query_type = $data["sma_query_type"]; //query type
-										$sma_query_type_type = $data["sma_query_type_type"];
+										$sma_query_type = isset($data["sma_query_type"]) ? $data["sma_query_type"] : null; //query type
+										$sma_query_type_type = isset($data["sma_query_type_type"]) ? $data["sma_query_type_type"] : null;
 										
 										$sma_query_type_code = WorkFlowTask::getVariableValueCode($sma_query_type, $sma_query_type_type);
 										eval('$sma_query_type = ' . $sma_query_type_code . ';');
@@ -377,9 +379,9 @@ if ($bean_name && $bean_file_name && $path && $data) {
 										break;
 								}
 								
-								if ($sma_query_type) {
-									$sma_query_id = $data["sma_query_id"]; //query id
-									$sma_query_id_type = $data["sma_query_id_type"];
+								if (!empty($sma_query_type)) {
+									$sma_query_id = isset($data["sma_query_id"]) ? $data["sma_query_id"] : null; //query id
+									$sma_query_id_type = isset($data["sma_query_id_type"]) ? $data["sma_query_id_type"] : null;
 									
 									$sma_query_id_code = WorkFlowTask::getVariableValueCode($sma_query_id, $sma_query_id_type);
 									eval('$sma_query_id = ' . $sma_query_id_code . ';');
@@ -415,7 +417,7 @@ if ($bean_name && $bean_file_name && $path && $data) {
 		$PHPVariablesFileHandler->endUserGlobalVariables();
 		
 		//redirect to url
-		if ($task_edit_url) {
+		if (!empty($task_edit_url)) {
 			$task_edit_url .= "&popup=$popup";
 			//echo "task_edit_url:$task_edit_url";die();
 			
@@ -450,6 +452,8 @@ function getFilePathLayerProps($user_global_variables_file_path, $user_beans_fol
 					$bean_file_name = WorkFlowBeansFileHandler::getBeanFilePath($user_global_variables_file_path, $user_beans_folder_path, $bean_name);
 					$bean_file_name = basename($bean_file_name);
 					$path = substr($file_path, strlen($layer_path));
+					$folder_type = null;
+					
 					//echo "path:$path<br>";
 					
 					if ($item_type == "presentation") {
@@ -458,7 +462,7 @@ function getFilePathLayerProps($user_global_variables_file_path, $user_beans_fol
 						$common_project_name = $obj->getCommonProjectName();
 						$is_common_project = substr($path, 0, strlen("$common_project_name/")) == "$common_project_name/";
 						
-						if ($PresentationCacheLayer && $PresentationCacheLayer->settings["presentation_caches_path"] && strpos($path, $PresentationCacheLayer->settings["presentation_caches_path"]) !== false && !$is_common_project)
+						if ($PresentationCacheLayer && !empty($PresentationCacheLayer->settings["presentation_caches_path"]) && strpos($path, $PresentationCacheLayer->settings["presentation_caches_path"]) !== false && !$is_common_project)
 							$folder_type = "cache";
 						else if (strpos($path, "/src/config/") !== false)
 							$folder_type = "config";
@@ -512,9 +516,9 @@ function getFilePathLayerProps($user_global_variables_file_path, $user_beans_fol
 		$path = substr($file_path, strlen(OTHER_PATH));
 	}
 	
-	if ($item_type)
+	if (!empty($item_type))
 		return array(
-			"path" => $path,
+			"path" => isset($path) ? $path : null,
 			"bean_file_name" => "",
 			"bean_name" => $item_type,
 			"item_type" => $item_type,
@@ -524,7 +528,12 @@ function getFilePathLayerProps($user_global_variables_file_path, $user_beans_fol
 }
 
 function getFilePathLayerPropsUrl($system_project_url_prefix, $filter_by_layout, $props) {
-	if ($props && $props["item_type"]) {
+	if ($props && !empty($props["item_type"])) {
+		$props["bean_name"] = isset($props["bean_name"]) ? $props["bean_name"] : null;
+		$props["bean_file_name"] = isset($props["bean_file_name"]) ? $props["bean_file_name"] : null;
+		$props["path"] = isset($props["path"]) ? $props["path"] : null;
+		$props["folder_type"] = isset($props["folder_type"]) ? $props["folder_type"] : null;
+		
 		$query_string = "bean_name=" . $props["bean_name"] . "&bean_file_name=" . $props["bean_file_name"] . "&filter_by_layout=$filter_by_layout&item_type=" . $props["item_type"] . "&path=" . $props["path"];
 		
 		switch ($props["item_type"]) {
@@ -567,7 +576,7 @@ function parseCode($path, $class_id, $method_id, $obj, $external_vars, $code) {
 		if (is_a($obj, "BusinessLogicLayer")) {
 			$module_id = dirname($path);
 			$props = $obj->getBusinessLogicServiceProps($module_id, "$class_id.$method_id");
-			$class_obj = $props["obj"];
+			$class_obj = isset($props["obj"]) ? $props["obj"] : null;
 			
 			//echo "<pre>";print_r($props);
 			//echo "class_obj:".get_class($class_obj);die();
@@ -583,7 +592,7 @@ function parseCode($path, $class_id, $method_id, $obj, $external_vars, $code) {
 			}
 		}
 		
-		if ($class_obj) {
+		if (!empty($class_obj)) {
 			eval('$getBrokerDummyFunc = function($external_vars) {
 				if ($external_vars)
 					foreach ($external_vars as $k => $v)

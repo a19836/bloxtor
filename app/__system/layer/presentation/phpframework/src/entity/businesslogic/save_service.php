@@ -6,12 +6,12 @@ $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "w
 
 $_GET["rename_file_with_class"] = true;
 
-if ($_POST["object"]) {
+if (!empty($_POST["object"])) {
 	//Getting default extend
-	$bean_name = $_GET["bean_name"];
-	$bean_file_name = $_GET["bean_file_name"];
-	$path = $_GET["path"];
-	$class = $_GET["class"];
+	$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+	$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+	$path = isset($_GET["path"]) ? $_GET["path"] : null;
+	$class = isset($_GET["class"]) ? $_GET["class"] : null;
 
 	$path = str_replace("../", "", $path);//for security reasons
 	
@@ -19,10 +19,10 @@ if ($_POST["object"]) {
 	$obj = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
 	
 	$common_namespace = "";
-	$common_service_file_path = $obj->settings["business_logic_modules_service_common_file_path"];
+	$common_service_file_path = isset($obj->settings["business_logic_modules_service_common_file_path"]) ? $obj->settings["business_logic_modules_service_common_file_path"] : null;
 	if ($common_service_file_path && file_exists($common_service_file_path)) {
 		$common_namespace = PHPCodePrintingHandler::getNamespacesFromFile($common_service_file_path);
-		$common_namespace = $common_namespace[0];
+		$common_namespace = isset($common_namespace[0]) ? $common_namespace[0] : null;
 		$common_namespace = substr($common_namespace, 0, 1) == "\\" ? substr($common_namespace, 1) : $common_namespace;
 		$common_namespace = substr($common_namespace, -1) == "\\" ? substr($common_namespace, 0, -1) : $common_namespace;
 	}
@@ -44,8 +44,9 @@ $do_not_die_on_save = true;
 include $EVC->getEntityPath("admin/save_file_class");
 
 //delete caches
-if ($obj && is_a($obj, "BusinessLogicLayer") && $_POST && $status) 
+if (!empty($obj) && is_a($obj, "BusinessLogicLayer") && !empty($_POST) && !empty($status)) 
 	CacheHandlerUtil::deleteFolder($obj->getCacheLayer()->getCachedDirPath(), false);
 
-die($status);
+echo isset($status) ? $status : null;
+die();
 ?>

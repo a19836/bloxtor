@@ -90,15 +90,15 @@
 		}
 		.myfancypopup.create_db_data_structure_popup.with_title > .db_driver label,
 		  .myfancypopup.create_db_data_structure_popup.with_title > .db_table label {
-			width:60px;
+			width:100px;
 			display:inline-block;
 		}
 		.myfancypopup.create_db_data_structure_popup.with_title > .db_driver select {
-			width:calc(100% - 65px);
+			width:calc(100% - 100px);
 			font-size:inherit;
 		}
 		.myfancypopup.create_db_data_structure_popup.with_title > .db_table select {
-			width:calc(100% - 85px);
+			width:calc(100% - 125px);
 			margin-right:5px;
 			font-size:inherit;
 		}

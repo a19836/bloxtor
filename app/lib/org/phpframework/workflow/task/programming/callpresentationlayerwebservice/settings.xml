@@ -43,6 +43,6 @@
 	</settings>
 	<code_parser>
 		<statements>Expr_Assign,Expr_AssignOp_Concat,Expr_AssignOp_Plus,Expr_AssignOp_Minus,Expr_FuncCall,Stmt_Echo</statements>
-		<reserved_function_names>callPresentationLayerWebService</reserved_function_names>
+		<reserved_function_names>call_presentation_layer_web_service</reserved_function_names>
 	</code_parser>
 </task>

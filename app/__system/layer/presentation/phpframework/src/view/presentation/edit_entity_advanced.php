@@ -3,7 +3,28 @@ include $EVC->getUtilPath("WorkFlowUIHandler");
 include $EVC->getUtilPath("WorkFlowPresentationHandler");
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
-$design_editor = $_GET["design_editor"];
+$file_path = isset($file_path) ? $file_path : null;
+$P = isset($P) ? $P : null;
+$db_drivers_options = isset($db_drivers_options) ? $db_drivers_options : null;
+$brokers_db_drivers = isset($brokers_db_drivers) ? $brokers_db_drivers : null;
+
+$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+$business_logic_brokers = isset($business_logic_brokers) ? $business_logic_brokers : null;
+$data_access_brokers = isset($data_access_brokers) ? $data_access_brokers : null;
+$ibatis_brokers = isset($ibatis_brokers) ? $ibatis_brokers : null;
+$hibernate_brokers = isset($hibernate_brokers) ? $hibernate_brokers : null;
+$db_brokers = isset($db_brokers) ? $db_brokers : null;
+
+$presentation_brokers_obj = isset($presentation_brokers_obj) ? $presentation_brokers_obj : null;
+$business_logic_brokers_obj = isset($business_logic_brokers_obj) ? $business_logic_brokers_obj : null;
+$data_access_brokers_obj = isset($data_access_brokers_obj) ? $data_access_brokers_obj : null;
+$ibatis_brokers_obj = isset($ibatis_brokers_obj) ? $ibatis_brokers_obj : null;
+$hibernate_brokers_obj = isset($hibernate_brokers_obj) ? $hibernate_brokers_obj : null;
+$db_brokers_obj = isset($db_brokers_obj) ? $db_brokers_obj : null;
+
+$view_file_path = isset($view_file_path) ? $view_file_path : null;
+
+$design_editor = isset($_GET["design_editor"]) ? $_GET["design_editor"] : null;
 
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 
@@ -13,9 +34,9 @@ $WorkFlowUIHandler->setTasksGroupsByTag(array(
 	"Connectors" => array("restconnector", "soapconnector"),
 	"Exception" => array("trycatchexception", "throwexception", "printexception"),
 	"DB" => array("getdbdriver", "setquerydata", "getquerydata", "dbdaoaction", "callibatisquery", "callhibernateobject", "callhibernatemethod"),
-	"Layers" => array("callbusinesslogic", "callpresentationlayerwebservice", "setpresentationview", "addpresentationview", "setpresentationtemplate", "resetregionblockjoinpoints", "addregionhtml", "addregionblock"),
+	"Layers" => array("callbusinesslogic", "callpresentationlayerwebservice", "setpresentationview", "addpresentationview", "setpresentationtemplate", "resetregionblockjoinpoints"),
 	"HTML" => array("inlinehtml", "createform"),
-	"CMS" => array("setblockparams", "settemplateregionblockparam", "includeblock", "addtemplateregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam"),
+	"CMS" => array("setblockparams", "settemplateregionblockparam", "includeblock", "addregionhtml", "addregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam"),
 ));
 $WorkFlowUIHandler->addFoldersTasksToTasksGroups($code_workflow_editor_user_tasks_folders_path);
 
@@ -87,10 +108,10 @@ $head .= '
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/presentation/edit_entity_advanced.js"></script>
 
 <script>
-' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, $selected_db_vars) . '
+' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, isset($selected_db_vars) ? $selected_db_vars : null) . '
 var layer_type = "pres";
-var selected_project_id = "' . $selected_project_id . '";
-var file_modified_time = ' . $file_modified_time . '; //for version control
+var selected_project_id = "' . (isset($selected_project_id) ? $selected_project_id : "") . '";
+var file_modified_time = ' . (isset($file_modified_time) ? $file_modified_time : "null") . '; //for version control
 var design_editor = ' . ($design_editor ? "true" : "false") . ';
 
 var get_workflow_file_url = \'' . $get_workflow_file_url . '\';
@@ -145,14 +166,13 @@ AddPresentationViewTaskPropertyObj.brokers_options = ' . json_encode(array("defa
 GetTemplateParamTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
 SetTemplateParamTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
 RenderTemplateRegionTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
-AddTemplateRegionBlockTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
-ResetRegionBlockJoinPointsTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSJoinPointLayer()')) . ';
 AddRegionBlockTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
+ResetRegionBlockJoinPointsTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSJoinPointLayer()')) . ';
 AddRegionHtmlTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
 IncludeBlockTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC')) . ';
-IncludeBlockTaskPropertyObj.projects_options = ' . json_encode($available_projects) . ';
+IncludeBlockTaskPropertyObj.projects_options = ' . (isset($available_projects) ? json_encode($available_projects) : "null") . ';
 GetBeanObjectTaskPropertyObj.phpframeworks_options = ' . json_encode($phpframeworks_options) . ';
-GetBeanObjectTaskPropertyObj.bean_names_options = ' . json_encode($bean_names_options) . ';
+GetBeanObjectTaskPropertyObj.bean_names_options = ' . (isset($bean_names_options) ? json_encode($bean_names_options) : "null") . ';
 
 CreateFormTaskPropertyObj.editor_ready_func = initLayoutUIEditorWidgetResourceOptions;
 CreateFormTaskPropertyObj.layout_ui_editor_menu_widgets_elm_selector = \'.ui-menu-widgets-backup\';
@@ -207,12 +227,12 @@ $head .= WorkFlowPresentationHandler::getDaoLibAndVendorBrokersHtml($choose_dao_
 $head .= WorkFlowPresentationHandler::getDataAccessBrokersHtml($data_access_brokers, $choose_bean_layer_files_from_file_manager_url);
 $head .= '</script>';
 
-$query_string = preg_replace("/dont_save_cookie=([^&])*/", "", str_replace(array("&edit_entity_type=advanced", "&edit_entity_type=simple"), "", $_SERVER["QUERY_STRING"]));
+$query_string = isset($_SERVER["QUERY_STRING"]) ? preg_replace("/dont_save_cookie=([^&])*/", "", str_replace(array("&edit_entity_type=advanced", "&edit_entity_type=simple"), "", $_SERVER["QUERY_STRING"])) : "";
 //echo "query_string:$query_string";die();
 //$project_with_auto_view = $view_file_exists = true; //for test only
 
 $main_content = '
-	<div class="top_bar ' . ($project_with_auto_view ? "project_with_auto_view" . ($view_file_exists ? " view_file_exists" : "") : "") . '">
+	<div class="top_bar ' . (!empty($project_with_auto_view) ? "project_with_auto_view" . (!empty($view_file_exists) ? " view_file_exists" : "") : "") . '">
 		<header>
 			<div class="title" title="' . $path . '">Edit Page (Code Workspace): ' . BreadCrumbsUIHandler::getFilePathBreadCrumbsHtml($file_path, $P) . '</div>
 			<ul>
@@ -223,7 +243,7 @@ $main_content = '
 		</header>
 	</div>';
 
-if ($obj_data) {
+if (!empty($obj_data)) {
 	//prepare file manager popups
 	$main_content .= WorkFlowPresentationHandler::getChooseFromFileManagerPopupHtml($bean_name, $bean_file_name, $choose_bean_layer_files_from_file_manager_url, $choose_dao_files_from_file_manager_url, $choose_lib_files_from_file_manager_url, $choose_vendor_files_from_file_manager_url, $db_brokers, $data_access_brokers, $ibatis_brokers, $hibernate_brokers, $business_logic_brokers, $presentation_brokers);
 	
@@ -236,12 +256,12 @@ if ($obj_data) {
 	
 	//prepare entity html
 	$view_file_tab = '';
-	if ($project_with_auto_view)
-		$view_file_tab = '<li id="view_tab" title="View"' . (!$view_file_exists ? ' class="hidden"' : '') . '><a href="#view" onClick="onClickViewTab(this, \'' . $edit_view_file_url . '\');return false;"><i class="icon view_tab"></i> View</a></li>
-		' . (!$view_file_exists ? '<li id="add_view_tab" title="Add View"><a href="#view" onClick="onClickNewViewTab(this, \'' . $add_view_file_url . '\');return false;"><i class="icon add"></i><i class="icon view_tab"></i> View</a></li>' : '');
+	if (!empty($project_with_auto_view))
+		$view_file_tab = '<li id="view_tab" title="View"' . (empty($view_file_exists) ? ' class="hidden"' : '') . '><a href="#view" onClick="onClickViewTab(this, \'' . $edit_view_file_url . '\');return false;"><i class="icon view_tab"></i> View</a></li>
+		' . (empty($view_file_exists) ? '<li id="add_view_tab" title="Add View"><a href="#view" onClick="onClickNewViewTab(this, \'' . $add_view_file_url . '\');return false;"><i class="icon add"></i><i class="icon view_tab"></i> View</a></li>' : '');
 	
 	$main_content .= '
-	<div class="entity_obj with_top_bar_tab ' . ($project_with_auto_view ? "project_with_auto_view" . ($view_file_exists ? " view_file_exists" : "") : "") . '">
+	<div class="entity_obj with_top_bar_tab ' . (!empty($project_with_auto_view) ? "project_with_auto_view" . (!empty($view_file_exists) ? " view_file_exists" : "") : "") . '">
 		<ul class="tabs tabs_transparent tabs_right tabs_icons">
 			<li id="visual_editor_tab" title="Design Editor"><a href="#code" onClick="onClickEntityLayoutEditorUIVisualTab(this);return false;"><i class="icon visual_editor_tab"></i> Design Editor</a></li>
 			<li id="code_editor_tab" title="Code Editor"><a href="#code" onClick="onClickEntityLayoutEditorUICodeTab(this);return false;"><i class="icon code_editor_tab"></i> Code Editor</a></li>
@@ -250,7 +270,7 @@ if ($obj_data) {
 		</ul>
 		
 		<div id="code" class="code_layout_ui_editor">
-			' . WorkFlowPresentationHandler::getCodeEditorHtml($obj_data["code"], array("save_func" => "saveEntity"), $ui_menu_widgets_html, $user_global_variables_file_path, $user_beans_folder_path, $PEVC, $UserAuthenticationHandler, $bean_name, $bean_file_name, $brokers_db_drivers, $choose_bean_layer_files_from_file_manager_url, $get_db_data_url, $create_page_presentation_uis_diagram_block_url, "chooseCodeLayoutUIEditorModuleBlockFromFileManagerTreeRightContainer", true) . '
+			' . WorkFlowPresentationHandler::getCodeEditorHtml(isset($obj_data["code"]) ? $obj_data["code"] : null, array("save_func" => "saveEntity"), $ui_menu_widgets_html, $user_global_variables_file_path, $user_beans_folder_path, $PEVC, $UserAuthenticationHandler, $bean_name, $bean_file_name, $brokers_db_drivers, $choose_bean_layer_files_from_file_manager_url, $get_db_data_url, $create_page_presentation_uis_diagram_block_url, "chooseCodeLayoutUIEditorModuleBlockFromFileManagerTreeRightContainer", true) . '
 		</div>
 	
 		<div id="ui">' . WorkFlowPresentationHandler::getTaskFlowContentHtml($WorkFlowUIHandler, array("save_func" => "saveEntity")) . '</div>

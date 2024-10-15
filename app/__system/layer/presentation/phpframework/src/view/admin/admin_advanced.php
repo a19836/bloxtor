@@ -3,7 +3,7 @@ include_once $EVC->getUtilPath("AdminMenuUIHandler");
 include_once $EVC->getUtilPath("TourGuideUIHandler");
 include_once $EVC->getUtilPath("HeatMapHandler");
 
-if (!$is_admin_ui_advanced_allowed) {
+if (empty($is_admin_ui_advanced_allowed)) {
 	echo '<script>
 		alert("You don\'t have permission to access this Workspace!");
 		document.location="' . $project_url_prefix . 'auth/logout";
@@ -11,9 +11,14 @@ if (!$is_admin_ui_advanced_allowed) {
 	die();
 }
 
+$filter_by_layout = isset($filter_by_layout) ? $filter_by_layout : null;
+$filter_by_layout_permission = isset($filter_by_layout_permission) ? $filter_by_layout_permission : null;
+$project = isset($project) ? $project : null;
+$presentation_projects_by_layer_label_and_folders = isset($presentation_projects_by_layer_label_and_folders) ? $presentation_projects_by_layer_label_and_folders : null;
+
 $logged_name = $UserAuthenticationHandler->auth["user_data"]["name"] ? $UserAuthenticationHandler->auth["user_data"]["name"] : $UserAuthenticationHandler->auth["user_data"]["username"];
 $logged_name_initials = explode(" ", $logged_name);
-$logged_name_initials = strtoupper(substr($logged_name_initials[0], 0, 1) . substr($logged_name_initials[1], 0, 1));
+$logged_name_initials = strtoupper(substr($logged_name_initials[0], 0, 1)) . (isset($logged_name_initials[1]) ? strtoupper(substr($logged_name_initials[1], 0, 1)) : "");
 
 $filter_by_layout_url_query = $filter_by_layout ? "&filter_by_layout=$filter_by_layout&filter_by_layout_permission=$filter_by_layout_permission" : "";
 $admin_home_project_page_url = $project_url_prefix . "admin/admin_home_project?filter_by_layout=#filter_by_layout#";
@@ -64,14 +69,14 @@ $main_content .= '
 								<a><i class="icon project_folder"></i> <span>' . $layer_label . '</span></a>
 								<ul>';
 		
-		$layer_bean_folder_name = $presentation_bean_folder_name_by_layer_label[$layer_label];
+		$layer_bean_folder_name = isset($presentation_bean_folder_name_by_layer_label[$layer_label]) ? $presentation_bean_folder_name_by_layer_label[$layer_label] : null;
 		$main_content .= getProjectsHtml($projs, $filter_by_layout, $layer_bean_folder_name . "/" . $EVC->getCommonProjectName());
 		
 		if (!$is_single_presentation_layer) //only show presentation layer if is not the only one.
 			$main_content .= '		</ul>
 							</li>';
 		
-		if ($filter_by_layout && $presentation_projects_by_layer_label[$layer_label][$filter_by_layout])
+		if ($filter_by_layout && !empty($presentation_projects_by_layer_label[$layer_label][$filter_by_layout]))
 			$selected_project_name = $presentation_projects_by_layer_label[$layer_label][$filter_by_layout];
 	}
 	
@@ -99,7 +104,7 @@ $main_content .= '
 			<li class="icon go_forward" onClick="goForward()" data-title="Go Forward"></li>
 			<li class="separator">|</li>
 			
-			' . ($is_flush_cache_allowed ? '<li class="icon flush_cache" data-title="Flush Cache" onClick="flushCacheFromAdmin(\'' . $project_url_prefix . 'admin/flush_cache\')"></li>' : '') . '
+			' . (!empty($is_flush_cache_allowed) ? '<li class="icon flush_cache" data-title="Flush Cache" onClick="flushCacheFromAdmin(\'' . $project_url_prefix . 'admin/flush_cache\')"></li>' : '') . '
 			<li class="icon refresh" onClick="refreshIframe()" data-title="Refresh"></li>
 			<li class="icon full_screen" data-title="Toggle Full Screen" onClick="toggleFullScreen(this)"></li>
 			<li class="separator">|</li>
@@ -151,10 +156,10 @@ $main_content .= '
 		
 $main_layers_properties = array();
 
-$main_content .= AdminMenuUIHandler::getLayersGroup("presentation_layers", $layers["presentation_layers"], $main_layers_properties, $project_url_prefix, $filter_by_layout, $filter_by_layout_permission);
-$main_content .= AdminMenuUIHandler::getLayersGroup("business_logic_layers", $layers["business_logic_layers"], $main_layers_properties, $project_url_prefix, $filter_by_layout, $filter_by_layout_permission);
-$main_content .= AdminMenuUIHandler::getLayersGroup("data_access_layers", $layers["data_access_layers"], $main_layers_properties, $project_url_prefix, $filter_by_layout, $filter_by_layout_permission);
-$main_content .= AdminMenuUIHandler::getLayersGroup("db_layers", $layers["db_layers"], $main_layers_properties, $project_url_prefix, $filter_by_layout, $filter_by_layout_permission);
+$main_content .= isset($layers["presentation_layers"]) ? AdminMenuUIHandler::getLayersGroup("presentation_layers", $layers["presentation_layers"], $main_layers_properties, $project_url_prefix, $filter_by_layout, $filter_by_layout_permission) : "";
+$main_content .= isset($layers["business_logic_layers"]) ? AdminMenuUIHandler::getLayersGroup("business_logic_layers", $layers["business_logic_layers"], $main_layers_properties, $project_url_prefix, $filter_by_layout, $filter_by_layout_permission) : "";
+$main_content .= isset($layers["data_access_layers"]) ? AdminMenuUIHandler::getLayersGroup("data_access_layers", $layers["data_access_layers"], $main_layers_properties, $project_url_prefix, $filter_by_layout, $filter_by_layout_permission) : "";
+$main_content .= isset($layers["db_layers"]) ? AdminMenuUIHandler::getLayersGroup("db_layers", $layers["db_layers"], $main_layers_properties, $project_url_prefix, $filter_by_layout, $filter_by_layout_permission) : "";
 
 $main_content .= '
 				<li class="main_node_library jstree-open" data-jstree=\'{"icon":"main_node main_node_library"}\'>

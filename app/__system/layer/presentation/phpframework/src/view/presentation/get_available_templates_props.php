@@ -1,4 +1,4 @@
 <?php
-$obj = $available_templates_props;
+$obj = isset($available_templates_props) ? $available_templates_props : null;
 $EVC->setTemplate("json");
 ?>

@@ -10,7 +10,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		
 		if ($props) {
 			$reserved_function_names = $WorkFlowTaskCodeParser->getReservedFunctionNames();
-			$func_name = $props["func_name"];
+			$func_name = isset($props["func_name"]) ? $props["func_name"] : null;
 			
 			if ($func_name && !in_array($func_name, $reserved_function_names)) {
 				$props["label"] = "Call " . self::prepareTaskPropertyValueLabelFromCodeStmt($func_name);
@@ -29,11 +29,11 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"func_name" => $raw_data["childs"]["properties"][0]["childs"]["func_name"][0]["value"],
-			"func_args" => $raw_data["childs"]["properties"][0]["childs"]["func_args"],
+			"func_name" => isset($raw_data["childs"]["properties"][0]["childs"]["func_name"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["func_name"][0]["value"] : null,
+			"func_args" => isset($raw_data["childs"]["properties"][0]["childs"]["func_args"]) ? $raw_data["childs"]["properties"][0]["childs"]["func_args"] : null,
 		);
 		
 		$properties = self::parseIncludeFileProperties($raw_data, $properties);
@@ -43,23 +43,25 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$var_name = self::getPropertiesResultVariableCode($properties);
-		$func = trim($properties["func_name"]);
+		$func = isset($properties["func_name"]) ? trim($properties["func_name"]) : "";
 		
 		$include_code = self::getPropertiesIncludeFileCode($properties);
 		
 		$code = $include_code ? $prefix_tab . $include_code . "\n" : "";
 		
 		if ($func) {
-			$args = self::getParametersString($properties["func_args"]);
+			$args = isset($properties["func_args"]) ? $properties["func_args"] : null;
+			$args = self::getParametersString($args);
 			$code .= $prefix_tab . $var_name . "$func($args);\n";
 		}
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

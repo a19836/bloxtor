@@ -4,7 +4,8 @@ include_once get_lib("org.phpframework.workflow.WorkFlowTaskCodeParser");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$method = $_POST["method"];
+$method = isset($_POST["method"]) ? $_POST["method"] : null;
+$properties = $tag = null;
 
 if ($method) {
 	$code = "<?php " . htmlspecialchars_decode($method) . " ?>";
@@ -17,11 +18,11 @@ if ($method) {
 	
 	$WorkFlowTaskCodeParser = new WorkFlowTaskCodeParser($WorkFlowTaskHandler);
 	$arr = $WorkFlowTaskCodeParser->getParsedCodeAsArray($code);
-	$arr = $arr["task"][0]["childs"];
-	$tag = $arr["tag"][0]["value"];
+	$arr = isset($arr["task"][0]["childs"]) ? $arr["task"][0]["childs"] : null;
+	$tag = isset($arr["tag"][0]["value"]) ? $arr["tag"][0]["value"] : null;
 	
 	if (in_array($tag, $allowed_tasks)) {
-		$properties = $arr["properties"][0]["childs"];
+		$properties = isset($arr["properties"][0]["childs"]) ? $arr["properties"][0]["childs"] : null;
 		$properties = MyXML::complexArrayToBasicArray($properties, array("lower_case_keys" => true));
 		
 		foreach ($properties as $k => $v) {

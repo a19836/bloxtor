@@ -1,0 +1,11 @@
+a:1:{s:22:"PHPParserNodeTraverser";a:1:{s:7:"methods";a:2:{s:23:"addNodeTraverserVisitor";a:20:{s:4:"name";s:23:"addNodeTraverserVisitor";s:16:"start_line_index";i:9;s:17:"start_token_index";i:13;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:12:"doc_comments";a:1:{i:0;s:91:"/**
+     * Adds a visitor.
+     *
+     * @param NodeVisitor $visitor Visitor to add
+     */";}s:25:"start_comments_line_index";i:4;s:26:"start_comments_token_index";i:11;s:23:"end_comments_line_index";i:4;s:24:"end_comments_token_index";i:11;s:22:"start_args_token_index";i:18;s:20:"end_args_token_index";i:22;s:9:"arguments";a:1:{s:30:"PhpParser\NodeVisitor $visitor";N;}s:25:"start_brackets_line_index";i:9;s:26:"start_brackets_token_index";i:24;s:23:"end_brackets_line_index";i:11;s:24:"end_brackets_token_index";i:34;s:14:"end_line_index";i:11;s:15:"end_token_index";i:34;}s:13:"nodesTraverse";a:20:{s:4:"name";s:13:"nodesTraverse";s:16:"start_line_index";i:20;s:17:"start_token_index";i:38;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:12:"doc_comments";a:1:{i:0;s:181:"/**
+     * Traverses an array of nodes using the registered visitors.
+     *
+     * @param Node[] $nodes Array of nodes
+     *
+     * @return Node[] Traversed array of nodes
+     */";}s:25:"start_comments_line_index";i:13;s:26:"start_comments_token_index";i:36;s:23:"end_comments_line_index";i:13;s:24:"end_comments_token_index";i:36;s:22:"start_args_token_index";i:43;s:20:"end_args_token_index";i:47;s:9:"arguments";a:1:{s:12:"array $nodes";N;}s:25:"start_brackets_line_index";i:20;s:26:"start_brackets_token_index";i:49;s:23:"end_brackets_line_index";i:22;s:24:"end_brackets_token_index";i:61;s:14:"end_line_index";i:22;s:15:"end_token_index";i:61;}}}}

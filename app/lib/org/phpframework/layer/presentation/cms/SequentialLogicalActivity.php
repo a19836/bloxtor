@@ -78,16 +78,16 @@ class SequentialLogicalActivity {
 		
 		//add default vars
 		$globals = array(
-			"EVC" => $EVC,
-			"_GET" => $_GET,
-			"_POST" => $_POST,
-			"_REQUEST" => $_REQUEST,
-			"_FILES" => $_FILES,
-			"_COOKIE" => $_COOKIE,
-			"_ENV" => $_ENV,
-			"_SERVER" => $_SERVER,
-			"_SESSION" => $_SESSION,
-			"GLOBALS" => $GLOBALS,
+			"EVC" => isset($EVC) ? $EVC : null,
+			"_GET" => isset($_GET) ? $_GET : null,
+			"_POST" => isset($_POST) ? $_POST : null,
+			"_REQUEST" => isset($_REQUEST) ? $_REQUEST : null,
+			"_FILES" => isset($_FILES) ? $_FILES : null,
+			"_COOKIE" => isset($_COOKIE) ? $_COOKIE : null,
+			"_ENV" => isset($_ENV) ? $_ENV : null,
+			"_SERVER" => isset($_SERVER) ? $_SERVER : null,
+			"_SESSION" => isset($_SESSION) ? $_SESSION : null,
+			"GLOBALS" => isset($GLOBALS) ? $GLOBALS : null,
 		);
 		$results = is_array($results) ? array_merge($globals, $results) : $globals; //results may overwrite the globals
 		
@@ -197,7 +197,13 @@ class SequentialLogicalActivity {
 	}
 	
 	private function prepareResultVarName(&$result_var_name, $results) {
-		$result_var_name = $result_var_name && substr($result_var_name, 0, 1) == '$' ? substr($result_var_name, 1) : $result_var_name;
+		if ($result_var_name) {
+			if (substr($result_var_name, 0, 1) == '$')
+				$result_var_name = substr($result_var_name, 1);
+			else if (substr($result_var_name, 0, 2) == '@$')
+				$result_var_name = substr($result_var_name, 2);
+		}
+		
 		$result_var_name = $this->getParsedValueFromData($result_var_name, $results);
 		$result_var_name = trim($result_var_name);
 		
@@ -217,7 +223,7 @@ class SequentialLogicalActivity {
 		}
 		//error_log("\nglobal_var_name:$global_var_name\nresult_var_name:$result_var_name", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 		
-		return $global_var_name ? $global_var_name : "results";
+		return !empty($global_var_name) ? $global_var_name : "results";
 	}
 	
 	private function executeCondition($condition_type, $condition_value, &$results) {
@@ -233,9 +239,9 @@ class SequentialLogicalActivity {
 					$var = trim($condition_value);
 					
 					if (!empty($var)) {
-						$var = substr($var, 0, 1) == '$' || substr($var, 0, 2) == '\\$' ? $var : '$' . $var;
+						$var = substr($var, 0, 1) == '$' || substr($var, 0, 2) == '@$' || substr($var, 0, 2) == '\\$' || substr($var, 0, 3) == '@\\$' ? $var : '$' . $var;
 						
-						$code = '<?= ' . $var . ' ? 1 : 0 ?>';
+						$code = '<?= !empty(' . $var . ') ? 1 : 0 ?>'; //empty here is very important, bc some var is '_POST', which will give a PHP Warning: Array to string conversion in...
 						$result = \PHPScriptHandler::parseContent($code, $results);
 						$status = !empty($result);
 					}
@@ -247,54 +253,58 @@ class SequentialLogicalActivity {
 				
 				case "execute_if_post_button": //Only execute if submit button was clicked via POST
 					$button_name = trim($condition_value);
-					$button_name = substr($button_name, 0, 1) == '$' ? substr($button_name, 1) : $button_name;
+					$button_name = substr($button_name, 0, 1) == '$' ? substr($button_name, 1) : (substr($button_name, 0, 2) == '@$' ? substr($button_name, 2) : $button_name);
 					
 					$status = $button_name ? !empty($_POST[$button_name]) : false;
 					break;
 				case "execute_if_not_post_button": //Only execute if submit button was not clicked via POST
 					$button_name = trim($condition_value);
-					$button_name = substr($button_name, 0, 1) == '$' ? substr($button_name, 1) : $button_name;
+					$button_name = substr($button_name, 0, 1) == '$' ? substr($button_name, 1) : (substr($button_name, 0, 2) == '@$' ? substr($button_name, 2) : $button_name);
 					
 					$status = $button_name ? empty($_POST[$button_name]) : true;
 					break;
 				
 				case "execute_if_get_button": //Only execute if submit button was clicked via GET
 					$button_name = trim($condition_value);
-					$button_name = substr($button_name, 0, 1) == '$' ? substr($button_name, 1) : $button_name;
+					$button_name = substr($button_name, 0, 1) == '$' ? substr($button_name, 1) : (substr($button_name, 0, 2) == '@$' ? substr($button_name, 2) : $button_name);
 					
 					$status = $button_name ? !empty($_GET[$button_name]) : false;
 					break;
 				case "execute_if_not_get_button": //Only execute if submit button was not clicked via GET
 					$button_name = trim($condition_value);
-					$button_name = substr($button_name, 0, 1) == '$' ? substr($button_name, 1) : $button_name;
+					$button_name = substr($button_name, 0, 1) == '$' ? substr($button_name, 1) : (substr($button_name, 0, 2) == '@$' ? substr($button_name, 2) : $button_name);
 					
 					$status = $button_name ? empty($_GET[$button_name]) : true;
 					break;
 				
 				case "execute_if_post_resource": //Only execute if resource is equal to via POST
 					$resource_name = trim($condition_value);
-					$resource_name = substr($resource_name, 0, 1) == '$' ? substr($resource_name, 1) : $resource_name;
+					$resource_name = substr($resource_name, 0, 1) == '$' ? substr($resource_name, 1) : (substr($resource_name, 0, 2) == '@$' ? substr($resource_name, 2) : $resource_name);
+					$post_resource = isset($_POST["resource"]) ? $_POST["resource"] : null;
 					
-					$status = $_POST["resource"] == $resource_name;
+					$status = $post_resource == $resource_name;
 					break;
 				case "execute_if_not_post_resource": //Only execute resource is different than via POST
 					$resource_name = trim($condition_value);
-					$resource_name = substr($resource_name, 0, 1) == '$' ? substr($resource_name, 1) : $resource_name;
+					$resource_name = substr($resource_name, 0, 1) == '$' ? substr($resource_name, 1) : (substr($resource_name, 0, 2) == '@$' ? substr($resource_name, 2) : $resource_name);
+					$post_resource = isset($_POST["resource"]) ? $_POST["resource"] : null;
 					
-					$status = $_POST["resource"] != $resource_name;
+					$status = $post_resource != $resource_name;
 					break;
 				
 				case "execute_if_get_resource": //Only execute if resource is equal to via GET
 					$resource_name = trim($condition_value);
-					$resource_name = substr($resource_name, 0, 1) == '$' ? substr($resource_name, 1) : $resource_name;
+					$resource_name = substr($resource_name, 0, 1) == '$' ? substr($resource_name, 1) : (substr($resource_name, 0, 2) == '@$' ? substr($resource_name, 2) : $resource_name);
+					$get_resource = isset($_GET["resource"]) ? $_GET["resource"] : null;
 					
-					$status = $_GET["resource"] == $resource_name;
+					$status = $get_resource == $resource_name;
 					break;
 				case "execute_if_not_get_resource": //Only execute resource is different than via GET
 					$resource_name = trim($condition_value);
-					$resource_name = substr($resource_name, 0, 1) == '$' ? substr($resource_name, 1) : $resource_name;
+					$resource_name = substr($resource_name, 0, 1) == '$' ? substr($resource_name, 1) : (substr($resource_name, 0, 2) == '@$' ? substr($resource_name, 2) : $resource_name);
+					$get_resource = isset($_GET["resource"]) ? $_GET["resource"] : null;
 					
-					$status = $_GET["resource"] != $resource_name;
+					$status = $get_resource != $resource_name;
 					break;
 				
 				case "execute_if_previous_action": //Only execute if previous action executed correctly
@@ -317,7 +327,7 @@ class SequentialLogicalActivity {
 					else if ((is_array($condition_value) || is_object($condition_value)) && !empty($condition_value))
 						$status = true;
 					else if (!empty($condition_value)) {
-						$code = '<?= ' . $condition_value . ' ?>';
+						$code = '<?= !empty(' . $condition_value . '); ?>'; //empty here is very important, bc some conditions are ilke '\$_POST', which will give a PHP Warning: Array to string conversion in...
 						$result = \PHPScriptHandler::parseContent($code, $results);
 						$status = !empty($result);
 					}
@@ -342,7 +352,7 @@ class SequentialLogicalActivity {
 			switch ($action_type) {
 				case "html":
 					if (is_array($action_value)) {
-						translateProjectFormSettings($EVC, $action_value);
+						@translateProjectFormSettings($EVC, $action_value);
 						$action_value["CacheHandler"] = $EVC->getPresentationLayer()->getPHPFrameWork()->getObject("UserCacheHandler");
 						
 						if (isset($action_value["ptl"]["code"])) {
@@ -509,7 +519,9 @@ class SequentialLogicalActivity {
 					$method_obj = $this->getParsedValueFromData($method_obj, $results);
 					
 					if ($method_obj) {
-						if ($action_value["broker_method_obj_type"] != "exists_hbn_var") {
+						$broker_method_obj_type = isset($action_value["broker_method_obj_type"]) ? $action_value["broker_method_obj_type"] : null;
+						
+						if ($broker_method_obj_type != "exists_hbn_var") {
 							if (method_exists($method_obj, "callObject")) {
 								$module_id = isset($action_value["module_id"]) ? $action_value["module_id"] : null;
 								$service_id = isset($action_value["service_id"]) ? $action_value["service_id"] : null;
@@ -581,7 +593,7 @@ class SequentialLogicalActivity {
 										$args[] = $v;
 								}
 								
-							$result = call_user_func_array(array($method_obj, $service_method), $args);
+							$result = @call_user_func_array(array($method_obj, $service_method), $args); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 							
 							if ($var_ids_name) //setting the ids from the hibernate insert method and adding them to the $results, so we can use them in other actions...
 								$results[$var_ids_name] = $ids;
@@ -647,8 +659,10 @@ class SequentialLogicalActivity {
 					$func_name = $this->getParsedValueFromData($func_name, $results);
 					$func_args = !empty($action_value["func_args"]) ? $this->getParsedValueFromData($action_value["func_args"], $results) : array();
 					
-					if ($func_name && function_exists($func_name))
-						$result = call_user_func_array($func_name, $func_args);
+					if ($func_name && function_exists($func_name)) {
+						$func_args = is_array($func_args) ? array_values($func_args) : $func_args;
+						$result = @call_user_func_array($func_name, $func_args); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
+					}
 					else
 						launch_exception(new \Exception('$func_name "' . $func_name . '" is not a function!'));
 					
@@ -683,14 +697,16 @@ class SequentialLogicalActivity {
 					$method_name = $this->getParsedValueFromData($method_name, $results);
 					$method_args = !empty($action_value["method_args"]) ? $this->getParsedValueFromData($action_value["method_args"], $results) : array();
 					
+					$method_args = is_array($method_args) ? array_values($method_args) : $method_args;
+					
 					if ($method_static) {
 						if (method_exists("\\" . $method_obj, $method_name)) 
-							$result = call_user_func_array("\\$method_obj::$method_name", $method_args);
+							$result = @call_user_func_array("\\$method_obj::$method_name", $method_args); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 						else
 							launch_exception(new \Exception("\\" . $method_obj . ' class must contain ' . $method_name . ' static method!'));
 					}
 					else if ($method_obj && method_exists($method_obj, $method_name))
-						$result = call_user_func_array(array($method_obj, $method_name), $method_args);
+						$result = @call_user_func_array(array($method_obj, $method_name), $method_args); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 					else
 						launch_exception(new \Exception('$action_value["method_obj"] cannot be null and must contain ' . $method_name . ' method!'));
 					
@@ -901,12 +917,12 @@ class SequentialLogicalActivity {
 				case "return_specific_record":
 					$records_variable_name = isset($action_value["records_variable_name"]) ? $action_value["records_variable_name"] : null;
 					$records_variable_name = $this->getParsedValueFromData($records_variable_name, $results);
-					$records = !is_array($records_variable_name) ? $results[$records_variable_name] : $records_variable_name;
+					$records = !is_array($records_variable_name) ? (isset($results[$records_variable_name]) ? $results[$records_variable_name] : null) : $records_variable_name;
 					
 					if (is_array($records)) {
 						$index_variable_name = isset($action_value["index_variable_name"]) ? $action_value["index_variable_name"] : null;
 						$index_variable_name = $this->getParsedValueFromData($index_variable_name, $results);
-						$current_index = is_numeric($index_variable_name) ? $index_variable_name : $_GET[$index_variable_name];
+						$current_index = is_numeric($index_variable_name) ? $index_variable_name : (isset($_GET[$index_variable_name]) ? $_GET[$index_variable_name] : null);
 						$current_index = is_numeric($current_index) ? $current_index : 0;
 						
 						if ($action_type == "return_previous_record")
@@ -914,7 +930,7 @@ class SequentialLogicalActivity {
 						else if ($action_type == "return_next_record")
 							$current_index++;
 						
-						$result = $records[$current_index];
+						$result = isset($records[$current_index]) ? $records[$current_index] : null;
 					}
 					
 					break;
@@ -932,9 +948,10 @@ class SequentialLogicalActivity {
 				case "code": //Only execute if code is invalid
 					$return_values = array();
 					$action_value = $this->getParsedValueFromData($action_value, $results, false);
+					
 					$result = \PHPScriptHandler::parseContent($action_value, $results, $return_values);
 					
-					if (isset($return_values[0]) && $return_values[0] !== false) //bc eval returns false on error and null if no return...
+					if (isset($return_values[0]) && (version_compare(PHP_VERSION, '7', '>=') || $return_values[0] !== false)) //bc eval returns false on error (if PHP <7) and null if no return...
 						$result = $return_values[0];
 					
 					break;
@@ -1163,7 +1180,7 @@ class SequentialLogicalActivity {
 														if ($i + 1 == $t)
 															$part_obj[$part] = $value;
 														else {
-															if (!is_array($part_obj[$part])) {
+															if (!isset($part_obj[$part]) || !is_array($part_obj[$part])) {
 																$part_obj[$part] = array();
 																$part_composite_keys_obj[$part] = array();
 															}
@@ -1327,7 +1344,7 @@ var myChart_' . $rand . ' = new Chart(canvas, {
 				
 				if (is_array($value) && is_array($composite_keys_obj) && array_key_exists($key, $composite_keys_obj)) {
 					$data_set_code .= '{';
-					$data_set_code .= $this->getDrawGraphDataSetCode($value[$key], $composite_keys_obj[$key], $results, $prefix . "    ");
+					$data_set_code .= $this->getDrawGraphDataSetCode(isset($value[$key]) ? $value[$key] : null, $composite_keys_obj[$key], $results, $prefix . "    ");
 					$data_set_code .= "\n$prefix}";
 				}
 				else {

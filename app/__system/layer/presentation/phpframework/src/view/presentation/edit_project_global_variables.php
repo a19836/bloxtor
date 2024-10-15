@@ -3,6 +3,11 @@ include $EVC->getUtilPath("WorkFlowUIHandler");
 include $EVC->getUtilPath("WorkFlowPresentationHandler");
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$layer_path = isset($layer_path) ? $layer_path : null;
+$selected_project_id = isset($selected_project_id) ? $selected_project_id : null;
+$P = isset($P) ? $P : null;
+$reserved_vars = isset($reserved_vars) ? $reserved_vars : null;
+
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 
 $WorkFlowUIHandler = new WorkFlowUIHandler($WorkFlowTaskHandler, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
@@ -54,13 +59,13 @@ $head .= '
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/presentation/choose_available_template.js"></script>
 
 <script>
-' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, $selected_db_vars) . '
+' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, isset($selected_db_vars) ? $selected_db_vars : null) . '
 var layer_type = "pres";
 var selected_project_id = "' . $selected_project_id . '";
-var file_modified_time = ' . $file_modified_time . '; //for version control
+var file_modified_time = ' . (isset($file_modified_time) ? $file_modified_time : "null") . '; //for version control
 var current_relative_file_path = "' . $path . '";
 var global_var_html = \'' . addcslashes(str_replace("\n", "", getGlobalVarHtml("", "")), "\\'") . '\';
-var is_code_valid= ' . ($is_code_valid ? 1 : 0) . ';
+var is_code_valid= ' . (!empty($is_code_valid) ? 1 : 0) . ';
 
 var get_workflow_file_url = \'' . $get_workflow_file_url . '\';
 var save_object_advanced_url = \'' . $save_advanced_url . '\';
@@ -72,7 +77,7 @@ var set_tmp_workflow_file_url = \'' . $set_tmp_workflow_file_url . '\';
 
 var edit_task_source_url = \'' . $edit_task_source_url . '\';
 
-var brokers_db_drivers = ' . json_encode($brokers_db_drivers) . ';
+var brokers_db_drivers = ' . (isset($brokers_db_drivers) ? json_encode($brokers_db_drivers) : "null") . ';
 
 ProgrammingTaskUtil.on_programming_task_edit_source_callback = onProgrammingTaskEditSource;
 ProgrammingTaskUtil.on_programming_task_choose_created_variable_callback = onProgrammingTaskChooseCreatedVariable;
@@ -94,7 +99,7 @@ FunctionUtilObj.create_workflow_file_from_code_url = create_workflow_file_from_c
 
 var install_template_url = \'' . $install_template_url . '\';
 var get_available_templates_props_url = \'' . $get_available_templates_props_url . '\';
-var available_templates_props = ' . json_encode($available_templates_props) . ';
+var available_templates_props = ' . (isset($available_templates_props) ? json_encode($available_templates_props) : null) . ';
 ';
 
 $head .= WorkFlowPresentationHandler::getPresentationBrokersHtml($presentation_brokers, $choose_bean_layer_files_from_file_manager_url, $get_file_properties_url, $upload_bean_layer_files_from_file_manager_url); //bc of the find variables in the workflow
@@ -123,7 +128,7 @@ $main_content .= '
 		<div class="code_menu top_bar_menu" onClick="openSubmenu(this)">
 			' . WorkFlowPresentationHandler::getCodeEditorMenuHtml(array("save_func" => "saveGlobalVariables")) . '
 		</div>
-		<textarea>' . htmlspecialchars($obj_data["code"], ENT_NOQUOTES) . '</textarea>
+		<textarea>' . (isset($obj_data["code"]) ? htmlspecialchars($obj_data["code"], ENT_NOQUOTES) : "") . '</textarea>
 	</div>
 
 	<div id="ui">' . WorkFlowPresentationHandler::getTaskFlowContentHtml($WorkFlowUIHandler, array("save_func" => "saveGlobalVariables")) . '</div>
@@ -146,7 +151,7 @@ $main_content .= '
 				<th class="var_desc"></th>
 			</tr>';
 
-if (is_array($vars)) 
+if (isset($vars) && is_array($vars)) 
 	foreach ($vars as $name => $value) 
 		$main_content .= getGlobalVarHtml($name, $value, !in_array($name, $reserved_vars));
 
@@ -175,9 +180,9 @@ function getGlobalVarHtml($var_name, $var_value, $is_name_editable = true) {
 		<td class="var_value">';
 	
 	if (is_array($var_value)) {
-		$items = $var_value["items"];
-		$value = $var_value["value"];
-		$force_raw_keys = $var_value["force_raw_keys"];
+		$items = isset($var_value["items"]) ? $var_value["items"] : null;
+		$value = isset($var_value["value"]) ? $var_value["value"] : null;
+		$force_raw_keys = isset($var_value["force_raw_keys"]) ? $var_value["force_raw_keys"] : null;
 		$exists = false;
 		
 		$html .= '<select class="var_value" name="vars_value[]" allownull="true" onChange="onChangeSimpleFormGlobalVarSelect(this)">';

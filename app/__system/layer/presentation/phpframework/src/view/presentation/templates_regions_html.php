@@ -29,7 +29,7 @@ $head = '
 $main_content = '<div class="title' . ($popup ? " inside_popup_title" : "") . '">Templates Regions Html</div>
 <div class="templates_regions_html_obj' . ($popup ? " in_popup" : "") . '">';
 
-if ($available_templates_regions) {
+if (!empty($available_templates_regions)) {
 	$main_content .= '<ul>';
 	
 	foreach ($available_templates_regions as $template => $regions) {
@@ -47,9 +47,9 @@ if ($available_templates_regions) {
 				<ul class="content">';
 			
 			foreach ($region_samples as $sample_name => $sample_data) {
-				$sample_path = $sample_data["sample_path"];
-				$template_path = $sample_data["template_path"];
-				$html = $sample_data["html"];
+				$sample_path = isset($sample_data["sample_path"]) ? $sample_data["sample_path"] : null;
+				$template_path = isset($sample_data["template_path"]) ? $sample_data["template_path"] : null;
+				$html = isset($sample_data["html"]) ? $sample_data["html"] : null;
 				
 				$sample_url = $project_url_prefix . "phpframework/presentation/template_region_sample?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$template_path&region=$region_name&sample_path=$sample_path";
 				

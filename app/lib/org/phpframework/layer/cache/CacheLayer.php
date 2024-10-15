@@ -674,15 +674,19 @@ abstract class CacheLayer {
 			
 			$double_quotes_open = false;
 			$single_quotes_open = false;
+			$l = strlen($key);
 			
-			for ($i = $start + 2; $i < strlen($key); $i++) {
+			if (is_numeric($key))
+				$key = (string)$key; //bc of php > 7.4 if we use $var[$i] gives an warning
+			
+			for ($i = $start + 2; $i < $l; $i++) {
 				if ($key[$i] == "'" && !$double_quotes_open) {
 					$single_quotes_open = !$single_quotes_open;
 				}
 				elseif ($key[$i] == '"' && !$single_quotes_open) {
 					$double_quotes_open = !$double_quotes_open;
 				}
-				elseif ($key[$i] == "?" && $key[$i + 1] == ">" && !$double_quotes_open && !$single_quotes_open) {
+				elseif ($key[$i] == "?" && $i + 1 < $l && $key[$i + 1] == ">" && !$double_quotes_open && !$single_quotes_open) {
 					$start = strpos($key, "<?", $i + 2);
 					$start = $start === false ? strlen($key) : $start;
 				
@@ -702,6 +706,8 @@ abstract class CacheLayer {
 	
 	private function executeScript($script, &$input, &$output = false) {
 		if ($script) {
+			$status = null;
+			
 			try {
 				$status = eval($script);
 			} catch(Exception $e) {
@@ -715,7 +721,10 @@ abstract class CacheLayer {
 	
 	public function parseCacheFile($module_id, $cache_file_path) {
 		$objs = $this->bean_objs;
-		$external_vars = array("objs" => $objs, "vars" => $objs["vars"]);
+		$external_vars = array(
+			"objs" => $objs, 
+			"vars" => isset($objs["vars"]) ? $objs["vars"] : null
+		);
 	
 		$BeanSettingsFileFactory = new BeanSettingsFileFactory();
 		$beans = $BeanSettingsFileFactory->getSettingsFromFile($cache_file_path, $external_vars);

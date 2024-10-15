@@ -8,6 +8,7 @@ if (!empty($_POST["acceptance"])) {
 	$continue = true;
 	
 	if (!empty($_POST["dependencies"])) {
+		$error_message = isset($error_message) ? $error_message : null;
 		$zips = DependenciesInstallationHandler::getDependencyZipFilesToInstall();
 		$continue = DependenciesInstallationHandler::installDependencies($dependencies_repo_url, $zips, $error_message);
 		

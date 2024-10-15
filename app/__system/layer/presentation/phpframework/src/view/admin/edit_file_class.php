@@ -2,8 +2,19 @@
 include_once $EVC->getUtilPath("WorkFlowPresentationHandler");
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$selected_project_id = isset($selected_project_id) ? $selected_project_id : null;
+$file_path = isset($file_path) ? $file_path : null;
+$obj = isset($obj) ? $obj : null;
+$is_class_equal_to_file_name = isset($is_class_equal_to_file_name) ? $is_class_equal_to_file_name : null;
+$db_brokers = isset($db_brokers) ? $db_brokers : null;
+$data_access_brokers = isset($data_access_brokers) ? $data_access_brokers : null;
+$ibatis_brokers = isset($ibatis_brokers) ? $ibatis_brokers : null;
+$hibernate_brokers = isset($hibernate_brokers) ? $hibernate_brokers : null;
+$business_logic_brokers = isset($business_logic_brokers) ? $business_logic_brokers : null;
+$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
-$is_obj_valid = $obj_data || !$class_id;
+$is_obj_valid = !empty($obj_data) || !$class_id;
 
 $head = '
 	<!-- Add MD5 JS File -->
@@ -43,6 +54,7 @@ $head = '
 if ($is_obj_valid) {
 	$choose_bean_layer_files_from_file_manager_url = $project_url_prefix . "admin/get_sub_files?bean_name=#bean_name#&bean_file_name=#bean_file_name#$filter_by_layout_url_query&path=#path#";
 	$upload_bean_layer_files_from_file_manager_url = $project_url_prefix . "admin/upload_file?bean_name=#bean_name#&bean_file_name=#bean_file_name#$filter_by_layout_url_query&path=#path#";
+$get_file_properties_url = $project_url_prefix . "phpframework/admin/get_file_properties?bean_name=#bean_name#&bean_file_name=#bean_file_name#&path=#path#&class_name=#class_name#&type=#type#";
 	$choose_dao_files_from_file_manager_url = $project_url_prefix . "admin/get_sub_files?item_type=dao&path=#path#";
 	$choose_lib_files_from_file_manager_url = $project_url_prefix . "admin/get_sub_files?item_type=lib&path=#path#";
 	$choose_vendor_files_from_file_manager_url = $project_url_prefix . "admin/get_sub_files?item_type=vendor&path=#path#";
@@ -94,14 +106,17 @@ if ($is_obj_valid) {
 	$get_layer_sub_files_url = str_replace("#bean_name#", $bean_name, str_replace("#bean_file_name#", $bean_file_name, $choose_bean_layer_files_from_file_manager_url));
 	$main_content .= WorkFlowPHPFileHandler::getChoosePHPClassFromFileManagerHtml($get_layer_sub_files_url);
 	
-	$extends = is_array($obj_data["extends"]) ? implode(", ", $obj_data["extends"]) : $obj_data["extends"];
-	$implements = is_array($obj_data["implements"]) ? implode(", ", $obj_data["implements"]) : $obj_data["implements"];
+	$extends = isset($obj_data["extends"]) ? $obj_data["extends"] : null;
+	$extends = is_array($extends) ? implode(", ", $extends) : $extends;
+	
+	$implements = isset($obj_data["implements"]) ? $obj_data["implements"] : null;
+	$implements = is_array($implements) ? implode(", ", $implements) : $implements;
 	
 	$main_content .= '
 	<div class="includes_obj file_class_obj with_top_bar_section' . ($popup ? " in_popup" : "") . '">
 		<div class="name">
 			<label>Name:</label>
-			<input type="text" value="' . $obj_data["name"] . '" placeHolder="Class Name" title="Class Name" onFocus="disableTemporaryAutoSaveOnInputFocus(this)" onBlur="undoDisableTemporaryAutoSaveOnInputBlur(this)" />
+			<input type="text" value="' . (isset($obj_data["name"]) ? $obj_data["name"] : "") . '" placeHolder="Class Name" title="Class Name" onFocus="disableTemporaryAutoSaveOnInputFocus(this)" onBlur="undoDisableTemporaryAutoSaveOnInputBlur(this)" />
 		</div>
 		<div class="extend">
 			<label>Extends:</label>
@@ -115,23 +130,23 @@ if ($is_obj_valid) {
 		</div>
 		<div class="abstract">
 			<label>Is Abstract:</label>
-			<input type="checkbox" value="1" ' . ($obj_data["abstract"] ? "checked" : "") . ' />
+			<input type="checkbox" value="1" ' . (!empty($obj_data["abstract"]) ? "checked" : "") . ' />
 		</div>
 		<div class="visibility">
 			<label>Is Visible:</label>
-			<input type="checkbox" value="1" ' . (!$is_hidden ? "checked" : "") . ' />
+			<input type="checkbox" value="1" ' . (empty($is_hidden) ? "checked" : "") . ' />
 			<span class="icon info" title="Hide this class from other projects or direct access">Info</span>
 		</div>
 		<div class="namespace">
 			<label>Namespace:</label>
-			<input type="text" value="' . $obj_data["namespace"] . '" placeHolder="Some\Namespace\Here\If\Apply" />
+			<input type="text" value="' . (isset($obj_data["namespace"]) ? $obj_data["namespace"] : "") . '" placeHolder="Some\Namespace\Here\If\Apply" />
 		</div>
 		<div class="uses">
 			<label>Uses:</label>
 			<span class="icon add" onClick="addNewUse(this)" title="Add Use">Add</span>
 			<div class="fields">';
 
-	$uses = $obj_data["uses"];
+	$uses = isset($obj_data["uses"]) ? $obj_data["uses"] : null;
 	if ($uses)
 		foreach ($uses as $use => $alias) 
 			$main_content .= WorkFlowPHPFileHandler::getUseHTML($use, $alias);
@@ -144,13 +159,13 @@ if ($is_obj_valid) {
 			<span class="icon add" onClick="addNewInclude(this)" title="Add Include">Add</span>
 			<div class="fields">';
 
-	$includes = $obj_data["includes"];
+	$includes = isset($obj_data["includes"]) ? $obj_data["includes"] : null;
 	if ($includes) {
 		$t = count($includes);
 		for ($i = 0; $i < $t; $i++) {
 			$include = $includes[$i];
 			
-			if ($include && $include[0])
+			if ($include && !empty($include[0]))
 				$main_content .= WorkFlowPHPFileHandler::getInludeHTML($include);
 		}
 	}
@@ -175,7 +190,7 @@ if ($is_obj_valid) {
 				</thead>
 				<tbody class="fields">';
 
-	$properties = $obj_data["properties"];
+	$properties = isset($obj_data["properties"]) ? $obj_data["properties"] : null;
 	if ($properties) {
 		$t = count($properties);
 		for ($i = 0; $i < $t; $i++) {
@@ -191,7 +206,7 @@ if ($is_obj_valid) {
 		</div>
 		<div class="comments">
 			<label>Comments:</label>
-			<textarea>' . htmlspecialchars($comments, ENT_NOQUOTES) . '</textarea>
+			<textarea>' . (isset($comments) ? htmlspecialchars($comments, ENT_NOQUOTES) : "") . '</textarea>
 		</div>
 	</div>';
 }

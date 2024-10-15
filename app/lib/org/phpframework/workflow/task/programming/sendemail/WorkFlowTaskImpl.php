@@ -8,21 +8,22 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	public function createTaskPropertiesFromCodeStmt($stmt, $WorkFlowTaskCodeParser, &$exits = null, &$inner_tasks = null) {
 		$props = $WorkFlowTaskCodeParser->getObjectMethodProps($stmt);
 		
-		if ($props && $props["method_name"] && $props["method_static"] && $props["method_obj"] == "SendEmailHandler") {
+		if ($props && !empty($props["method_name"]) && !empty($props["method_static"]) && isset($props["method_obj"]) && $props["method_obj"] == "SendEmailHandler") {
 			$method_name = $props["method_name"];
 			
 			if ($method_name == "sendEmail" || $method_name == "sendSMTPEmail") {
-				$args = $props["method_args"];
+				$args = isset($props["method_args"]) ? $props["method_args"] : null;
 				
 				$props["method"] = $props["method_obj"] . "::$method_name";
 				
-				$settings = $args[0]["value"];
-				$settings_type = $args[0]["type"];
+				$settings = isset($args[0]["value"]) ? $args[0]["value"] : null;
+				$settings_type = isset($args[0]["type"]) ? $args[0]["type"] : null;
 				
 				if ($settings_type == "array") {
-					$param_stmts = $WorkFlowTaskCodeParser->getPHPParserEmulative()->parse("<?php\n" . $settings . "\n?>");
+					$param_stmts = $WorkFlowTaskCodeParser->getPHPMultipleParser()->parse("<?php\n" . $settings . "\n?>");
 					//print_r($param_stmts);
-					$settings = $WorkFlowTaskCodeParser->getArrayItems($param_stmts[0]->items);
+					$items = $WorkFlowTaskCodeParser->getStmtArrayItems($param_stmts[0]);
+					$settings = $WorkFlowTaskCodeParser->getArrayItems($items);
 				}
 				
 				$props["settings"] = $settings;
@@ -47,19 +48,19 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
-		$settings_type = $raw_data["childs"]["properties"][0]["childs"]["settings_type"][0]["value"];
+		$settings_type = isset($raw_data["childs"]["properties"][0]["childs"]["settings_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["settings_type"][0]["value"] : null;
 		if ($settings_type == "array") {
-			$settings = $raw_data["childs"]["properties"][0]["childs"]["settings"];
+			$settings = isset($raw_data["childs"]["properties"][0]["childs"]["settings"]) ? $raw_data["childs"]["properties"][0]["childs"]["settings"] : null;
 			$settings = self::parseArrayItems($settings);
 		}
 		else {
-			$settings = $raw_data["childs"]["properties"][0]["childs"]["settings"][0]["value"];
+			$settings = isset($raw_data["childs"]["properties"][0]["childs"]["settings"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["settings"][0]["value"] : null;
 		}
 		
 		$properties = array(
-			"method" => $raw_data["childs"]["properties"][0]["childs"]["method"][0]["value"],
+			"method" => isset($raw_data["childs"]["properties"][0]["childs"]["method"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["method"][0]["value"] : null,
 			"settings" => $settings,
 			"settings_type" => $settings_type,
 		);
@@ -70,27 +71,30 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$var_name = self::getPropertiesResultVariableCode($properties);
-		$method = $properties["method"];
+		$method = isset($properties["method"]) ? $properties["method"] : null;
 		$code = "";
 		
 		if ($method) {
-			$settings_type = $properties["settings_type"];
+			$settings_type = isset($properties["settings_type"]) ? $properties["settings_type"] : null;
+			$settings = isset($properties["settings"]) ? $properties["settings"] : null;
+			
 			if ($settings_type == "array")
-				$settings = self::getArrayString($properties["settings"]);
+				$settings = self::getArrayString($settings);
 			else
-				$settings = self::getVariableValueCode($properties["settings"], $settings_type);
+				$settings = self::getVariableValueCode($settings, $settings_type);
 			
 			$code = $prefix_tab . $var_name . "$method(";
 			$code .= $settings ? $settings : "null";
 			$code .= ");\n";
 		}
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

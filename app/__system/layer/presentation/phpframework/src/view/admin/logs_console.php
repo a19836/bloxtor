@@ -1,4 +1,8 @@
 <?php
+$file_created_time = isset($file_created_time) ? $file_created_time : null;
+$file_pointer = isset($file_pointer) ? $file_pointer : null;
+$output = isset($output) ? $output : null;
+
 $head = '
 <!-- Add Fontawsome Icons CSS -->
 <link rel="stylesheet" href="' . $project_common_url_prefix . 'vendor/fontawesome/css/all.min.css">

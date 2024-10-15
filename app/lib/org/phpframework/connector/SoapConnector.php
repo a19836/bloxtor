@@ -7,7 +7,7 @@ class SoapConnector {
 	
 	public static function connect($data, $result_type = null) {
 		$SoapConnector = new SoapConnector();
-		return $data["type"] == "callSoapClient" ? $SoapConnector->callSoapClient($data) : $SoapConnector->callSoapFunction($data, $result_type);
+		return isset($data["type"]) && $data["type"] == "callSoapClient" ? $SoapConnector->callSoapClient($data) : $SoapConnector->callSoapFunction($data, $result_type);
 	}
 	
 	public function callSoapFunction($data, $result_type = null) {

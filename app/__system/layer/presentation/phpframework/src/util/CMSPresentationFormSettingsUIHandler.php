@@ -126,7 +126,7 @@ class CMSPresentationFormSettingsUIHandler {
 							
 							if (!empty($tables[$task_table_name]))
 								foreach ($tables[$task_table_name] as $attr_name => $attr) 
-									if ($attr["primary_key"]) {
+									if (!empty($attr["primary_key"])) {
 										$pks[] = $attr_name;
 										
 										if (WorkFlowDataAccessHandler::isAutoIncrementedAttribute($attr))
@@ -187,7 +187,7 @@ class CMSPresentationFormSettingsUIHandler {
 									"action_value" => array(
 										"all_permissions_checked" => 0,
 										"entity_path" => "\"\" . \$entity_path . \"\"",
-										"logged_user_id" => "\"\" . \$GLOBALS[\"logged_user_id\"] . \"\"",
+										"logged_user_id" => "\"\" . (isset(\$GLOBALS[\"logged_user_id\"]) ? \$GLOBALS[\"logged_user_id\"] : null) . \"\"",
 										"users_perms" => $access_permissions
 									)
 								);
@@ -241,7 +241,7 @@ class CMSPresentationFormSettingsUIHandler {
 											"action_value" => array(
 												"all_permissions_checked" => 0,
 												"entity_path" => "\"\" . \$entity_path . \"\"",
-												"logged_user_id" => "\"\" . \$GLOBALS[\"logged_user_id\"] . \"\"",
+												"logged_user_id" => "\"\" . (isset(\$GLOBALS[\"logged_user_id\"]) ? \$GLOBALS[\"logged_user_id\"] : null) . \"\"",
 												"users_perms" => $write_permissions
 											)
 										);
@@ -595,7 +595,7 @@ class CMSPresentationFormSettingsUIHandler {
 													"action_value" => array(
 														"all_permissions_checked" => 0,
 														"entity_path" => "\"\" . \$entity_path . \"\"",
-														"logged_user_id" => "\"\" . \$GLOBALS[\"logged_user_id\"] . \"\"",
+														"logged_user_id" => "\"\" . (isset(\$GLOBALS[\"logged_user_id\"]) ? \$GLOBALS[\"logged_user_id\"] : null) . \"\"",
 														"users_perms" => $delete_permissions
 													)
 												);
@@ -1325,7 +1325,7 @@ class CMSPresentationFormSettingsUIHandler {
 											"action_value" => array(
 												"all_permissions_checked" => 0,
 												"entity_path" => "\"\" . \$entity_path . \"\"",
-												"logged_user_id" => "\"\" . \$GLOBALS[\"logged_user_id\"] . \"\"",
+												"logged_user_id" => "\"\" . (isset(\$GLOBALS[\"logged_user_id\"]) ? \$GLOBALS[\"logged_user_id\"] : null) . \"\"",
 												"users_perms" => $write_permissions
 											)
 										);
@@ -1339,7 +1339,7 @@ class CMSPresentationFormSettingsUIHandler {
 											"action_value" => array(
 												"all_permissions_checked" => 0,
 												"entity_path" => "\"\" . \$entity_path . \"\"",
-												"logged_user_id" => "\"\" . \$GLOBALS[\"logged_user_id\"] . \"\"",
+												"logged_user_id" => "\"\" . (isset(\$GLOBALS[\"logged_user_id\"]) ? \$GLOBALS[\"logged_user_id\"] : null) . \"\"",
 												"users_perms" => $delete_permissions
 											)
 										);
@@ -1480,12 +1480,12 @@ class CMSPresentationFormSettingsUIHandler {
 										if (!$is_ajax && $write_permissions)
 											$table_actions_settings[] = array(
 												"result_var_name" => "",
-												"action_type" => $insert_error_action_type,
+												"action_type" => isset($insert_error_action_type) ? $insert_error_action_type : null,
 												"condition_type" => "execute_if_condition",
 												"condition_value" => "\\\$_POST[\"{$tn}_add\"] && !\\\$has_write_permission", // \\\$ is very important, otherwise this will get converted to an invalid php string. Addiciotnally we want the system to execute this only when it gets to this condition, since there could be previous code that changes these variables dynamically.
 												"action_value" => array(
 													"message" => "Error: You do NOT have permission to insert this $tn_label!",
-													"redirect_url" => $insert_error_msg_redirect_url
+													"redirect_url" => isset($insert_error_msg_redirect_url) ? $insert_error_msg_redirect_url : null
 												)
 											);
 									}
@@ -1649,12 +1649,12 @@ class CMSPresentationFormSettingsUIHandler {
 										if (!$is_ajax && $write_permissions)
 											$table_actions_settings[] = array(
 												"result_var_name" => "",
-												"action_type" => $update_error_action_type,
+												"action_type" => isset($update_error_action_type) ? $update_error_action_type : null,
 												"condition_type" => "execute_if_condition",
 												"condition_value" => "\\\$_POST[\"{$tn}_save\"] && !\\\$has_write_permission", // \\\$ is very important, otherwise this will get converted to an invalid php string. Addiciotnally we want the system to execute this only when it gets to this condition, since there could be previous code that changes these variables dynamically.
 												"action_value" => array(
 													"message" => "Error: You do NOT have permission to update this $tn_label!",
-													"redirect_url" => $update_error_msg_redirect_url
+													"redirect_url" => isset($update_error_msg_redirect_url) ? $update_error_msg_redirect_url : null
 												)
 											);
 									}
@@ -1785,12 +1785,12 @@ class CMSPresentationFormSettingsUIHandler {
 										if (!$is_ajax && $delete_permissions)
 											$table_actions_settings[] = array(
 												"result_var_name" => "",
-												"action_type" => $delete_error_action_type,
+												"action_type" => isset($delete_error_action_type) ? $delete_error_action_type : null,
 												"condition_type" => "execute_if_condition",
 												"condition_value" => "\\\$_POST[\"{$tn}_delete\"] && !\\\$has_delete_permission", // \\\$ is very important, otherwise this will get converted to an invalid php string. Addiciotnally we want the system to execute this only when it gets to this condition, since there could be previous code that changes these variables dynamically.
 												"action_value" => array(
 													"message" => "Error: You do NOT have permission to delete this $tn_label!",
-													"redirect_url" => $delete_error_msg_redirect_url
+													"redirect_url" => isset($delete_error_msg_redirect_url) ? $delete_error_msg_redirect_url : null
 												)
 											);
 									}
@@ -2155,12 +2155,12 @@ class CMSPresentationFormSettingsUIHandler {
 										$on_click_js_func = isset($pagination["on_click_js_func"]) ? $pagination["on_click_js_func"] : null;
 										
 										if ($on_click_js_func) {
-											$prev_on_click = "return $on_click_js_func('{$tn_plural}_record_index', '<ptl:echo \\\$input[\"{$tn_plural}_record_index\"] &gt; $default_page_attr_value ? \\\$input[\"{$tn_plural}_record_index\"] - 1 : $default_page_attr_value/>', 'prev', '$panel_id', this);";
-											$next_on_click = "return $on_click_js_func('{$tn_plural}_record_index', '<ptl:echo (\\\$input[\"{$tn_plural}_record_index\"] + 1)/>', 'next', '$panel_id', this);";
+											$prev_on_click = "return $on_click_js_func('{$tn_plural}_record_index', '<ptl:echo @\\\$input[\"{$tn_plural}_record_index\"] &gt; $default_page_attr_value ? \\\$input[\"{$tn_plural}_record_index\"] - 1 : $default_page_attr_value/>', 'prev', '$panel_id', this);";
+											$next_on_click = "return $on_click_js_func('{$tn_plural}_record_index', '<ptl:echo (@\\\$input[\"{$tn_plural}_record_index\"] + 1)/>', 'next', '$panel_id', this);";
 										}
 										else {
-											$prev_on_click = "return loadPageWithNewNavigation('{$tn_plural}_record_index', '<ptl:echo \\\$input[\"{$tn_plural}_record_index\"] &gt; $default_page_attr_value ? \\\$input[\"{$tn_plural}_record_index\"] - 1 : $default_page_attr_value/>');";
-											$next_on_click = "return loadPageWithNewNavigation('{$tn_plural}_record_index', '<ptl:echo (\\\$input[\"{$tn_plural}_record_index\"] + 1)/>');";
+											$prev_on_click = "return loadPageWithNewNavigation('{$tn_plural}_record_index', '<ptl:echo @\\\$input[\"{$tn_plural}_record_index\"] &gt; $default_page_attr_value ? \\\$input[\"{$tn_plural}_record_index\"] - 1 : $default_page_attr_value/>');";
+											$next_on_click = "return loadPageWithNewNavigation('{$tn_plural}_record_index', '<ptl:echo (@\\\$input[\"{$tn_plural}_record_index\"] + 1)/>');";
 										}
 										
 										$table_actions_settings[] = array(
@@ -2173,10 +2173,10 @@ class CMSPresentationFormSettingsUIHandler {
 													"code" => "
 <div class=\"buttons pagination-buttons\">
 	<div class=\"button\">
-		<input type=\"button\" <ptl:echo \\\$input[\"{$tn_plural}_record_index\"] &gt; $default_page_attr_value ? '' : 'class=\"button-hidden\"'/> value=\"Go to Previous Record\" onClick=\"$prev_on_click\" />
+		<input type=\"button\" <ptl:echo @\\\$input[\"{$tn_plural}_record_index\"] &gt; $default_page_attr_value ? '' : 'class=\"button-hidden\"'/> value=\"Go to Previous Record\" onClick=\"$prev_on_click\" />
 	</div>
 	<div class=\"button\">
-		<input type=\"button\" <ptl:echo \\\$input[\"{$tn_plural}_record_index\"] + 1 &gt;= \\\$input['{$tn_plural}_count'] ? 'class=\"button-hidden\"' : '' /> value=\"Go to Next Record\" onClick=\"$next_on_click\" />
+		<input type=\"button\" <ptl:echo @\\\$input[\"{$tn_plural}_record_index\"] + 1 &gt;= \\\$input['{$tn_plural}_count'] ? 'class=\"button-hidden\"' : '' /> value=\"Go to Next Record\" onClick=\"$next_on_click\" />
 	</div>
 </div>", 
 													/*"input_data_var_name" => "", 
@@ -2503,7 +2503,7 @@ return $code;
 						"action_value" => array(
 							"ptl" => array(
 								"code" => "<script>
-var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
+var $var_name = <ptl:echo isset(\\\$$var_name) ? json_encode(\\\$$var_name) : 'null' />;
 </script>", 
 							)
 						)
@@ -2524,7 +2524,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		}
 	}
 	
-	private function findTableAttributeForeignKey($tables, $table_name, $attribute_name, $fk_table_name) {
+	private static function findTableAttributeForeignKey($tables, $table_name, $attribute_name, $fk_table_name) {
 		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
 		$attr = isset($attrs[$attribute_name]) ? $attrs[$attribute_name] : null;
 		$fk_attribute = null;
@@ -2549,7 +2549,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		return $fk_attribute;
 	}
 	
-	private function getTablesInnerJoinKeys($tables, $table_name, $table_parent) {
+	private static function getTablesInnerJoinKeys($tables, $table_name, $table_parent) {
 		$keys = array();
 		
 		if ($table_parent) {
@@ -2662,7 +2662,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 						"key" => $k,
 						"key_type" => is_numeric($k) ? "" : "string",
 						"value" => $v,
-						"value_type" => $is_code_type ? "" : (substr($v, 0, 1) == '$' ? "variable" : "string"),
+						"value_type" => $is_code_type ? "" : (substr($v, 0, 1) == '$' || substr($v, 0, 2) == '@$' ? "variable" : "string"),
 					);
 				}
 		
@@ -2757,7 +2757,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			}
 			else if ($allow_null && ($is_numeric_type || ObjTypeHandler::isDBTypeDate($type))) {
 				if ($is_db_primitive_action) {
-					$code .= 'if (is_numeric(' . $var_prefix . '["' . $attr_name . '"]) && is_string(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] += 0;' . "\n"; //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
+					$code .= 'if (isset(' . $var_prefix . '["' . $attr_name . '"]) && is_numeric(' . $var_prefix . '["' . $attr_name . '"]) && is_string(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] += 0;' . "\n"; //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
 					
 					$default = isset($attr["default"]) && strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : '"DEFAULT"';
 					
@@ -2770,7 +2770,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 					else if ( (!isset($attr["default"]) || !strlen($attr["default"])) && ObjTypeHandler::isDBTypeDate($type))
 						$default = $is_ibatis ? '"null"' : 'null';
 					
-					$code .= 'else if (!strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n\n";
+					$code .= 'else if (!isset(' . $var_prefix . '["' . $attr_name . '"]) || !strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n\n";
 				}
 				else {
 					$default = 'null';
@@ -2778,21 +2778,21 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 					if ($is_logged_user_id_attribute)
 						$default .= '/* REPLACE THIS BY THE LOGGED USER ID */';
 					
-					$code .= 'if (!strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
+					$code .= 'if (!isset(' . $var_prefix . '["' . $attr_name . '"]) || !strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
 				}
 			}
 			else if ($is_db_primitive_action && $is_numeric_type) { //for the cases with a checkbox where the value doesn't exist and is numeric
-				$code .= 'if (is_numeric(' . $var_prefix . '["' . $attr_name . '"]) && is_string(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] += 0;' . "\n"; //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
+				$code .= 'if (isset(' . $var_prefix . '["' . $attr_name . '"]) && is_numeric(' . $var_prefix . '["' . $attr_name . '"]) && is_string(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] += 0;' . "\n"; //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
 				
 				if (!empty($attr["primary_key"]))
-					$code .= 'else if (!is_numeric(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] = "null";' . "\n"; //This is on purpose so it can return empty records or don't do nothing in the DB, bc if the user wrote a pk with a non numeric value, it means is trying to do some hack.
+					$code .= 'else if (!isset(' . $var_prefix . '["' . $attr_name . '"]) || !is_numeric(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] = "null";' . "\n"; //This is on purpose so it can return empty records or don't do nothing in the DB, bc if the user wrote a pk with a non numeric value, it means is trying to do some hack.
 				else {
 					$default = isset($attr["default"]) && strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : '"DEFAULT"';
 					
 					if ($is_logged_user_id_attribute)
 						$default .= "/* REPLACE THIS BY THE LOGGED USER ID */";
 					
-					$code .= 'else if (!strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
+					$code .= 'else if (!isset(' . $var_prefix . '["' . $attr_name . '"]) || !strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
 				}
 				
 				$code .= "\n";
@@ -2868,7 +2868,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 				$broker_code = '$EVC->getBroker(' . (!empty($insert["dal_broker"]) ? '"' . $insert["dal_broker"] . '"' : '') . ');';
 			else if (isset($insert["method_obj"]) && trim($insert["method_obj"])) {
 				$method_obj = trim($insert["method_obj"]);
-				$broker_code = substr($method_obj, 0, 1) == '$' ? $method_obj : '$' . $method_obj;
+				$broker_code = substr($method_obj, 0, 1) == '$' || substr($method_obj, 0, 2) == '@$' ? $method_obj : '$' . $method_obj;
 			}
 			
 			if ($broker_code) {
@@ -2876,7 +2876,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 				$options = self::getBrokerSettingsOptionsCode($WorkFlowTaskHandler, $insert);
 				$options = $options ? str_replace("\n", "\n\t", $options) : "null";
 				
-				return 'if (!strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) 
+				return 'if (!isset(' . $var_prefix . '["' . $attr_name . '"]) || !strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) 
 	' . $var_prefix . '["' . $attr_name . '"] = ' . $broker_code . '->findObjectsColumnMax("' . $table_name . '", "' . $attr_name . '", ' . addcslashes($options, "'") . ');' . "\n";
 			}
 		}
@@ -2932,7 +2932,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			foreach ($pks as $pk)
 				$code .= 'if (isset(' . $var_prefix . '["orig_' . $pk . '"]) && !isset(' . $var_prefix . '["' . $pk . '"])) ' . $var_prefix . '["' . $pk . '"] = ' . $var_prefix . '["orig_' . $pk . '"];' . "\n";
 				
-			$code .= "\n" . 'if ($_POST["' . $tn . '_save_pks"]) {' . "\n";
+			$code .= "\n" . 'if (!empty($_POST["' . $tn . '_save_pks"])) {' . "\n";
 			
 			//sets new_pk and old_pk variables
 			foreach ($pks as $pk)
@@ -3007,7 +3007,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 					$method_obj = isset($insert["method_obj"]) ? trim($insert["method_obj"]) : "";
 					
 					if ($method_obj) {
-						$method_obj = substr($method_obj, 0, 1) == '$' ? $method_obj : '$' . $method_obj;
+						$method_obj = substr($method_obj, 0, 1) == '$' || substr($method_obj, 0, 2) == '@$' ? $method_obj : '$' . $method_obj;
 						$options = self::getBrokerSettingsOptionsCode($WorkFlowTaskHandler, $insert);
 						
 						$code .= '$' . $tn . '_status = ' . $method_obj . '->getInsertedId(' . addcslashes($options, "'") . ');' . "\n";
@@ -3056,7 +3056,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			$attr = isset($attrs[$attr_name]) ? $attrs[$attr_name] : null;
 			
 			if (isset($attr["type"]) && ObjTypeHandler::isDBTypeDate($attr["type"]))
-				$code .= 'if ($' . $tn . '["' . $attr_name . '"] == "0000-00-00 00:00:00" || $' . $tn . '["' . $attr_name . '"] == "0000-00-00") $' . $tn . '["' . $attr_name . '"] = "";' . "\n";
+				$code .= 'if (isset($' . $tn . '["' . $attr_name . '"]) && ($' . $tn . '["' . $attr_name . '"] == "0000-00-00 00:00:00" || $' . $tn . '["' . $attr_name . '"] == "0000-00-00")) $' . $tn . '["' . $attr_name . '"] = "";' . "\n";
 		}
 		
 		return $code ? "'<?\n" . $code . "?>'" : null;
@@ -3080,7 +3080,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			'	foreach ($' . $tn_plural . ' as $k => &$v) {' . "\n";
 			
 			foreach ($db_date_attrs as $attr_name)
-				$code .= '		if ($v["' . $attr_name . '"] == "0000-00-00 00:00:00" || $v["' . $attr_name . '"] == "0000-00-00") $v["' . $attr_name . '"] = "";' . "\n";
+				$code .= '		if (isset($v["' . $attr_name . '"]) && ($v["' . $attr_name . '"] == "0000-00-00 00:00:00" || $v["' . $attr_name . '"] == "0000-00-00")) $v["' . $attr_name . '"] = "";' . "\n";
 			
 			$code .= "	}\n?>'";
 			
@@ -3095,7 +3095,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		return ""; //this function is deprecated bc the hibernate returns the same result array than ibatis
 		
 		return "'<?\n" . 
-		'if ($' . $tn_plural . ') {' . "\n" . 
+		'if (!empty($' . $tn_plural . ')) {' . "\n" . 
 		'	$hbn_object_name = array_keys($' . $tn_plural . '[0]);' . "\n" . 
 		'	$hbn_object_name = $hbn_object_name[0];' . "\n" . 
 		"	\n" . 
@@ -3103,7 +3103,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		'	$t = count($' . $tn_plural . ')' . "\n" . 
 		"	\n" . 
 		'	for ($i = 0; $i < $t; $i++)' . "\n" . 
-		'		$items[] = $' . $tn_plural . '[$i][$hbn_object_name];' . "\n" . 
+		'		$items[] = isset($' . $tn_plural . '[$i][$hbn_object_name]) ? $' . $tn_plural . '[$i][$hbn_object_name] : null;' . "\n" . 
 		"	\n" . 
 		'	$' . $tn_plural . ' = $items;' . "\n" . 
 		"}\n" . 
@@ -3115,10 +3115,10 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		return ""; //this function is deprecated bc the hibernate returns the same result array than ibatis
 		
 		return "'<?\n" . 
-		'if ($' . $tn . ') {' . "\n" . 
+		'if (!empty($' . $tn . ')) {' . "\n" . 
 		'	$hbn_object_name = array_keys($' . $tn . ');' . "\n" . 
 		'	$hbn_object_name = $hbn_object_name[0];' . "\n" . 
-		'	$' . $tn . ' = $' . $tn . '[$hbn_object_name];' . "\n" . 
+		'	$' . $tn . ' = isset($' . $tn . '[$hbn_object_name]) ? $' . $tn . '[$hbn_object_name] : null;' . "\n" . 
 		"}\n" . 
 		"\n?>'";
 	}
@@ -3342,6 +3342,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		$code = '';
 		$has_action = $insert || $update || $delete || !empty($actions_props["single_insert"]) || !empty($actions_props["single_update"]) || !empty($actions_props["single_delete"]);
 		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
+		$form_id = null;
 		
 		if ($has_action) {
 			$form_id = "form_" . rand(0, 10000);
@@ -3582,7 +3583,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			$attr_prop_type = PHPUICodeExpressionHandler::getValueType($attr_prop, array("empty_string_type" => "string", "non_set_type" => "string"));
 			
 			if (empty($attr_prop_type)) //if php code like a $_GET var
-				return '<ptl:echo ' . $attr_prop . ' />';
+				return '<ptl:echo @' . $attr_prop . ' />';
 		}
 		return $attr_prop;
 	}
@@ -3599,7 +3600,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		
 		$input_class = isset($attr_props["input_class"]) ? $attr_props["input_class"] : null;
 		
-		$field_value = isset($attr_props["input_value"]) && strlen($attr_props["input_value"]) ? self::getFormFieldAttrPropHtml($attr_props["input_value"]) : '<ptl:echo str_replace(\'"\', \'&quot;\', (\\$input[' . $tn . '][' . $attr_name . '] )) />';
+		$field_value = isset($attr_props["input_value"]) && strlen($attr_props["input_value"]) ? self::getFormFieldAttrPropHtml($attr_props["input_value"]) : '<ptl:echo str_replace(\'"\', \'&quot;\', (@\\$input[' . $tn . '][' . $attr_name . '] )) />';
 		$field_name = $tn . '[' . $attr_name . ']';
 		$field_class = $input_class ? ' class="' . self::getFormFieldAttrPropHtml($input_class) . '"' : '';
 		
@@ -3608,12 +3609,12 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		if (!empty($attr_props["available_values"]))  {
 			$field_value = '
 			<ptl:var:av_exists false/>
-			<ptl:var:var_aux \\$input[' . $tn . '][' . $attr_name . '] />';
+			<ptl:var:var_aux @\\$input[' . $tn . '][' . $attr_name . '] />';
 			
 			if (is_array($attr_props["available_values"]))
 				$field_value .= '<ptl:var:avs ' . str_replace(" => ", " =&gt; ", str_replace("\n", "", var_export($attr_props["available_values"], true))) . ' />';
 			else //must be a string
-				$field_value .= '<ptl:var:avs \\$input[' . $attr_props["available_values"] . ']/>';
+				$field_value .= '<ptl:var:avs @\\$input[' . $attr_props["available_values"] . ']/>';
 			
 			$field_value .= '
 			<ptl:if is_array(\\$avs) />
@@ -3625,7 +3626,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 					</ptl:if>
 				</ptl:foreach>
 			</ptl:if>
-			<ptl:if !\\$av_exists>
+			<ptl:if \\$av_exists>
 				<ptl:echo \\$var_aux/>
 			</ptl:if>';
 		}
@@ -3684,13 +3685,13 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 					
 					if (is_array($attr_props["options"]))
 						foreach($attr_props["options"] as $k => $v)
-							$code .= '<option value="' . $k . '"<ptl:echo ("' . $k . '" == \\$input[' . $tn . '][' . $attr_name . '] ? " selected" : "")/>>' . $v . '</option>';
+							$code .= '<option value="' . $k . '"<ptl:echo ("' . $k . '" == @\\$input[' . $tn . '][' . $attr_name . '] ? " selected" : "")/>>' . $v . '</option>';
 					else {
 						$var_name = $attr_props["options"];
 						
-						$code .= '<ptl:if is_array(\\$input[' . $var_name . '])>
+						$code .= '<ptl:if is_array(@\\$input[' . $var_name . '])>
 									<ptl:foreach \\$input[' . $var_name . '] k v>
-										<option value="<ptl:echo str_replace(\'"\', \'&quot;\', \\$k) />"<ptl:echo (\\$k == \\$input[' . $tn . '][' . $attr_name . '] ? " selected" : "")/>><ptl:echo \\$v/></option>
+										<option value="<ptl:echo str_replace(\'"\', \'&quot;\', \\$k) />"<ptl:echo (\\$k == @\\$input[' . $tn . '][' . $attr_name . '] ? " selected" : "")/>><ptl:echo \\$v/></option>
 									</ptl:foreach>
 								</ptl:if>';
 					}
@@ -3708,31 +3709,31 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 					
 					foreach($options as $k => $v) {
 						if ($t > 1)
-							$code .= '<div' . $field_class . '><label>' . $v . '</label><input type="' . $input_type . '" name="' . $field_name . '" value="' . $k . '" <ptl:echo (\\$input[' . $tn . '][' . $attr_name . '] == "' . $k . '" ? "checked" : "")' . $input_attrs . ' /></div>';
+							$code .= '<div' . $field_class . '><label>' . $v . '</label><input type="' . $input_type . '" name="' . $field_name . '" value="' . $k . '" <ptl:echo (@\\$input[' . $tn . '][' . $attr_name . '] == "' . $k . '" ? "checked" : "")' . $input_attrs . ' /></div>';
 						else
-							$code .= '<input' . $field_class . ' type="' . $input_type . '" name="' . $field_name . '" value="' . $k . '" <ptl:echo (\\$input[' . $tn . '][' . $attr_name . '] == "' . $k . '" ? "checked" : "") />' . $input_attrs . ' />';
+							$code .= '<input' . $field_class . ' type="' . $input_type . '" name="' . $field_name . '" value="' . $k . '" <ptl:echo (@\\$input[' . $tn . '][' . $attr_name . '] == "' . $k . '" ? "checked" : "") />' . $input_attrs . ' />';
 					}
 				}
 				else if ($options) {
 					$var_name = $options;
 					
-					$code .= '<ptl:if is_array(\\$input[' . $var_name . '])>
+					$code .= '<ptl:if is_array(@\\$input[' . $var_name . '])>
 								<ptl:var:t count(\\$input[' . $var_name . ']) />
 								
 								<ptl:foreach \\$input[' . $var_name . '] k v>
 									<ptl:if \\$t &gt; 1>
 										<div' . $field_class . '>
 											<label><ptl:echo \\$v/></label>
-											<input type="' . $input_type . '" name="' . $field_name . '" value="<ptl:echo str_replace(\'"\', \'&quot;\', \\$k) />" <ptl:echo (\\$k == \\$input[' . $tn . '][' . $attr_name . '] ? "checked" : "")/>' . $input_attrs . ' />
+											<input type="' . $input_type . '" name="' . $field_name . '" value="<ptl:echo str_replace(\'"\', \'&quot;\', \\$k) />" <ptl:echo (\\$k == @\\$input[' . $tn . '][' . $attr_name . '] ? "checked" : "")/>' . $input_attrs . ' />
 										</div>
 									<ptl:else>
-										<input' . $field_class . ' type="' . $input_type . '" name="' . $field_name . '" value="<ptl:echo str_replace(\'"\', \'&quot;\', \\$k) />" <ptl:echo (\\$k == \\$input[' . $tn . '][' . $attr_name . '] ? "checked" : "")/>' . $input_attrs . ' />
+										<input' . $field_class . ' type="' . $input_type . '" name="' . $field_name . '" value="<ptl:echo str_replace(\'"\', \'&quot;\', \\$k) />" <ptl:echo (\\$k == @\\$input[' . $tn . '][' . $attr_name . '] ? "checked" : "")/>' . $input_attrs . ' />
 									</ptl:if>
 								</ptl:foreach>
 							</ptl:if>';
 				}
 				else
-					$code .= '<input' . $field_class . ' type="' . $input_type . '" name="' . $field_name . '" value="1" <ptl:echo (\\$input[' . $tn . '][' . $attr_name . '] == 1 ? "checked" : "") />' . $input_attrs . ' />';
+					$code .= '<input' . $field_class . ' type="' . $input_type . '" name="' . $field_name . '" value="1" <ptl:echo (@\\$input[' . $tn . '][' . $attr_name . '] == 1 ? "checked" : "") />' . $input_attrs . ' />';
 			}
 			else if (!in_array($input_type, self::$editable_input_types)) {
 				$code .= '<input type="hidden" name="' . $field_name . '" value="' . $orig_field_value . '" />';
@@ -4061,12 +4062,14 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			(isset($actions_props["multiple_delete"]["action_type"]) && substr($actions_props["multiple_delete"]["action_type"], 0, 5) != "ajax_")
 		);
 		
+		$form_id = null;
+		
 		//Preparing form html
 		$is_pagination_active = !$pagination || !empty($pagination["active"]);
 		
 		if ($is_pagination_active)
 			$pagination_code = '
-		<ptl:var:PaginationLayout new PaginationLayout(\$input["' . $tn_plural . '_count"], \$input["' . $tn_plural . '_rows_per_page"], array("' . $tn_plural . '_current_page" =&gt; \$input["' . $tn_plural . '_current_page"]), "' . $tn_plural . '_current_page"' . ($pagination && !empty($pagination["on_click_js_func"]) ? ', "' . $pagination["on_click_js_func"] . '"' : '') . ') />
+		<ptl:var:PaginationLayout new PaginationLayout(@\$input["' . $tn_plural . '_count"], @\$input["' . $tn_plural . '_rows_per_page"], array("' . $tn_plural . '_current_page" =&gt; @\$input["' . $tn_plural . '_current_page"]), "' . $tn_plural . '_current_page"' . ($pagination && !empty($pagination["on_click_js_func"]) ? ', "' . $pagination["on_click_js_func"] . '"' : '') . ') />
 		<ptl:var:PaginationLayout-&gt;show_x_pages_at_once 20 />
 		<ptl:var:pagination_data \$PaginationLayout-&gt;data />
 		<ptl:var:pagination_data["style"] "bootstrap1" />
@@ -4137,7 +4140,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		$code .= '</tr>
 			</thead>
 			<tbody>
-				<ptl:if is_array(\\$input[' . $tn_plural . '])>
+				<ptl:if is_array(@\\$input[' . $tn_plural . '])>
 					<ptl:foreach \\$input[' . $tn_plural . '] i item>
 						<tr>';
 		
@@ -4364,16 +4367,19 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			$db_attr_props = isset($attrs[$attr_name]) ? $attrs[$attr_name] : null;
 			$is_pk = in_array($attr_name, $pks);
 			$is_pk_auto_increment = in_array($attr_name, $pks_auto_increment);
+			$input_type = null;
+			
+			$aux_html = self::getTableFieldInputHtml($tn, '', $attr_name, $attrs, $attr_props, $pks, $is_pk, $is_pk_auto_increment, $editable, $deletable, $input_type, 
+				isset($actions_props["single_update"]["action_type"]) && $actions_props["single_update"]["action_type"] == "ajax_on_blur", 
+				true, 
+				!empty($actions_props["multiple_update"]) || !empty($actions_props["multiple_insert_update"]) || !empty($actions_props["single_update"])
+			);
 			
 			$td_html = '<td class="field field-' . (isset($db_attr_props["type"]) ? strtolower(str_replace(" ", "-", $db_attr_props["type"])) : "") . " " . $attr_name . ($is_pk ? " is-pk" : "") . ($is_pk_auto_increment ? " is-pk-auto-increment" : "") . " field-" . $input_type . (!empty($attr_props["class"]) ? " " . self::getFormFieldAttrPropHtml($attr_props["class"]) : "") . '">';
 			
 			$before_insert_html .= $td_html . self::getTableFieldInputHtml($tn, '', $attr_name, $attrs, $attr_props, $pks, $is_pk, $is_pk_auto_increment, true, $deletable, $aux = null, false, true, true) . '</td>';
 			
-			$after_insert_html .= $td_html . self::getTableFieldInputHtml($tn, '', $attr_name, $attrs, $attr_props, $pks, $is_pk, $is_pk_auto_increment, $editable, $deletable, $input_type, 
-				isset($actions_props["single_update"]["action_type"]) && $actions_props["single_update"]["action_type"] == "ajax_on_blur", 
-				true, 
-				!empty($actions_props["multiple_update"]) || !empty($actions_props["multiple_insert_update"]) || !empty($actions_props["single_update"])
-			) . '</td>';
+			$after_insert_html .= $td_html . $aux_html . '</td>';
 		}
 		
 		$before_insert_html .= '<td class="actions">
@@ -4530,6 +4536,14 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			$db_attr_props = isset($attrs[$attr_name]) ? $attrs[$attr_name] : null;
 			$is_pk = in_array($attr_name, $pks);
 			$is_pk_auto_increment = in_array($attr_name, $pks_auto_increment);
+			$input_type = null;
+			
+			$aux_html = self::getTableFieldInputHtml($tn, '', $attr_name, $attrs, $attr_props, $pks, $is_pk, $is_pk_auto_increment, $editable, $deletable, $input_type, 
+				isset($actions_props["single_update"]["action_type"]) && $actions_props["single_update"]["action_type"] == "ajax_on_blur", 
+				true, 
+				!empty($actions_props["multiple_update"]) || !empty($actions_props["multiple_insert_update"]) || !empty($actions_props["single_update"])
+			);
+			
 			
 			$div_html = '<div class="field field-' . (isset($db_attr_props["type"]) ? strtolower(str_replace(" ", "-", $db_attr_props["type"])) : "") . " " . $attr_name . ($is_pk ? " is-pk" : "") . ($is_pk_auto_increment ? " is-pk-auto-increment" : "") . " field-" . $input_type . (!empty($attr_props["class"]) ? " " . self::getFormFieldAttrPropHtml($attr_props["class"]) : "") . '">
 				' . self::getFormFieldLabelHtml($attr_name, $attr_props);
@@ -4538,11 +4552,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			if (!$is_pk_auto_increment) 
 				$before_insert_html .= $div_html . self::getTableFieldInputHtml($tn, '', $attr_name, $attrs, $attr_props, $pks, $is_pk, $is_pk_auto_increment, true, $deletable, $aux = null, false, true, true) . '</div>';
 			
-			$after_insert_html .= $div_html . self::getTableFieldInputHtml($tn, '', $attr_name, $attrs, $attr_props, $pks, $is_pk, $is_pk_auto_increment, $editable, $deletable, $input_type, 
-				isset($actions_props["single_update"]["action_type"]) && $actions_props["single_update"]["action_type"] == "ajax_on_blur", 
-				true, 
-				!empty($actions_props["multiple_update"]) || !empty($actions_props["multiple_insert_update"]) || !empty($actions_props["single_update"])
-			) . '</div>';
+			$after_insert_html .= $div_html . $aux_html . '</div>';
 		}
 		
 		$before_insert_html .= '</div>
@@ -4602,7 +4612,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		$code = self::getFormFieldAttrPropHtml($input_previous_html);
 		
 		$is_empty_value = empty($tn_plural);
-		$field_value = !$is_empty_value ? (isset($attr_props["input_value"]) && strlen($attr_props["input_value"]) ? self::getFormFieldAttrPropHtml($attr_props["input_value"]) : '<ptl:echo str_replace(\'"\', \'&quot;\', (\\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] )) />') : '';
+		$field_value = !$is_empty_value ? (isset($attr_props["input_value"]) && strlen($attr_props["input_value"]) ? self::getFormFieldAttrPropHtml($attr_props["input_value"]) : '<ptl:echo str_replace(\'"\', \'&quot;\', (@\\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] )) />') : '';
 		$field_name = $tn . ($is_table_insert ? '[]' : '[<ptl:echo \$i/>]') . '[' . $attr_name . ']';
 		$field_class = !empty($attr_props["input_class"]) ? ' class="' . self::getFormFieldAttrPropHtml($attr_props["input_class"]) . '"' : '';
 		$attr_type = isset($attr_props["type"]) ? $attr_props["type"] : null;
@@ -4612,12 +4622,12 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		if (!$is_empty_value && !empty($attr_props["available_values"]))  {
 			$field_value = '
 				<ptl:var:av_exists false/>
-				<ptl:var:var_aux \\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] />';
+				<ptl:var:var_aux @\\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] />';
 				
 			if (is_array($attr_props["available_values"]))
 				$field_value .= '<ptl:var:avs ' . str_replace(" => ", " =&gt; ", str_replace("\n", "", var_export($attr_props["available_values"], true))) . ' />';
 			else //must be a string
-				$field_value .= '<ptl:var:avs \\$input[' . $attr_props["available_values"] . ']/>';
+				$field_value .= '<ptl:var:avs @\\$input[' . $attr_props["available_values"] . ']/>';
 				
 			$field_value .= '
 				<ptl:if is_array(\\$avs) />
@@ -4694,14 +4704,14 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 					
 					if (is_array($options))
 						foreach($options as $k => $v) {
-							$selected = !$is_empty_value ? '<ptl:echo ("' . $k . '" == \\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] ? " selected" : "")/>' : '';
+							$selected = !$is_empty_value ? '<ptl:echo ("' . $k . '" == @\\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] ? " selected" : "")/>' : '';
 							$code .= '<option value="' . $k . '"' . $selected . '>' . $v . '</option>';
 						}
 					else {
 						$var_name = $options;
 						
-						$selected = !$is_empty_value ? '<ptl:echo (\\$k == \\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] ? " selected" : "")/>' : '';
-						$code .= '<ptl:if is_array(\\$input[' . $var_name . '])>
+						$selected = !$is_empty_value ? '<ptl:echo (\\$k == @\\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] ? " selected" : "")/>' : '';
+						$code .= '<ptl:if is_array(@\\$input[' . $var_name . '])>
 									<ptl:foreach \\$input[' . $var_name . '] k v>
 										<option value="<ptl:echo str_replace(\'"\', \'&quot;\', \\$k) />"' . $selected . '><ptl:echo \\$v/></option>
 									</ptl:foreach>
@@ -4718,7 +4728,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 					$t = count($options);
 					
 					foreach($options as $k => $v) {
-						$checked = !$is_empty_value ? '<ptl:echo ("' . $k . '" == \\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] ? " checked" : "")/>' : '';
+						$checked = !$is_empty_value ? '<ptl:echo ("' . $k . '" == @\\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] ? " checked" : "")/>' : '';
 						
 						if ($t > 1)
 							$code .= '<div' . $field_class . '><label>' . $v . '</label><input' . $field_class . ' type="' . $input_type . '" name="' . $field_name . '" value="' . $k . '"' . $checked . $input_attrs . ' /></div>';
@@ -4729,8 +4739,8 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 				else if ($options) {
 					$var_name = $options;
 					
-					$checked = !$is_empty_value ? '<ptl:echo (\\$k == \\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] ? " checked" : "")/>' : '';
-					$code .= '<ptl:if is_array(\\$input[' . $var_name . '])>
+					$checked = !$is_empty_value ? '<ptl:echo (\\$k == @\\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] ? " checked" : "")/>' : '';
+					$code .= '<ptl:if is_array(@\\$input[' . $var_name . '])>
 								<ptl:var:t count(\\$input[' . $var_name . ']) />
 								
 								<ptl:foreach \\$input[' . $var_name . '] k v>
@@ -4746,7 +4756,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 							</ptl:if>';
 				}
 				else {
-					$checked = !$is_empty_value ? ' <ptl:echo (\\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] == 1 ? "checked" : "") />' : '';
+					$checked = !$is_empty_value ? ' <ptl:echo (@\\$input[' . $tn_plural . '][\\$i][' . $attr_name . '] == 1 ? "checked" : "") />' : '';
 					$code .= '<input' . $field_class . ' type="' . $input_type . '" name="' . $field_name . '" value="1"' . $checked . $input_attrs . ' />';
 				}
 			}
@@ -5083,12 +5093,14 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			(isset($actions_props["multiple_delete"]["action_type"]) && substr($actions_props["multiple_delete"]["action_type"], 0, 5) != "ajax_")
 		);
 		
+		$form_id = null;
+		
 		//Preparing form html
 		$is_pagination_active = !$pagination || !empty($pagination["active"]);
 		
 		if ($is_pagination_active)
 			$pagination_code = '
-		<ptl:var:PaginationLayout new PaginationLayout(\$input["' . $tn_plural . '_count"], \$input["' . $tn_plural . '_rows_per_page"], array("' . $tn_plural . '_current_page" =&gt; \$input["' . $tn_plural . '_current_page"]), "' . $tn_plural . '_current_page"' . ($pagination && !empty($pagination["on_click_js_func"]) ? ', "' . $pagination["on_click_js_func"] . '"' : '') . ') />
+		<ptl:var:PaginationLayout new PaginationLayout(@\$input["' . $tn_plural . '_count"], @\$input["' . $tn_plural . '_rows_per_page"], array("' . $tn_plural . '_current_page" =&gt; @\$input["' . $tn_plural . '_current_page"]), "' . $tn_plural . '_current_page"' . ($pagination && !empty($pagination["on_click_js_func"]) ? ', "' . $pagination["on_click_js_func"] . '"' : '') . ') />
 		<ptl:var:PaginationLayout-&gt;show_x_pages_at_once 20 />
 		<ptl:var:pagination_data \$PaginationLayout-&gt;data />
 		<ptl:var:pagination_data["style"] "bootstrap1" />
@@ -5125,7 +5137,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 		$code .= ($is_pagination_active ? '<div class="top-pagination">' . $pagination_code . '</div>' : '') . '
 	<div class="list-container">
 		<ul class="list-tree">
-			<ptl:if is_array(\\$input[' . $tn_plural . '])>
+			<ptl:if is_array(@\\$input[' . $tn_plural . '])>
 				<ptl:foreach \\$input[' . $tn_plural . '] i item>
 					<li>
 						<div class="fields-container">';
@@ -5140,7 +5152,7 @@ var $var_name = <ptl:echo json_encode(\\\$$var_name) />;
 			$is_pk_auto_increment = in_array($attr_name, $pks_auto_increment);
 			
 			//if only insert and attr is a pk auto-incremented, doesn't show attribute
-			if ($insertable && !$updatable && !$deletable && $is_pk_auto_increment)
+			if ($insertable && !$editable && !$deletable && $is_pk_auto_increment)
 				continue 1;
 			
 			$input_html = self::getTableFieldInputHtml($tn, $tn_plural, $attr_name, $attrs, $attr_props, $pks, $is_pk, $is_pk_auto_increment, $editable, $deletable, $input_type, 
@@ -6398,9 +6410,11 @@ if (typeof executeSingleAction != "function")
 								status_message = data["message"];
 
 								if (data.hasOwnProperty(table_name) && data[table_name]) {
+									var tn = table_name.toLowerCase();
+									
 									if (data[table_name].hasOwnProperty(table_name + "_status"))
 										status = data[table_name][table_name + "_status"];
-									else if ($.isPlainObject(data[table_name]["data"]) && data[table_name]["data"].hasOwnProperty("' . $tn . '_status"))
+									else if ($.isPlainObject(data[table_name]["data"]) && data[table_name]["data"].hasOwnProperty(tn + "_status"))
 										status = data[table_name]["data"][table_name + "_status"];
 									else if (data[table_name].hasOwnProperty("status"))
 										status = data[table_name]["status"];
@@ -6457,7 +6471,7 @@ if (typeof executeSingleAction != "function")
 	}
 ';
 		
-		if (strpos($generic_ajax_javascript, "function executeMultipleActions(") === false && ($is_single_multiple_ajax || $is_multiple_update_ajax || $is_multiple_delete_ajax))
+		if (strpos($generic_ajax_javascript, "function executeMultipleActions(") === false && ($is_multiple_insert_ajax || $is_multiple_update_ajax || $is_multiple_delete_ajax))
 			$code .= '
 if (typeof executeMultipleActions != "function")
 	function executeMultipleActions(elm, success_func) {
@@ -6803,7 +6817,7 @@ if (typeof executeMultipleActions != "function")
 		return str_replace(".", "_", $name);
 	}
 	
-	private function getForeignChildTables($tables, $table_name, $tables_alias, $pks, $with_labels = false) {
+	private static function getForeignChildTables($tables, $table_name, $tables_alias, $pks, $with_labels = false) {
 		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
 		$childs = array();
 		$pks = array_flip($pks);
@@ -6945,14 +6959,14 @@ if (typeof executeMultipleActions != "function")
 				"key" => "start",
 				"key_type" => "string",
 				"value" => $start_row,
-				"value_type" => $start_row && !is_numeric($start_row) && substr($start_row, 0, 1) != '$' ? "string" : ""
+				"value_type" => $start_row && !is_numeric($start_row) && substr($start_row, 0, 1) != '$' && substr($start_row, 0, 2) != '@$' ? "string" : ""
 			);
 			
 			$options[] = array(
 				"key" => "limit",
 				"key_type" => "string",
 				"value" => $rows_per_page,
-				"value_type" => $rows_per_page && !is_numeric($rows_per_page) && substr($rows_per_page, 0, 1) != '$' ? "string" : ""
+				"value_type" => $rows_per_page && !is_numeric($rows_per_page) && substr($rows_per_page, 0, 1) != '$' && substr($rows_per_page, 0, 2) != '@$' ? "string" : ""
 			);
 			
 			$broker_settings[$options_type] = $options;
@@ -7006,8 +7020,8 @@ if (typeof executeMultipleActions != "function")
 								if ($v) {
 									$static_pos = strpos($v, "::") || ($broker_settings["brokers_layer_type"] == "callobjectmethod" && isset($broker_settings["method_static"]) && $broker_settings["method_static"] == 1);
 									$non_static_pos = strpos($v, "->");
-									$v = substr($v, 0, 1) != '$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $v : $v;
-									$v = substr($v, 0, 1) == '$' ? $v : '"' . $v . '"';
+									$v = substr($v, 0, 1) != '$' && substr($v, 0, 2) != '@$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $v : $v;
+									$v = substr($v, 0, 1) == '$' || substr($v, 0, 2) == '@$' ? $v : '"' . $v . '"';
 									
 									$broker_settings[$key] = $v;
 									$broker_settings[$key . "_type"] = "method";
@@ -7015,7 +7029,7 @@ if (typeof executeMultipleActions != "function")
 								break;
 							
 							case "sma_ids": //very important otherwise it will convert the sma_ids value to a variable by default and we want to have a string with the variable name to be created after it executes the hibernate insert action!
-								if ($v && substr($v, 0, 1) != '$')
+								if ($v && substr($v, 0, 1) != '$' && substr($v, 0, 2) != '@$')
 									$broker_settings[$key . "_type"] = "string"; //set this to string instead of variable which is the default value
 								break;
 							
@@ -7328,7 +7342,7 @@ if (typeof executeMultipleActions != "function")
 			else
 				return $options;
 		}
-		else if ($options_type == "variable" && is_string($options) && substr(trim($options), 0, 1) != '$')
+		else if ($options_type == "variable" && is_string($options) && substr(trim($options), 0, 1) != '$' && substr(trim($options), 0, 2) != '@$')
 			return '$' . trim($options);
 		
 		return $options;
@@ -7414,7 +7428,7 @@ if (typeof executeMultipleActions != "function")
 							$parameters = array();
 						
 						//prepare conditions item in parameters
-						$conditions_index = null;
+						$conditions_index = $idx = null;
 						foreach ($parameters as $idx => $parameter) 
 							if (isset($parameter["key_type"]) && $parameter["key_type"] == "string" && isset($parameter["key"]) && $parameter["key"] == "conditions") {
 								$conditions_index = $idx;
@@ -7536,7 +7550,7 @@ if (typeof executeMultipleActions != "function")
 					foreach ($matches[1] as $match) 
 						if (isset($attrs[$match])) {
 							if ($is_ptl)
-								$c = '<ptl:echo \\$input[' . $tn . ']' . ($is_list ? '[\\$i]' : '') . '[' . $match . '] />';
+								$c = '<ptl:echo @\\$input[' . $tn . ']' . ($is_list ? '[\\$i]' : '') . '[' . $match . '] />';
 							else
 								$c = $is_list ? '#[idx][' . $match . ']#' : '#' . $tn . '[' . $match . ']#';
 							
@@ -7559,7 +7573,7 @@ if (typeof executeMultipleActions != "function")
 						if ($simple_value)
 							$query_string .= "#$attr_name#";
 						else if ($is_ptl)
-							$query_string .= '<ptl:echo \\$input[' . $tn . ']' . ($is_list ? '[\\$i]' : '') . '[' . $attr_name . '] />';
+							$query_string .= '<ptl:echo @\\$input[' . $tn . ']' . ($is_list ? '[\\$i]' : '') . '[' . $attr_name . '] />';
 						else
 							$query_string .= $is_list ? '#[idx][' . $attr_name . ']#' : '#' . $tn . '[' . $attr_name . ']#';
 					}

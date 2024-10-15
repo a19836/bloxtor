@@ -3,14 +3,14 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$item_type = $_GET["item_type"];
-$element_type = $_GET["element_type"]; //only apply if is presentation layer
-$filter_by_layout = $_GET["filter_by_layout"];
-$filter_by_layout_permission = $_GET["filter_by_layout_permission"];
-$selected_db_driver = $_GET["selected_db_driver"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$item_type = isset($_GET["item_type"]) ? $_GET["item_type"] : null;
+$element_type = isset($_GET["element_type"]) ? $_GET["element_type"] : null; //only apply if is presentation layer
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
+$filter_by_layout_permission = isset($_GET["filter_by_layout_permission"]) ? $_GET["filter_by_layout_permission"] : null;
+$selected_db_driver = isset($_GET["selected_db_driver"]) ? $_GET["selected_db_driver"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -61,16 +61,18 @@ else {
 	include $EVC->getUtilPath("admin_uis_layers_and_permissions");
 	//echo "<pre>";print_r($layers);die();
 	
-	if ($item_type && $layers[$item_type . "_layers"]) 
+	if ($item_type && !empty($layers[$item_type . "_layers"]))
 		$layers = $layers[$item_type . "_layers"];
 	else if ($bean_name && $bean_file_name) {
 		$new_layers = array();
 		
 		foreach ($layers as $layer_type_name => $layer_type)
 			foreach ($layer_type as $layer_name => $layer) {
-				$properties = $layer["properties"];
+				$properties = isset($layer["properties"]) ? $layer["properties"] : null;
+				$layer_bean_name = isset($properties["bean_name"]) ? $properties["bean_name"] : null;
+				$layer_bean_file_name = isset($properties["bean_file_name"]) ? $properties["bean_file_name"] : null;
 				
-				if ($properties["bean_name"] == $bean_name && $properties["bean_file_name"] == $bean_file_name) {
+				if ($layer_bean_name == $bean_name && $layer_bean_file_name == $bean_file_name) {
 					$new_layers[$layer_name] = $layer;
 					
 					if (!$item_type)

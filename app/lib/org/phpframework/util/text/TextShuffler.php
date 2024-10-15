@@ -72,7 +72,7 @@ class TextShuffler {
 			
 			$str = $first_char . $str;
 		
-			if (empty($options["disable_email"]) && $domain)
+			if (empty($options["disable_email"]) && !empty($domain))
 				$str .= $domain;
 		}
 		
@@ -116,7 +116,7 @@ class TextShuffler {
 			
 			$str = $first_char . $str;
 		
-			if (empty($options["disable_email"]) && $domain)
+			if (empty($options["disable_email"]) && !empty($domain))
 				$str .= $domain;
 		}
 		

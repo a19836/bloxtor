@@ -1,6 +1,6 @@
 <?php
-$dependent_file_path_to_include = $dependent_file_path_to_include ? $dependent_file_path_to_include : "lib/org/phpframework/util/web/MyCurl.php";
-$dependent_file_path_to_include_js = $dependent_file_path_to_include_js ? $dependent_file_path_to_include_js : "GetUrlContentsTaskPropertyObj.dependent_file_path_to_include";
+$dependent_file_path_to_include = !empty($dependent_file_path_to_include) ? $dependent_file_path_to_include : "lib/org/phpframework/util/web/MyCurl.php";
+$dependent_file_path_to_include_js = !empty($dependent_file_path_to_include_js) ? $dependent_file_path_to_include_js : "GetUrlContentsTaskPropertyObj.dependent_file_path_to_include";
 ?>
 <div class="get_url_contents_task_html">
 	<div class="info">

@@ -1,6 +1,5 @@
 <?php
-include_once get_lib("lib.vendor.phpparser.lib.bootstrap");
-include_once get_lib("org.phpframework.workflow.PHPParserPrettyPrinter");
+include_once get_lib("org.phpframework.phpscript.phpparser.phpparser_autoload");
 include_once get_lib("org.phpframework.phpscript.PHPCodeBeautifier");
 include_once get_lib("org.phpframework.util.text.TextSanitizer");
 
@@ -10,7 +9,7 @@ class CMSFileHandler {
 		if ($contents) {
 			self::prepareContentsForParsing($contents);
 			
-			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 			$methods = self::getMethodParamsFromContent($contents, $method_names, $class_obj, $search_limit, $depth);
 			
 			return $methods;
@@ -49,7 +48,7 @@ class CMSFileHandler {
 				);
 			}*/
 			
-			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 			$methods = self::getMethodParamsFromContent($contents, "setTemplate", $class_obj, $search_limit, $depth);
 			//echo "<pre>";print_r($matches);
 			
@@ -101,13 +100,13 @@ class CMSFileHandler {
 				
 				$regions[] = array(
 					"match" => $codes[$i],
-					"class_obj" => "$" . $class_objs[$i],
+					"class_obj" => '$' . $class_objs[$i],
 					"region" => $region,
 					"region_type" => $region_type,
 				);
 			}*/
 			
-			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 			$methods = self::getMethodParamsFromContent($contents, "renderRegion", $class_obj, $search_limit, $depth);
 			//echo "<pre>";print_r($matches);
 			
@@ -134,7 +133,7 @@ class CMSFileHandler {
 	}
 	
 	//Parse $XXX->addRegionBlock(YYY, WWW)
-	public static function getRegionsBlocks($contents, $class_obj_name = false) {
+	public static function getRegionsBlocks($contents, $class_obj_name = false, $search_limit = 0, $depth = -1) {
 		$regions_blocks = array();
 		
 		if ($contents) {
@@ -199,7 +198,7 @@ class CMSFileHandler {
 				
 				$regions_blocks[] = array(
 					"match" => $codes[$i],
-					"class_obj" => "$" . $class_objs[$i],
+					"class_obj" => '$' . $class_objs[$i],
 					"region" => $region,
 					"region_type" => $region_type,
 					"block" => $block,
@@ -209,7 +208,7 @@ class CMSFileHandler {
 				);
 			}*/
 			
-			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 			$methods = self::getMethodParamsFromContent($contents, array("addRegionHtml", "addRegionBlock", "includeRegionBlockPathOutput", "addRegionView", "includeRegionViewPathOutput"), $class_obj, $search_limit, $depth);
 			//echo '<textarea>'.$contents.'</textarea>';die();
 			//echo "<pre>";print_r($methods);die();
@@ -234,9 +233,9 @@ class CMSFileHandler {
 						self::prepareMethodParamVariables($method, 1, $block, $block_type);
 						
 						$b = trim( self::getVariableValueCode($block, $block_type) );
-						$idx = $blocks_projects_idx[$b] ? $blocks_projects_idx[$b] : 0;
-						$block_project = $blocks_projects[$b][$idx];
-						$blocks_projects_idx[$b] = $blocks_projects[$b] && count($blocks_projects[$b]) > $idx + 1 ? $idx + 1 : $idx;
+						$idx = !empty($blocks_projects_idx[$b]) ? $blocks_projects_idx[$b] : 0;
+						$block_project = isset($blocks_projects[$b][$idx]) ? $blocks_projects[$b][$idx] : null;
+						$blocks_projects_idx[$b] = !empty($blocks_projects[$b]) && count($blocks_projects[$b]) > $idx + 1 ? $idx + 1 : $idx;
 						
 						if ($block_project) {
 							$block_project_type = self::getArgumentType($block_project);
@@ -255,9 +254,9 @@ class CMSFileHandler {
 						self::prepareMethodParamVariables($method, 1, $block, $block_type);
 						
 						$b = trim( self::getVariableValueCode($block, $block_type) );
-						$idx = $views_projects_idx[$b] ? $views_projects_idx[$b] : 0;
-						$block_project = $views_projects[$b][$idx];
-						$views_projects_idx[$b] = $views_projects[$b] && count($views_projects[$b]) > $idx + 1 ? $idx + 1 : $idx;
+						$idx = !empty($views_projects_idx[$b]) ? $views_projects_idx[$b] : 0;
+						$block_project = isset($views_projects[$b][$idx]) ? $views_projects[$b][$idx]: null;
+						$views_projects_idx[$b] = !empty($views_projects[$b]) && count($views_projects[$b]) > $idx + 1 ? $idx + 1 : $idx;
 						
 						if ($block_project) {
 							$block_project_type = self::getArgumentType($block_project);
@@ -294,7 +293,7 @@ class CMSFileHandler {
 	}
 	
 	//Parse $XXX->getBlock(WWW)
-	public static function getHardCodedRegionsBlocks($contents, $class_obj_name = false) {
+	public static function getHardCodedRegionsBlocks($contents, $class_obj_name = false, $search_limit = 0, $depth = -1) {
 		$blocks = array();
 		
 		if ($contents) {
@@ -354,7 +353,7 @@ class CMSFileHandler {
 				
 				$blocks[] = array(
 					"match" => $codes[$i],
-					"class_obj" => "$" . $class_objs[$i],
+					"class_obj" => '$' . $class_objs[$i],
 					"block" => $block,
 					"block_type" => $block_type,
 					"block_project" => $block_project,
@@ -362,7 +361,7 @@ class CMSFileHandler {
 				);
 			}*/
 			
-			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$'  ? '$' . $class_obj_name : $class_obj_name;
 			$methods = self::getMethodParamsFromContent($contents, array("getBlock", "getView"), $class_obj, $search_limit, $depth);
 			//echo '<textarea>'.$contents.'</textarea>';
 			//echo "<pre>";print_r($methods);
@@ -375,6 +374,7 @@ class CMSFileHandler {
 					$method_name = isset($method["method"]) ? $method["method"] : null;
 					
 					self::prepareMethodParamVariables($method, 0, $block, $block_type);
+					self::prepareMethodParamVariables($method, 1, $block_index, $block_index_type);
 					
 					$b = trim( self::getVariableValueCode($block, $block_type) );
 					
@@ -393,8 +393,6 @@ class CMSFileHandler {
 						$block_project_type = self::getArgumentType($block_project);
 						$block_project = self::prepareArgument($block_project, $block_project_type);
 					}
-					else 
-						self::prepareMethodParamVariables($method, 1, $block_project, $block_project_type);
 					
 					$blocks[] = array(
 						"match" => isset($method["match"]) ? $method["match"] : null,
@@ -405,6 +403,8 @@ class CMSFileHandler {
 						"block_type" => $block_type,
 						"block_project" => $block_project,
 						"block_project_type" => $block_project_type,
+						"block_index" => $block_index,
+						"block_index_type" => $block_index_type,
 						"line" => isset($method["line"]) ? $method["line"] : null,
 					);
 				}
@@ -416,7 +416,7 @@ class CMSFileHandler {
 	}
 	
 	public static function getFileIncludes($file_path, $with_blocks_include = true) {
-		return self::getIncludes( self::getFileContents($file_path, $with_blocks_include) );
+		return self::getIncludes(self::getFileContents($file_path), $with_blocks_include);
 	}
 	
 	public static function getIncludes($contents, $with_blocks_include = true) {
@@ -536,7 +536,7 @@ class CMSFileHandler {
 		if ($contents) {
 			self::prepareContentsForParsing($contents);
 			
-			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 			$methods = self::getMethodParamsFromContent($contents, "getParam", $class_obj, $search_limit, $depth);
 			//echo "<pre>";print_r($methods);
 			
@@ -570,7 +570,7 @@ class CMSFileHandler {
 		if ($contents) {
 			self::prepareContentsForParsing($contents);
 			
-			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+			$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 			$methods = self::getMethodParamsFromContent($contents, "setParam", $class_obj, $search_limit, $depth);
 			//echo "<pre>";print_r($methods);die();
 			
@@ -714,11 +714,11 @@ class CMSFileHandler {
 	
 	public static function getCreateBlockParams($contents, $class_obj_name = false, $search_limit = 0, $depth = -1) {
 		$params = array();
-		//echo $contents;die();
+		//echo "<pre>".$contents;die();
 		
 		self::prepareContentsForParsing($contents);
 		
-		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 		$methods = self::getMethodParamsFromContent($contents, "createBlock", $class_obj, $search_limit, $depth);
 		//echo "<pre>";print_r($methods);die();
 		
@@ -755,7 +755,7 @@ class CMSFileHandler {
 		
 		self::prepareContentsForParsing($contents);
 		
-		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 		$methods = self::getMethodParamsFromContent($contents, array("includeJoinPoint", "includeStatusJoinPoint"), $class_obj, $search_limit, $depth);
 		
 		foreach ($methods as $method) {
@@ -793,7 +793,7 @@ class CMSFileHandler {
 		
 		self::prepareContentsForParsing($contents);
 		
-		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 		$methods = self::getMethodParamsFromContent($contents, "addBlockJoinPoint", $class_obj, $search_limit, $depth);
 		//echo "<pre>";print_r($methods);die();
 		
@@ -832,7 +832,7 @@ class CMSFileHandler {
 		
 		self::prepareContentsForParsing($contents);
 		
-		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 		$methods = self::getMethodParamsFromContent($contents, "addRegionBlockJoinPoint", $class_obj, $search_limit, $depth);
 		
 		if ($methods) {
@@ -897,7 +897,7 @@ class CMSFileHandler {
 				
 				self::getVariableFromRegex($contents, $block, $block_type, $pos);
 				
-				$join_point_name = $join_point_names[$i][0] ? trim($join_point_names[$i][0]) : "";
+				$join_point_name = !empty($join_point_names[$i][0]) ? trim($join_point_names[$i][0]) : "";
 				$join_point_name_type = self::getArgumentType($join_point_name);
 				$join_point_name = self::prepareArgument($join_point_name, $join_point_name_type);
 				
@@ -923,7 +923,7 @@ class CMSFileHandler {
 		
 		self::prepareContentsForParsing($contents);
 		
-		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 		$methods = self::getMethodParamsFromContent($contents, "addSequentialLogicalActivities", $class_obj, $search_limit, $depth);
 		//echo "<pre>";print_r($methods);die();
 		
@@ -992,7 +992,7 @@ class CMSFileHandler {
 		//find methods in php code
 		self::prepareContentsForParsing($contents);
 		
-		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 		$methods = self::getMethodParamsFromContent($contents, array_keys($methods_to_search), $class_obj, $search_limit, $depth);
 		//echo "<pre>";print_r($methods);die();
 		
@@ -1044,7 +1044,7 @@ class CMSFileHandler {
 		//find methods in php code
 		self::prepareContentsForParsing($contents);
 		
-		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 		$methods = self::getMethodParamsFromContent($contents, "addEntity", $class_obj, $search_limit, $depth);
 		//echo "<pre>";print_r($methods);die();
 		
@@ -1082,7 +1082,7 @@ class CMSFileHandler {
 		//find methods in php code
 		self::prepareContentsForParsing($contents);
 		
-		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' ? '$' . $class_obj_name : $class_obj_name;
+		$class_obj = $class_obj_name && substr($class_obj_name, 0, 1) != '$' && substr($class_obj_name, 0, 2) != '@$' ? '$' . $class_obj_name : $class_obj_name;
 		$methods = self::getMethodParamsFromContent($contents, "addTemplate", $class_obj, $search_limit, $depth);
 		//echo "<pre>";print_r($methods);die();
 		
@@ -1157,7 +1157,7 @@ class CMSFileHandler {
 		$var_value = $var_type = null;
 		
 		if ($method && !empty($method["params"])) {
-			$param = $method["params"][$param_idx];
+			$param = isset($method["params"][$param_idx]) ? $method["params"][$param_idx] : null;
 			
 			if (isset($param["type"]) && $param["type"] == "variable") {
 				$var_value = isset($param["referenced_value"]) ? $param["referenced_value"] : null;
@@ -1203,8 +1203,8 @@ class CMSFileHandler {
 				
 				//print new code
 				if ($status) {
-					$PHPCodePrettyPrinter = new PhpParser\PrettyPrinter\Standard();
-					$new_contents = $PHPCodePrettyPrinter->prettyPrint($stmts);
+					$PHPCodePrettyPrinter = new PHPParserPrettyPrinterStandard();
+					$new_contents = $PHPCodePrettyPrinter->nativeStmtsPrettyPrint($stmts);
 					
 					//prettyPrint removes the php open and close tags when is a pure php file, so we must add them
 					if (substr(trim($contents), 0, 2) == "<?" && substr(trim($new_contents), 0, 2) != "<?")
@@ -1269,16 +1269,13 @@ class CMSFileHandler {
 		}
 		?>';*/
 		
-		//$PHPParserEmulative = new PhpParser\Parser(new PhpParser\Lexer\Emulative);
-		$PHPParser5 = new PhpParser\Parser\Php5(new PhpParser\Lexer\Emulative);
-		$PHPParser7 = new PhpParser\Parser\Php7(new PhpParser\Lexer\Emulative);
-		$PHPParserEmulative = new PhpParser\Parser\Multiple(array($PHPParser5, $PHPParser7));
+		$PHPMultipleParser = new PHPMultipleParser();
 		
 		/*
 
-		 * The $PHPParserEmulative->parse($contents) parses the '\n' as end-lines but we dont' want this, bc we can have the code: 
+		 * The $PHPMultipleParser->parse($contents) parses the '\n' as end-lines but we dont' want this, bc we can have the code: 
 		 	$x = '<script>modal.find(".modal-body").html(msg.replace(/\n/g, "<br>"));</script>';
-		 Without this the $PHPParserEmulative->parse will convert the stmts to:
+		 Without this the $PHPMultipleParser->parse will convert the stmts to:
 		 	$x = '<script>modal.find(".modal-body").html(msg.replace(/
 /g, "<br>"));</script>';
 		 */
@@ -1287,8 +1284,12 @@ class CMSFileHandler {
 		
 		//echo "<textarea>$contents</textarea>";die();
 		//TODO: replace '\n' that are not escaped with something
-		$stmts = $PHPParserEmulative->parse($contents);
+		$stmts = $PHPMultipleParser->parse($contents);
 		//TODO loop stmts and inner stmts and replace back to '\n'
+		//echo "<pre>";print_r($stmts);die();
+		
+		//convert stmts expression to simple stmts
+		$stmts = self::convertStmtsExpressionToSimpleStmts($stmts);
 		//echo "<pre>";print_r($stmts);die();
 		
 		return $stmts;
@@ -1305,15 +1306,17 @@ class CMSFileHandler {
 		$variables_stmts = $variables_stmts ? $variables_stmts : array();
 		
 		//echo "stmts_count:$stmts_count\n";
-		//echo "<pre>";print_r($stmts);die();
+		//if ($stmts_count && in_array("includejoinpoint", $method_names)){echo "<pre>HERE:";print_r($stmts);die();}
 		
 		for ($i = 0; $i < $stmts_count; $i++) {
 			$stmt = $stmts[$i];
+			$stmt = self::convertStmtExpressionToSimpleStmt($stmt);
 			$stmt_type = strtolower($stmt->getType());
 			
 			//prepare variables_stmts - Do not set the $variables_stmts outside this loop because we only want the variables inited before this current $stmts[$i], otherwise when we call the self::getVariableFromStmts method, we can get variables that were inited after the $class_obj->$method_names gets called, And that is not what we want. This is very important bc in case we have multiple variables set, one for each call "$class_obj->$method_names", then we only get the latest variable set. And that is not what we want, this is: if we have the code: '$x=0;foo($x);$x=1;foo($x);' we want the $variables_stmts to reference first the $x=0 and then the $x=1; If we move this outside of this loop, we will always get $x=1; for both foo methods, which is incorrect.
 			if ($stmt_type == "expr_assign") {
-				$var_code = $PHPParserPrettyPrinter->prettyPrintExpr($stmt->var);
+				$stmt_var = isset($stmt->var) ? $stmt->var : null;
+				$var_code = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_var);
 				$var_code_type = self::getArgumentType($var_code);
 				
 				if ($var_code_type == "variable")
@@ -1335,13 +1338,13 @@ class CMSFileHandler {
 			}
 			
 			//parse var if a method/function call
-			$stmt_var = $stmt->var;
+			$stmt_var = isset($stmt->var) ? $stmt->var : null;
 			
 			if ($stmt_var) {
 				$stmt_var_type = strtolower($stmt_var->getType());
 				
 				if ($stmt_var_type == "expr_methodcall" || $stmt_var_type == "expr_staticcall" || $stmt_var_type == "expr_funccall") {
-					//echo "getMethodParamsFromStmts:".$PHPParserPrettyPrinter->prettyPrintExpr($stmt_var)."\n";
+					//echo "getMethodParamsFromStmts:".$PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_var)."\n";
 					
 					$items = self::getMethodParamsFromStmts($PHPParserPrettyPrinter, array($stmt_var), $method_names, $class_obj, $search_limit, $depth, $variables_stmts);
 					$methods = array_merge($methods, $items);
@@ -1354,19 +1357,19 @@ class CMSFileHandler {
 			//parse expr if a method/function call
 			if ($stmt_type == "expr_methodcall" || $stmt_type == "expr_staticcall" || $stmt_type == "expr_funccall") {
 				$func_name = self::printCodeNodeName($PHPParserPrettyPrinter, $stmt);
-				//echo "func_name:$func_name\n";
+				//echo "func_name:$func_name\n<br/>";
 				
 				if ($func_name && is_string($func_name) && in_array(strtolower($func_name), $method_names)) {
 					//Getting obj_name
 					$obj = null;
-					if ($stmt->var)
-						$obj = $PHPParserPrettyPrinter->prettyPrintExpr($stmt->var);
+					if (!empty($stmt->var))
+						$obj = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var);
 					else
-						$obj = self::printCodeNodeName($PHPParserPrettyPrinter, $stmt->class);
+						$obj = self::printCodeNodeName($PHPParserPrettyPrinter, isset($stmt->class) ? $stmt->class : null);
 					
 					//Checking obj_name
 					if (!$class_obj || $class_obj == $obj) {
-						$stmt_args = $stmt->args;
+						$stmt_args = isset($stmt->args) ? $stmt->args : null;
 						$params = array();
 						
 						//preparing params
@@ -1376,11 +1379,11 @@ class CMSFileHandler {
 								$var_name = $referenced_value = $referenced_type = null;
 								
 								if ($stmt_arg_type == "expr_assign" || $stmt_arg_type == "expr_assignop_concat" || $stmt_arg_type == "expr_assignop_plus" || $stmt_arg_type == "expr_assignop_minus") {
-									$var_name = $stmt_arg->value->var->name;
-									$stmt_arg->value = $stmt_arg->value->expr;
+									$var_name = isset($stmt_arg->value->var->name) ? $stmt_arg->value->var->name : null;
+									$stmt_arg->value = isset($stmt_arg->value->expr) ? $stmt_arg->value->expr : null;
 								}
 							
-								if ($stmt_arg->value->items) {
+								if (!empty($stmt_arg->value->items)) {
 									$value = self::getMethodParamsArrayItems($PHPParserPrettyPrinter, $stmt_arg->value->items);
 									$value_type = "array";
 								}
@@ -1388,7 +1391,7 @@ class CMSFileHandler {
 									//$arg_type = strtolower($stmt_arg->value->getType());
 									
 								//echo "!<pre>";print_r($stmt_arg);echo "</pre>!";
-									$value = $PHPParserPrettyPrinter->pArg($stmt_arg);
+									$value = $PHPParserPrettyPrinter->printArg($stmt_arg);
 									$value_type = self::getArgumentType($value);
 								//echo "!<pre>value $value_type:";print_r($value);echo "</pre>!";
 									$value = self::prepareArgument($value, $value_type);
@@ -1424,9 +1427,9 @@ class CMSFileHandler {
 					}
 					
 					$method = array(
-						"match" => $PHPParserPrettyPrinter->prettyPrintExpr($stmt),
+						"match" => $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt),
 						"method" => $func_name,
-						"params" => $params,
+						"params" => isset($params) ? $params : null,
 						"line" => $stmt->getAttribute("startLine"),
 					);
 					
@@ -1443,19 +1446,21 @@ class CMSFileHandler {
 				break;
 			else if ($depth <= -1 || $depth > 0) {
 				//prepare inner tasks
-				$sub_stmts_groups = $stmt->stmts ? array($stmt) : array();
+				$sub_stmts_groups = !empty($stmt->stmts) ? array($stmt) : array();
 				
 				if ($stmt_type == "stmt_if") {
 					//prepare conditions bc there might be some $method_names calls in the conditions
-					$stmt_cond = self::convertStmtConditionInStmt($stmt->cond);
+					$stmt_cond = isset($stmt->cond) ? $stmt->cond : null;
+					$stmt_cond = self::convertStmtConditionInStmt($stmt_cond);
 					
 					if ($stmt_cond)
 						$sub_stmts_groups[] = $stmt_cond;
 					
-					if ($stmt->elseifs) {
+					if (!empty($stmt->elseifs)) {
 						//prepare conditions bc there might be some $method_names calls in the conditions
 						for ($j = 0, $tj = count($stmt->elseifs); $j < $tj; $j++) {
-							$stmt_cond = self::convertStmtConditionInStmt($stmt->elseifs[$j]->cond);
+							$stmt_cond = isset($stmt->elseifs[$j]->cond) ? $stmt->elseifs[$j]->cond : null;
+							$stmt_cond = self::convertStmtConditionInStmt($stmt_cond);
 							
 							if ($stmt_cond)
 								$sub_stmts_groups[] = $stmt_cond;
@@ -1465,20 +1470,22 @@ class CMSFileHandler {
 						$sub_stmts_groups = array_merge($sub_stmts_groups, $stmt->elseifs);
 					}
 					
-					if ($stmt->else->stmts)
+					if (!empty($stmt->else->stmts))
 						$sub_stmts_groups[] = $stmt->else;
 				}
-				else if ($stmt_type == "stmt_switch" && $stmt->cases) {
+				else if ($stmt_type == "stmt_switch" && !empty($stmt->cases)) {
 					//prepare conditions bc there might be some $method_names calls in the conditions
-					$stmt_cond = self::convertStmtConditionInStmt($stmt->cond);
+					$stmt_cond = isset($stmt->cond) ? $stmt->cond : null;
+					$stmt_cond = self::convertStmtConditionInStmt($stmt_cond);
 					
 					if ($stmt_cond)
 						$sub_stmts_groups[] = $stmt_cond;
 					
 					//prepare cases
-					if ($stmt->cases)
+					if (!empty($stmt->cases))
 						for ($j = 0, $tj = count($stmt->cases); $j < $tj; $j++) {
-							$stmt_cond = self::convertStmtConditionInStmt($stmt->cases[$j]->cond);
+							$stmt_cond = isset($stmt->cases[$j]->cond) ? $stmt->cases[$j]->cond : null;
+							$stmt_cond = self::convertStmtConditionInStmt($stmt_cond);
 							
 							if ($stmt_cond)
 								$sub_stmts_groups[] = $stmt_cond;
@@ -1487,17 +1494,17 @@ class CMSFileHandler {
 					$sub_stmts_groups = array_merge($sub_stmts_groups, $stmt->cases);
 					//echo "<pre>";print_r($sub_stmts_groups);
 				}
-				else if ($stmt_type == "stmt_trycatch" && $stmt->catches) {
+				else if ($stmt_type == "stmt_trycatch" && !empty($stmt->catches)) {
 					//echo "<pre>";print_r($stmt);
 					$sub_stmts_groups = array_merge($sub_stmts_groups, $stmt->catches);
 				}
-				else if ($stmt_type == "expr_binaryop_concat" && ($stmt->left || $stmt->right)) {//in case of echo "asd" . $EVC->foo()
+				else if ($stmt_type == "expr_binaryop_concat" && (!empty($stmt->left) || !empty($stmt->right))) {//in case of echo "asd" . $EVC->foo()
 					$stmt->stmts = array();
 					
-					if ($stmt->left)
+					if (!empty($stmt->left))
 						$stmt->stmts[] = $stmt->left;
 					
-					if ($stmt->right)
+					if (!empty($stmt->right))
 						$stmt->stmts[] = $stmt->right;
 					
 					$sub_stmts_groups[] = $stmt;
@@ -1506,11 +1513,11 @@ class CMSFileHandler {
 					$func_name = self::printCodeNodeName($PHPParserPrettyPrinter, $stmt);
 					
 					//a method can be called inside of another method
-				 	if ($func_name && is_string($func_name) && !in_array(strtolower($func_name), $method_names) && $stmt->args) {
+				 	if ($func_name && is_string($func_name) && !in_array(strtolower($func_name), $method_names) && !empty($stmt->args)) {
 						$stmt->stmts = array();
 						
 						foreach ($stmt->args as $arg)
-							if ($arg->value)
+							if (!empty($arg->value))
 								$stmt->stmts[] = $arg->value;
 						
 						$sub_stmts_groups[] = $stmt;
@@ -1543,6 +1550,8 @@ class CMSFileHandler {
 		$tmp_stmt = null;
 		
 		if ($cond) {
+			$cond = self::convertStmtExpressionToSimpleStmt($cond);
+			
 			if (empty($cond->stmts)) {
 				$tmp_stmt = new stdClass();
 				
@@ -1558,8 +1567,25 @@ class CMSFileHandler {
 		return $tmp_stmt;
 	}
 	
+	private static function convertStmtExpressionToSimpleStmt($stmt) {
+		if ($stmt && is_object($stmt) && method_exists($stmt, "getType") && strtolower($stmt->getType()) == "stmt_expression" && isset($stmt->expr))
+			$stmt = $stmt->expr;
+		
+		return $stmt;
+	}
+	
+	private static function convertStmtsExpressionToSimpleStmts($stmts) {
+		if ($stmts)
+			foreach ($stmts as $idx => $stmt)
+				$stmts[$idx] = self::convertStmtExpressionToSimpleStmt($stmt);
+		
+		return $stmts;
+	}
+	
 	private static function setMethodParamsFromStmts($PHPParserPrettyPrinter, $stmts, $item_path_parts, $new_item_value, $method_names, $class_obj = false, $search_method_index = 0, $search_argument_index = 0, $depth = -1, $variables_stmts = null, $found_method = false) {
 		$status = false;
+		
+		$stmts = self::convertStmtsExpressionToSimpleStmts($stmts);
 		
 		$method_names = is_array($method_names) ? $method_names : array($method_names);
 		foreach ($method_names as $idx => $method_name)
@@ -1569,11 +1595,13 @@ class CMSFileHandler {
 		$variables_stmts = $variables_stmts ? $variables_stmts : array();
 		
 		for ($i = 0; $i < $stmts_count; $i++) {
-			$stmt = &$stmts[$i];
+			$stmt = $stmts[$i];
+			$stmt = self::convertStmtExpressionToSimpleStmt($stmt);
 			$stmt_type = strtolower($stmt->getType());
 			
 			if ($stmt_type == "expr_assign") {
-				$var_code = $PHPParserPrettyPrinter->prettyPrintExpr($stmt->var);
+				$stmt_var = isset($stmt->var) ? $stmt->var : null;
+				$var_code = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_var);
 				$var_code_type = self::getArgumentType($var_code);
 				
 				if ($var_code_type == "variable")
@@ -1585,7 +1613,11 @@ class CMSFileHandler {
 			$stmt = &$stmts[$i];
 			$stmt_type = strtolower($stmt->getType());
 			
-			if ($stmt_type == "expr_assign" || $stmt_type == "expr_assignop_concat" || $stmt_type == "expr_assignop_plus" || $stmt_type == "expr_assignop_minus") {
+			if ($stmt_type == "stmt_expression") {
+				$stmt = &$stmt->expr;
+				$stmt_type = strtolower($stmt->getType());
+			}
+			else if ($stmt_type == "expr_assign" || $stmt_type == "expr_assignop_concat" || $stmt_type == "expr_assignop_plus" || $stmt_type == "expr_assignop_minus") {
 				$stmt = &$stmt->expr;
 				$stmt_type = strtolower($stmt->getType());
 			}
@@ -1600,16 +1632,16 @@ class CMSFileHandler {
 				if ($func_name && is_string($func_name) && in_array(strtolower($func_name), $method_names)) {
 					//Getting obj_name
 					$obj = null;
-					if ($stmt->var)
-						$obj = $PHPParserPrettyPrinter->prettyPrintExpr($stmt->var);
+					if (!empty($stmt->var))
+						$obj = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var);
 					else
-						$obj = self::printCodeNodeName($PHPParserPrettyPrinter, $stmt->class);
+						$obj = self::printCodeNodeName($PHPParserPrettyPrinter, isset($stmt->class) ? $stmt->class : null);
 					
 					//Checking obj_name
 					if (!$class_obj || $class_obj == $obj) {
 						if ($search_method_index <= 0) {
 							$found_method = true;
-							$stmt_args = $stmt->args;
+							$stmt_args = isset($stmt->args) ? $stmt->args : null;
 							
 							//preparing params
 							if (is_array($stmt_args)) {
@@ -1642,7 +1674,7 @@ class CMSFileHandler {
 			if ($found_method)
 				break;
 			else if ($depth <= -1 || $depth > 0) {
-				$sub_stmts_groups = $stmt->stmts ? array($stmt) : array();
+				$sub_stmts_groups = !empty($stmt->stmts) ? array($stmt) : array();
 				
 				if ($stmt_type == "stmt_if") {
 					if (!empty($stmt->elseifs)) {
@@ -1710,8 +1742,11 @@ class CMSFileHandler {
 	private static function setMethodParamStmtExprValue($PHPParserPrettyPrinter, &$variables_stmts, $item_path_parts, $new_item_value, &$stmt_expr) {
 		$status = false;
 		
+		$variables_stmts = self::convertStmtsExpressionToSimpleStmts($variables_stmts);
+		$stmt_expr = self::convertStmtExpressionToSimpleStmt($stmt_expr);
+		
 		//$expr_type = strtolower($stmt_expr->getType());
-		$value = $PHPParserPrettyPrinter->prettyPrintExpr($stmt_expr);
+		$value = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_expr);
 		$value_type = self::getArgumentType($value);
 		//echo "!<pre>value $value_type:";print_r($value);echo "</pre>!";
 		$value = self::prepareArgument($value, $value_type);
@@ -1740,33 +1775,42 @@ class CMSFileHandler {
 	
 	private static function printCodeNodeName($PHPParserPrettyPrinter, $node) {
 		if (is_object($node)) {
-			if (is_object($node->name) && strtolower($node->name->getType()) == "name")
-				return $PHPParserPrettyPrinter->pName($node->name);
+			if (isset($node->name) && is_object($node->name)) {
+				$node_type = strtolower($node->name->getType());
+				
+				if ($node_type == "name")
+					return $PHPParserPrettyPrinter->printName($node->name);
+				else if ($node_type == "identifier") //JP: Identifier type added in 20-09-2024
+					return $PHPParserPrettyPrinter->printIdentifier($node->name);
+			}
 			
-			if (is_array($node->parts))
-				return $PHPParserPrettyPrinter->pName($node);
+			if (isset($node->parts) && is_array($node->parts))
+				return $PHPParserPrettyPrinter->printName($node);
 			
-			return $node->name;
+			return isset($node->name) ? $node->name : null;
 		}
 		return $node;
 	}
 	
 	private static function getVariableFromStmts($PHPParserPrettyPrinter, $stmts, &$var, &$var_type) {
 		if ($var_type == "variable") {
+			$stmts = self::convertStmtsExpressionToSimpleStmts($stmts);
+			
 			//get last stmt variable initialized
 			for ($i = count($stmts) - 1; $i >= 0; $i--) {
 				$stmt = $stmts[$i];
 				
 				if (strtolower($stmt->getType()) == "expr_assign" && !empty($stmt->var)) {
-					$v = $PHPParserPrettyPrinter->prettyPrintExpr($stmt->var);
+					$v = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var);
 					
-					if ($v == '$' . $var) {
+					if ($v == '$' . $var || $v == '@$' . $var) {
 						if (!empty($stmt->expr->items)) {
 							$var = self::getMethodParamsArrayItems($PHPParserPrettyPrinter, $stmt->expr->items);
 							$var_type = "array";
 						}
 						else {
-							$var = $PHPParserPrettyPrinter->prettyPrintExpr($stmt->expr);
+							$expr = isset($stmt->expr) ? $stmt->expr : null;
+							$var = $PHPParserPrettyPrinter->nodeExprPrettyPrint($expr);
 							$var_type = self::getArgumentType($var);
 							$var = self::prepareArgument($var, $var_type);
 						}
@@ -1782,15 +1826,17 @@ class CMSFileHandler {
 		$status = false;
 		
 		if ($var_type == "variable") {
+			$stmts = self::convertStmtsExpressionToSimpleStmts($stmts);
+			
 			$t = count($stmts);
 			for ($i = 0; $i < $t; $i++) {
 				$stmt = $stmts[$i];
 				
 				if (strtolower($stmt->getType()) == "expr_assign" && !empty($stmt->var)) {
-					$v = $PHPParserPrettyPrinter->prettyPrintExpr($stmt->var);
+					$v = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var);
 				
-					if ($v == '$' . $var) {
-						$value = $stmt->expr;
+					if ($v == '$' . $var || $v == '@$' . $var) {
+						$value = isset($stmt->expr) ? $stmt->expr : null;
 						
 						if (count($item_path_parts) == 1 && empty(strlen($item_path_parts[0]))) { //only change it if the item_path_parts is empty
 							//echo "<pre>";print_r($value);die();
@@ -1863,22 +1909,24 @@ class CMSFileHandler {
 	private static function getMethodParamsArrayItems($PHPParserPrettyPrinter, $items) {
 		$props = array();
 		
+		$items = self::convertStmtExpressionToSimpleStmt($items);
+		
 		$t = $items ? count($items) : 0;
 		for ($i = 0; $i < $t; $i++) {
 			$item = $items[$i];
 			
-			$key = $item->key;
-			$value = $item->value;
+			$key = isset($item->key) ? $item->key : null;
+			$value = isset($item->value) ? $item->value : null;
 			
 			$key_type = is_object($key) ? strtolower($key->getType()) : null;
 			$value_type = is_object($value) ? strtolower($value->getType()) : null;
 			
 			if ($key_type) {
-				$key = $PHPParserPrettyPrinter->prettyPrintExpr($key);
+				$key = $PHPParserPrettyPrinter->nodeExprPrettyPrint($key);
 				$key = self::getStmtValueAccordingWithType($key, $key_type);
 				
 				$key_type = strtolower($item->key->getType());
-				$key_type = $key_type == "scalar_string" || $key_type == "scalar_encapsed" ? "string" : (
+				$key_type = $key_type == "scalar_string" || $key_type == "scalar_encapsed" || $key_type == "scalar_interpolatedstring" ? "string" : (
 					$key_type == "expr_variable" ? "variable" : (
 					$key_type == "expr_funccall" ? "function" : (
 					$key_type == "expr_methodcall" || $key_type == "expr_staticcall" ? "method" : (
@@ -1890,9 +1938,9 @@ class CMSFileHandler {
 			
 			if ($value_type) {
 				if ($value_type == "expr_array")
-					$value = self::getMethodParamsArrayItems($PHPParserPrettyPrinter, $value->items);
+					$value = self::getMethodParamsArrayItems($PHPParserPrettyPrinter, isset($value->items) ? $value->items : null);
 				else {
-					$value = $PHPParserPrettyPrinter->prettyPrintExpr($value);
+					$value = $PHPParserPrettyPrinter->nodeExprPrettyPrint($value);
 					//echo "<pre>value($value_type):$value<pre><br>";
 					$value = self::getStmtValueAccordingWithType($value, $value_type);
 					//echo "<pre>value($value_type):$value<pre><br>";
@@ -1900,7 +1948,7 @@ class CMSFileHandler {
 				//echo "$key($value_type): $value<br>";
 				
 				$value_type = strtolower($value_type);
-				$value_type = $value_type == "scalar_string" || $value_type == "scalar_encapsed" ? "string" : (
+				$value_type = $value_type == "scalar_string" || $value_type == "scalar_encapsed" || $value_type == "scalar_interpolatedstring" ? "string" : (
 					$value_type == "expr_variable" ? "variable" : (
 					$value_type == "expr_funccall" ? "function" : (
 					$value_type == "expr_methodcall" || $value_type == "expr_staticcall" ? "method" : (
@@ -1931,20 +1979,22 @@ class CMSFileHandler {
 	private static function setMethodParamsArrayItems($PHPParserPrettyPrinter, &$items, $item_path_parts, $new_item_value) {
 		$status = false;
 		
+		$items = self::convertStmtExpressionToSimpleStmt($items);
+		
 		$item_path_parts_0 = isset($item_path_parts[0]) ? $item_path_parts[0] : null;
 		
 		$t = $items ? count($items) : 0;
 		for ($i = 0; $i < $t; $i++) {
 			$item = $items[$i];
 			
-			$key = $item->key;
-			$value = $item->value;
+			$key = isset($item->key) ? $item->key : null;
+			$value = isset($item->value) ? $item->value : null;
 			
 			$key_type = is_object($key) ? strtolower($key->getType()) : null;
 			$value_type = is_object($value) ? strtolower($value->getType()) : null;
 			
 			if ($key_type) {
-				$key = $PHPParserPrettyPrinter->prettyPrintExpr($key);
+				$key = $PHPParserPrettyPrinter->nodeExprPrettyPrint($key);
 				$key = self::getStmtValueAccordingWithType($key, $key_type);
 				
 				$key_type = strtolower($item->key->getType());
@@ -1955,7 +2005,7 @@ class CMSFileHandler {
 			//check if key is the same inside of array
 			$is_same_key = false;
 			
-			if ($key && ($key_type == "scalar_string" || $key_type == "scalar_encapsed") && $key == $item_path_parts_0)
+			if ($key && ($key_type == "scalar_string" || $key_type == "scalar_encapsed" || $key_type == "scalar_interpolatedstring") && $key == $item_path_parts_0)
 				$is_same_key = true;
 			else if (empty($key) && $i == $item_path_parts_0) //Note that the key may be empty, bc is an array with automatic indexes, but the $item_path_parts_0 could be "0"
 				$is_same_key = true;
@@ -2031,7 +2081,7 @@ class CMSFileHandler {
 	public static function getStmtValueAccordingWithType($value, $value_type) {
 		//error_log("$value, $value_type\n\n", 3, "/var/www/html/livingroop/default/tmp/test.log");
 		
-		if ($value_type == "scalar_string" || $value_type == "scalar_encapsed") {
+		if ($value_type == "scalar_string" || $value_type == "scalar_encapsed" || $value_type == "scalar_interpolatedstring") {
 			$first_char = substr($value, 0, 1);
 			
 			$value = substr($value, 1, -1); //remove double quotes
@@ -2139,7 +2189,7 @@ class CMSFileHandler {
 	
 	//2019-10-17: Deprecated method
 	private static function getStmtValueAccordingWithTypeOld($value, $value_type) {
-		if ($value_type == "scalar_string" || $value_type == "scalar_encapsed") {
+		if ($value_type == "scalar_string" || $value_type == "scalar_encapsed" || $value_type == "scalar_interpolatedstring") {
 			$first_char = substr($value, 0, 1);
 			
 			$value = substr($value, 1, -1); //remove double quotes
@@ -2247,7 +2297,7 @@ class CMSFileHandler {
 		if (!isset($variable))
 			return $type == "string" || $type == "date" ? "''" : (!$type ? "null" : "");
 		
-		return $type == "variable" && $variable ? ((substr(trim($variable), 0, 1) != '$' ? '$' : '') . trim($variable)) : ($type == "string" || $type == "date" ? "\"" . addcslashes($variable, '"') . "\"" : (!$type && strlen(trim($variable)) == 0 ? "null" : trim($variable)) );//Please do not add the addcslashes($variable, '\\"') otherwise it will create an extra \\. The correct is without the \\, because yo are editing php code directly.
+		return $type == "variable" && $variable ? ((substr(trim($variable), 0, 1) != '$' && substr(trim($variable), 0, 2) != '@$' ? '$' : '') . trim($variable)) : ($type == "string" || $type == "date" ? "\"" . addcslashes($variable, '"') . "\"" : (!$type && strlen(trim($variable)) == 0 ? "null" : trim($variable)) );//Please do not add the addcslashes($variable, '\\"') otherwise it will create an extra \\. The correct is without the \\, because yo are editing php code directly.
 	}
 }
 ?>

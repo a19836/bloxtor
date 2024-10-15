@@ -12,7 +12,13 @@ $sla_tasks_folder_path = $EVC->getViewsPath() . "sequentiallogicalactivity/tasks
 $WorkFlowTaskHandler->addTasksFolderPath($sla_tasks_folder_path);
 $WorkFlowTaskHandler->initWorkFlowTasks();
 
-$task_file_path = WorkFlowTasksFileHandler::getTaskFilePathByPath($workflow_paths_id, $_GET["path"], $_GET["path_extra"]);
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$path_extra = isset($_GET["path_extra"]) ? $_GET["path_extra"] : null;
+
+$path = str_replace("../", "", $path);//for security reasons
+$path_extra = str_replace("../", "", $path_extra);//for security reasons
+
+$task_file_path = WorkFlowTasksFileHandler::getTaskFilePathByPath($workflow_paths_id, $path, $path_extra);
 
 $obj_settings = null;
 
@@ -29,10 +35,13 @@ if ($task_file_path && file_exists($task_file_path)) {
 			$t = count($loops);
 			for ($i = 0; $i < $t; $i++) {
 				$loop = $loops[$i];
-				$is_loop_allowed = $loop[2];
+				$is_loop_allowed = isset($loop[2]) ? $loop[2] : null;
 			
 				if (!$is_loop_allowed)
-					$obj_settings["error"]["infinit_loop"][] = array("source_task_id" => $loop[0], "target_task_id" => $loop[1]);
+					$obj_settings["error"]["infinit_loop"][] = array(
+						"source_task_id" => isset($loop[0]) ? $loop[0] : null, 
+						"target_task_id" => isset($loop[1]) ? $loop[1] : null
+					);
 			}
 		}
 	}
@@ -42,7 +51,7 @@ function convertResultsIntoTasks($items) {
 	$tasks = array();
 	
 	foreach ($items as $item) {
-		$task = $item["code"];
+		$task = isset($item["code"]) ? $item["code"] : null;
 		
 		if (isset($task["inner"]))
 			$task["inner"] = convertResultsIntoTasks($task["inner"]);
@@ -50,10 +59,10 @@ function convertResultsIntoTasks($items) {
 		if (isset($task["next"]))
 			$task["next"] = convertResultsIntoTasks($task["next"]);
 		
-		if (!$task["inner"])
+		if (empty($task["inner"]))
 			unset($task["inner"]);
 		
-		if (!$task["next"])
+		if (empty($task["next"]))
 			unset($task["next"]);
 		
 		$tasks[] = $task;
@@ -66,7 +75,7 @@ function convertTasksIntoSettingsActions($tasks) {
 	$actions = array();
 	
 	foreach ($tasks as $task) {
-		$item = $task["properties"];
+		$item = isset($task["properties"]) ? $task["properties"] : null;
 		
 		if (isset($task["inner"]))
 			$item["action_value"]["actions"] = convertTasksIntoSettingsActions($task["inner"]);

@@ -208,7 +208,7 @@ trait MySqlDBStatement { //must be "trait" and not "class" bc this code will ser
 			$collation = isset($attribute_data["collation"]) ? $attribute_data["collation"] : null;
 			$comment = isset($attribute_data["comment"]) ? $attribute_data["comment"] : null;
 			
-			if ($flags)
+			if (!empty($flags))
 				foreach ($flags as $k => $v)
 					if ($k != "charset")
 						eval("\$$k = \$v;"); //may change the $auto_increment to true

@@ -1,14 +1,6 @@
 <?php
 include_once get_lib("org.phpframework.util.web.html.HtmlFormHandler");
 include $EVC->getUtilPath("UserAuthenticationUIHandler");
-
-$extra_html = '<select name="choose_project" onChange="onChooseProject(this)">
-				<option value="">- Choose a project -</option>';
-foreach ($presentation_projects_by_folders as $layer_label => $projs) {
-	$extra_html .= '<optgroup label="' . $layer_label . '">';
-	$extra_html .= getProjectsHtml($projs, $layout_type_data ? $layout_type_data["name"] : null);
-	$extra_html .= '</optgroup>';
-}
 		
 function getProjectsHtml($projs, $layout_type_id, $prefix = "") {
 	$html = "";
@@ -23,6 +15,16 @@ function getProjectsHtml($projs, $layout_type_id, $prefix = "") {
 	
 	return $html;
 }
+
+$extra_html = '<select name="choose_project" onChange="onChooseProject(this)">
+				<option value="">- Choose a project -</option>';
+
+if (!empty($presentation_projects_by_folders))
+	foreach ($presentation_projects_by_folders as $layer_label => $projs) {
+		$extra_html .= '<optgroup label="' . $layer_label . '">';
+		$extra_html .= getProjectsHtml($projs, isset($layout_type_data["name"]) ? $layout_type_data["name"] : null);
+		$extra_html .= '</optgroup>';
+	}
 
 $extra_html .= '</select>';
 

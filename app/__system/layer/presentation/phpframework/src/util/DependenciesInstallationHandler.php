@@ -43,7 +43,7 @@ class DependenciesInstallationHandler {
 						if ($fp)
 							$files_to_close[] = $fp;
 						
-						if ($downloaded_file && stripos($downloaded_file["type"], "zip") !== false) {
+						if ($downloaded_file && !empty($downloaded_file["tmp_name"]) && !empty($downloaded_file["type"]) && stripos($downloaded_file["type"], "zip") !== false) {
 							foreach ($folders_to_install as $folder_to_install)
 								if (!ZipHandler::unzip($downloaded_file["tmp_name"], $folder_to_install))
 									$errors[] = "Could not install $zip_name in $folder_to_install.<br/>";

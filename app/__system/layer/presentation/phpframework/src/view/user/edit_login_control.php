@@ -160,7 +160,7 @@ $main_content = '
 			</header>
 		</div>';
 
-if ($username && $login_control_data)
+if ($username && !empty($login_control_data))
 	$main_content .= HtmlFormHandler::createHtmlForm($form_settings, $login_control_data);
 else
 	$main_content .= '<div class="error">No username data to reset.</div>';

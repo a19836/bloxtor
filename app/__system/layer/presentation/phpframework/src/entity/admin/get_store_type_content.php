@@ -1,7 +1,7 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$type = $_GET["type"];
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
 $url = $type == "modules" ? $get_store_modules_url : (
 	$type == "templates" ? $get_store_templates_url : (
 		$type == "programs" ? $get_store_programs_url : (
@@ -11,7 +11,7 @@ $url = $type == "modules" ? $get_store_modules_url : (
 );
 
 if ($url) {
-	$query_string = $_SERVER["QUERY_STRING"];
+	$query_string = isset($_SERVER["QUERY_STRING"]) ? $_SERVER["QUERY_STRING"] : null;
 	
 	$settings = array(
 		"url" => $url, 
@@ -25,7 +25,7 @@ if ($url) {
 	$MyCurl->initSingle($settings);
 	$MyCurl->get_contents();
 	$data = $MyCurl->getData();
-	$json = $data[0]["content"];
+	$json = isset($data[0]["content"]) ? $data[0]["content"] : null;
 	
 	echo $json;
 }

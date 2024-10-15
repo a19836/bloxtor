@@ -183,7 +183,8 @@ class MyS3Manager extends MyIOManager {
 		$prefix = self::configurePath($this->getRootPath() . $dir_path, $this->free);
 		
 		$files = $this->MyS3Folder->getFiles($this->bucket, $prefix);
-		$files["files"] = $this->prepareFiles($files["files"]);
+		$files["files"] = $this->prepareFiles(isset($files["files"]) ? $files["files"] : null);
+		
 		return $files;
 	}
 

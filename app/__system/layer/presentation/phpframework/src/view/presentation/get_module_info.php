@@ -1,4 +1,4 @@
 <?php
-$obj = $module;
+$obj = isset($module) ? $module : null;
 $EVC->setTemplate("json");
 ?>

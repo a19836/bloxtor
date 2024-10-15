@@ -27,6 +27,7 @@ class UserAuthenticationHandler {
 	private $available_user_types;
 	private $available_object_types;
 	private $available_users;
+	private $available_layout_types;
 	
 	private $user_type_permissions;
 	private $user_type_permissions_by_object;
@@ -65,17 +66,17 @@ class UserAuthenticationHandler {
 	
 	//public function setEncryptionKeys($permission_table_encryption_key, $user_table_encryption_key, $user_type_table_encryption_key, $object_type_table_encryption_key, $user_type_permission_table_encryption_key, $user_user_type_table_encryption_key, $login_control_table_encryption_key, $user_stats_table_encryption_key) {
 	public function setEncryptionKeys($keys) {
-		$this->permission_table_encryption_key = $keys["permission_table_encryption_key"];
-		$this->user_table_encryption_key = $keys["user_table_encryption_key"];
-		$this->user_type_table_encryption_key = $keys["user_type_table_encryption_key"];
-		$this->object_type_table_encryption_key = $keys["object_type_table_encryption_key"];
-		$this->user_type_permission_table_encryption_key = $keys["user_type_permission_table_encryption_key"];
-		$this->user_user_type_table_encryption_key = $keys["user_user_type_table_encryption_key"];
-		$this->login_control_table_encryption_key = $keys["login_control_table_encryption_key"];
-		$this->user_stats_table_encryption_key = $keys["user_stats_table_encryption_key"];
-		$this->layout_type_table_encryption_key = $keys["layout_type_table_encryption_key"];
-		$this->layout_type_permission_table_encryption_key = $keys["layout_type_permission_table_encryption_key"];
-		$this->reserved_db_table_name_table_encryption_key = $keys["reserved_db_table_name_table_encryption_key"];
+		$this->permission_table_encryption_key = isset($keys["permission_table_encryption_key"]) ? $keys["permission_table_encryption_key"] : null;
+		$this->user_table_encryption_key = isset($keys["user_table_encryption_key"]) ? $keys["user_table_encryption_key"] : null;
+		$this->user_type_table_encryption_key = isset($keys["user_type_table_encryption_key"]) ? $keys["user_type_table_encryption_key"] : null;
+		$this->object_type_table_encryption_key = isset($keys["object_type_table_encryption_key"]) ? $keys["object_type_table_encryption_key"] : null;
+		$this->user_type_permission_table_encryption_key = isset($keys["user_type_permission_table_encryption_key"]) ? $keys["user_type_permission_table_encryption_key"] : null;
+		$this->user_user_type_table_encryption_key = isset($keys["user_user_type_table_encryption_key"]) ? $keys["user_user_type_table_encryption_key"] : null;
+		$this->login_control_table_encryption_key = isset($keys["login_control_table_encryption_key"]) ? $keys["login_control_table_encryption_key"] : null;
+		$this->user_stats_table_encryption_key = isset($keys["user_stats_table_encryption_key"]) ? $keys["user_stats_table_encryption_key"] : null;
+		$this->layout_type_table_encryption_key = isset($keys["layout_type_table_encryption_key"]) ? $keys["layout_type_table_encryption_key"] : null;
+		$this->layout_type_permission_table_encryption_key = isset($keys["layout_type_permission_table_encryption_key"]) ? $keys["layout_type_permission_table_encryption_key"] : null;
+		$this->reserved_db_table_name_table_encryption_key = isset($keys["reserved_db_table_name_table_encryption_key"]) ? $keys["reserved_db_table_name_table_encryption_key"] : null;
 	}
 	
 	public function setAuthSettings($maximum_failed_attempts, $user_blocked_expired_time, $login_expired_time, $is_local_db) {
@@ -100,23 +101,23 @@ class UserAuthenticationHandler {
 	
 	public function getURLContent($url, $post_data = null, $connection_timeout = 0) { //in seconds
 		$url_host = parse_url($url, PHP_URL_HOST);
-		$current_host = explode(":", $_SERVER["HTTP_HOST"]); //maybe it contains the port
-		$current_host = $current_host[0];
+		$current_host = explode(":", isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : null); //maybe it contains the port
+		$current_host = isset($current_host[0]) ? $current_host[0] : null;
 		
 		$settings = array(
 			"url" => $url, 
 			"post" => $post_data, 
 			"cookie" => $current_host == $url_host ? $_COOKIE : null,
 			"settings" => array(
-				"referer" => $_SERVER["HTTP_REFERER"],
+				"referer" => isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : null,
 				"follow_location" => 1,
 				"connection_timeout" => $connection_timeout,
 			)
 		);
 		
-		if ($_SERVER["AUTH_TYPE"] && $_SERVER["PHP_AUTH_USER"]) {
+		if (!empty($_SERVER["AUTH_TYPE"]) && !empty($_SERVER["PHP_AUTH_USER"])) {
 			$settings["settings"]["http_auth"] = $_SERVER["AUTH_TYPE"];
-			$settings["settings"]["user_pwd"] = $_SERVER["PHP_AUTH_USER"] . ":" . $_SERVER["PHP_AUTH_PW"];
+			$settings["settings"]["user_pwd"] = $_SERVER["PHP_AUTH_USER"] . ":" . (isset($_SERVER["PHP_AUTH_PW"]) ? $_SERVER["PHP_AUTH_PW"] : null);
 		}
 		
 		$MyCurl = new MyCurl();
@@ -124,7 +125,7 @@ class UserAuthenticationHandler {
 		$MyCurl->get_contents();
 		$content = $MyCurl->getData();
 		
-		return $content[0]["content"];
+		return isset($content[0]["content"]) ? $content[0]["content"] : null;
 	}
 	
 	/* MOVE DB FUNCTIONS */
@@ -159,11 +160,12 @@ class UserAuthenticationHandler {
 		$is_different_db = false;
 		
 		if (!$update_db && !$is_local_db) { //if was remote db and now continues to be remote, but is another db
-			$prefix = $GLOBALS["default_db_driver"];
-			$old_db_credentials = $prefix . $GLOBALS[$prefix . "_db_host"] . $GLOBALS[$prefix . "_db_name"] . $GLOBALS[$prefix . "_db_encoding"] . $GLOBALS[$prefix . "_db_odbc_data_source"];
+			$prefix = isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null;
 			
-			$prefix = $global_variables["default_db_driver"];
-			$new_db_credentials = $prefix . $global_variables[$prefix . "_db_host"] . $global_variables[$prefix . "_db_name"] . $global_variables[$prefix . "_db_encoding"] . $global_variables[$prefix . "_db_odbc_data_source"];
+			$old_db_credentials = $prefix . (isset($GLOBALS[$prefix . "_db_host"]) ? $GLOBALS[$prefix . "_db_host"] : null) . (isset($GLOBALS[$prefix . "_db_name"]) ? $GLOBALS[$prefix . "_db_name"] : null)(isset($GLOBALS[$prefix . "_db_encoding"]) ? $GLOBALS[$prefix . "_db_encoding"] : null) . (isset($GLOBALS[$prefix . "_db_odbc_data_source"]) ? $GLOBALS[$prefix . "_db_odbc_data_source"] : null);
+			
+			$prefix = isset($global_variables["default_db_driver"]) ? $global_variables["default_db_driver"] : null;
+			$new_db_credentials = $prefix . (isset($global_variables[$prefix . "_db_host"]) ? $global_variables[$prefix . "_db_host"] : null) . (isset($global_variables[$prefix . "_db_name"]) ? $global_variables[$prefix . "_db_name"] : null) . (isset($global_variables[$prefix . "_db_encoding"]) ? $global_variables[$prefix . "_db_encoding"] : null) . (isset($global_variables[$prefix . "_db_odbc_data_source"]) ? $global_variables[$prefix . "_db_odbc_data_source"] : null);
 			
 			$is_different_db = $old_db_credentials != $new_db_credentials;
 		}
@@ -182,7 +184,7 @@ class UserAuthenticationHandler {
 				$objs = $PHPFrameWork->getObjects();
 				
 				//change default db driver
-				$default_db_driver = $GLOBALS["default_db_driver"];
+				$default_db_driver = isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null;
 				$PHPFrameWork->getObject("DBLayer")->setDefaultBrokerName($default_db_driver);
 				
 				//update db driver options with new options
@@ -210,10 +212,13 @@ class UserAuthenticationHandler {
 				
 				//clean table with no records	so we can insert the previous ones saved in $db_data
 				if ($new_reserved_db_table_names) 
-					foreach ($new_reserved_db_table_names as $item)
-						if (!$this->deleteReservedDBTableName($item["reserved_db_table_name_id"]))
+					foreach ($new_reserved_db_table_names as $item) {
+						$reserved_db_table_name_id = isset($item["reserved_db_table_name_id"]) ? $item["reserved_db_table_name_id"] : null;
+						
+						if (!$this->deleteReservedDBTableName($reserved_db_table_name_id))
 							$status = false;
-				
+					}
+					
 				if ($status) {
 					//insert all data into sysauth tables
 					$status = $this->insertRemoteDBData($db_data);
@@ -221,7 +226,9 @@ class UserAuthenticationHandler {
 					//add new sysauth tables names in new_reserved_db_table_names
 					if ($status && $new_reserved_db_table_names) 
 						foreach ($new_reserved_db_table_names as $item)
-							if (!$this->insertReservedDBTableNameIfNotExistsYet(array("name" => $item["name"])))
+							if (!$this->insertReservedDBTableNameIfNotExistsYet(array(
+								"name" => isset($item["name"]) ? $item["name"] : null
+							)))
 								$status = false;
 				}
 			}
@@ -268,17 +275,17 @@ class UserAuthenticationHandler {
 	private function insertRemoteDBData($db_data) {
 		$status = true;
 		
-		$login_controls = $db_data["login_controls"];
-		$permissions = $db_data["permissions"];
-		$users = $db_data["users"];
-		$user_types = $db_data["user_types"];
-		$object_types = $db_data["object_types"];
-		$user_type_permissions = $db_data["user_type_permissions"];
-		$user_user_types = $db_data["user_user_types"];
-		$user_stats = $db_data["user_stats"];
-		$layout_types = $db_data["layout_types"];
-		$layout_type_permissions = $db_data["layout_type_permissions"];
-		$reserved_db_table_names = $db_data["reserved_db_table_names"];
+		$login_controls = isset($db_data["login_controls"]) ? $db_data["login_controls"] : null;
+		$permissions = isset($db_data["permissions"]) ? $db_data["permissions"] : null;
+		$users = isset($db_data["users"]) ? $db_data["users"] : null;
+		$user_types = isset($db_data["user_types"]) ? $db_data["user_types"] : null;
+		$object_types = isset($db_data["object_types"]) ? $db_data["object_types"] : null;
+		$user_type_permissions = isset($db_data["user_type_permissions"]) ? $db_data["user_type_permissions"] : null;
+		$user_user_types = isset($db_data["user_user_types"]) ? $db_data["user_user_types"] : null;
+		$user_stats = isset($db_data["user_stats"]) ? $db_data["user_stats"] : null;
+		$layout_types = isset($db_data["layout_types"]) ? $db_data["layout_types"] : null;
+		$layout_type_permissions = isset($db_data["layout_type_permissions"]) ? $db_data["layout_type_permissions"] : null;
+		$reserved_db_table_names = isset($db_data["reserved_db_table_names"]) ? $db_data["reserved_db_table_names"] : null;
 		
 		$t = $login_controls ? count($login_controls) : 0;
 		for ($i = 0; $i < $t; $i++) 
@@ -348,8 +355,8 @@ class UserAuthenticationHandler {
 		
 		$user_data = $this->getUserByUsernameAndPassword($username, $password);
 		
-		if ($user_data && $user_data["username"]) {
-			$session_id = $_COOKIE[ self::$USER_SESSION_ID_VARIABLE_NAME ];
+		if ($user_data && !empty($user_data["username"])) {
+			$session_id = isset($_COOKIE[ self::$USER_SESSION_ID_VARIABLE_NAME ]) ? $_COOKIE[ self::$USER_SESSION_ID_VARIABLE_NAME ] : null;
 			$login_expired_time = time() + $this->login_expired_time;
 			
 			//if already exists a session with another username, reset $session_id so the system can create new one.
@@ -392,7 +399,7 @@ class UserAuthenticationHandler {
 	}
 	
 	public function logout() {
-		$session_id = $_COOKIE[ self::$USER_SESSION_ID_VARIABLE_NAME ];
+		$session_id = isset($_COOKIE[ self::$USER_SESSION_ID_VARIABLE_NAME ]) ? $_COOKIE[ self::$USER_SESSION_ID_VARIABLE_NAME ] : null;
 		
 		if ($session_id)
 			$this->expireSession($session_id);
@@ -407,10 +414,10 @@ class UserAuthenticationHandler {
 	}
 	
 	public function getUrlBack() {
-		$url_back = $_COOKIE[ self::$URL_BACK_VARIABLE_NAME ];
+		$url_back = isset($_COOKIE[ self::$URL_BACK_VARIABLE_NAME ]) ? $_COOKIE[ self::$URL_BACK_VARIABLE_NAME ] : null;
 		
 		if ($url_back)
-			$url_back = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443 ? "https://" : "http://") . $_SERVER["HTTP_HOST"] . $url_back;
+			$url_back = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443 ? "https://" : "http://") . (isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "") . $url_back;
 		
 		return $url_back;
 	}
@@ -443,7 +450,7 @@ class UserAuthenticationHandler {
 	
 	private function checkFileAuthentication($file_path, $file_type, $permissions) {
 		$available_object_types = $this->getAvailableObjectTypes();
-		$object_type_id = $available_object_types[$file_type];
+		$object_type_id = isset($available_object_types[$file_type]) ? $available_object_types[$file_type] : null;
 		
 		$object_id = str_replace(APP_PATH, "", $file_path);
 		$object_id = substr($object_id, 0, 1) == "/" ? substr($object_id, 1) : $object_id;
@@ -496,7 +503,7 @@ class UserAuthenticationHandler {
 	
 	public function isFilePermissionAllowed($file_path, $file_type, $permission) {
 		$available_object_types = $this->getAvailableObjectTypes();
-		$object_type_id = $available_object_types[$file_type];
+		$object_type_id = isset($available_object_types[$file_type]) ? $available_object_types[$file_type] : null;
 		
 		$object_id = str_replace(APP_PATH, "", $file_path);
 		$object_id = substr($object_id, 0, 1) == "/" ? substr($object_id, 1) : $object_id;
@@ -509,9 +516,9 @@ class UserAuthenticationHandler {
 	//Check if the $file_path is inside of any of permited folders
 	public function isInnerFilePermissionAllowed($file_path, $file_type, $permission, $omitted_permission_return = true) {
 		$available_object_types = $this->getAvailableObjectTypes();
-		$object_type_id = $available_object_types[$file_type];
+		$object_type_id = isset($available_object_types[$file_type]) ? $available_object_types[$file_type] : null;
 		
-		$objects_permissions = $object_type_id ? $this->user_type_permissions_by_object[$object_type_id] : null;
+		$objects_permissions = $object_type_id && isset($this->user_type_permissions_by_object[$object_type_id]) ? $this->user_type_permissions_by_object[$object_type_id] : null;
 		
 		if ($objects_permissions) {
 			if (substr(strtolower($file_path), 0, strlen(APP_PATH)) == strtolower(APP_PATH))
@@ -551,8 +558,8 @@ class UserAuthenticationHandler {
 	
 	private function isObjectPermissionAllowed($object_type_id, $object_id, $permission) {
 		$available_permissions = $this->getAvailablePermissions();
-		$permission_id = $available_permissions[strtolower($permission)];
-		$current_object_permissions = $object_type_id && $object_id ? $this->user_type_permissions_by_object[$object_type_id][$object_id] : null;
+		$permission_id = isset($available_permissions[strtolower($permission)]) ? $available_permissions[strtolower($permission)] : null;
+		$current_object_permissions = $object_type_id && $object_id && isset($this->user_type_permissions_by_object[$object_type_id][$object_id]) ? $this->user_type_permissions_by_object[$object_type_id][$object_id] : null;
 		//echo "object_id:$object_id:";print_r($current_object_permissions);echo "<br>";
 		
 		return is_array($current_object_permissions) ? in_array($permission_id, $current_object_permissions) : false;
@@ -563,7 +570,7 @@ class UserAuthenticationHandler {
 	//$include_children_access is used in the admin/manage_file.php to check if the files can be created inside of a folder that doesn't belong to a project, but has children that belong to it.
 	public function isLayoutInnerFilePermissionAllowed($file_path, $layout, $file_type, $permission, $omitted_permission_return = false, $include_children_access = true) { 
 		$available_object_types = $this->getAvailableObjectTypes();
-		$object_type_id = $available_object_types[$file_type];
+		$object_type_id = isset($available_object_types[$file_type]) ? $available_object_types[$file_type] : null;
 		
 		$available_permissions = $this->getAvailablePermissions();
 		
@@ -571,13 +578,13 @@ class UserAuthenticationHandler {
 			$permission_id = array();
 			
 			foreach ($permission as $p)
-				$permission_id[] = $available_permissions[strtolower($p)];
+				$permission_id[] = isset($available_permissions[strtolower($p)]) ? $available_permissions[strtolower($p)] : null;
 		}
 		else
-			$permission_id = $available_permissions[strtolower($permission)];
+			$permission_id = isset($available_permissions[strtolower($permission)]) ? $available_permissions[strtolower($permission)] : null;
 		
 		$layout = preg_replace("/\/+/", "/", $layout); //replace multiple slashes
-		$objects_permissions = $layout && $object_type_id ? $this->layouts_type_permissions_by_object[$layout][$object_type_id] : null;
+		$objects_permissions = $layout && $object_type_id && isset($this->layouts_type_permissions_by_object[$layout][$object_type_id]) ? $this->layouts_type_permissions_by_object[$layout][$object_type_id] : null;
 		
 		/*echo "file_path:$file_path<br>\n";
 		echo "layout:$layout<br>\n";
@@ -657,8 +664,8 @@ class UserAuthenticationHandler {
 	
 	private function isLayoutObjectPermissionAllowed($layout, $object_type_id, $object_id, $permission) {
 		$available_permissions = $this->getAvailablePermissions();
-		$permission_id = $available_permissions[strtolower($permission)];
-		$current_object_permissions = $layout && $object_type_id && $object_id ? $this->layouts_type_permissions_by_object[$layout][$object_type_id][$object_id] : null;
+		$permission_id = isset($available_permissions[strtolower($permission)]) ? $available_permissions[strtolower($permission)] : null;
+		$current_object_permissions = $layout && $object_type_id && $object_id && isset($this->layouts_type_permissions_by_object[$layout][$object_type_id][$object_id]) ? $this->layouts_type_permissions_by_object[$layout][$object_type_id][$object_id] : null;
 		//echo "object_id:$object_id; permission_id:$permission_id; exists: ".in_array($permission_id, $current_object_permissions)."; current_object_permissions:";print_r($current_object_permissions);echo "<br>";
 		
 		return is_array($current_object_permissions) ? in_array($permission_id, $current_object_permissions) : false;
@@ -667,17 +674,18 @@ class UserAuthenticationHandler {
 	private function redirect($url) {
 		//Do not add the domain in the cookies so we can save same space in the cookies.
 		//$url_back = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443 ? "https://" : "http://") . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-		$url_back = $_SERVER["REQUEST_URI"];
+		$url_back = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : null;
 		
 		$_COOKIE[ self::$URL_BACK_VARIABLE_NAME ] = $url_back;
 		CookieHandler::setCurrentDomainEternalRootSafeCookie(self::$URL_BACK_VARIABLE_NAME, $url_back);
 		
 		header("Location: " . $url);
-		die("<script>document.location = '" . $url . "';</script>");
+		echo "<script>document.location = '" . $url . "';</script>";
+		die();
 	}
 	
 	private function checkIfUserIsLoggedIn() {
-		$session_id = $_COOKIE[ self::$USER_SESSION_ID_VARIABLE_NAME ];
+		$session_id = isset($_COOKIE[ self::$USER_SESSION_ID_VARIABLE_NAME ]) ? $_COOKIE[ self::$USER_SESSION_ID_VARIABLE_NAME ] : null;
 		
 		if ($session_id) {
 			$status = true;
@@ -689,26 +697,26 @@ class UserAuthenticationHandler {
 				if (empty($this->auth["user_data"]["user_id"])) {
 					$login_data = $this->getLoginControlBySessionId($session_id);
 					
-					if ($login_data["username"]) {
+					if (!empty($login_data["username"])) {
 						$user_data = $this->searchUsers(array("username" => $login_data["username"]));
 						$user_data = $user_data[0];
 						unset($user_data["password"]);
 						
 						$this->auth["user_data"] = $user_data;
-						$this->auth["login_expired_time"] = $login_data["login_expired_time"];
+						$this->auth["login_expired_time"] = isset($login_data["login_expired_time"]) ? $login_data["login_expired_time"] : null;
 					}
 				}
 				
-				if ($this->auth["user_data"]["user_id"]) {
+				if (!empty($this->auth["user_data"]["user_id"])) {
 					$this->loadLoggedUserPermissions();
 					
-					if ($this->auth["login_expired_time"] > time()) {
+					if (isset($this->auth["login_expired_time"]) && $this->auth["login_expired_time"] > time()) {
 						$extra_flags = CSRFValidator::$COOKIES_EXTRA_FLAGS;
 						
 						//code against xss and csfr attacks
-						if (in_array(strtolower($_SERVER['REQUEST_METHOD']), $this->user_session_control_methods)) {
+						if (isset($_SERVER['REQUEST_METHOD']) && in_array(strtolower($_SERVER['REQUEST_METHOD']), $this->user_session_control_methods)) {
 							//check session control variable and renew the expiration time. this is very important bc of xss and csfr attacks.
-							$user_session_control = $_COOKIE[ self::$USER_SESSION_CONTROL_VARIABLE_NAME ];
+							$user_session_control = isset($_COOKIE[ self::$USER_SESSION_CONTROL_VARIABLE_NAME ]) ? $_COOKIE[ self::$USER_SESSION_CONTROL_VARIABLE_NAME ] : null;
 							if ($user_session_control) {
 								$user_session_control = CryptoKeyHandler::hexToBin($user_session_control);
 								$user_session_control = CryptoKeyHandler::decryptText($user_session_control, $this->login_control_table_encryption_key);
@@ -722,7 +730,7 @@ class UserAuthenticationHandler {
 								
 								//error_log("$user_session_control => ". (time() + $this->user_session_control_expired_time) ."\n", 3, $GLOBALS["log_file_path"] ? $GLOBALS["log_file_path"] : "/var/www/html/livingroop/default/tmp/phpframework.log");
 								
-								return $this->auth["user_data"]["user_id"];
+								return isset($this->auth["user_data"]["user_id"]) ? $this->auth["user_data"]["user_id"] : null;
 							}
 						}
 						else {
@@ -731,7 +739,7 @@ class UserAuthenticationHandler {
 							$ttl = CryptoKeyHandler::binToHex($ttl);
 							CookieHandler::setSafeCookie(self::$USER_SESSION_CONTROL_VARIABLE_NAME, $ttl, 0, "/", $extra_flags);
 							
-							return $this->auth["user_data"]["user_id"];
+							return isset($this->auth["user_data"]["user_id"]) ? $this->auth["user_data"]["user_id"] : null;;
 						}
 					}
 				}
@@ -744,7 +752,7 @@ class UserAuthenticationHandler {
 			$this->user_type_permissions = array();
 			$this->user_type_permissions_by_object = array();
 			
-			if ($this->auth["user_data"]["user_id"]) {
+			if (!empty($this->auth["user_data"]["user_id"])) {
 				$user_user_types = $this->getUserUserTypesByUserId($this->auth["user_data"]["user_id"]);
 				
 				foreach ($user_user_types as $user_type_id) {
@@ -753,7 +761,11 @@ class UserAuthenticationHandler {
 					if (is_array($user_type_permissions)) {//it could be with no permissions...
 						$this->user_type_permissions = array_merge($this->user_type_permissions, $user_type_permissions);
 						foreach ($user_type_permissions as $utp) {
-							$this->user_type_permissions_by_object[ $utp["object_type_id"] ][ $utp["object_id"] ][] = $utp["permission_id"];
+							$object_type_id = isset($utp["object_type_id"]) ? $utp["object_type_id"] : null;
+							$object_id = isset($utp["object_id"]) ? $utp["object_id"] : null;
+							$permission_id = isset($utp["permission_id"]) ? $utp["permission_id"] : null;
+							
+							$this->user_type_permissions_by_object[$object_type_id][$object_id][] = $permission_id;
 						}
 					}
 				}
@@ -767,7 +779,7 @@ class UserAuthenticationHandler {
 			$this->layouts_type_permissions_by_object[$layout] = array();
 			
 			$layout_types = $this->getAvailableLayoutTypes($type_id);
-			$layout_type_id = $layout_types[$layout];
+			$layout_type_id = isset($layout_types[$layout]) ? $layout_types[$layout] : null;
 			
 			if ($layout_type_id) {
 				$layout_type_permissions = $this->searchLayoutTypePermissions(array("layout_type_id" => $layout_type_id));
@@ -775,8 +787,13 @@ class UserAuthenticationHandler {
 				if (is_array($layout_type_permissions)) {//it could be with no permissions...
 					$this->layouts_type_permissions[$layout] = array_merge($this->layouts_type_permissions[$layout], $layout_type_permissions);
 					
-					foreach ($layout_type_permissions as $ptp)
-						$this->layouts_type_permissions_by_object[$layout][ $ptp["object_type_id"] ][ $ptp["object_id"] ][] = $ptp["permission_id"];
+					foreach ($layout_type_permissions as $ptp) {
+						$object_type_id = isset($ptp["object_type_id"]) ? $ptp["object_type_id"] : null;
+						$object_id = isset($ptp["object_id"]) ? $ptp["object_id"] : null;
+						$permission_id = isset($ptp["permission_id"]) ? $ptp["permission_id"] : null;
+						
+						$this->layouts_type_permissions_by_object[$layout][$object_type_id][$object_id][] = $permission_id;
+					}
 				}
 			}
 		}
@@ -958,7 +975,10 @@ class UserAuthenticationHandler {
 				$t = count($permissions);
 				for ($i = 0; $i < $t; $i++) {
 					$p = $permissions[$i];
-					$this->available_permissions[ $p["name"] ] = $p["permission_id"];
+					$name = isset($p["name"]) ? $p["name"] : null;
+					$permission_id = isset($p["permission_id"]) ? $p["permission_id"] : null;
+					
+					$this->available_permissions[$name] = $permission_id;
 				}
 			}
 		}
@@ -1055,7 +1075,10 @@ class UserAuthenticationHandler {
 				$t = count($users);
 				for ($i = 0; $i < $t; $i++) {
 					$u = $users[$i];
-					$this->available_users[ $u["name"] ] = $u["user_id"];
+					$name = isset($u["name"]) ? $u["name"] : null;
+					$user_id = isset($u["user_id"]) ? $u["user_id"] : null;
+					
+					$this->available_users[$name] = $user_id;
 				}
 			}
 		}
@@ -1140,7 +1163,10 @@ class UserAuthenticationHandler {
 				$t = count($user_types);
 				for ($i = 0; $i < $t; $i++) {
 					$ut = $user_types[$i];
-					$this->available_user_types[ $ut["name"] ] = $ut["user_type_id"];
+					$name = isset($ut["name"]) ? $ut["name"] : null;
+					$user_type_id = isset($ut["user_type_id"]) ? $ut["user_type_id"] : null;
+					
+					$this->available_user_types[$name] = $user_type_id;
 				}
 			}
 		}
@@ -1188,7 +1214,7 @@ class UserAuthenticationHandler {
 			$data = array("root_path" => $this->root_path, "encryption_key" => $this->object_type_table_encryption_key, "object_type_id" => $object_type_id);
 			return $this->EVC->getBroker()->callBusinessLogic("auth.localdb", "LocalDBObjectTypeService.delete", $data);
 		}
-		return $this->EVC->getBroker()->callBusinessLogic("auth.remotedb", "RemoteDBObjectTypeService.delete", array("user_type_id" => $user_type_id));
+		return $this->EVC->getBroker()->callBusinessLogic("auth.remotedb", "RemoteDBObjectTypeService.delete", array("object_type_id" => $object_type_id));
 	}
 	
 	public function getObjectType($object_type_id) {
@@ -1196,7 +1222,7 @@ class UserAuthenticationHandler {
 			$data = array("root_path" => $this->root_path, "encryption_key" => $this->object_type_table_encryption_key, "object_type_id" => $object_type_id);
 			return $this->EVC->getBroker()->callBusinessLogic("auth.localdb", "LocalDBObjectTypeService.get", $data);
 		}
-		return $this->EVC->getBroker()->callBusinessLogic("auth.remotedb", "RemoteDBObjectTypeService.get", array("user_type_id" => $user_type_id));
+		return $this->EVC->getBroker()->callBusinessLogic("auth.remotedb", "RemoteDBObjectTypeService.get", array("object_type_id" => $object_type_id));
 	}
 	
 	public function getAllObjectTypes() {
@@ -1225,7 +1251,10 @@ class UserAuthenticationHandler {
 				$t = count($object_types);
 				for ($i = 0; $i < $t; $i++) {
 					$ot = $object_types[$i];
-					$this->available_object_types[ $ot["name"] ] = $ot["object_type_id"];
+					$name = isset($ot["name"]) ? $ot["name"] : null;
+					$object_type_id = isset($ot["object_type_id"]) ? $ot["object_type_id"] : null;
+					
+					$this->available_object_types[$name] = $object_type_id;
 				}
 			}
 		}
@@ -1392,7 +1421,7 @@ class UserAuthenticationHandler {
 		if ($data) {
 			$t = count($data);
 			for ($i = 0; $i < $t; $i++) 
-				$user_user_types[] = $data[$i]["user_type_id"];
+				$user_user_types[] = isset($data[$i]["user_type_id"]) ? $data[$i]["user_type_id"] : null;
 		}
 		
 		return $user_user_types;
@@ -1530,7 +1559,10 @@ class UserAuthenticationHandler {
 				$t = count($layout_types);
 				for ($i = 0; $i < $t; $i++) {
 					$ut = $layout_types[$i];
-					$this->available_layout_types[ $ut["name"] ] = $ut["layout_type_id"];
+					$name = isset($ut["name"]) ? $ut["name"] : null;
+					$layout_type_id = isset($ut["layout_type_id"]) ? $ut["layout_type_id"] : null;
+					
+					$this->available_layout_types[$name] = $layout_type_id;
 				}
 			}
 		}
@@ -1717,15 +1749,17 @@ class UserAuthenticationHandler {
 	public function isUsersMaximumNumberReached() {
 		$li = $this->EVC->getPresentationLayer()->getPHPFrameWork()->getLicenceInfo();
 		$users = $this->getAllUsers();
+		$umn = isset($li["umn"]) ? $li["umn"] : null;
 		
-		return $li["umn"] != -1 && count($users) >= $li["umn"];
+		return $umn != -1 && count($users) >= $umn;
 	}
 	
 	public function isUsersMaximumNumberExceeded() {
 		$li = $this->EVC->getPresentationLayer()->getPHPFrameWork()->getLicenceInfo();
 		$users = $this->getAllUsers();
+		$umn = isset($li["umn"]) ? $li["umn"] : null;
 		
-		return $li["umn"] != -1 && count($users) > $li["umn"];
+		return $umn != -1 && count($users) > $umn;
 	}
 	
 	public static function checkUsersMaxNum($UserAuthenticationHandler) {
@@ -1752,7 +1786,8 @@ class UserAuthenticationHandler {
 				"value" => CryptoKeyHandler::binToHex(CryptoKeyHandler::encryptText(1, $this->user_stats_table_encryption_key)),
 			);
 		else {
-			$value = CryptoKeyHandler::decryptText(CryptoKeyHandler::hexTobin($data["value"]), $this->user_stats_table_encryption_key);
+			$value = isset($data["value"]) ? $data["value"] : null;
+			$value = CryptoKeyHandler::decryptText(CryptoKeyHandler::hexTobin($value), $this->user_stats_table_encryption_key);
 			$value++;
 			$data["value"] = CryptoKeyHandler::binToHex(CryptoKeyHandler::encryptText($value, $this->user_stats_table_encryption_key));
 		}
@@ -1762,14 +1797,16 @@ class UserAuthenticationHandler {
 	
 	public function getUsedActionsTotal() {
 		$data = $this->getUserStat("used_actions_total");
-		return $data ? CryptoKeyHandler::decryptText(CryptoKeyHandler::hexTobin($data["value"]), $this->user_stats_table_encryption_key) : null;
+		$value = isset($data["value"]) ? $data["value"] : null;
+		return $data ? CryptoKeyHandler::decryptText(CryptoKeyHandler::hexTobin($value), $this->user_stats_table_encryption_key) : null;
 	}
 	
 	public function isActionsMaximumNumberReached() {
 		$li = $this->EVC->getPresentationLayer()->getPHPFrameWork()->getLicenceInfo();
 		$actions_total = $this->getUsedActionsTotal();
+		$amn = isset($li["amn"]) ? $li["amn"] : null;
 		
-		return $li["amn"] != -1 && $actions_total >= $li["amn"];
+		return $amn != -1 && $actions_total >= $amn;
 	}
 	
 	public static function checkActionsMaxNum($UserAuthenticationHandler) {
@@ -1790,16 +1827,16 @@ class UserAuthenticationHandler {
 	public function isAllowedDomain() {
 		$li = $this->EVC->getPresentationLayer()->getPHPFrameWork()->getLicenceInfo();
 		
-		$cadp = $li["cadp"];
+		$cadp = isset($li["cadp"]) ? $li["cadp"] : null;
 		
-		$ad = str_replace(";", ",", trim($li["ad"]));
+		$ad = isset($li["ad"]) ? str_replace(";", ",", trim($li["ad"])) : "";
 		$ad .= $ad ? "," : "";
 		$ad = preg_replace("/:80,/", ",", $ad);
 		$ad = !$cadp ? preg_replace("/:[0-9]+,/", ",", $ad) : $ad;
 		$ad = strtolower($ad);
 		$ad = preg_replace("/,+/", ",", preg_replace("/(^,|,$)/", "", preg_replace("/\s*,\s*/", ",", $ad)));
 		
-		$hh = $_SERVER["HTTP_HOST"];
+		$hh = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : null;
 		$status = !empty($hh);
 		
 		if ($status && $ad) {
@@ -1828,7 +1865,7 @@ class UserAuthenticationHandler {
 	public function isAllowedPath() {
 		$li = $this->EVC->getPresentationLayer()->getPHPFrameWork()->getLicenceInfo();
 		
-		$ap = str_replace(";", ",", preg_replace("/\/+/", "/", trim($li["ap"])));
+		$ap = isset($li["ap"]) ? str_replace(";", ",", preg_replace("/\/+/", "/", trim($li["ap"]))) : "";
 		$cp = preg_replace("/\/+$/", "", preg_replace("/\/+/", "/", CMS_PATH)); //remove repeated and last slash
 		return !$ap || preg_match("/,s*" . str_replace("/", "\\/", str_replace(".", "\\.", $cp)) . "\/?s*,/i", ",$ap,");
 	}

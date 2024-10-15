@@ -29,7 +29,7 @@ class EVCDispatcher extends Dispatcher {
 		while (count($explode) > 0 && $explode[ count($explode) - 1] == "") //deletes empty parameters - normally the last one will be an empty string by default
 			array_pop($explode);
 		
-		$this->page_code = $explode[0];
+		$this->page_code = count($explode) ? $explode[0] : null;
 		if($this->page_code && $this->EVC->controllerExists($this->page_code)) {
 			$this->requested_file_path = $this->EVC->getControllerPath($this->page_code);
 			$this->parameters = $explode;

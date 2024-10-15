@@ -9,18 +9,18 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$props = $WorkFlowTaskCodeParser->getObjectMethodProps($stmt);
 		
 		if ($props) {
-			$method_name = $props["method_name"];
+			$method_name = isset($props["method_name"]) ? $props["method_name"] : null;
 			
 			if ($method_name == "addRegionBlock" && empty($props["method_static"])) {
-				$args = $props["method_args"];
+				$args = isset($props["method_args"]) ? $props["method_args"] : null;
 				
 				if (count($args) != 2)
 					return null;
 				
-				$region_id = $args[0]["value"];
-				$region_id_type = $args[0]["type"];
-				$block_id = $args[1]["value"];
-				$block_id_type = $args[1]["type"];
+				$region_id = isset($args[0]["value"]) ? $args[0]["value"] : null;
+				$region_id_type = isset($args[0]["type"]) ? $args[0]["type"] : null;
+				$block_id = isset($args[1]["value"]) ? $args[1]["value"] : null;
+				$block_id_type = isset($args[1]["type"]) ? $args[1]["type"] : null;
 				
 				unset($props["method_name"]);
 				unset($props["method_args"]);
@@ -45,35 +45,41 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"method_obj" => $raw_data["childs"]["properties"][0]["childs"]["method_obj"][0]["value"],
-			"region_id" => $raw_data["childs"]["properties"][0]["childs"]["region_id"][0]["value"],
-			"region_id_type" => $raw_data["childs"]["properties"][0]["childs"]["region_id_type"][0]["value"],
-			"block_id" => $raw_data["childs"]["properties"][0]["childs"]["block_id"][0]["value"],
-			"block_id_type" => $raw_data["childs"]["properties"][0]["childs"]["block_id_type"][0]["value"],
+			"method_obj" => isset($raw_data["childs"]["properties"][0]["childs"]["method_obj"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["method_obj"][0]["value"] : null,
+			"region_id" => isset($raw_data["childs"]["properties"][0]["childs"]["region_id"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["region_id"][0]["value"] : null,
+			"region_id_type" => isset($raw_data["childs"]["properties"][0]["childs"]["region_id_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["region_id_type"][0]["value"] : null,
+			"block_id" => isset($raw_data["childs"]["properties"][0]["childs"]["block_id"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["block_id"][0]["value"] : null,
+			"block_id_type" => isset($raw_data["childs"]["properties"][0]["childs"]["block_id_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["block_id_type"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$method_obj = $properties["method_obj"];
+		$method_obj = isset($properties["method_obj"]) ? $properties["method_obj"] : null;
 		if ($method_obj) {
 			$static_pos = strpos($method_obj, "::");
 			$non_static_pos = strpos($method_obj, "->");
-			$method_obj = substr($method_obj, 0, 1) != '$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $method_obj : $method_obj;
+			$method_obj = substr($method_obj, 0, 1) != '$' && substr($method_obj, 0, 2) != '@$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $method_obj : $method_obj;
 			$method_obj .= "->";
 		}
 		
-		$code  = $prefix_tab . $method_obj . "addRegionBlock(" . self::getVariableValueCode($properties["region_id"], $properties["region_id_type"]) . ", " . self::getVariableValueCode($properties["block_id"], $properties["block_id_type"]) . ");\n";
+		$region_id_type = isset($properties["region_id_type"]) ? $properties["region_id_type"] : null;
+		$region_id = isset($properties["region_id"]) ? $properties["region_id"] : null;
+		$block_id_type = isset($properties["block_id_type"]) ? $properties["block_id_type"] : null;
+		$block_id = isset($properties["block_id"]) ? $properties["block_id"] : null;
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$code  = $prefix_tab . $method_obj . "addRegionBlock(" . self::getVariableValueCode($region_id, $region_id_type) . ", " . self::getVariableValueCode($block_id, $block_id_type) . ");\n";
+		
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

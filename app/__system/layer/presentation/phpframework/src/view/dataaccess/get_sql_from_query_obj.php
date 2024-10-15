@@ -1,5 +1,5 @@
 <?php
-echo $sql;
+echo isset($sql) ? $sql : "";
 
 $EVC->setTemplate("empty");
 ?>

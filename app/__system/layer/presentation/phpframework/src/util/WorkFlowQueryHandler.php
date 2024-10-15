@@ -35,11 +35,11 @@ class WorkFlowQueryHandler {
 		$this->map_db_types = $map_db_types;
 	}
 	
-	public static function getSelectedDBBrokersDriversTablesAndAttributes($DataAccessObj, $tasks_file_path, $workflow_paths_id, $selected_default_table = false, $selected_default_db_driver = false, $filter_by_layout = false, $LayoutTypeProjectHandler = null) {
+	public static function getSelectedDBBrokersDriversTablesAndAttributes($DataAccessObj, $workflow_paths_id, $selected_default_table = false, $selected_default_db_driver = false, $filter_by_layout = false, $LayoutTypeProjectHandler = null) {
 		$brokers = $DataAccessObj->getBrokers();
 		$db_drivers = array();
 		
-		$selected_db_broker = $selected_db_driver = $bkp_selected_db_broker = $bkp_selected_db_driver = $selected_type = $selected_table = $selected_table_attrs = null;
+		$selected_db_broker = $selected_db_driver = $bkp_selected_db_broker = $bkp_selected_db_driver = $selected_type = $selected_table = $selected_tables_name = $selected_table_attrs = null;
 		
 		if ($brokers) {
 			foreach ($brokers as $broker_name => $broker) {
@@ -49,13 +49,13 @@ class WorkFlowQueryHandler {
 				if ($filter_by_layout && $LayoutTypeProjectHandler)
 					$LayoutTypeProjectHandler->filterLayerBrokersDBDriversNamesFromLayoutName($DataAccessObj, $db_drivers[$broker_name], $filter_by_layout); 
 				
-				if ($selected_default_db_driver && empty($selected_db_broker) && $db_drivers[$selected_default_db_driver]) {
+				if ($selected_default_db_driver && empty($selected_db_broker) && !empty($db_drivers[$selected_default_db_driver])) {
 					$selected_db_broker = $broker_name;
-					$selected_db_driver = $db_drivers[$selected_default_db_driver][0];
+					$selected_db_driver = isset($db_drivers[$selected_default_db_driver][0]) ? $db_drivers[$selected_default_db_driver][0] : null;
 				}
 				else if (empty($bkp_selected_db_broker) && $db_drivers[$broker_name]) { //only execute one time
 					$bkp_selected_db_broker = $broker_name;
-					$bkp_selected_db_driver = $db_drivers[$broker_name][0];
+					$bkp_selected_db_driver = isset($db_drivers[$broker_name][0]) ? $db_drivers[$broker_name][0] : null;
 				}
 			}
 			
@@ -74,26 +74,26 @@ class WorkFlowQueryHandler {
 				$WorkFlowDataAccessHandler->setTasksFilePath($tasks_file_path);
 				$tasks = $WorkFlowDataAccessHandler->getTasks();
 				
-				$selected_tables_name = array_keys($tasks["tasks"]);
+				$selected_tables_name = !empty($tasks["tasks"]) ? array_keys($tasks["tasks"]) : array();
 				
 				$selected_table = !empty($selected_default_table) ? $selected_default_table : $selected_tables_name[0];
 				
-				$selected_table_attrs = $tasks["tasks"][$selected_table];
-				$selected_table_attrs = $selected_table_attrs["properties"]["table_attr_names"];
+				$selected_table_attrs = isset($tasks["tasks"][$selected_table]) ? $tasks["tasks"][$selected_table] : null;
+				$selected_table_attrs = isset($selected_table_attrs["properties"]["table_attr_names"]) ? $selected_table_attrs["properties"]["table_attr_names"] : null;
 			}
 			else {
 				$selected_tables = $DataAccessObj->getBroker($selected_db_broker)->getFunction("listTables", null, array("db_driver" => $selected_db_driver));
 				$selected_tables_name = array();
 				if ($selected_tables)
 					foreach ($selected_tables as $st)
-						$selected_tables_name[] = $st["name"];
+						$selected_tables_name[] = isset($st["name"]) ? $st["name"] : null;
 				
 				if ($selected_default_table) {
 					$selected_table_exists = $DataAccessObj->getBroker($selected_db_broker)->getFunction("isTableInNamesList", array($selected_tables_name, $selected_default_table), array("db_driver" => $selected_db_driver));
-					$selected_table = $selected_table_exists ? $selected_default_table : $selected_tables_name[0];
+					$selected_table = $selected_table_exists ? $selected_default_table : (isset($selected_tables_name[0]) ? $selected_tables_name[0] : null);
 				}
 				else
-					$selected_table = $selected_tables_name[0];
+					$selected_table = isset($selected_tables_name[0]) ? $selected_tables_name[0] : null;
 				
 				$selected_table_attrs = $DataAccessObj->getBroker($selected_db_broker)->getFunction("listTableFields", $selected_table, array("db_driver" => $selected_db_driver));
 				$selected_table_attrs = array_keys($selected_table_attrs);
@@ -166,7 +166,7 @@ class WorkFlowQueryHandler {
 								<span class="icon add add_parameter" onClick="addParameterMap(this)" title="Add new Map">Add</span>
 								<div class="parameters">';
 			
-			if ($relationships["parameter_map"]) {
+			if (!empty($relationships["parameter_map"])) {
 				$t = count($relationships["parameter_map"]);
 				for ($i = 0; $i < $t; $i++)
 					$html .= $this->getParameterMapHTML("map", $relationships["parameter_map"][$i], $this->map_php_types, $this->map_db_types, true);
@@ -192,7 +192,7 @@ class WorkFlowQueryHandler {
 							<span class="icon add add_result" onClick="addResultMap(this)" title="Add new Map">Add</span>
 							<div class="results">';
 		
-		if ($relationships["result_map"]) {
+		if (!empty($relationships["result_map"])) {
 			$t = count($relationships["result_map"]);
 			for ($i = 0; $i < $t; $i++)
 				$html .= $this->getResultMapHTML("map", $relationships["result_map"][$i], $this->map_php_types, $this->map_db_types, true);
@@ -204,7 +204,7 @@ class WorkFlowQueryHandler {
 					</div>';
 	
 		$html .= '
-					<div id="relationships_tabs-4">' . $this->getInludeHTMLBlock($relationships["import"]) . '</div>';
+					<div id="relationships_tabs-4">' . $this->getInludeHTMLBlock(isset($relationships["import"]) ? $relationships["import"] : null) . '</div>';
 	
 		//CLOSE RELATIONSHIP SUB_TABS AND MAIN RELATIONSHIP DIV AND RELATIONSHIP TAB
 		$html .= '	
@@ -390,7 +390,7 @@ class WorkFlowQueryHandler {
 						<select onChange="updateDBTables(this)">
 							<option></option>';
 	
-		if ($this->db_drivers[$this->selected_db_broker]) {
+		if (!empty($this->db_drivers[$this->selected_db_broker])) {
 			$t = count($this->db_drivers[$this->selected_db_broker]);
 			for ($i = 0; $i < $t; $i++) 
 				$html .= '	<option ' . ($this->selected_db_driver == $this->db_drivers[$this->selected_db_broker][$i] ? 'selected' : '') . '>' . $this->db_drivers[$this->selected_db_broker][$i] . '</option>';
@@ -507,7 +507,7 @@ class WorkFlowQueryHandler {
 	}
 
 	public function getInludeHTMLBlock($imports) {
-		$html .= '
+		$html = '
 		<div class="includes">
 			<div class="description">
 				"includes" are files that you can add and that contains specific configurations, this is, an include file can have parameteres or result maps, queries, relationships, etc...
@@ -518,8 +518,8 @@ class WorkFlowQueryHandler {
 		if ($imports) {
 			$t = count($imports);
 			for ($i = 0; $i < $t; $i++) {
-				$include = $imports[$i]["value"];
-				$is_relative = $imports[$i]["@"]["relative"];
+				$include = isset($imports[$i]["value"]) ? $imports[$i]["value"] : null;
+				$is_relative = isset($imports[$i]["@"]["relative"]) ? $imports[$i]["@"]["relative"] : null;
 		
 				$html .= $this->getInludeHTML($include, $is_relative);
 			}
@@ -611,11 +611,11 @@ class WorkFlowQueryHandler {
 			<span class="icon update_automatically" onClick="createParameterOrResultMapAutomatically(this, \'parameter\')" title="Create Map Automatically">Update Automatically</span>
 			<div class="map_id">
 				<label>ID:</label>
-				<input type="text" value="' . $parameter_map["@"]["id"] . '" placeHolder="Id/Name" onBlur="validateMapId(this, \'parameter\');" />
+				<input type="text" value="' . (isset($parameter_map["@"]["id"]) ? $parameter_map["@"]["id"] : "") . '" placeHolder="Id/Name" onBlur="validateMapId(this, \'parameter\');" />
 			</div>
 			<div class="map_class">
 				<label>Class:</label>
-				<input type="text" value="' . $parameter_map["@"]["class"] . '" />
+				<input type="text" value="' . (isset($parameter_map["@"]["class"]) ? $parameter_map["@"]["class"] : "") . '" />
 				<span class="icon search" onClick="getParameterClassFromFileManager(this)">Search</span>
 			</div>
 			<table>
@@ -631,14 +631,19 @@ class WorkFlowQueryHandler {
 				</thead>
 				<tbody class="fields">';
 	
-		$parameters = $parameter_map["childs"]["parameter"];
+		$parameters = isset($parameter_map["childs"]["parameter"]) ? $parameter_map["childs"]["parameter"] : null;
 		
 		if ($parameters) {
 			$t = count($parameters);
 			for ($i = 0; $i < $t; $i++) {
-				$parameter = $parameters[$i]["@"];
-			
-				$html .= $this->getParameterHTML($map_php_types, $map_db_types, $parameter["input_name"], $parameter["input_type"], $parameter["output_name"], $parameter["output_type"], $parameter["mandatory"]);
+				$parameter = isset($parameters[$i]["@"]) ? $parameters[$i]["@"] : null;
+				$parameter_input_name = isset($parameter["input_name"]) ? $parameter["input_name"] : null;
+				$parameter_input_type = isset($parameter["input_type"]) ? $parameter["input_type"] : null;
+				$parameter_output_name = isset($parameter["output_name"]) ? $parameter["output_name"] : null;
+				$parameter_output_type = isset($parameter["output_type"]) ? $parameter["output_type"] : null;
+				$parameter_mandatory = isset($parameter["mandatory"]) ? $parameter["mandatory"] : null;
+				
+				$html .= $this->getParameterHTML($map_php_types, $map_db_types, $parameter_input_name, $parameter_input_type, $parameter_output_name, $parameter_output_type, $parameter_mandatory);
 			}
 		}
 		else
@@ -687,11 +692,11 @@ class WorkFlowQueryHandler {
 			<span class="icon update_automatically" onClick="createParameterOrResultMapAutomatically(this, \'result\')" title="Create Map Automatically">Update Automatically</span>
 			<div class="map_id">
 				<label>ID:</label>
-				<input type="text" value="' . $result_map["@"]["id"] . '" placeHolder="Id/Name" onFocus="disableTemporaryAutoSaveOnInputFocus(this)" onBlur="undoDisableTemporaryAutoSaveOnInputBlur(this); validateMapId(this, \'result\');" />
+				<input type="text" value="' . (isset($result_map["@"]["id"]) ? $result_map["@"]["id"] : "") . '" placeHolder="Id/Name" onFocus="disableTemporaryAutoSaveOnInputFocus(this)" onBlur="undoDisableTemporaryAutoSaveOnInputBlur(this); validateMapId(this, \'result\');" />
 			</div>
 			<div class="map_class">
 				<label>Class:</label>
-				<input type="text" value="' . $result_map["@"]["class"] . '" />
+				<input type="text" value="' . (isset($result_map["@"]["class"]) ? $result_map["@"]["class"] : "") . '" />
 				<span class="icon search" onClick="getParameterClassFromFileManager(this)">Search</span>
 			</div>
 			<table>
@@ -707,14 +712,19 @@ class WorkFlowQueryHandler {
 				</thead>
 				<tbody class="fields">';
 	
-		$results = $result_map["childs"]["result"];
+		$results = isset($result_map["childs"]["result"]) ? $result_map["childs"]["result"] : null;
 		
 		if ($results) {
 			$t = count($results);
 			for ($i = 0; $i < $t; $i++) {
-				$result = $results[$i]["@"];
-			
-				$html .= $this->getResultHTML($map_php_types, $map_db_types, $result["input_name"], $result["input_type"], $result["output_name"], $result["output_type"], $result["mandatory"]);
+				$result = isset($results[$i]["@"]) ? $results[$i]["@"] : null;
+				$result_input_name = isset($result["input_name"]) ? $result["input_name"] : null;
+				$result_input_type = isset($result["input_type"]) ? $result["input_type"] : null;
+				$result_output_name = isset($result["output_name"]) ? $result["output_name"] : null;
+				$result_output_type = isset($result["output_type"]) ? $result["output_type"] : null;
+				$result_mandatory = isset($result["mandatory"]) ? $result["mandatory"] : null;
+				
+				$html .= $this->getResultHTML($map_php_types, $map_db_types, $result_input_name, $result_input_type, $result_output_name, $result_output_type, $result_mandatory);
 			}
 		}
 		else
@@ -744,14 +754,14 @@ class WorkFlowQueryHandler {
 				$result_class = WorkFlowDataAccessHandler::getNodeValue($rel, "result_class");
 				$result_map = WorkFlowDataAccessHandler::getNodeValue($rel, "result_map");
 
-				$attributes = $rel["childs"]["attribute"];
-				$keys = $rel["childs"]["key"];
-				$conditions = $rel["childs"]["condition"];
-				$groups_by = $rel["childs"]["group_by"];
-				$sorts = $rel["childs"]["sort"];
+				$attributes = isset($rel["childs"]["attribute"]) ? $rel["childs"]["attribute"] : null;
+				$keys = isset($rel["childs"]["key"]) ? $rel["childs"]["key"] : null;
+				$conditions = isset($rel["childs"]["condition"]) ? $rel["childs"]["condition"] : null;
+				$groups_by = isset($rel["childs"]["group_by"]) ? $rel["childs"]["group_by"] : null;
+				$sorts = isset($rel["childs"]["sort"]) ? $rel["childs"]["sort"] : null;
 				$limit = WorkFlowDataAccessHandler::getNodeValue($rel, "limit");
 				$start = WorkFlowDataAccessHandler::getNodeValue($rel, "start");
-				$sql = $rel["value"];
+				$sql = isset($rel["value"]) ? $rel["value"] : null;
 				
 				$rand = rand(0, 1000);
 				
@@ -792,24 +802,24 @@ class WorkFlowQueryHandler {
 	}
 	
 	public function getQueryBlockHtml($is_hbn_relationship = false, $settings = false, $data = false) {
-		$init_ui = $settings["init_ui"];
-		$minimize = $settings["minimize"];
-		$encapsulate_parameter_and_result_settings = $settings["encapsulate_parameter_and_result_settings"];
+		$init_ui = isset($settings["init_ui"]) ? $settings["init_ui"] : null;
+		$minimize = isset($settings["minimize"]) ? $settings["minimize"] : null;
+		$encapsulate_parameter_and_result_settings = isset($settings["encapsulate_parameter_and_result_settings"]) ? $settings["encapsulate_parameter_and_result_settings"] : null;
 		
-		$rel_type = $data["type"];
-		$name = $data["name"];
-		$parameter_class = $data["parameter_class"];
-		$parameter_map = $data["parameter_map"];
-		$result_class = $data["result_class"];
-		$result_map = $data["result_map"];
-		$attributes = $data["attributes"];
-		$keys = $data["keys"];
-		$conditions = $data["conditions"];
-		$groups_by = $data["groups_by"];
-		$sorts = $data["sorts"];
-		$limit = $data["limit"];
-		$start = $data["start"];
-		$sql = $data["sql"];
+		$rel_type = isset($data["type"]) ? $data["type"] : null;
+		$name = isset($data["name"]) ? $data["name"] : null;
+		$parameter_class = isset($data["parameter_class"]) ? $data["parameter_class"] : null;
+		$parameter_map = isset($data["parameter_map"]) ? $data["parameter_map"] : null;
+		$result_class = isset($data["result_class"]) ? $data["result_class"] : null;
+		$result_map = isset($data["result_map"]) ? $data["result_map"] : null;
+		$attributes = isset($data["attributes"]) ? $data["attributes"] : null;
+		$keys = isset($data["keys"]) ? $data["keys"] : null;
+		$conditions = isset($data["conditions"]) ? $data["conditions"] : null;
+		$groups_by = isset($data["groups_by"]) ? $data["groups_by"] : null;
+		$sorts = isset($data["sorts"]) ? $data["sorts"] : null;
+		$limit = isset($data["limit"]) ? $data["limit"] : null;
+		$start = isset($data["start"]) ? $data["start"] : null;
+		$sql = isset($data["sql"]) ? $data["sql"] : null;
 		
 		if ($is_hbn_relationship) {
 			$rel_types = array("one_to_one", "one_to_many", "many_to_one", "many_to_many");
@@ -926,7 +936,7 @@ class WorkFlowQueryHandler {
 	}
 	
 	public function getQueryInsertUpdateDeleteHtml($attributes = false, $conditions = false) {
-		$table = $attributes ? WorkFlowDataAccessHandler::getNodeValue($attributes[0], "table") : "";
+		$table = isset($attributes[0]) ? WorkFlowDataAccessHandler::getNodeValue($attributes[0], "table") : "";
 		$table = $table ? $table : ($conditions ? WorkFlowDataAccessHandler::getNodeValue($conditions[0], "table") : "");
 		
 		$html = '
@@ -957,7 +967,7 @@ class WorkFlowQueryHandler {
 			for ($j = 0; $j < $t; $j++) {
 				$attribute = $attributes[$j];
 		
-				if ($attribute["@"] || $attribute["childs"]) {
+				if (!empty($attribute["@"]) || !empty($attribute["childs"])) {
 					$column = WorkFlowDataAccessHandler::getNodeValue($attribute, "column");
 					$value = WorkFlowDataAccessHandler::getNodeValue($attribute, "value");
 
@@ -988,7 +998,7 @@ class WorkFlowQueryHandler {
 			for ($j = 0; $j < $t; $j++) {
 				$condition = $conditions[$j];
 
-				if ($condition["@"] || $condition["childs"]) {
+				if (!empty($condition["@"]) || !empty($condition["childs"])) {
 					$column = WorkFlowDataAccessHandler::getNodeValue($condition, "column");
 					$operator = WorkFlowDataAccessHandler::getNodeValue($condition, "operator");
 					$value = WorkFlowDataAccessHandler::getNodeValue($condition, "value");
@@ -1041,7 +1051,7 @@ class WorkFlowQueryHandler {
 				for ($j = 0; $j < $t; $j++) {
 					$attribute = $attributes[$j];
 				
-					if ($attribute["@"] || $attribute["childs"]) {
+					if (!empty($attribute["@"]) || !empty($attribute["childs"])) {
 						$table = WorkFlowDataAccessHandler::getNodeValue($attribute, "table");
 						$column = WorkFlowDataAccessHandler::getNodeValue($attribute, "column");
 						$name = WorkFlowDataAccessHandler::getNodeValue($attribute, "name");
@@ -1079,7 +1089,7 @@ class WorkFlowQueryHandler {
 				for ($j = 0; $j < $t; $j++) {
 					$key = $keys[$j];
 
-					if ($key["@"] || $key["childs"]) {
+					if (!empty($key["@"]) || !empty($key["childs"])) {
 						$ptable = WorkFlowDataAccessHandler::getNodeValue($key, "ptable");
 						$pcolumn = WorkFlowDataAccessHandler::getNodeValue($key, "pcolumn");
 						$ftable = WorkFlowDataAccessHandler::getNodeValue($key, "ftable");
@@ -1119,7 +1129,7 @@ class WorkFlowQueryHandler {
 				for ($j = 0; $j < $t; $j++) {
 					$condition = $conditions[$j];
 
-					if ($condition["@"] || $condition["childs"]) {
+					if (!empty($condition["@"]) || !empty($condition["childs"])) {
 						$table = WorkFlowDataAccessHandler::getNodeValue($condition, "table");
 						$column = WorkFlowDataAccessHandler::getNodeValue($condition, "column");
 						$operator = WorkFlowDataAccessHandler::getNodeValue($condition, "operator");
@@ -1153,7 +1163,7 @@ class WorkFlowQueryHandler {
 				for ($j = 0; $j < $t; $j++) {
 					$group_by = $groups_by[$j];
 
-					if ($group_by["@"] || $group_by["childs"]) {
+					if (!empty($group_by["@"]) || !empty($group_by["childs"])) {
 						$table = WorkFlowDataAccessHandler::getNodeValue($group_by, "table");
 						$column = WorkFlowDataAccessHandler::getNodeValue($group_by, "column");
 			
@@ -1186,7 +1196,7 @@ class WorkFlowQueryHandler {
 				for ($j = 0; $j < $t; $j++) {
 					$sort = $sorts[$j];
 
-					if ($sort["@"] || $sort["childs"]) {
+					if (!empty($sort["@"]) || !empty($sort["childs"])) {
 						$table = WorkFlowDataAccessHandler::getNodeValue($sort, "table");
 						$column = WorkFlowDataAccessHandler::getNodeValue($sort, "column");
 						$order = strtolower( WorkFlowDataAccessHandler::getNodeValue($sort, "order") );
@@ -1221,8 +1231,8 @@ class WorkFlowQueryHandler {
 	}
 	
 	public function getQueryWorkFlow($is_hbn_relationship = false, $attributes = false, $keys = false, $conditions = false, $settings = null) {
-		$init_ui = $settings["init_ui"];
-		$init_workflow = $settings["init_workflow"];
+		$init_ui = isset($settings["init_ui"]) ? $settings["init_ui"] : null;
+		$init_workflow = isset($settings["init_workflow"]) ? $settings["init_workflow"] : null;
 		
 		$menus = array(
 			"Add new Table" => array(

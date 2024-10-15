@@ -26,22 +26,24 @@ class CMSViewLayer {
 		if ($this->isViewExecutionValid($view_id)) {
 			$this->current_view_id = $view_id;//To be used by the stop views action
 			
-			$this->views[$view_id] = $html;
+			$this->views[$view_id][] = $html;
 		}
 	}
 	
 	public function getCurrentViewId() { return $this->current_view_id; }
 	
 	public function getViews() { return $this->views; }
-	public function getView($view_id) { 
-		return isset($this->views[$view_id]) ? $this->views[$view_id] : null;
+	public function getView($view_id, $index = 0) { 
+		$this->prepareSavedViewIndex($view_id, $index);
+		return isset($this->views[$view_id][$index]) ? $this->views[$view_id][$index] : null;
 	}
 	public function existsView($view_id) {
 		return $this->views && array_key_exists($view_id, $this->views);
 	}
-	public function getCurrentView() { 
+	public function getCurrentView($index = -1) { //get the output/result from the last saved view
 		$view_id = $this->getCurrentViewId();
-		return $view_id && isset($this->views[$view_id]) ? $this->views[$view_id] : null; 
+		$this->prepareSavedViewIndex($view_id, $index);
+		return $view_id && isset($this->views[$view_id][$index]) ? $this->views[$view_id][$index] : null; 
 	}
 	
 	public function getViewIdFromFilePath($file_path, $project_id = false) {
@@ -69,6 +71,17 @@ class CMSViewLayer {
 			$view_id = str_replace("." . $extension, "", $view_id);
 		
 		return $view_id;
+	}
+	
+	private function prepareSavedViewIndex($view_id, &$index) {
+		if (isset($this->views[$view_id])) {
+			$index = is_numeric($index) ? $index : 0;
+			
+			if ($index == -1) //get last saved view
+				$index = count($this->views[$block_id]) - 1;
+		}
+		
+		return $index;
 	}
 	
 	/* STOP EXECUTION FUNCTIONS */
@@ -115,20 +128,20 @@ class CMSViewLayer {
 	
 	public function stopCurrentView() { 
 		$view_id = $this->getCurrentViewId();
-		$this->stopView($this->view_id); 
+		$this->stopView($view_id); 
 	}
 	public function startCurrentView() { 
 		$view_id = $this->getCurrentViewId();
-		$this->startView($this->view_id); 
+		$this->startView($view_id); 
 	}
 	
 	public function stopCurrentViewRegions() { 
 		$view_id = $this->getCurrentViewId();
-		$this->stopViewRegions($this->view_id); 
+		$this->stopViewRegions($view_id); 
 	}
 	public function startCurrentViewRegions() { 
 		$view_id = $this->getCurrentViewId();
-		$this->startViewRegions($this->view_id); 
+		$this->startViewRegions($view_id); 
 	}
 	
 	public function isAllViewsExecutionValid() { 
@@ -155,7 +168,7 @@ class CMSViewLayer {
 	}
 	public function isCurrentViewExecutionValid() { 
 		$view_id = $this->getCurrentViewId();
-		return $this->isViewExecutionValid($this->view_id); 
+		return $this->isViewExecutionValid($view_id); 
 	}
 	
 	public function addViewRegion($view_id, $region_id) {

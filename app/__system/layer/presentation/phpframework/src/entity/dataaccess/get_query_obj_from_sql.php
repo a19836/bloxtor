@@ -4,13 +4,14 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$db_broker = $_GET["db_broker"];
-$db_driver = $_GET["db_driver"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$item_type = isset($_GET["item_type"]) ? $_GET["item_type"] : null;
+$db_broker = isset($_GET["db_broker"]) ? $_GET["db_broker"] : null;
+$db_driver = isset($_GET["db_driver"]) ? $_GET["db_driver"] : null;
 
-$sql = $_POST["sql"];
+$sql = isset($_POST["sql"]) ? $_POST["sql"] : null;
 
 if ($sql) {
 	$path = str_replace("../", "", $path);//for security reasons
@@ -34,7 +35,7 @@ if ($sql) {
 			if (is_a($broker, "IDBBrokerClient") || is_a($broker, "IDataAccessBrokerClient"))
 				$data = $broker->getFunction("convertSQLToObject", $sql, array("db_driver" => $db_driver));
 			else {
-				$layers = WorkFlowBeansFileHandler::getLocalBeanLayersFromBrokers($user_global_variables_file_paths, $user_beans_folder_path, $obj->getBrokers(), true);
+				$layers = WorkFlowBeansFileHandler::getLocalBeanLayersFromBrokers($user_global_variables_file_path, $user_beans_folder_path, $obj->getBrokers(), true);
 				
 				foreach ($layers as $layer_bean_name => $layer_obj)
 					if (is_a($layer_obj, "DBLayer") || is_a($layer_obj, "DataAccessLayer")) {

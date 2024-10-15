@@ -326,4 +326,20 @@ if (typeof is_global_common_file_already_included == "undefined") {
 			}
 		}
 	}
+	
+	function getObjectorArraySize(obj_arr) {
+		if ($.isArray(obj_arr))
+			return obj_arr.length;
+		
+		if ($.isPlainObject(obj_arr)) {
+			var count = 0;
+			
+			for (var k in obj_arr)
+				count++;
+			
+			return count;
+		}
+		
+		return $.isNumeric(obj_arr.length) ? obj_arr.length : null; //in case of nodes list from jquery
+	}
 }

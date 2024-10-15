@@ -10,27 +10,30 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
-		$properties = $raw_data["childs"]["properties"][0]["childs"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
+		$properties = isset($raw_data["childs"]["properties"][0]["childs"]) ? $raw_data["childs"]["properties"][0]["childs"] : null;
 		$properties = \MyXML::complexArrayToBasicArray($properties, array("lower_case_keys" => true));
 		
-		return $properties["properties"];
+		return isset($properties["properties"]) ? $properties["properties"] : null;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
-		$properties = $data["properties"];
+		$data = isset($this->data) ? $this->data : null;
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		//PREPARING INNER TASKS CODE
 		$stops_id = array();
 		if ($stop_task_id)
 			$stops_id = is_array($stop_task_id) ? $stop_task_id : array($stop_task_id);
 		
-		if ($data["exits"]["outside_group_exit"][0]) 
+		if (!empty($data["exits"]["outside_group_exit"][0]))
 			$stops_id = array_merge($stops_id, $data["exits"]["outside_group_exit"]);
 		
-		$inner_tasks = self::printTask($tasks, $data["exits"]["inside_group_exit"], $stops_id, $prefix_tab . "\t", $options);
-		$next_task = self::printTask($tasks, $data["exits"]["outside_group_exit"][0], $stop_task_id, $prefix_tab, $options);
+		$inside_task_id = isset($data["exits"]["inside_group_exit"]) ? $data["exits"]["inside_group_exit"] : null;
+		$outside_task_id = isset($data["exits"]["outside_group_exit"][0]) ? $data["exits"]["outside_group_exit"][0] : null;
+		
+		$inner_tasks = self::printTask($tasks, $inside_task_id, $stops_id, $prefix_tab . "\t", $options);
+		$next_task = self::printTask($tasks, $outside_task_id, $stop_task_id, $prefix_tab, $options);
 		
 		return array(
 			"properties" => $properties,

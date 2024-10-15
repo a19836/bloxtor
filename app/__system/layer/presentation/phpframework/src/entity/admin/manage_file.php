@@ -7,14 +7,14 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 UserAuthenticationHandler::checkUsersMaxNum($UserAuthenticationHandler);
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$item_type = $_GET["item_type"];
-$path = $_GET["path"];
-$action = $_GET["action"];
-$extra = trim($_GET["extra"]);
-$folder_type = $_GET["folder_type"];
-$filter_by_layout = $_GET["filter_by_layout"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$item_type = isset($_GET["item_type"]) ? $_GET["item_type"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$action = isset($_GET["action"]) ? $_GET["action"] : null;
+$extra = isset($_GET["extra"]) ? trim($_GET["extra"]) : null;
+$folder_type = isset($_GET["folder_type"]) ? $_GET["folder_type"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -66,6 +66,12 @@ if ($root_path) {
 											$prefix .= "dirname(";
 											$suffix .= ")";
 										}
+										
+										if (empty($obj->settings["presentation_configs_path"]))
+											launch_exception(new Exception("'PresentationLayer->settings[presentation_configs_path]' cannot be undefined!"));
+										
+										if (empty($obj->settings["presentation_webroot_path"]))
+											launch_exception(new Exception("'PresentationLayer->settings[presentation_webroot_path]' cannot be undefined!"));
 										
 										//fix dirs for init.php
 										$init_path = $path . "$extra/" . $obj->settings["presentation_configs_path"] . "init.php";
@@ -125,7 +131,7 @@ if ($root_path) {
 					$UserAuthenticationHandler->checkInnerFilePermissionAuthentication("$layer_object_id/$extra", "layer", "access");
 					
 					$path_info = pathinfo($extra);
-					if (!$path_info["extension"]) {
+					if (empty($path_info["extension"])) {
 						if ($item_type == "ibatis" || $item_type == "hibernate")
 							$extra .= ".xml";
 						else if ($item_type == "businesslogic" || $item_type == "presentation")
@@ -155,7 +161,7 @@ if ($root_path) {
 						}
 					}
 					else {
-						header($_SERVER["SERVER_PROTOCOL"] . " 405 Not Allowed");
+						header((!empty($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.0") . " 405 Not Allowed");
 						$status = "You are not allowed to create a file inside of this folder, because it does NOT belong to the selected project!";
 					}
 				}
@@ -213,8 +219,11 @@ if ($root_path) {
 								if ($status) {
 									//rename class
 									if ($is_class_rename && $class_data) {
-										$src_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($class_data["name"], $class_data["namespace"]);
-										$dst_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace(pathinfo($dst, PATHINFO_FILENAME), $class_data["namespace"]);
+										$class_data_name = isset($class_data["name"]) ? $class_data["name"] : null;
+										$class_data_namespace = isset($class_data["namespace"]) ? $class_data["namespace"] : null;
+										
+										$src_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($class_data_name, $class_data_namespace);
+										$dst_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace(pathinfo($dst, PATHINFO_FILENAME), $class_data_namespace);
 										
 										$status = PHPCodePrintingHandler::renameClassFromFile($dst, $src_class_name, $dst_class_name);
 									}
@@ -247,7 +256,7 @@ if ($root_path) {
 								}
 							}
 							else {
-								header($_SERVER["SERVER_PROTOCOL"] . " 405 Not Allowed");
+								header((!empty($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.0") . " 405 Not Allowed");
 								$status = "You are not allowed to rename a file inside of this folder, because it does NOT belong to the selected project!";
 							}
 						}
@@ -309,7 +318,7 @@ if ($root_path) {
 						}
 					}
 					else {
-						header($_SERVER["SERVER_PROTOCOL"] . " 405 Not Allowed");
+						header((!empty($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.0") . " 405 Not Allowed");
 						$status = "You are not allowed to remove a file inside of this folder, because it does NOT belong to the selected project!";
 					}
 				}
@@ -344,7 +353,7 @@ if ($root_path) {
 						$status = ZipHandler::zip($path, $dest);
 					}
 					else {
-						header($_SERVER["SERVER_PROTOCOL"] . " 405 Not Allowed");
+						header((!empty($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.0") . " 405 Not Allowed");
 						$status = "You are not allowed to zip a file inside of this folder, because it does NOT belong to the selected project!";
 					}
 				}
@@ -399,7 +408,7 @@ if ($root_path) {
 						}
 					}
 					else {
-						header($_SERVER["SERVER_PROTOCOL"] . " 405 Not Allowed");
+						header((!empty($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.0") . " 405 Not Allowed");
 						$status = "You are not allowed to unzip a file inside of this folder, because it does NOT belong to the selected project!";
 					}
 				}
@@ -408,7 +417,7 @@ if ($root_path) {
 				$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 				UserAuthenticationHandler::checkActionsMaxNum($UserAuthenticationHandler);
 				
-				if (is_dir($path) && $_FILES["file"]) {
+				if (is_dir($path) && !empty($_FILES["file"]) && isset($_FILES['file']['name'])) {
 					$file_name = basename($_FILES['file']['name']);
 					$allowed = true;
 					
@@ -426,14 +435,14 @@ if ($root_path) {
 						$status = move_uploaded_file( $_FILES['file']['tmp_name'], $path . "/" . $file_name);
 						
 						if (!$status) {
-							header($_SERVER["SERVER_PROTOCOL"] . " 500 Internal Server Error");
+							header((!empty($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.0") . " 500 Internal Server Error");
 							$status = "Internal Server Error";
 						}
 						else
 							$UserAuthenticationHandler->incrementUsedActionsTotal();
 					}
 					else {
-						header($_SERVER["SERVER_PROTOCOL"] . " 405 Not Allowed");
+						header((!empty($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.0") . " 405 Not Allowed");
 						$status = "You are not allowed to upload a file inside of this folder, because it does NOT belong to the selected project!";
 					}
 				}
@@ -448,10 +457,10 @@ if ($root_path) {
 				$extra = explode(",", str_replace(array("[", "]"), "", $extra));
 				
 				if (count($extra) >= 4) {
-					$bn = $extra[0];//bean_name
-					$bfn = $extra[1];//bean_file_name
-					$fp = $extra[2];//file_path
-					$it = $extra[3];//item_type
+					$bn = isset($extra[0]) ? $extra[0] : null;//bean_name
+					$bfn = isset($extra[1]) ? $extra[1] : null;//bean_file_name
+					$fp = isset($extra[2]) ? $extra[2] : null;//file_path
+					$it = isset($extra[3]) ? $extra[3] : null;//item_type
 					
 					$fp = str_replace("../", "", $fp);//for security reasons
 					$rp = getRootPath($bn, $bfn, $it, $fp, $user_beans_folder_path, $user_global_variables_file_path);
@@ -489,7 +498,7 @@ if ($root_path) {
 								$path_info = pathinfo($src);
 								$idx = 1;
 								while (file_exists($dst)) {
-									$dst = $path . "/" . $path_info["filename"] . "_" . $idx . ($path_info["extension"] ? "." . $path_info["extension"] : "");
+									$dst = $path . "/" . $path_info["filename"] . "_" . $idx . (!empty($path_info["extension"]) ? "." . $path_info["extension"] : "");
 									$idx++;
 								}
 								
@@ -510,8 +519,11 @@ if ($root_path) {
 											$idx--;
 											
 											foreach ($src_classes as $cn => $c) {
-												$src_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($c["name"], $c["namespace"]);
-												$dst_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($c["name"] . "_$idx", $c["namespace"]);
+												$c_name = isset($c["name"]) ? $c["name"] : null;
+												$c_namespace = isset($c["namespace"]) ? $c["namespace"] : null;
+												
+												$src_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($c_name, $c_namespace);
+												$dst_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($c_name . "_$idx", $c_namespace);
 												
 												if (!PHPCodePrintingHandler::renameClassFromFile($dst, $src_class_name, $dst_class_name))
 													$status = false;
@@ -559,7 +571,7 @@ if ($root_path) {
 						}
 					}
 					else {
-						header($_SERVER["SERVER_PROTOCOL"] . " 405 Not Allowed");
+						header((!empty($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.0") . " 405 Not Allowed");
 						$status = "You are not allowed to copy a file inside of this folder, because it does NOT belong to the selected project!";
 					}
 				}
@@ -613,7 +625,7 @@ function isProjectCreationAllowed($EVC, $user_global_variables_file_path, $user_
 	$projs_count = 0;
 	if ($files)
 		foreach ($files as $file)
-			if ($file["projects"]) {
+			if (!empty($file["projects"])) {
 				$projs_count += count($file["projects"]);
 				
 				//bc of the common project that doesn't count
@@ -639,7 +651,7 @@ function isLayerDefaultFolder($obj, $item_type, $root_path, $path) {
 		$path = preg_replace("/\/+$/", "", $path); //remove end / if exists
 		$path = substr($path, strlen($root_path));
 		
-		$common_module_name = $item_type == "businesslogic" && $obj->settings["business_logic_modules_common_name"] ? $obj->settings["business_logic_modules_common_name"] : "common";
+		$common_module_name = $item_type == "businesslogic" && !empty($obj->settings["business_logic_modules_common_name"]) ? $obj->settings["business_logic_modules_common_name"] : "common";
 		
 		return in_array($path, array($common_module_name, "module", "program", "resource"));
 	}
@@ -672,8 +684,12 @@ function isLayerDefaultFile($obj, $item_type, $root_path, $path) {
 }
 
 function isPresentationTemplateFile($obj, $item_type, $root_path, $path) {
-	if ($path && $item_type == "presentation")
+	if ($path && $item_type == "presentation") {
+		if (empty($obj->settings["presentation_templates_path"]))
+			launch_exception(new Exception("'PresentationLayer->settings[presentation_templates_path]' cannot be undefined!"));
+		
 		return strpos($path, $root_path . $obj->getSelectedPresentationId() . "/" . $obj->settings["presentation_templates_path"]) !== false;
+	}
 	
 	return false;
 }
@@ -681,6 +697,9 @@ function isPresentationTemplateFile($obj, $item_type, $root_path, $path) {
 //remove new layout from template.xml, if file exists
 function addPresentationTemplateLayoutToXml($obj, $item_type, $root_path, $path) {
 	if ($path && $item_type == "presentation") {
+		if (empty($obj->settings["presentation_templates_path"]))
+			launch_exception(new Exception("'PresentationLayer->settings[presentation_templates_path]' cannot be undefined!"));
+		
 		$root_template_folder_path = $root_path . $obj->getSelectedPresentationId() . "/" . $obj->settings["presentation_templates_path"];
 		
 		//confirm if is a template
@@ -718,6 +737,9 @@ function addPresentationTemplateLayoutToXml($obj, $item_type, $root_path, $path)
 //remove new layout from template.xml, if file exists
 function removePresentationTemplateLayoutToXml($obj, $item_type, $root_path, $path) {
 	if ($path && $item_type == "presentation") {
+		if (empty($obj->settings["presentation_templates_path"]))
+			launch_exception(new Exception("'PresentationLayer->settings[presentation_templates_path]' cannot be undefined!"));
+		
 		$root_template_folder_path = $root_path . $obj->getSelectedPresentationId() . "/" . $obj->settings["presentation_templates_path"];
 		
 		//confirm if is a template
@@ -881,6 +903,12 @@ function prepareProjectsInitFiles($root_path, $src, $dst, $user_beans_folder_pat
 							$prefix .= "dirname(";
 							$suffix .= ")";
 						}
+						
+						if (empty($P->settings["presentation_configs_path"]))
+							launch_exception(new Exception("'PresentationLayer->settings[presentation_configs_path]' cannot be undefined!"));
+						
+						if (empty($P->settings["presentation_webroot_path"]))
+							launch_exception(new Exception("'PresentationLayer->settings[presentation_webroot_path]' cannot be undefined!"));
 						
 						//fix dirs for init.php
 						$init_path = $dst . $P->settings["presentation_configs_path"] . "init.php";

@@ -124,7 +124,7 @@ class MyXMLArray {
 		return $nodes;
 	}
 	
-	private function getItemsPath($nodes_path = false, $data, $path_index = -1) {
+	private function getItemsPath($nodes_path, $data, $path_index = -1) {
 		$node_path = "";
 		$node_index_num = false;
 		$node_conditions = false;

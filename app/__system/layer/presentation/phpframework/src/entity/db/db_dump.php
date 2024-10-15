@@ -5,10 +5,10 @@ include_once $EVC->getUtilPath("WorkFlowDBHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$selected_table = $_GET["table"];
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$selected_table = isset($_GET["table"]) ? $_GET["table"] : null;
 
 if ($bean_name) {
 	$layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$bean_name";
@@ -19,9 +19,9 @@ if ($bean_name) {
 	$tables = $DBDriver->listTables();
 	//echo "<pre>";print_r($tables);die();
 	
-	if ($_POST) {
+	if (!empty($_POST)) {
 		//print_r($_POST);
-		$selected_tables = $_POST["tables"];
+		$selected_tables = isset($_POST["tables"]) ? $_POST["tables"] : null;
 		
 		if (!$selected_tables || !is_array($selected_tables))
 			$error_messsage = "Error: You must select at least 1 table!";
@@ -29,65 +29,67 @@ if ($bean_name) {
 			if (!DBDumper::isValid($DBDriver))
 				$error_messsage = "Error: The '" . $DBDriver->getLabel() . "' driver doesn't allow dumps! Please contact the sysadmin to add this feature...";
 			else {
-				$settings = $_POST["settings"];
+				$settings = isset($_POST["settings"]) ? $_POST["settings"] : null;
 				$db_options = $DBDriver->getOptions();
-				$dump_file_name = "dbsqldump_data." . $db_options["host"] . ($db_options["port"] ? "-" . $db_options["port"] : "") . "-" . $db_options["db_name"] . ".sql";
+				$dump_file_name = "dbsqldump_data." . (isset($db_options["host"]) ? $db_options["host"] : "") . (!empty($db_options["port"]) ? "-" . $db_options["port"] : "") . "-" . (isset($db_options["db_name"]) ? $db_options["db_name"] : "") . ".sql";
 				$compression = DBDumperHandler::NONE;
 				
-				switch ($settings["compress"]) {
-					case "bzip2": 
-						$compression = DBDumperHandler::BZIP2; 
-						$dump_file_name .= ".bz2";
-						break;
-					case "gzip": $compression = DBDumperHandler::GZIP; 
-						$dump_file_name .= ".gz";
-						break;
-					case "gzipstream": $compression = DBDumperHandler::GZIPSTREAM; 
-						$dump_file_name .= ".gz";
-						break;
-					case "zip": $compression = DBDumperHandler::ZIP; 
-						$dump_file_name .= ".zip";
-						break;
-				}
+				if (isset($settings["compress"]))
+					switch ($settings["compress"]) {
+						case "bzip2": 
+							$compression = DBDumperHandler::BZIP2; 
+							$dump_file_name .= ".bz2";
+							break;
+						case "gzip": $compression = DBDumperHandler::GZIP; 
+							$dump_file_name .= ".gz";
+							break;
+						case "gzipstream": $compression = DBDumperHandler::GZIPSTREAM; 
+							$dump_file_name .= ".gz";
+							break;
+						case "zip": $compression = DBDumperHandler::ZIP; 
+							$dump_file_name .= ".zip";
+							break;
+					}
 				
 				$tmp_file = tmpfile();
-				$tmp_file_path = stream_get_meta_data($tmp_file)['uri']; // eg: /tmp/phpFx0513a
+				$tmp_file_path = stream_get_meta_data($tmp_file);
+				$tmp_file_path = isset($tmp_file_path['uri']) ? $tmp_file_path['uri'] : null; // eg: /tmp/phpFx0513a
 				
 				$dump_settings = array(
 					'include-tables' => count($selected_tables) == count($tables) ? array() : $selected_tables,
 					'exclude-tables' => array(),
 					'include-views' => array(),
 					'compress' => $compression,
-					'no-data' => $settings["no-data"] ? true : false,
-					'reset-auto-increment' => $settings["reset-auto-increment"],
-					'add-drop-database' => $settings["add-drop-database"],
-					'add-drop-table' => $settings["add-drop-table"],
-					'add-drop-trigger' => $settings["add-drop-trigger"],
-					'add-drop-routine' => $settings["add-drop-routine"],
-					'add-drop-event' => $settings["add-drop-event"],
-					'add-locks' => $settings["add-locks"],
-					'complete-insert' => $settings["complete-insert"],
+					'no-data' => !empty($settings["no-data"]) ? true : false,
+					'reset-auto-increment' => isset($settings["reset-auto-increment"]) ? $settings["reset-auto-increment"] : null,
+					'add-drop-database' => isset($settings["add-drop-database"]) ? $settings["add-drop-database"] : null,
+					'add-drop-table' => isset($settings["add-drop-table"]) ? $settings["add-drop-table"] : null,
+					'add-drop-trigger' => isset($settings["add-drop-trigger"]) ? $settings["add-drop-trigger"] : null,
+					'add-drop-routine' => isset($settings["add-drop-routine"]) ? $settings["add-drop-routine"] : null,
+					'add-drop-event' => isset($settings["add-drop-event"]) ? $settings["add-drop-event"] : null,
+					'add-locks' => isset($settings["add-locks"]) ? $settings["add-locks"] : null,
+					'complete-insert' => isset($settings["complete-insert"]) ? $settings["complete-insert"] : null,
 					'databases' => false,
-					'default-character-set' => $db_options["encoding"] ? $db_options["encoding"] : null, //DBDumperHandler::UTF8,
-					'disable-keys' => $settings["disable-keys"],
-					'extended-insert' => $settings["extended-insert"],
-					'events' => $settings["events"],
-					'hex-blob' => $settings["hex-blob"],
-					'insert-ignore' => $settings["insert-ignore"],
+					'default-character-set' => !empty($db_options["encoding"]) ? $db_options["encoding"] : null, //DBDumperHandler::UTF8,
+					'disable-keys' => isset($settings["disable-keys"]) ? $settings["disable-keys"] : null,
+					'extended-insert' => isset($settings["extended-insert"]) ? $settings["extended-insert"] : null,
+					'events' => isset($settings["events"]) ? $settings["events"] : null,
+					'hex-blob' => isset($settings["hex-blob"]) ? $settings["hex-blob"] : null,
+					'insert-ignore' => isset($settings["insert-ignore"]) ? $settings["insert-ignore"] : null,
 					'net_buffer_length' => DBDumperHandler::MAX_LINE_SIZE,
-					'no-autocommit' => $settings["no-autocommit"],
-					'no-create-info' => $settings["no-create-info"],
-					'lock-tables' => $settings["lock-tables"],
-					'routines' => $settings["routines"],
-					'single-transaction' => $settings["single-transaction"],
-					'skip-triggers' => $settings["skip-triggers"],
-					'skip-tz-utc' => $settings["skip-tz-utc"],
-					'skip-comments' => $settings["skip-comments"],
-					'skip-dump-date' => $settings["skip-dump-date"],
-					'skip-definer' => $settings["skip-definer"],
-					'where' => $settings["where"],
+					'no-autocommit' => isset($settings["no-autocommit"]) ? $settings["no-autocommit"] : null,
+					'no-create-info' => isset($settings["no-create-info"]) ? $settings["no-create-info"] : null,
+					'lock-tables' => isset($settings["lock-tables"]) ? $settings["lock-tables"] : null,
+					'routines' => isset($settings["routines"]) ? $settings["routines"] : null,
+					'single-transaction' => isset($settings["single-transaction"]) ? $settings["single-transaction"] : null,
+					'skip-triggers' => isset($settings["skip-triggers"]) ? $settings["skip-triggers"] : null,
+					'skip-tz-utc' => isset($settings["skip-tz-utc"]) ? $settings["skip-tz-utc"] : null,
+					'skip-comments' => isset($settings["skip-comments"]) ? $settings["skip-comments"] : null,
+					'skip-dump-date' => isset($settings["skip-dump-date"]) ? $settings["skip-dump-date"] : null,
+					'skip-definer' => isset($settings["skip-definer"]) ? $settings["skip-definer"] : null,
+					'where' => isset($settings["where"]) ? $settings["where"] : null,
 				);
-				$pdo_settings = $db_options["persistent"] && !$db_options["new_link"] ? array(PDO::ATTR_PERSISTENT => true) : array();
+				$pdo_settings = !empty($db_options["persistent"]) && empty($db_options["new_link"]) ? array(PDO::ATTR_PERSISTENT => true) : array();
 				
 				$DBDumperHandler = new DBDumperHandler($DBDriver, $dump_settings, $pdo_settings);
 				$DBDumperHandler->connect();
@@ -101,7 +103,7 @@ if ($bean_name) {
 					$old_compressed_internal_file = pathinfo($tmp_file_path, PATHINFO_FILENAME);
 					$new_compressed_internal_file = pathinfo($dump_file_name, PATHINFO_FILENAME);
 					
-					if ($settings["compress"] == "zip" && !ZipHandler::renameFileInZip($tmp_file_path, $old_compressed_internal_file, $new_compressed_internal_file)) {
+					if (isset($settings["compress"]) && $settings["compress"] == "zip" && !ZipHandler::renameFileInZip($tmp_file_path, $old_compressed_internal_file, $new_compressed_internal_file)) {
 						$status = false;
 						$error_messsage = "Error: Could NOT rename internal file inside of zip file! Please try again...";
 					}

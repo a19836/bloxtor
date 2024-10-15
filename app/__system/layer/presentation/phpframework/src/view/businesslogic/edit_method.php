@@ -18,8 +18,8 @@ $head .= '
 
 $show_business_logic_service_first = (!$method_id && $ft == "class_method") || (!$function_id && $ft == "function");
 $is_bl_service_select_html = '<select class="is_business_logic_service advanced_settings" onChange="hideOrShowIsBusinessLogicService(this);">
-				<option value="1"' . ($obj_data["is_business_logic_service"] || $show_business_logic_service_first ? " selected" : "") . '>Is business logic service</option>
-				<option value="0"' . ($obj_data["is_business_logic_service"] || $show_business_logic_service_first ? "" : " selected") . '>Is regular function</option>
+				<option value="1"' . (!empty($obj_data["is_business_logic_service"]) || $show_business_logic_service_first ? " selected" : "") . '>Is business logic service</option>
+				<option value="0"' . (!empty($obj_data["is_business_logic_service"]) || $show_business_logic_service_first ? "" : " selected") . '>Is regular function</option>
 			</select>';
 
 $toggle_advanced_settings_html = '<li class="toggle_advanced_settings" title="Toggle Advanced Settings"><a onClick="toggleBLAdvancedSettings()"><i class="icon toggle_ids"></i> <span>Show Advanced Settings</span> <input type="checkbox"/></a></li>';

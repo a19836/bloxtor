@@ -1,8 +1,8 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$path = $_GET["path"];
-$popup = $_GET["popup"];
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -16,7 +16,8 @@ if ($file_exists) {
 	
 	if ($is_contents_allowed) {
 		$available_extensions = array("xml" => "xml", "php" => "php", "js" => "javascript", "css" => "css", "" => "text", "txt" => "text", "html" => "html", "htm" => "html");
-		$editor_code_type = $available_extensions[ strtolower(pathinfo($file_path, PATHINFO_EXTENSION)) ];
+		$fpel = strtolower(pathinfo($file_path, PATHINFO_EXTENSION));
+		$editor_code_type = isset($available_extensions[$fpel]) ? $available_extensions[$fpel] : null;
 		
 		$code = file_get_contents($file_path);
 	}

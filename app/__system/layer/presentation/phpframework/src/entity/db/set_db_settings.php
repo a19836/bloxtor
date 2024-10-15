@@ -6,9 +6,9 @@ include_once $EVC->getUtilPath("WorkFlowDBHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
 
 $bean_path = BEAN_PATH . $bean_file_name;
 $workflow_path_id = "layer";
@@ -21,7 +21,8 @@ if (!empty($bean_file_name) && file_exists($bean_path)) {
 	$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($bean_path, $user_global_variables_file_path);
 	$WorkFlowBeansFileHandler->init();
 	$DBDriver = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
-	$db_settings = $WorkFlowBeansFileHandler->getDBSettings($bean_name, $db_settings_variables, $_POST["data"]);
+	$db_settings = $WorkFlowBeansFileHandler->getDBSettings($bean_name, $db_settings_variables, isset($_POST["data"]) ? $_POST["data"] : null);
+	$db_driver_type = isset($db_settings["type"]) ? $db_settings["type"] : null;
 	//echo "<pre>";print_r($db_settings);print_r($db_settings_variables);print_r($_POST["data"]);die();
 	
 	//PREPARE POST EVENT
@@ -31,6 +32,8 @@ if (!empty($bean_file_name) && file_exists($bean_path)) {
 		include_once $EVC->getUtilPath("WorkFlowDBHandler");
 		$WorkFlowDBHandler = new WorkFlowDBHandler($user_beans_folder_path, $user_global_variables_file_path);
 		
+		$data_password = isset($_POST["data"]["password"]) ? $_POST["data"]["password"] : null;
+		
 		//check if DB credentials are valid here, before delete or create beans
 		if ($WorkFlowDBHandler->isDBDriverSettingsValid($_POST["data"], false)) {
 			//SAVES NEW CHANGES TO DBDRIVER BEANS FILE
@@ -39,7 +42,7 @@ if (!empty($bean_file_name) && file_exists($bean_path)) {
 					if ($WorkFlowDBHandler->areTasksDBDriverBeanValid($workflow_paths_id[ $workflow_path_id ], false)) 
 						$status_message = "Settings saved successfully";
 					else
-						$error_message = "DataBase connection issue. " . str_replace($_POST["data"]["password"], "***", $WorkFlowDBHandler->getError());
+						$error_message = "DataBase connection issue. " . str_replace($data_password, "***", $WorkFlowDBHandler->getError());
 				}
 				else
 					$error_message = "There was an error trying to save the DB task settings. Please try again...";
@@ -48,7 +51,7 @@ if (!empty($bean_file_name) && file_exists($bean_path)) {
 				$error_message = "There was an error trying to save db settings. Please try again...";
 		}
 		else
-			$error_message = "DataBase settings are wrong. " . str_replace($_POST["data"]["password"], "***", $WorkFlowDBHandler->getError());
+			$error_message = "DataBase settings are wrong. " . str_replace($data_password, "***", $WorkFlowDBHandler->getError());
 	}
 	
 	//preparing db types
@@ -61,23 +64,29 @@ if (!empty($bean_file_name) && file_exists($bean_path)) {
 	$drivers_extensions = DB::getAllExtensionsByType();
 	$available_extensions_options = array();
 	
-	if ($db_settings["type"] && is_array($drivers_extensions[ $db_settings["type"] ]))
-		foreach ($drivers_extensions[ $db_settings["type"] ] as $idx => $enc)
+	$db_driver_extension = isset($db_settings["extension"]) ? $db_settings["extension"] : null;
+	$db_driver_type_extensions = isset($drivers_extensions[$db_driver_type]) ? $drivers_extensions[$db_driver_type] : null;
+	
+	if ($db_driver_type && is_array($db_driver_type_extensions))
+		foreach ($db_driver_type_extensions as $idx => $enc)
 			$available_extensions_options[] = array("value" => $enc, "label" => $enc . ($idx == 0 ? " - Default" : ""));
 	
-	if ($db_settings["extension"] && (!$drivers_extensions[ $db_settings["type"] ] || !in_array($db_settings["extension"], $drivers_extensions[ $db_settings["type"] ])))
-		$available_extensions_options[] = array("value" => $db_settings["extension"], "label" => $db_settings["extension"] . " - DEPRECATED");
+	if (!empty($db_driver_extension) && (!$db_driver_type_extensions || !in_array($db_driver_extension, $db_driver_type_extensions)))
+		$available_extensions_options[] = array("value" => $db_driver_extension, "label" => $db_driver_extension . " - DEPRECATED");
 	
 	//preparing db encodings
 	$drivers_encodings = DB::getAllDBCharsetsByType();
 	$available_encodings_options = array(array("value" => "", "label" => "-- Default --"));
 	
-	if ($db_settings["type"] && is_array($drivers_encodings[ $db_settings["type"] ]))
-		foreach ($drivers_encodings[ $db_settings["type"] ] as $enc => $label)
+	$db_driver_encoding = isset($db_settings["encoding"]) ? $db_settings["encoding"] : null;
+	$db_driver_type_encodings = isset($drivers_encodings[$db_driver_type]) ? $drivers_encodings[$db_driver_type] : null;
+	
+	if ($db_driver_type && is_array($db_driver_type_encodings))
+		foreach ($db_driver_type_encodings as $enc => $label)
 			$available_encodings_options[] = array("value" => $enc, "label" => $label);
 	
-	if ($db_settings["encoding"] && (!$drivers_encodings[ $db_settings["type"] ] || !array_key_exists($db_settings["encoding"], $drivers_encodings[ $db_settings["type"] ])))
-		$available_encodings_options[] = array("value" => $db_settings["encoding"], "label" => $db_settings["encoding"] . " - DEPRECATED");
+	if ($db_driver_encoding && (!$db_driver_type_encodings || !array_key_exists($db_driver_encoding, $db_driver_type_encodings)))
+		$available_encodings_options[] = array("value" => $db_driver_encoding, "label" => $db_driver_encoding . " - DEPRECATED");
 	
 	//preparing ignore db options
 	$drivers_ignore_connection_options = DB::getAllIgnoreConnectionOptionsByType();

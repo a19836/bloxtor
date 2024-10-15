@@ -154,7 +154,7 @@ class LogHandler implements ILogHandler {
 			
 			$file = str_replace($this->root_path, "", $file);
 			
-			if (strlen($file) > $this->max_file_path_prefix_length + $this->max_file_path_suffix_length) {
+			if (strlen($file) > ($this->max_file_path_prefix_length + $this->max_file_path_suffix_length)) {
 				$file = substr($file, 0, $this->max_file_path_prefix_length) . "..." . substr($file, strlen($file) - $this->max_file_path_suffix_length);
 			}
 			else {
@@ -168,7 +168,7 @@ class LogHandler implements ILogHandler {
 			$fl = strtolower($function);
 			
 			if ($fl == "include" || $fl == "include_once" || $fl == "require_once" || $fl == "require")
-				$message .= $function . "('" . $call["args"][0] . "')";
+				$message .= $function . "('" . (!empty($call["args"][0]) ? $call["args"][0] : "") . "')";
 			else {
 				$object = "";
 				$args_str = "";

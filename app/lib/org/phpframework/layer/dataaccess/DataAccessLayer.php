@@ -10,6 +10,8 @@ abstract class DataAccessLayer extends Layer {
 	
 	protected $ibatis_or_hibernate;
 	
+	abstract protected function getRegexToGrepDataAccessFilesAndGetNodeIds();
+	
 	public function __construct($SQLClient, $settings = array()) {
 		parent::__construct($settings);
 		
@@ -64,7 +66,7 @@ abstract class DataAccessLayer extends Layer {
 		
 		//if new_module_id is different. this happens bc the module_id can be "test.item" where item is an xml file called item.xml
 		if ($new_module_id != $module_id)
-			$this->modules_path[$module_id] = $this->modules_path[$new_module_id];
+			$this->modules_path[$module_id] = isset($this->modules_path[$new_module_id]) ? $this->modules_path[$new_module_id] : null;
 		
 		return $path;
 	}
@@ -101,7 +103,7 @@ abstract class DataAccessLayer extends Layer {
 					$this->updateModuleServicesFromXMLFile($module_id, $module_path);
 				
 				//echo "<pre>$module_id:$module_path:";print_r($this->modules[$module_id]);die();
-				$this->getModuleCacheLayer()->setCachedModule($module_id, $this->modules[$module_id]);
+				$this->getModuleCacheLayer()->setCachedModule($module_id, isset($this->modules[$module_id]) ? $this->modules[$module_id] : null);
 			}
 			
 			//execute consequence if licence was hacked

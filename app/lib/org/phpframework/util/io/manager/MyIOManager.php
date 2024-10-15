@@ -107,6 +107,7 @@ abstract class MyIOManager implements IMyIOManager {
 		
 		if($file_type_allowed) {
 			$type = $this->getMyIOHandler()->getType($name);
+			$type_id = isset($type["id"]) ? $type["id"] : null;
 			
 			if(is_array($file_type_allowed)) {
 				$t = count($file_type_allowed);
@@ -114,14 +115,14 @@ abstract class MyIOManager implements IMyIOManager {
 					if($file_type_allowed[$i] == 2) {
 						return true;
 					}
-					elseif($type["id"] == $file_type_allowed[$i]) {
+					elseif($type_id == $file_type_allowed[$i]) {
 						return true;
 					}
 				}
 				return false;
 			}
 			else {
-				return $file_type_allowed == 2 || $type["id"] == $file_type_allowed ? true : false;
+				return $file_type_allowed == 2 || $type_id == $file_type_allowed ? true : false;
 			}
 		}
 		return $status;

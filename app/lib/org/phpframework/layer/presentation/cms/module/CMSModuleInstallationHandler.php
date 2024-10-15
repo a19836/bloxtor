@@ -510,7 +510,7 @@ class CMSModuleInstallationHandler implements ICMSModuleInstallationHandler {
 				}
 				catch (Exception $e) {
 					$s = false;
-					$exception_msg .= "\n\nDB DRIVER: " . ($opts["db_name"] ? $opts["db_name"] : null) . "\n" . $e->problem . $e->getMessage();
+					$exception_msg .= "\n\nDB DRIVER: " . (!empty($opts["db_name"]) ? $opts["db_name"] : null) . "\n" . (!empty($e->problem) ? $e->problem : "") . $e->getMessage();
 				}
 				
 				if (!$s)

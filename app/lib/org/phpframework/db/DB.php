@@ -77,7 +77,7 @@ abstract class DB implements IDB {
 	}
 	
 	public function getOption($option_name) { 
-		return $this->options[$option_name]; 
+		return isset($this->options[$option_name]) ? $this->options[$option_name] : null;
 	}
 	
 	public function setOptions($options) {
@@ -117,9 +117,10 @@ abstract class DB implements IDB {
 		
 		if ($exists) {
 			$func_args = is_array($parameters) ? $parameters : ($parameters ? array($parameters) : array()); //$parameters could be an array with arguments or a simple attribute (string or numeric) which means it should be converted to first argument of the $function_name method.
+			$func_args = array_values($func_args);
 			
 			//echo "<pre>".$this->getType()."::getFunction: $function_name";print_r($func_args);die();
-			$result = call_user_func_array(array($this, $function_name), $func_args);
+			$result = @call_user_func_array(array($this, $function_name), $func_args); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 			
 			//bc of security issues don't allow password retrieval.
 			if ($function_name == "getOptions")
@@ -239,8 +240,8 @@ abstract class DB implements IDB {
 					$reconnect = !empty($options["reconnect"]) || !empty($this->options["reconnect"]);
 					
 					if ($reconnect && empty($result) && !$this->ping() && ( 
-						($this->options["db_name"] && $this->connect()) || 
-						(!$this->options["db_name"] && $this->connectWithoutDB())
+						(!empty($this->options["db_name"]) && $this->connect()) || 
+						(empty($this->options["db_name"]) && $this->connectWithoutDB())
 					))
 						$result = $this->query($query, $options);
 					
@@ -254,8 +255,8 @@ abstract class DB implements IDB {
 								$count = $this->numFields($result);
 								$get_fields_from_results = false;
 								
-								for ($i = 0; $i < $count; $i++) {
-									$field = $this->fetchField($result, $i);
+								for ($j = 0; $j < $count; $j++) {
+									$field = $this->fetchField($result, $j);
 									$data["fields"][] = $field;
 									
 									if (!$field)
@@ -271,16 +272,16 @@ abstract class DB implements IDB {
 									$data["result"][] = $row;
 							
 							//set fields if none set before. Note that fetchField in PDO doesn't work for some drivers like mssql server, so we need to perfomr this code.
-							if ($prepare_fields && $get_fields_from_results && !empty($data["result"][0])) {
-								$i = 0;
+							if ($prepare_fields && !empty($get_fields_from_results) && !empty($data["result"][0])) {
+								$j = 0;
 								
 								foreach ($data["result"][0] as $k => $v)
 									if (!is_numeric($k)) {
 										$obj = new stdClass();
 										$obj->name = $k;
 										
-										$data["fields"][$i] = $obj;
-										$i++;
+										$data["fields"][$j] = $obj;
+										$j++;
 									}
 							}
 							
@@ -367,8 +368,8 @@ abstract class DB implements IDB {
 					$reconnect = !empty($options["reconnect"]) || !empty($this->options["reconnect"]);
 					
 					if ($reconnect && empty($result) && !$this->ping() && ( 
-						($this->options["db_name"] && $this->connect()) || 
-						(!$this->options["db_name"] && $this->connectWithoutDB())
+						(!empty($this->options["db_name"]) && $this->connect()) || 
+						(empty($this->options["db_name"]) && $this->connectWithoutDB())
 					))
 						$result = $this->execute($query, $options);
 					

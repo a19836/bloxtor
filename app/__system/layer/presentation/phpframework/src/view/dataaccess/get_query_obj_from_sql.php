@@ -1,5 +1,5 @@
 <?php
-$obj = $data;
+$obj = isset($data) ? $data : null;
 
 $EVC->setTemplate("json");
 ?>

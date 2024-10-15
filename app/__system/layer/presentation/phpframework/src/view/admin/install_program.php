@@ -1,6 +1,9 @@
 <?php
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$selected_project_id = isset($selected_project_id) ? $selected_project_id : null;
+$P = isset($P) ? $P : null;
+
 $head = '
 <!-- Add Fontawsome Icons CSS -->
 <link rel="stylesheet" href="' . $project_common_url_prefix . 'vendor/fontawesome/css/all.min.css">
@@ -36,15 +39,15 @@ if ($step >= 3) {
 		</div>
 		
 		<div class="program_info">
-			<div class="program_name">Installing program: "<span>' . ($program_label ? $program_label : $program_name) . '</span>"</div>
+			<div class="program_name">Installing program: "<span>' . (!empty($program_label) ? $program_label : (isset($program_name) ? $program_name : "")) . '</span>"</div>
 		</div>';
 	
-	if ($errors) {
+	if (!empty($errors)) {
 		$main_content .= '<label class="error_title">There were some erros installing this program, this is:</label>
 		<ul class="errors_list">';
 		
-		$dbs_errors = $errors["dbs"];
-		$files_errors = $errors["files"];
+		$dbs_errors = isset($errors["dbs"]) ? $errors["dbs"] : null;
+		$files_errors = isset($errors["files"]) ? $errors["files"] : null;
 		unset($errors["files"]);
 		unset($errors["dbs"]);
 		
@@ -68,14 +71,14 @@ if ($step >= 3) {
 		
 		$main_content .= '</ul>';
 	}
-	else if ($error_message) {
+	else if (!empty($error_message)) {
 		$main_content .= '<label class="error">' . $error_message . '</label>';
 	}
-	else if ($next_step_html) {
+	else if (!empty($next_step_html)) {
 		$main_content .= '
 		<form method="post" enctype="multipart/form-data">
-			<input type="hidden" name="step" value="' . $next_step . '" />
-			<textarea class="hidden" name="post_data">' . json_encode($post_data) . '</textarea>
+			<input type="hidden" name="step" value="' . (isset($next_step) ? $next_step : "") . '" />
+			<textarea class="hidden" name="post_data">' . (isset($post_data) ? json_encode($post_data) : "") . '</textarea>
 			
 			' . $next_step_html . '
 			
@@ -86,7 +89,7 @@ if ($step >= 3) {
 		</script>';
 	}
 	else {
-		$main_content .= '<label class="ok">' . $status_message . '</label>
+		$main_content .= '<label class="ok">' . (isset($status_message) ? $status_message : "") . '</label>
 		<script>
 			$(".program_info").hide();
 		</script>
@@ -120,7 +123,7 @@ if ($step >= 3) {
 		</div>';
 	}
 	
-	if ($messages)
+	if (!empty($messages))
 		$main_content .= '<label class="error_title">Important messages:</label>
 		<ul class="messages_list">
 			<li>'  . implode("</li><li>", $messages) . '</li>
@@ -140,17 +143,17 @@ else if ($step == 2) {
 		</div>
 		
 		<div class="program_info">
-			<div class="program_name">Installing program: "<span>' . ($program_label ? $program_label : $program_name) . '</span>"</div>
+			<div class="program_name">Installing program: "<span>' . (!empty($program_label) ? $program_label : (isset($program_name) ? $program_name : "")) . '</span>"</div>
 		</div>';
 	
-	if ($db_drivers)
+	if (!empty($db_drivers))
 		$main_content .= '<div class="db_drivers"><label>The DBs where the program will be installed: </label><ul><li>' . implode("</li><li>", $db_drivers) . '</li></ul></div>';
 	
 	$main_content .= '<div class="layers">
 		<label>The files from the uploaded file will be copied to the following folders:</label>
 		<ul>';
 	
-	if ($layers) {
+	if (!empty($layers)) {
 		foreach ($layers as $layer_type => $items) {
 			$layer_label = "";
 			
@@ -166,11 +169,11 @@ else if ($step == 2) {
 			<ul>';
 			
 			foreach ($items as $broker_name => $layer_props) {
-				$layer_files = $all_files[$broker_name];
+				$layer_files = isset($all_files[$broker_name]) ? $all_files[$broker_name] : null;
 				
 				if ($layer_type == "vendor" && !is_array($layer_files)) {
 					$file_exists = $layer_files;
-					$extra = $file_exists ? ($overwrite ? " (Already exists and will be replaced!)" : " (Already exists and will be backed-up!)") : "";
+					$extra = $file_exists ? (!empty($overwrite) ? " (Already exists and will be replaced!)" : " (Already exists and will be backed-up!)") : "";
 					$main_content .= '<li class="' . ($file_exists ? 'file_exists' : 'file_ok') . '">' . $broker_name . $extra . '</li>';
 				}
 				else if (is_array($layer_files) && $layer_type == "presentation") {
@@ -183,7 +186,7 @@ else if ($step == 2) {
 						
 						foreach ($project_files as $file_path => $file_exists) {
 							$is_config = strpos($file_path, "config/") === 0;
-							$extra = $file_exists ? ($overwrite && !$is_config ? "(Already exists and will be replaced!)" : "(Already exists and will be " . ($is_config ? "merged" : "backed-up") . "!)") : "";
+							$extra = $file_exists ? (!empty($overwrite) && !$is_config ? "(Already exists and will be replaced!)" : "(Already exists and will be " . ($is_config ? "merged" : "backed-up") . "!)") : "";
 							$pretty_file_path = substr($file_path, -4) == ".php" ? substr($file_path, 0, -4) : $file_path;
 							$main_content .= '<tr class="' . ($file_exists ? 'file_exists' : 'file_ok') . '"><td>' . $pretty_file_path . '</td><td>' . ($file_exists ? "EXISTS" : "") . '</td><td>' . $extra . '</td></tr>';
 						}
@@ -198,7 +201,7 @@ else if ($step == 2) {
 					<table>';
 					
 					foreach ($layer_files as $file_path => $file_exists) {
-						$extra = $file_exists ? ($overwrite ? "(Already exists and will be replaced!)" : "(Already exists and will be backed-up!)") : "";
+						$extra = $file_exists ? (!empty($overwrite) ? "(Already exists and will be replaced!)" : "(Already exists and will be backed-up!)") : "";
 						$pretty_file_path = substr($file_path, -4) == ".php" ? substr($file_path, 0, -4) : $file_path;
 						$main_content .= '<tr class="' . ($file_exists ? 'file_exists' : 'file_ok') . '"><td>' . $pretty_file_path . '</td><td>' . ($file_exists ? "EXISTS" : "") . '</td><td>' . $extra . '</td></tr>';
 					}
@@ -219,13 +222,17 @@ else if ($step == 2) {
 		
 		<form method="post" enctype="multipart/form-data">
 			<input type="hidden" name="step" value="3" />
-			<textarea class="hidden" name="post_data">' . json_encode($_POST) . '</textarea>
+			<textarea class="hidden" name="post_data">' . (isset($_POST) ? json_encode($_POST) : "") . '</textarea>
 			
 			<input type="hidden" name="continue" value="Continue" />
 		</form>
 	</div>';
 }
 else if ($step == 1) {
+	$program_name = isset($program_name) ? $program_name : null;
+	$program_with_db = isset($program_with_db) ? $program_with_db : null;
+	$default_db_driver = isset($default_db_driver) ? $default_db_driver : null;
+	
 	$main_content .= '
 	<div class="step_1">
 		<div class="top_bar' . ($popup ? ' in_popup' : '') . '">
@@ -238,8 +245,8 @@ else if ($step == 1) {
 		</div>
 		
 		<div class="program_info">
-			<div class="program_name">Installing program: "<span>' . ($info && $info["label"] ? $info["label"] : $program_name) . '</span>"</div>
-			<div class="program_description">' . ($info && $info["description"] ? str_replace("\n", "<br/>", $info["description"]) : "") . '</div>
+			<div class="program_name">Installing program: "<span>' . (!empty($info["label"]) ? $info["label"] : $program_name) . '</span>"</div>
+			<div class="program_description">' . (!empty($info["description"]) ? str_replace("\n", "<br/>", $info["description"]) : "") . '</div>
 			<div class="program_with_db">' . ($program_with_db ? '<span class="icon db"></span> This program uses database' : '') . '</div>
 		</div>';
 	
@@ -247,11 +254,11 @@ else if ($step == 1) {
 		<form method="post" enctype="multipart/form-data">
 			<input type="hidden" name="step" value="2" />
 			<input type="hidden" name="program_name" value="' . $program_name . '" />
-			<input type="hidden" name="program_label" value="' . str_replace('"', '', $info["label"]) . '" />
+			<input type="hidden" name="program_label" value="' . (isset($info["label"]) ? str_replace('"', '', $info["label"]) : "") . '" />
 			<input type="hidden" name="program_with_db" value="' . $program_with_db . '" />
 			';
 	
-	if ($brokers_db_drivers && $program_with_db) {
+	if (!empty($brokers_db_drivers) && $program_with_db) {
 		$main_content .= '
 			<div class="db_drivers">
 				<label>This program uses a database, that is, if you want the data from this program to be loaded, choose a database below where you want to install it:</label>
@@ -264,7 +271,7 @@ else if ($step == 1) {
 			
 			if ($P)
 				$checked = $default_db_driver && $default_db_driver == $bl;
-			else if (!$first_item_checked && $project_name != $EVC->getCommonProjectName()) {
+			else if (!$first_item_checked) {
 				$first_item_checked = true;
 				$checked = true;
 			}
@@ -281,43 +288,51 @@ else if ($step == 1) {
 				<label>Please choose the Layers where you wish to install your program:</label>
 				<ul>';
 	
-	if ($ibatis_brokers) {
+	if (!empty($ibatis_brokers)) {
 		$main_content .= '<li>Data Access - Ibatis Layers:
 		<ul>';
 		
-		foreach ($ibatis_brokers as $bl)
-			$main_content .= '<li><input type="checkbox" name="layers[ibatis][' . $bl[0] . '][active]" value="1" checked/> ' . ucwords($bl[0]) . '</li>';
+		foreach ($ibatis_brokers as $bl) {
+			$bl_broker = isset($bl[0]) ? $bl[0] : null;
+			$main_content .= '<li><input type="checkbox" name="layers[ibatis][' . $bl_broker . '][active]" value="1" checked/> ' . ucwords($bl_broker) . '</li>';
+		}
 		
 		$main_content .= '</ul></li>';
 	}
 	
-	if ($hibernate_brokers) {
+	if (!empty($hibernate_brokers)) {
 		$main_content .= '<li>Data Access - Hibernate Layers:
 		<ul>';
 		
-		foreach ($hibernate_brokers as $bl)
-			$main_content .= '<li><input type="checkbox" name="layers[hibernate][' . $bl[0] . '][active]" value="1" checked/> ' . ucwords($bl[0]) . '</li>';
+		foreach ($hibernate_brokers as $bl) {
+			$bl_broker = isset($bl[0]) ? $bl[0] : null;
+			$main_content .= '<li><input type="checkbox" name="layers[hibernate][' . $bl_broker . '][active]" value="1" checked/> ' . ucwords($bl_broker) . '</li>';
+		}
 		
 		$main_content .= '</ul></li>';
 	}
 	
-	if ($business_logic_brokers) {
+	if (!empty($business_logic_brokers)) {
 		$main_content .= '<li>Business Logic Layers:
 		<ul>';
 		
-		foreach ($business_logic_brokers as $bl)
-			$main_content .= '<li><input type="checkbox" name="layers[businesslogic][' . $bl[0] . '][active]" value="1" checked/> ' . ucwords($bl[0]) . '</li>';
+		foreach ($business_logic_brokers as $bl) {
+			$bl_broker = isset($bl[0]) ? $bl[0] : null;
+			$main_content .= '<li><input type="checkbox" name="layers[businesslogic][' . $bl_broker . '][active]" value="1" checked/> ' . ucwords($bl_broker) . '</li>';
+		}
 		
 		$main_content .= '</ul></li>';
 	}
 	
-	if ($presentation_brokers) {
+	if (!empty($presentation_brokers)) {
 		$main_content .= '<li>Presentation Layers:
 		<ul>';
 		
 		foreach ($presentation_brokers as $bl) {
-			$projects = $presentation_projects[ $bl[2] ]["projects"];
-			$main_content .= '<li>' . ucwords($bl[0]) . ':
+			$bl_broker = isset($bl[0]) ? $bl[0] : null;
+			$bl_bean_name = isset($bl[2]) ? $bl[2] : null;
+			$projects = isset($presentation_projects[$bl_bean_name]["projects"]) ? $presentation_projects[$bl_bean_name]["projects"] : null;
+			$main_content .= '<li>' . ucwords($bl_broker) . ':
 			<ul>';
 			
 			$first_item_checked = count($projects) != 2;
@@ -333,7 +348,7 @@ else if ($step == 1) {
 						$checked = true;
 					}
 					
-					$main_content .= '<li><input type="checkbox" name="layers[presentation][' . $bl[0] . '][' . $project_name . '][active]" value="1"' . ($checked ? ' checked' : '') . '/> ' . ucwords($project_name) . '</li>';
+					$main_content .= '<li><input type="checkbox" name="layers[presentation][' . $bl_broker . '][' . $project_name . '][active]" value="1"' . ($checked ? ' checked' : '') . '/> ' . ucwords($project_name) . '</li>';
 				}
 				
 			$main_content .= '</ul>
@@ -343,7 +358,7 @@ else if ($step == 1) {
 		$main_content .= '</ul></li>';
 	}
 	
-	if ($vendor_brokers) {
+	if (!empty($vendor_brokers)) {
 		$main_content .= '<li>Vendor Files:
 		<ul>';
 		
@@ -361,13 +376,15 @@ else if ($step == 1) {
 				<input type="checkbox" name="overwrite" value="1" checked/> Please check this box to overwrite the existent files...
 			</div>
 			
-			' . ($program_settings ? '<div class="program_settings"><label>Other Program Settings:</label>' . $program_settings . '</div>' : '') . '
+			' . (!empty($program_settings) ? '<div class="program_settings"><label>Other Program Settings:</label>' . $program_settings . '</div>' : '') . '
 			
 			<input type="hidden" name="continue" value="Continue" />
 		</form>
 	</div>';
 }
 else {
+	$db_drivers_names = isset($db_drivers_names) ? $db_drivers_names : null;
+	
 	$head .= '
 	<script>
 		var list_programs_with_dbs = ' . (!empty($db_drivers_names) ? "true" : "false") . ';

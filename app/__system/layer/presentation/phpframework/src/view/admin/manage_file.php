@@ -1,6 +1,6 @@
 <?php
 //echo $xml;
-echo $status;
+echo isset($status) ? $status : null;
 
 $EVC->setTemplate("empty");
 ?>

@@ -29,11 +29,11 @@ class UploadHandler {
 				}
 				
 				foreach ($files["name"] as $idx => $name) 
-					if ($name && $files["tmp_name"][$idx]) {
+					if ($name && !empty($files["tmp_name"][$idx])) {
 						$tmp_name = $files["tmp_name"][$idx];
-						$type = $files["type"][$idx];
-						$size = $files["size"][$idx];
-						$error = $files["error"][$idx];
+						$type = isset($files["type"][$idx]) ? $files["type"][$idx] : null;
+						$size = isset($files["size"][$idx]) ? $files["size"][$idx] : null;
+						$error = isset($files["error"][$idx]) ? $files["error"][$idx] : null;
 						
 						if ($error == UPLOAD_ERR_OK && is_uploaded_file($tmp_name)) {
 							$validated = true;

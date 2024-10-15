@@ -22,10 +22,10 @@ class WorkFlowBeansFolderHandler {
 		
 		//init global_paths. This is very important bc the deployment code uses different paths, so we msut use the $this->global_paths variable instead of using directly the php defined variables.
 		$this->global_paths = $this->global_paths ? $this->global_paths : array();
-		$this->global_paths["LAYER_CACHE_PATH"] = $this->global_paths["LAYER_CACHE_PATH"] ? $this->global_paths["LAYER_CACHE_PATH"] : LAYER_CACHE_PATH;
-		$this->global_paths["LAYER_PATH"] = $this->global_paths["LAYER_PATH"] ? $this->global_paths["LAYER_PATH"] : LAYER_PATH;
-		$this->global_paths["BEAN_PATH"] = $this->global_paths["BEAN_PATH"] ? $this->global_paths["BEAN_PATH"] : BEAN_PATH;
-		$this->global_paths["SYSTEM_LAYER_PATH"] = $this->global_paths["SYSTEM_LAYER_PATH"] ? $this->global_paths["SYSTEM_LAYER_PATH"] : SYSTEM_LAYER_PATH;
+		$this->global_paths["LAYER_CACHE_PATH"] = !empty($this->global_paths["LAYER_CACHE_PATH"]) ? $this->global_paths["LAYER_CACHE_PATH"] : LAYER_CACHE_PATH;
+		$this->global_paths["LAYER_PATH"] = !empty($this->global_paths["LAYER_PATH"]) ? $this->global_paths["LAYER_PATH"] : LAYER_PATH;
+		$this->global_paths["BEAN_PATH"] = !empty($this->global_paths["BEAN_PATH"]) ? $this->global_paths["BEAN_PATH"] : BEAN_PATH;
+		$this->global_paths["SYSTEM_LAYER_PATH"] = !empty($this->global_paths["SYSTEM_LAYER_PATH"]) ? $this->global_paths["SYSTEM_LAYER_PATH"] : SYSTEM_LAYER_PATH;
 	}
 	
 	public function getGlobalPaths() {
@@ -88,7 +88,7 @@ class WorkFlowBeansFolderHandler {
 			$new_default_layer_folder = null;
 			
 			foreach ($types_sorted as $type)
-				if ($this->default_layers_folder[$type]) {
+				if (!empty($this->default_layers_folder[$type])) {
 					foreach ($this->default_layers_folder[$type] as $layer_folder)
 						if ($layer_folder) {
 							$new_default_layer_folder = $layer_folder;
@@ -176,11 +176,12 @@ RewriteRule (.*) ' . $new_default_layer_folder . '/$1 [L,NC]
 					
 							if (empty($arg)) {
 								$reference = $constructor_arg->reference;
-								$arg = $vars[$reference];
+								$arg = isset($vars[$reference]) ? $vars[$reference] : null;
 							}
 							
 							if (!empty($arg)) {
 								$path = false;
+								$type = null;
 								
 								if (isset($arg["presentations_path"])) {
 									$type = "presentation";
@@ -272,6 +273,8 @@ RewriteRule (.*) ' . $new_default_layer_folder . '/$1 [L,NC]
 		//PREPARE COMMON PROJECT
 		$common_project_name = "";
 		foreach($beans as $name => $bean) {
+			$obj = $this->BeanFactory->getObject($name);
+			
 			if (is_a($obj, "PresentationLayer")) {
 				$common_project_name = $obj->getCommonProjectName();
 				break;
@@ -360,7 +363,12 @@ try {
 	define(\'EVC_DISPATCHER_BEAN_NAME\', \'' . $evc_dispacher_bean_name . '\');
 	define(\'EVC_BEAN_NAME\', \'' . $evc_bean_name . '\');
 
-	echo call_presentation_layer_web_service(array("presentation_id" => $presentation_id, "external_vars" => $external_vars, "includes" => $includes, "includes_once" => $includes_once));
+	echo call_presentation_layer_web_service(array(
+		"presentation_id" => isset($presentation_id) ? $presentation_id : null, 
+		"external_vars" => isset($external_vars) ? $external_vars : null, 
+		"includes" => isset($includes) ? $includes : null, 
+		"includes_once" => isset($includes_once) ? $includes_once : null, 
+	));
 }
 catch(Exception $e) {
 	$GlobalExceptionLogHandler->log($e);
@@ -399,7 +407,7 @@ catch(Exception $e) {
 			$obj = $this->BeanFactory->getObject($name);
 			
 			if (is_a($obj, "BusinessLogicLayer"))
-				$common_module_name = $obj->settings["business_logic_modules_common_name"];
+				$common_module_name = isset($obj->settings["business_logic_modules_common_name"]) ? $obj->settings["business_logic_modules_common_name"] : null;
 		}
 		
 		$common_module_name = $common_module_name ? $common_module_name : "common";
@@ -438,7 +446,10 @@ try {
 	' . $extra . '
 	define(\'BUSINESS_LOGIC_BROKER_SERVER_BEAN_NAME\', $broker_server_bean_name);
 	
-	echo call_business_logic_layer_web_service(array("global_variables" => $_POST["gv"], "request_encryption_key" => $broker_server_request_encryption_key));
+	echo call_business_logic_layer_web_service(array(
+		"global_variables" => isset($_POST["gv"]) ? $_POST["gv"] : null, 
+		"request_encryption_key" => $broker_server_request_encryption_key
+	));
 }
 catch(Exception $e) {
 	$GlobalExceptionLogHandler->log($e);
@@ -552,7 +563,10 @@ try {
 	' . $extra . '
 	define(\'IBATIS_DATA_ACCESS_BROKER_SERVER_BEAN_NAME\', $broker_server_bean_name);
 
-	echo call_ibatis_data_access_layer_web_service(array("global_variables" => $_POST["gv"], "request_encryption_key" => $broker_server_request_encryption_key));
+	echo call_ibatis_data_access_layer_web_service(array(
+		"global_variables" => isset($_POST["gv"]) ? $_POST["gv"] : null, 
+		"request_encryption_key" => $broker_server_request_encryption_key
+	));
 }
 catch(Exception $e) {
 	$GlobalExceptionLogHandler->log($e);
@@ -584,7 +598,10 @@ try {
 	' . $extra . '
 	define(\'HIBERNATE_DATA_ACCESS_BROKER_SERVER_BEAN_NAME\', $broker_server_bean_name);
 
-	echo call_hibernate_data_access_layer_web_service(array("global_variables" => $_POST["gv"], "request_encryption_key" => $broker_server_request_encryption_key));
+	echo call_hibernate_data_access_layer_web_service(array(
+		"global_variables" => isset($_POST["gv"]) ? $_POST["gv"] : null, 
+		"request_encryption_key" => $broker_server_request_encryption_key
+	));
 }
 catch(Exception $e) {
 	$GlobalExceptionLogHandler->log($e);
@@ -599,10 +616,10 @@ catch(Exception $e) {
 <beans>
 	<!-- START FILE SYSTEM HANDLER --> 
 	<bean name="ServiceCacheHandler" path="org.phpframework.cache.service.filesystem.FileSystemServiceCacheHandler" path_prefix="<?php echo LIB_PATH;?>">
-		<constructor_arg><?php echo $vars["dal_module_cache_maximum_size"]; ?></constructor_arg>
+		<constructor_arg><?php echo isset($vars["dal_module_cache_maximum_size"]) ? $vars["dal_module_cache_maximum_size"] : null; ?></constructor_arg>
 		
-		<property name="rootPath"><?php echo $vars["dal_cache_path"] . $vars["current_dal_module_id"]; ?></property>
-		<property name="defaultTTL"><?php echo $vars["dal_default_cache_ttl"]; ?></property>
+		<property name="rootPath"><?php echo (isset($vars["dal_cache_path"]) ? $vars["dal_cache_path"] : "") . (isset($vars["current_dal_module_id"]) ? $vars["current_dal_module_id"] : ""); ?></property>
+		<property name="defaultTTL"><?php echo isset($vars["dal_default_cache_ttl"]) ? $vars["dal_default_cache_ttl"] : null; ?></property>
 	</bean>
 	<!-- END FILE SYSTEM HANDLER --> 
 </beans>';
@@ -679,7 +696,10 @@ try {
 	' . $extra . '
 	define(\'DB_BROKER_SERVER_BEAN_NAME\', $broker_server_bean_name);
 
-	echo call_db_layer_web_service(array("global_variables" => $_POST["gv"], "request_encryption_key" => $broker_server_request_encryption_key));
+	echo call_db_layer_web_service(array(
+		"global_variables" => isset($_POST["gv"]) ? $_POST["gv"] : null, 
+		"request_encryption_key" => $broker_server_request_encryption_key
+	));
 }
 catch(Exception $e) {
 	$GlobalExceptionLogHandler->log($e);
@@ -693,10 +713,10 @@ catch(Exception $e) {
 <beans>
 	<!-- START FILE SYSTEM HANDLER --> 
 	<bean name="ServiceCacheHandler" path="org.phpframework.cache.service.filesystem.FileSystemServiceCacheHandler" path_prefix="<?php echo LIB_PATH;?>">
-		<constructor_arg><?php echo $vars["dbl_module_cache_maximum_size"]; ?></constructor_arg>
+		<constructor_arg><?php echo isset($vars["dbl_module_cache_maximum_size"]) ? $vars["dbl_module_cache_maximum_size"] : null; ?></constructor_arg>
 		
-		<property name="rootPath"><?php echo $vars["dbl_cache_path"]; ?></property>
-		<property name="defaultTTL"><?php echo $vars["dbl_default_cache_ttl"]; ?></property>
+		<property name="rootPath"><?php echo isset($vars["dbl_cache_path"]) ? $vars["dbl_cache_path"] : null; ?></property>
+		<property name="defaultTTL"><?php echo isset($vars["dbl_default_cache_ttl"]) ? $vars["dbl_default_cache_ttl"] : null; ?></property>
 	</bean>
 	<!-- END FILE SYSTEM HANDLER --> 
 </beans>';
@@ -705,6 +725,7 @@ catch(Exception $e) {
 	}
 	
 	private function getRemoteServerInitBeansCode($beans, $settings, $class_suffix, &$default_layer_broker_type, &$default_broker_server_bean_name, &$default_broker_server_request_encryption_key, &$default_global_variables_code) {
+		$extra = '';
 		$remote_broker_server_bean_names_by_type = array();
 		
 		if (!empty($settings["layer_brokers"]))
@@ -719,24 +740,24 @@ catch(Exception $e) {
 		
 		if ($remote_broker_server_bean_names_by_type) {
 			$default_layer_broker_type = key($remote_broker_server_bean_names_by_type);
-			$default_broker_server_bean_name = $remote_broker_server_bean_names_by_type[$default_layer_broker_type];
-			$default_broker_server_request_encryption_key = $settings["layer_brokers"][$default_layer_broker_type]["request_encryption_key"];
-			$default_global_variables_code = $this->getRemoteServerInitBeansGlobalVariablesCode($settings["layer_brokers"][$default_layer_broker_type]["global_variables"]);
-			$extra = '';
+			$default_broker_server_bean_name = isset($remote_broker_server_bean_names_by_type[$default_layer_broker_type]) ? $remote_broker_server_bean_names_by_type[$default_layer_broker_type] : null;
+			$default_broker_server_request_encryption_key = isset($settings["layer_brokers"][$default_layer_broker_type]["request_encryption_key"]) ? $settings["layer_brokers"][$default_layer_broker_type]["request_encryption_key"] : null;
+			$default_global_variables_code = $this->getRemoteServerInitBeansGlobalVariablesCode(isset($settings["layer_brokers"][$default_layer_broker_type]["global_variables"]) ? $settings["layer_brokers"][$default_layer_broker_type]["global_variables"] : null);
 			
 			if (count($remote_broker_server_bean_names_by_type) > 1) {
 				$extra .= '
 	$headers = getallheaders();
-
-	switch ($headers["layer_broker_server_type"]) {';
+	$header_layer_broker_server_type = isset($headers["layer_broker_server_type"]) ? $headers["layer_broker_server_type"] : null;
+	
+	switch ($header_layer_broker_server_type) {';
 				
 				foreach ($remote_broker_server_bean_names_by_type as $layer_broker_type => $broker_server_bean_name)
 					if ($layer_broker_type != $default_layer_broker_type) {
-						$default_global_variables_code .= $this->getRemoteServerInitBeansGlobalVariablesCode($settings["layer_brokers"][$layer_broker_type]["global_variables"]);
+						$default_global_variables_code .= $this->getRemoteServerInitBeansGlobalVariablesCode(isset($settings["layer_brokers"][$layer_broker_type]["global_variables"]) ? $settings["layer_brokers"][$layer_broker_type]["global_variables"] : null);
 						$extra .= '
 		case "' . $layer_broker_type . '":
 			$broker_server_bean_name = \'' . $broker_server_bean_name . '\';
-			$broker_server_request_encryption_key = \'' . $settings["layer_brokers"][$layer_broker_type]["request_encryption_key"] . '\';
+			$broker_server_request_encryption_key = \'' . (isset($settings["layer_brokers"][$layer_broker_type]["request_encryption_key"]) ? $settings["layer_brokers"][$layer_broker_type]["request_encryption_key"] : "") . '\';
 			' . str_replace("\n", "\n\t\t", $default_global_variables_code) . '
 			break;';
 					}
@@ -757,7 +778,7 @@ catch(Exception $e) {
 		
 		if (is_array($global_variables) && !empty($global_variables["vars_name"])) { 
 			$vars_name = $global_variables["vars_name"];
-			$vars_value = $global_variables["vars_value"];
+			$vars_value = isset($global_variables["vars_value"]) ? $global_variables["vars_value"] : null;
 			
 			if (!is_array($vars_name)) {
 				$vars_name = array($vars_name);
@@ -766,7 +787,7 @@ catch(Exception $e) {
 			
 			foreach ($vars_name as $idx => $name)
 				if ($name) {
-					$value = $vars_value[$idx];
+					$value = isset($vars_value[$idx]) ? $vars_value[$idx] : null;
 					$code .= ($code ? "\n\t" : "") . "\$$name = '" . $value . "';";
 				}
 		}

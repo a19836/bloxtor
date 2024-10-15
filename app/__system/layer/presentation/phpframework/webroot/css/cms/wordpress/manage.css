@@ -2,6 +2,10 @@
 .manage_wordpress {
 	min-width:400px;
 }
+.manage_wordpress .php_version {
+	margin-bottom:20px;
+	color:var(--link-color);
+}
 .manage_wordpress .project,
   .manage_wordpress .db_driver {
 	margin-bottom:20px;

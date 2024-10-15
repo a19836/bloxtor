@@ -2,18 +2,27 @@
 include_once $EVC->getUtilPath("WorkFlowPresentationHandler"); //must be include_once bc the workflow module calls the WorkFlowPresentationHandler too, and if is not include_once, it will give a php error bc we are including the WorkFlowPresentationHandler twice.
 include_once $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$file_path = isset($file_path) ? $file_path : null;
+$P = isset($P) ? $P : null;
+$PEVC = isset($PEVC) ? $PEVC : null;
+$module_id = isset($module_id) ? $module_id : null;
+$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+$block_settings = isset($block_settings) ? $block_settings : null;
+$block_join_points = isset($block_join_points) ? $block_join_points : null;
+$block_local_join_points = isset($block_local_join_points) ? $block_local_join_points : null;
+
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 
 //prepare some default configurations. This configurations can be changed from the edit_page_module_block too.
-$query_string = preg_replace("/dont_save_cookie=([^&])*/", "", str_replace(array("&edit_block_type=advanced", "&edit_block_type=simple"), "", $_SERVER["QUERY_STRING"]));
+$query_string = isset($_SERVER["QUERY_STRING"]) ? preg_replace("/dont_save_cookie=([^&])*/", "", str_replace(array("&edit_block_type=advanced", "&edit_block_type=simple"), "", $_SERVER["QUERY_STRING"])) : "";
 $title = isset($title) ? $title : 'Edit Block (Visual Workspace): ' . BreadCrumbsUIHandler::getFilePathBreadCrumbsHtml($file_path, $P, true);
 $title_icons = isset($title_icons) ? $title_icons : '<li class="show_advanced_ui" title="Switch to Code Workspace"><a href="?' . $query_string . '&edit_block_type=advanced"><i class="icon show_advanced_ui"></i> Switch to Code Workspace</a></li>';
-$save_url = $save_url ? $save_url : $project_url_prefix . "phpframework/presentation/save_block_simple?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";
+$save_url = !empty($save_url) ? $save_url : $project_url_prefix . "phpframework/presentation/save_block_simple?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";
 
 $call_module_file_prefix_url = $project_url_prefix . "phpframework/module/" . $module_id . "/#module_file_path#?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";
 $call_common_module_file_prefix_url = $project_common_url_prefix . "module/common/#module_file_path#?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";
 $get_block_handler_source_code_url = $project_url_prefix . "phpframework/presentation/get_module_handler_source_code?bean_name=$bean_name&bean_file_name=$bean_file_name&project=$path&block=#block#";
-$module_admin_panel_url = $module_group_id ? $project_url_prefix . "/module/" . $module_group_id . "/admin/?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path" : "";
+$module_admin_panel_url = !empty($module_group_id) ? $project_url_prefix . "/module/" . $module_group_id . "/admin/?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path" : "";
 
 $presentation_project_webroot_url = getPresentationProjectWebrootUrl($PEVC, $user_global_variables_file_path);
 $presentation_project_common_webroot_url = getPresentationProjectCommonWebrootUrl($PEVC, $user_global_variables_file_path);
@@ -77,10 +86,10 @@ $head = '
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/presentation/module_join_points.js"></script>
 
 <script>
-' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, $selected_db_vars) . '
+' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, isset($selected_db_vars) ? $selected_db_vars : null) . '
 var layer_type = "pres";
-var selected_project_id = "' . $selected_project_id . '";
-var file_modified_time = ' . $file_modified_time . '; //for version control
+var selected_project_id = "' . (isset($selected_project_id) ? $selected_project_id : null) . '";
+var file_modified_time = ' . (isset($file_modified_time) ? $file_modified_time : "null") . '; //for version control
 
 var save_object_url = \'' . $save_url . '\';
 var call_module_file_prefix_url = \'' . $call_module_file_prefix_url . '\';
@@ -97,8 +106,8 @@ var templates_regions_html_url = \'' . $templates_regions_html_url . '\';  //use
 var selected_project_url_prefix = \'' . $selected_project_url_prefix . '\';
 var selected_project_common_url_prefix = \'' . $selected_project_common_url_prefix . '\';
 
-var block_settings_obj = ' . json_encode($block_settings_obj) . ';
-var brokers_db_drivers = ' . json_encode($brokers_db_drivers) . ';
+var block_settings_obj = ' . (isset($block_settings_obj) ? json_encode($block_settings_obj) : "null") . ';
+var brokers_db_drivers = ' . (isset($brokers_db_drivers) ? json_encode($brokers_db_drivers) : "null") . ';
 var load_module_settings_function = null;
 var is_popup = ' . ($popup ? 1 : 0) . ';
 ';
@@ -133,19 +142,19 @@ $main_content = '
 		</header>
 	</div>';
 
-if ($module) {
-	if (!$module["enabled"])
+if (!empty($module)) {
+	if (empty($module["enabled"]))
 		$main_content .='<div class="invalid">Warning: This module is currently DISABLED!</div>';
 	
-	if ($hard_coded) 
+	if (!empty($hard_coded))
 		$main_content .='<div class="invalid">Alert: The system detected that the block id is different than the current file name. We advise you to edit this file with the Advanced UI, otherwise you may overwrite other people\'s changes...</div>';
 	
 	$main_content .= WorkFlowPresentationHandler::getChooseFromFileManagerPopupHtml($bean_name, $bean_file_name, $choose_bean_layer_files_from_file_manager_url, $choose_dao_files_from_file_manager_url, $choose_lib_files_from_file_manager_url, $choose_vendor_files_from_file_manager_url, null, null, null, null, null, $presentation_brokers);
 	
 	$image = '<span class="no_photo">No Photo</span>';
 	
-	if ($module["images"][0]["url"]) {
-		if (preg_match("/\.svg$/i", $module["images"][0]["url"]) && file_exists($module["images"][0]["path"]))
+	if (!empty($module["images"][0]["url"])) {
+		if (preg_match("/\.svg$/i", $module["images"][0]["url"]) && !empty($module["images"][0]["path"]) && file_exists($module["images"][0]["path"]))
 			$image = file_get_contents($module["images"][0]["path"]);
 		else
 			$image = '<img src="' . $module["images"][0]["url"] . '" />';
@@ -156,28 +165,28 @@ if ($module) {
 		<div class="module_data">
 			<input type="hidden" name="module_id" value="' . $module_id . '" />
 			<div class="module_img">' . $image . '</div>
-			<div class="module_label">' . $module["label"] . '</div>
+			<div class="module_label">' . (isset($module["label"]) ? $module["label"] : "") . '</div>
 			<div class="module_description">
-				' . str_replace("\n", "<br>", $module["description"]) . '
-				' . ($exists_admin_panel ? '<a class="open_module_admin_panel_popup" href="javascript:void(0)" onClick="openModuleAdminPanelPopup()">Open ' . $module["group_id"] . ' admin panel</a>' : '') . '
+				' . (isset($module["description"]) ? str_replace("\n", "<br>", $module["description"]) : "") . '
+				' . (!empty($exists_admin_panel) ? '<a class="open_module_admin_panel_popup" href="javascript:void(0)" onClick="openModuleAdminPanelPopup()">Open ' . (isset($module["group_id"]) ? $module["group_id"] : "") . ' admin panel</a>' : '') . '
 			</div>
 		</div>';
 	
-	if ($module["settings_html"]) 
+	if (!empty($module["settings_html"])) 
 		$main_content .= '
 			<div class="module_settings">
 				<label>Module\'s Settings:</label>
 				<div class="settings">
-					' . $module["settings_html"] . '
+					' . (isset($module["settings_html"]) ? $module["settings_html"] : "") . '
 				</div>
 			</div>';
 	
 	$main_content .= CMSPresentationLayerJoinPointsUIHandler::getBlockJoinPointsJavascriptObjs($block_join_points, $block_local_join_points);
-	$main_content .= CMSPresentationLayerJoinPointsUIHandler::getBlockJoinPointsHtml($module["join_points"], $block_id, !$obj_data["code"], $module["module_handler_impl_file_path"]);
+	$main_content .= CMSPresentationLayerJoinPointsUIHandler::getBlockJoinPointsHtml(isset($module["join_points"]) ? $module["join_points"] : null, $block_id, empty($obj_data["code"]), isset($module["module_handler_impl_file_path"]) ? $module["module_handler_impl_file_path"] : null);
 	
 	$main_content .= '
 		<script>
-			load_module_settings_function = ' . ($module["load_module_settings_js_function"] ? $module["load_module_settings_js_function"] : 'null') . ';
+			load_module_settings_function = ' . (!empty($module["load_module_settings_js_function"]) ? $module["load_module_settings_js_function"] : 'null') . ';
 		</script>
 	</div>';
 }

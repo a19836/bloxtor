@@ -10,7 +10,7 @@ else if (!empty($_COOKIE["admin_type"]))
 
 validateLicence($EVC, $user_global_variables_file_path, $user_beans_folder_path);
 
-if ($admin_type) {
+if (!empty($admin_type)) {
 	include $EVC->getUtilPath("admin_uis_permissions");
 	
 	if ( ($admin_type == "simple" && !$is_admin_ui_simple_allowed)
@@ -22,7 +22,7 @@ if ($admin_type) {
 		$admin_type = "";
 }
 
-$entity_view_id = $admin_type ? "admin/admin_" . $admin_type : "admin/admin_uis";
+$entity_view_id = !empty($admin_type) ? "admin/admin_" . $admin_type : "admin/admin_uis";
 $entity_path = $EVC->getEntityPath($entity_view_id);
 include $entity_path;
 
@@ -61,10 +61,10 @@ function validateLicence($EVC, $user_global_variables_file_path, $user_beans_fol
 		$time_key = "sad";
 		$time_key .= "min_ex" . "piratio" . "n_date";
 		$time_key = "sy" . $time_key;
-		$time = strtotime($p[$time_key]);
+		$time = isset($p[$time_key]) ? strtotime($p[$time_key]) : "";
 		$project_maximum_number_key = "m_num" . "ber";
 		$project_maximum_number_key = "p". "rojec" . "ts_ma" . "ximu" . $project_maximum_number_key;
-		$project_maximum_number = (int)$p[$project_maximum_number_key];
+		$project_maximum_number = isset($p[$project_maximum_number_key]) ? (int)$p[$project_maximum_number_key] : null;
 		$status = $time > time();
 		//echo "$time:".date("Y-m-d", $time).":$status";die();
 		
@@ -75,7 +75,7 @@ function validateLicence($EVC, $user_global_variables_file_path, $user_beans_fol
 			$layers = CMSPresentationLayerHandler::getPresentationLayersProjectsFiles($user_global_variables_file_path, $user_beans_folder_path, "webroot", false, 0);
 			if ($layers)
 				foreach ($layers as $layer)
-					if ($layer["projects"]) {
+					if (!empty($layer["projects"])) {
 						$projects_count += count($layer["projects"]);
 						
 						//bc of the common project that doesn't count
@@ -128,7 +128,7 @@ function validateLicence($EVC, $user_global_variables_file_path, $user_beans_fol
 		//if time doesn't exist, deletes the lib/ and __system/ folders, bc it means someone try to hack the licence.
 		//Note: Only delete fiels if someone hacks the code or licence, otherwise only show a simple message saying "licence expired"
 		//Note that if it enters here it means someone was already messing with the code and tried to hack it, otherwise the system will die before.
-		if (!$time) {
+		if (empty($time)) {
 			//Deletes folders
 			//To create the numbers:
 			//	php -r '$x="@rename(LAYER_PATH, APP_PATH . \".layer\");@CacheHandlerUtil::deleteFolder(VENDOR_PATH);@CacheHandlerUtil::deleteFolder(LIB_PATH, false, array(realpath(LIB_PATH . \"cache/CacheHandlerUtil.php\")));@CacheHandlerUtil::deleteFolder(SYSTEM_PATH);"; $l=strlen($x); for($i=0; $i<$l; $i+=2) echo ($i+1 < $l ? ord($x[$i+1])." " : "").ord($x[$i])." "; echo "\n";'

@@ -1,6 +1,6 @@
 # Bloxtor installation steps
 
-1. install apache, php 5.6 or higher
+1. install apache, php 5.6 or higher (tested until PHP 8.4)
 
 2. Then install confirm if you have the following php modules installed:
 	`bcmath (is installed by default)`

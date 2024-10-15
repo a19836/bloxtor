@@ -95,11 +95,11 @@ To "**Propagate**" a work means to do anything with it that, without permission,
 
 ##### Clause 1 - Usage
 
-We grant you this license, in order for you to:
-- use the Covered Work by installing it within your infrastructure,
-- use the Covered Work in order to use its features (e.g. create your own web applications, database reverse engineering, database management).
+**We grant you this license, in order for you to:**
+- **use the Covered Work by installing it within your infrastructure,**
+- **use the Covered Work in order to use its features (e.g. create your own web applications, database reverse engineering, database management).**
 
-Please read the "*Clause 3 - Permissions*" and "*Clause 4 - Restrictions*" below to understand what you can and cannot do with Covered Work.
+**Please read the "*Clause 3 - Permissions*" and "*Clause 4 - Restrictions*" below to understand what you can and cannot do with Covered Work.**
 
 ##### Clause 2 - Intellectual Property
 

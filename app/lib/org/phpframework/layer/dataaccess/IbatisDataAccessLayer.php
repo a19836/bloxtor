@@ -64,8 +64,8 @@ class IbatisDataAccessLayer extends DataAccessLayer {
 		$this->initModuleServices($module_id);
 		
 		if($this->getErrorHandler()->ok()) {
-			$module = $this->modules[$module_id];
-			$module_path = $this->modules_path[$module_id];
+			$module = isset($this->modules[$module_id]) ? $this->modules[$module_id] : null;
+			$module_path = isset($this->modules_path[$module_id]) ? $this->modules_path[$module_id] : null;
 			//echo "$module_id, $service_type, $service_id<br>";
 			//echo "<pre>$module_id:";print_r($this->modules_path);print_r(array_keys($module));print_r($module[$service_id]);echo "</pre>";
 			
@@ -127,8 +127,8 @@ class IbatisDataAccessLayer extends DataAccessLayer {
 	}
 	
 	private function callService($module_id, $service_type, $service_id, $parameters, $options, &$includes = false) {
-		$module = $this->modules[$module_id];
-		$module_path = $this->modules_path[$module_id];
+		$module = isset($this->modules[$module_id]) ? $this->modules[$module_id] : null;
+		$module_path = isset($this->modules_path[$module_id]) ? $this->modules_path[$module_id] : null;
 		//echo "$module_id, $service_type, $service_id<br>";
 		//echo "<pre>$module_id:";print_r($this->modules_path);print_r(array_keys($module));print_r($module[$service_id]);echo "</pre>";
 		
@@ -157,7 +157,7 @@ class IbatisDataAccessLayer extends DataAccessLayer {
 				//echo "<pre>";print_r($query);echo "</pre>";
 				
 				if($query) {
-					if($options["call_query_sql"]) {
+					if(!empty($options["call_query_sql"])) {
 						return $SQLClient->getQuerySQL($query, $parameters, $options);
 					}
 					else {

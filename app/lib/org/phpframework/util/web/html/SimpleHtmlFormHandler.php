@@ -3,7 +3,7 @@ include_once get_lib("org.phpframework.util.web.html.HtmlFormHandler");
 
 class SimpleHtmlFormHandler {
 	
-	public function getListHtml($settings) {
+	public static function getListHtml($settings) {
 		//Preparing Settings
 		$title = isset($settings["title"]) ? $settings["title"] : null;
 		$class = isset($settings["class"]) ? $settings["class"] : null;
@@ -25,7 +25,7 @@ class SimpleHtmlFormHandler {
 		return $html;
 	}
 	
-	public function getFormHtml($settings) {
+	public static function getFormHtml($settings) {
 		//Preparing Settings
 		$title = isset($settings["title"]) ? $settings["title"] : null;
 		$class = isset($settings["class"]) ? $settings["class"] : null;
@@ -80,7 +80,7 @@ class SimpleHtmlFormHandler {
 				
 				if (!$field_name && is_string($field) && !is_numeric($field)) {
 					$field_name = $field;
-					unset($field);
+					$field = null;
 				}
 				
 				$elements[] = self::getFieldElementSettings($field, $field_name, "list_column");
@@ -350,6 +350,7 @@ class SimpleHtmlFormHandler {
 		$previous_html = null;
 		$next_html = null;
 		$label = null;
+		$input_value = null;
 		$input_field_name = $field_name;
 		
 		if (is_array($field)) {

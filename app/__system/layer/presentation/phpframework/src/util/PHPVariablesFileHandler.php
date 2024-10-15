@@ -53,7 +53,7 @@ class PHPVariablesFileHandler {
 								eval("\$this->old_globals[\$var_name] = isset($var_name) ? $var_name : null;");
 							}
 							else 
-								$this->old_globals[$var_name] = $GLOBALS[$var_name];
+								$this->old_globals[$var_name] = isset($GLOBALS[$var_name]) ? $GLOBALS[$var_name] : null;
 						}
 					
 						//Preparing var_value
@@ -65,8 +65,14 @@ class PHPVariablesFileHandler {
 						
 								eval("\$var_value = isset($var_value) ? $var_value : null;");
 							}
-							else if (substr(trim($var_value), 0, 1) == '$') 
-								$var_value = $GLOBALS[substr(trim($var_value), 1)];
+							else if (substr(trim($var_value), 0, 1) == '$') {
+								$aux = substr(trim($var_value), 1);
+								$var_value = isset($GLOBALS[$aux]) ? $GLOBALS[$aux] : null;
+							}
+							else if (substr(trim($var_value), 0, 2) == '@$') {
+								$aux = substr(trim($var_value), 2);
+								$var_value = isset($GLOBALS[$aux]) ? $GLOBALS[$aux] : null;
+							}
 						}
 						
 						//Preparing var_name with correspondent var_value
@@ -98,7 +104,7 @@ class PHPVariablesFileHandler {
 						eval("\$this->old_globals[\$var_name] = isset($var_name) ? $var_name : null;");
 					}
 					else 
-						$this->old_globals[$var_name] = $GLOBALS[$var_name];
+						$this->old_globals[$var_name] = isset($GLOBALS[$var_name]) ? $GLOBALS[$var_name] : null;
 				}
 				
 				unset($GLOBALS[$var_name]);
@@ -123,7 +129,8 @@ class PHPVariablesFileHandler {
 			$non_isset_global_vars_name = array_diff($global_keys, $this->old_global_vars_name);
 			
 			foreach ($non_isset_global_vars_name as $var_name) 
-				unset($GLOBALS[$var_name]);
+				if (isset($GLOBALS[$var_name]))
+					unset($GLOBALS[$var_name]);
 		}
 	}
 	
@@ -167,7 +174,7 @@ class PHPVariablesFileHandler {
 				
 				if (is_bool($value))
 					$value = $value ? "true" : "false";
-				else if (is_numeric($value) || substr(trim($value), 0, 1) == '$' || strpos($value, "::") !== false || strpos($value, "->") !== false)
+				else if (is_numeric($value) || substr(trim($value), 0, 1) == '$' || substr(trim($value), 0, 2) == '@$' || strpos($value, "::") !== false || strpos($value, "->") !== false)
 					$value = $value;
 				else if (isset($value))
 					$value = '"' . addcslashes($value, '"') . '"'; //Do not add the '\\' in the addcslashes, bc the user may have variables with password that contain the char '$', which means, the user must escape this char in the UI. If we add '\\' in the addcslashes, the '$' will stop being escaped and will be considered a variable.
@@ -223,7 +230,7 @@ class PHPVariablesFileHandler {
 		if ($content) {
 			//$content = PHPCodePrintingHandler::getCodeWithoutComments($content);
 			
-			preg_match_all('/([\w\$:\-\>]+)([ ]*)=([ ]*)([^;]+);/u', $content, $matches, PREG_SET_ORDER); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 
+			preg_match_all('/([\w\$@:\-\>]+)([ ]*)=([ ]*)([^;]+);/u', $content, $matches, PREG_SET_ORDER); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 
 			//echo "<pre>";print_r($matches);die();
 			
 			$t = count($matches);
@@ -233,16 +240,17 @@ class PHPVariablesFileHandler {
 				$char = substr($value, 0, 1);
 				
 				//check if real name, this is, if $... or Class::something
-				if (substr($name, 0, 1) == '$' || strpos($name, "::") !== false) {
+				if (substr($name, 0, 1) == '$' || substr($name, 0, 2) == '@$' || strpos($name, "::") !== false) {
 					//it means is not a real variable and maybe there is a comment that is confusing the regex, this is, something like this: '//optional => only if you which to start a session, but if you DO, please do it here!' This example happens in the pre_init_config.php
 				
 					$name = substr($name, 0, 1) == "\$" && strpos($name, "::") === false && strpos($name, "->") === false ? substr($name, 1) : $name;
+					$name = substr($name, 0, 2) == "@\$" && strpos($name, "::") === false && strpos($name, "->") === false ? substr($name, 2) : $name;
 					
 					if ($char == '"' || $char == "'") {
 						$value = str_replace("\\" . $char, $char, substr($value, 1, -1)); //remove the \" added from the saveVarsToFile
 					}
 					else {
-						preg_match_all('/isset([ ]*)\(([ ]*)([\w\$:\-\>]+)([ ]*)\)([ ]*)\?([ ]*)([\w\$:\-\>]+)([ ]*)\:([ ]*)([^;]+);/iu', "$value;", $m, PREG_SET_ORDER); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 
+						preg_match_all('/isset([ ]*)\(([ ]*)([\w\$@:\-\>]+)([ ]*)\)([ ]*)\?([ ]*)([\w\$@:\-\>]+)([ ]*)\:([ ]*)([^;]+);/iu', "$value;", $m, PREG_SET_ORDER); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 
 						
 						$value_lower = strtolower($value);
 						

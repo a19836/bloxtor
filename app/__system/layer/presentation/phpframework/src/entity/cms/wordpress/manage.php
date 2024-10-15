@@ -4,10 +4,10 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"]; //optional
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null; //optional
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -29,7 +29,7 @@ if ($bean_name && $bean_file_name) {
 		
 		$LayoutTypeProjectHandler = new LayoutTypeProjectHandler($UserAuthenticationHandler, $user_global_variables_file_path, $user_beans_folder_path, $bean_file_name, $bean_name);
 		$LayoutTypeProjectHandler->filterLayerBrokersDBDriversPropsFromLayoutName($layer_db_drivers, $filter_by_layout); //filter db_drivers by $filter_by_layout
-		$default_db_driver = $GLOBALS["default_db_driver"];
+		$default_db_driver = isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null;
 		
 		$PHPVariablesFileHandler->endUserGlobalVariables();
 		
@@ -56,14 +56,14 @@ if ($bean_name && $bean_file_name) {
 		
 		$installed_wordpress_folders_name = CMSPresentationLayerHandler::getWordPressInstallationsFoldersName($PEVC);
 		
-		if ($_POST) {
-			$db_driver = $_POST["db_driver"];
+		if (!empty($_POST)) {
+			$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
 			
 			if ($db_driver) {
-				if ($show_projects && $_POST["project"])
+				if ($show_projects && !empty($_POST["project"]))
 					$path = $_POST["project"] . "/";
 				
-				$page = $_POST["install_wordpress"] ? "install" : "admin_login";
+				$page = !empty($_POST["install_wordpress"]) ? "install" : "admin_login";
 				$url = $project_url_prefix . "phpframework/cms/wordpress/$page?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path&db_driver=$db_driver";
 				
 				header("Location: $url");

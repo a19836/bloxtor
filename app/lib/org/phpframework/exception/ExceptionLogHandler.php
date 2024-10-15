@@ -11,7 +11,7 @@ class ExceptionLogHandler {
 	public function log(Exception $exception) {
 		if($this->LogHandler) {
 			$message = $exception->getMessage();
-			$problem = $exception->problem;
+			$problem = isset($exception->problem) ? $exception->problem : null;
 			$msg = $message != $problem ? "$message\n$problem" : $problem;
 			
 			$this->LogHandler->setExceptionLog($msg, $exception->getTrace());

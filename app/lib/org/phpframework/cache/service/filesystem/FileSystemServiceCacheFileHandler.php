@@ -15,6 +15,8 @@ class FileSystemServiceCacheFileHandler {
 	}
 	
 	public function write($file_path, $cont) {
+		$status = null;
+		
 		if(($file = fopen($file_path, "w"))) {
 			$status = fputs($file, $cont);
 			$status = $status === false ? false : true;
@@ -34,7 +36,8 @@ class FileSystemServiceCacheFileHandler {
 		if($size_status) {
 			$dir_path = dirname($file_path);
 			$new_file_path = $this->getPath($file_path);
-		
+			$exists = false;
+			
 			if($new_file_path && $this->exists($new_file_path)) {
 				$file_path = $new_file_path;
 				$exists = true;
@@ -96,11 +99,13 @@ class FileSystemServiceCacheFileHandler {
 			$t = count($folders_to_update_keys);
 			for($i = 0; $i < $t; $i++) {
 				$dir_path = $folders_to_update_keys[$i];
-				if(is_numeric($folders_to_update[$dir_path]["number"])) {
+				
+				if(isset($folders_to_update[$dir_path]["number"]) && is_numeric($folders_to_update[$dir_path]["number"])) {
 					$inc = $folders_to_update[$dir_path]["number"] * -1;
 					$this->CacheFolderHandler->updateFilesTotal($dir_path, $inc);
 				}
-				if(is_numeric($folders_to_update[$dir_path]["size"])) {
+				
+				if(isset($folders_to_update[$dir_path]["size"]) && is_numeric($folders_to_update[$dir_path]["size"])) {
 					$inc = $folders_to_update[$dir_path]["size"] * -1;
 					$this->CacheFolderHandler->setFolderSize($this->CacheHandler->getRootPath(), $dir_path, $inc);
 				}
@@ -122,7 +127,7 @@ class FileSystemServiceCacheFileHandler {
 	}
 	
 	public function getPath($file_path) {
-		if(!$this->exists($file_path) && $this->folder_manager_active) {
+		if(!$this->exists($file_path) && $this->CacheFolderHandler->getFolderTotalNumManagerActive()) {
 			$dir_path = dirname($file_path);
 			$file_name = basename($file_path);
 			
@@ -231,6 +236,7 @@ class FileSystemServiceCacheFileHandler {
 	
 	public function isValid($file_path) {
 		$invalid_file_path = $this->getInvalidFilePath($file_path);
+		$cont = null;
 		
 		if($this->exists($invalid_file_path)) {
 			$cont = $this->getContent($invalid_file_path);

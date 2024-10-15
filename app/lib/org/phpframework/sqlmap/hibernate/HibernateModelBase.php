@@ -50,7 +50,7 @@ class HibernateModelBase extends SQLMap {
 		foreach($this->ids as $key => $value) {
 			$attr_name = isset($value["output_name"]) ? $value["output_name"] : null;
 			$type = isset($value["generator"]["type"]) ? $value["generator"]["type"] : "";
-			$id_default_value = $data[$attr_name];
+			$id_default_value = isset($data[$attr_name]) ? $data[$attr_name] : null;
 			//echo "id_default_value:$id_default_value<br>";
 			//echo "type:$type<br>";
 		
@@ -155,7 +155,7 @@ class HibernateModelBase extends SQLMap {
 	public function setTableAttributes($table_attributes) {$this->table_attributes = is_array($table_attributes) ? $table_attributes : array();}//get attributes from the DB
 	public function getTableAttributes() {return $this->table_attributes;}//get attributes from the DB
 	
-	public function setManyToOne($many_to_one) {$this->many_to_one = is_array($table_attributes) ? $table_attributes : array();}
+	public function setManyToOne($many_to_one) {$this->many_to_one = is_array($many_to_one) ? $many_to_one : array();}
 	public function getManyToOne() {return $this->many_to_one;}
 	
 	public function setManyToMany($many_to_many) {$this->many_to_many = is_array($many_to_many) ? $many_to_many : array();}

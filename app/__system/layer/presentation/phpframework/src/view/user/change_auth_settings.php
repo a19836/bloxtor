@@ -272,7 +272,7 @@ $form_settings = array(
 								"type" => "password",
 								"name" => "authentication_db_password",
 								"value" => "#authentication_db_password#",
-								"next_html" => '<span class="icon switch toggle_password" onclick="toggleDBPasswordField(this)" title="Toggle password and text field"></span>' . ($db_settings_variables["password"] ? '<span>...with the global value: "***"</span>' : ''),
+								"next_html" => '<span class="icon switch toggle_password" onclick="toggleDBPasswordField(this)" title="Toggle password and text field"></span>' /*. (!empty($db_settings_variables["password"]) ? '<span>...with the global value: "***"</span>' : '')*/,
 							)
 						)
 					),

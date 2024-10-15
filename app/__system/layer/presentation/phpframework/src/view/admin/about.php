@@ -41,27 +41,27 @@ $main_content = '
 	</div>
 	<div class="projects_expiration_date">
 		<label>Projects Expiration Date:</label>
-		<span>' . ($li_data["dep"] == -1 ? "Unlimited" : $li_data["dep"]) . '</span>
+		<span>' . (isset($li_data["dep"]) ? ($li_data["dep"] == -1 ? "Unlimited" : $li_data["dep"]) : "") . '</span>
 	</div>
 	<div class="sysadmin_expiration_date">
 		<label>SysAdmin Expiration Date:</label>
-		<span>' . $li_data["des"] . '</span>
+		<span>' . (isset($li_data["des"]) ? $li_data["des"] : "") . '</span>
 	</div>
 	<div class="projects_maximum_number">
 		<label>Projects Maximum Number:</label>
-		<span>' . ($li_data["nmp"] == -1 ? "Unlimited" : $li_data["nmp"] - 1) . '</span>
+		<span>' . (isset($li_data["nmp"]) ? ($li_data["nmp"] == -1 ? "Unlimited" : $li_data["nmp"] - 1) : "") . '</span>
 	</div>
 	<div class="users_maximum_number">
 		<label>Developer-Users Maximum Number:</label>
-		<span>' . ($li_data["nmu"] == -1 ? "Unlimited" : $li_data["nmu"]) . '</span>
+		<span>' . (isset($li_data["nmu"]) ? ($li_data["nmu"] == -1 ? "Unlimited" : $li_data["nmu"]) : "") . '</span>
 	</div>
 	<div class="end_users_maximum_number">
 		<label>End-Users Maximum Number:</label>
-		<span>' . ($li_data["nmue"] == -1 ? "Unlimited" : $li_data["nmue"]) . '</span>
+		<span>' . (isset($li_data["nmue"]) ? ($li_data["nmue"] == -1 ? "Unlimited" : $li_data["nmue"]) : "") . '</span>
 	</div>
 	<div class="actions_maximum_number">
 		<label>Actions Maximum Number:</label>
-		<span>' . ($li_data["nma"] == -1 ? "Unlimited" : $li_data["nma"]) . '</span>
+		<span>' . (isset($li_data["nma"]) ? ($li_data["nma"] == -1 ? "Unlimited" : $li_data["nma"]) : "") . '</span>
 	</div>
 	<div class="used_actions_total">
 		<label>Used Actions Total:</label>

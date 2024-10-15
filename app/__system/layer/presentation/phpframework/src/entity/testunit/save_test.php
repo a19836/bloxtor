@@ -6,19 +6,19 @@ $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "w
 UserAuthenticationHandler::checkUsersMaxNum($UserAuthenticationHandler);
 UserAuthenticationHandler::checkActionsMaxNum($UserAuthenticationHandler);
 
-$path = $_GET["path"];
-$file_modified_time = $_GET["file_modified_time"];
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$file_modified_time = isset($_GET["file_modified_time"]) ? $_GET["file_modified_time"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
 $file_path = TEST_UNIT_PATH . $path;
 
-if ($path && file_exists($file_path) && $_POST) {	
+if ($path && file_exists($file_path) && !empty($_POST)) {
 	$folder_path = substr($file_path, strlen($file_path) - 1) == "/" ? $file_path : dirname($file_path);
 	if (!is_dir($folder_path))
 		mkdir($folder_path, 0755, true);
 	
-	$object = $_POST["object"];
+	$object = isset($_POST["object"]) ? $_POST["object"] : null;
 	MyArray::arrKeysToLowerCase($object, true);
 	
 	$file_was_changed = file_exists($file_path) && $file_modified_time && $file_modified_time < filemtime($file_path);
@@ -26,10 +26,10 @@ if ($path && file_exists($file_path) && $_POST) {
 	
 	if ($file_was_changed) {
 		$old_code = file_exists($file_path) ? file_get_contents($file_path) : "";
-		$tmp_file_path = tempnam(TMP_PATH, $file_type . "_");
+		$tmp_file_path = tempnam(TMP_PATH, "test_unit_");
 		file_put_contents($tmp_file_path, $old_code);
 		
-		$status = WorkFlowTestUnitHandler::saveTestFile($tmp_file_path, $object, $class_name, $object["name"]);
+		$status = WorkFlowTestUnitHandler::saveTestFile($tmp_file_path, $object, $class_name);
 		
 		$ret = array(
 			"status" => "CHANGED",
@@ -40,7 +40,7 @@ if ($path && file_exists($file_path) && $_POST) {
 		unlink($tmp_file_path);
 	}
 	else {
-		$status = WorkFlowTestUnitHandler::saveTestFile($file_path, $object, $class_name, $object["name"]);
+		$status = WorkFlowTestUnitHandler::saveTestFile($file_path, $object, $class_name);
 		
 		clearstatcache(true, $file_path); //very important otherwise the filemtime will contain the old modified time.
 		
@@ -56,5 +56,6 @@ if ($path && file_exists($file_path) && $_POST) {
 	$status = json_encode($ret);
 }
 
-die($status);
+echo isset($status) ? $status : null;
+die();
 ?>

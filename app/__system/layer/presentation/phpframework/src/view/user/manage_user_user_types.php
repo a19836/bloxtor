@@ -39,15 +39,17 @@ $main_content = '
 $t = count($user_user_types);
 for ($i = 0; $i < $t; $i++) {
 	$user_user_type = $user_user_types[$i];
+	$uut_user_id = isset($user_user_type["user_id"]) ? $user_user_type["user_id"] : null;
+	$uut_user_type_id = isset($user_user_type["user_type_id"]) ? $user_user_type["user_type_id"] : null;
 	
 	$main_content .= '
 	<tr>
-		<td class="user_id">' . $users[ $user_user_type["user_id"] ] . '</td>
-		<td class="user_type_id">' . $user_types[ $user_user_type["user_type_id"] ] . '</td>
-		<td class="created_date">' . $user_user_type["created_date"] . '</td>
-		<td class="modified_date">' . $user_user_type["modified_date"] . '</td>
+		<td class="user_id">' . (isset($users[$uut_user_id]) ? $users[$uut_user_id] : "") . '</td>
+		<td class="user_type_id">' . (isset($user_types[$uut_user_type_id]) ? $user_types[$uut_user_type_id] : "") . '</td>
+		<td class="created_date">' . (isset($user_user_type["created_date"]) ? $user_user_type["created_date"] : "") . '</td>
+		<td class="modified_date">' . (isset($user_user_type["modified_date"]) ? $user_user_type["modified_date"] : "") . '</td>
 		<td class="buttons">
-			<a class="icon edit" href="' . $project_url_prefix . 'user/edit_user_user_type?user_id=' . $user_user_type["user_id"] . '&user_type_id=' . $user_user_type["user_type_id"] . '" title="Edit">Edit</a>
+			<a class="icon edit" href="' . $project_url_prefix . 'user/edit_user_user_type?user_id=' . $uut_user_id . '&user_type_id=' . $uut_user_type_id . '" title="Edit">Edit</a>
 		</td>
 	</tr>';
 }

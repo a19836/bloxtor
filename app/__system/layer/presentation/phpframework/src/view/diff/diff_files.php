@@ -25,5 +25,5 @@ $head = '
 	}
 </style>';
 
-$main_content = $html;
+$main_content = isset($html) ? $html : null;
 ?>

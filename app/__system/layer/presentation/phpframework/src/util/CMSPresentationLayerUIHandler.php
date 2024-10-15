@@ -122,7 +122,7 @@ class CMSPresentationLayerUIHandler {
 	}
 	
 	public static function getChoosePresentationIncludeFromFileManagerPopupHtml($bean_name, $bean_file_name, $choose_bean_layer_files_from_file_manager_url, $choose_dao_files_from_file_manager_url, $choose_lib_files_from_file_manager_url, $choose_vendor_files_from_file_manager_url, $presentation_brokers, $my_fancy_popup_obj = "MyFancyPopup") {
-		$bean_label = $presentation_brokers[0][0] ? $presentation_brokers[0][0] : $bean_name; //get broker name from current presentation layer
+		$bean_label = !empty($presentation_brokers[0][0]) ? $presentation_brokers[0][0] : $bean_name; //get broker name from current presentation layer
 		
 		return '<div id="choose_presentation_include_from_file_manager" class="myfancypopup choose_from_file_manager with_title">
 			<div class="title">Choose a File</div>
@@ -151,7 +151,7 @@ class CMSPresentationLayerUIHandler {
 	}
 	
 	public static function getTemplateRegionBlockHtmlEditorPopupHtml($ui_menu_widgets_html) {
-		$reverse_class = $_COOKIE["main_navigator_side"] == "main_navigator_reverse" ? "" : "reverse";
+		$reverse_class = isset($_COOKIE["main_navigator_side"]) && $_COOKIE["main_navigator_side"] == "main_navigator_reverse" ? "" : "reverse";
 		
 		return '<div class="template_region_block_html_editor_popup myfancypopup">
 			<div class="layout-ui-editor ' . $reverse_class . ' fixed-side-properties hide-template-widgets-options">
@@ -183,11 +183,12 @@ class CMSPresentationLayerUIHandler {
 					
 					for ($j = 0; $j < $rbt; $j++) {
 						$rbl = $regions_blocks_list[$j];
+						$rbl_region = isset($rbl[0]) ? $rbl[0] : null;
 						
-						if ($rbl[0] == $region) {
-							$block = $rbl[1];
-							$proj = $rbl[2];
-							$type = $rbl[3];
+						if ($rbl_region == $region) {
+							$block = isset($rbl[1]) ? $rbl[1] : null;
+							$proj = isset($rbl[2]) ? $rbl[2] : null;
+							$type = isset($rbl[3]) ? $rbl[3] : null;
 							$block_hash = $type == 1 ? md5($block) : ($type == 2 || $type == 3 ? "block_" : "view_") . $block; //if html set md5
 							
 							$existent_region_blocks[$region][ $block_hash ][ $proj ] = true;
@@ -226,10 +227,10 @@ class CMSPresentationLayerUIHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$rbl = $regions_blocks_list[$i];
 				
-				$region = $rbl[0];
-				$block = $rbl[1];
-				$proj = $rbl[2];
-				$type = $rbl[3];
+				$region = isset($rbl[0]) ? $rbl[0] : null;
+				$block = isset($rbl[1]) ? $rbl[1] : null;
+				$proj = isset($rbl[2]) ? $rbl[2] : null;
+				$type = isset($rbl[3]) ? $rbl[3] : null;
 				$block_hash = $type == 1 ? md5($block) : ($type == 2 || $type == 3 ? "block_" : "view_") . $block; //if html set md5
 				
 				if (!isset($existent_region_blocks[$region][$block_hash][$proj])) {
@@ -280,9 +281,13 @@ class CMSPresentationLayerUIHandler {
 			$t = count($includes);
 			for ($i = 0; $i < $t; $i++) {
 				$include = $includes[$i];
-				$inc_path = PHPUICodeExpressionHandler::getArgumentCode($include["path"], $include["path_type"]);
+				$include_path = isset($include["path"]) ? $include["path"] : null;
+				$include_path_type = isset($include["path_type"]) ? $include["path_type"] : null;
+				$include_once = isset($include["once"]) ? $include["once"] : null;
+				
+				$inc_path = PHPUICodeExpressionHandler::getArgumentCode($include_path, $include_path_type);
 			
-				$html .= self::getIncludeHtml($inc_path, $include["once"]);
+				$html .= self::getIncludeHtml($inc_path, $include_once);
 			}
 		}
 		
@@ -304,8 +309,8 @@ class CMSPresentationLayerUIHandler {
 					$param = $available_params_list[$i];
 					
 					if ($param && !isset($existent_template_params[$param])) {
-						$param_value = $template_params_values_list[$param];
-						$default_value = $defined_template_params_values[$param];
+						$param_value = isset($template_params_values_list[$param]) ? $template_params_values_list[$param] : null;
+						$default_value = isset($defined_template_params_values[$param]) ? $defined_template_params_values[$param] : null;
 						$html .= self::getTemplateParamHtml($param, $param_value, $default_value);
 					}
 					
@@ -316,7 +321,7 @@ class CMSPresentationLayerUIHandler {
 			if ($defined_template_params_values) {
 				foreach ($defined_template_params_values as $param => $default_value) {
 					if ($param && !isset($existent_template_params[$param])) {
-						$param_value = $template_params_values_list[$param];
+						$param_value = isset($template_params_values_list[$param]) ? $template_params_values_list[$param] : null;
 						$html .= self::getTemplateParamHtml($param, $param_value, $default_value);
 						$existent_template_params[$param] = true;
 					}
@@ -377,6 +382,7 @@ class CMSPresentationLayerUIHandler {
 		$is_html = $selected_block_type == 1;
 		$is_block = $selected_block_type == 2 || $selected_block_type == 3;
 		$is_view = $selected_block_type == 4 || $selected_block_type == 5;
+		$is_text = $is_variable = $is_input = $is_string = $is_code = $is_options = $sb = $sbp = null;
 		
 		if (!$is_block && !$is_html && !$is_view)
 			$is_block = true;
@@ -393,15 +399,15 @@ class CMSPresentationLayerUIHandler {
 			
 			if ($is_block) {
 				$is_sb_html_or_text = strpos($sb, "\n") || strip_tags($sb) != $sb;
-				$apbl = $available_blocks_list[$sbp];
+				$apbl = isset($available_blocks_list[$sbp]) ? $available_blocks_list[$sbp] : null;
 				$exists = empty($sb) || ($apbl && !$is_sb_html_or_text && in_array($sb, $apbl));
 				
-				$block_params = $available_block_params_list[$region][$selected_block];
-				$block_params_values = $block_params_values_list[$region][$selected_block][$rb_index];
+				$block_params = isset($available_block_params_list[$region][$selected_block]) ? $available_block_params_list[$region][$selected_block] : null;
+				$block_params_values = isset($block_params_values_list[$region][$selected_block][$rb_index]) ? $block_params_values_list[$region][$selected_block][$rb_index] : null;
 			}
 			
 			$is_text = strpos($selected_block, "\n") !== false; //if is textarea
-			$is_variable = strpos($selected_block, "\n") === false && substr($selected_block, 0, 1) == '$' && strpos($selected_block, "->") === false;
+			$is_variable = strpos($selected_block, "\n") === false && (substr($selected_block, 0, 1) == '$' || substr($selected_block, 0, 2) == '@$') && strpos($selected_block, "->") === false;
 			$is_input = !$is_variable && !$is_text && strlen($selected_block);
 			$is_string = $is_input && substr($selected_block, 0, 1) == '"';
 			$is_code = $is_input && !$is_string;
@@ -483,7 +489,7 @@ class CMSPresentationLayerUIHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$p = $block_params[$i];
 			
-				$html .= self::getBlockParamHtml($p, $block_params_values[$p]);
+				$html .= self::getBlockParamHtml($p, isset($block_params_values[$p]) ? $block_params_values[$p] : null);
 			}
 		}
 		
@@ -507,7 +513,7 @@ class CMSPresentationLayerUIHandler {
 				<option value="">default</option>
 				<option' . (strpos($value, "\n") === false && (substr($value, 0, 1) == '"' || !strlen($value)) ? ' selected' : '') . '>string</option>
 				<option' . (strpos($value, "\n") !== false ? ' selected' : '') . '>text</option>
-				<option' . (strpos($value, "\n") === false && substr($value, 0, 1) == '$' && strpos($value, "->") === false ? ' selected' : '') . '>variable</option>
+				<option' . (strpos($value, "\n") === false && (substr($value, 0, 1) == '$' || substr($value, 0, 2) == '@$') && strpos($value, "->") === false ? ' selected' : '') . '>variable</option>
 			</select>
 			<span class="icon search search_page" onclick="onPresentationIncludePageUrlTaskChooseFile(this)" title="Choose a page url">Search Page</span>
 			<span class="icon search search_image" onclick="onPresentationIncludeImageUrlTaskChooseFile(this)" title="Choose an image url">Search Image</span>
@@ -524,7 +530,7 @@ class CMSPresentationLayerUIHandler {
 			<select onchange="onChangeIncludeType(this)">
 				<option value="">default</option>
 				<option' . (substr($inc_path, 0, 1) == '"' || !strlen($inc_path) ? ' selected' : '') . '>string</option>
-				<option' . (substr($inc_path, 0, 1) == '$' && strpos($inc_path, "->") === false ? ' selected' : '') . '>variable</option>
+				<option' . ((substr($inc_path, 0, 1) == '$' || substr($inc_path, 0, 2) == '@$') && strpos($inc_path, "->") === false ? ' selected' : '') . '>variable</option>
 			</select>
 			<input class="once" type="checkbox" value="1"' . ($inc_once ? ' checked' : '') . ' title="Check here to active the include ONCE feature" onchange="onChangeIncludeOnce(this)" />
 			<span class="icon search" onClick="onPresentationIncludeTaskChoosePage(this)" title="Choose a file to include">Search</span>
@@ -572,7 +578,7 @@ class CMSPresentationLayerUIHandler {
 				<option value="">default</option>
 				<option' . (!$is_text && (substr($value, 0, 1) == '"' || !strlen($v)) ? ' selected' : '') . '>string</option>
 				<option' . ($is_text ? ' selected' : '') . '>text</option>
-				<option' . (!$is_text && substr($value, 0, 1) == '$' && strpos($value, "->") === false ? ' selected' : '') . '>variable</option>
+				<option' . (!$is_text && (substr($value, 0, 1) == '$' || substr($value, 0, 2) == '@$') && strpos($value, "->") === false ? ' selected' : '') . '>variable</option>
 				<option' . ($is_bool ? ' selected' : '') . '>boolean</option>
 			</select>
 			<span class="icon search search_page" onclick="onPresentationIncludePageUrlTaskChooseFile(this)" title="Choose a page url">Search Page</span>

@@ -1,6 +1,9 @@
 <?
 include $EVC->getViewPath("dataaccess/edit_query");
 
+$export_type = isset($export_type) ? $export_type : null;
+$doc_name = isset($doc_name) ? $doc_name : null;
+
 $head .= '
 <!-- Add Local JS and CSS files -->
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/db/export_table_data.css" type="text/css" charset="utf-8" />

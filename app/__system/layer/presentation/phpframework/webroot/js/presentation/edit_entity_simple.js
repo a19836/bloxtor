@@ -1369,9 +1369,7 @@ function confirmSave(opts) {
 								opts["success"] = function() {
 									prev_func();
 									
-									$(".top_bar li.save a").click(function() { //cannot use the .attr("onClick", "save()") bc it doesn't work, so we must use click(function() {...});
-										save();
-									});
+									confirm_save = false; //set confirm_save to false so it doesn't call again the confirmSave, othewsie it is annoying.
 									
 									return true;
 								}
@@ -1381,9 +1379,7 @@ function confirmSave(opts) {
 									opts = {};
 								
 								opts["success"] = function() {
-									$(".top_bar li.save a").click(function() { //cannot use the .attr("onClick", "save()") bc it doesn't work, so we must use click(function() {...});
-										save();
-									});
+									confirm_save = false; //set confirm_save to false so it doesn't call again the confirmSave, othewsie it is annoying.
 									
 									return true;
 								}

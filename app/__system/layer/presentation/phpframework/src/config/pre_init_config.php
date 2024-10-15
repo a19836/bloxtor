@@ -11,5 +11,6 @@ $project_default_template = "main";
 $project_with_auto_view = true;
 $log_level = 3;
 
-define("IS_SYSTEM_PHPFRAMEWORK", true);
+if (!defined("IS_SYSTEM_PHPFRAMEWORK"))
+	define("IS_SYSTEM_PHPFRAMEWORK", true);
 ?>

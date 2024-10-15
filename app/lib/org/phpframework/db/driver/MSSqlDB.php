@@ -17,7 +17,7 @@ class MSSqlDB extends DB {
 	public function __construct() {
 		if (!$this->default_php_extension_type) {
 			$exts = self::getAvailablePHPExtensionTypes();
-			$this->default_php_extension_type = $exts[0];
+			$this->default_php_extension_type = isset($exts[0]) ? $exts[0] : null;
 		}
 	}
 	
@@ -113,7 +113,7 @@ class MSSqlDB extends DB {
 						$connection_info["CharacterSet"] = $this->options["encoding"]; //Beware though that only two options exist: 'UTF-8' and SQLSRV_ENC_CHAR (constant) for ANSI, which is the default
 					
 					//prepare extra settings
-					$parsed_extra_settings = self::parseExtraSettings($this->options["extra_settings"]);
+					$parsed_extra_settings = isset($this->options["extra_settings"]) ? self::parseExtraSettings($this->options["extra_settings"]) : null;
 					
 					if ($parsed_extra_settings)
 						foreach ($parsed_extra_settings as $es_name => $es_value)
@@ -134,7 +134,7 @@ class MSSqlDB extends DB {
 						$pdo_settings[PDO::ATTR_PERSISTENT] = true;
 					
 					//prepare extra settings
-					$extra_pdo_settings = self::parseExtraSettingsAsPDOSettings($this->options["extra_settings"]);
+					$extra_pdo_settings = isset($this->options["extra_settings"]) ? self::parseExtraSettingsAsPDOSettings($this->options["extra_settings"]) : null;
 					
 					if ($extra_pdo_settings)
 						foreach ($extra_pdo_settings as $pdos_name => $pdos_value)
@@ -215,7 +215,7 @@ class MSSqlDB extends DB {
 						$connection_info["CharacterSet"] = $this->options["encoding"]; //Beware though that only two options exist: 'UTF-8' and SQLSRV_ENC_CHAR (constant) for ANSI, which is the default
 					
 					//Note: I could not find how to create persistent connections through sqlsrv_ extension.
-					$this->link = sqlsrv_connect($server_ame, $connection_info);
+					$this->link = sqlsrv_connect($server_name, $connection_info);
 					break;
 				
 				case "pdo":
@@ -284,7 +284,7 @@ class MSSqlDB extends DB {
 				if ($this->ping())
 					switch ($this->default_php_extension_type) {
 						case "sqlsrv": $closed = sqlsrv_close($this->link); break;
-						case "odbc": $closed = odbc_close($this->link); break;
+						case "odbc": odbc_close($this->link); $closed = true; break;
 					}
 				
 				if ($closed) {
@@ -363,10 +363,10 @@ class MSSqlDB extends DB {
 			if ($this->link) {
 				switch ($this->default_php_extension_type) {
 					case "sqlsrv": 
-						$errors = sqlsrv_errors();
+						$error = sqlsrv_errors();
 						$msg = "";
 						
-						if ($errors) 
+						if ($error) 
 							$msg = "SQLSTATE error code: " . (isset($error["SQLSTATE"]) ? $error["SQLSTATE"] : "") . "\nDriver-specific error code: " . (isset($error["code"]) ? $error["code"] : "") . "\nDriver-specific error message: " . (isset($error["message"]) ? $error["message"] : "");
 						
 						return $msg;
@@ -590,18 +590,24 @@ class MSSqlDB extends DB {
 					
 					return $records;
 			}
-		}catch(Exception $e) {
+		}
+		catch(Exception $e) {
+			return launch_exception(new SQLException(8, $e, array($result, $array_type)));
+		}
+		catch(Error $e) {
 			return launch_exception(new SQLException(8, $e, array($result, $array_type)));
 		}
 	} 
 	
 	public function fetchField($result, $offset) {
 		try {
+			$field = null;
+			
 			try {
 				switch ($this->default_php_extension_type) {
 					case "sqlsrv": 
 						$fields = sqlsrv_field_metadata($result);
-						$field = $fields ? $fields[$offset] : null;
+						$field = $fields && isset($fields[$offset]) ? $fields[$offset] : null;
 						
 						if ($field)
 							$this->prepareMssqlsrvField($field);
@@ -637,7 +643,8 @@ class MSSqlDB extends DB {
 			
 			//echo "<pre>";print_r($field);die();
 			return $field;
-		}catch(Exception $e) {
+		}
+		catch(Exception $e) {
 			return launch_exception(new SQLException(12, $e, array($result, $offset)));
 		}
 	}
@@ -670,8 +677,8 @@ class MSSqlDB extends DB {
 		unset($field->size);
 		unset($field->nullable);
 		
-		$field_types = self::$mssqlserver_data_types[$field->type];
-		$field->type = $field_types[0];
+		$field_types = isset(self::$mssqlserver_data_types[$field->type]) ? self::$mssqlserver_data_types[$field->type] : null;
+		$field->type = isset($field_types[0]) ? $field_types[0] : null;
 		
 		//echo "<pre>";print_r($field);die();
 	}
@@ -681,7 +688,7 @@ class MSSqlDB extends DB {
 			case "pdo": return is_a($result, "PDOStatement");
 		}
 		
-		return is_resource($result);
+		return is_resource($result) || is_object($result);
 	}
 	
 	public function listTables($db_name = false, $options = false) {
@@ -697,7 +704,7 @@ class MSSqlDB extends DB {
 		if($result)
 			foreach ($result as $table)
 			    	$tables[] = array(
-				    	"name" => (!empty($table["table_schema"]) && empty($this->options["schema"]) ? $table["table_schema"] . "." : "") . $table["table_name"], //Only add schema if is not defined in options
+				    	"name" => (!empty($table["table_schema"]) && empty($this->options["schema"]) ? $table["table_schema"] . "." : "") . (isset($table["table_name"]) ? $table["table_name"] : null), //Only add schema if is not defined in options
 				    	"table_name" => isset($table["table_name"]) ? $table["table_name"] : null,
 				    	"schema" => isset($table["table_schema"]) ? $table["table_schema"] : null,
 				    	"type" => isset($table["table_type"]) ? strtolower($table["table_type"]) : null

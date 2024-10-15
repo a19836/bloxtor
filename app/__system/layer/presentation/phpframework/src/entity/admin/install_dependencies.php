@@ -8,11 +8,12 @@ if (!empty($_POST)) {
 	$continue = true;
 	
 	if (!empty($_POST["install"])) {
+		$error_message = isset($error_message) ? $error_message : null;
 		$zips = DependenciesInstallationHandler::getDependencyZipFilesToInstall();
 		$continue = DependenciesInstallationHandler::installDependencies($dependencies_repo_url, $zips, $error_message);
 		
 		if (!$continue)
-			$error_message = "Error could not download and install dependencies.<br/>Please confirm if you are connected to the internet." . ($error_message ? "<br/>$error_message" : "");
+			$error_message = "Error could not download and install dependencies.<br/>Please confirm if you are connected to the internet." . (!empty($error_message) ? "<br/>$error_message" : "");
 	}
 	
 	if ($continue) {
@@ -22,7 +23,8 @@ if (!empty($_POST)) {
 		$url_back = $UserAuthenticationHandler->validateUrlBack($url_back) ? $url_back : $project_url_prefix . "admin/";
 		
 		header("Location: $url_back");
-		die("<script>document.location = '$url_back';</script>");
+		echo "<script>document.location = '$url_back';</script>";
+		die();
 	}
 }
 ?>

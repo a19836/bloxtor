@@ -4,7 +4,7 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$module_id = $_GET["module_id"];
+$module_id = isset($_GET["module_id"]) ? $_GET["module_id"] : null;
 
 $layer_path = $EVC->getPresentationLayer()->getLayerPathSetting();
 

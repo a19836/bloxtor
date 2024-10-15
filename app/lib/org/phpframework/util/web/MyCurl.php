@@ -167,6 +167,7 @@ class MyCurl {
 	}
 	
 	public function get_contents($thread = false) {
+		$status = false;
 		$session_id = !defined("PHP_SESSION_NONE") || session_status() != PHP_SESSION_NONE ? session_id() : false;
 		
 		if ($session_id)
@@ -216,8 +217,9 @@ class MyCurl {
 				$this->data[$i]["info"] = curl_getinfo($conn);
 			
 			//error_log(print_r(curl_getinfo($conn), 1), 3, "/tmp/tmp.log");
-				
-			curl_close($conn);
+			
+			if (function_exists("curl_close"))	
+				curl_close($conn);
 		}
 		
 		return $status;
@@ -326,16 +328,20 @@ class MyCurl {
 			}
 			
 			curl_multi_remove_handle($mh,$conn[$i]);
-			curl_close($conn[$i]);
+			
+			if (function_exists("curl_close"))	
+				curl_close($conn[$i]);
 		}
 		
-		curl_multi_close($mh);
+		if (function_exists("curl_multi_close"))	
+			curl_multi_close($mh);
 		
 		return $status;
 	}
 	
 	private function setCurlOpts(&$conn, &$data) {
-		$this->setCurlUrlOpt($conn, $data["url"]);
+		$url = isset($data["url"]) ? $data["url"] : null;
+		$this->setCurlUrlOpt($conn, $url);
 		
 		curl_setopt($conn, CURLOPT_RETURNTRANSFER, 1);
 		
@@ -478,15 +484,15 @@ class MyCurl {
 			return $post_str;
 		else if ($post_str) {
 			$post = array();
-			$explode = explode("?",$post_str);
-			$explode = explode("&",$explode[count($explode) - 1]);
+			$explode = explode("?", $post_str);
+			$explode = explode("&", $explode[count($explode) - 1]);
 			
 			$t = count($explode);
 			for ($i = 0; $i < $t; $i++) {
-				$sub_explode = explode("=",$explode[$i]);
+				$sub_explode = explode("=", $explode[$i]);
 				
 				if (strlen(trim($sub_explode[0])) > 0)
-					$post[trim($sub_explode[0])] = $sub_explode[1];
+					$post[trim($sub_explode[0])] = isset($sub_explode[1]) ? $sub_explode[1] : null;
 			}
 			
 			return $post;
@@ -502,10 +508,10 @@ class MyCurl {
 			return $get_str;
 		}
 		else if ($get) {
-			$explode = explode("?",$get);
+			$explode = explode("?", $get);
 			$get_inc = $explode[count($explode) - 1];
 			
-			return $get_inc ? "&".$get_inc : "";
+			return $get_inc ? "&" . $get_inc : "";
 		}
 	}
 	

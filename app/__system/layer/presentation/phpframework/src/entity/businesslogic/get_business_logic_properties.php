@@ -5,10 +5,10 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$service_id = $_GET["service"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$service_id = isset($_GET["service"]) ? $_GET["service"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -24,7 +24,7 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 	
 	if ($path && file_exists($file_path)) {
 		$bean_objs = $obj->getPHPFrameWork()->getObjects();
-		$vars = is_array($bean_objs["vars"]) ? array_merge($bean_objs["vars"], $obj->settings) : $obj->settings;
+		$vars = isset($bean_objs["vars"]) && is_array($bean_objs["vars"]) ? array_merge($bean_objs["vars"], $obj->settings) : $obj->settings;
 		$vars["current_business_logic_module_path"] = $file_path;
 		$vars["current_business_logic_module_id"] = substr($path, 0, strlen($path) - 4);//remove ".php"
 		//$vars["current_business_logic_module_id"] = str_replace("/", ".", $vars["current_business_logic_module_id"]); //2021-01-17 JP: Or it could be this code. It doesn't really matter. Even if there are folders with "." in the names, the system detects it. The module_id with "/" is faster before cache happens, but after the first call for this module, it doesn't really matter anymore bc the module_path is cached with the correspondent module_id.
@@ -42,7 +42,8 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 			$found_class_data = PHPCodePrintingHandler::searchClassFromPHPClasses($classes, $class_name);
 			
 			if ($found_class_data) {
-				$found_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($found_class_data["name"], $found_class_data["namespace"]);
+				$found_class_name = isset($found_class_data["name"]) ? $found_class_data["name"] : null;
+				$found_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($found_class_name, isset($found_class_data["namespace"]) ? $found_class_data["namespace"] : null);
 				$class_name = $found_class_name;
 				//echo $found_class_name;print_r($found_class_data);
 			}
@@ -63,13 +64,13 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 			$args = $param->getArgs();
 			
 			$name = !empty($args["name"]) ? $args["name"] : (isset($args["index"]) ? $args["index"] : $i);
-			$type = $args["type"];
+			$type = isset($args["type"]) ? $args["type"] : null;
 			
 			if ($name) {
 				if (strpos($name, "[") !== false) {
 					preg_match_all("/^([^\[]*)\[([^\[]*)\]/u", $name, $matches, PREG_PATTERN_ORDER); //'/u' means converts to unicode.
 					
-					if ($matches[0]) 
+					if (!empty($matches[0]))
 						$name = $matches[2][0];
 				}
 				

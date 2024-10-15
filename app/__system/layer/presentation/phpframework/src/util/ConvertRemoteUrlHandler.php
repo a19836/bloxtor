@@ -23,12 +23,14 @@ class ConvertRemoteUrlHandler {
 				$available_extensions[] = "js";
 				
 				$pu = parse_url($url);
+				$pu_host = isset($pu["host"]) ? $pu["host"] : null;
 				
 				foreach ($links as $idx => $link) {
 					$lu = parse_url($link);
+					$lu_host = isset($lu["host"]) ? $lu["host"] : null;
 					
-					if ($lu["host"] == $pu["host"]) {
-						$path = $lu["path"];
+					if ($lu_host == $pu_host) {
+						$path = isset($lu["path"]) ? $lu["path"] : null;
 						$extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 						
 						if (in_array($extension, $available_extensions)) {
@@ -49,8 +51,8 @@ class ConvertRemoteUrlHandler {
 									"settings" => array(
 										"connection_timeout" => 60, //in seconds
 										"follow_location" => 1,
-										"referer" => $_SERVER["HTTP_REFERER"],
-										"CURLOPT_USERAGENT" => $_SERVER["HTTP_USER_AGENT"]
+										"referer" => isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : null,
+										"CURLOPT_USERAGENT" => isset($_SERVER["HTTP_USER_AGENT"]) ? $_SERVER["HTTP_USER_AGENT"] : null
 									)
 								);
 								
@@ -58,8 +60,8 @@ class ConvertRemoteUrlHandler {
 								$MyCurl->initSingle($settings);
 								$MyCurl->get_contents();
 								$data = $MyCurl->getData();
-								$content = $data[0]["content"];
-								$content_type = strtolower($data[0]["info"]["content_type"]);
+								$content = isset($data[0]["content"]) ? $data[0]["content"] : null;
+								$content_type = isset($data[0]["info"]["content_type"]) ? strtolower($data[0]["info"]["content_type"]) : "";
 							}
 							
 							$valid = true;
@@ -111,8 +113,8 @@ class ConvertRemoteUrlHandler {
 				"settings" => array(
 					"connection_timeout" => 60, //in seconds
 					"follow_location" => 1,
-					"referer" => $_SERVER["HTTP_REFERER"],
-					"CURLOPT_USERAGENT" => $_SERVER["HTTP_USER_AGENT"]
+					"referer" => isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : null,
+					"CURLOPT_USERAGENT" => isset($_SERVER["HTTP_USER_AGENT"]) ? $_SERVER["HTTP_USER_AGENT"] : null
 				)
 			);
 			
@@ -120,9 +122,9 @@ class ConvertRemoteUrlHandler {
 			$MyCurl->initSingle($settings);
 			$MyCurl->get_contents();
 			$data = $MyCurl->getData();
-			$html = $data[0]["content"];
+			$html = isset($data[0]["content"]) ? $data[0]["content"] : null;
 			
-			$url = $data[0]["info"]["url"] ? $data[0]["info"]["url"] : $url;
+			$url = !empty($data[0]["info"]["url"]) ? $data[0]["info"]["url"] : $url;
 		}
 		
 		if ($html)
@@ -143,12 +145,14 @@ class ConvertRemoteUrlHandler {
 			if ($links) {
 				$full_matches = $matches[0];
 				$pu = parse_url($url);
+				$pu_host = isset($pu["host"]) ? $pu["host"] : null;
 				
 				foreach ($links as $idx => $link) {
 					$lu = parse_url($link);
+					$lu_host = isset($lu["host"]) ? $lu["host"] : null;
 					
-					if ($lu["host"] == $pu["host"]) {
-						$new_link = $lu["path"];
+					if ($lu_host == $pu_host) {
+						$new_link = isset($lu["path"]) ? $lu["path"] : null;
 						$new_link = substr($new_link, 0, 1) == "/" ? substr($new_link, 1) : $new_link;
 						
 						$replacement = str_replace($link, $new_link, $full_matches[$idx]);
@@ -169,11 +173,13 @@ class ConvertRemoteUrlHandler {
 			if ($links) {
 				$full_matches = $matches[0];
 				$pu = parse_url($url);
+				$pu_host = isset($pu["host"]) ? $pu["host"] : null;
 				
 				foreach ($links as $idx => $link) {
 					$lu = parse_url($link);
+					$lu_host = isset($lu["host"]) ? $lu["host"] : null;
 					
-					if ($lu["host"] == $pu["host"]) {
+					if ($lu_host == $pu_host) {
 						$new_link = '#';
 						$replacement = str_replace($link, $new_link, $full_matches[$idx]);
 						$html = str_replace($full_matches[$idx], $replacement, $html);
@@ -196,23 +202,26 @@ class ConvertRemoteUrlHandler {
 				$prefix_url = (!preg_match("/^(http:\/\/|https:\/\/|\/\/)/i", $url) ? "http://" : "") . $url;
 				
 				$pu = parse_url($prefix_url);
-				$prefix_root_url = ($pu["scheme"] ? $pu["scheme"] . "://" : "//") . ($pu["user"] ? $pu["user"] . ($pu["pass"] ? ":" . $pu["pass"] : "") . "@" : "") . $pu["host"] . ($pu["port"] ? ":" . $pu["port"] : "");
 				
-				$prefix_url = $prefix_root_url . (
-					pathinfo($pu["path"], PATHINFO_EXTENSION) ? (
-						dirname($pu["path"]) != "." ? dirname($pu["path"]) : ""
-					) : $pu["path"]
-				);
-				$prefix_url .= substr($prefix_url, -1) != "/" ? "/" : "";
-				$prefix_root_url .= substr($prefix_root_url, -1) != "/" ? "/" : "";
-				
-				foreach ($links as $idx => $link) 
-					if (!preg_match("/^(http:\/\/|https:\/\/|\/\/)/i", trim($link))) {
-						$new_link = trim($link);
-						$new_link = $new_link[0] == "/" ? $prefix_root_url . substr($new_link, 1) : $prefix_url . $new_link;
-						$replacement = str_replace($link, $new_link, $full_matches[$idx]);
-						$html = str_replace($full_matches[$idx], $replacement, $html);
-					}
+				if ($pu) {
+					$prefix_root_url = (!empty($pu["scheme"]) ? $pu["scheme"] . "://" : "//") . (!empty($pu["user"]) ? $pu["user"] . (!empty($pu["pass"]) ? ":" . $pu["pass"] : "") . "@" : "") . $pu["host"] . (!empty($pu["port"]) ? ":" . $pu["port"] : "");
+					
+					$prefix_url = $prefix_root_url . (
+						pathinfo($pu["path"], PATHINFO_EXTENSION) ? (
+							dirname($pu["path"]) != "." ? dirname($pu["path"]) : ""
+						) : $pu["path"]
+					);
+					$prefix_url .= substr($prefix_url, -1) != "/" ? "/" : "";
+					$prefix_root_url .= substr($prefix_root_url, -1) != "/" ? "/" : "";
+					
+					foreach ($links as $idx => $link) 
+						if (!preg_match("/^(http:\/\/|https:\/\/|\/\/)/i", trim($link))) {
+							$new_link = trim($link);
+							$new_link = $new_link[0] == "/" ? $prefix_root_url . substr($new_link, 1) : $prefix_url . $new_link;
+							$replacement = str_replace($link, $new_link, $full_matches[$idx]);
+							$html = str_replace($full_matches[$idx], $replacement, $html);
+						}
+				}
 			}
 		}
 		

@@ -3,8 +3,8 @@ include_once $EVC->getUtilPath("WorkFlowTasksFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$path = $_GET["path"];
-$path_extra = $_GET["path_extra"];
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$path_extra = isset($_GET["path_extra"]) ? $_GET["path_extra"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $path_extra = str_replace("../", "", $path_extra);//for security reasons

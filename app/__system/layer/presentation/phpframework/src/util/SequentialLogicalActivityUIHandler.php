@@ -13,11 +13,11 @@ class SequentialLogicalActivityUIHandler {
 	public static function getHeader($EVC, $PEVC, $UserAuthenticationHandler, $bean_name, $bean_file_name, $path, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $user_beans_folder_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $filter_by_layout, $opts = false) {
 		$head = "";
 		
-		$main_div_selector = $opts["main_div_selector"];
-		$allowed_tasks_tag = $opts["allowed_tasks_tag"];
-		$extra_tasks_folder_path = $opts["extra_tasks_folder_path"];
-		$tasks_groups_by_tag = $opts["tasks_groups_by_tag"];
-		$ui_menu_widgets_selector = $opts["ui_menu_widgets_selector"];
+		$main_div_selector = isset($opts["main_div_selector"]) ? $opts["main_div_selector"] : null;
+		$allowed_tasks_tag = isset($opts["allowed_tasks_tag"]) ? $opts["allowed_tasks_tag"] : null;
+		$extra_tasks_folder_path = isset($opts["extra_tasks_folder_path"]) ? $opts["extra_tasks_folder_path"] : null;
+		$tasks_groups_by_tag = isset($opts["tasks_groups_by_tag"]) ? $opts["tasks_groups_by_tag"] : null;
+		$ui_menu_widgets_selector = isset($opts["ui_menu_widgets_selector"]) ? $opts["ui_menu_widgets_selector"] : null;
 		
 		if (!$allowed_tasks_tag)
 			$allowed_tasks_tag = array("slaitemsingle", "slaitemgroup");
@@ -78,20 +78,20 @@ class SequentialLogicalActivityUIHandler {
 		$db_brokers_obj = $layer_brokers_settings["db_brokers_obj"];
 		
 		$brokers_settings = array(
-			$presentation_layer_label => $presentation_brokers[0]
+			$presentation_layer_label => isset($presentation_brokers[0]) ? $presentation_brokers[0] : null
 		);
 		$brokers_name_by_obj_code = array(
 			$presentation_brokers_obj["default"] => $presentation_layer_label,
 		);
 		
 		foreach ($business_logic_brokers as $b) {
-			$broker_name = $b[0];
+			$broker_name = isset($b[0]) ? $b[0] : null;
 			$brokers_settings[$broker_name] = $b;
 			$brokers_name_by_obj_code[ $business_logic_brokers_obj[$broker_name] ] = $broker_name;
 		}
 		
 		foreach ($data_access_brokers as $b) {
-			$broker_name = $b[0];
+			$broker_name = isset($b[0]) ? $b[0] : null;
 			$brokers_settings[$broker_name] = $b;
 			$brokers_name_by_obj_code[ $data_access_brokers_obj[$broker_name] ] = $broker_name;
 		}
@@ -147,19 +147,19 @@ class SequentialLogicalActivityUIHandler {
 		foreach ($tasks_settings as $group_id => $group_tasks) {
 			foreach ($group_tasks as $task_type => $task_settings) {
 				if (is_array($task_settings)) {
-					$tag = $task_settings["tag"];
-					$tasks_contents[$tag] = $task_settings["task_properties_html"];
-					$js_load_functions[$tag] = $task_settings["settings"]["callback"]["on_load_task_properties"];
+					$tag = isset($task_settings["tag"]) ? $task_settings["tag"] : null;
+					$tasks_contents[$tag] = isset($task_settings["task_properties_html"]) ? $task_settings["task_properties_html"] : null;
+					$js_load_functions[$tag] = isset($task_settings["settings"]["callback"]["on_load_task_properties"]) ? $task_settings["settings"]["callback"]["on_load_task_properties"] : null;
 				}
 			}
 		}
 		
 		//prepare selected_db_vars
 		$selected_db_vars = WorkFlowBrokersSelectedDBVarsHandler::getBrokersSelectedDBVars($brokers);
-		$db_drivers = $selected_db_vars["db_brokers_drivers"];
-		$selected_dal_broker = $selected_db_vars["dal_broker"];
-		$selected_db_driver = $selected_db_vars["db_driver"];
-		$selected_type = $selected_db_vars["type"];
+		$db_drivers = isset($selected_db_vars["db_brokers_drivers"]) ? $selected_db_vars["db_brokers_drivers"] : null;
+		$selected_dal_broker = isset($selected_db_vars["dal_broker"]) ? $selected_db_vars["dal_broker"] : null;
+		$selected_db_driver = isset($selected_db_vars["db_driver"]) ? $selected_db_vars["db_driver"] : null;
+		$selected_type = isset($selected_db_vars["type"]) ? $selected_db_vars["type"] : null;
 		//echo "<pre>";print_r($selected_db_vars);die();
 		
 		//filter db drivers
@@ -277,9 +277,9 @@ class SequentialLogicalActivityUIHandler {
 			$WorkFlowQueryHandler = new WorkFlowQueryHandler($QueryWorkFlowUIHandler, $project_url_prefix, $project_common_url_prefix, $db_drivers, $selected_dal_broker, $selected_db_driver, $selected_type, "", array(), array(), array(), array());
 			
 			//prepare query task settings - Add Javascript
-			$query_js_head .= $WorkFlowQueryHandler->getDataAccessJavascript($bean_name, $bean_file_name, $path, "presentation", null, null);
+			$query_js_head = $WorkFlowQueryHandler->getDataAccessJavascript($bean_name, $bean_file_name, $path, "presentation", null, null);
 			$js_head .= str_replace('<script>', '', str_replace('</script>', '', $query_js_head));
-			$js_head .= 'get_broker_db_data_url += "&global_default_db_driver_broker=' . $GLOBALS["default_db_broker"] . '";'; //$GLOBALS["default_db_broker"] corresponds to the default broker name of the DBLayer inside of the DataAccessLayer brokers.
+			$js_head .= 'get_broker_db_data_url += "&global_default_db_driver_broker=' . (isset($GLOBALS["default_db_broker"]) ? $GLOBALS["default_db_broker"] : "") . '";'; //$GLOBALS["default_db_broker"] corresponds to the default broker name of the DBLayer inside of the DataAccessLayer brokers.
 			
 			//prepare query task settings - Add taskworkflow html
 			$html = $WorkFlowQueryHandler->getGlobalTaskFlowChar();
@@ -314,14 +314,14 @@ class SequentialLogicalActivityUIHandler {
 			
 			foreach ($brokers_bean_layers as $layer_bean_name => $layer_obj) {
 				if (is_a($layer_obj, "DataAccessLayer") || is_a($layer_obj, "DBLayer")) {
-					$layer_brokers_name = $brokers_beans_brokers_name[$layer_bean_name];
+					$layer_brokers_name = isset($brokers_beans_brokers_name[$layer_bean_name]) ? $brokers_beans_brokers_name[$layer_bean_name] : null;
 					$layer_db_drivers = is_a($layer_obj, "DBLayer") ? $layer_obj->getDBDriversName() : $layer_obj->getBrokersDBDriversName();
 					
 					$LayoutTypeProjectHandler->filterLayerBrokersDBDriversNamesFromLayoutName($P, $layer_db_drivers, $filter_by_layout); //filter db_drivers by $filter_by_layout
 					
 					if ($layer_db_drivers) {
-						$selected_dal_broker = $layer_brokers_name[0];
-						$selected_db_driver = $layer_db_drivers[0];
+						$selected_dal_broker = isset($layer_brokers_name[0]) ? $layer_brokers_name[0] : null;
+						$selected_db_driver = isset($layer_db_drivers[0]) ? $layer_db_drivers[0] : null;
 						
 						foreach ($layer_brokers_name as $layer_broker_name)
 							$db_brokers_drivers[$layer_broker_name] = $layer_db_drivers;
@@ -341,7 +341,7 @@ class SequentialLogicalActivityUIHandler {
 				);
 				
 				//create choose_db_table_or_attribute_elm popup
-				$WorkFlowQueryHandler = new WorkFlowQueryHandler(null, $project_url_prefix, $project_common_url_prefix, $selected_db_vars["db_brokers_drivers"], $selected_dal_broker, $selected_db_driver, $selected_type, "", array(), array(), array(), array());
+				$WorkFlowQueryHandler = new WorkFlowQueryHandler(null, $project_url_prefix, $project_common_url_prefix, isset($selected_db_vars["db_brokers_drivers"]) ? $selected_db_vars["db_brokers_drivers"] : null, $selected_dal_broker, $selected_db_driver, $selected_type, "", array(), array(), array(), array());
 				$html = $WorkFlowQueryHandler->getChooseQueryTableOrAttributeHtml("choose_db_table_or_attribute");
 				
 				$js_head .= '
@@ -417,9 +417,9 @@ class SequentialLogicalActivityUIHandler {
 		$ret = self::getWorkflowHeader($PEVC, $UserAuthenticationHandler, $bean_name, $bean_file_name, $path, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $user_beans_folder_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $filter_by_layout, $WorkFlowTaskHandler, $opts);
 		
 		if ($ret) {
-			$workflow_js_head = $ret["js_head"];
-			$set_workflow_file_url = $ret["set_workflow_file_url"];
-			$get_workflow_file_url = $ret["get_workflow_file_url"];
+			$workflow_js_head = isset($ret["js_head"]) ? $ret["js_head"] : null;
+			$set_workflow_file_url = isset($ret["set_workflow_file_url"]) ? $ret["set_workflow_file_url"] : null;
+			$get_workflow_file_url = isset($ret["get_workflow_file_url"]) ? $ret["get_workflow_file_url"] : null;
 			
 			$js_head .= $workflow_js_head;
 		}
@@ -455,14 +455,14 @@ class SequentialLogicalActivityUIHandler {
 			"WorkFlowTaskHandler" => $WorkFlowTaskHandler,
 			"WorkFlowUIHandler" => $WorkFlowUIHandler,
 			
-			"set_workflow_file_url" => $set_workflow_file_url,
-			"get_workflow_file_url" => $get_workflow_file_url,
+			"set_workflow_file_url" => isset($set_workflow_file_url) ? $set_workflow_file_url : null,
+			"get_workflow_file_url" => isset($get_workflow_file_url) ? $get_workflow_file_url : null,
 		);
 	}
 	
 	public static function getWorkflowHeader($PEVC, $UserAuthenticationHandler, $bean_name, $bean_file_name, $path, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $user_beans_folder_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $filter_by_layout, $WorkFlowTaskHandler, $opts = false) {
-		$workflow_tasks_id = $opts["workflow_tasks_id"];
-		$path_extra = $opts["path_extra"];
+		$workflow_tasks_id = isset($opts["workflow_tasks_id"]) ? $opts["workflow_tasks_id"] : null;
+		$path_extra = isset($opts["path_extra"]) ? $opts["path_extra"] : null;
 		
 		//preparing workflow urls
 		if ($workflow_tasks_id) {
@@ -504,8 +504,8 @@ class SequentialLogicalActivityUIHandler {
 		return $ui_menu_widgets_html;
 	}
 	
-	public static function getSLAHtml($EVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects, $WorkFlowUIHandler, $opts = null) {
-		$groups_flow_html = self::getGroupsFlowHtml($EVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects, $opts);
+	public static function getSLAHtml($EVC, $PEVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects, $WorkFlowUIHandler, $opts = null) {
+		$groups_flow_html = self::getGroupsFlowHtml($EVC, $PEVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects, $opts);
 		
 		$tasks_flow_html = self::getTasksFlowHtml($EVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects, $WorkFlowUIHandler, $opts);
 		
@@ -524,7 +524,7 @@ class SequentialLogicalActivityUIHandler {
 	}
 	
 	public static function getTasksFlowHtml($EVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects, $WorkFlowUIHandler, $opts = null) {
-		$save_func = $opts ? $opts["save_func"]: null;
+		$save_func = $opts && isset($opts["save_func"]) ? $opts["save_func"]: null;
 		
 		$html = '
 			<div id="ui">
@@ -554,8 +554,8 @@ class SequentialLogicalActivityUIHandler {
 		return $html;
 	}
 	
-	public static function getGroupsFlowHtml($EVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects, $opts = null) {
-		$extra_short_actions_html = $opts ? $opts["extra_short_actions_html"] : "";
+	public static function getGroupsFlowHtml($EVC, $PEVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects, $opts = null) {
+		$extra_short_actions_html = $opts && isset($opts["extra_short_actions_html"]) ? $opts["extra_short_actions_html"] : "";
 		
 		$html = '
 			<div id="sla_groups_flow" class="sla_groups_flow">
@@ -569,7 +569,7 @@ class SequentialLogicalActivityUIHandler {
 				
 				<ul class="sla_groups sla_main_groups">
 					<li class="sla_group_item sla_group_default">
-						' . self::getGroupItemHtml($EVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects) . '
+						' . self::getGroupItemHtml($EVC, $PEVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects) . '
 					</li>
 					<li class="sla_group_empty_items">There are no groups available...</li>
 				</ul>
@@ -578,13 +578,13 @@ class SequentialLogicalActivityUIHandler {
 		return $html;
 	}
 	
-	public static function getGroupItemHtml($EVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects) {
-		$ui_menu_widgets_html .= self::getUIMenuWidgetsHTML($EVC, $project_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
+	public static function getGroupItemHtml($EVC, $PEVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $contents, $db_drivers, $presentation_projects) {
+		$ui_menu_widgets_html = self::getUIMenuWidgetsHTML($EVC, $project_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
 		
-		$module_common_util_path = $EVC->getModulePath("common/CommonModuleUI", $EVC->getCommonProjectName());
+		$module_common_util_path = $PEVC->getModulePath("common/CommonModuleUI", $EVC->getCommonProjectName());
 		$is_module_common_installed = file_exists($module_common_util_path);
 		
-		$module_user_util_path = $EVC->getModulePath("user/UserUtil", $EVC->getCommonProjectName());
+		$module_user_util_path = $PEVC->getModulePath("user/UserUtil", $EVC->getCommonProjectName());
 		$is_module_user_installed = file_exists($module_user_util_path); //Do not use CMSPresentationUIAutomaticFilesHandler::isUserModuleInstalled bc we only want to know if the module is installed or not. It doesn't matter if is enable. Bc if later the user disable this module, we can still see the user resources in the html.
 		
 		$html = '
@@ -708,7 +708,7 @@ class SequentialLogicalActivityUIHandler {
 			
 			<section class="html_action_body">
 				<!-- FORM -->
-				' . $contents["createform"] . '
+				' . (isset($contents["createform"]) ? $contents["createform"] : "") . '
 				
 				<div class="sla_ui_menu_widgets_backup hidden">
 					' . $ui_menu_widgets_html . '
@@ -764,15 +764,15 @@ class SequentialLogicalActivityUIHandler {
 			' : '') . '
 			
 			<section class="broker_action_body">
-				' . $contents["callbusinesslogic"] . '
-				' . $contents["callibatisquery"] . '
-				' . $contents["callhibernatemethod"] . '
-				' . $contents["getquerydata"] . '
-				' . $contents["setquerydata"] . '
-				' . $contents["callfunction"] . '
-				' . $contents["callobjectmethod"] . '
-				' . $contents["restconnector"] . '
-				' . $contents["soapconnector"] . '
+				' . (isset($contents["callbusinesslogic"]) ? $contents["callbusinesslogic"] : "") . '
+				' . (isset($contents["callibatisquery"]) ? $contents["callibatisquery"] : "") . '
+				' . (isset($contents["callhibernatemethod"]) ? $contents["callhibernatemethod"] : "") . '
+				' . (isset($contents["getquerydata"]) ? $contents["getquerydata"] : "") . '
+				' . (isset($contents["setquerydata"]) ? $contents["setquerydata"] : "") . '
+				' . (isset($contents["callfunction"]) ? $contents["callfunction"] : "") . '
+				' . (isset($contents["callobjectmethod"]) ? $contents["callobjectmethod"] : "") . '
+				' . (isset($contents["restconnector"]) ? $contents["restconnector"] : "") . '
+				' . (isset($contents["soapconnector"]) ? $contents["soapconnector"] : "") . '
 			</section>
 			
 			<section class="message_action_body">

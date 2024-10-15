@@ -5,10 +5,10 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$project = $_GET["project"];
-$block = $_GET["block"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$project = isset($_GET["project"]) ? $_GET["project"] : null;
+$block = isset($_GET["block"]) ? $_GET["block"] : null;
 
 if ($project && $block) {
 	$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
@@ -26,8 +26,10 @@ if ($project && $block) {
 		$t = count($available_block_params);
 		for ($i = 0; $i < $t; $i++) {
 			$p = $available_block_params[$i];
-		
-			$available_block_params_list[] = PHPUICodeExpressionHandler::getArgumentCode($p["param"], $p["param_type"]);
+			$param_value = isset($p["param"]) ? $p["param"] : null;
+			$param_type = isset($p["param_type"]) ? $p["param_type"] : null;
+			
+			$available_block_params_list[] = PHPUICodeExpressionHandler::getArgumentCode($param_value, $param_type);
 		}
 		
 		$PHPVariablesFileHandler->endUserGlobalVariables();

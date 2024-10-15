@@ -4,9 +4,24 @@ include $EVC->getUtilPath("WorkFlowPresentationHandler");
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 include $EVC->getUtilPath("TourGuideUIHandler");
 
+$selected_db_vars = isset($selected_db_vars) ? $selected_db_vars : null;
+$selected_project_id = isset($selected_project_id) ? $selected_project_id : null;
+$file_path = isset($file_path) ? $file_path : null;
+$obj = isset($obj) ? $obj : null;
+$is_class_equal_to_file_name = isset($is_class_equal_to_file_name) ? $is_class_equal_to_file_name : null;
+$db_brokers = isset($db_brokers) ? $db_brokers : null;
+$data_access_brokers = isset($data_access_brokers) ? $data_access_brokers : null;
+$ibatis_brokers = isset($ibatis_brokers) ? $ibatis_brokers : null;
+$hibernate_brokers = isset($hibernate_brokers) ? $hibernate_brokers : null;
+$business_logic_brokers = isset($business_logic_brokers) ? $business_logic_brokers : null;
+$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+
+$head = "";
+$main_content = "";
+
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 $ft = str_replace("edit_file_", "", $file_type);
-$is_obj_valid = $obj_data || (!$method_id && $ft == "class_method") || (!$function_id && $ft == "function");
+$is_obj_valid = !empty($obj_data) || (!$method_id && $ft == "class_method") || (!$function_id && $ft == "function");
 
 if ($ft == "class_method")
 	$title = ($method_id ? "Edit Class Method" : "Add Method") . ' <span class="class_name">' . $class_id . '-&gt;</span>';
@@ -24,7 +39,7 @@ if ($is_obj_valid) {
 			"DB" => array("getdbdriver", "setquerydata", "getquerydata", "dbdaoaction", "callibatisquery", "callhibernateobject", "callhibernatemethod"),
 			"Layers" => array("callbusinesslogic", "callpresentationlayerwebservice"),
 			"HTML" => array("inlinehtml", "createform"),
-			"PVC" => array("setpresentationview", "addpresentationview", "setpresentationtemplate", "setblockparams", "settemplateregionblockparam", "includeblock", "addtemplateregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam"),
+			"CMS" => array("setpresentationview", "addpresentationview", "setpresentationtemplate", "setblockparams", "settemplateregionblockparam", "includeblock", "addregionhtml", "addregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam"),
 		));
 	else if ($item_type == "businesslogic")
 		$WorkFlowUIHandler->setTasksGroupsByTag(array(
@@ -42,7 +57,7 @@ if ($is_obj_valid) {
 
 	$WorkFlowUIHandler->addFoldersTasksToTasksGroups($code_workflow_editor_user_tasks_folders_path);
 	
-	$js_save_func_name = $js_save_func_name ? $js_save_func_name : "saveFileClassMethod";
+	$js_save_func_name = !empty($js_save_func_name) ? $js_save_func_name : "saveFileClassMethod";
 
 	$class_id_for_js = addcslashes(preg_replace("/\\+/", "\\", $class_id), '\\'); //must duplicate the back-slashes, otherwise in javascript it will remove it the back-slashes and merge the multiple namespaces of the object class (in case the namespace exists)
 
@@ -53,8 +68,8 @@ if ($is_obj_valid) {
 
 	//Note: $get_workflow_tasks_id and $get_tmp_workflow_tasks_id can be set previously, like it happens in the businesslogic/edit_method that calls this file
 	$path_extra = hash('crc32b', "$bean_file_name/$bean_name/$item_type/$path/$class_id/" . ($ft == "class_method" ? $method_id : $function_id) );
-	$get_workflow_tasks_id = $get_workflow_tasks_id ? $get_workflow_tasks_id : "php_file_workflow&path_extra=_$path_extra";
-	$get_tmp_workflow_tasks_id = $get_tmp_workflow_tasks_id ? $get_tmp_workflow_tasks_id : "php_file_workflow_tmp&path_extra=_${path_extra}_" . rand(0, 1000);
+	$get_workflow_tasks_id = !empty($get_workflow_tasks_id) ? $get_workflow_tasks_id : "php_file_workflow&path_extra=_$path_extra";
+	$get_tmp_workflow_tasks_id = !empty($get_tmp_workflow_tasks_id) ? $get_tmp_workflow_tasks_id : "php_file_workflow_tmp&path_extra=_${path_extra}_" . rand(0, 1000);
 
 	$set_workflow_file_url = $project_url_prefix . "workflow/set_workflow_file?path=${get_workflow_tasks_id}";
 	$get_workflow_file_url = $project_url_prefix . "workflow/get_workflow_file?path=${get_workflow_tasks_id}";
@@ -125,7 +140,7 @@ if ($is_obj_valid) {
 	var layer_type = "' . ($item_type == "presentation" ? "pres" : ($item_type == "businesslogic" ? "bl" : $item_type)) . '";
 	var selected_project_id = "' . $selected_project_id . '";
 	var original_method_id = \'' . ($ft == "class_method" ? $method_id : $function_id) . '\';
-	var file_modified_time = ' . $file_modified_time . '; //for version control
+	var file_modified_time = ' . (isset($file_modified_time) ? $file_modified_time : "null") . '; //for version control
 	var js_save_func_name = "' . $js_save_func_name . '";
 	var class_id = \'' . $class_id . '\';
 
@@ -135,26 +150,26 @@ if ($is_obj_valid) {
 	var get_tmp_workflow_file_url = \'' . $get_tmp_workflow_file_url . '\';
 	var create_code_from_workflow_file_url = \'' . $create_code_from_workflow_file_url . '\';
 	var set_tmp_workflow_file_url = \'' . $set_tmp_workflow_file_url . '\';
-	var get_query_properties_url = \'' . $get_query_properties_url . '\';
-	var get_business_logic_properties_url = \'' . $get_business_logic_properties_url . '\';
-	var get_broker_db_drivers_url = \'' . $get_broker_db_drivers_url . '\';
-	var get_broker_db_data_url = \'' . $get_broker_db_data_url . '\';
-	var edit_task_source_url = \'' . $edit_task_source_url . '\';
+	var get_query_properties_url = \'' . (isset($get_query_properties_url) ? $get_query_properties_url : null) . '\';
+	var get_business_logic_properties_url = \'' . (isset($get_business_logic_properties_url) ? $get_business_logic_properties_url : null) . '\';
+	var get_broker_db_drivers_url = \'' . (isset($get_broker_db_drivers_url) ? $get_broker_db_drivers_url : null) . '\';
+	var get_broker_db_data_url = \'' . (isset($get_broker_db_data_url) ? $get_broker_db_data_url : null) . '\';
+	var edit_task_source_url = \'' . (isset($edit_task_source_url) ? $edit_task_source_url : null) . '\';
 	
-	var create_page_module_block_url = \'' . $create_page_module_block_url . '\';
-	var add_block_url = \'' . $add_block_url . '\';
-	var edit_block_url = \'' . $edit_block_url . '\';
-	var get_module_info_url = \'' . $get_module_info_url . '\';
+	var create_page_module_block_url = \'' . (isset($create_page_module_block_url) ? $create_page_module_block_url : null) . '\';
+	var add_block_url = \'' . (isset($add_block_url) ? $add_block_url : null) . '\';
+	var edit_block_url = \'' . (isset($edit_block_url) ? $edit_block_url : null) . '\';
+	var get_module_info_url = \'' . (isset($get_module_info_url) ? $get_module_info_url : null) . '\';
 	
-	var create_db_driver_table_or_attribute_url = \'' . $create_db_driver_table_or_attribute_url . '\';
-	var edit_db_driver_tables_diagram_url = \'' . $edit_db_driver_tables_diagram_url . '\';
+	var create_db_driver_table_or_attribute_url = \'' . (isset($create_db_driver_table_or_attribute_url) ? $create_db_driver_table_or_attribute_url : null) . '\';
+	var edit_db_driver_tables_diagram_url = \'' . (isset($edit_db_driver_tables_diagram_url) ? $edit_db_driver_tables_diagram_url : null) . '\';
 	
-	var templates_regions_html_url = \'' . $templates_regions_html_url . '\'; //used in widget: src/view/presentation/common_editor_widget/template_region/import_region_html.xml which is used in the Layout_ui_editor from the taskflowchart->inlinehtml and createform tasks.
+	var templates_regions_html_url = \'' . (isset($templates_regions_html_url) ? $templates_regions_html_url : null) . '\'; //used in widget: src/view/presentation/common_editor_widget/template_region/import_region_html.xml which is used in the Layout_ui_editor from the taskflowchart->inlinehtml and createform tasks.
 
 	var new_argument_html = \'' . str_replace("'", "\\'", str_replace("\n", "", WorkFlowPHPFileHandler::getArgumentHTML())) .'\';
 	var new_annotation_html = \'' . str_replace("'", "\\'", str_replace("\n", "", WorkFlowPHPFileHandler::getAnnotationHTML())) .'\';
 	
-	var brokers_db_drivers = ' . json_encode($brokers_db_drivers) . ';
+	var brokers_db_drivers = ' . (isset($brokers_db_drivers) ? json_encode($brokers_db_drivers) : "null") . ';
 	
 	ProgrammingTaskUtil.on_programming_task_edit_source_callback = onProgrammingTaskEditSource;
 	ProgrammingTaskUtil.on_programming_task_choose_created_variable_callback = onProgrammingTaskChooseCreatedVariable;
@@ -193,7 +208,7 @@ if ($is_obj_valid) {
 
 	if (typeof callPresentationLayerWebServiceTaskPropertyObj != "undefined" && callPresentationLayerWebServiceTaskPropertyObj) {
 		callPresentationLayerWebServiceTaskPropertyObj.on_choose_page_callback = onPresentationTaskChoosePage;
-		callPresentationLayerWebServiceTaskPropertyObj.brokers_options = ' . json_encode($presentation_brokers_obj) . ';
+		callPresentationLayerWebServiceTaskPropertyObj.brokers_options = ' . (isset($presentation_brokers_obj) ? json_encode($presentation_brokers_obj) : "null") . ';
 	}
 
 	if (typeof SetPresentationTemplateTaskPropertyObj != "undefined" && SetPresentationTemplateTaskPropertyObj)
@@ -215,21 +230,21 @@ if ($is_obj_valid) {
 	if (typeof RenderTemplateRegionTaskPropertyObj != "undefined" && RenderTemplateRegionTaskPropertyObj)
 		RenderTemplateRegionTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
 
-	if (typeof AddTemplateRegionBlockTaskPropertyObj != "undefined" && AddTemplateRegionBlockTaskPropertyObj)
-		AddTemplateRegionBlockTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
+	if (typeof AddRegionBlockTaskPropertyObj != "undefined" && AddRegionBlockTaskPropertyObj)
+		AddRegionBlockTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
 
 	if (typeof IncludeBlockTaskPropertyObj != "undefined" && IncludeBlockTaskPropertyObj)
 		IncludeBlockTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC')) . ';
 
 	if (typeof IncludeBlockTaskPropertyObj != "undefined" && IncludeBlockTaskPropertyObj)
-		IncludeBlockTaskPropertyObj.projects_options = ' . json_encode($available_projects) . ';
+		IncludeBlockTaskPropertyObj.projects_options = ' . (isset($available_projects) ? json_encode($available_projects) : "null") . ';
 	';
 
 	if ($item_type == "presentation" || $item_type == "businesslogic")
 		$head .= '
 	if (typeof GetBeanObjectTaskPropertyObj != "undefined" && GetBeanObjectTaskPropertyObj) {
-		GetBeanObjectTaskPropertyObj.phpframeworks_options = ' . json_encode($phpframeworks_options) . ';
-		GetBeanObjectTaskPropertyObj.bean_names_options = ' . json_encode($bean_names_options) . ';
+		GetBeanObjectTaskPropertyObj.phpframeworks_options = ' . (isset($phpframeworks_options) ? json_encode($phpframeworks_options) : "null") . ';
+		GetBeanObjectTaskPropertyObj.bean_names_options = ' . (isset($bean_names_options) ? json_encode($bean_names_options) : "null") . ';
 	}
 
 	if (typeof LayerOptionsUtilObj != "undefined" && LayerOptionsUtilObj)
@@ -237,38 +252,38 @@ if ($is_obj_valid) {
 
 	if (typeof CallBusinessLogicTaskPropertyObj != "undefined" && CallBusinessLogicTaskPropertyObj) {
 		CallBusinessLogicTaskPropertyObj.on_choose_business_logic_callback = onBusinessLogicTaskChooseBusinessLogic;
-		CallBusinessLogicTaskPropertyObj.brokers_options = ' . json_encode($business_logic_brokers_obj) . ';
+		CallBusinessLogicTaskPropertyObj.brokers_options = ' . (isset($business_logic_brokers_obj) ? json_encode($business_logic_brokers_obj) : "null") . ';
 	}
 
 	if (typeof CallIbatisQueryTaskPropertyObj != "undefined" && CallIbatisQueryTaskPropertyObj) {
 		CallIbatisQueryTaskPropertyObj.on_choose_query_callback = onChooseIbatisQuery;
-		CallIbatisQueryTaskPropertyObj.brokers_options = ' . json_encode($ibatis_brokers_obj) . ';
+		CallIbatisQueryTaskPropertyObj.brokers_options = ' . (isset($ibatis_brokers_obj) ? json_encode($ibatis_brokers_obj) : "null") . ';
 	}
 
 	if (typeof CallHibernateObjectTaskPropertyObj != "undefined" && CallHibernateObjectTaskPropertyObj) {
 		CallHibernateObjectTaskPropertyObj.on_choose_hibernate_object_callback = onChooseHibernateObject;
-		CallHibernateObjectTaskPropertyObj.brokers_options = ' . json_encode($hibernate_brokers_obj) . ';
+		CallHibernateObjectTaskPropertyObj.brokers_options = ' . (isset($hibernate_brokers_obj) ? json_encode($hibernate_brokers_obj) : "null") . ';
 	}
 
 	if (typeof CallHibernateMethodTaskPropertyObj != "undefined" && CallHibernateMethodTaskPropertyObj) {
 		CallHibernateMethodTaskPropertyObj.on_choose_hibernate_object_method_callback = onChooseHibernateObjectMethod;
-		CallHibernateMethodTaskPropertyObj.brokers_options = ' . json_encode($hibernate_brokers_obj) . ';
+		CallHibernateMethodTaskPropertyObj.brokers_options = ' . (isset($hibernate_brokers_obj) ? json_encode($hibernate_brokers_obj) : "null") . ';
 	}
 
 	if (typeof GetQueryDataTaskPropertyObj != "undefined" && GetQueryDataTaskPropertyObj)
-		GetQueryDataTaskPropertyObj.brokers_options = ' . json_encode(array_merge($db_brokers_obj, $data_access_brokers_obj)) . ';
+		GetQueryDataTaskPropertyObj.brokers_options = ' . (isset($db_brokers_obj) ? json_encode(array_merge($db_brokers_obj, $data_access_brokers_obj)) : "null") . ';
 
 	if (typeof SetQueryDataTaskPropertyObj != "undefined" && SetQueryDataTaskPropertyObj)
-		SetQueryDataTaskPropertyObj.brokers_options = ' . json_encode(array_merge($db_brokers_obj, $data_access_brokers_obj)) . ';
+		SetQueryDataTaskPropertyObj.brokers_options = ' . (isset($db_brokers_obj) ? json_encode(array_merge($db_brokers_obj, $data_access_brokers_obj)) : "null") . ';
 
 	if (typeof DBDAOActionTaskPropertyObj != "undefined" && DBDAOActionTaskPropertyObj){
 		DBDAOActionTaskPropertyObj.on_choose_table_callback = onChooseDBTableAndAttributes;
-		DBDAOActionTaskPropertyObj.brokers_options = ' . json_encode(array_merge($db_brokers_obj, $data_access_brokers_obj)) . ';
+		DBDAOActionTaskPropertyObj.brokers_options = ' . (isset($db_brokers_obj) ? json_encode(array_merge($db_brokers_obj, $data_access_brokers_obj)) : "null") . ';
 	}
 
 	if (typeof GetDBDriverTaskPropertyObj != "undefined" && GetDBDriverTaskPropertyObj) {
-		GetDBDriverTaskPropertyObj.brokers_options = ' . json_encode($db_brokers_obj) . ';
-		GetDBDriverTaskPropertyObj.db_drivers_options = ' . json_encode($db_drivers_options) . ';
+		GetDBDriverTaskPropertyObj.brokers_options = ' . (isset($db_brokers_obj) ? json_encode($db_brokers_obj) : "null") . ';
+		GetDBDriverTaskPropertyObj.db_drivers_options = ' . (isset($db_drivers_options) ? json_encode($db_drivers_options) : "null") . ';
 	}
 	';
 
@@ -282,7 +297,7 @@ if ($is_obj_valid) {
 		<div class="top_bar' . ($popup ? " in_popup" : "") . '">
 			<header>
 				<div class="title" title="' . $path . '">
-					' . $title . ' <input class="name" type="text" value="' . ($obj_data ? $obj_data["name"] : "") . '" placeHolder="Name" title="Function/Method Name" onFocus="disableTemporaryAutoSaveOnInputFocus(this)" onBlur="undoDisableTemporaryAutoSaveOnInputBlur(this)" /> in ' . BreadCrumbsUIHandler::getFilePathBreadCrumbsHtml($is_class_equal_to_file_name ? dirname($file_path) : $file_path, $obj, $is_class_equal_to_file_name) . '
+					' . $title . ' <input class="name" type="text" value="' . (isset($obj_data["name"]) ? $obj_data["name"] : "") . '" placeHolder="Name" title="Function/Method Name" onFocus="disableTemporaryAutoSaveOnInputFocus(this)" onBlur="undoDisableTemporaryAutoSaveOnInputBlur(this)" /> in ' . BreadCrumbsUIHandler::getFilePathBreadCrumbsHtml($is_class_equal_to_file_name ? dirname($file_path) : $file_path, $obj, $is_class_equal_to_file_name) . '
 				</div>
 				<ul>
 					<li class="save" data-title="Save"><a onClick="' . $js_save_func_name . '()"><i class="icon save"></i> Save</a></li>
@@ -335,25 +350,25 @@ if ($is_obj_valid) {
 		$types = array("public", "private", "protected");
 		$t = count($types);
 		for ($i = 0; $i < $t; $i++) 
-			$main_content .= '<option' . ($types[$i] == $obj_data["type"] ? " selected" : "") . '>' . $types[$i] . '</option>';
+			$main_content .= '<option' . (isset($obj_data["type"]) && $types[$i] == $obj_data["type"] ? " selected" : "") . '>' . $types[$i] . '</option>';
 		
 		$main_content .= '
 				</select>
 			</div>
 			<div class="abstract">
 				<label>Is Abstract:</label>
-				<input type="checkbox" value="1" ' . ($obj_data["abstract"] ? "checked" : "") . ' />
+				<input type="checkbox" value="1" ' . (!empty($obj_data["abstract"]) ? "checked" : "") . ' />
 			</div>
 			<div class="static">
 				<label>Is Static:</label>
-				<input type="checkbox" value="1" ' . ($obj_data["static"] || (!$method_id && $_GET["static"]) ? "checked" : "") . ' />
+				<input type="checkbox" value="1" ' . (!empty($obj_data["static"]) || (!$method_id && !empty($_GET["static"])) ? "checked" : "") . ' />
 			</div>';
 	}
 	
 	$main_content .= '
 			<div class="visibility">
 				<label>Is Visible:</label>
-				<input type="checkbox" value="1" ' . (!$is_hidden ? "checked" : "") . ' />
+				<input type="checkbox" value="1" ' . (empty($is_hidden) ? "checked" : "") . ' />
 				<span class="icon info" title="Hide this ' . str_replace("_", " ", $ft) . ' from other projects or direct access">Info</span>
 			</div>
 			<div class="arguments">
@@ -370,7 +385,7 @@ if ($is_obj_valid) {
 					</thead>
 					<tbody class="fields">';
 
-		$arguments = $obj_data["arguments"];
+		$arguments = isset($obj_data["arguments"]) ? $obj_data["arguments"] : null;
 		if (is_array($arguments)) 
 			foreach ($arguments as $arg_name => $arg_value)
 				$main_content .= WorkFlowPHPFileHandler::getArgumentHTML($arg_name, $arg_value);
@@ -381,7 +396,7 @@ if ($is_obj_valid) {
 			</div>
 		';
 	
-	if ($include_annotations) {
+	if (!empty($include_annotations)) {
 		$main_content .= '
 			<div class="annotations">
 				<label>Annotations:</label>
@@ -401,24 +416,24 @@ if ($is_obj_valid) {
 					</thead>
 					<tbody class="fields">';
 		
-		if (is_array($params))
+		if (isset($params) && is_array($params))
 			foreach ($params as $param) {
 				$attrs = $param->getArgs();
-				if ($obj_data["is_business_logic_service"] && is_array($attrs) && substr($attrs["name"], 0, 5) == "data[") {
+				if (!empty($obj_data["is_business_logic_service"]) && is_array($attrs) && isset($attrs["name"]) && substr($attrs["name"], 0, 5) == "data[") {
 					$attrs["name"] = substr($attrs["name"], 5);
 					$attrs["name"] = substr($attrs["name"], -1) == "]" ? substr($attrs["name"], 0, -1) : $attrs["name"];
 				
 					//for the cases where data[article][id] => article][id
 					$attrs["name"] = str_replace(array('"', "'"), "", $attrs["name"]);
 					preg_match_all("/([^\[\]]+)/u", $attrs["name"], $matches, PREG_PATTERN_ORDER); //'/u' means converts to unicode.
-					$first = array_shift($matches[1]);
-					$attrs["name"] = $first . ($matches[1] ? "[" . implode('][', $matches[1]) . "]" : "");
+					$first = $matches ? array_shift($matches[1]) : "";
+					$attrs["name"] = $first . (!empty($matches[1]) ? "[" . implode('][', $matches[1]) . "]" : "");
 				}
 				
 				$main_content .= WorkFlowPHPFileHandler::getAnnotationHTML($attrs, "param");
 			}
 
-		if (is_array($returns))
+		if (isset($returns) && is_array($returns))
 			foreach ($returns as $return)
 				$main_content .= WorkFlowPHPFileHandler::getAnnotationHTML($return->getArgs(), "return");
 		
@@ -431,7 +446,7 @@ if ($is_obj_valid) {
 	$main_content .= '
 			<div class="comments">
 				<label>Comments:</label>
-				<textarea>' . htmlspecialchars($comments, ENT_NOQUOTES) . '</textarea>
+				<textarea>' . (isset($comments) ? htmlspecialchars($comments, ENT_NOQUOTES) : "") . '</textarea>
 			</div>
 		</div>
 		
@@ -439,7 +454,7 @@ if ($is_obj_valid) {
 			<div class="code_menu top_bar_menu" onClick="openSubmenu(this)">
 				' . WorkFlowPresentationHandler::getCodeEditorMenuHtml(array("save_func" => $js_save_func_name)) . '
 			</div>
-			<textarea>' . "<?php\n" . htmlspecialchars($obj_data["code"], ENT_NOQUOTES) . "\n?>" . '</textarea>
+			<textarea>' . "<?php\n" . (isset($obj_data["code"]) ? htmlspecialchars($obj_data["code"], ENT_NOQUOTES) : "") . "\n?>" . '</textarea>
 		</div>
 		
 		<div id="ui">' . WorkFlowPresentationHandler::getTaskFlowContentHtml($WorkFlowUIHandler, array("save_func" => $js_save_func_name)) . '</div>

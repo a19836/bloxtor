@@ -1,5 +1,5 @@
 <?php
-$exists_phpmailer = file_exists( get_lib("lib.vendor.phpmailer.PHPMailerAutoload") );
+$exists_phpmailer = file_exists( get_lib("lib.vendor.phpmailer.vendor.autoload") );
 
 if (!$exists_phpmailer)
 	echo '<script>SendEmailTaskPropertyObj.exists_phpmailer = false;</script>';

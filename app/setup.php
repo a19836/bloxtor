@@ -118,7 +118,7 @@ $optional_files = array(
 
 $html = "<ol>
 	<li>Please point the Document Root from your WebServer to the $dir_path folder!</li>
-	<li>Install the PHP 5.6 or higher.</li>
+	<li>Install the PHP 5.6 or higher (tested until PHP 8.4).</li>
 	<li>Please be sure that you have PHP installed and all the following modules:
 		<ul>
 			<li>bcmath (is installed by default)</li>

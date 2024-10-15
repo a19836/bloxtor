@@ -63,23 +63,30 @@ class TableDiagram implements ITableDiagram {
 		if (!empty($data["keys"]["unique_keys"]) && is_array($data["keys"]["unique_keys"]))
 			foreach ($data["keys"]["unique_keys"] as $key) {
 				$type = isset($key["type"]) && $key["type"] ? "USING " . $key["type"] : "";
+				$key_name = isset($key["name"]) ? $key["name"] : null;
+				$key_attribute = isset($key["attribute"]) ? $key["attribute"] : null;
 				
-				$sql .= "   UNIQUE " . $key["name"] . " $type (" . $key["attribute"] . "),\n";
+				$sql .= "   UNIQUE " . $key_name . " $type (" . $key_attribute . "),\n";
 			}
 		
 		if (!empty($data["keys"]["foreign_keys"]) && is_array($data["keys"]["foreign_keys"]))
 			foreach ($data["keys"]["foreign_keys"] as $key) {
 				$on_delete = isset($key["on_delete"]) && $key["on_delete"] ? "ON DELETE " . $key["on_delete"] : "";
 				$on_update = isset($key["on_update"]) && $key["on_update"] ? "ON UPDATE " . $key["on_update"] : "";
+				$key_attribute = isset($key["attribute"]) ? $key["attribute"] : null;
+				$key_reference_table = isset($key["reference_table"]) ? $key["reference_table"] : null;
+				$key_reference_attribute = isset($key["reference_attribute"]) ? $key["reference_attribute"] : null;
 				
-				$sql .= "   FOREIGN KEY (" . $key["attribute"] . ") REFERENCES " . $key["reference_table"] . " (" . $key["reference_attribute"] . ") $on_delete $on_update,\n";
+				$sql .= "   FOREIGN KEY (" . $key_attribute . ") REFERENCES " . $key_reference_table . " (" . $key_reference_attribute . ") $on_delete $on_update,\n";
 			}
 		
 		if (!empty($data["keys"]["index_keys"]) && is_array($data["keys"]["index_keys"]))
 			foreach ($data["keys"]["index_keys"] as $key) {
 				$type = isset($key["type"]) && $key["type"] ? "USING " . $key["type"] : "";
+				$key_name = isset($key["name"]) ? $key["name"] : null;
+				$key_attribute = isset($key["attribute"]) ? $key["attribute"] : null;
 				
-				$sql .= "   INDEX " . $key["name"] . " $type (" . $key["attribute"] . "),\n";
+				$sql .= "   INDEX " . $key_name . " $type (" . $key_attribute . "),\n";
 			}
 		
 		$engine = !empty($data["engine"]) ? "ENGINE=" . $data["engine"] : "";

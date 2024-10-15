@@ -1,3 +1,3 @@
 <?php
-$requested_file = $_GET["file"];
+$requested_file = isset($_GET["file"]) ? $_GET["file"] : null;
 ?>

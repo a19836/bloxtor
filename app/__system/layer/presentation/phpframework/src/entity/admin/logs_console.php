@@ -3,11 +3,11 @@ include_once get_lib("org.phpframework.util.text.TextSanitizer");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$last_file_created_time = $_GET["file_created_time"];
-$last_file_pointer = $_GET["file_pointer"];
-$number_of_lines = $_GET["number_of_lines"];
-$popup = $_GET["popup"];
-$ajax = $_GET["ajax"];
+$last_file_created_time = isset($_GET["file_created_time"]) ? $_GET["file_created_time"] : null;
+$last_file_pointer = isset($_GET["file_pointer"]) ? $_GET["file_pointer"] : null;
+$number_of_lines = isset($_GET["number_of_lines"]) ? $_GET["number_of_lines"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
+$ajax = isset($_GET["ajax"]) ? $_GET["ajax"] : null;
 
 $file_path = $GLOBALS["GlobalLogHandler"]->getFilePath();
 
@@ -34,9 +34,9 @@ if (file_exists($file_path)) {
 
 if ($ajax) {
 	$obj = array(
-		"output" => $output,
-		"file_created_time" => $file_created_time,
-		"file_pointer" => $file_pointer
+		"output" => isset($output) ? $output : null,
+		"file_created_time" => isset($file_created_time) ? $file_created_time : null,
+		"file_pointer" => isset($file_pointer) ? $file_pointer : null
 	);
 	echo json_encode($obj);
 	die();

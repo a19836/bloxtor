@@ -41,12 +41,12 @@ for ($i = 0; $i < $t; $i++) {
 	$reserved_db_table_name = $reserved_db_table_names[$i];
 	
 	$main_content .= '<tr>
-		<td class="reserved_db_table_name_id">' . $reserved_db_table_name["reserved_db_table_name_id"] . '</td>
-		<td class="name">' . $reserved_db_table_name["name"] . '</td>
-		<td class="created_date">' . $reserved_db_table_name["created_date"] . '</td>
-		<td class="modified_date">' . $reserved_db_table_name["modified_date"] . '</td>
+		<td class="reserved_db_table_name_id">' . (isset($reserved_db_table_name["reserved_db_table_name_id"]) ? $reserved_db_table_name["reserved_db_table_name_id"] : "") . '</td>
+		<td class="name">' . (isset($reserved_db_table_name["name"]) ? $reserved_db_table_name["name"] : "") . '</td>
+		<td class="created_date">' . (isset($reserved_db_table_name["created_date"]) ? $reserved_db_table_name["created_date"] : "") . '</td>
+		<td class="modified_date">' . (isset($reserved_db_table_name["modified_date"]) ? $reserved_db_table_name["modified_date"] : "") . '</td>
 		<td class="buttons">
-			<a class="icon edit" href="' . $project_url_prefix . 'user/edit_reserved_db_table_name?reserved_db_table_name_id=' . $reserved_db_table_name["reserved_db_table_name_id"] . '" title="Edit">Edit</a>
+			<a class="icon edit" href="' . $project_url_prefix . 'user/edit_reserved_db_table_name?reserved_db_table_name_id=' . (isset($reserved_db_table_name["reserved_db_table_name_id"]) ? $reserved_db_table_name["reserved_db_table_name_id"] : "") . '" title="Edit">Edit</a>
 		</td>
 	</tr>';
 }

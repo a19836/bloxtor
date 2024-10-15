@@ -3,7 +3,7 @@ include_once get_lib("org.phpframework.util.io.exception.MyIOManagerException");
 
 $FileManager = null;
 
-if($FILEMANAGER_DATA) {
+if (!empty($FILEMANAGER_DATA)) {
 	$FILE_MANAGER_TYPE = isset($FILEMANAGER_DATA["type"]) ? strtolower($FILEMANAGER_DATA["type"]) : null;
 	$FILE_MANAGER_ARGS = isset($FILEMANAGER_DATA["args"]) ? $FILEMANAGER_DATA["args"] : null;
 	

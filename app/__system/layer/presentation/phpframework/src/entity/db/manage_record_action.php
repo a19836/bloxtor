@@ -8,12 +8,12 @@ $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "w
 
 $status = false;
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$table = $_GET["table"];
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$table = isset($_GET["table"]) ? $_GET["table"] : null;
 
-$download = $_GET["download"];
+$download = isset($_GET["download"]) ? $_GET["download"] : null;
 
 if ($bean_name && $table) {
 	$layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$bean_name";
@@ -27,18 +27,18 @@ if ($bean_name && $table) {
 	
 	if ($table_exists) {
 		if ($download) {
-			$attr_name = $_GET["attr_name"];
-			$pks = $_GET["pks"];
+			$attr_name = isset($_GET["attr_name"]) ? $_GET["attr_name"] : null;
+			$pks = isset($_GET["pks"]) ? $_GET["pks"] : null;
 			
 			if ($attr_name && $pks) {
 				$results = $DBDriver->findObjects($table, $attr_name, $pks);
-				$content = $results[0][$attr_name];
+				$content = isset($results[0][$attr_name]) ? $results[0][$attr_name] : null;
 				
 				$finfo = new finfo(FILEINFO_MIME_TYPE);
-				$mime_type = $finfo->buffer($field_value);
+				$mime_type = $finfo->buffer($content);
 				
 				$types = MimeTypeHandler::getAvailableTypesByMimeType($mime_type);
-				$extension = $types ? $types[0]["extension"] : "";
+				$extension = $types && isset($types[0]["extension"]) ? $types[0]["extension"] : "";
 				$extension = $extension ? explode(" ", str_replace(array(",", ";"), " ", $extension)) : "";
 				
 				header('Content-Description: File Transfer');
@@ -49,36 +49,36 @@ if ($bean_name && $table) {
 				exit;
 			}
 		}
-		else if ($_POST) {
+		else if (!empty($_POST)) {
 			$table_fields = $DBDriver->listTableFields($table);
 			
 			if ($table_fields) {
 				$pks = array();
 				$auto_increment_pks = array();
 				
-				$action = $_POST["action"];
-				$attributes = $_POST["attributes"];
-				$conditions = $_POST["conditions"];
+				$action = isset($_POST["action"]) ? $_POST["action"] : null;
+				$attributes = isset($_POST["attributes"]) ? $_POST["attributes"] : null;
+				$conditions = isset($_POST["conditions"]) ? $_POST["conditions"] : null;
 				
 				//prepare pks
 				foreach ($table_fields as $field_name => $field) {
-					if ($field["primary_key"])
+					if (!empty($field["primary_key"]))
 						$pks[] = $field_name;
 					
-					if ($field["auto_increment"])
+					if (!empty($field["auto_increment"]))
 						$auto_increment_pks[] = $field_name;
 				}
 				//echo "<pre>";print_r($pks);die();
 				
 				//add _FILES to attributes
 				//echo "<pre>";print_r($_FILES);die();
-				if ($_FILES) {
+				if (!empty($_FILES)) {
 					$blob_types = $DBDriver->getDBColumnBlobTypes();
 					
 					foreach ($table_fields as $field_name => $field) {
-						$field_type = $field["type"];
+						$field_type = isset($field["type"]) ? $field["type"] : null;
 						
-						if (in_array($field_type, $blob_types) && preg_match("/blob/i", $field_type) && $_FILES[$field_name] && $_FILES[$field_name]["tmp_name"]) {
+						if (in_array($field_type, $blob_types) && preg_match("/blob/i", $field_type) && !empty($_FILES[$field_name]) && !empty($_FILES[$field_name]["tmp_name"])) {
 							$uploaded_file = $_FILES[$field_name]["tmp_name"];
 							$attributes[$field_name] = file_exists($uploaded_file) ? file_get_contents($uploaded_file) : "";
 						}
@@ -94,16 +94,17 @@ if ($bean_name && $table) {
 							unset($attributes[$k]);
 						else {
 							$field_props = $table_fields[$k];
+							$is_field_numeric_type = isset($field_props["type"]) && in_array($field_props["type"], $numeric_types);
 							
-							if (in_array($field_props["type"], $numeric_types) && !is_numeric($v) && empty($v)) {
+							if ($is_field_numeric_type && !is_numeric($v) && empty($v)) {
 								if (in_array($k, $auto_increment_pks)) {
 									unset($attributes[$k]);
 									continue 1;
 								}
 								else
-									$attributes[$k] = $field_props["null"] ? null : 0;
+									$attributes[$k] = !empty($field_props["null"]) ? null : 0;
 							}
-							else if (in_array($field_props["type"], $numeric_types) && is_numeric($v) && is_string($v)) //convert string to numeric
+							else if ($is_field_numeric_type && is_numeric($v) && is_string($v)) //convert string to numeric
 								$attributes[$k] += 0; //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
 						}
 					}
@@ -135,7 +136,7 @@ if ($bean_name && $table) {
 								if (in_array($k, $auto_increment_pks))
 									$pks_values[$k] = $DBDriver->getInsertedId();
 								else
-									$pks_values[$k] = $attributes[$k];
+									$pks_values[$k] = isset($attributes[$k]) ? $attributes[$k] : null;
 							}
 							
 							$status = json_encode($pks_values);
@@ -184,6 +185,7 @@ if ($bean_name && $table) {
 										
 										$finfo = new finfo(FILEINFO_MIME_TYPE);
 										$mime_type = $finfo->buffer($field_value);
+										$new_field_value = null;
 										
 										if (MimeTypeHandler::isImageMimeType($mime_type))
 											$new_field_value = "<img src=\"data:$mime_type;base64, " . base64_encode($field_value) . "\" />";
@@ -194,7 +196,7 @@ if ($bean_name && $table) {
 									}
 							}
 							
-							$status = json_encode($results[0] ? $results[0] : array());
+							$status = json_encode(!empty($results[0]) ? $results[0] : array());
 						}
 						break;
 				}

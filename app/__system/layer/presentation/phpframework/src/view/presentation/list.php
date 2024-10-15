@@ -1,6 +1,8 @@
 <?php
 include_once $EVC->getUtilPath("AdminMenuUIHandler");
 
+$is_module_user_installed = isset($is_module_user_installed) ? $is_module_user_installed : null;
+
 $head = AdminMenuUIHandler::getHeader($project_url_prefix, $project_common_url_prefix);
 $head .= '
 <!-- Add Local JS and CSS files -->
@@ -59,14 +61,14 @@ $main_content .= '
 	
 	$main_layers_properties = array();
 	
-	if ($layers)
+	if (!empty($layers))
 		foreach ($layers as $layer_name => $layer) {
 			$main_content .= AdminMenuUIHandler::getLayer($layer_name, $layer, $main_layers_properties, $project_url_prefix, $filter_by_layout, $filter_by_layout_permission, $selected_db_driver);
 			
 			if ($item_type == "presentation" && $element_type) {
-				$properties = $main_layers_properties[$layer_name];
-				$bean_file_name = $properties["bean_file_name"];
-				$bean_name = $properties["bean_name"];
+				$properties = isset($main_layers_properties[$layer_name]) ? $main_layers_properties[$layer_name] : null;
+				$bean_file_name = isset($properties["bean_file_name"]) ? $properties["bean_file_name"] : null;
+				$bean_name = isset($properties["bean_name"]) ? $properties["bean_name"] : null;
 				
 				$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
 				$obj = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
@@ -79,7 +81,7 @@ $main_content .= '
 	</ul>
 </div>';
 
-if (!$layers)
+if (empty($layers))
 	$main_content .= '<div class="error">There are no files!</div>';
 	
 $main_content .= '
@@ -89,7 +91,7 @@ $main_content .= '
 	var path_to_filter = "' . $path . '";
 	var inline_icons_by_context_menus = ' . json_encode(AdminMenuUIHandler::getInlineIconsByContextMenus()) . ';
 	
-	main_layers_properties = ' . json_encode($main_layers_properties) . '; //this var is already created in the filemanage.js
+	main_layers_properties = ' . (isset($main_layers_properties) ? json_encode($main_layers_properties) : "null") . '; //this var is already created in the filemanage.js
 </script>
 
 <div class="myfancypopup auxiliar_popup with_iframe_title">

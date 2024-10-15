@@ -179,7 +179,7 @@ class WorkFlowTestUnitHandler {
 	}
 	
 	public function executeTest($test_path, &$responses_by_path, $class_name = null) {
-		if (is_array($responses_by_path[$test_path]))
+		if (isset($responses_by_path[$test_path]) && is_array($responses_by_path[$test_path]))
 			return $responses_by_path[$test_path]["status"];
 		
 		$response = array();
@@ -223,7 +223,7 @@ class WorkFlowTestUnitHandler {
 				
 				//parse doc comments annotations
 				$file_data = PHPCodePrintingHandler::getFunctionFromFile($file_path, "execute", $class_name);
-				$comments = $file_data["doc_comments"] ? implode("\n", $file_data["doc_comments"]) : "";
+				$comments = !empty($file_data["doc_comments"]) ? implode("\n", $file_data["doc_comments"]) : "";
 				$DocBlockParser = new DocBlockParser();
 				$DocBlockParser->ofComment($comments);
 				$doc_comments_objects = $DocBlockParser->getObjects();
@@ -238,7 +238,7 @@ class WorkFlowTestUnitHandler {
 					if ($class_name && is_subclass_of($class_name, "TestUnit")) {
 						//get global_variables_files_path
 						$test_global_variables_files_path = array();
-						$global_variables_files_path = $doc_comments_objects["global_variables_files_path"];
+						$global_variables_files_path = isset($doc_comments_objects["global_variables_files_path"]) ? $doc_comments_objects["global_variables_files_path"] : null;
 						if (is_array($global_variables_files_path))
 							foreach ($global_variables_files_path as $global_variables_file_path)
 								$test_global_variables_files_path[] = trim($global_variables_file_path->getArgs());
@@ -264,12 +264,12 @@ class WorkFlowTestUnitHandler {
 						
 						//get dependencies
 						$continue = true;
-						$depends = $doc_comments_objects["depends"];
+						$depends = isset($doc_comments_objects["depends"]) ? $doc_comments_objects["depends"] : null;
 						
 						if (is_array($depends))
 							foreach ($depends as $depend) {
 								$args = $depend->getArgs();
-								$depend_path = trim($args["path"]);
+								$depend_path = isset($args["path"]) ? trim($args["path"]) : "";
 								
 								if ($depend_path) {
 									$depend_extension = pathinfo($depend_path, PATHINFO_EXTENSION);
@@ -279,7 +279,7 @@ class WorkFlowTestUnitHandler {
 									
 									if (!$depend_response) {
 										$continue = false;
-										$response["error"] = "The following dependencie didn't executed correctly: $depend_path!" . ($depend_response["error"] ? "\n" . $depend_response["error"] : "");
+										$response["error"] = "The following dependencie didn't executed correctly: $depend_path!" . (!empty($depend_response["error"]) ? "\n" . $depend_response["error"] : "");
 										break;
 									}
 								}
@@ -294,7 +294,7 @@ class WorkFlowTestUnitHandler {
 								$response["error"] = "$class_name didn't execute correctly!";
 							
 							if ($errors)
-								$response["error"] .= ($response["error"] ? "\n" : "") . implode("\n", $errors);
+								$response["error"] .= (!empty($response["error"]) ? "\n" : "") . implode("\n", $errors);
 						}
 					}
 					else
@@ -305,7 +305,7 @@ class WorkFlowTestUnitHandler {
 		
 		$responses_by_path[$test_path] = $response;
 		
-		return $response["status"];
+		return isset($response["status"]) ? $response["status"] : null;
 	}
 	
 	public static function getGlobalVariablesFilePathHTML($path = false) {
@@ -324,9 +324,9 @@ class WorkFlowTestUnitHandler {
 		$path = $description = $others = "";
 		
 		if (is_array($attrs)) {
-			$path = $attrs["path"];
-			$description = str_replace('\\"', '"', $attrs["desc"]);
-		
+			$path = isset($attrs["path"]) ? $attrs["path"] : null;
+			$description = isset($attrs["desc"]) ? str_replace('\\"', '"', $attrs["desc"]) : "";
+			
 			foreach ($attrs as $k => $v) 
 				if ($k != "path" && $k != "desc")
 					$others .= ($others ? ", " : "") . "$k=$v";
@@ -371,13 +371,13 @@ class WorkFlowTestUnitHandler {
 				$status = PHPCodePrintingHandler::addFunctionToFile($file_path, $object, $class_name);
 		}
 		
-		return $status;
+		return isset($status) ? $status : null;
 	}
 	
 	private static function prepareObjectComments(&$object) {
 		$comments = isset($object["comments"]) && trim($object["comments"]) ? " * " . str_replace("\n", "\n * ", trim($object["comments"])) . "\n" : "";
 		
-		if (isset($object["enabled"]) && $object["enabled"]) {
+		if (!empty($object["enabled"])) {
 			$comments .= $comments ? " * \n" : "";
 			$comments .= " * @enabled\n";
 		}
@@ -402,14 +402,15 @@ class WorkFlowTestUnitHandler {
 				$t = $annotations ? count($annotations) : 0;
 				for ($i = 0; $i < $t; $i++) {
 					$annotation = $annotations[$i];
-					$path = trim($annotation["path"]);
+					$path = isset($annotation["path"]) ? trim($annotation["path"]) : "";
+					$desc = isset($annotation["desc"]) ? trim($annotation["desc"]) : "";
 					
 					$args = "";
 					$args .= $path ? ($args ? ", " : "") . "path=" . $path : "";
-					$args .= trim($annotation["others"]) ? ($args ? ", " : "") . $annotation["others"] : "";
+					$args .= isset($annotation["others"]) && trim($annotation["others"]) ? ($args ? ", " : "") . $annotation["others"] : "";
 					
-					if ($args || trim($annotation["desc"]))
-						$comments .= " * @$at ($args) " . addcslashes($annotation["desc"], '"') . "\n";
+					if ($args || trim($desc))
+						$comments .= " * @$at ($args) " . addcslashes($desc, '"') . "\n";
 				}
 			}
 		}

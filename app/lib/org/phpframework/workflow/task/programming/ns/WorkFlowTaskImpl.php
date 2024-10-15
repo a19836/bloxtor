@@ -11,7 +11,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		if ($stmt_type == "stmt_namespace") {
 			$value = $WorkFlowTaskCodeParser->printCodeNodeName($stmt);
 			
-			$sub_stmts = $stmt->stmts;
+			$sub_stmts = isset($stmt->stmts) ? $stmt->stmts : null;
 			$sub_inner_tasks = self::createTasksPropertiesFromCodeStmts($sub_stmts, $WorkFlowTaskCodeParser);
 			
 			$props = array(
@@ -28,7 +28,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			
 			//PREPARING EXITS AND INNER TASKS
 			if ($sub_inner_tasks) {
-				$exits[self::DEFAULT_EXIT_ID][] = array("task_id" => $sub_inner_tasks[0]["id"]);
+				$exits[self::DEFAULT_EXIT_ID][] = array(
+					"task_id" => isset($sub_inner_tasks[0]["id"]) ? $sub_inner_tasks[0]["id"] : null
+				);
 				
 				$WorkFlowTaskCodeParser->addNextTaskToUndefinedTaskExits($sub_inner_tasks[count($sub_inner_tasks) - 1]);
 				
@@ -42,23 +44,24 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"value" => $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"],
+			"value" => isset($raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$code = "namespace " . $properties["value"] . ";";
+		$code = "namespace " . (isset($properties["value"]) ? $properties["value"] : null) . ";";
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

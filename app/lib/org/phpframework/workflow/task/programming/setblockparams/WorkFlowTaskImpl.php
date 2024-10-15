@@ -18,12 +18,14 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$props = $WorkFlowTaskCodeParser->getVariableNameProps($stmt);
 			$props = $props ? $props : array();
 			
-			if (trim($props["result_var_name"]) != self::MAIN_VARIABLE_NAME) {
+			$result_var_name = isset($props["result_var_name"]) ? $props["result_var_name"] : null;
+			
+			if (trim($result_var_name) != self::MAIN_VARIABLE_NAME) {
 				return null;
 			}
 			
-			$expr = $stmt->expr;
-			$expr_type = strtolower($expr->getType());
+			$expr = isset($stmt->expr) ? $stmt->expr : null;
+			$expr_type = $expr ? strtolower($expr->getType()) : "";
 			
 			$code = $WorkFlowTaskCodeParser->printCodeExpr($expr);
 			$code = $WorkFlowTaskCodeParser->getStmtValueAccordingWithType($code, $expr_type);
@@ -48,27 +50,29 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"main_variable_name" => $raw_data["childs"]["properties"][0]["childs"]["main_variable_name"][0]["value"],
-			"value" => $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"],
-			"type" => $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"],
+			"main_variable_name" => isset($raw_data["childs"]["properties"][0]["childs"]["main_variable_name"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["main_variable_name"][0]["value"] : null,
+			"value" => isset($raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"] : null,
+			"type" => isset($raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$main_var_name = '$' . ($properties["main_variable_name"] ? $properties["main_variable_name"] : self::MAIN_VARIABLE_NAME);
+		$main_var_name = '$' . (!empty($properties["main_variable_name"]) ? $properties["main_variable_name"] : self::MAIN_VARIABLE_NAME);
 		
-		$code  = $prefix_tab . $main_var_name . " = " . self::getVariableValueCode($properties["value"], $properties["type"]) . ";\n";
+		$value = isset($properties["value"]) ? $properties["value"] : null;
+		$code  = $prefix_tab . $main_var_name . " = " . self::getVariableValueCode($value, isset($properties["type"]) ? $properties["type"] : null) . ";\n";
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

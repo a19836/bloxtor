@@ -1,6 +1,5 @@
 <?php
 include_once get_lib("org.phpframework.workflow.WorkFlowTaskHandler");
-include_once get_lib("org.phpframework.workflow.PHPParserTraverserNodeVisitor");
 include_once get_lib("org.phpframework.layer.presentation.cms.CMSFileHandler");
 
 ini_set('xdebug.max_nesting_level', 2000);
@@ -13,7 +12,7 @@ class WorkFlowTaskCodeParser {
 	private $reserved_object_method_names;
 	private $reserved_function_names;
 	
-	private $PHPParserEmulative;
+	private $PHPMultipleParser;
 	private $PHPParserTraverser;
 	private $PHPParserPrettyPrinter;
 	
@@ -24,16 +23,13 @@ class WorkFlowTaskCodeParser {
 	public function __construct($WorkFlowTaskHandler) {
 		$this->WorkFlowTaskHandler = $WorkFlowTaskHandler;
 		
-		//$this->PHPParserEmulative = new PhpParser\Parser(new PhpParser\Lexer\Emulative);
-		$PHPParser5 = new PhpParser\Parser\Php5(new PhpParser\Lexer\Emulative);
-		$PHPParser7 = new PhpParser\Parser\Php7(new PhpParser\Lexer\Emulative);
-		$this->PHPParserEmulative = new PhpParser\Parser\Multiple(array($PHPParser5, $PHPParser7));
+		$this->PHPMultipleParser = new PHPMultipleParser();
 		
-		$this->PHPParserTraverser = new PhpParser\NodeTraverser;
+		$this->PHPParserTraverser = new PHPParserNodeTraverser;
 		$this->PHPParserPrettyPrinter = new PHPParserPrettyPrinter();
 		$this->PHPParserPrettyPrinter->disableNoIndentToken(); //very important, otherwise it will add a weird code like an _NO_INDENT_ string.
 		
-		$this->PHPParserTraverser->addVisitor(new PHPParserTraverserNodeVisitor);
+		$this->PHPParserTraverser->addNodeTraverserVisitor(new PHPParserTraverserNodeVisitor);
 		
 		$this->init();
 	}
@@ -68,10 +64,10 @@ class WorkFlowTaskCodeParser {
 	}
 	
 	public function getParsedCodeAsArray($code) {
-		$stmts = $this->PHPParserEmulative->parse($code);
+		$stmts = $this->PHPMultipleParser->parse($code);
 		//print_r($stmts);die();
 		
-		$stmts = $this->PHPParserTraverser->traverse($stmts);
+		$stmts = $this->PHPParserTraverser->nodesTraverse($stmts);
 		//print_r($stmts);die();
 		
 		$tasks_properties = WorkFlowTask::createTasksPropertiesFromCodeStmts($stmts, $this);
@@ -85,7 +81,7 @@ class WorkFlowTaskCodeParser {
 		
 		/*$t = count($tasks_properties);
 		for ($i = 0; $i < $t; $i++) {
-			if ($tasks_properties[$i]["is_return"] && $i + 1 < $t && $tasks_properties[$i + 1][""]) {
+			if (!empty($tasks_properties[$i]["is_return"]) && $i + 1 < $t && !empty($tasks_properties[$i + 1][""])) {
 				$tasks_properties[$i + 1]["start"] = ++$start_count;
 			}
 		}*/
@@ -120,7 +116,7 @@ class WorkFlowTaskCodeParser {
 			$is_break = $this->default_task_code["obj"]->isBreakTask();
 		}
 		else {
-			$code = $this->PHPParserPrettyPrinter->prettyPrint($stmts);
+			$code = $this->PHPParserPrettyPrinter->stmtsPrettyPrint($stmts);
 			$prop_exits = array(
 				WorkFlowTask::DEFAULT_EXIT_ID => array(
 					"color" => "#000",
@@ -175,17 +171,18 @@ class WorkFlowTaskCodeParser {
 		$is_return = $task["obj"]->isReturnTask();
 		$is_break = $task["obj"]->isBreakTask();
 		unset($task["obj"]);
-	
-		$task_settings = $this->getTaskSettingsByTaskType($task["type"]);
+		
+		$task_type = isset($task["type"]) ? $task["type"] : null;
+		$task_settings = $this->getTaskSettingsByTaskType($task_type);
 		
 		if (!$task_settings) {
 			return null;
 		}
 		
 		$xml_task = array(
-			"id" => !empty($props["id"]) ? $props["id"] : $task["type"] . "_" . hash("crc32b", serialize($props)) . "_" . rand(0, 1000),
-			"type" => $task["type"],
-			"tag" => $task_settings["tag"],
+			"id" => !empty($props["id"]) ? $props["id"] : $task_type . "_" . hash("crc32b", serialize($props)) . "_" . rand(0, 1000),
+			"type" => $task_type,
+			"tag" => isset($task_settings["tag"]) ? $task_settings["tag"] : null,
 			"is_loop" => $is_loop,
 			"is_return" => $is_return,
 			"is_break" => $is_break,
@@ -337,47 +334,68 @@ class WorkFlowTaskCodeParser {
 		return $task;
 	}
 	
+	public function convertStmtExpressionToSimpleStmt($stmt) {
+		if ($stmt && is_object($stmt) && method_exists($stmt, "getType") && strtolower($stmt->getType()) == "stmt_expression" && isset($stmt->expr))
+			$stmt = $stmt->expr;
+		
+		return $stmt;
+	}
+	
+	public function convertStmtsExpressionToSimpleStmts($stmts) {
+		if ($stmts)
+			foreach ($stmts as $idx => $stmt)
+				$stmts[$idx] = $this->convertStmtExpressionToSimpleStmt($stmt);
+		
+		return $stmts;
+	}
+	
 	public function printCodeStatement($stmt, $with_comments = false) {
-		return $this->PHPParserPrettyPrinter->prettyPrint(array($stmt), $with_comments);
+		return $this->PHPParserPrettyPrinter->stmtsPrettyPrint(array($stmt), $with_comments);
 	}
 	
 	public function printCodeExpr($expr) {
-		return $this->PHPParserPrettyPrinter->prettyPrintExpr($expr);
+		return $this->PHPParserPrettyPrinter->nodeExprPrettyPrint($expr);
 	}
 	
 	public function printCodeNodeName($node) {
 		if (is_object($node)) {
-			if (is_object($node->name) && strtolower($node->name->getType()) == "name") //JP: getType added in 19-07-2019
-				return $this->PHPParserPrettyPrinter->pName($node->name);
+			if (isset($node->name) && is_object($node->name)) {
+				$node_type = strtolower($node->name->getType()); //JP: getType added in 19-07-2019
+				
+				if ($node_type == "name")
+					return $this->PHPParserPrettyPrinter->printName($node->name);
+				else if ($node_type == "identifier") //JP: Identifier type added in 20-09-2024
+					return $this->PHPParserPrettyPrinter->printIdentifier($node->name);
+			}
 			
-			if (is_array($node->parts))
-				return $this->PHPParserPrettyPrinter->pName($node);
+			if (isset($node->parts) && is_array($node->parts))
+				return $this->PHPParserPrettyPrinter->printName($node);
 			
-			return $node->name;
+			return isset($node->name) ? $node->name : null;
 		}
 		return $node;
 	}
 	
 	public function getVariableName($stmt) {
-		$var = $stmt->var;
+		$var = isset($stmt->var) ? $stmt->var : null;
 		$var_type = strtolower($var->getType());
 		
 		if ($var_type == "expr_propertyfetch" || $var_type == "expr_staticpropertyfetch") {
 			if ($var_type == "expr_staticpropertyfetch") {
-				$obj_name = $var->class->name;
+				$obj_name = isset($var->class->name) ? $var->class->name : null;
 			
-				if (!$obj_name && is_array($var->class->parts))
+				if (!$obj_name && isset($var->class->parts) && is_array($var->class->parts))
 					$obj_name = implode("::", $var->class->parts);
 			}
 			else
-				$obj_name = $this->printCodeExpr($var->var);
+				$obj_name = $this->printCodeExpr(isset($var->var) ? $var->var : null);
 			
-			if (is_object($var->name)) {
+			if (isset($var->name) && is_object($var->name)) {
 				$prop_name = $this->printCodeExpr($var->name);
-				$prop_name = substr($prop_name, 0, 1) == '$' ? substr($prop_name, 1) : $prop_name;
+				$prop_name = substr($prop_name, 0, 1) == '$' ? substr($prop_name, 1) : (substr($prop_name, 0, 2) == '@$' ? substr($prop_name, 2) : $prop_name);
 			}
 			else
-				$prop_name = $var->name;
+				$prop_name = isset($var->name) ? $var->name : null;
 			
 			if ($obj_name && $prop_name)
 				return array(
@@ -387,7 +405,7 @@ class WorkFlowTaskCodeParser {
 				);
 		}
 		else if ($var_type == "expr_variable") {
-			$var_name = $var->name;
+			$var_name = isset($var->name) ? $var->name : null;
 			
 			if ($var_name)
 				return array(
@@ -398,7 +416,7 @@ class WorkFlowTaskCodeParser {
 			$var_name = $this->printCodeExpr($var);
 			
 			if ($var_name) {
-				$var_name = substr($var_name, 0, 1) == '$' ? substr($var_name, 1) : $var_name;
+				$var_name = substr($var_name, 0, 1) == '$' ? substr($var_name, 1) : (substr($var_name, 0, 2) == '@$' ? substr($var_name, 2) : $var_name);
 				
 				return array(
 					"var_name" => $var_name,
@@ -416,6 +434,7 @@ class WorkFlowTaskCodeParser {
 	}
 	
 	public function getVariableNameProps($stmt) {
+		$stmt = $this->convertStmtExpressionToSimpleStmt($stmt);
 		$props = null;
 		
 		if (strtolower($stmt->getType()) == "stmt_echo") {
@@ -431,7 +450,7 @@ class WorkFlowTaskCodeParser {
 		else {
 			$var_name = $this->getVariableName($stmt);
 			
-			$var = $stmt->var;
+			$var = isset($stmt->var) ? $stmt->var : null;
 			$var_type = strtolower($var->getType());
 		
 			if ($var_type == "expr_propertyfetch" || $var_type == "expr_staticpropertyfetch") {
@@ -469,19 +488,20 @@ class WorkFlowTaskCodeParser {
 	}
 	
 	public function getFunctionProps($stmt) {
+		$stmt = $this->convertStmtExpressionToSimpleStmt($stmt);
 		$stmt_type = strtolower($stmt->getType());
 		
-		if ($this->isAssignExpr($stmt) || ($stmt_type == "stmt_echo" && count($stmt->exprs) == 1 && !$this->isAssignExpr($stmt->exprs[0]))) {
+		if ($this->isAssignExpr($stmt) || ($stmt_type == "stmt_echo" && isset($stmt->exprs) && count($stmt->exprs) == 1 && !$this->isAssignExpr($stmt->exprs[0]))) {
 			//print_r($stmt);
-			$expr = $stmt_type == "stmt_echo" ? (isset($stmt->exprs[0]) ? $stmt->exprs[0] : null) : $stmt->expr;
-			$expr_type = strtolower($expr->getType());
+			$expr = $stmt_type == "stmt_echo" ? (isset($stmt->exprs[0]) ? $stmt->exprs[0] : null) : (isset($stmt->expr) ? $stmt->expr : null);
+			$expr_type = $expr ? strtolower($expr->getType()) : "";
 			
 			if ($expr_type == "expr_funccall") {
 				$props = $this->getVariableNameProps($stmt);
 				
 				if ($props) {
 					$func_name = $this->printCodeNodeName($expr);
-					$args = $this->getArgs($expr->args);
+					$args = $this->getArgs(isset($expr->args) ? $expr->args : null);
 				
 					if ($func_name) {
 						$props["func_name"] = $func_name;
@@ -495,7 +515,7 @@ class WorkFlowTaskCodeParser {
 		}
 		else if ($stmt_type == "expr_funccall") {
 			$func_name = $this->printCodeNodeName($stmt);
-			$args = $this->getArgs($stmt->args);
+			$args = $this->getArgs(isset($stmt->args) ? $stmt->args : null);
 			
 			if ($func_name) {
 				return array(
@@ -508,28 +528,29 @@ class WorkFlowTaskCodeParser {
 	}
 	
 	public function getObjectMethodProps($stmt) {
+		$stmt = $this->convertStmtExpressionToSimpleStmt($stmt);
 		$stmt_type = strtolower($stmt->getType());
 		
-		if ($this->isAssignExpr($stmt) || ($stmt_type == "stmt_echo" && count($stmt->exprs) == 1 && !$this->isAssignExpr($stmt->exprs[0]))) {
+		if ($this->isAssignExpr($stmt) || ($stmt_type == "stmt_echo" && isset($stmt->exprs) && count($stmt->exprs) == 1 && !$this->isAssignExpr($stmt->exprs[0]))) {
 			//print_r($stmt);
-			$expr = $stmt_type == "stmt_echo" ? (isset($stmt->exprs[0]) ? $stmt->exprs[0] : null) : $stmt->expr;
-			$expr_type = strtolower($expr->getType());
+			$expr = $stmt_type == "stmt_echo" ? (isset($stmt->exprs[0]) ? $stmt->exprs[0] : null) : (isset($stmt->expr) ? $stmt->expr : null);
+			$expr_type = $expr ? strtolower($expr->getType()) : "";
 			
 			if ($expr_type == "expr_methodcall" || $expr_type == "expr_staticcall") {
 				$props = $this->getVariableNameProps($stmt);
 				
 				if ($props) {
 					if ($expr_type == "expr_staticcall") {
-						$obj_name = $this->printCodeNodeName($expr->class);
+						$obj_name = $this->printCodeNodeName(isset($expr->class) ? $expr->class : null);
 					}
 					else {
-						$obj_name = $this->printCodeExpr($expr->var);
+						$obj_name = $this->printCodeExpr(isset($expr->var) ? $expr->var : null);
 					}
 					
 					$method_name = $this->printCodeNodeName($expr);
 					
 					if ($obj_name && $method_name) {
-						$args = $this->getArgs($expr->args);
+						$args = $this->getArgs(isset($expr->args) ? $expr->args : null);
 					
 						$props["method_obj"] = $obj_name;
 						$props["method_name"] = $method_name;
@@ -544,14 +565,14 @@ class WorkFlowTaskCodeParser {
 		}
 		else if ($stmt_type == "expr_methodcall" || $stmt_type == "expr_staticcall") {
 			if ($stmt_type == "expr_staticcall")
-				$obj_name = $this->printCodeNodeName($stmt->class);
+				$obj_name = $this->printCodeNodeName(isset($stmt->class) ? $stmt->class : null);
 			else
-				$obj_name = $this->printCodeExpr($stmt->var);
+				$obj_name = $this->printCodeExpr(isset($stmt->var) ? $stmt->var : null);
 			
 			$method_name = $this->printCodeNodeName($stmt);
 			
 			if ($obj_name && $method_name) {
-				$args = $this->getArgs($stmt->args);
+				$args = $this->getArgs(isset($stmt->args) ? $stmt->args : null);
 				
 				return array(
 					"method_obj" => $obj_name,
@@ -565,19 +586,20 @@ class WorkFlowTaskCodeParser {
 	}
 	
 	public function getNewObjectProps($stmt) {
+		$stmt = $this->convertStmtExpressionToSimpleStmt($stmt);
 		$stmt_type = strtolower($stmt->getType());
 		
-		if ($this->isAssignExpr($stmt) || ($stmt_type == "stmt_echo" && count($stmt->exprs) == 1 && !$this->isAssignExpr($stmt->exprs[0]))) {
+		if ($this->isAssignExpr($stmt) || ($stmt_type == "stmt_echo" && isset($stmt->exprs) && count($stmt->exprs) == 1 && !$this->isAssignExpr($stmt->exprs[0]))) {
 			//print_r($stmt);
-			$expr = $stmt_type == "stmt_echo" ? (isset($stmt->exprs[0]) ? $stmt->exprs[0] : null) : $stmt->expr;
-			$expr_type = strtolower($expr->getType());
+			$expr = $stmt_type == "stmt_echo" ? (isset($stmt->exprs[0]) ? $stmt->exprs[0] : null) : (isset($stmt->expr) ? $stmt->expr : null);
+			$expr_type = $expr ? strtolower($expr->getType()) : "";
 			
 			if ($expr_type == "expr_new") {
 				$props = $this->getVariableNameProps($stmt);
 			
 				if ($props) {
-					$class_name = $this->printCodeNodeName($expr->class);
-					$args = $this->getArgs($expr->args);
+					$class_name = $this->printCodeNodeName(isset($expr->class) ? $expr->class : null);
+					$args = $this->getArgs(isset($expr->args) ? $expr->args : null);
 				
 					if ($class_name) {
 						$props["class_name"] = $class_name;
@@ -590,8 +612,8 @@ class WorkFlowTaskCodeParser {
 			}
 		}
 		else if ($stmt_type == "expr_new") {
-			$class_name = $this->printCodeNodeName($stmt->class);
-			$args = $this->getArgs($stmt->args);
+			$class_name = $this->printCodeNodeName(isset($stmt->class) ? $stmt->class : null);
+			$args = $this->getArgs(isset($stmt->args) ? $stmt->args : null);
 			
 			if ($class_name) {
 				return array(
@@ -613,10 +635,10 @@ class WorkFlowTaskCodeParser {
 				
 				$arg_type = strtolower($arg->value->getType());
 				
-				$value = $this->PHPParserPrettyPrinter->pArg($arg);
+				$value = $this->PHPParserPrettyPrinter->printArg($arg);
 				$value = $this->getStmtValueAccordingWithType($value, $arg_type);
 				
-				$value_type = $this->getStmtType($arg->value);
+				$value_type = $this->getStmtType(isset($arg->value) ? $arg->value : null);
 				
 				$args[] = array(
 					"value" => $value,
@@ -635,8 +657,8 @@ class WorkFlowTaskCodeParser {
 		for ($i = 0; $i < $t; $i++) {
 			$item = $items[$i];
 			
-			$key = $item->key;
-			$value = $item->value;
+			$key = isset($item->key) ? $item->key : null;
+			$value = isset($item->value) ? $item->value : null;
 			
 			$key_type = is_object($key) ? strtolower($key->getType()) : null;
 			$value_type = is_object($value) ? strtolower($value->getType()) : null;
@@ -653,7 +675,7 @@ class WorkFlowTaskCodeParser {
 			
 			if ($value_type) {
 				if ($value_type == "expr_array") {
-					$value = $this->getArrayItems($value->items);
+					$value = $this->getArrayItems(isset($value->items) ? $value->items : null);
 				}
 				else {
 					$value = $this->printCodeExpr($value);
@@ -805,6 +827,17 @@ class WorkFlowTaskCodeParser {
 				"value" => $value,
 				"type" => $value_type,
 			);
+		}
+		
+		return null;
+	}
+	
+	public function getStmtArrayItems($stmt) {
+		if ($stmt) {
+			$stmt = $this->convertStmtExpressionToSimpleStmt($stmt);
+			
+			if ($stmt && isset($stmt->items))
+				return $stmt->items;
 		}
 		
 		return null;
@@ -1035,7 +1068,7 @@ class WorkFlowTaskCodeParser {
 		return false;
 	}
 	
-	public function getPHPParserEmulative() { return $this->PHPParserEmulative; }
+	public function getPHPMultipleParser() { return $this->PHPMultipleParser; }
 	public function getPHPParserTraverser() { return $this->PHPParserTraverser; }
 	public function getPHPParserPrettyPrinter() { return $this->PHPParserPrettyPrinter; }
 }

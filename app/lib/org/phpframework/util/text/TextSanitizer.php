@@ -518,11 +518,11 @@ class TextSanitizer {
 			$c = $text_chars[$i];
 			
 			if (
-				$c == "$" && 
+				$c == '$' && 
 				(
-					($i > 0 ? $text_chars[$i - 1] == "{" : false) 
+					($i > 0 && $text_chars[$i - 1] == "{") 
 					|| 
-					($i + 1 < $l ? $text_chars[$i + 1] == "{" : false)
+					($i + 1 < $l && $text_chars[$i + 1] == "{")
 				) && 
 				!self::isMBCharEscaped($text, $i, $text_chars)
 			) //{$...} or ${...}
@@ -548,7 +548,7 @@ class TextSanitizer {
 		for ($i = 0; $i < $l; $i++) {
 			$c = mb_substr($text, $i, 1);
 			
-			if ($c == "$" && (mb_substr($text, $i - 1, 1) == "{" || mb_substr($text, $i + 1, 1) == "{") && !self::isMBSubstrCharEscaped($text, $i)) //{$...} or ${...}
+			if ($c == '$' && (mb_substr($text, $i - 1, 1) == "{" || mb_substr($text, $i + 1, 1) == "{") && !self::isMBSubstrCharEscaped($text, $i)) //{$...} or ${...}
 				$is_var++;
 			else if ($is_var && $c == "}")
 				$is_var--;
@@ -586,6 +586,9 @@ class TextSanitizer {
 	*/
 	public static function isCharEscaped($str, $index) {
 		$escaped = false;
+		
+		if (is_numeric($str))
+			$str = (string)$str; //bc of php > 7.4 if we use $sql[$i] gives an warning
 		
 		for ($i = $index - 1; $i >= 0; $i--) {
 			if ($str[$i] == "\\")
@@ -735,6 +738,9 @@ class TextSanitizer {
 		$newStr = "";
 		$openTag = false;
 
+		if (is_numeric($str))
+			$str = (string)$str; //bc of php > 7.4 if we use $sql[$i] gives an warning
+		
 		for($i = 0; $i < strlen($str); $i++) {
 			$newStr .= $str[$i];
 			
@@ -769,8 +775,8 @@ class TextSanitizer {
 	public static function sanitizeString($string, $html = false) {
 		$string = str_replace("&nbsp;", " ", $string);
 		$string = stripslashes($string);
-		$string = replaceBadWords($string);
-		$string = replaceWebLinks($string);
+		$string = self::replaceBadWords($string);
+		$string = self::replaceWebLinks($string);
 		//$string = breakLongWords($string, 20, $html);
 		
 		return $string;
@@ -789,12 +795,12 @@ class TextSanitizer {
 		$newString = "";
 
 		if($startIndex == 0) {
-			$newString = sanitizeString($stringArr[$startIndex], $html);	//don't enclose in "<p>" if no "<p>" tag in the first place
+			$newString = self::sanitizeString($stringArr[$startIndex], $html);	//don't enclose in "<p>" if no "<p>" tag in the first place
 		}
 		else {
 			$t = count($stringArr);
 			for($i = $startIndex; $i < $t; $i++) {
-				$newString .= "<p>" . sanitizeString($stringArr[$i], $html) . "</p>";
+				$newString .= "<p>" . self::sanitizeString($stringArr[$i], $html) . "</p>";
 			}
 		}
 		return $newString;
@@ -897,7 +903,6 @@ class TextSanitizer {
 		    'cawk'=> 'rawk',
 		    'chink'=> 'shrink',
 		    'cl1t'=> 'tint',
-		    'clit'=> 'tint',
 		    'clit'=> 'tint',
 		    'clits'=> 'tints',
 		    'cnut'=> 'hnut',
@@ -1045,7 +1050,6 @@ class TextSanitizer {
 		    'shagging'=> 'ragging',
 		    'shemale'=> 'female',
 		    'shi\+'=> 'brad pi++',
-		    'shit'=> 'brad pitt',
 		    'shit'=> 'brad pitt',
 		    'shitdick'=> 'brad pitt wig',
 		    'shite'=> 'delight',

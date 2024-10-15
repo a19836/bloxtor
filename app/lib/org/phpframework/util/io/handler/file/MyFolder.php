@@ -39,8 +39,8 @@ class MyFolder extends MyFileHandler {
 					$files[$file] = array(
 						"path" => $this->file_name . $file, 
 						"name" => $file, 
-						"type" => $type["id"], 
-						"type_desc" => $type["desc"]
+						"type" => isset($type["id"]) ? $type["id"] : null,
+						"type_desc" => isset($type["desc"]) ? $type["desc"] : null
 					);
 				}
 			closedir($dir);
@@ -55,13 +55,17 @@ class MyFolder extends MyFileHandler {
 	public function getFilesRecursevly() {
 		$files = $this->getFiles();
 		$folder_type = $this->getFolderType();
+		$folder_type_id = isset($folder_type["id"]) ? $folder_type["id"] : null;
 		
 		$keys = array_keys($files);
 		$t = count($keys);
 		for($i = 0; $i < $t; $i++) {
 			$file = $files[ $keys[$i] ];
-			if($file["type"] == $folder_type["id"]) {
-				$sub_folder = new MyFolder($file["path"]);
+			$file_type = isset($file["type"]) ? $file["type"] : null;
+			
+			if($file_type == $folder_type_id) {
+				$file_path = isset($file["path"]) ? $file["path"] : null;
+				$sub_folder = new MyFolder($file_path);
 				$sub_files = $sub_folder->getFilesRecursevly();
 				$files[ $keys[$i] ]["files"] = $sub_files;
 			}
@@ -93,12 +97,15 @@ class MyFolder extends MyFileHandler {
 			
 				if (is_dir($this->file_name) && ($dir = opendir($this->file_name)) ) {
 					$folder_type = $this->getFolderType();
-			
+					$folder_type_id = isset($folder_type["id"]) ? $folder_type["id"] : null;
+					
 					while( ($file = readdir($dir)) !== false)
 						if($file != "." && $file != "..") {
 							$sub_file_name = $this->file_name . $file;
 							$type = $this->getType($sub_file_name);
-							if($type["id"] == $folder_type["id"]) {
+							$type_id = isset($type["id"]) ? $type["id"] : null;
+							
+							if($type_id == $folder_type_id) {
 								$sub_folder = new MyFolder($sub_file_name);
 								if(!$sub_folder->delete())
 									$status = false;
@@ -132,6 +139,7 @@ class MyFolder extends MyFileHandler {
 				$dest_folder = new MyFolder($dest);
 				if($dest_folder->exists() || (!$dest_folder->exists() && $dest_folder->create())) {
 					$folder_type = $this->getFolderType();
+					$folder_type_id = isset($folder_type["id"]) ? $folder_type["id"] : null;
 					$status = true;
 				
 					$files = $this->getFiles();
@@ -139,18 +147,23 @@ class MyFolder extends MyFileHandler {
 					$t = count($keys);
 					for($i = 0; $i < $t && $status; $i++) {
 						$file = $files[ $keys[$i] ];
-						$dest_sub_file_name = $dest . $file["name"];
-						if($file["type"] == $folder_type["id"]) {
+						$file_type = isset($file["type"]) ? $file["type"] : null;
+						$file_name = isset($file["name"]) ? $file["name"] : null;
+						$file_path = isset($file["path"]) ? $file["path"] : null;
+						
+						$dest_sub_file_name = $dest . $file_name;
+						
+						if($file_type == $folder_type_id) {
 							$dest_sub_folder = new MyFolder($dest_sub_file_name);
 							if(!$dest_sub_folder->exists() && !$dest_sub_folder->create())
 								$status = false;
 						
-							$src_sub_folder = new MyFolder($file["path"]);
+							$src_sub_folder = new MyFolder($file_path);
 							if($status && !$src_sub_folder->copy($dest_sub_folder->file_name))
 								$status = false;
 						}
 						else {
-							$sub_file = new MyFile($file["path"]);
+							$sub_file = new MyFile($file_path);
 							if(!$sub_file->copy($dest_sub_file_name))
 								$status = false;
 						}

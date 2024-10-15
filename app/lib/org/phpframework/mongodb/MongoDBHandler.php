@@ -6,7 +6,7 @@ class MongoDBHandler implements IMongoDBHandler {
 	private $conn;
 	private $ok;
 	private $auth_active;
-	private db_name;
+	private $db_name;
 	
 	public function connect($host = "",  $db_name = "", $username = "", $password = "", $port = "", $options = null) {
 		try {
@@ -93,8 +93,10 @@ class MongoDBHandler implements IMongoDBHandler {
 			if (!$exists) {
 				$exists = $this->createCollection($collection_name);
 				
-				if ($exists)
-					$collection->ensureIndex( array( "raw_id" => 1 ) );//create ascending index on the "raw_id" column
+				if ($exists) {
+					$collection = $this->get($collection_name, $key);
+					$collection && $collection->ensureIndex( array( "raw_id" => 1 ) );//create ascending index on the "raw_id" column
+				}
 			}
 			
 			if ($exists) {

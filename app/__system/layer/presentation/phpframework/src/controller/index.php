@@ -32,12 +32,12 @@ function checkLicenceProjects($EVC, $user_global_variables_file_path, $user_bean
 
 	//php -r '$string="define(\"PROJECTS_CHECKED\", 123);"; for($i=0; $i < strlen($string); $i++) echo dechex(ord($string[$i]));echo "\n";'
 	//php -r '$string="You exceed the maximum number of projects that your licence allow."; for($i=0; $i < strlen($string); $i++) echo dechex(ord($string[$i]));echo "\n";'
-	$hash = $status ? "646566696e65282250524f4a454354535f434845434b4544222c20313233293b" : "596f752065786365656420746865206d6178696d756d206e756d626572206f662070726f6a65637473207468617420796f7572206c6963656e636520616c6c6f772e";
+	$hash = !empty($status) ? "646566696e65282250524f4a454354535f434845434b4544222c20313233293b" : "596f752065786365656420746865206d6178696d756d206e756d626572206f662070726f6a65637473207468617420796f7572206c6963656e636520616c6c6f772e";
 	$msg = "";
 	for ($i = 0, $l = strlen($hash); $i < $l; $i += 2)
 		$msg .= chr( hexdec($hash[$i] . ($i+1 < $l ? $hash[$i+1] : "") ) );
 	
-	if ($status) 
+	if (!empty($status))
 		eval($msg);
 	else {
 		echo $msg;

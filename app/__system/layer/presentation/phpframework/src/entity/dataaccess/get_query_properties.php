@@ -5,15 +5,15 @@ include_once $EVC->getUtilPath("WorkFlowDataAccessHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$db_driver = $_GET["db_driver"];
-$db_type = $_GET["type"];
-$path = $_GET["path"];
-$hbn_obj_id = $_GET["obj"];
-$query_id = $_GET["query"];
-$query_type = $_GET["query_type"];
-$relationship_type = $_GET["relationship_type"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$db_driver = isset($_GET["db_driver"]) ? $_GET["db_driver"] : null;
+$db_type = isset($_GET["type"]) ? $_GET["type"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$hbn_obj_id = isset($_GET["obj"]) ? $_GET["obj"] : null;
+$query_id = isset($_GET["query"]) ? $_GET["query"] : null;
+$query_type = isset($_GET["query_type"]) ? $_GET["query_type"] : null;
+$relationship_type = isset($_GET["relationship_type"]) ? $_GET["relationship_type"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -43,28 +43,28 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 				$rels = $nodes;
 				
 				$query_type = $query_type ? $query_type : getNodeType($rels, $query_id);
-				$node = $nodes[$query_type][$query_id];
+				$node = isset($nodes[$query_type][$query_id]) ? $nodes[$query_type][$query_id] : null;
 				
 				WorkFlowDataAccessHandler::prepareSQLStatementParameters($node, $rels, $obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, null, $parameters);
 			}
 			else if ($hbn_obj_id) {
 				if ($relationship_type == "queries") {
 					//http://jplpinto.localhost/__system/phpframework/dataaccess/get_query_properties?bean_name=DalHibernate&bean_file_name=horm_dal.xml&path=test/item_subitem.xml&query_type=select&query=select_all_by_status&obj=ItemObj&relationship_type=queries
-					$hbn_obj_data = $nodes["class"][$hbn_obj_id];
-					$rels = $hbn_obj_data["childs"][$relationship_type];
+					$hbn_obj_data = isset($nodes["class"][$hbn_obj_id]) ? $nodes["class"][$hbn_obj_id] : null;
+					$rels = isset($hbn_obj_data["childs"][$relationship_type]) ? $hbn_obj_data["childs"][$relationship_type] : null;
 					
 					$query_type = $query_type ? $query_type : getNodeType($rels, $query_id);
-					$node = $rels[$query_type][$query_id];
+					$node = isset($rels[$query_type][$query_id]) ? $rels[$query_type][$query_id] : null;
 					
 					WorkFlowDataAccessHandler::prepareSQLStatementParameters($node, $rels, $obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, null, $parameters);
 				}
 				else if ($relationship_type == "relationships") {
 					//http://jplpinto.localhost/__system/phpframework/dataaccess/get_query_properties?bean_name=DalHibernate&bean_file_name=horm_dal.xml&path=module/article/article.xml&query_type=one_to_many&query=tags&obj=Article&relationship_type=relationships
-					$hbn_obj_data = $nodes["class"][$hbn_obj_id];
-					$rels = $hbn_obj_data["childs"][$relationship_type];
+					$hbn_obj_data = isset($nodes["class"][$hbn_obj_id]) ? $nodes["class"][$hbn_obj_id] : null;
+					$rels = isset($hbn_obj_data["childs"][$relationship_type]) ? $hbn_obj_data["childs"][$relationship_type] : null;
 					
 					$query_type = $query_type ? $query_type : getNodeType($rels, $query_id);
-					$node = $rels[$query_type][$query_id];
+					$node = isset($rels[$query_type][$query_id]) ? $rels[$query_type][$query_id] : null;
 					WorkFlowDataAccessHandler::prepareRelationshipParameters($node, $rels, $obj, $db_broker, $db_driver, $tasks_file_path, $tables_props, $hbn_obj_data, $parameters);
 					
 					if (empty($node["@"]["parameter_class"])) {
@@ -75,7 +75,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 				else if ($relationship_type == "native") {
 					//For Native functions of the Hibernate Objects
 					//http://jplpinto.localhost/__system/phpframework/dataaccess/get_query_properties?bean_name=DalHibernate&bean_file_name=horm_dal.xml&path=module/article/article.xml&query_type=&query=findById&obj=Article&relationship_type=native
-					$hbn_obj_data = $nodes["class"][$hbn_obj_id];
+					$hbn_obj_data = isset($nodes["class"][$hbn_obj_id]) ? $nodes["class"][$hbn_obj_id] : null;
 					$hbn_obj_parameters = WorkFlowDataAccessHandler::getHbnObjParameters($obj, $db_broker, $db_driver, $tasks_file_path, $hbn_obj_data, $tables_props);
 					$parameters = array();
 					
@@ -84,11 +84,11 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 					
 					if ($tables_props) {
 						$table_name = key($tables_props);
-						$attrs = $tables_props[$table_name];
+						$attrs = isset($tables_props[$table_name]) ? $tables_props[$table_name] : null;
 						
 						if ($attrs)
 							foreach ($attrs as $attr_name => $attr_props)
-								if ($attr_props["primary_key"]) {
+								if (!empty($attr_props["primary_key"])) {
 									$no_pks = false;
 									break;
 								}
@@ -111,7 +111,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 							if ($no_pks) {
 								foreach ($parameters as $param_name => $param_props)
 									if (!ObjTypeHandler::isDBAttributeNameACreatedDate($param_name) && !ObjTypeHandler::isDBAttributeNameACreatedUserId($param_name) && !ObjTypeHandler::isDBAttributeNameAModifiedDate($param_name) && !ObjTypeHandler::isDBAttributeNameAModifiedUserId($param_name)) {
-										$pn = $param_props["name"] ? $param_props["name"] : $param_name;
+										$pn = !empty($param_props["name"]) ? $param_props["name"] : $param_name;
 										
 										$parameters["new_$param_name"] = $param_props;
 										$parameters["new_$param_name"]["name"] = "new_$pn";
@@ -138,11 +138,11 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 									
 									if ($no_pks && !ObjTypeHandler::isDBAttributeNameACreatedDate($param_name) && !ObjTypeHandler::isDBAttributeNameACreatedUserId($param_name) && !ObjTypeHandler::isDBAttributeNameAModifiedDate($param_name) && !ObjTypeHandler::isDBAttributeNameAModifiedUserId($param_name))
 										$add = true;
-									else if ($param_props["primary_key"]) 
+									else if (!empty($param_props["primary_key"]))
 										$add = true;
 									
 									if ($add) {
-										$pn = $param_props["name"] ? $param_props["name"] : $param_name;
+										$pn = !empty($param_props["name"]) ? $param_props["name"] : $param_name;
 										
 										$parameters["new_$param_name"] = $param_props;
 										$parameters["new_$param_name"]["name"] = "new_$pn";
@@ -182,8 +182,8 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 		if ($parameters) {
 			$props = array();
 			foreach ($parameters as $attr_name => $param) {
-				$name = $param["name"] ? $param["name"] : $attr_name;
-				$type = ObjTypeHandler::convertCompositeTypeIntoSimpleType($param["type"]);
+				$name = !empty($param["name"]) ? $param["name"] : $attr_name;
+				$type = isset($param["type"]) ? ObjTypeHandler::convertCompositeTypeIntoSimpleType($param["type"]) : null;
 				
 				$props[$name] = $type && !ObjTypeHandler::isPHPTypeNumeric($type) && !ObjTypeHandler::isDBTypeNumeric($type) ? "string" : "";
 			}

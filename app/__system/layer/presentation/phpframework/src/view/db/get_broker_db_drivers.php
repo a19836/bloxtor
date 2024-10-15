@@ -1,4 +1,4 @@
 <?php
-$obj = $db_drivers;
+$obj = isset($db_drivers) ? $db_drivers : null;
 $EVC->setTemplate("json");
 ?>

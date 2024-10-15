@@ -2,7 +2,7 @@
 $head =	'<title>View 1</title>';
 
 $left_content = "LEFT CONTENT";
-$main_content = "{$result}<br>";
+$main_content = (isset($result) ? $result : "") . "<br>";
 
 /*if(isset($result[0]) && is_array($result[0])) {
 	$main_content .= '<table>';

@@ -110,7 +110,7 @@ class DispatcherCacheHandler extends Dispatcher {
 			if($url_settings) {
 				$code = $this->getURLCode($url, $url_settings);
 				
-				if($this->ServiceCacheHandler->isValid(false, $code, $url_settings["ttl"])) {
+				if($this->ServiceCacheHandler->isValid(false, $code, isset($url_settings["ttl"]) ? $url_settings["ttl"] : null)) {
 					return $this->ServiceCacheHandler->get(false, $code);
 				}
 			}
@@ -149,11 +149,13 @@ class DispatcherCacheHandler extends Dispatcher {
 			$suffix_key = "_" . PHPScriptHandler::parseContent($url_settings["suffix_key"]);
 		}
 		
-		return "url-" . md5($url) . "_get-" . md5(serialize($_GET)) . "_post-" . md5(serialize($_POST)) . $suffix_key;
+		$get = isset($_GET) ? $_GET : null;
+		$post = isset($_POST) ? $_POST : null;
+		return "url-" . md5($url) . "_get-" . md5(serialize($get)) . "_post-" . md5(serialize($post)) . $suffix_key;
 	}
 	
 	private function getURLSettings(&$url) {
-		$rm = strtolower($_SERVER["REQUEST_METHOD"]);
+		$rm = isset($_SERVER["REQUEST_METHOD"]) ? strtolower($_SERVER["REQUEST_METHOD"]) : null;
 		$locations = $rm == "post" ? (isset($this->urls["post"]) ? $this->urls["post"] : null) : ($rm == "get" ? (isset($this->urls["get"]) ? $this->urls["get"] : null) : array());
 		
 		$url_without_slash = substr($url, strlen($url) - 1) == "/" ? substr($url, 0, strlen($url) - 1) : $url;

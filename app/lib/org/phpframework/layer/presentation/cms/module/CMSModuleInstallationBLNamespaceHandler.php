@@ -3,7 +3,7 @@ include_once get_lib("org.phpframework.phpscript.PHPCodePrintingHandler");
 
 class CMSModuleInstallationBLNamespaceHandler {
 	
-	public function updateExtendedCommonServiceCodeInBusinessLogicPHPFiles($layers, $business_logic_module_paths) {
+	public static function updateExtendedCommonServiceCodeInBusinessLogicPHPFiles($layers, $business_logic_module_paths) {
 		$status = true;
 		
 		//change businesslogic services namespace
@@ -17,7 +17,7 @@ class CMSModuleInstallationBLNamespaceHandler {
 					
 					if (file_exists($common_file_path)) {
 						$common_namespace = PHPCodePrintingHandler::getNamespacesFromFile($common_file_path);
-						$common_namespace = $common_namespace[0];
+						$common_namespace = isset($common_namespace[0]) ? $common_namespace[0] : null;
 						$common_namespace = substr($common_namespace, 0, 1) == "\\" ? substr($common_namespace, 1) : $common_namespace;
 						$common_namespace = substr($common_namespace, -1) == "\\" ? substr($common_namespace, 0, -1) : $common_namespace;
 						

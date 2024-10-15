@@ -1,10 +1,26 @@
 <?php
-if ($layout_type_id) {
+if (!empty($layout_type_id)) {
 	include $EVC->getUtilPath("WorkFlowPresentationHandler");
 	include $EVC->getUtilPath("BreadCrumbsUIHandler");
-
+	
+	$layer_path = isset($layer_path) ? $layer_path : null;
+	$selected_project_id = isset($selected_project_id) ? $selected_project_id : null;
+	$P = isset($P) ? $P : null;
+	$permissions = isset($permissions) ? $permissions : null;
+	$layers_to_be_referenced = isset($layers_to_be_referenced) ? $layers_to_be_referenced : null;
+	$layers_props = isset($layers_props) ? $layers_props : null;
+	$layers_label = isset($layers_label) ? $layers_label : null;
+	$layers_object_id = isset($layers_object_id) ? $layers_object_id : null;
+	$layer_object_id_prefix = isset($layer_object_id_prefix) ? $layer_object_id_prefix : null;
+	$layer_object_type_id = isset($layer_object_type_id) ? $layer_object_type_id : null;
+	
+	$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+	$business_logic_brokers = isset($business_logic_brokers) ? $business_logic_brokers : null;
+	$data_access_brokers = isset($data_access_brokers) ? $data_access_brokers : null;
+	
 	$choose_bean_layer_files_from_file_manager_url = $project_url_prefix . "admin/get_sub_files?bean_name=#bean_name#&bean_file_name=#bean_file_name#&path=#path#";
 	$upload_bean_layer_files_from_file_manager_url = $project_url_prefix . "admin/upload_file?bean_name=#bean_name#&bean_file_name=#bean_file_name#&path=#path#";
+$get_file_properties_url = $project_url_prefix . "phpframework/admin/get_file_properties?bean_name=#bean_name#&bean_file_name=#bean_file_name#&path=#path#&class_name=#class_name#&type=#type#";
 
 	$head = '
 	<!-- Add MD5 JS File -->
@@ -53,7 +69,7 @@ if ($layout_type_id) {
 	
 	$main_content = '';
 	
-	if ($_POST && !$error_message) {
+	if (!empty($_POST) && empty($error_message)) {
 		$on_success_js_func = $on_success_js_func ? $on_success_js_func : "refreshLastNodeParentChilds";
 		$main_content .= "<script>if (typeof window.parent.$on_success_js_func == 'function') window.parent.$on_success_js_func();</script>";
 	}
@@ -73,7 +89,7 @@ if ($layout_type_id) {
 				<div class="layout_type_permissions_content">
 					<div id="referenced_in_layout">
 						<ul>
-					' . getLayersHtml($layers_to_be_referenced, $layers_props, $layers_object_id, $layers_label, $layer_object_id_prefix, $choose_bean_layer_files_from_file_manager_url, $layer_object_type_id, $permissions[UserAuthenticationHandler::$PERMISSION_REFERENCED_NAME], "removeAllThatCannotBeReferencedFromTree") . '
+					' . getLayersHtml($layers_to_be_referenced, $layers_props, $layers_object_id, $layers_label, $layer_object_id_prefix, $choose_bean_layer_files_from_file_manager_url, $layer_object_type_id, isset($permissions[UserAuthenticationHandler::$PERMISSION_REFERENCED_NAME]) ? $permissions[UserAuthenticationHandler::$PERMISSION_REFERENCED_NAME] : null, "removeAllThatCannotBeReferencedFromTree") . '
 						</ul>
 					</div>
 					
@@ -94,20 +110,20 @@ function getLayersHtml($layers, $layers_props, $layers_object_id, $layers_label,
 		
 		if ($layer_type)
 			foreach ($layer_type as $layer_name => $layer) {
-				$layer_props = $layers_props[$layer_type_name][$layer_name];
-				$object_id = "$layer_object_id_prefix/" . $layers_object_id[$layer_type_name][$layer_name];
+				$layer_props = isset($layers_props[$layer_type_name][$layer_name]) ? $layers_props[$layer_type_name][$layer_name] : null;
+				$object_id = "$layer_object_id_prefix/" . (isset($layers_object_id[$layer_type_name][$layer_name]) ? $layers_object_id[$layer_type_name][$layer_name] : null);
 				
-				$html .= '<li data-jstree=\'{"icon":"main_node_' . $layer_props["item_type"] . '"}\'>
+				$html .= '<li data-jstree=\'{"icon":"main_node_' . (isset($layer_props["item_type"]) ? $layer_props["item_type"] : "") . '"}\'>
 							<label>
 								<input type="checkbox" name="permissions_by_objects[' . $object_type_id . '][' . $object_id . '][]" value="' . $permission_id . '" />
-								' . $layers_label[$layer_type_name][$layer_name] . '
+								' . (isset($layers_label[$layer_type_name][$layer_name]) ? $layers_label[$layer_type_name][$layer_name] : "") . '
 							</label>';
 				
 				if ($layer_type_name == "db_layers") {
 					$html .= '<ul>';
 					
 					foreach ($layer as $folder_name => $folder) {
-						$object_id = "$layer_object_id_prefix/" . $layers_object_id[$layer_type_name][$layer_name] . "/$folder_name";
+						$object_id = "$layer_object_id_prefix/" . (isset($layers_object_id[$layer_type_name][$layer_name]) ? $layers_object_id[$layer_type_name][$layer_name] : "") . "/$folder_name";
 						
 						$html .= '<li data-jstree=\'{"icon":"db_driver"}\'>
 										<label>
@@ -121,8 +137,8 @@ function getLayersHtml($layers, $layers_props, $layers_object_id, $layers_label,
 				}
 				else {
 					$url = $choose_bean_layer_files_from_file_manager_url;
-					$url = str_replace("#bean_name#", $layer_props["bean_name"], $url);
-					$url = str_replace("#bean_file_name#", $layer_props["bean_file_name"], $url);
+					$url = str_replace("#bean_name#", isset($layer_props["bean_name"]) ? $layer_props["bean_name"] : null, $url);
+					$url = str_replace("#bean_file_name#", isset($layer_props["bean_file_name"]) ? $layer_props["bean_file_name"] : null, $url);
 					$url = str_replace("#path#", "", $url);
 					
 					$html .= '<ul url="' . $url . '" object_id_prefix="' . $object_id . '"></ul>';

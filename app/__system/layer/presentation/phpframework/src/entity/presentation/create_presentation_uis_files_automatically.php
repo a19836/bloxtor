@@ -6,23 +6,23 @@ $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "a
 UserAuthenticationHandler::checkUsersMaxNum($UserAuthenticationHandler);
 UserAuthenticationHandler::checkActionsMaxNum($UserAuthenticationHandler);
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"];
-//$db_layer = $_GET["db_layer"];
-$db_layer_file = $_GET["db_layer_file"];
-$db_driver = $_GET["db_driver"];
-$include_db_driver = $_GET["include_db_driver"];
-$type = $_GET["type"];
-$authenticated_template = $_GET["authenticated_template"];
-$non_authenticated_template = $_GET["non_authenticated_template"];
-$overwrite = $_GET["overwrite"];
-$tables_alias = $_POST["sta"] ? $_POST["sta"] : $_GET["sta"];
-$users_perms = $_POST["users_perms"] ? $_POST["users_perms"] : $_GET["users_perms"];
-$users_perms_folder = $_POST["users_perms_folder"] ? $_POST["users_perms_folder"] : $_GET["users_perms_folder"];
-$list_and_edit_users = $_POST["list_and_edit_users"] ? $_POST["list_and_edit_users"] : $_GET["list_and_edit_users"];
-$form_type = $_GET["form_type"] ? $_GET["form_type"] : "settings";
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
+//$db_layer = isset($_GET["db_layer"]) ? $_GET["db_layer"] : null;
+$db_layer_file = isset($_GET["db_layer_file"]) ? $_GET["db_layer_file"] : null;
+$db_driver = isset($_GET["db_driver"]) ? $_GET["db_driver"] : null;
+$include_db_driver = isset($_GET["include_db_driver"]) ? $_GET["include_db_driver"] : null;
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
+$authenticated_template = isset($_GET["authenticated_template"]) ? $_GET["authenticated_template"] : null;
+$non_authenticated_template = isset($_GET["non_authenticated_template"]) ? $_GET["non_authenticated_template"] : null;
+$overwrite = isset($_GET["overwrite"]) ? $_GET["overwrite"] : null;
+$tables_alias = !empty($_POST["sta"]) ? $_POST["sta"] : $_GET["sta"];
+$users_perms = !empty($_POST["users_perms"]) ? $_POST["users_perms"] : (isset($_GET["users_perms"]) ? $_GET["users_perms"] : null);
+$users_perms_folder = !empty($_POST["users_perms_folder"]) ? $_POST["users_perms_folder"] : (isset($_GET["users_perms_folder"]) ? $_GET["users_perms_folder"] : null);
+$list_and_edit_users = !empty($_POST["list_and_edit_users"]) ? $_POST["list_and_edit_users"] : (isset($_GET["list_and_edit_users"]) ? $_GET["list_and_edit_users"] : null);
+$form_type = !empty($_GET["form_type"]) ? $_GET["form_type"] : "settings";
 $files_creation_type = 1;
 
 //create var: with user authentication
@@ -51,9 +51,9 @@ if ($path) {
 			
 			//get db driver object
 			$db_drivers = WorkFlowBeansFileHandler::getLayerDBDrivers($user_global_variables_file_path, $user_beans_folder_path, $P, true);
-			$db_driver_props = $db_drivers[$db_driver];
-			$db_driver_bean_file_name = $db_driver_props[1] ? $db_driver_props[1] : $db_layer_file;
-			$db_driver_bean_name = $db_driver_props[2] ? $db_driver_props[2] : $db_driver;
+			$db_driver_props = isset($db_drivers[$db_driver]) ? $db_drivers[$db_driver] : null;
+			$db_driver_bean_file_name = !empty($db_driver_props[1]) ? $db_driver_props[1] : $db_layer_file;
+			$db_driver_bean_name = !empty($db_driver_props[2]) ? $db_driver_props[2] : $db_driver;
 			
 			//prepare tables
 			$WorkFlowDataAccessHandler = new WorkFlowDataAccessHandler();
@@ -87,7 +87,7 @@ if ($path) {
 			$settings = json_decode($settings, true);
 			//print_r($settings);die();
 			
-			if (strtoupper($_SERVER['REQUEST_METHOD']) === "POST" && is_array($settings) && $settings) {
+			if (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === "POST" && is_array($settings) && $settings) {
 				$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 				$UserAuthenticationHandler->incrementUsedActionsTotal();
 				
@@ -197,8 +197,8 @@ if ($path) {
 				$task_page_settings["regions_blocks"][] = array("region" => "Content", "block" => $index_block_id);
 				$task_page_settings["template_params"][] = array("name" => "Page Title", "value" => "Admin Panel - Dashboard");
 				
-				$task_id = getTaskId($task_absolute_path, $overwrite, "page", null, "index");
-				$task_file_name = getTaskPageId($task_absolute_path, $overwrite, "index");
+				$task_id = getTaskId($absolute_path, $overwrite, "page", null, "index");
+				$task_file_name = getTaskPageId($absolute_path, $overwrite, "index");
 				
 				$tasks_details = array(
 					$task_id => array(
@@ -231,14 +231,17 @@ if ($path) {
 				//create page file
 				$table_statuses = array();
 				foreach ($tasks_details as $task_id => $task)
-					if ($task["tag"] == "page") {
-						CMSPresentationUIDiagramFilesHandler::createPageFile($PEVC, $UserCacheHandler, $cms_page_cache_path_prefix, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, $relative_path, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $list_and_edit_users, $authenticated_template, $non_authenticated_template, $authenticated_template, $table_statuses, $js_funcs = array(), $js_code = "", $tasks_details, $task);
+					if (isset($task["tag"]) && $task["tag"] == "page") {
+						$js_funcs = array();
+						$js_code = "";
+						
+						CMSPresentationUIDiagramFilesHandler::createPageFile($PEVC, $UserCacheHandler, $cms_page_cache_path_prefix, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, $relative_path, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $list_and_edit_users, $authenticated_template, $non_authenticated_template, $authenticated_template, $table_statuses, $js_funcs, $js_code, $tasks_details, $task);
 						
 						//prepare created_files and statuses
 						foreach ($table_statuses as $t_id => $task_statuses) {
 							//prepare statuses
 							foreach ($task_statuses as $file_path => $file_data)
-								$statuses["*"][$file_path] = $file_data["modified_time"] ? true : false;
+								$statuses["*"][$file_path] = !empty($file_data["modified_time"]) ? true : false;
 							
 							//prepare created_files
 							$tasks_details = addCreatedFilesToTaskDetails($tasks_details, $t_id, $task_statuses);
@@ -258,7 +261,7 @@ if ($path) {
 				
 				//print_r($settings);
 				foreach ($settings as $table_name => $brokers_settings) {
-					$table_alias = $tables_alias[$table_name];
+					$table_alias = isset($tables_alias[$table_name]) ? $tables_alias[$table_name] : null;
 					$tn = $table_alias ? $table_alias : $table_name;
 					$tn_plural = CMSPresentationFormSettingsUIHandler::getPlural($tn);
 					$tn_label = CMSPresentationFormSettingsUIHandler::getName($tn);
@@ -275,10 +278,11 @@ if ($path) {
 					if ($attrs) 
 						foreach ($attrs as $attr_name => $attr) {
 							$default_task_properties_ui_attributes[$attr_name] = array("active" => 1);
+							$attr_type = isset($attr["type"]) ? $attr["type"] : null;
 							
-							if ($attr["type"] == "boolean" || (in_array($attr["type"], array("tinyint", "bit")) && $attr["length"] == 1)) {
+							if ($attr_type == "boolean" || (in_array($attr_type, array("tinyint", "bit")) && isset($attr["length"]) && $attr["length"] == 1)) {
 								$default_task_properties_ui_attributes[$attr_name]["list_type"] = "manual";
-								$default_task_properties_ui_attributes[$attr_name]["manual_list"] = $attr["type"] == "boolean" ? $boolean_available_options : array(
+								$default_task_properties_ui_attributes[$attr_name]["manual_list"] = $attr_type == "boolean" ? $boolean_available_options : array(
 									array("value" => 0, "label" => "NO"),
 									array("value" => 1, "label" => "YES"),
 								);
@@ -339,7 +343,7 @@ if ($path) {
 								$task_exits = array();
 								$links = array();
 								
-								if ($brokers_settings["get"]) 
+								if (!empty($brokers_settings["get"]))
 									$task_exits[] = array(
 										"task_id" => getTaskId($task_absolute_path, $overwrite, "page", $table_name, "view"),
 										"label" => "View",
@@ -353,7 +357,7 @@ if ($path) {
 										),
 									);
 								
-								if ($brokers_settings["update"] || $brokers_settings["delete"]) 
+								if (!empty($brokers_settings["update"]) || !empty($brokers_settings["delete"]))
 									$task_exits[] = array(
 										"task_id" => getTaskId($task_absolute_path, $overwrite, "page", $table_name, "edit"),
 										"label" => "Edit",
@@ -368,7 +372,7 @@ if ($path) {
 									);
 								
 								//add link to insert new item at the top of page
-								if ($brokers_settings["insert"]) 
+								if (!empty($brokers_settings["insert"])) 
 									$links[] = array(
 										"url" => getTaskPageUrl($task_absolute_path, $task_relative_path, $overwrite, "add"),
 										"value" => "Add new $tn",
@@ -381,7 +385,7 @@ if ($path) {
 								
 								//prepare links and comboboxes for the foreign attributes
 								$task_properties_ui_attributes = $default_task_properties_ui_attributes;
-								prepareFKsActionsAndAttributesSettings($settings, $tables, $table_name, $tables_alias, $tn, $db_driver, $include_db_driver, $type, $absolute_path, $relative_path, $overwrite, $task_properties_ui_attributes, $form_type, $brokers_settings["insert"] || $brokers_settings["update"]);
+								prepareFKsActionsAndAttributesSettings($settings, $tables, $table_name, $tables_alias, $tn, $db_driver, $include_db_driver, $type, $absolute_path, $relative_path, $overwrite, $task_properties_ui_attributes, $form_type, !empty($brokers_settings["insert"]) || !empty($brokers_settings["update"]));
 								//print_r($task_properties_ui_attributes);
 								
 								//prepare brokers
@@ -449,10 +453,10 @@ if ($path) {
 													"db_table_alias" => $table_alias,
 												),
 												"action" => array(
-													"single_insert" => $brokers_settings["insert"] ? 1 : 0,
-													"single_update" => $brokers_settings["update"] ? 1 : 0,
-													"single_delete" => $brokers_settings["delete"] ? 1 : 0,
-													"multiple_delete" => $brokers_settings["delete"] ? 1 : 0,
+													"single_insert" => !empty($brokers_settings["insert"]) ? 1 : 0,
+													"single_update" => !empty($brokers_settings["update"]) ? 1 : 0,
+													"single_delete" => !empty($brokers_settings["delete"]) ? 1 : 0,
+													"multiple_delete" => !empty($brokers_settings["delete"]) ? 1 : 0,
 													"single_delete_confirmation_message" => null, //cannot be empty string "", otherwise there will not be any confirmation message
 													"multiple_delete_confirmation_message" => null, //cannot be empty string "", otherwise there will not be any confirmation message
 													"single_delete_ok_redirect_url" => null,
@@ -478,7 +482,7 @@ if ($path) {
 							case "get": //view form ui
 								$task_exits = array();
 								
-								if ($brokers_settings["get_all"]) 
+								if (!empty($brokers_settings["get_all"]))
 									$task_exits[] = array(
 										"task_id" => getTaskId($task_absolute_path, $overwrite, "page", $table_name, "list"),
 										"label" => "View all " . CMSPresentationFormSettingsUIHandler::getName($tn_plural),
@@ -492,7 +496,7 @@ if ($path) {
 										),
 									);
 								
-								if ($brokers_settings["update"] || $brokers_settings["delete"]) 
+								if (!empty($brokers_settings["update"]) || !empty($brokers_settings["delete"]))
 									$task_exits[] = array(
 										"task_id" => getTaskId($task_absolute_path, $overwrite, "page", $table_name, "edit"),
 										"label" => "Edit",
@@ -594,7 +598,7 @@ if ($path) {
 								$task_exits = array();
 								$single_insert_ok_msg_redirect_url = null;
 								
-								if ($brokers_settings["get_all"]) {
+								if (!empty($brokers_settings["get_all"])) {
 									$task_exits[] = array(
 										"task_id" => getTaskId($task_absolute_path, $overwrite, "page", $table_name, "list"),
 										"label" => "View all " . CMSPresentationFormSettingsUIHandler::getName($tn_plural),
@@ -612,14 +616,14 @@ if ($path) {
 									$single_insert_ok_msg_redirect_url = getTaskPageUrl($task_absolute_path, $task_relative_path, $overwrite, "list");
 								}
 								
-								if ($brokers_settings["update"] || $brokers_settings["delete"]) {
+								if (!empty($brokers_settings["update"]) || !empty($brokers_settings["delete"])) {
 									//prepare redirect url for successfully insert if get_all exists - overwrite previous url. The edit url takes precedent!
 									$single_insert_ok_msg_redirect_url = getTaskPageUrl($task_absolute_path, $task_relative_path, $overwrite, "edit");
 								}
 								
 								//prepare links and comboboxes for the foreign attributes
 								$task_properties_ui_attributes = $default_task_properties_ui_attributes;
-								prepareFKsActionsAndAttributesSettings($settings, $tables, $table_name, $tables_alias, $tn, $db_driver, $include_db_driver, $type, $absolute_path, $relative_path, $overwrite, $task_properties_ui_attributes, $form_type, $brokers_settings["insert"]);
+								prepareFKsActionsAndAttributesSettings($settings, $tables, $table_name, $tables_alias, $tn, $db_driver, $include_db_driver, $type, $absolute_path, $relative_path, $overwrite, $task_properties_ui_attributes, $form_type, !empty($brokers_settings["insert"]));
 								
 								//prepare brokers
 								$brokers_services_and_rules = $brokers_settings;
@@ -711,7 +715,7 @@ if ($path) {
 							case "delete": //delete form ui
 								$task_exits = array();
 								
-								if ($brokers_settings["get_all"]) 
+								if (!empty($brokers_settings["get_all"]))
 									$task_exits[] = array(
 										"task_id" => getTaskId($task_absolute_path, $overwrite, "page", $table_name, "list"),
 										"label" => "View all " . CMSPresentationFormSettingsUIHandler::getName($tn_plural),
@@ -725,7 +729,7 @@ if ($path) {
 										),
 									);
 								
-								if ($brokers_settings["get"]) 
+								if (!empty($brokers_settings["get"]))
 									$task_exits[] = array(
 										"task_id" => getTaskId($task_absolute_path, $overwrite, "page", $table_name, "view"),
 										"label" => "View",
@@ -744,10 +748,10 @@ if ($path) {
 								
 								//prepare links and comboboxes for the foreign attributes
 								$task_properties_ui_attributes = $default_task_properties_ui_attributes;
-								prepareFKsActionsAndAttributesSettings($settings, $tables, $table_name, $tables_alias, $tn, $db_driver, $include_db_driver, $type, $absolute_path, $relative_path, $overwrite, $task_properties_ui_attributes, $form_type, $brokers_settings["update"]);
+								prepareFKsActionsAndAttributesSettings($settings, $tables, $table_name, $tables_alias, $tn, $db_driver, $include_db_driver, $type, $absolute_path, $relative_path, $overwrite, $task_properties_ui_attributes, $form_type, !empty($brokers_settings["update"]));
 								
 								//prepare broker_settings
-								$single_delete_ok_msg_redirect_url = $brokers_settings["delete"] && $brokers_settings["get_all"] ? getTaskPageUrl($task_absolute_path, $task_relative_path, $overwrite, "list") : "";
+								$single_delete_ok_msg_redirect_url = !empty($brokers_settings["delete"]) && !empty($brokers_settings["get_all"]) ? getTaskPageUrl($task_absolute_path, $task_relative_path, $overwrite, "list") : "";
 								
 								//prepare brokers
 								$brokers_services_and_rules = $brokers_settings;
@@ -763,7 +767,7 @@ if ($path) {
 								$task_file_name = getTaskPageId($task_absolute_path, $overwrite, "edit");
 								
 								//jump if already exists. This happens bc if the $brokers_settings contains update and delete, it will execute twice this code, so we need to avoid it and continue the loop for the remaining items.
-								if ($tasks_details[$task_id])
+								if (!empty($tasks_details[$task_id]))
 									continue 2;
 								
 								//prepare page settings
@@ -815,8 +819,8 @@ if ($path) {
 													"db_table_alias" => $table_alias,
 												),
 												"action" => array(
-													"single_update" => $brokers_settings["update"] ? 1 : 0,
-													"single_delete" => $brokers_settings["delete"] ? 1 : 0,
+													"single_update" => !empty($brokers_settings["update"]) ? 1 : 0,
+													"single_delete" => !empty($brokers_settings["delete"]) ? 1 : 0,
 													"single_delete_confirmation_message" => null, //cannot be empty string "", otherwise there will not be any confirmation message
 													"single_delete_ok_msg_redirect_url" => $single_delete_ok_msg_redirect_url,
 												),
@@ -843,7 +847,7 @@ if ($path) {
 								if ($broker_settings)
 									foreach ($broker_settings as $relationship_table => $relationship_table_settings) 
 										if ($relationship_table_settings) {
-											$relationship_table_alias = $tables_alias[$relationship_table];
+											$relationship_table_alias = isset($tables_alias[$relationship_table]) ? $tables_alias[$relationship_table] : null;
 											$rn = $relationship_table_alias ? $relationship_table_alias : $relationship_table;
 											$rn_plural = CMSPresentationFormSettingsUIHandler::getPlural($rn);
 											$rn_label = CMSPresentationFormSettingsUIHandler::getName($rn);
@@ -863,8 +867,8 @@ if ($path) {
 														foreach ($rn_attrs as $attr_name => $attr) 
 															$relationship_task_properties_ui_attributes[$attr_name] = array("active" => 1);
 													
-													$relationship_table_count_broker_settings = $brokers_settings["relationships_count"][$relationship_table][$i];
-													$relationship_table_brokers_settings = $settings[$relationship_table];
+													$relationship_table_count_broker_settings = isset($brokers_settings["relationships_count"][$relationship_table][$i]) ? $brokers_settings["relationships_count"][$relationship_table][$i] : null;
+													$relationship_table_brokers_settings = isset($settings[$relationship_table]) ? $settings[$relationship_table] : null;
 													
 													$relationship_table_brokers_settings["get_all"] = $relationship_table_broker_settings;
 													$relationship_table_brokers_settings["count"] = $relationship_table_count_broker_settings;
@@ -872,7 +876,7 @@ if ($path) {
 													//prepare links
 													$links = array();
 													
-													if ($brokers_settings["get_all"]) 
+													if (!empty($brokers_settings["get_all"]))
 														$links[] = array(
 															"url" => getTaskPageUrl($task_absolute_path, $task_relative_path, $overwrite, "list"),
 															"value" => "View all " . CMSPresentationFormSettingsUIHandler::getName($tn_plural),
@@ -880,7 +884,7 @@ if ($path) {
 															"title" => "View all " . CMSPresentationFormSettingsUIHandler::getName($tn_plural),
 														);
 													
-													if ($brokers_settings["get"]) {
+													if (!empty($brokers_settings["get"])) {
 														$pks_query_string = getTablePKsQueryStringFromCurrentURL($attrs, $form_type);
 														
 														if ($pks_query_string)
@@ -892,7 +896,7 @@ if ($path) {
 															);
 													}
 													
-													if ($relationship_table_brokers_settings["insert"]) {
+													if (!empty($relationship_table_brokers_settings["insert"])) {
 														$rn_fks_query_string = getFKQueryStringFromCurrentURL($table_name, $rn_attrs, $form_type);										
 														
 														$links[] = array(
@@ -906,7 +910,7 @@ if ($path) {
 													//prepare inner links
 													$inner_links = array();
 													
-													if ($relationship_table_brokers_settings["get"]) 
+													if (!empty($relationship_table_brokers_settings["get"])) 
 														$inner_links[] = array(
 															"url" => getTaskPageUrl($rn_absolute_path, $rn_relative_path, $overwrite, "view"),
 															"value" => "View",
@@ -914,7 +918,7 @@ if ($path) {
 															"title" => "View $rn_label",
 														);
 													
-													if ($relationship_table_brokers_settings["update"] || $relationship_table_brokers_settings["delete"]) 
+													if (!empty($relationship_table_brokers_settings["update"]) || !empty($relationship_table_brokers_settings["delete"]))
 														$inner_links[] = array(
 															"url" => getTaskPageUrl($rn_absolute_path, $rn_relative_path, $overwrite, "edit"),
 															"value" => "Edit",
@@ -926,7 +930,7 @@ if ($path) {
 													prepareRelationshipsLinks($relationship_table, $tables_alias, $relationship_table_brokers_settings, $rn, $rn_label, $absolute_path, $relative_path, $overwrite, $rn_attrs, $inner_links, $form_type);
 													
 													//prepare links and comboboxes for the foreign attributes
-													prepareFKsActionsAndAttributesSettings($settings, $tables, $relationship_table, $tables_alias, $tn, $db_driver, $include_db_driver, $type, $absolute_path, $relative_path, $overwrite, $relationship_task_properties_ui_attributes, $form_type, $brokers_services_and_rules["insert"] || $brokers_services_and_rules["update"]);
+													prepareFKsActionsAndAttributesSettings($settings, $tables, $relationship_table, $tables_alias, $tn, $db_driver, $include_db_driver, $type, $absolute_path, $relative_path, $overwrite, $relationship_task_properties_ui_attributes, $form_type, !empty($brokers_services_and_rules["insert"]) || !empty($brokers_services_and_rules["update"]));
 													
 													//prepare brokers
 													$brokers_services_and_rules = $relationship_table_brokers_settings;
@@ -934,17 +938,17 @@ if ($path) {
 													unset($brokers_services_and_rules["relationships"]);
 													unset($brokers_services_and_rules["relationships_count"]);
 													
-													if ($relationship_table_brokers_settings["insert"]) 
+													if (!empty($relationship_table_brokers_settings["insert"]))
 														unset($brokers_services_and_rules["insert"]);
 													
-													if ($relationship_table_brokers_settings["update"]) 
+													if (!empty($relationship_table_brokers_settings["update"]))
 														unset($brokers_services_and_rules["update"]);
 													
-													if ($relationship_table_brokers_settings["delete"]) 
+													if (!empty($relationship_table_brokers_settings["delete"]))
 														unset($brokers_services_and_rules["delete"]);
 													
 													//prepare task details
-													$suffix = $j > 0 ? "_" . ($j + 1) : "";
+													$suffix = $i > 0 ? "_" . ($i + 1) : "";
 													$relationship_page_id = "relationship_" . strtolower($rn) . $suffix;
 													$task_id = getTaskId($task_absolute_path, $overwrite, "page", $table_name, $relationship_page_id);
 													$inner_task_id = getTaskId($task_absolute_path, $overwrite, "listing", $table_name, $relationship_page_id);
@@ -1002,10 +1006,10 @@ if ($path) {
 																		"db_table_parent_alias" => $table_alias,
 																	),
 																	"action" => array(
-																		"single_insert" => $brokers_services_and_rules["insert"] ? 1 : 0,
-																		"single_update" => $brokers_services_and_rules["update"] ? 1 : 0,
-																		"single_delete" => $brokers_services_and_rules["delete"] ? 1 : 0,
-																		"multiple_delete" => $brokers_services_and_rules["delete"] ? 1 : 0,
+																		"single_insert" => !empty($brokers_services_and_rules["insert"]) ? 1 : 0,
+																		"single_update" => !empty($brokers_services_and_rules["update"]) ? 1 : 0,
+																		"single_delete" => !empty($brokers_services_and_rules["delete"]) ? 1 : 0,
+																		"multiple_delete" => !empty($brokers_services_and_rules["delete"]) ? 1 : 0,
 																		"single_delete_confirmation_message" => null, //cannot be empty string "", otherwise there will not be any confirmation message
 																		"multiple_delete_confirmation_message" => null, //cannot be empty string "", otherwise there will not be any confirmation message
 																		"single_delete_ok_redirect_url" => null,
@@ -1052,28 +1056,31 @@ if ($path) {
 				
 				//Do this here, bc if this code is inside of the $settings loop and if $overwrite is false, then when we get a task_id through getTaskId(...), we will get a name with "_cp", bc the relationship file was created before in the previous loop item. By calling CMSPresentationUIDiagramFilesHandler::createPageFile after all getTaskId methods be called, we avoid this issue.
 				foreach ($tables_tasks_details as $table_name => $tasks_details) {
-					$table_alias = $tables_alias[$table_name];
+					$table_alias = isset($tables_alias[$table_name]) ? $tables_alias[$table_name] : null;
 					$tn = $table_alias ? $table_alias : $table_name;
 					$task_relative_path = "$relative_path$tn/";
 					$table_statuses = array();
 					
 					//save task details pages
 					foreach ($tasks_details as $task_id => $task)
-						if ($task["tag"] == "page") {
-							CMSPresentationUIDiagramFilesHandler::createPageFile($PEVC, $UserCacheHandler, $cms_page_cache_path_prefix, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, $task_relative_path, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $list_and_edit_users, $authenticated_template, $non_authenticated_template, $authenticated_template, $table_statuses, $js_funcs = array(), $js_code = "", $tasks_details, $task);
+						if (isset($task["tag"]) && $task["tag"] == "page") {
+							$js_funcs = array();
+							$js_code = "";
+							
+							CMSPresentationUIDiagramFilesHandler::createPageFile($PEVC, $UserCacheHandler, $cms_page_cache_path_prefix, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, $task_relative_path, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $list_and_edit_users, $authenticated_template, $non_authenticated_template, $authenticated_template, $table_statuses, $js_funcs, $js_code, $tasks_details, $task);
 							
 							//prepare created_files and statuses
 							foreach ($table_statuses as $t_id => $task_statuses) {
 								//prepare statuses
 								foreach ($task_statuses as $file_path => $file_data)
-									$statuses[$table_name][$file_path] = $file_data["modified_time"] ? true : false;
+									$statuses[$table_name][$file_path] = !empty($file_data["modified_time"]) ? true : false;
 								
 								//prepare created_files
 								$tasks_details = addCreatedFilesToTaskDetails($tasks_details, $t_id, $task_statuses);
 							}
 							
 							//prepare task page settings
-							$tasks_details[$task_id] = getTaskWithUpdatedFilePageSettings($PEVC, $task, $statuses[$table_name], "$absolute_path$tn/");
+							$tasks_details[$task_id] = getTaskWithUpdatedFilePageSettings($PEVC, $task, isset($statuses[$table_name]) ? $statuses[$table_name] : null, "$absolute_path$tn/");
 						}
 					
 					//save diagram xml
@@ -1146,10 +1153,10 @@ function getTaskWithUpdatedFilePageSettings($PEVC, $task, $table_statuses, $task
 	$selected_project_id = $P->getSelectedPresentationId();
 	$extension = $P->getPresentationFileExtension();
 	
-	$file_path = $task["properties"]["file_name"] ? $task_absolute_path . $task["properties"]["file_name"] . "." . $extension : null;
+	$file_path = !empty($task["properties"]["file_name"]) ? $task_absolute_path . $task["properties"]["file_name"] . "." . $extension : null;
 	//echo "\n$file_path(".$table_statuses[$file_path]."):".file_exists($file_path);
 	
-	if (file_exists($file_path) && $table_statuses[$file_path]) {
+	if (file_exists($file_path) && !empty($table_statuses[$file_path])) {
 		$code = file_get_contents($file_path);
 		
 		$includes = CMSFileHandler::getIncludes($code, false);
@@ -1161,30 +1168,30 @@ function getTaskWithUpdatedFilePageSettings($PEVC, $task, $table_statuses, $task
 		$template_params = CMSFileHandler::getParamsValues($code);;
 		//echo "<pre>";print_r($template_params);
 		
-		$page_settings = $task["properties"]["page_settings"];
+		$page_settings = isset($task["properties"]["page_settings"]) ? $task["properties"]["page_settings"] : null;
 		$page_settings["includes"] = $page_settings["regions_blocks"] = $page_settings["template_params"] = array();
 		//print_r($task["properties"]["page_settings"]);
 		
 		if ($includes)
 			foreach ($includes as $include)
 				$page_settings["includes"][] = array(
-					"path" => $include["path"],
-					"once" => $include["once"],
+					"path" => isset($include["path"]) ? $include["path"] : null,
+					"once" => isset($include["once"]) ? $include["once"] : null,
 				);
 		
 		if ($regions_blocks)
 			foreach ($regions_blocks as $region_block)
 				$page_settings["regions_blocks"][] = array(
-					"region" => $region_block["region"],
-					"block" => $region_block["block"],
-					"project" => $region_block["block_project"] && $region_block["block_project"] != $selected_project_id ? $region_block["block_project"] : "",
+					"region" => isset($region_block["region"]) ? $region_block["region"] : null,
+					"block" => isset($region_block["block"]) ? $region_block["block"] : null,
+					"project" => !empty($region_block["block_project"]) && $region_block["block_project"] != $selected_project_id ? $region_block["block_project"] : "",
 				);
 		
 		if ($template_params)
 			foreach ($template_params as $param)
 				$page_settings["template_params"][] = array(
-					"name" => $param["param"],
-					"value" => $param["value"],
+					"name" => isset($param["param"]) ? $param["param"] : null,
+					"value" => isset($param["value"]) ? $param["value"] : null,
 				);
 		
 		$task["properties"]["page_settings"] = $page_settings;
@@ -1199,17 +1206,17 @@ function addCreatedFilesToTaskDetails($tasks_details, $task_id, $task_statuses) 
 	foreach ($tasks_details as $t_id => $task_details) {
 		if ($t_id == $task_id) {
 			foreach ($task_statuses as $file_path => $file_data)
-				if ($file_data && $file_data["modified_time"] && $file_data["file_id"] && file_exists($file_path)) {
-					if (!$tasks_details[$t_id]["properties"]["created_files"])
+				if ($file_data && !empty($file_data["modified_time"]) && !empty($file_data["file_id"]) && file_exists($file_path)) {
+					if (empty($tasks_details[$t_id]["properties"]["created_files"]))
 						$tasks_details[$t_id]["properties"]["created_files"] = array();
 					
-					$tasks_details[$t_id]["properties"]["created_files"][ $file_data["file_id"] ] = $file_data["modified_time"];
+					$tasks_details[$t_id]["properties"]["created_files"][ $file_data["file_id"] ] = isset($file_data["modified_time"]) ? $file_data["modified_time"] : null;
 					//echo "\n$t_id:".$file_data["file_id"];
 				}
 			
 			break;
 		}
-		else if ($task_details["tasks"]) 
+		else if (!empty($task_details["tasks"]))
 			$tasks_details[$t_id]["tasks"] = addCreatedFilesToTaskDetails($task_details["tasks"], $task_id, $task_statuses);
 	}
 	
@@ -1235,15 +1242,19 @@ function saveTasksDetailsToDiagamXML($workflow_paths_id, $bean_name, $xml_relati
 		$attrs_to_keep = array("offset_top", "offset_left", "width", "height");
 		
 		foreach ($tasks_details as $task) {
-			$task_id = $task["id"];
+			$task_id = isset($task["id"]) ? $task["id"] : null;
 			
-			foreach ($tasks["tasks"] as $old_task)
-				if ($old_task["id"] == $task_id) {
-					foreach ($attrs_to_keep as $attr_to_keep) 
-						if (strlen($old_task[$attr_to_keep])) 
-							$task[$attr_to_keep] = $old_task[$attr_to_keep];
+			if (!empty($tasks["tasks"]))
+				foreach ($tasks["tasks"] as $old_task) {
+					$old_task_id = isset($old_task["id"]) ? $old_task["id"] : null;
 					
-					break;
+					if ($old_task_id == $task_id) {
+						foreach ($attrs_to_keep as $attr_to_keep) 
+							if (strlen($old_task[$attr_to_keep])) 
+								$task[$attr_to_keep] = $old_task[$attr_to_keep];
+						
+						break;
+					}
 				}
 			
 			$tasks["tasks"][$task_id] = $task;
@@ -1258,7 +1269,7 @@ function prepareTasksDetailsForDiagramXMLFile(&$tasks_details) {
 		unset($tasks_details[$task_id]["properties"]["brokers_services_and_rules"]);
 		unset($tasks_details[$task_id]["properties"]["files_to_create"]);
 		
-		if ($task["tasks"]) {
+		if (!empty($task["tasks"])) {
 			prepareTasksDetailsForDiagramXMLFile($task["tasks"]);
 			$new_sub_tasks = array();
 			
@@ -1271,14 +1282,14 @@ function prepareTasksDetailsForDiagramXMLFile(&$tasks_details) {
 		}
 		
 		//prepare task attributes - convert it to array with numeric keys - bc if we save it as it is, it will create xml nodes with the correspondent attributes names and these names are not compatible with the xml syntax, this is, the db attribute names can have the '+' symbol, but the xml nodes cannot!
-		if ($task["properties"]["attributes"]) {
+		if (!empty($task["properties"]["attributes"])) {
 			$new_attributes = array();
 			
 			foreach ($task["properties"]["attributes"] as $attribute_name => $attribute) {
 				$attribute["name"] = $attribute_name;
 				
 				if (isset($attribute["include_db_driver"]))
-					$attribute["include_db_driver"] = $attribute["include_db_driver"] ? 1 : 0;
+					$attribute["include_db_driver"] = !empty($attribute["include_db_driver"]) ? 1 : 0;
 				
 				$new_attributes[] = $attribute;
 			}
@@ -1287,7 +1298,7 @@ function prepareTasksDetailsForDiagramXMLFile(&$tasks_details) {
 		}
 		
 		if (isset($task["properties"]["choose_db_table"]["include_db_driver"])) //it could be a page, so we need to check if the exists, bc only exists if task is listing, form or view.
-			$tasks_details[$task_id]["properties"]["choose_db_table"]["include_db_driver"] = $task["properties"]["choose_db_table"]["include_db_driver"] ? 1 : 0;
+			$tasks_details[$task_id]["properties"]["choose_db_table"]["include_db_driver"] = !empty($task["properties"]["choose_db_table"]["include_db_driver"]) ? 1 : 0;
 	}
 }
 
@@ -1324,10 +1335,10 @@ function getValidadedTaskPageId($task_absolute_path, $overwrite, $page_id) {
 }
 
 function prepareRelationshipsLinks($table_name, $tables_alias, $brokers_settings, $tn, $tn_label, $absolute_path, $relative_path, $overwrite, $attrs, &$links, $form_type) {
-	if ($brokers_settings && $brokers_settings["relationships"])
+	if ($brokers_settings && !empty($brokers_settings["relationships"]))
 		foreach ($brokers_settings["relationships"] as $relationship_table => $relationship_table_settings) 
 			if ($relationship_table_settings) {
-				$relationship_table_alias = $tables_alias[$relationship_table];
+				$relationship_table_alias = isset($tables_alias[$relationship_table]) ? $tables_alias[$relationship_table] : null;
 				$rn = $relationship_table_alias ? $relationship_table_alias : $relationship_table;
 				
 				$t = count($relationship_table_settings);
@@ -1351,7 +1362,7 @@ function prepareRelationshipsLinks($table_name, $tables_alias, $brokers_settings
 }
 
 function prepareRelationshipsTaskExits($table_name, $tables_alias, $brokers_settings, $tn, $tn_label, $absolute_path, $relative_path, $overwrite, &$task_exits) {
-	if ($brokers_settings && $brokers_settings["relationships"])
+	if ($brokers_settings && !empty($brokers_settings["relationships"]))
 		foreach ($brokers_settings["relationships"] as $relationship_table => $relationship_table_settings) 
 			if ($relationship_table_settings) {
 				$relationship_table_alias = $tables_alias[$relationship_table];
@@ -1386,18 +1397,18 @@ function prepareFKsActionsAndAttributesSettings($settings, $tables, $table_name,
 	
 	if ($attrs) 
 		foreach ($attrs as $attr_name => $attr) 
-			if ($attr["fk"][0]["table"]) { //setting fk link
+			if (!empty($attr["fk"][0]["table"])) { //setting fk link
 				$attr_fk = WorkFlowDataAccessHandler::getTableAttributeFKTable($attr["fk"], $tables);
-				$fk_table = $attr_fk["table"];
-				$fk_attr = $attr_fk["attribute"];
+				$fk_table = isset($attr_fk["table"]) ? $attr_fk["table"] : null;
+				$fk_attr = isset($attr_fk["attribute"]) ? $attr_fk["attribute"] : null;
 				
 				$fk_attrs = WorkFlowDBHandler::getTableFromTables($tables, $fk_table);
 				
-				if ($fk_attrs && $fk_attrs[$fk_attr]) {
+				if ($fk_attrs && !empty($fk_attrs[$fk_attr])) {
 					$title_attr = WorkFlowDataAccessHandler::getTableAttrTitle($fk_attrs, $fk_table);
 					
 					if ($title_attr) {
-						$fk_alias = $tables_alias[$fk_table];
+						$fk_alias = isset($tables_alias[$fk_table]) ? $tables_alias[$fk_table] : null;
 						$fkn = $fk_alias ? $fk_alias : $fk_table;
 						
 						$attribute_settings = array(
@@ -1411,7 +1422,7 @@ function prepareFKsActionsAndAttributesSettings($settings, $tables, $table_name,
 							"db_attribute_fk" => $fk_attr,
 						);
 						
-						if ($settings[$fk_table] && $settings[$fk_table]["get"] && !$is_editable) {
+						if (!empty($settings[$fk_table]) && !empty($settings[$fk_table]["get"]) && !$is_editable) {
 							$fkn_relative_path = $relative_path . CMSPresentationUIDiagramFilesHandler::getLabelFileName($fkn) . "/";
 							$fkn_absolute_path = $absolute_path . CMSPresentationUIDiagramFilesHandler::getLabelFileName($fkn) . "/";
 							
@@ -1419,7 +1430,7 @@ function prepareFKsActionsAndAttributesSettings($settings, $tables, $table_name,
 							$attribute_settings["link"] = getTaskPageUrl($fkn_absolute_path, $fkn_relative_path, $overwrite, "view") . "?$fks_query_string";
 						}
 						
-						if ($task_properties_ui_attributes[$attr_name])
+						if (!empty($task_properties_ui_attributes[$attr_name]))
 							$task_properties_ui_attributes[$attr_name] = array_merge($task_properties_ui_attributes[$attr_name], $attribute_settings);
 						else
 							$task_properties_ui_attributes[$attr_name] = $attribute_settings;
@@ -1483,7 +1494,7 @@ function getHomePageMenusItems($settings, $relative_path, $tables_alias) {
 	$menu_items = array();
 	
 	foreach ($settings as $table_name => $table_settings) {
-		$table_alias = $tables_alias[$table_name];
+		$table_alias = isset($tables_alias[$table_name]) ? $tables_alias[$table_name] : null;
 		$tn = $table_alias ? $table_alias : $table_name;
 		
 		$name = CMSPresentationFormSettingsUIHandler::getName($tn);
@@ -1504,17 +1515,17 @@ function getHomePageMenusItems($settings, $relative_path, $tables_alias) {
 function getTableMenusItems($settings, $tables, $absolute_path, $relative_path, $overwrite, $tables_alias, $table_name) {
 	$menu_items = array();
 	
-	$table_settings = $settings[$table_name];
+	$table_settings = isset($settings[$table_name]) ? $settings[$table_name] : null;
 	
 	if ($table_settings) {
-		$get_all = $table_settings["get_all"];
-		$get = $table_settings["get"];
-		$insert = $table_settings["insert"];
-		$update = $table_settings["update"];
-		$delete = $table_settings["delete"];
-		$relationships = $table_settings["relationships"];
+		$get_all = isset($table_settings["get_all"]) ? $table_settings["get_all"] : null;
+		$get = isset($table_settings["get"]) ? $table_settings["get"] : null;
+		$insert = isset($table_settings["insert"]) ? $table_settings["insert"] : null;
+		$update = isset($table_settings["update"]) ? $table_settings["update"] : null;
+		$delete = isset($table_settings["delete"]) ? $table_settings["delete"] : null;
+		$relationships = isset($table_settings["relationships"]) ? $table_settings["relationships"] : null;
 		
-		$table_alias = $tables_alias[$table_name];
+		$table_alias = isset($tables_alias[$table_name]) ? $tables_alias[$table_name] : null;
 		$tn = $table_alias ? $table_alias : $table_name;
 		
 		$task_relative_path = $relative_path . CMSPresentationUIDiagramFilesHandler::getLabelFileName($tn) . "/";
@@ -1525,7 +1536,7 @@ function getTableMenusItems($settings, $tables, $absolute_path, $relative_path, 
 		if (!empty($attrs)) {
 			$pks = array();
 			foreach ($attrs as $attr_name => $attr)
-				if ($attr["primary_key"])
+				if (!empty($attr["primary_key"]))
 					$pks[] = $attr_name;
 			
 			if ($get_all)
@@ -1563,7 +1574,7 @@ function getTableMenusItems($settings, $tables, $absolute_path, $relative_path, 
 			if ($relationships)
 				foreach ($relationships as $relationship_table => $relationship_table_brokers) 
 					if ($relationship_table_brokers) {
-						$relationship_table_alias = $tables_alias[$relationship_table];
+						$relationship_table_alias = isset($tables_alias[$relationship_table]) ? $tables_alias[$relationship_table] : null;
 						$rn = $relationship_table_alias ? $relationship_table_alias : $relationship_table;
 						
 						$t = count($relationship_table_brokers);
@@ -1588,7 +1599,7 @@ function getMenusCode($settings, $tables, $absolute_path, $relative_path, $overw
 	$elements_code = '';
 	
 	foreach ($settings as $table_name => $table_settings) {
-		$table_alias = $tables_alias[$table_name];
+		$table_alias = isset($tables_alias[$table_name]) ? $tables_alias[$table_name] : null;
 		$tn = $table_alias ? $table_alias : $table_name;
 		$label = CMSPresentationFormSettingsUIHandler::getName($tn);
 		
@@ -1640,16 +1651,16 @@ $block_settings[$block_id] = array(
 	<ptl:foreach \$input i item>
 		
 		<!-- Nav Item - Components Collapse Menu -->
-		<li class=\"nav-item <ptl:echo \$item[class]/>\">
-			<ptl:echo \$item[previous_html]/>
+		<li class=\"nav-item <ptl:echo @\$item[class]/>\">
+			<ptl:echo @\$item[previous_html]/>
 			
-			<ptl:if \$item[menus]>
-				<a class=\"nav-link collapsed\" href=\"#\" data-toggle=\"collapse\" data-target=\"#collapseLayouts-<ptl:echo \$i/>\" aria-expanded=\"false\" aria-controls=\"collapseLayouts-<ptl:echo \$i/>\" title=\\"<ptl:echo \$item[title]/>\\" <ptl:echo \$item[attrs]/>>
+			<ptl:if @\$item[menus]>
+				<a class=\"nav-link collapsed\" href=\"#\" data-toggle=\"collapse\" data-target=\"#collapseLayouts-<ptl:echo \$i/>\" aria-expanded=\"false\" aria-controls=\"collapseLayouts-<ptl:echo \$i/>\" title=\\"<ptl:echo @\$item[title]/>\\" <ptl:echo @\$item[attrs]/>>
 					<span class=\"sb-nav-link-icon\"><i class=\"fas fa-table\"></i></span>
-					<span><ptl:echo \$item[label]/></span>
+					<span><ptl:echo @\$item[label]/></span>
 					<span class=\"sb-sidenav-collapse-arrow\"><i class=\"fas fa-angle-down\"></i></span>
 				</a>
-				<ptl:echo \$item[next_html]/>
+				<ptl:echo @\$item[next_html]/>
 				
 				<div class=\"collapse\" id=\"collapseLayouts-<ptl:echo \$i/>\" aria-labelledby=\"headingOne\" data-parent=\"#sidenavAccordion\">
 					<nav class=\"sb-sidenav-menu-nested nav\">
@@ -1659,16 +1670,16 @@ $block_settings[$block_id] = array(
 					</nav>
 				</div>
 		    	<ptl:else>
-		    		<a class=\"nav-link\" href=\"<ptl:echo \$item[url]/>\" title=\\"<ptl:echo \$item[title]/>\\" <ptl:echo \$item[attrs]/>><ptl:echo \$item[label]/></a>
+		    		<a class=\"nav-link\" href=\"<ptl:echo @\$item[url]/>\" title=\\"<ptl:echo @\$item[title]/>\\" <ptl:echo @\$item[attrs]/>><ptl:echo \$item[label]/></a>
 		    		
-		    		<ptl:echo \$item[next_html]/>
+		    		<ptl:echo @\$item[next_html]/>
 			</ptl:if>
 		</li>
 	</ptl:foreach>
 </ptl:if>	
 
 <ptl:function:getSubMenuHTML item>
-	<a class=\"nav-link <ptl:echo \$item[class]/>\" href=\"<ptl:echo \$item[url]/>\" title=\\"<ptl:echo \$item[title]/>\\" <ptl:echo \$item[attrs]/>><ptl:echo \$item[label]/></a>
+	<a class=\"nav-link <ptl:echo @\$item[class]/>\" href=\"<ptl:echo @\$item[url]/>\" title=\\"<ptl:echo @\$item[title]/>\\" <ptl:echo @\$item[attrs]/>><ptl:echo @\$item[label]/></a>
 </ptl:function>",
 	),
 	"css" => "",
@@ -1717,9 +1728,9 @@ $block_settings[$block_id] = array(
 <ptl:function:getMenuHTML menus>
 	<ptl:if is_array(\$menus)>
 		<ptl:foreach \$menus i item>
-			<a class=\"list-group-item list-group-item-action\" href=\"<ptl:echo \$item[url]/>\" title=\\"<ptl:echo \$item[title]/>\\"><i class=\"fas fa-fw fa-table\"></i> <ptl:echo \$item[label]/></a>
+			<a class=\"list-group-item list-group-item-action\" href=\"<ptl:echo @\$item[url]/>\" title=\\"<ptl:echo @\$item[title]/>\\"><i class=\"fas fa-fw fa-table\"></i> <ptl:echo @\$item[label]/></a>
 			
-			<ptl:if \$item[menus]>
+			<ptl:if @\$item[menus]>
 		    		<ptl:getMenuHTML \$item[menus] />
 			</ptl:if>
 		</ptl:foreach>
@@ -1741,12 +1752,16 @@ function getIndexPageCode($page_name, $menu_items) {
 	if ($menu_items) {
 		$html .= '<div class="align-items-center justify-content-between">';
 		
-		foreach ($menu_items as $menu_item)
+		foreach ($menu_items as $menu_item) {
+			$menu_item_url = isset($menu_item["url"]) ? $menu_item["url"] : null;
+			$menu_item_title = isset($menu_item["title"]) ? $menu_item["title"] : null;
+			$menu_item_label = isset($menu_item["label"]) ? $menu_item["label"] : null;
+			
 			$html .= '
 		<div class="col-xl-3 col-md-4 col-sm-6 float-left">
-			<a class="text-white stretched-link text-decoration-none" href="' . $menu_item["url"] . '" title="' . $menu_item["title"] . '">
+			<a class="text-white stretched-link text-decoration-none" href="' . $menu_item_url . '" title="' . $menu_item_title . '">
 				<div class="card bg-primary mt-2 mb-2 ml-2 mr-2">
-	                     <div class="card-body">' . ucwords(str_replace(array("-", "_"), " ", $menu_item["label"])) . '</div>
+	                     <div class="card-body">' . ucwords(str_replace(array("-", "_"), " ", $menu_item_label)) . '</div>
 	                     <div class="card-footer bg-primary d-flex align-items-center justify-content-between">
 	                         <span class="small text-white stretched-link" href="#">View Details</span>
 	                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -1754,6 +1769,7 @@ function getIndexPageCode($page_name, $menu_items) {
 				</div>
 			</a>
 		</div>';
+		}
 		
 		$html .= '</div>';
 	}
@@ -1792,16 +1808,19 @@ function getFKQueryStringForTable($fk_table_name, $attrs, $form_type, $tn) {
 	$lfktn = strtolower($fk_table_name);
 	
 	foreach ($attrs as $attr_name => $attr)
-		if (is_array($attr["fk"]))
-			foreach ($attr["fk"] as $fk)
-				if ($fk["table"] == $lfktn) {
+		if (isset($attr["fk"]) && is_array($attr["fk"]))
+			foreach ($attr["fk"] as $fk) {
+				$fk_table_lower = isset($fk["table"]) ? strtolower($fk["table"]) : null;
+				
+				if ($fk_table_lower == $lfktn && isset($fk["attribute"])) {
 					/*if ($form_type == "ptl") //JP 2021-08-10: This is not tested so I disabled it, just in case.
-						$value = '<ptl:echo \\$' . $tn . '[' . $attr_name . '] />';
+						$value = '<ptl:echo @\\$' . $tn . '[' . $attr_name . '] />';
 					else*/
 						$value = "#$attr_name#";
 					
 					$fk_query_string .= ($fk_query_string ? "&" : "") . $fk["attribute"] . "=" . $value;
 				}
+			}
 	
 	return $fk_query_string;
 }
@@ -1812,16 +1831,19 @@ function getFKQueryStringFromCurrentURL($table_name, $fk_attrs, $form_type) {
 	
 	if ($fk_attrs)
 		foreach ($fk_attrs as $attr_name => $attr)
-			if (is_array($attr["fk"]))
-				foreach ($attr["fk"] as $fk)
-					if (strtolower($fk["table"]) == $ltn) {
+			if (isset($attr["fk"]) && is_array($attr["fk"]))
+				foreach ($attr["fk"] as $fk) {
+					$fk_table_lower = isset($fk["table"]) ? strtolower($fk["table"]) : null;
+					
+					if ($fk_table_lower == $ltn && isset($fk["attribute"])) {
 						if ($form_type == "ptl")
-							$value = '<ptl:echo \\$_GET[' . $fk["attribute"] . '] />';
+							$value = '<ptl:echo isset(\\$_GET[' . $fk["attribute"] . ']) ? \\$_GET[' . $fk["attribute"] . '] : null />';
 						else
 							$value = '#_GET[' . $fk["attribute"] . ']#';
 						
 						$fk_query_string .= ($fk_query_string ? "&" : "") . $attr_name . "=" . $value;
 					}
+				}
 	
 	return $fk_query_string;
 }
@@ -1831,9 +1853,9 @@ function getTablePKsQueryStringFromCurrentURL($attrs, $form_type) {
 	
 	if ($attrs)
 		foreach ($attrs as $attr_name => $attr)
-			if ($attr["primary_key"]) {
+			if (!empty($attr["primary_key"])) {
 				if ($form_type == "ptl")
-					$value = '<ptl:echo \\$_GET[' . $attr_name . '] />';
+					$value = '<ptl:echo isset(\\$_GET[' . $attr_name . ']) ? \\$_GET[' . $attr_name . '] : null />';
 				else
 					$value = '#_GET[' . $attr_name . ']#';
 				

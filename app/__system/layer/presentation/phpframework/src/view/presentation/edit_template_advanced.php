@@ -3,6 +3,20 @@ include $EVC->getUtilPath("WorkFlowUIHandler");
 include $EVC->getUtilPath("WorkFlowPresentationHandler");
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$file_path = isset($file_path) ? $file_path : null;
+$P = isset($P) ? $P : null;
+$db_drivers_options = isset($db_drivers_options) ? $db_drivers_options : null;
+$brokers_db_drivers = isset($brokers_db_drivers) ? $brokers_db_drivers : null;
+
+$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+$business_logic_brokers = isset($business_logic_brokers) ? $business_logic_brokers : null;
+$data_access_brokers = isset($data_access_brokers) ? $data_access_brokers : null;
+$ibatis_brokers = isset($ibatis_brokers) ? $ibatis_brokers : null;
+$hibernate_brokers = isset($hibernate_brokers) ? $hibernate_brokers : null;
+$db_brokers = isset($db_brokers) ? $db_brokers : null;
+
+$presentation_brokers_obj = isset($presentation_brokers_obj) ? $presentation_brokers_obj : null;
+
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 
 $WorkFlowUIHandler = new WorkFlowUIHandler($WorkFlowTaskHandler, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
@@ -12,7 +26,7 @@ $WorkFlowUIHandler->setTasksGroupsByTag(array(
 	"Exception" => array("trycatchexception", "throwexception", "printexception"),
 	"Layers" => array("callpresentationlayerwebservice"),
 	"HTML" => array("inlinehtml", "createform"),
-	"CMS" => array("setblockparams", "settemplateregionblockparam", "includeblock", "addtemplateregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam"),
+	"CMS" => array("setblockparams", "settemplateregionblockparam", "includeblock", "addregionhtml", "addregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam"),
 ));
 $WorkFlowUIHandler->addFoldersTasksToTasksGroups($code_workflow_editor_user_tasks_folders_path);
 
@@ -52,10 +66,10 @@ $head .= '
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/presentation/edit_template_advanced.js"></script>
 
 <script>
-' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, $selected_db_vars) . '
+' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, isset($selected_db_vars) ? $selected_db_vars : null) . '
 var layer_type = "pres";
-var selected_project_id = "' . $selected_project_id . '";
-var file_modified_time = ' . $file_modified_time . '; //for version control
+var selected_project_id = "' . (isset($selected_project_id) ? $selected_project_id : "") . '";
+var file_modified_time = ' . (isset($file_modified_time) ? $file_modified_time : "null") . '; //for version control
 
 var get_workflow_file_url = \'' . $get_workflow_file_url . '\';
 var save_object_url = \'' . $save_url . '\';
@@ -94,11 +108,11 @@ callPresentationLayerWebServiceTaskPropertyObj.brokers_options = ' . json_encode
 GetTemplateParamTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
 SetTemplateParamTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
 RenderTemplateRegionTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
-AddTemplateRegionBlockTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
+AddRegionBlockTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC->getCMSLayer()->getCMSTemplateLayer()')) . ';
 IncludeBlockTaskPropertyObj.brokers_options = ' . json_encode(array("default" => '$EVC')) . ';
-IncludeBlockTaskPropertyObj.projects_options = ' . json_encode($available_projects) . ';
+IncludeBlockTaskPropertyObj.projects_options = ' . (isset($available_projects) ? json_encode($available_projects) : "null") . ';
 GetBeanObjectTaskPropertyObj.phpframeworks_options = ' . json_encode($phpframeworks_options) . ';
-GetBeanObjectTaskPropertyObj.bean_names_options = ' . json_encode($bean_names_options) . ';
+GetBeanObjectTaskPropertyObj.bean_names_options = ' . (isset($bean_names_options) ? json_encode($bean_names_options) : "null") . ';
 
 CreateFormTaskPropertyObj.editor_ready_func = initLayoutUIEditorWidgetResourceOptions;
 CreateFormTaskPropertyObj.layout_ui_editor_menu_widgets_elm_selector = \'ui-menu-widgets-backup\';
@@ -110,7 +124,7 @@ $head .= WorkFlowPresentationHandler::getPresentationBrokersHtml($presentation_b
 $head .= WorkFlowPresentationHandler::getDaoLibAndVendorBrokersHtml($choose_dao_files_from_file_manager_url, $choose_lib_files_from_file_manager_url, $choose_vendor_files_from_file_manager_url, $get_file_properties_url);
 $head .= '</script>';
 
-$query_string = preg_replace("/dont_save_cookie=([^&])*/", "", str_replace(array("&edit_template_type=advanced", "&edit_template_type=simple"), "", $_SERVER["QUERY_STRING"]));
+$query_string = isset($_SERVER["QUERY_STRING"]) ? preg_replace("/dont_save_cookie=([^&])*/", "", str_replace(array("&edit_template_type=advanced", "&edit_template_type=simple"), "", $_SERVER["QUERY_STRING"])) : "";
 
 $main_content = '
 	<div class="top_bar' . ($popup ? " in_popup" : "") . '">
@@ -123,7 +137,7 @@ $main_content = '
 		</header>
 	</div>';
 
-if ($obj_data) {
+if (!empty($obj_data)) {
 	//prepare file manager popups
 	$main_content .= WorkFlowPresentationHandler::getChooseFromFileManagerPopupHtml($bean_name, $bean_file_name, $choose_bean_layer_files_from_file_manager_url, $choose_dao_files_from_file_manager_url, $choose_lib_files_from_file_manager_url, $choose_vendor_files_from_file_manager_url, null, null, null, null, null, $presentation_brokers);
 	
@@ -147,7 +161,7 @@ if ($obj_data) {
 			<div class="code_menu top_bar_menu" onClick="openSubmenu(this)">
 				' . WorkFlowPresentationHandler::getCodeEditorMenuHtml(array("save_func" => "saveTemplate", "show_pretty_print" => false)) . '
 			</div>
-			<textarea>' . htmlspecialchars($obj_data["code"], ENT_NOQUOTES) . '</textarea>
+			<textarea>' . (isset($obj_data["code"]) ? htmlspecialchars($obj_data["code"], ENT_NOQUOTES) : "") . '</textarea>
 		</div>
 		
 		<div id="ui">' . WorkFlowPresentationHandler::getTaskFlowContentHtml($WorkFlowUIHandler, array("save_func" => "saveTemplate")) . '</div>

@@ -140,7 +140,7 @@ class SQLQueryHandler {
 				$alias = "";
 				
 				if (isset($item["alias"]["name"]))
-					$alias = $item["alias"]["as"] ? self::getAlias($item["base_expr"]) : self::getName($item["alias"]["name"]);
+					$alias = !empty($item["alias"]["as"]) ? self::getAlias($item["base_expr"]) : self::getName($item["alias"]["name"]);
 				
 				$aliases[ ($alias ? self::getName($alias) : $table) ] = $table . ($alias ? " $alias" : "");
 				
@@ -167,9 +167,9 @@ class SQLQueryHandler {
 				
 				$table = $base_expr[0];
 				$column = $parts[0];
-				$name = $parts[1];
+				$name = isset($parts[1]) ? $parts[1] : "";
 				
-				if (!$name && $item["alias"]["name"])
+				if (!$name && !empty($item["alias"]["name"]))
 					$name = self::getName($item["alias"]["name"]);
 			}
 			else {
@@ -180,7 +180,7 @@ class SQLQueryHandler {
 				$name = isset($item["alias"]["name"]) ? self::getName($item["alias"]["name"]) : "";
 				
 				//in case we have an expression with reference to a table and between parenthesis, when build the query through build method, it creates the sql with comma delimiter at the end.
-				$delimiter = $item["delim"] ? $item["delim"] : ",";
+				$delimiter = !empty($item["delim"]) ? $item["delim"] : ",";
 				
 				if (preg_match("/$delimiter\s*$/", $column))
 					$column = preg_replace("/\s*$delimiter\s*$/", "", $column);
@@ -204,7 +204,7 @@ class SQLQueryHandler {
 				$alias = "";
 				
 				if (isset($item["alias"]["name"]))
-					$alias = $item["alias"]["as"] ? self::getAlias($item["base_expr"]) : self::getName($item["alias"]["name"]);
+					$alias = !empty($item["alias"]["as"]) ? self::getAlias($item["base_expr"]) : self::getName($item["alias"]["name"]);
 				
 				$table_alias = $table . ($alias ? " $alias" : "");
 				
@@ -232,15 +232,15 @@ class SQLQueryHandler {
 							
 							if ($condition["expr_type"] == "colref") {
 								$base_expr = self::parseBaseExpr($condition_base_expr, $main_table, $aliases);
-								$ptable = isset($base_expr[0]) ? $base_expr[0] : null;
-								$pcolumn = isset($base_expr[1]) ? $base_expr[1] : null;
+								$ptable = $base_expr[0];
+								$pcolumn = $base_expr[1];
 								
 								if ($operator) {
 									
 									if ($next_twice_condition_expr_type == "colref" && !self::isBaseExpressionSQLVariable($next_twice_condition_base_expr)) {//different than #column_name#
 										$base_expr = self::parseBaseExpr($next_twice_condition_base_expr, $main_table, $aliases);
-										$ftable = isset($base_expr[0]) ? $base_expr[0] : null;
-										$fcolumn = isset($base_expr[1]) ? $base_expr[1] : null;
+										$ftable = $base_expr[0];
+										$fcolumn = $base_expr[1];
 									}
 									else
 										$value = self::getBaseExprValue($next_twice_condition);
@@ -256,8 +256,8 @@ class SQLQueryHandler {
 								if ($operator) {
 									if ($next_twice_condition_expr_type == "colref" && !self::isBaseExpressionSQLVariable($next_twice_condition_base_expr)) {//different than #column_name#
 										$base_expr = self::parseBaseExpr($next_twice_condition_base_expr, $main_table, $aliases);
-										$ptable = isset($base_expr[0]) ? $base_expr[0] : null;
-										$pcolumn = isset($base_expr[1]) ? $base_expr[1] : null;
+										$ptable = $base_expr[0];
+										$pcolumn = $base_expr[1];
 									}
 									else
 										$value = "$value $operator " . self::getBaseExprValue($next_twice_condition);
@@ -384,14 +384,14 @@ class SQLQueryHandler {
 				if ($item["expr_type"] == "colref") {
 					$base_expr = isset($item["base_expr"]) ? $item["base_expr"] : null;
 					$base_expr = self::parseBaseExpr($base_expr, $main_table, $aliases);
-					$table = isset($base_expr[0]) ? $base_expr[0] : null;
-					$column = isset($base_expr[1]) ? $base_expr[1] : null;
+					$table = $base_expr[0];
+					$column = $base_expr[1];
 					
 					if ($operator) {
 						if ($next_twice_item_expr_type == "colref" && !self::isBaseExpressionSQLVariable($next_twice_item_base_expr)) {//different than #column_name#
 							$base_expr = self::parseBaseExpr($next_twice_item_base_expr, $main_table, $aliases);
-							$ftable = isset($base_expr[0]) ? $base_expr[0] : null;
-							$fcolumn = isset($base_expr[1]) ? $base_expr[1] : null;
+							$ftable = $base_expr[0];
+							$fcolumn = $base_expr[1];
 							$fc = trim($fcolumn);
 						
 							if ($column && $fcolumn) {
@@ -424,8 +424,8 @@ class SQLQueryHandler {
 					if ($operator) {
 						if ($next_twice_item_expr_type == "colref" && !self::isBaseExpressionSQLVariable($next_twice_item_base_expr)) {//different than #column_name#
 							$base_expr = self::parseBaseExpr($next_twice_item_base_expr, $main_table, $aliases);
-							$table = isset($base_expr[0]) ? $base_expr[0] : null;
-							$column = isset($base_expr[1]) ? $base_expr[1] : null;
+							$table = $base_expr[0];
+							$column = $base_expr[1];
 						}
 						else
 							$value = "$value $operator " . self::getBaseExprValue($next_twice_item);
@@ -536,7 +536,7 @@ class SQLQueryHandler {
 	
 	public static function createUpdate($data) {
 		$sql = null;
-			
+		
 		$table_name = !empty($data["main_table"]) ? $data["main_table"] : (isset($data["table"]) ? $data["table"] : null); //table is bc the parseUpdate
 		$attributes = isset($data["attributes"]) ? $data["attributes"] : null;
 		$conditions = isset($data["conditions"]) ? $data["conditions"] : null;
@@ -599,7 +599,7 @@ class SQLQueryHandler {
 	
 	public static function createDelete($data) {
 		$sql = null;
-			
+		
 		$table_name = !empty($data["main_table"]) ? $data["main_table"] : (isset($data["table"]) ? $data["table"] : null); //table is bc the parseDelete
 		$conditions = isset($data["conditions"]) ? $data["conditions"] : null;
 		
@@ -718,12 +718,12 @@ class SQLQueryHandler {
 				$source_name = self::getTableName($source_table);
 				$target_name = self::getTableName($target_table);
 				
-				$join_table = $tables[$source_table] && $target_table != $main_table ? $target_table : $source_table;
+				$join_table = !empty($tables[$source_table]) && $target_table != $main_table ? $target_table : $source_table;
 				
 				$total = !empty($connection["source_columns"]) ? count($connection["source_columns"]) : 0;
 				if ($total) {
 					$join_type = isset($connection["tables_join"]) ? $connection["tables_join"] : null;
-			 		$join_conditions = $joins[$join_table][$join_type] ? $joins[$join_table][$join_type] : array();
+			 		$join_conditions = !empty($joins[$join_table][$join_type]) ? $joins[$join_table][$join_type] : array();
 					
 					for ($i = 0; $i < $total; $i++) {
 						$sc = isset($connection["source_columns"][$i]) ? $connection["source_columns"][$i] : null;
@@ -865,7 +865,7 @@ class SQLQueryHandler {
 							"ref_clause" => $join_conditions,
 						);
 			}
-					
+			
 			//PREPARING CONDITIONS
 			$pd = self::createConditions($conditions, $main_table);
 			$parsed_data["WHERE"] = isset($pd["WHERE"]) ? $pd["WHERE"] : null;
@@ -1067,7 +1067,7 @@ class SQLQueryHandler {
 				$table_alias = self::getAlias($table);
 				$table_name = self::getTableName($table);
 				
-				$sql .= ($i > 0 ? ", \n\t" : "") . self::getParsedSqlTableColumnName($table_alias, $column, $table_alias != $table_name) . ($name ? " " . getAlias($name) : "");
+				$sql .= ($i > 0 ? ", \n\t" : "") . self::getParsedSqlTableColumnName($table_alias, $column, $table_alias != $table_name) . ($name ? " " . self::getAlias($name) : "");
 			}
 			
 			//PREPARING MAIN TABLE
@@ -1089,7 +1089,7 @@ class SQLQueryHandler {
 				$source_name = self::getTableName($source_table);
 				$target_name = self::getTableName($target_table);
 				
-				$join_table = $tables[$source_table] ? $target_table : $source_table;
+				$join_table = !empty($tables[$source_table]) ? $target_table : $source_table;
 				
 				$total = !empty($connection["source_columns"]) ? count($connection["source_columns"]) : 0;
 				if ($total) {
@@ -1259,7 +1259,7 @@ class SQLQueryHandler {
 			$operator = empty($operator) ? "=" : $operator;
 			
 			if ($ptable && $ftable) {
-				$c_id = $ptable . "_" . $ftable . "_" . $tables_join;
+				$c_id = $ptable . "_" . $ftable . "_" . $join;
 		
 				if (!isset($connections[$c_id])) {
 					$connections[$c_id] = array(
@@ -1333,10 +1333,10 @@ class SQLQueryHandler {
 			
 			$part = self::getName(implode(".", $parts));
 			
-			if (!$aliases[$part] && $part) 
+			if (empty($aliases[$part]) && $part) 
 				$aliases[$part] = $part;
 			
-			$table = $aliases[$part];
+			$table = isset($aliases[$part]) ? $aliases[$part] : null;
 			$attr = self::getName($attr);
 		}
 		
@@ -1436,6 +1436,9 @@ class SQLQueryHandler {
 		$open_single_quotes = false;
 		$open_double_quotes = false;
 		
+		if (is_numeric($value))
+			$value = (string)$value; //bc of php > 7.4 if we use $var[$i] gives an warning
+		
 		$t = strlen($value);
 		for ($i = 0; $i < $t; $i++) {
 			$c = $value[$i];
@@ -1459,7 +1462,7 @@ class SQLQueryHandler {
 			//$values[] = is_numeric($v) ? $v : "'" . addcslashes($v, "\\'") . "'";
 			$values[] = $create_expr_value_func ? $create_expr_value_func($v) : self::createBaseExprValue($v);
 		
-		return "(" . implode($values, ", ") . ")";
+		return "(" . implode(", ", $values) . ")";
 	}
 	
 	//it's used in the DB too.
@@ -1469,7 +1472,7 @@ class SQLQueryHandler {
 		if ($lv == "null" || $lv == "true" || $lv == "false" || $lv == "unknown")
 			return $value;
 		
-		return $create_expr_value_func ? $create_expr_value_func($v) : self::createBaseExprValue($value); //if $value is not allowed, return the value with "". This should give an sql error when executed to the DB, but at least the DB will not be hacked and we can see then that the sql query is wrong.
+		return $create_expr_value_func ? $create_expr_value_func($value) : self::createBaseExprValue($value); //if $value is not allowed, return the value with "". This should give an sql error when executed to the DB, but at least the DB will not be hacked and we can see then that the sql query is wrong.
 	}
 	
 	private static function stripQuotes($str) {
@@ -1551,7 +1554,7 @@ class SQLQueryHandler {
 					$table = $item["ftable"];
 				
 				if (isset($table)) {
-					$table = empty($table) ? $main_table : $table;
+					$table = !$table ? $main_table : $table;
 					$tables[ $table ] = false;
 				}
 			}
@@ -1563,7 +1566,7 @@ class SQLQueryHandler {
 	//checks if a base_expr is #var_name# or $var_name
 	private static function isBaseExpressionSQLVariable($base_expr) {
 		$base_expr = trim($base_expr);
-		return substr($base_expr, 0, 1) == '$' || (substr($base_expr, 0, 1) == "#" && substr($base_expr, -1, 1) == "#");
+		return substr($base_expr, 0, 1) == '$' || substr($base_expr, 0, 2) == '@$' || (substr($base_expr, 0, 1) == "#" && substr($base_expr, -1, 1) == "#");
 	}
 	
 	//used in DB::parseTableName in DB.php

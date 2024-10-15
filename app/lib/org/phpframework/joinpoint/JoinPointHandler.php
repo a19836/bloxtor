@@ -11,6 +11,7 @@ class JoinPointHandler {
 	public function executeJoinPoint($join_point_properties, &$input) {
 		//echo "<pre>";print_r($join_point_properties);
 		//print_r($input);die();
+		$status = null;
 		
 		if ($this->some_global_variables)
 			foreach ($this->some_global_variables as $var_name => $var_value)
@@ -42,7 +43,11 @@ class JoinPointHandler {
 				$join_point_input = isset($item["join_point_input"]) ? $item["join_point_input"] : null;
 				$method_input = isset($item["method_input"]) ? $item["method_input"] : null;
 				
-				$input[$method_input] = &$input[$join_point_input];
+				$input[$method_input] = null;
+				
+				if (isset($input[$join_point_input]))
+					$input[$method_input] = &$input[$join_point_input];
+				
 				if (!empty($item["erase_from_input"]))
 					unset($input[$join_point_input]);
 			}
@@ -55,7 +60,7 @@ class JoinPointHandler {
 			if ($method_static)
 				$code .= $method_obj . '::';
 			else
-				$code .= (substr($method_obj, 0, 1) != '$' ? '$' : '') . $method_obj . '->';
+				$code .= (substr($method_obj, 0, 1) != '$' && substr($method_obj, 0, 2) != '@$' ? '$' : '') . $method_obj . '->';
 		}
 		$code .= $method_name . '(';
 		
@@ -63,13 +68,13 @@ class JoinPointHandler {
 		if (is_array($method_args)) {
 			$args = '';
 			foreach ($method_args as $item) {
-				$value = $item["value"];
-				$type = $item["type"];
+				$value = isset($item["value"]) ? $item["value"] : null;
+				$type = isset($item["type"]) ? $item["type"] : null;
 				
 				if (!isset($value))
 					$value = $type == "string" || $type == "date" ? "''" : (!$type ? "null" : "");
 				else
-					$value = $type == "variable" && $value ? ((substr(trim($value), 0, 1) != '$' ? '$' : '') . trim($value)) : ($type == "string" || $type == "date" ? "\"" . addcslashes($value, '"') . "\"" : (!$type && strlen(trim($value)) == 0 ? "null" : trim($value)) );//Please do not add the addcslashes($value, '\\"') otherwise it will create an extra \\. The correct is without the \\, because we are editing php code directly.
+					$value = $type == "variable" && $value ? ((substr(trim($value), 0, 1) != '$' && substr(trim($value), 0, 2) != '@$' ? '$' : '') . trim($value)) : ($type == "string" || $type == "date" ? "\"" . addcslashes($value, '"') . "\"" : (!$type && strlen(trim($value)) == 0 ? "null" : trim($value)) );//Please do not add the addcslashes($value, '\\"') otherwise it will create an extra \\. The correct is without the \\, because we are editing php code directly.
 				
 				$value = strlen($value) ? $value : "null";
 			
@@ -87,6 +92,18 @@ class JoinPointHandler {
 			
 			eval($code);
 		}
+		catch (Error $e) {
+	   		launch_exception(new JoinPointHandlerException(1, $e, $code));
+			return false;
+	   	}
+		catch(ParseError $e) {
+	   		launch_exception(new JoinPointHandlerException(1, $e, $code));
+			return false;
+		}
+		catch(ErrorException $e) {
+	   		launch_exception(new JoinPointHandlerException(1, $e, $code));
+			return false;
+		}
 		catch(Exception $e) {
 			launch_exception(new JoinPointHandlerException(1, $e, $code));
 			return false;
@@ -99,7 +116,11 @@ class JoinPointHandler {
 				$method_output = isset($item["method_output"]) ? $item["method_output"] : null;
 				$join_point_output = isset($item["join_point_output"]) ? $item["join_point_output"] : null;
 				
-				$input[$join_point_output] = &$input[$method_output];
+				$input[$join_point_output] = null;
+				
+				if (isset($input[$method_output]))
+					$input[$join_point_output] = &$input[$method_output];
+				
 				if (!empty($item["erase_from_output"]))
 					unset($input[$method_output]);
 			}

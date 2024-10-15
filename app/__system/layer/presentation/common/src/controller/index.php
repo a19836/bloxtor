@@ -62,8 +62,20 @@ for ($entity_index = 0; $entity_index < count($entities); ++$entity_index) {
 		if (file_exists($entity_path)) 
 			include $entity_path;
 		else {
-			header("HTTP/1.0 404 Not Found");
-			launch_exception(new EVCException(2, $entity_path));
+			$is_reserve = false;
+			
+			//avoid log exception when the edit_entity_simple, edit_template_simple, edit_view and edit_block_simple tries to open an image with a dynamic url containing the $project_url_prefix var.
+			if (defined("IS_SYSTEM_PHPFRAMEWORK")) {
+				//'presentation/{$project_url_prefix}', 'presentation/${project_url_prefix}', 'presentation/<?= $project_url_prefix', 'presentation/<? echo $original_project_url_prefix', etc...
+				$layer_folder_name = preg_replace("/(^\/+|\/+$)/", "", substr($EVC->getPresentationLayer()->getLayerPathSetting(), strlen(SYSTEM_LAYER_PATH)));
+				$is_reserve = strpos($entity, "$layer_folder_name/\$project_url_prefix") === 0 || strpos($entity, "$layer_folder_name/{\$project_url_prefix}") === 0 || strpos($entity, "$layer_folder_name/\${project_url_prefix}") === 0 || strpos($entity, "$layer_folder_name/<") === 0;
+				//echo "entity:$entity\n<br>";print_r($parameters);
+			}
+			
+			if (!$is_reserve) {
+				header("HTTP/1.0 404 Not Found");
+				launch_exception(new EVCException(2, $entity_path));
+			}
 		}
 		
 		//Each entity can add or remove other entities, so we need to update the $entities everytime we call an entity

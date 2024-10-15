@@ -3,11 +3,11 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$project = $_GET["project"];
-$block = $_GET["block"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$project = isset($_GET["project"]) ? $_GET["project"] : null;
+$block = isset($_GET["block"]) ? $_GET["block"] : null;
 
 /*The ENT_NOQUOTES will avoid converting the &quot; to ". If this is not here and if we have some form settings with PTL code like: 
 	$form_settings = array("ptl" => array("code" => "<ptl:echo str_replace('\"', '&quot;', \$var_aux_910) />"));
@@ -20,10 +20,11 @@ This ENT_NOQUOTES option was added in 2018-01-09, and I did not tested it for ot
 */
 $data = json_decode( htmlspecialchars_decode( file_get_contents("php://input"), ENT_NOQUOTES), true);
 //echo "<pre>data:";print_r($data);die();
+//error_log("\n".print_r($data, 1)."\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 
-$page_region_block_type = $data["page_region_block_type"];
-$page_region_block_params = $data["page_region_block_params"];
-$page_region_block_join_points = $data["page_region_block_join_points"];
+$page_region_block_type = isset($data["page_region_block_type"]) ? $data["page_region_block_type"] : null;
+$page_region_block_params = isset($data["page_region_block_params"]) ? $data["page_region_block_params"] : null;
+$page_region_block_join_points = isset($data["page_region_block_join_points"]) ? $data["page_region_block_join_points"] : null;
 //echo "<pre>";print_r($page_region_block_params);print_r($page_region_block_join_points);die();
 
 $path = str_replace("../", "", $path);//for security reasons
@@ -41,7 +42,7 @@ if ($path && $project && $block) {
 		$P = $PEVC->getPresentationLayer();
 		
 		//get page includes
-		$page_include_files = getPageIncludeFiles($PEVC, $data["template_includes"]);
+		$page_include_files = getPageIncludeFiles($PEVC, isset($data["template_includes"]) ? $data["template_includes"] : null);
 		//echo "<pre>includes:";print_r($page_include_files);die();
 		
 		//set new presentation bc the $project can be different from the page's project
@@ -55,13 +56,13 @@ if ($path && $project && $block) {
 		//echo "block_path:$block_path";die();
 		
 		if (file_exists($block_path)) {
-			$module_id = null;
+			$module_id = $block_params = null;
 			
 			if ($is_block) {
 				//get block's module id
 				$block_params = CMSFileHandler::getFileCreateBlockParams($block_path, false, 1, 1);
 				//echo "<pre>block_params:";print_r($block_params);die();
-				$module_id = $block_params[0]["module_type"] == "string" ? $block_params[0]["module"] : "";
+				$module_id = isset($block_params[0]["module_type"]) && $block_params[0]["module_type"] == "string" ? $block_params[0]["module"] : "";
 				
 				$block_code_id = md5(file_get_contents($block_path));
 				$block_code_time = filemtime($block_path);
@@ -94,7 +95,7 @@ if ($path && $project && $block) {
 								foreach ($join_point as $idx => $join_point_settings) 
 									if (is_array($join_point_settings)) {
 										$join_point_settings = getProjectJoinPointSettings($PEVC, $project, $page_include_files, $join_point_settings);
-										$PEVC->getCMSLayer()->getCMSJoinPointLayer()->addBlockJoinPoint($block, $join_point_name, $block_join_point_properties);
+										$PEVC->getCMSLayer()->getCMSJoinPointLayer()->addBlockJoinPoint($block, $join_point_name, $join_point_settings);
 									}
 							}
 						}
@@ -118,7 +119,7 @@ function getPageIncludeFiles($EVC, $includes) {
 	
 	if (is_array($includes)) {
 		foreach ($includes as $include) 
-			if ($include["path"]) {
+			if (!empty($include["path"])) {
 				$code = "\$include_path = " . $include["path"] . ";";
 				eval($code);
 				
@@ -154,7 +155,7 @@ function getProjectJoinPointSettings($EVC, $selected_project_id, $page_include_f
 	
 	PHPScriptHandler::parseContent($code, $external_vars, $return_values);
 	//echo "<pre>return_values:";print_r($return_values);die();
-	$join_point_settings = $return_values[0];
+	$join_point_settings = isset($return_values[0]) ? $return_values[0] : null;
 	
 	return $join_point_settings;
 }
@@ -192,17 +193,17 @@ function getProjectBlockSettings($EVC, $selected_project_id, $block_params, $pag
 	
 	$code .= 'return ';
 	
-	if (is_array($block_params[0]["block_settings"]))
+	if (isset($block_params[0]["block_settings"]) && is_array($block_params[0]["block_settings"]))
 		$code .= WorkFlowTask::getArrayString($block_params[0]["block_settings"]);
 	else
-		$code .= strlen($block_params[0]["block_settings"]) ? PHPUICodeExpressionHandler::getArgumentCode($block_params[0]["block_settings"], $block_params[0]["block_settings_type"]) : '""';
+		$code .= isset($block_params[0]["block_settings"]) && strlen($block_params[0]["block_settings"]) ? PHPUICodeExpressionHandler::getArgumentCode($block_params[0]["block_settings"], $block_params[0]["block_settings_type"]) : '""';
 	
 	$code .= '; ?>';
 	//echo "code:<textarea>$code</textarea>";die();
 	
 	PHPScriptHandler::parseContent($code, $external_vars, $return_values);
 	//echo "<pre>return_values:";print_r($return_values);die();
-	$block_settings = $return_values[0];
+	$block_settings = isset($return_values[0]) ? $return_values[0] : null;
 	
 	return $block_settings;
 }

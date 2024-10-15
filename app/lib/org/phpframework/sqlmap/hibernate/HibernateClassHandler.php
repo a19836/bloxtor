@@ -182,7 +182,7 @@ class $class_file_obj_name extends $extend_class_name {
 		if (is_array($obj_table_attributes) && is_array($obj_ids)) {
 			foreach ($obj_table_attributes as $akey => $avalue) {
 				if (!empty($avalue["primary_key"])) {
-					if (!$obj_ids[$akey])
+					if (empty($obj_ids[$akey]))
 						$obj_ids[$akey] = array("output_name" => $akey);
 				}
 			}
@@ -194,7 +194,7 @@ class $class_file_obj_name extends $extend_class_name {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$pkey = $obj_ids_keys[$i];
-				$pvalue = $obj_ids[$pkey];
+				$pvalue = isset($obj_ids[$pkey]) ? $obj_ids[$pkey] : null;
 				$pon = isset($pvalue["output_name"]) ? $pvalue["output_name"] : null;
 				
 				foreach ($obj_properties as $okey => $ovalue) {
@@ -269,7 +269,7 @@ class $class_file_obj_name extends $extend_class_name {
 			foreach ($items as $item_id => $item) {
 				if (!empty($item["result_map"])) {
 					$result_map_id = $item["result_map"];
-					$items[$item_id]["result_map"] = $obj_data["childs"]["relationships"]["result_map"][$result_map_id];
+					$items[$item_id]["result_map"] = isset($obj_data["childs"]["relationships"]["result_map"][$result_map_id]) ? $obj_data["childs"]["relationships"]["result_map"][$result_map_id] : null;
 				}	
 			}
 		}

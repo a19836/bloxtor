@@ -34,7 +34,7 @@ function addNewFile(elm) {
 	var html = '<div class="upload_file"><input type="file" name="zip_file[]" multiple> <span class="icon delete" onClick="$(this).parent().remove()"></span></div>';
 	var upload_files = $(elm).parent().closest("form").children(".upload_file, .upload_url");
 	
-	if (upload_files.filter(".upload_file").length < 20)
+	if (upload_files.filter(".upload_file").length < max_file_uploads)
 		upload_files.last().after(html);
 	else
 		alert("Maximum number of allowable file uploads has been reached!");
@@ -70,8 +70,8 @@ function checkUploadedFiles() {
 			count++;
 	});
 	
-	if (count_files > 20) {
-		alert("You can only upload 20 zip files maximum each time!\nPlease remove some files before you proceed...");
+	if (count_files > max_file_uploads) {
+		alert("You can only upload " + max_file_uploads + " zip files maximum each time!\nPlease remove some files before you proceed...");
 		return false;
 	}
 	else if (!count) {

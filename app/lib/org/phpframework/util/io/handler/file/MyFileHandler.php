@@ -15,7 +15,11 @@ class MyFileHandler extends MyIOHandler {
 		$types = $this->getFileTypes();
 		$file_name = basename($file_path);
 		
-		return is_dir($file_path) ? $types["folder"] : $types[ self::getFileType($file_name) ];
+		if (is_dir($file_path))
+			return isset($types["folder"]) ? $types["folder"] : null;
+		
+		$type = self::getFileType($file_name);
+		return isset($types[$type]) ? $types[$type] : null;
 	}
 	
 	/*
@@ -48,8 +52,8 @@ class MyFileHandler extends MyIOHandler {
 			$info = array();
 			$info["path"] = $this->file_name;
 			$info["name"] = basename($this->file_name);
-			$info["type"] = $type["id"];
-			$info["type_desc"] = $type["desc"];
+			$info["type"] = isset($type["id"]) ? $type["id"] : null;
+			$info["type_desc"] = isset($type["desc"]) ? $type["desc"] : null;
 			
 			if($info["type"] != 1) {
 				$extension = pathinfo($this->file_name, PATHINFO_EXTENSION);

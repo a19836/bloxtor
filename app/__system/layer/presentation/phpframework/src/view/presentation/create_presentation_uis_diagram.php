@@ -4,7 +4,10 @@ include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 
-if ($WorkFlowTaskHandler) {
+$head = "";
+$main_content = "";
+
+if (!empty($WorkFlowTaskHandler)) {
 	//preparing generic interface
 	$WorkFlowUIHandler = new WorkFlowUIHandler($WorkFlowTaskHandler, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
 	
@@ -21,10 +24,10 @@ if ($WorkFlowTaskHandler) {
 	foreach ($tasks_settings as $group_id => $group_tasks)
 		foreach ($group_tasks as $task_type => $task_settings)
 			if (is_array($task_settings)) {
-				$tag = $task_settings["tag"];
-				$js_load_functions[$tag] = $task_settings["settings"]["callback"]["on_load_task_properties"];
-				$js_submit_functions[$tag] = $task_settings["settings"]["callback"]["on_submit_task_properties"];
-				$js_complete_functions[$tag] = $task_settings["settings"]["callback"]["on_complete_task_properties"];
+				$tag = isset($task_settings["tag"]) ? $task_settings["tag"] : null;
+				$js_load_functions[$tag] = isset($task_settings["settings"]["callback"]["on_load_task_properties"]) ? $task_settings["settings"]["callback"]["on_load_task_properties"] : null;
+				$js_submit_functions[$tag] = isset($task_settings["settings"]["callback"]["on_submit_task_properties"]) ? $task_settings["settings"]["callback"]["on_submit_task_properties"] : null;
+				$js_complete_functions[$tag] = isset($task_settings["settings"]["callback"]["on_complete_task_properties"]) ? $task_settings["settings"]["callback"]["on_complete_task_properties"] : null;
 			}
 	
 	$choose_dao_files_from_file_manager_url = $project_url_prefix . "admin/get_sub_files?item_type=dao&path=#path#";
@@ -165,8 +168,8 @@ if ($WorkFlowTaskHandler) {
 		PresentationTaskUtil.selected_db_driver = "' . $selected_db_driver . '";
 		PresentationTaskUtil.get_broker_db_data_url = "' . $get_broker_db_data_url . '";
 		PresentationTaskUtil.on_choose_file_callback = onIncludePageUrlTaskChooseFile;
-		PresentationTaskUtil.available_user_types = ' . json_encode($available_user_types) . ';
-		PresentationTaskUtil.available_activities = ' . json_encode($available_activities) . ';
+		PresentationTaskUtil.available_user_types = ' . (isset($available_user_types) ? json_encode($available_user_types) : "null") . ';
+		PresentationTaskUtil.available_activities = ' . (isset($available_activities) ? json_encode($available_activities) : "null") . ';
 		PresentationTaskUtil.users_management_admin_panel_url = "' . $users_management_admin_panel_url . '";
 		PresentationTaskUtil.auto_increment_db_attributes_types = ' . json_encode($auto_increment_db_attributes_types) . ';
 		
@@ -178,7 +181,7 @@ if ($WorkFlowTaskHandler) {
 		PageTaskPropertyObj.edit_page_admin_panel_url = "' . $edit_entity_admin_panel_url . '";
 		PageTaskPropertyObj.diagram_path = "' . $diagram_relative_folder_path . '";
 		
-		var create_presentation_uis_diagram_files_url = "' . $project_url_prefix . 'phpframework/presentation/create_presentation_uis_diagram_files?bean_name=' . $bean_name . '&bean_file_name=' . $bean_file_name . $filter_by_layout_url_query . '&path=' . $path . '&do_not_save_vars_file=' . $do_not_save_vars_file . '&do_not_check_if_path_exists=' . $do_not_check_if_path_exists . '"; //$do_not_save_vars_file comes from the file: create_page_presentation_uis_diagram_block.php
+		var create_presentation_uis_diagram_files_url = "' . $project_url_prefix . 'phpframework/presentation/create_presentation_uis_diagram_files?bean_name=' . $bean_name . '&bean_file_name=' . $bean_file_name . $filter_by_layout_url_query . '&path=' . $path . '&do_not_save_vars_file=' . (isset($do_not_save_vars_file) ? $do_not_save_vars_file : "") . '&do_not_check_if_path_exists=' . (isset($do_not_check_if_path_exists) ? $do_not_check_if_path_exists : "") . '"; //$do_not_save_vars_file comes from the file: create_page_presentation_uis_diagram_block.php
 	';
 	$head .= WorkFlowPresentationHandler::getPresentationBrokersHtml($presentation_brokers, $choose_bean_layer_files_from_file_manager_url, $get_file_properties_url, $upload_bean_layer_files_from_file_manager_url);
 	$head .= WorkFlowPresentationHandler::getBusinessLogicBrokersHtml($business_logic_brokers, $choose_bean_layer_files_from_file_manager_url, $get_file_properties_url);
@@ -263,7 +266,7 @@ if ($WorkFlowTaskHandler) {
 						<select multiple>
 							<option value="" disabled>Choose at least one user to enable this feature...</option>';
 	
-	if ($available_user_types)
+	if (!empty($available_user_types))
 		foreach ($available_user_types as $user_type_id => $user_type_name)
 			$main_content .= '<option value="' . $user_type_id . '" ' . ($user_type_id != UserUtil::PUBLIC_USER_TYPE_ID ? 'selected' : '') . '>' . $user_type_name . '</option>';
 	
@@ -273,7 +276,7 @@ if ($WorkFlowTaskHandler) {
 				</div>
 				
 				<div class="button">
-					<input class="' . ($layer_brokers_settings["data_access_brokers"] ? '' : 'hidden') . '" type="button" value="Create files now with new sql queries" onClick="saveUISFilesWithNewQueries(this)" />
+					<input class="' . (!empty($layer_brokers_settings["data_access_brokers"]) ? '' : 'hidden') . '" type="button" value="Create files now with new sql queries" onClick="saveUISFilesWithNewQueries(this)" />
 					<input type="button" value="Continue with existent services and rules" onClick="goToStepAutomaticCreation(this, 2)" />
 				</div>
 			</div>
@@ -302,23 +305,24 @@ if ($WorkFlowTaskHandler) {
 							</tr>
 						</thead>
 						<tbody>';
-				
-			foreach ($brokers as $broker_name => $broker)
-				if (is_a($broker, "IBusinessLogicBrokerClient") || is_a($broker, "IDataAccessBrokerClient") || is_a($broker, "IDBBrokerClient")) {
-					$broker_type_label = is_a($broker, "IBusinessLogicBrokerClient") ? "Business Logic Broker" : (
-						is_a($broker, "IHibernateDataAccessBrokerClient") ? "Hibernate Data Access Broker" : (
-							is_a($broker, "IIbatisDataAccessBrokerClient") ? "Ibatis Data Access Broker" : (
-								is_a($broker, "IDBBrokerClient") ? "DB Broker" : ""
+			
+			if ($brokers)	
+				foreach ($brokers as $broker_name => $broker)
+					if (is_a($broker, "IBusinessLogicBrokerClient") || is_a($broker, "IDataAccessBrokerClient") || is_a($broker, "IDBBrokerClient")) {
+						$broker_type_label = is_a($broker, "IBusinessLogicBrokerClient") ? "Business Logic Broker" : (
+							is_a($broker, "IHibernateDataAccessBrokerClient") ? "Hibernate Data Access Broker" : (
+								is_a($broker, "IIbatisDataAccessBrokerClient") ? "Ibatis Data Access Broker" : (
+									is_a($broker, "IDBBrokerClient") ? "DB Broker" : ""
+								)
 							)
-						)
-					);
-					$main_content .= '
-							<tr broker_name="' . $broker_name . '">
-								<td class="status"><input type="checkbox" value="1" checked /></td>
-								<td class="name">' . $broker_name . '(' . $broker_type_label . ') </td>
-								<td class="path">' . (is_a($broker, "IDBBrokerClient") ? '' : '<input type="text" value="" placeHolder="write folder path here" />') . '</td>
-							</tr>';
-				}
+						);
+						$main_content .= '
+								<tr broker_name="' . $broker_name . '">
+									<td class="status"><input type="checkbox" value="1" checked /></td>
+									<td class="name">' . $broker_name . '(' . $broker_type_label . ') </td>
+									<td class="path">' . (is_a($broker, "IDBBrokerClient") ? '' : '<input type="text" value="" placeHolder="write folder path here" />') . '</td>
+								</tr>';
+					}
 			
 			$main_content .= '
 						</tbody>

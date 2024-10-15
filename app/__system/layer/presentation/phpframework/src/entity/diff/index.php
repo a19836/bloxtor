@@ -9,7 +9,7 @@ unset($layers["db_layers"]);
 //echo "<pre>";print_r($layers);die();
 
 //delete all projects. Projects will be get from the get_sub_files request and with the proper permissions
-if ($layers["presentation_layers"])
+if (!empty($layers["presentation_layers"]))
 	foreach ($layers["presentation_layers"] as $layer_name => $layer)
 		foreach ($layer as $fn => $f)
 			if ($fn != "properties" && $fn != "aliases")

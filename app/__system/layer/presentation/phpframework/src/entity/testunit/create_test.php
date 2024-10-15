@@ -1,33 +1,35 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 
-$path = $_GET["path"];
-$file_name = ucfirst($_GET["file_name"]);
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$file_name = isset($_GET["file_name"]) ? ucfirst($_GET["file_name"]) : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
 $path = TEST_UNIT_PATH . $path;
+$status = null;
 
 if (file_exists($path) && $file_name) {
 	$UserAuthenticationHandler->checkInnerFilePermissionAuthentication("vendor/testunit/$path", "layer", "access");
 	
 	$file_path = "$path/$file_name";
 	$path_info = pathinfo($file_path);
-	$file_path .= $path_info["extension"] == "php" ? "" : ".php";
+	$file_path .= isset($path_info["extension"]) && $path_info["extension"] == "php" ? "" : ".php";
 	
 	$contents = getTestUnitClassContents($path_info["filename"]);
 	
 	if (!$contents)
 		$file_path = "";
 	else if (!PHPScriptHandler::isValidPHPContents($contents, $error_message)) { // in case the user creates a class with a name: "as" or any other php reserved word.
-		echo $error_message ? $error_message : "Error creating $type with name: $file_name";
+		echo $error_message ? $error_message : "Error creating test unit with name: $file_name";
 		die();
 	}
 	
 	$status = $file_path ? file_put_contents($file_path, $contents) !== false : false;
 }
 
-die($status);
+echo $status;
+die();
 
 function getTestUnitClassContents($class_name) {
 	include_once get_lib("org.phpframework.testunit.TestUnit"); //include TestUnit file so all the dependents classes get included too and we can check if the class already exists

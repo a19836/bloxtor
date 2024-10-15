@@ -3,15 +3,15 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$db_driver = $_GET["db_driver"];
-$module_id = $_GET["module_id"];
-$hbn_obj_id = $_GET["obj"];
-$query_id = $_GET["query"];
-$query_type = $_GET["query_type"];
-$relationship_type = $_GET["relationship_type"];
-$rel_name = $_GET["rel_name"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$db_driver = isset($_GET["db_driver"]) ? $_GET["db_driver"] : null;
+$module_id = isset($_GET["module_id"]) ? $_GET["module_id"] : null;
+$hbn_obj_id = isset($_GET["obj"]) ? $_GET["obj"] : null;
+$query_id = isset($_GET["query"]) ? $_GET["query"] : null;
+$query_type = isset($_GET["query_type"]) ? $_GET["query_type"] : null;
+$relationship_type = isset($_GET["relationship_type"]) ? $_GET["relationship_type"] : null;
+$rel_name = isset($_GET["rel_name"]) ? $_GET["rel_name"] : null;
 
 $PHPVariablesFileHandler = new PHPVariablesFileHandler($user_global_variables_file_path);
 $PHPVariablesFileHandler->startUserGlobalVariables();
@@ -32,7 +32,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 				
 				if ($data)
 					$props = array(
-						"attributes" => $data["attributes"],
+						"attributes" => isset($data["attributes"]) ? $data["attributes"] : null,
 						"is_multiple" => true,
 						"is_single" => true,
 					);
@@ -52,7 +52,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 						
 						if ($data)
 							$props = array(
-								"attributes" => $data["attributes"],
+								"attributes" => isset($data["attributes"]) ? $data["attributes"] : null,
 								"is_multiple" => true,
 								"is_single" => true,
 							);
@@ -77,11 +77,11 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 							break;
 					}
 					
-					$data = $hbn_obj_relationships ? $hbn_obj_relationships[$query_id] : null;
+					$data = isset($hbn_obj_relationships[$query_id]) ? $hbn_obj_relationships[$query_id] : null;
 					
 					if ($data)
 						$props = array(
-							"attributes" => $data["attribute"],
+							"attributes" => isset($data["attribute"]) ? $data["attribute"] : null,
 							"is_multiple" => true,
 							"is_single" => true,
 						);
@@ -107,7 +107,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 								
 								foreach ($attrs as $attr) {
 									$attr["table"] = $table_name;
-									$attr["column"] = $attr["name"];
+									$attr["column"] = isset($attr["name"]) ? $attr["name"] : null;
 									$props["attributes"][] = $attr;
 								}
 							}
@@ -130,14 +130,14 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 										$data = $hbn_obj_relationships[$rel_name];
 									else {
 										$hbn_obj_relationships = $hbn_obj->getOneToOne();
-										$data = $hbn_obj_relationships[$rel_name];
+										$data = isset($hbn_obj_relationships[$rel_name]) ? $hbn_obj_relationships[$rel_name] : null;
 									}
 								}
 							}
 							
 							if ($data)
 								$props = array(
-									"attributes" => $data["attribute"],
+									"attributes" => isset($data["attribute"]) ? $data["attribute"] : null,
 									"is_multiple" => true,
 									"is_single" => true,
 								);

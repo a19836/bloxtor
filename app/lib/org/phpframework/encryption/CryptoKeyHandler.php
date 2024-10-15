@@ -17,9 +17,11 @@ class CryptoKeyHandler {
 			// WARNING: Do NOT encode $key with bin2hex() or base64_encode(),
 			// they may leak the key to the attacker through side channels.
 		} catch (Ex\CryptoTestFailedException $ex) {
-			die('Cannot safely create a key');
+			echo 'Cannot safely create a key';
+			die();
 		} catch (Ex\CannotPerformOperationException $ex) {
-			die('Cannot safely create a key');
+			echo 'Cannot safely create a key';
+			die();
 		}
 		
 		return $key;
@@ -44,10 +46,12 @@ class CryptoKeyHandler {
 			$cipher_text = Crypto::encrypt($text, $key);
 		} 
 		catch (Ex\CryptoTestFailedException $ex) {
-			die('Cannot safely perform encryption');
+			echo 'Cannot safely perform encryption';
+			die();
 		} 
 		catch (Ex\CannotPerformOperationException $ex) {
-			die('Cannot safely perform encryption');
+			echo 'Cannot safely perform encryption';
+			die();
 		}
 		
 		return $cipher_text;
@@ -73,13 +77,16 @@ class CryptoKeyHandler {
 			//   2. The key is wrong, or
 			//   3. $ciphertext is not a valid ciphertext or was corrupted.
 			// Assume the worst.
-			die('DANGER! DANGER! The ciphertext has been tampered with!');
+			echo 'DANGER! DANGER! The ciphertext has been tampered with!';
+			die();
 		} 
 		catch (Ex\CryptoTestFailedException $ex) {
-			die('Cannot safely perform decryption');
+			echo 'Cannot safely perform decryption';
+			die();
 		} 
 		catch (Ex\CannotPerformOperationException $ex) {
-			die('Cannot safely perform decryption');
+			echo 'Cannot safely perform decryption';
+			die();
 		}
 		
 		return $decrypted;

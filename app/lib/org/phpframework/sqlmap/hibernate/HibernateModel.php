@@ -458,7 +458,7 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 		
 		$status = false;
 		
-		if ($this->getErrorHandler()->ok() && $sql) {
+		if ($this->getErrorHandler()->ok() && ($conditions || $all)) {
 			$opts = is_array($options) ? $options : array();
 			$opts["conditions_join"] = $conditions_join;
 			$opts["all"] = $all;
@@ -832,6 +832,7 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 		$sorts = !empty($options["sort"]) && empty($data["sort"]) ? $options["sort"] : (isset($data["sort"]) ? $data["sort"] : null);
 		$start = !empty($options["start"]) && (!isset($data["start"]) || !is_numeric($data["start"])) ? $options["start"] : (isset($data["start"]) ? $data["start"] : null);
 		$limit = !empty($options["limit"]) && (!isset($data["limit"]) || !is_numeric($data["limit"])) ? $options["limit"] : (isset($data["limit"]) ? $data["limit"] : null);
+		$ids_not_in_attributes = null;
 		
 		//if relationships, add pks to attributes if not there yet.
 		if($relationships) {
@@ -862,7 +863,7 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 			
 			if($this->getErrorHandler()->ok()) {
 				$results = array();
-				$t = count($db_data["result"]);
+				$t = isset($db_data["result"]) ? count($db_data["result"]) : 0;
 				
 				for($i = 0; $i < $t; $i++) {
 					$item_data = $db_data["result"][$i];
@@ -880,9 +881,12 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 					else 
 						$result_data = $item_data;
 					
-					$db_data_aux = array("fields" => $db_data["fields"], "result" => array($result_data));
+					$db_data_aux = array(
+						"fields" => isset($db_data["fields"]) ? $db_data["fields"] : null, 
+						"result" => array($result_data)
+					);
 					$this->ResultHandler->transformData($db_data_aux, $this->result_class, $this->result_map);
-					$result_data = $db_data_aux[0];
+					$result_data = isset($db_data_aux[0]) ? $db_data_aux[0] : null;
 					
 					if (!empty($options["separated_by_objects"]))
 						$result[$this->obj_name] = $result_data;
@@ -1318,7 +1322,7 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 				if (isset($value) && is_string($value) && is_numeric($value) && !empty($this->table_attributes[$key])) {
 					$attr = $this->table_attributes[$key];
 					
-					if ($attr["type"] && ObjTypeHandler::isDBTypeNumeric($attr["type"]))
+					if (!empty($attr["type"]) && ObjTypeHandler::isDBTypeNumeric($attr["type"]))
 						$attributes[$key] += 0; 
 				}
 		

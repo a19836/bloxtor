@@ -18,6 +18,7 @@ $httpagent = getenv ("HTTP_USER_AGENT");
 $today = date("D M j Y g:i:s a T");
 
 //$note = "Yes you have been bagged and tagged for a making an illegal move" ;
+$note = "";
 
 $message = "($today) \n
 <br><br>

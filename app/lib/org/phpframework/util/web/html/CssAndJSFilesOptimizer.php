@@ -209,6 +209,9 @@ class CssAndJSFilesOptimizer {
 		$css_items = $js_items = $items_to_delete = array();
 		$new_html = $html;
 		
+		if (is_numeric($html))
+			$html = (string)$html; //bc of php > 7.4 if we use $var[$i] gives an warning
+		
 		for ($i = 0; $i < $l; $i++) {
 			$char = $html[$i];
 			
@@ -271,7 +274,7 @@ class CssAndJSFilesOptimizer {
 				$find_closed_tag = false;
 				$close_end_pos = $i;
 				
-				if ($is_script && !$code && count($js_items)) {
+				if ($is_script && empty($code) && count($js_items)) {
 					$js_item_idx = count($js_items) - 1;
 					$js_item = $js_items[$js_item_idx];
 					$js_items[$js_item_idx]["close_end_pos"] = $close_end_pos;
@@ -394,6 +397,9 @@ class CssAndJSFilesOptimizer {
 		$start_pos = $end_pos = null;
 		$al = strlen($attr_name);
 		$fc = $al ? strtolower($attr_name[0]) : "";
+		
+		if (is_numeric($attrs_html))
+			$attrs_html = (string)$attrs_html; //bc of php > 7.4 if we use $var[$i] gives an warning
 		
 		for ($i = 0; $i < $l; $i++) {
 			$char = $attrs_html[$i];
@@ -864,8 +870,8 @@ class CssAndJSFilesOptimizer {
 		$data = array();
 		$repeated_urls = array();
 		
-		$current_host = explode(":", $_SERVER["HTTP_HOST"]); //maybe it contains the port
-		$current_host = $current_host[0];
+		$current_host = isset($_SERVER["HTTP_HOST"]) ? explode(":", $_SERVER["HTTP_HOST"]) : null; //maybe it contains the port
+		$current_host = isset($current_host[0]) ? $current_host[0] : null;
 		
 		foreach ($urls as $url) 
 			if (!in_array($url, $repeated_urls)) {
@@ -940,6 +946,9 @@ class CssAndJSFilesOptimizer {
 		//preparing the cases: url("relative path") to url("http://full path")
 		$pos = -1;
 		$keyword_length = strlen("url");
+		
+		if (is_numeric($contents))
+			$contents = (string)$contents; //bc of php > 7.4 if we use $var[$i] gives an warning
 		
 		do {
 			$pos = stripos($contents, "url", $pos + 1);
@@ -1129,10 +1138,10 @@ class CssAndJSFilesOptimizer {
 				$end_pos = strlen($part_1);
 			 
 				for ($i = $start_pos - 1; $i >= 0; $i--) {
-				        if ($part_1[$i] == "/") {
-				                $end_pos = $i;
-				                break;
-				        }
+			        if ($part_1[$i] == "/") {
+		                $end_pos = $i;
+		                break;
+			        }
 				}
 			 
 				$part_1 = substr($part_1, 0, $end_pos + 1) . substr($part_1, $start_pos + 4, strlen($part_1));
@@ -1209,7 +1218,7 @@ class CssAndJSFilesOptimizer {
 				else if ($char == "'" && !$odq && !TextSanitizer::isMBCharEscaped($contents, $i, $contents_chars))
 					$osq = !$osq;
 				else if ($char == "/" && !$odq && !$osq) {
-					$next_char = $contents_chars[$i + 1];
+					$next_char = $i + 1 < $l ? $contents_chars[$i + 1] : null;
 					
 					if (!empty($options["remove_single_line_comments"]) && $next_char == "/") { //remove single line comments
 						//sets $i to the next end-line

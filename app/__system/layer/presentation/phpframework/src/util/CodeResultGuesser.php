@@ -41,31 +41,36 @@ class CodeResultGuesser {
 		//remove php comments from $contents, bc if the code was generated from the workflow, it will create comments that will mess up with this method.
 		$php_code = "<?php\n$code\n?>";
 		$methods = CMSFileHandler::getContentsMethodParams($php_code, $method_names);
+		$props = null;
 		
 		if ($methods)
 			foreach ($methods as $method) {
-				if (!$method["static"]) {
-					$method_name = $method["method"];
+				if (empty($method["static"])) {
+					$method_name = isset($method["method"]) ? $method["method"] : null;
 					
 					switch($method_name) {
 						case "callBusinessLogic": //Business logic method
 							$module_id = null;
 							$service_id = null;
 							
-							if ($method["params"][0]["type"] == "variable" && $method["params"][0]["referenced_type"] == "string")
-								$module_id = $method["params"][0]["referenced_value"];
-							else if ($method["params"][0]["type"] == "string")
-								$module_id = $method["params"][0]["value"];
+							if (isset($method["params"][0]["type"])) {
+								if ($method["params"][0]["type"] == "variable" && isset($method["params"][0]["referenced_type"]) && $method["params"][0]["referenced_type"] == "string")
+									$module_id = $method["params"][0]["referenced_value"];
+								else if ($method["params"][0]["type"] == "string")
+									$module_id = $method["params"][0]["value"];
+							}
 							
-							if ($method["params"][1]["type"] == "variable" && $method["params"][1]["referenced_type"] == "string")
-								$service_id = $method["params"][1]["referenced_value"];
-							else if ($method["params"][1]["type"] == "string")
-								$service_id = $method["params"][1]["value"];
+							if (isset($method["params"][1]["type"])) {
+								if ($method["params"][1]["type"] == "variable" && isset($method["params"][1]["referenced_type"]) && $method["params"][1]["referenced_type"] == "string")
+									$service_id = $method["params"][1]["referenced_value"];
+								else if ($method["params"][1]["type"] == "string")
+									$service_id = $method["params"][1]["value"];
+							}
 							
 							if ($module_id && $service_id) {
-								$broker_props = $this->getBrokerProps($method["class_obj"]);
+								$broker_props = $this->getBrokerProps(isset($method["class_obj"]) ? $method["class_obj"] : null);
 								
-								if (!$broker_props && $this->layer_brokers_settings["business_logic_brokers"])
+								if (!$broker_props && !empty($this->layer_brokers_settings["business_logic_brokers"]))
 									$broker_props = $this->layer_brokers_settings["business_logic_brokers"][0];
 								
 								if ($broker_props) {
@@ -86,22 +91,26 @@ class CodeResultGuesser {
 							$module_id = null;
 							$rule_id = null;
 							
-							if ($method["params"][0]["type"] == "variable" && $method["params"][0]["referenced_type"] == "string")
-								$module_id = $method["params"][0]["referenced_value"];
-							else if ($method["params"][0]["type"] == "string")
-								$module_id = $method["params"][0]["value"];
+							if (isset($method["params"][0]["type"])) {
+								if ($method["params"][0]["type"] == "variable" && isset($method["params"][0]["referenced_type"]) && $method["params"][0]["referenced_type"] == "string")
+									$module_id = $method["params"][0]["referenced_value"];
+								else if ($method["params"][0]["type"] == "string")
+									$module_id = $method["params"][0]["value"];
+							}
 							
-							if ($method["params"][1]["type"] == "variable" && $method["params"][1]["referenced_type"] == "string")
-								$rule_id = $method["params"][1]["referenced_value"];
-							else if ($method["params"][1]["type"] == "string")
-								$rule_id = $method["params"][1]["value"];
+							if (isset($method["params"][1]["type"])) {
+								if ($method["params"][1]["type"] == "variable" && isset($method["params"][1]["referenced_type"]) && $method["params"][1]["referenced_type"] == "string")
+									$rule_id = $method["params"][1]["referenced_value"];
+								else if ($method["params"][1]["type"] == "string")
+									$rule_id = $method["params"][1]["value"];
+							}
 							
-							$obj_props = $this->getHibernateObjProps($php_code, $method["class_obj"]); //get the obj id based in $method["class_obj"]
+							$obj_props = $this->getHibernateObjProps($php_code, isset($method["class_obj"]) ? $method["class_obj"] : null); //get the obj id based in $method["class_obj"]
 							
 							if ($module_id && ($rule_id || $obj_props)) {
-								$broker_props = $this->getBrokerProps($method["class_obj"]);
+								$broker_props = $this->getBrokerProps(isset($method["class_obj"]) ? $method["class_obj"] : null);
 								
-								if (!$broker_props && $this->layer_brokers_settings["data_access_brokers"])
+								if (!$broker_props && !empty($this->layer_brokers_settings["data_access_brokers"]))
 									$broker_props = $this->layer_brokers_settings["data_access_brokers"][0];
 								
 								if ($broker_props) {
@@ -114,9 +123,9 @@ class CodeResultGuesser {
 									
 									if ($obj_props) {
 										$hbn_url = $url;
-										$hbn_url = str_replace("#module_id#", $obj_props["module_id"], $hbn_url);
+										$hbn_url = str_replace("#module_id#", isset($obj_props["module_id"]) ? $obj_props["module_id"] : null, $hbn_url);
 										$hbn_url = str_replace("#query#", $module_id, $hbn_url);
-										$hbn_url = str_replace("#obj#", $obj_props["obj_id"], $hbn_url);
+										$hbn_url = str_replace("#obj#", isset($obj_props["obj_id"]) ? $obj_props["obj_id"] : null, $hbn_url);
 										
 										//make the request to get hbn rule attributes
 										$props = $this->UserAuthenticationHandler->getURLContent($hbn_url);
@@ -139,20 +148,22 @@ class CodeResultGuesser {
 						case "getSQL": //DB method
 							$sql = null;
 							
-							if ($method["params"][0]["type"] == "variable" && $method["params"][0]["referenced_type"] == "string")
-								$sql = $method["params"][0]["referenced_value"];
-							else if ($method["params"][0]["type"] == "string")
-								$sql = $method["params"][0]["value"];
+							if (isset($method["params"][0]["type"])) {
+								if ($method["params"][0]["type"] == "variable" && isset($method["params"][0]["referenced_type"]) && $method["params"][0]["referenced_type"] == "string")
+									$sql = $method["params"][0]["referenced_value"];
+								else if ($method["params"][0]["type"] == "string")
+									$sql = $method["params"][0]["value"];
+							}
 							
 							if ($sql) {
 								//parse sql and get table name
 								$sql_data = DB::convertDefaultSQLToObject($sql);
 								
 								//get attributes from sql
-								if ($sql_data["type"] == "select" && $sql_data["table"]) {
+								if (isset($sql_data["type"]) && $sql_data["type"] == "select" && !empty($sql_data["table"])) {
 									$attributes = array();
 									
-									if (!$sql_data["attributes"] || count($sql_data["attributes"]) == 0 || $sql_data["attributes"][0]["column"] == "*") {
+									if (empty($sql_data["attributes"]) || count($sql_data["attributes"]) == 0 || (isset($sql_data["attributes"][0]["column"]) && $sql_data["attributes"][0]["column"] == "*")) {
 										//get all db table attributes
 										if ($this->DBDriver) {
 											$db_attributes = $this->DBDriver->listTableFields($sql_data["table"]);
@@ -166,11 +177,11 @@ class CodeResultGuesser {
 									}
 									else {
 										foreach ($sql_data["attributes"] as $attr) {
-											if ($attr["name"])
+											if (!empty($attr["name"]))
 												$attributes[] = array(
 													"column" => $attr["name"]
 												);
-											else if ($attr["column"])
+											else if (!empty($attr["column"]))
 												$attributes[] = array(
 													"column" => $attr["column"]
 												);
@@ -178,8 +189,8 @@ class CodeResultGuesser {
 									}
 									
 									//check if is_multiple
-									$start = is_numeric($sql_data["start"]) ? $sql_data["start"] : 0;
-									$is_multiple = !$sql_data["limit"] || $sql_data["limit"] - $start > 1;
+									$start = isset($sql_data["start"]) && is_numeric($sql_data["start"]) ? $sql_data["start"] : 0;
+									$is_multiple = empty($sql_data["limit"]) || $sql_data["limit"] - $start > 1;
 									
 									//prepare props
 									$props = array(
@@ -192,10 +203,12 @@ class CodeResultGuesser {
 						case "findObjects": //DB method
 							$table_name = null;
 							
-							if ($method["params"][0]["type"] == "variable" && $method["params"][0]["referenced_type"] == "string")
-								$table_name = $method["params"][0]["referenced_value"];
-							else if ($method["params"][0]["type"] == "string")
-								$table_name = $method["params"][0]["value"];
+							if (isset($method["params"][0]["type"])) {
+								if ($method["params"][0]["type"] == "variable" && isset($method["params"][0]["referenced_type"]) && $method["params"][0]["referenced_type"] == "string")
+									$table_name = $method["params"][0]["referenced_value"];
+								else if ($method["params"][0]["type"] == "string")
+									$table_name = $method["params"][0]["value"];
+							}
 							
 							if ($table_name && $this->DBDriver) {
 								//get all db table attributes
@@ -221,19 +234,19 @@ class CodeResultGuesser {
 						case "find": //Hibernate method
 						case "findRelationships": //Hibernate method
 						case "findRelationship": //Hibernate method
-							$obj_props = $this->getHibernateObjProps($php_code, $method["class_obj"]); //get the obj id based in $method["class_obj"]
+							$obj_props = $this->getHibernateObjProps($php_code, isset($method["class_obj"]) ? $method["class_obj"] : null); //get the obj id based in $method["class_obj"]
 							
 							if ($obj_props) {
-								$broker_props = $this->getBrokerProps($obj_props["class_obj"]);
+								$broker_props = $this->getBrokerProps(isset($obj_props["class_obj"]) ? $obj_props["class_obj"] : null);
 								
-								if (!$broker_props && $this->layer_brokers_settings["hibernate_brokers"])
+								if (!$broker_props && !empty($this->layer_brokers_settings["hibernate_brokers"]))
 									$broker_props = $this->layer_brokers_settings["hibernate_brokers"][0];
 								
 								if ($broker_props) {
 									$rel_name = "";
 									
-									if ($method_name == "findRelationship") {
-										if ($method["params"][0]["type"] == "variable" && $method["params"][0]["referenced_type"] == "string")
+									if ($method_name == "findRelationship" && isset($method["params"][0]["type"])) {
+										if ($method["params"][0]["type"] == "variable" && isset($method["params"][0]["referenced_type"]) && $method["params"][0]["referenced_type"] == "string")
 											$rel_name = $method["params"][0]["referenced_value"];
 										else if ($method["params"][0]["type"] == "string")
 											$rel_name = $method["params"][0]["value"];
@@ -242,11 +255,11 @@ class CodeResultGuesser {
 									$url = $get_query_result_properties_url;
 									$url = str_replace("#bean_name#", $broker_props[2], $url);
 									$url = str_replace("#bean_file_name#", $broker_props[1], $url);
-									$url = str_replace("#module_id#", $obj_props["module_id"], $url);
+									$url = str_replace("#module_id#", isset($obj_props["module_id"]) ? $obj_props["module_id"] : null, $url);
 									$url = str_replace("#query_type#", "", $url);
 									$url = str_replace("#query#", $method_name, $url);
 									$url = str_replace("#rel_name#", $rel_name, $url);
-									$url = str_replace("#obj#", $obj_props["obj_id"], $url);
+									$url = str_replace("#obj#", isset($obj_props["obj_id"]) ? $obj_props["obj_id"] : null, $url);
 									$url = str_replace("#relationship_type#", "native", $url);
 									
 									//make the request to get hbn rule attributes
@@ -272,28 +285,32 @@ class CodeResultGuesser {
 		
 		if ($methods)
 			foreach ($methods as $method) {
-				if (!$method["static"]) {
+				if (empty($method["static"])) {
 					$module_id = null;
 					$obj_id = null;
 					
-					if ($method["params"][0]["type"] == "variable" && $method["params"][0]["referenced_type"] == "string")
-						$module_id = $method["params"][0]["referenced_value"];
-					else if ($method["params"][0]["type"] == "string")
-						$module_id = $method["params"][0]["value"];
+					if (isset($method["params"][0]["type"])) {
+						if ($method["params"][0]["type"] == "variable" && isset($method["params"][0]["referenced_type"]) && $method["params"][0]["referenced_type"] == "string")
+							$module_id = $method["params"][0]["referenced_value"];
+						else if ($method["params"][0]["type"] == "string")
+							$module_id = $method["params"][0]["value"];
+					}
 					
-					if ($method["params"][1]["type"] == "variable" && $method["params"][1]["referenced_type"] == "string")
-						$obj_id = $method["params"][1]["referenced_value"];
-					else if ($method["params"][1]["type"] == "string")
-						$obj_id = $method["params"][1]["value"];
+					if (isset($method["params"][1]["type"])) {
+						if ($method["params"][1]["type"] == "variable" && isset($method["params"][1]["referenced_type"]) && $method["params"][1]["referenced_type"] == "string")
+							$obj_id = $method["params"][1]["referenced_value"];
+						else if ($method["params"][1]["type"] == "string")
+							$obj_id = $method["params"][1]["value"];
+					}
 					
 					if ($module_id && $obj_id) {
 						$props = array(
-							"class_obj" => $method["class_obj"],
+							"class_obj" => isset($method["class_obj"]) ? $method["class_obj"] : null,
 							"module_id" => $module_id,
 							"obj_id" => $obj_id
 						);
 						
-						if (preg_match("/" . preg_quote($var_to_compare, "/") . "\s*=\s*" . preg_quote($method["match"], "/") . "/", $php_code))
+						if (isset($method["match"]) && preg_match("/" . preg_quote($var_to_compare, "/") . "\s*=\s*" . preg_quote($method["match"], "/") . "/", $php_code))
 							break;
 					}
 				}
@@ -309,17 +326,17 @@ class CodeResultGuesser {
 			if (!$matches)
 				preg_match("/\s*\->\s*getBroker\s*\(\s*'([^']+)'\s*\)/", $class_obj, $matches, PREG_OFFSET_CAPTURE);
 			
-			$broker_name = $matches && $matches[1] ? $matches[1][0] : null;
+			$broker_name = $matches && !empty($matches[1]) ? $matches[1][0] : null;
 			
 			if ($broker_name) { //get bean and bena_file for broker name
 				$keys = array("business_logic_brokers", "data_access_brokers", "db_brokers");
 				
 				foreach ($keys as $key) {
-					$brokers = $this->layer_brokers_settings[$key];
+					$brokers = isset($this->layer_brokers_settings[$key]) ? $this->layer_brokers_settings[$key] : null;
 					
 					if ($brokers)
 						foreach ($brokers as $broker_props)
-							if ($broker_props[0] == $broker_name)
+							if (isset($broker_props[0]) && $broker_props[0] == $broker_name)
 								return $broker_props;
 				}
 			}

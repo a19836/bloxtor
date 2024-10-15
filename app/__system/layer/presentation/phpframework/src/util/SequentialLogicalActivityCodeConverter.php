@@ -6,7 +6,7 @@ include_once get_lib("org.phpframework.phpscript.PHPUICodeExpressionHandler");
 $common_project_name = $EVC->getCommonProjectName();
 $user_module_path = $EVC->getModulesPath($common_project_name) . "user/";
 
-if (file_exists($object_module_path))
+if (file_exists($user_module_path))
 	include_once $EVC->getModulePath("user/UserUtil", $common_project_name);
 
 class SequentialLogicalActivityCodeConverter {
@@ -54,8 +54,8 @@ class SequentialLogicalActivityCodeConverter {
 					$var = trim($condition_value);
 					
 					if (!empty($var)) {
-						$var = substr($var, 0, 1) == '$' ? $var : '$' . $var;
-						$code = ($is_not ? "!" : "") . $var;
+						$var = substr($var, 0, 1) == '$' || substr($var, 0, 2) == '@$' ? $var : '$' . $var;
+						$code = ($is_not ? "" : "!") . "empty($var)";
 					}
 					break;
 				
@@ -67,7 +67,7 @@ class SequentialLogicalActivityCodeConverter {
 					
 					if ($button_name)
 						$button_name = self::prepareStringValue($button_name);
-						$code = ($is_not ? "!" : "") . (strpos($condition_type, "_get_") !== false ? '$_GET' : '$_POST') . '[' . $button_name . ']';
+						$code = ($is_not ? "" : "!") . "empty(" . (strpos($condition_type, "_get_") !== false ? '$_GET' : '$_POST') . '[' . $button_name . '])';
 					break;
 				
 				case "execute_if_post_resource": //Only execute if resource is equal to via POST
@@ -78,15 +78,14 @@ class SequentialLogicalActivityCodeConverter {
 					
 					if ($resource_name)
 						$resource_name = self::prepareStringValue($resource_name);
-						$code = (strpos($condition_type, "_get_") !== false ? '$_GET' : '$_POST') . '["resource"] ' . ($is_not ? "!=" : "==") . ' ' . $resource_name . '';
+						$var = (strpos($condition_type, "_get_") !== false ? '$_GET' : '$_POST') . '["resource"]';
+						$code = $is_not ? "!isset($var) || $var != $resource_name" : "isset($var) && $var == $resource_name";
 					break;
 				
 				case "execute_if_previous_action": //Only execute if previous action executed correctly
 				case "execute_if_not_previous_action": //Only execute if previous action was not executed correctly
-					$code = $result_var_prefix . '[count(' . $result_var_prefix . ') - 1]';
-					
-					if ($is_not)
-						$code = "empty($code)";
+					$var = $result_var_prefix . '[count(' . $result_var_prefix . ') - 1]';
+					$code = ($is_not ? "" : "!") . "empty($var)";
 					break;
 				
 				case "execute_if_condition": //Only execute if condition is valid
@@ -102,7 +101,7 @@ class SequentialLogicalActivityCodeConverter {
 					else if (is_array($condition_value) || is_object($condition_value))
 						$code = $is_not ? (empty($condition_value) ? "false" : "true") : (empty($condition_value) ? "true" : "false");
 					else if (!empty($condition_value))
-						$code = $is_not ? "empty($condition_value)" : $condition_value;
+						$code = ($is_not ? "" : "!") . "empty($condition_value)";
 					break;
 			}
 			
@@ -117,7 +116,7 @@ class SequentialLogicalActivityCodeConverter {
 		
 		if (is_array($actions))
 			foreach ($actions as $idx => $action_settings)
-				$code .= self::getActionCode($EVC, $WorkFlowTaskHandler, $action_settings, $result_var_prefix, $head_code, $prefix, $original_actions[$idx]);
+				$code .= self::getActionCode($EVC, $WorkFlowTaskHandler, $action_settings, $result_var_prefix, $head_code, $prefix, isset($original_actions[$idx]) ? $original_actions[$idx] : null);
 			
 		return $code;
 	}
@@ -125,12 +124,12 @@ class SequentialLogicalActivityCodeConverter {
 	public static function getActionCode($EVC, $WorkFlowTaskHandler, $action_settings, $result_var_prefix, &$head_code, $prefix = "", $original_actions = null) {
 		$code = "";
 		
-		$result_var_name = trim($action_settings["result_var_name"]);
-		$action_type = strtolower($action_settings["action_type"]);
-		$action_value = $action_settings["action_value"];
+		$result_var_name = isset($action_settings["result_var_name"]) ? trim($action_settings["result_var_name"]) : "";
+		$action_type = isset($action_settings["action_type"]) ? strtolower($action_settings["action_type"]) : "";
+		$action_value = isset($action_settings["action_value"]) ? $action_settings["action_value"] : null;
 		$original_action_value = isset($original_actions["action_value"]) ? $original_actions["action_value"] : array();
-		$condition_type = strtolower($action_settings["condition_type"]);
-		$condition_value = $action_settings["condition_value"];
+		$condition_type = isset($action_settings["condition_type"]) ? strtolower($action_settings["condition_type"]) : "";
+		$condition_value = isset($action_settings["condition_value"]) ? $action_settings["condition_value"] : null;
 		
 		$result_var_code = "";
 		if ($result_var_name) 
@@ -144,10 +143,10 @@ class SequentialLogicalActivityCodeConverter {
 		switch ($action_type) {
 			case "html": //getting design form html settings
 				$task = $WorkFlowTaskHandler->getTasksByTag("createform");
-				$task = $task[0];
+				$task = isset($task[0]) ? $task[0] : null;
 				$task["properties"] = array(
-					"form_settings_data_type" => $action_value["form_settings_data_type"], 
-					"form_settings_data" => $action_value["form_settings_data"],
+					"form_settings_data_type" => isset($action_value["form_settings_data_type"]) ? $action_value["form_settings_data_type"] : null, 
+					"form_settings_data" => isset($action_value["form_settings_data"]) ? $action_value["form_settings_data"] : null,
 					"form_input_data_type" => '',
 					"form_input_data" => '$results',
 				);
@@ -184,11 +183,11 @@ class SequentialLogicalActivityCodeConverter {
 				
 				if ($task_code) {
 					if ($action_type == "callfunction" || $action_type == "callobjectmethod") {
-						$path = trim($action_value["include_file_path"]);
+						$path = isset($action_value["include_file_path"]) ? trim($action_value["include_file_path"]) : "";
 						$path = self::replaceActionValuesHashTagWithVariables($path);
 						
 						if ($path) {
-							$path = PHPUICodeExpressionHandler::getArgumentCode($path, $action_value["include_file_path_type"]);
+							$path = PHPUICodeExpressionHandler::getArgumentCode($path, isset($action_value["include_file_path_type"]) ? $action_value["include_file_path_type"] : null);
 							$once = !empty($action_value["include_once"]);
 							
 							$code .= $prefix . 'include' . ($once ? '_once' : '') . ' ' . $path . ";\n";
@@ -208,12 +207,14 @@ class SequentialLogicalActivityCodeConverter {
 			case "procedure":
 			case "getinsertedid":
 				$action_value = self::replaceActionValuesHashTagWithVariables($action_value);
+				$action_value_options = isset($action_value["options"]) ? $action_value["options"] : null;
+				$action_value_options_type = isset($action_value["options_type"]) ? $action_value["options_type"] : null;
 				
 				//prepare options
-				if ($action_value["options_type"] == "array") {
-					$options = is_array($action_value["options"]) ? $action_value["options"] : array();
+				if ($action_value_options_type == "array") {
+					$options = is_array($action_value_options) ? $action_value_options : array();
 					
-					if ($action_value["db_driver"])
+					if (!empty($action_value["db_driver"]))
 						$options["db_driver"] = array(
 							"key" => "db_driver",
 							"key_type" => "string",
@@ -223,31 +224,31 @@ class SequentialLogicalActivityCodeConverter {
 					
 					$code .= $prefix . '$options = ' . trim(WorkFlowTask::getArrayString($options, $prefix)) . ';' . "\n";
 				}
-				else if ($action_value["options_type"] == "variable") {
-					$code .= $prefix . '$options = ' . PHPUICodeExpressionHandler::getArgumentCode($action_value["options"], $action_value["options_type"]) . ';' . "\n";
+				else if ($action_value_options_type == "variable") {
+					$code .= $prefix . '$options = ' . PHPUICodeExpressionHandler::getArgumentCode($action_value_options, $action_value_options_type) . ';' . "\n";
 					
-					if ($action_value["db_driver"])
+					if (!empty($action_value["db_driver"]))
 						$code .= $prefix . '$options["db_driver"] = ' . PHPUICodeExpressionHandler::getArgumentCode($action_value["db_driver"], "string") . ';' . "\n";
 				}
-				else if ($action_value["options"] && $action_value["db_driver"]) //if string, overwrites it with db_driver. If no db_driver discards string
+				else if ($action_value_options && !empty($action_value["db_driver"])) //if string, overwrites it with db_driver. If no db_driver discards string
 					$code .= $prefix . '$options = array("db_driver" => ' . self::prepareStringValue($action_value["db_driver"]) . ');' . "\n";
 				else
 					$code .= $prefix . '$options = array();' . "\n";
 				
 				//prepare sql
-				$broker = '$EVC->getBroker(' . self::prepareStringValue($action_value["dal_broker"]) . ')';
+				$broker = '$EVC->getBroker(' . self::prepareStringValue(isset($action_value["dal_broker"]) ? $action_value["dal_broker"] : null) . ')';
 				
 				if ($action_type == "getinsertedid")
 					$code .= $prefix . $result_var_code . $broker . '->getInsertedId($options);' . "\n";
 				else {
-					$sql = $action_value["sql"];
+					$sql = isset($action_value["sql"]) ? $action_value["sql"] : null;
 					
-					if ($action_value["table"] && $action_type != "procedure") {
+					if (!empty($action_value["table"]) && $action_type != "procedure") {
 						$data = array(
 							"type" => $action_type,
 							"main_table" => $action_value["table"],
-							"attributes" => $action_value["attributes"],
-							"conditions" => $action_value["conditions"],
+							"attributes" => isset($action_value["attributes"]) ? $action_value["attributes"] : null,
+							"conditions" => isset($action_value["conditions"]) ? $action_value["conditions"] : null,
 						);
 						
 						$code .= $prefix . '$sql_data = ' . trim(var_export($data, true)) . ';' . "\n";
@@ -260,7 +261,7 @@ class SequentialLogicalActivityCodeConverter {
 						$code .= $prefix . '$result = ' . $broker . '->getData($sql, $options);' . "\n";
 						
 						if ($action_type == "count") {
-							$code .= $prefix . '$result = $result["result"];' . "\n";
+							$code .= $prefix . '$result = isset($result["result"]) ? $result["result"] : null;' . "\n";
 							$code .= $prefix . "\n";
 							$code .= $prefix . 'if ($result && is_array($result[0])) ' . "\n";
 							$code .= $prefix . '	' . $result_var_code . 'array_shift(array_values($result[0]));' . "\n";
@@ -268,7 +269,7 @@ class SequentialLogicalActivityCodeConverter {
 							$code .= $prefix . '	' . $result_var_code . 'null;' . "\n";
 						}
 						else
-							$code .= $prefix . $result_var_code . '$result["result"];' . "\n";
+							$code .= $prefix . $result_var_code . 'isset($result["result"]) ? $result["result"] : null;' . "\n";
 					}
 					else
 						$code .= $prefix . $result_var_code . $broker . '->setData($sql, $options);' . "\n";
@@ -285,10 +286,10 @@ class SequentialLogicalActivityCodeConverter {
 			case "show_error_msg_and_redirect":
 				$action_value = self::replaceActionValuesHashTagWithVariables($action_value);
 				
-				$message = $action_value["message"];
+				$message = isset($action_value["message"]) ? $action_value["message"] : null;
 				$ok_message = strpos($action_type, "_ok_") ? $message : null;
 				$error_message = strpos($action_type, "_error_") ? $message : null;
-				$redirect_url = strpos($action_type, "_redirect") ? $action_value["redirect_url"] : null;
+				$redirect_url = strpos($action_type, "_redirect") && isset($action_value["redirect_url"]) ? $action_value["redirect_url"] : null;
 				
 				$head_code[] = 'include_once $EVC->getModulePath("common/CommonModuleUI", $common_project_name);';
 				echo "ok_message:$ok_message\nerror_message:$error_message\nredirect_url:$redirect_url\n";
@@ -305,8 +306,8 @@ class SequentialLogicalActivityCodeConverter {
 			case "alert_msg_and_stop":
 			case "alert_msg_and_redirect":
 				$action_value = self::replaceActionValuesHashTagWithVariables($action_value);
-				$message = $action_value["message"];
-				$redirect_url = strpos($action_type, "_redirect") ? $action_value["redirect_url"] : null;
+				$message = isset($action_value["message"]) ? $action_value["message"] : null;
+				$redirect_url = strpos($action_type, "_redirect") && isset($action_value["redirect_url"]) ? $action_value["redirect_url"] : null;
 				
 				$code .= $prefix . 'echo \'<script>'
 					. ($message ? addcslashes('alert("' . addcslashes($message, '"') . '");', "'") : '')
@@ -324,8 +325,8 @@ class SequentialLogicalActivityCodeConverter {
 				
 				if (is_array($action_value)) {
 					$action_value = self::replaceActionValuesHashTagWithVariables($action_value);
-					$redirect_type = $action_value["redirect_type"];
-					$redirect_url = $action_value["redirect_url"];
+					$redirect_type = isset($action_value["redirect_type"]) ? $action_value["redirect_type"] : null;
+					$redirect_url = isset($action_value["redirect_url"]) ? $action_value["redirect_url"] : null;
 				}
 				else
 					$redirect_url = $action_value;
@@ -343,19 +344,21 @@ class SequentialLogicalActivityCodeConverter {
 			case "return_specific_record":
 				$action_value = self::replaceActionValuesHashTagWithVariables($action_value);
 				
-				$records_variable_name = trim($action_value["records_variable_name"]);
-				$index_variable_name = trim($action_value["index_variable_name"]);
+				$records_variable_name = isset($action_value["records_variable_name"]) ? trim($action_value["records_variable_name"]) : "";
+				$index_variable_name = isset($action_value["index_variable_name"]) ? trim($action_value["index_variable_name"]) : "";
 				
 				//it could be a real variable with already an array inside
 				if (substr($records_variable_name, 0, 1) == '$')
-					$code .= $prefix . '$records = ' . $records_variable_name . ';' . "\n";
+					$code .= $prefix . '$records = isset(' . $records_variable_name . ') ? : ' . $records_variable_name . ' null;' . "\n";
+				else if (substr($records_variable_name, 0, 2) == '@$')
+					$code .= $prefix . '$records = isset(' . substr($records_variable_name, 0, 1) . ') ? : ' . $records_variable_name . ' null;' . "\n";
 				else
-					$code .= $prefix . '$records = $results[' . self::prepareStringValue($records_variable_name) . '];' . "\n";
+					$code .= $prefix . '$records = isset($results[' . self::prepareStringValue($records_variable_name) . ']) ? : $results[' . self::prepareStringValue($records_variable_name) . '] : null;' . "\n";
 				
 				$code .= $prefix . "\n";
 				$code .= $prefix . 'if (is_array($records)) {' . "\n";
 				$code .= $prefix . '	$index = ' . self::prepareStringValue($index_variable_name) . ";\n";
-				$code .= $prefix . '	$index = $index && !is_numeric($index) && is_string($index) ? $_GET[$index] : $index;' . "\n";
+				$code .= $prefix . '	$index = $index && !is_numeric($index) && is_string($index) ? (isset($_GET[$index]) ? $_GET[$index] : null) : $index;' . "\n";
 				$code .= $prefix . '	$index = is_numeric($index) ? $index : 0;' . "\n";
 				$code .= $prefix . "\n";
 				
@@ -365,7 +368,7 @@ class SequentialLogicalActivityCodeConverter {
 					$code .= $prefix . '	$index++;'. "\n";
 				
 				$code .= $prefix . "\n";
-				$code .= $prefix . "\t" . $result_var_code . '$records[$index];' . "\n";
+				$code .= $prefix . "\t" . $result_var_code . 'isset($records[$index]) ? $records[$index] : null;' . "\n";
 				$code .= $prefix . "}\n";
 				break;
 				
@@ -373,11 +376,11 @@ class SequentialLogicalActivityCodeConverter {
 				$action_value = self::replaceActionValuesHashTagWithVariables($action_value);
 				
 				$all_permissions_checked = !empty($action_value["all_permissions_checked"]);
-				$users_perms = $action_value["users_perms"];
-				$entity_path_var_name = trim($action_value["entity_path_var_name"]) ? trim($action_value["entity_path_var_name"]) : '$entity_path';
-				$entity_path_var_name = (substr($entity_path_var_name, 0, 1) != '$' ? '$' : '') . $entity_path_var_name;
+				$users_perms = isset($action_value["users_perms"]) ? $action_value["users_perms"] : null;
+				$entity_path_var_name = isset($action_value["entity_path_var_name"]) && trim($action_value["entity_path_var_name"]) ? trim($action_value["entity_path_var_name"]) : '$entity_path';
+				$entity_path_var_name = (substr($entity_path_var_name, 0, 1) != '$' && substr($entity_path_var_name, 0, 2) != '@$' ? '$' : '') . $entity_path_var_name;
 				$entity_path = $entity_path_var_name;
-				$logged_user_id = $action_value["logged_user_id"];
+				$logged_user_id = isset($action_value["logged_user_id"]) ? $action_value["logged_user_id"] : null;
 				
 				if ($users_perms && class_exists("UserUtil")) {
 					//prepare users_perms
@@ -385,7 +388,7 @@ class SequentialLogicalActivityCodeConverter {
 					$new_users_perms = array();
 					
 					foreach ($users_perms as $user_perm) {
-						if ($user_perm["user_type_id"] == UserUtil::PUBLIC_USER_TYPE_ID) {
+						if (isset($user_perm["user_type_id"]) && $user_perm["user_type_id"] == UserUtil::PUBLIC_USER_TYPE_ID) {
 							$exists_public_access = true;
 							break;
 						}
@@ -425,7 +428,7 @@ class SequentialLogicalActivityCodeConverter {
 							
 							$code .= $prefix . "\n";
 							$code .= $prefix . '		foreach ($users_perms as $user_perm) ' . "\n";
-							$code .= $prefix . '			if (is_numeric($user_perm["user_type_id"]) && is_numeric($user_perm["activity_id"])) {' . "\n";
+							$code .= $prefix . '			if (isset($user_perm["user_type_id"]) && is_numeric($user_perm["user_type_id"]) && isset($user_perm["activity_id"]) && is_numeric($user_perm["activity_id"])) {' . "\n";
 							$code .= $prefix . '				if (!$entered && !$all_permissions_checked) //only happens on the first iteration and if $all_permissions_checked is false' . "\n";
 							$code .= $prefix . '					$user_has_permission = false;' . "\n";
 									
@@ -434,11 +437,15 @@ class SequentialLogicalActivityCodeConverter {
 									
 							$code .= $prefix . "\n";
 							$code .= $prefix . '				$user_perm_exists = false;' . "\n";
-							$code .= $prefix . '				foreach ($utaos as $utao)' . "\n";
-							$code .= $prefix . '					if ($utao["user_type_id"] == $user_perm["user_type_id"] && $utao["activity_id"] == $user_perm["activity_id"]) {' . "\n";
+							$code .= $prefix . '				foreach ($utaos as $utao) {' . "\n";
+							$code .= $prefix . '					$utao_user_type_id = isset($utao["user_type_id"]) ? $utao["user_type_id"] : null;' . "\n";
+							$code .= $prefix . '					$utao_activity_id = isset($utao["activity_id"]) ? $utao["activity_id"] : null;' . "\n";
+							$code .= $prefix . '					' . "\n";
+							$code .= $prefix . '					if ($utao_user_type_id == $user_perm["user_type_id"] && $utao_activity_id == $user_perm["activity_id"]) {' . "\n";
 							$code .= $prefix . '						$user_perm_exists = true;' . "\n";
 							$code .= $prefix . '						break;' . "\n";
 							$code .= $prefix . '					}' . "\n";
+							$code .= $prefix . '				}' . "\n";
 									
 							$code .= $prefix . "\n";
 							$code .= $prefix . '				if ($all_permissions_checked && !$user_perm_exists) {' . "\n";
@@ -503,7 +510,7 @@ class SequentialLogicalActivityCodeConverter {
 				$action_value = self::replaceActionValuesHashTagWithVariables($action_value);
 				
 				$task = $WorkFlowTaskHandler->getTasksByTag("createform");
-				$task = $task[0];
+				$task = isset($task[0]) ? $task[0] : null;
 				$task["properties"] = array("form_input_data_type" => "array", "form_input_data" => $action_value);
 				$task["obj"]->data = $task;
 				
@@ -521,8 +528,8 @@ class SequentialLogicalActivityCodeConverter {
 					$operator = null;
 					
 					if (is_array($action_value)) {
-						$string = self::prepareStringValue($action_value["string"]);
-						$operator = $action_value["operator"];
+						$string = self::prepareStringValue(isset($action_value["string"]) ? $action_value["string"] : null);
+						$operator = isset($action_value["operator"]) ? $action_value["operator"] : null;
 					}
 					else
 						$string = self::prepareStringValue($action_value);
@@ -542,8 +549,8 @@ class SequentialLogicalActivityCodeConverter {
 					$operator = null;
 					
 					if (is_array($action_value)) {
-						$var = $action_value["variable"];
-						$operator = $action_value["operator"];
+						$var = isset($action_value["variable"]) ? $action_value["variable"] : null;
+						$operator = isset($action_value["operator"]) ? $action_value["operator"] : null;
 					}
 					
 					if (!$operator)
@@ -570,9 +577,9 @@ class SequentialLogicalActivityCodeConverter {
 				
 			case "validate_variable":
 				$action_value = self::replaceActionValuesHashTagWithVariables($action_value);
-				$method = $action_value["method"];
-				$variable = $action_value["variable"];
-				$offset = $action_value["offset"];
+				$method = isset($action_value["method"]) ? $action_value["method"] : null;
+				$variable = isset($action_value["variable"]) ? $action_value["variable"] : null;
+				$offset = isset($action_value["offset"]) ? $action_value["offset"] : null;
 				
 				if ($method && $variable) {
 					$is_check_method = strpos($method, "TextValidator::check") === 0;
@@ -599,15 +606,15 @@ class SequentialLogicalActivityCodeConverter {
 				break;
 				
 			case "list_report":
-				$var = $action_value["variable"];
+				$var = isset($action_value["variable"]) ? $action_value["variable"] : null;
 				$var = self::replaceActionValuesHashTagWithVariables($var);
 				$var = trim($var);
 				
 				if ($var) {
 					$var = self::prepareVariableNameValue($var);
-					$type = $action_value["type"];
-					$doc_name = $action_value["doc_name"];
-					$continue = $action_value["continue"];
+					$type = isset($action_value["type"]) ? $action_value["type"] : null;
+					$doc_name = isset($action_value["doc_name"]) ? $action_value["doc_name"] : null;
+					$continue = isset($action_value["continue"]) ? $action_value["continue"] : null;
 					$content_type = $type == "xls" ? "application/vnd.ms-excel" : "text/plain";
 					
 					$code .= $prefix . 'header("Content-Type: ' . $content_type . '");' . "\n";
@@ -655,11 +662,11 @@ class SequentialLogicalActivityCodeConverter {
 				break;
 				
 			case "call_block":
-				$block = trim($action_value["block"]);
+				$block = isset($action_value["block"]) ? trim($action_value["block"]) : "";
 				$block = self::replaceActionValuesHashTagWithVariables($block);
 				
 				if ($block) {
-					$project = trim($action_value["project"]);
+					$project = isset($action_value["project"]) ? trim($action_value["project"]) : "";
 					$project = self::replaceActionValuesHashTagWithVariables($project);
 					
 					$code .= $prefix . '$block_local_variables = array();' . "\n";
@@ -673,11 +680,11 @@ class SequentialLogicalActivityCodeConverter {
 				break;
 				
 			case "call_view":
-				$view = trim($action_value["view"]);
+				$view = isset($action_value["view"]) ? trim($action_value["view"]) : "";
 				$view = self::replaceActionValuesHashTagWithVariables($view);
 				
 				if ($view) {
-					$project = trim($action_value["project"]);
+					$project = isset($action_value["project"]) ? trim($action_value["project"]) : "";
 					$project = self::replaceActionValuesHashTagWithVariables($project);
 					
 					$code .= $prefix . 'include $EVC->getViewPath(' . self::prepareStringValue($view) . ($project ? ', ' . self::prepareStringValue($project) : '') . ');' . "\n";
@@ -690,7 +697,7 @@ class SequentialLogicalActivityCodeConverter {
 				break;
 				
 			case "include_file":
-				$path = trim($action_value["path"]);
+				$path = isset($action_value["path"]) ? trim($action_value["path"]) : "";
 				$path = self::replaceActionValuesHashTagWithVariables($path);
 				
 				if ($path) {
@@ -706,10 +713,10 @@ class SequentialLogicalActivityCodeConverter {
 					if (array_key_exists("code", $action_value))
 						$code .= "?>\n" . self::replaceActionValuesHashTagWithVariables($action_value["code"]) . "\n<?php\n"; //no prefix here bc is html
 					else {
-						$include_graph_library = self::replaceActionValuesHashTagWithVariables($action_value["include_graph_library"]);
-						$width = self::replaceActionValuesHashTagWithVariables($action_value["width"]);
-						$height = self::replaceActionValuesHashTagWithVariables($action_value["height"]);
-						$labels_variable = self::replaceActionValuesHashTagWithVariables($action_value["labels_variable"]);
+						$include_graph_library = isset($action_value["include_graph_library"]) ? self::replaceActionValuesHashTagWithVariables($action_value["include_graph_library"]) : null;
+						$width = isset($action_value["width"]) ? self::replaceActionValuesHashTagWithVariables($action_value["width"]) : null;
+						$height = isset($action_value["height"]) ? self::replaceActionValuesHashTagWithVariables($action_value["height"]) : null;
+						$labels_variable = isset($action_value["labels_variable"]) ? self::replaceActionValuesHashTagWithVariables($action_value["labels_variable"]) : null;
 						
 						$labels_variable_code = $labels_variable ? self::prepareVariableNameValue($labels_variable) : self::prepareStringValue($labels_variable);
 						$data_sets_code = '';
@@ -751,7 +758,7 @@ class SequentialLogicalActivityCodeConverter {
 													if ($i + 1 == $t)
 														$part_obj[$part] = $value;
 													else {
-														if (!is_array($part_obj[$part])) {
+														if (!isset($part_obj[$part]) || !is_array($part_obj[$part])) {
 															$part_obj[$part] = array();
 															$part_composite_keys_obj[$part] = array();
 														}
@@ -779,7 +786,7 @@ class SequentialLogicalActivityCodeConverter {
 											$value = self::replaceActionValuesHashTagWithVariables($value);
 											
 											if ($key) {
-												$option_name = $options_names[$key] ? $options_names[$key] : $key;
+												$option_name = !empty($options_names[$key]) ? $options_names[$key] : $key;
 												$is_valid = !empty($value) || is_numeric($value) || !isset($options_names[$key]);
 												
 												if ($key == "type") {
@@ -845,21 +852,23 @@ class SequentialLogicalActivityCodeConverter {
 				break;
 			
 			case "loop": //getting string settings
-				if ($action_value["actions"]) {
+				if (!empty($action_value["actions"])) {
 					if ($result_var_code)
 						$code .= $prefix . "ob_start(null, 0);\n\n";
 					
-					$records_variable_name = self::replaceActionValuesHashTagWithVariables(trim($action_value["records_variable_name"]));
-					$records_start_index = self::replaceActionValuesHashTagWithVariables(trim($action_value["records_start_index"]));
-					$records_end_index = self::replaceActionValuesHashTagWithVariables(trim($action_value["records_end_index"]));
-					$array_item_key_variable_name = self::replaceActionValuesHashTagWithVariables(trim($action_value["array_item_key_variable_name"]));
-					$array_item_value_variable_name = self::replaceActionValuesHashTagWithVariables(trim($action_value["array_item_value_variable_name"]));
+					$records_variable_name = isset($action_value["records_variable_name"]) ? self::replaceActionValuesHashTagWithVariables(trim($action_value["records_variable_name"])) : null;
+					$records_start_index = isset($action_value["records_start_index"]) ? self::replaceActionValuesHashTagWithVariables(trim($action_value["records_start_index"])) : null;
+					$records_end_index = isset($action_value["records_end_index"]) ? self::replaceActionValuesHashTagWithVariables(trim($action_value["records_end_index"])) : null;
+					$array_item_key_variable_name = isset($action_value["array_item_key_variable_name"]) ? self::replaceActionValuesHashTagWithVariables(trim($action_value["array_item_key_variable_name"])) : null;
+					$array_item_value_variable_name = isset($action_value["array_item_value_variable_name"]) ? self::replaceActionValuesHashTagWithVariables(trim($action_value["array_item_value_variable_name"])) : null;
 					
 					//it could be a real variable with already an array inside
 					if (substr($records_variable_name, 0, 1) == '$')
-						$code .= $prefix . '$records = ' . $records_variable_name . ';' . "\n";
+						$code .= $prefix . '$records = isset(' . $records_variable_name . ') ? ' . $records_variable_name . ' : null;' . "\n";
+					else if (substr($records_variable_name, 0, 2) == '@$')
+						$code .= $prefix . '$records = isset(' . substr($records_variable_name, 0, 2). ') ? ' . $records_variable_name . ' : null;' . "\n";
 					else
-						$code .= $prefix . '$records = $results[' . self::prepareStringValue($records_variable_name) . '];' . "\n";
+						$code .= $prefix . '$records = isset($results[' . self::prepareStringValue($records_variable_name) . ']) ? $results[' . self::prepareStringValue($records_variable_name) . '] : null;' . "\n";
 					
 					$code .= $prefix . "\n";
 					$code .= $prefix . 'if (is_array($records)) {' . "\n";
@@ -881,7 +890,7 @@ class SequentialLogicalActivityCodeConverter {
 					if ($array_item_value_variable_name)
 						$code .= $prefix . '		$' . $array_item_value_variable_name . ' = $v;' . "\n";
 					
-					$code .= self::getActionsCode($EVC, $WorkFlowTaskHandler, $action_value["actions"], $result_var_prefix, $head_code, "$prefix\t\t", $original_action_value["actions"]);
+					$code .= self::getActionsCode($EVC, $WorkFlowTaskHandler, $action_value["actions"], $result_var_prefix, $head_code, "$prefix\t\t", isset($original_action_value["actions"]) ? $original_action_value["actions"] : null);
 					$code .= $prefix . '		}' . "\n";
 					$code .= $prefix . "\n";
 					$code .= $prefix . '		++$i;' . "\n";
@@ -897,18 +906,18 @@ class SequentialLogicalActivityCodeConverter {
 				break;
 				
 			case "group": //getting string settings
-				if ($action_value["actions"]) {
+				if (!empty($action_value["actions"])) {
 					if ($result_var_code)
 						$code .= $prefix . "ob_start(null, 0);\n\n";
 					
-					$group_name = self::replaceActionValuesHashTagWithVariables(trim($action_value["group_name"]));
+					$group_name = isset($action_value["group_name"]) ? self::replaceActionValuesHashTagWithVariables(trim($action_value["group_name"])) : "";
 					
 					if ($group_name) {
 						$group_name = $result_var_prefix . "[" . self::prepareStringValue($group_name) . "] = ";
-						$code .= self::getActionsCode($EVC, $WorkFlowTaskHandler, $action_value["actions"], $group_name, $head_code, $prefix, $original_action_value["actions"]);
+						$code .= self::getActionsCode($EVC, $WorkFlowTaskHandler, $action_value["actions"], $group_name, $head_code, $prefix, isset($original_action_value["actions"]) ? $original_action_value["actions"] : null);
 					}
 					else
-						$code .= self::getActionsCode($EVC, $WorkFlowTaskHandler, $action_value["actions"], $result_var_prefix, $head_code, $prefix, $original_action_value["actions"]);
+						$code .= self::getActionsCode($EVC, $WorkFlowTaskHandler, $action_value["actions"], $result_var_prefix, $head_code, $prefix, isset($original_action_value["actions"]) ? $original_action_value["actions"] : null);
 					
 					if ($result_var_code) {
 						$code .= $prefix . "\n";
@@ -980,16 +989,17 @@ class SequentialLogicalActivityCodeConverter {
 			
 			for ($i = 0; $i < $t; $i++) {
 				$char = $value[$i];
+				$next_char = isset($value[$i + 1]) ? $value[$i + 1] : null;
 				
-				if ($char == "<" && $value[$i + 1] == "?" && !$odq && !$osq)
+				if ($char == "<" && $next_char == "?" && !$odq && !$osq)
 					$ophpt = true;
-				else if ($char == "?" && $value[$i + 1] == ">" && !$odq && !$osq)
+				else if ($char == "?" && $next_char == ">" && !$odq && !$osq)
 					$ophpt = false;
 				else if ($char == '"' && $ophpt && !$osq && !TextSanitizer::isCharEscaped($value, $i))
 					$odq = !$odq;
 				else if ($char == "'" && $ophpt && !$odq && !TextSanitizer::isCharEscaped($value, $i))
 					$osq = !$osq;
-				else if ($char == '$' && ($value[$i + 1] == "{" || preg_match("/\w/u", $value[$i + 1])) && $ophpt && TextSanitizer::isCharEscaped($value, $i)) //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 
+				else if ($char == '$' && ($next_char == "{" || preg_match("/\w/u", $next_char)) && $ophpt && TextSanitizer::isCharEscaped($value, $i)) //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 
 					$new_value = substr($new_value, 0, -1);
 				
 				$new_value .= $char;
@@ -1027,7 +1037,7 @@ class SequentialLogicalActivityCodeConverter {
 					
 					if (strpos($m, "[") !== false) { //if value == #[0]name# or #[$idx - 1][name]#, returns $results[0]["name"] or $results[$idx - 1]["name"]
 						preg_match_all("/([^\[\]]+)/u", trim($m), $sub_matches, PREG_PATTERN_ORDER); //'/u' means converts to unicode.
-						$sub_matches = $sub_matches[1];
+						$sub_matches = isset($sub_matches[1]) ? $sub_matches[1] : null;
 						
 						if ($sub_matches) {
 							//echo "1:";print_r($sub_matches);
@@ -1081,7 +1091,7 @@ class SequentialLogicalActivityCodeConverter {
 		
 		if (($fc == "#" && $lc == "#") || ($fc == '"' && $lc == '"') || ($fc == "'" && $lc == "'"))
 			$var = self::prepareStringValue($var);
-		else if ($fc != '$') {
+		else if ($fc != '$' && substr($var, 0, 2) != '@$') {
 			$type = PHPUICodeExpressionHandler::getValueType($var, array("non_set_type" => "string", "empty_string_type" => "string"));
 			
 			if ($type == "string")

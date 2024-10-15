@@ -16,7 +16,7 @@ $head = '
 $main_content = '
 	<div class="top_bar">
 		<header>
-			<div class="title" title="' . $path . '">Docbook in ' . BreadCrumbsUIHandler::getFilePathBreadCrumbsHtml($file_path, $obj) . '</div>
+			<div class="title" title="' . $path . '">Docbook in ' . BreadCrumbsUIHandler::getFilePathBreadCrumbsHtml($file_path, null) . '</div>
 		</header>
 	</div>';
 	
@@ -24,12 +24,12 @@ if ($file_exists) {
 	$main_content .= '<div class="file_docbook with_top_bar_section">';
 	
 	//show file info
-	if ($is_docbook_allowed) {
-		if ($classes_properties) {
+	if (!empty($is_docbook_allowed)) {
+		if (!empty($classes_properties)) {
 			foreach ($classes_properties as $class_name => $class) {
 				$is_class = $class_name !== 0;
-				$props = $class["props"];
-				$methods = $class["methods"];
+				$props = isset($class["props"]) ? $class["props"] : null;
+				$methods = isset($class["methods"]) ? $class["methods"] : null;
 				
 				if ($is_class)
 					$main_content .= '<div class="class">
@@ -40,15 +40,15 @@ if ($file_exists) {
 						<label>Properties</label>';
 					
 					foreach ($props as $prop_name => $prop) {
-						$value = $prop["value"] ? ($prop["var_type"] == "string" ? '"' . addcslashes($prop["value"], '"') . '"' : $prop["value"]) : "";
+						$value = !empty($prop["value"]) ? (isset($prop["var_type"]) && $prop["var_type"] == "string" ? '"' . addcslashes($prop["value"], '"') . '"' : $prop["value"]) : "";
 						
 						$comments = "";
-						if ($prop["doc_comments"] || $prop["comments"]) {
-							$comments = trim(($prop["comments"] ? implode("", $prop["comments"]) : "") . ($prop["doc_comments"] ? "\n" . implode("", $prop["doc_comments"]) : ""));
+						if (!empty($prop["doc_comments"]) || !empty($prop["comments"])) {
+							$comments = trim((!empty($prop["comments"]) ? implode("", $prop["comments"]) : "") . (!empty($prop["doc_comments"]) ? "\n" . implode("", $prop["doc_comments"]) : ""));
 							$main_content .= '<li class="comments"><pre>' . $comments . '</pre></li>';
 						}
 						
-						$str = ($prop["type"] && !$prop["const"] ? $prop["type"] . " " : "") . ($prop["const"] ? "const " : "") . ($prop["static"] ? "static " : "") . (!$prop["const"] && $prop_name[0] != '$' ? '$' : '') . $prop_name . ($value ? " = " . $value : "");
+						$str = (!empty($prop["type"]) && empty($prop["const"]) ? $prop["type"] . " " : "") . (!empty($prop["const"]) ? "const " : "") . (!empty($prop["static"]) ? "static " : "") . (empty($prop["const"]) && strlen($prop_name) && $prop_name[0] != '$' ? '$' : '') . $prop_name . ($value ? " = " . $value : "");
 						
 						$main_content .= '<li class="prop">' . $str . '</li>';
 					}
@@ -62,20 +62,20 @@ if ($file_exists) {
 					
 					foreach ($methods as $method_name => $method) {
 						$args = "";
-						if ($method["arguments"])
+						if (!empty($method["arguments"]))
 							foreach ($method["arguments"] as $arg_var => $arg_value) 
 								$args .= ($args ? ", " : "") . $arg_var . ($arg_value ? ' = ' . $arg_value : "");
 						
 						$comments = "";
-						if ($method["doc_comments"] || $method["comments"]) {
-							$comments = trim(($method["comments"] ? implode("", $method["comments"]) : "") . ($method["doc_comments"] ? "\n" . implode("", $method["doc_comments"]) : ""));
+						if (!empty($method["doc_comments"]) || !empty($method["comments"])) {
+							$comments = trim((!empty($method["comments"]) ? implode("", $method["comments"]) : "") . (!empty($method["doc_comments"]) ? "\n" . implode("", $method["doc_comments"]) : ""));
 							$main_content .= '<li class="comments"><pre>' . $comments . '</pre></li>';
 						}
 						
 						$str = $method_name . " ( " . $args . " )";
 						
 						if ($is_class)
-							$str = ($method["abstract"] ? "abstract " : "") . ($method["type"] ? $method["type"] . " " : "") . ($method["static"] ? "static " : "") . $str;
+							$str = (!empty($method["abstract"]) ? "abstract " : "") . (!empty($method["type"]) ? $method["type"] . " " : "") . (!empty($method["static"]) ? "static " : "") . $str;
 						
 						$main_content .= '<li class="method">' . $str . '</li>';
 					}
@@ -91,7 +91,7 @@ if ($file_exists) {
 			$main_content .= '<div class="error">No data for file: "' . substr($file_path, strlen(APP_PATH)) . '"</div>';
 	}
 	else 
-		$main_content .= '<div class="code"><textarea readonly>' . htmlspecialchars($contents, ENT_NOQUOTES) . '</textarea></div>';
+		$main_content .= '<div class="code"><textarea readonly>' . (isset($contents) ? htmlspecialchars($contents, ENT_NOQUOTES) : "") . '</textarea></div>';
 		
 	$main_content .= '</div>';
 }

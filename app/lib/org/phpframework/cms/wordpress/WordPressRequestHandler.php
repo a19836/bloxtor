@@ -50,7 +50,7 @@ class WordPressRequestHandler {
 		 * 
 		 * R: It will open the last $_COOKIE["phpframework_url"], which is the __system url. BUT THIS IS OK! DON'T WORRY WITH THIS BC THIS WILL NOT HAPPEN IN PROD BC THE FINAL END-USER DOESN'T HAVE ACCESS TO THE __system UI.
 		*/
-		if ($_SERVER["HTTP_REFERER"] && !empty($_COOKIE[$this->cookies_prefix . "_phpframework_url"])) {
+		if (!empty($_SERVER["HTTP_REFERER"]) && !empty($_COOKIE[$this->cookies_prefix . "_phpframework_url"])) {
 			$referer = explode("#", $_SERVER["HTTP_REFERER"]);
 			$referer = explode("?", $referer[0]);
 			$referer = $referer[0];

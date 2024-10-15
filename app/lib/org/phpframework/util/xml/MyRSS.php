@@ -30,8 +30,8 @@ class MyRSS {
 	
 	public function getRssContent() {
 		$data = array();
-		$current_host = explode(":", $_SERVER["HTTP_HOST"]); //maybe it contains the port
-		$current_host = $current_host[0];
+		$current_host = isset($_SERVER["HTTP_HOST"]) ? explode(":", $_SERVER["HTTP_HOST"]) : null; //maybe it contains the port
+		$current_host = isset($current_host[0]) ? $current_host[0] : null;
 		
 		foreach ($this->url as $url) {
 			$url_host = parse_url($url, PHP_URL_HOST);
@@ -78,14 +78,15 @@ class MyRSS {
 			$keys = array_keys($content);
 			$t = count($keys);
 			for ($i = 0; $i < $t; $i++) {
-				$content_i = $content[ $keys[$i] ];
+				$key = $keys[$i];
+				$content_i = $content[$key];
 				
 				$status = false;
 				if (is_numeric(stripos($content_i,"<rss")) || is_numeric(stripos($content_i,"<feed"))) {
 					$xml = simplexml_load_string($content_i);
 					$status = $xml ? true : false;
 				}
-				$statuses[ $keys[$i] ] = $status;
+				$statuses[$key] = $status;
 			}
 			
 			return $statuses;
@@ -107,8 +108,10 @@ class MyRSS {
 			
 			$t = count($keys);
 			for ($i = 0; $i < $t; $i++) {
-				if (!empty($data["is_rss_url"][ $keys[$i] ])) {
-					$data["content"][ $keys[$i] ] = $this->content[ $keys[$i] ];
+				$key = $keys[$i];
+				
+				if (!empty($data["is_rss_url"][$key])) {
+					$data["content"][$key] = isset($this->content[$key]) ? $this->content[$key] : null;
 				}
 			}
 		}

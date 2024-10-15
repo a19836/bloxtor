@@ -4,12 +4,12 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$hbn_obj_id = $_GET["obj"];
-$map_type = $_GET["map_type"];
-$query_type = $_GET["query_type"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$hbn_obj_id = isset($_GET["obj"]) ? $_GET["obj"] : null;
+$map_type = isset($_GET["map_type"]) ? $_GET["map_type"] : null;
+$query_type = isset($_GET["query_type"]) ? $_GET["query_type"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -29,10 +29,10 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 		$nodes = $obj->getSQLClient()->getNodesData();
 		
 		if ($obj->getType() == "hibernate") {
-			$maps = $nodes["class"][$hbn_obj_id]["childs"][$query_type][$map_type . "_map"];
+			$maps = isset($nodes["class"][$hbn_obj_id]["childs"][$query_type][$map_type . "_map"]) ? $nodes["class"][$hbn_obj_id]["childs"][$query_type][$map_type . "_map"] : null;
 		}
 		else {
-			$maps = $nodes[$map_type . "_map"];
+			$maps = isset($nodes[$map_type . "_map"]) ? $nodes[$map_type . "_map"] : null;
 		}
 		
 		$items = is_array($maps) ? array_keys($maps) : array();

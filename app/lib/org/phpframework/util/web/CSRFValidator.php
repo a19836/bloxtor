@@ -57,16 +57,16 @@ DXW+pzUWrmScbhHynvHdKQo=
 	}
 	
 	public static function isSameReferer() {
-		$referer_domain = $_SERVER["HTTP_REFERER"] ? strtolower(parse_url($_SERVER["HTTP_REFERER"], PHP_URL_HOST)) : null;
-		$request_host = explode(":", $_SERVER["HTTP_HOST"]);
-		$request_host = $request_host[0];
+		$referer_domain = !empty($_SERVER["HTTP_REFERER"]) ? strtolower(parse_url($_SERVER["HTTP_REFERER"], PHP_URL_HOST)) : null;
+		$request_host = isset($_SERVER["HTTP_HOST"]) ? explode(":", $_SERVER["HTTP_HOST"]) : null;
+		$request_host = isset($request_host[0]) ? $request_host[0] : null;
 		
 		return $referer_domain && $referer_domain == strtolower($request_host);
 	}
 	
 	public static function isSameIP() {
 		$client_ip = self::getClientIP();
-		$referer_ip = $_COOKIE[self::$CLIENT_IP_VARIABLE_NAME];
+		$referer_ip = isset($_COOKIE[self::$CLIENT_IP_VARIABLE_NAME]) ? $_COOKIE[self::$CLIENT_IP_VARIABLE_NAME] : null;
 		//echo "client_ip(".$_SERVER["REMOTE_ADDR"]."):$client_ip<pre>";print_r($_SERVER);die();
 		
 		return $referer_ip && $referer_ip == $client_ip;
@@ -79,7 +79,7 @@ DXW+pzUWrmScbhHynvHdKQo=
 	}
 	
 	public static function getClientIP() {
-		$client_ip = $_SERVER["REMOTE_ADDR"];
+		$client_ip = isset($_SERVER["REMOTE_ADDR"]) ? $_SERVER["REMOTE_ADDR"] : null;
 		
 		if (self::$CLIENT_IP_ENCRYPTION_KEY) {
 			$PublicPrivateKeyHandler = new PublicPrivateKeyHandler(true);

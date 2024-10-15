@@ -9,13 +9,13 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$props = $WorkFlowTaskCodeParser->getObjectMethodProps($stmt);
 		
 		if ($props) {
-			$method_name = $props["method_name"];
+			$method_name = isset($props["method_name"]) ? $props["method_name"] : null;
 			
 			if ($method_name == "addView" && empty($props["method_static"])) {
-				$args = $props["method_args"];
+				$args = isset($props["method_args"]) ? $props["method_args"] : null;
 				
-				$value = $args[0]["value"];
-				$type = $args[0]["type"];
+				$value = isset($args[0]["value"]) ? $args[0]["value"] : null;
+				$type = isset($args[0]["type"]) ? $args[0]["type"] : null;
 				
 				unset($props["method_name"]);
 				unset($props["method_args"]);
@@ -38,33 +38,37 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"method_obj" => $raw_data["childs"]["properties"][0]["childs"]["method_obj"][0]["value"],
-			"value" => $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"],
-			"type" => $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"],
+			"method_obj" => isset($raw_data["childs"]["properties"][0]["childs"]["method_obj"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["method_obj"][0]["value"] : null,
+			"value" => isset($raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"] : null,
+			"type" => isset($raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$method_obj = $properties["method_obj"];
+		$method_obj = isset($properties["method_obj"]) ? $properties["method_obj"] : null;
 		if ($method_obj) {
 			$static_pos = strpos($method_obj, "::");
 			$non_static_pos = strpos($method_obj, "->");
-			$method_obj = substr($method_obj, 0, 1) != '$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $method_obj : $method_obj;
+			$method_obj = substr($method_obj, 0, 1) != '$' && substr($method_obj, 0, 2) != '@$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $method_obj : $method_obj;
 			$method_obj .= "->";
 		}
 		
-		$code  = $prefix_tab . $method_obj . "addView(" . self::getVariableValueCode($properties["value"], $properties["type"]) . ");\n";
+		$value = isset($properties["value"]) ? $properties["value"] : null;
+		$type = isset($properties["type"]) ? $properties["type"] : null;
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$code  = $prefix_tab . $method_obj . "addView(" . self::getVariableValueCode($value, $type) . ");\n";
+		
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

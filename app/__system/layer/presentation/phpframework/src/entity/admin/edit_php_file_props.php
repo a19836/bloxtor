@@ -6,15 +6,15 @@ include_once get_lib("org.phpframework.workflow.WorkFlowTaskHandler");
 include_once get_lib("org.phpframework.phpscript.docblock.DocBlockParser");
 include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$item_type = $_GET["item_type"];
-$class_id = $_GET["class"];
-$method_id = $_GET["method"];
-$function_id = $_GET["function"];
-$filter_by_layout = $_GET["filter_by_layout"];
-$popup = $_GET["popup"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$item_type = isset($_GET["item_type"]) ? $_GET["item_type"] : null;
+$class_id = isset($_GET["class"]) ? $_GET["class"] : null;
+$method_id = isset($_GET["method"]) ? $_GET["method"] : null;
+$function_id = isset($_GET["function"]) ? $_GET["function"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -77,12 +77,12 @@ if ($layer_path) { //bc of hackings, like trying to know the code for libs or sy
 			$is_class_equal_to_file_name = $class_id && pathinfo($path, PATHINFO_FILENAME) == $class_id;
 			
 			//remove the weird chars from code, this is, in the php editor appears some red dots in the code, which means there some weird chars in the code. I detected which chars are these ones, this is, the char 'chr(194) . chr(160)' which should be replaced with space and the second with empty.
-			if ($obj_data["code"]) //This if is very important, bc the obj_data can be empty, otherwise we are setting an non empty array and then we cannot detect if the method exists or not.
+			if (!empty($obj_data["code"])) //This if is very important, bc the obj_data can be empty, otherwise we are setting an non empty array and then we cannot detect if the method exists or not.
 				$obj_data["code"] = str_replace(chr(194) . chr(160), ' ', $obj_data["code"]);
 			
 			$ugvfps = array($user_global_variables_file_path);
 			
-			if ($PEVC) {
+			if (!empty($PEVC)) {
 				$ugvfps[] = $PEVC->getConfigPath("pre_init_config");
 				$selected_project_id = $obj->getSelectedPresentationId();
 			}
@@ -98,40 +98,40 @@ if ($layer_path) { //bc of hackings, like trying to know the code for libs or sy
 				$layer_brokers_settings = WorkFlowBeansFileHandler::getLayerBrokersSettings($user_global_variables_file_path, $user_beans_folder_path, $brokers, $item_type == "presentation" ? '$EVC->getBroker' : '$this->getBusinessLogicLayer()->getBroker');
 				//echo "<pre>";print_r($layer_brokers_settings);die();
 				
-				if ($PEVC) {
+				if (!empty($PEVC)) {
 					$presentation_brokers = array();
 					$presentation_brokers[] = array(WorkFlowBeansFileHandler::getLayerNameFromBeanObject($bean_name, $obj) . " (Self)", $bean_file_name, $bean_name);
 					$presentation_brokers_obj = array("default" => '$EVC->getPresentationLayer()');
 					
 					$available_projects = $PEVC->getProjectsId();
 					
-					$business_logic_brokers = $layer_brokers_settings["business_logic_brokers"];
-					$business_logic_brokers_obj = $layer_brokers_settings["business_logic_brokers_obj"];
+					$business_logic_brokers = isset($layer_brokers_settings["business_logic_brokers"]) ? $layer_brokers_settings["business_logic_brokers"] : null;
+					$business_logic_brokers_obj = isset($layer_brokers_settings["business_logic_brokers_obj"]) ? $layer_brokers_settings["business_logic_brokers_obj"] : null;
 					
 					$phpframeworks_options = array("default" => '$EVC->getPresentationLayer()->getPHPFrameWork()');
 				}
 				else {
 					$business_logic_brokers = array();
 					$business_logic_brokers[] = array(WorkFlowBeansFileHandler::getLayerNameFromBeanObject($bean_name, $obj) . " (Self)", $bean_file_name, $bean_name);
-					$business_logic_brokers = array_merge($business_logic_brokers, $layer_brokers_settings["business_logic_brokers"]);
+					$business_logic_brokers = array_merge($business_logic_brokers, isset($layer_brokers_settings["business_logic_brokers"]) ? $layer_brokers_settings["business_logic_brokers"] : null);
 					
 					$business_logic_brokers_obj = array("default" => '$this->getBusinessLogicLayer()');
-					$business_logic_brokers_obj = array_merge($business_logic_brokers_obj, $layer_brokers_settings["business_logic_brokers_obj"]);
+					$business_logic_brokers_obj = array_merge($business_logic_brokers_obj, isset($layer_brokers_settings["business_logic_brokers_obj"]) ? $layer_brokers_settings["business_logic_brokers_obj"] : null);
 					
 					$phpframeworks_options = array("default" => '$this->getBusinessLogicLayer()->getPHPFrameWork()');
 				}
 				
-				$data_access_brokers = $layer_brokers_settings["data_access_brokers"];
-				$data_access_brokers_obj = $layer_brokers_settings["data_access_brokers_obj"];
+				$data_access_brokers = isset($layer_brokers_settings["data_access_brokers"]) ? $layer_brokers_settings["data_access_brokers"] : null;
+				$data_access_brokers_obj = isset($layer_brokers_settings["data_access_brokers_obj"]) ? $layer_brokers_settings["data_access_brokers_obj"] : null;
 
-				$ibatis_brokers = $layer_brokers_settings["ibatis_brokers"];
-				$ibatis_brokers_obj = $layer_brokers_settings["ibatis_brokers_obj"];
+				$ibatis_brokers = isset($layer_brokers_settings["ibatis_brokers"]) ? $layer_brokers_settings["ibatis_brokers"] : null;
+				$ibatis_brokers_obj = isset($layer_brokers_settings["ibatis_brokers_obj"]) ? $layer_brokers_settings["ibatis_brokers_obj"] : null;
 
-				$hibernate_brokers = $layer_brokers_settings["hibernate_brokers"];
-				$hibernate_brokers_obj = $layer_brokers_settings["hibernate_brokers_obj"];
+				$hibernate_brokers = isset($layer_brokers_settings["hibernate_brokers"]) ? $layer_brokers_settings["hibernate_brokers"] : null;
+				$hibernate_brokers_obj = isset($layer_brokers_settings["hibernate_brokers_obj"]) ? $layer_brokers_settings["hibernate_brokers_obj"] : null;
 				
-				$db_brokers = $layer_brokers_settings["db_brokers"];
-				$db_brokers_obj = $layer_brokers_settings["db_brokers_obj"];
+				$db_brokers = isset($layer_brokers_settings["db_brokers"]) ? $layer_brokers_settings["db_brokers"] : null;
+				$db_brokers_obj = isset($layer_brokers_settings["db_brokers_obj"]) ? $layer_brokers_settings["db_brokers_obj"] : null;
 				
 				//PREPARING getbeanobject
 				$bean_names_options = array_keys($obj->getPHPFrameWork()->getObjects());
@@ -153,7 +153,7 @@ if ($layer_path) { //bc of hackings, like trying to know the code for libs or sy
 				if ($item_type == "presentation")
 					$allowed_tasks_tag = array_merge($allowed_tasks_tag, array(
 						"inlinehtml", "createform",
-						"callpresentationlayerwebservice", "setpresentationview", "addpresentationview", "setpresentationtemplate", "setblockparams", "settemplateregionblockparam", "includeblock", "addtemplateregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam",
+						"callpresentationlayerwebservice", "setpresentationview", "addpresentationview", "setpresentationtemplate", "setblockparams", "settemplateregionblockparam", "includeblock", "addregionhtml", "addregionblock", "rendertemplateregion", "settemplateparam", "gettemplateparam",
 					));
 				
 				if ($data_access_brokers_obj) {
@@ -201,12 +201,12 @@ if ($layer_path) { //bc of hackings, like trying to know the code for libs or sy
 			$comments = isset($obj_data["doc_comments"]) && is_array($obj_data["doc_comments"]) ? implode("\n", $obj_data["doc_comments"]) : "";
 			$is_hidden = strpos($comments, "@hidden") !== false;
 			
-			if ($include_annotations) {
+			if (!empty($include_annotations)) {
 				$DocBlockParser = new DocBlockParser();
 				$DocBlockParser->ofComment($comments);
 				$objects = $DocBlockParser->getObjects();
 				$method_comments = $DocBlockParser->getDescription();
-				$returns = $objects["return"];
+				$returns = isset($objects["return"]) ? $objects["return"] : null;
 				$params = $DocBlockParser->getTagParams();
 			}
 			else {
@@ -219,7 +219,7 @@ if ($layer_path) { //bc of hackings, like trying to know the code for libs or sy
 				$method_comments = trim($method_comments);
 			}
 			
-			$comments = is_array($obj_data["comments"]) ? trim(implode("\n", $obj_data["comments"])) : "";
+			$comments = isset($obj_data["comments"]) && is_array($obj_data["comments"]) ? trim(implode("\n", $obj_data["comments"])) : "";
 			$comments .= $method_comments ? "\n" . trim($method_comments) : "";
 			$comments = str_replace(array("/*", "*/", "//"), "", $comments);
 			$comments = trim($comments);

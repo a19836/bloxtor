@@ -239,7 +239,8 @@ class HtmlFormHandler {
 		$HtmlFormHandler = new HtmlFormHandler($settings);
 		
 		if (!empty($settings["ptl"])) {
-			$ptl_external_vars = array($HtmlFormHandler->settings["ptl"]["input_data_var_name"] => $input_data);
+			$input_data_var_name = isset($HtmlFormHandler->settings["ptl"]["input_data_var_name"]) ? $HtmlFormHandler->settings["ptl"]["input_data_var_name"] : null;
+			$ptl_external_vars = array($input_data_var_name => $input_data);
 			$ptl_external_vars = isset($HtmlFormHandler->settings["ptl"]["external_vars"]) && is_array($HtmlFormHandler->settings["ptl"]["external_vars"]) ? array_merge($HtmlFormHandler->settings["ptl"]["external_vars"], $ptl_external_vars) : $ptl_external_vars;
 			
 			$input_data = false;
@@ -414,7 +415,8 @@ class HtmlFormHandler {
 				$old_input_data_var_name = $this->settings["ptl"]["input_data_var_name"];
 				$this->settings["ptl"]["input_data_var_name"] = $old_input_data_var_name . "_" . rand(1, 1000);
 				
-				$html .= '<ptl:var:' . $this->settings["ptl"]["input_data_var_name"] . ' $' . $old_input_data_var_name . '[$' . $this->settings["ptl"]["idx_var_name"] . '] />';
+				$html .= '<ptl:var:' . $this->settings["ptl"]["input_data_var_name"] . ' @$' . $old_input_data_var_name . '[$' . $this->settings["ptl"]["idx_var_name"] . '] />';
+				$items = null;
 			}
 			else 
 				$items = isset($idx) && $idx !== false ? $input_data[$idx] : $input_data;
@@ -561,7 +563,7 @@ class HtmlFormHandler {
 		if (!empty($table["default_input_data"]))
 			$input_data = $this->parseNewInputData($table["default_input_data"], $input_data);
 		
-		$html .= '<table';
+		$html = '<table';
 		if (!empty($table["table_class"]))
 			$html .= ' class="' . $this->parseSettingsAttributeValue($table["table_class"], $input_data, false, false, " ") . '"';
 		$html .= '>';
@@ -620,14 +622,14 @@ class HtmlFormHandler {
 	private function createPTLTable($table) {
 		$html = '';
 		$rand = rand(1, 1000);
-		$input_data_var_name = $this->settings["ptl"]["input_data_var_name"] . "_$rand";
+		$old_input_data_var_name = isset($this->settings["ptl"]["input_data_var_name"]) ? $this->settings["ptl"]["input_data_var_name"] : null;
+		$input_data_var_name = $old_input_data_var_name . "_$rand";
 		
 		if (!empty($table["default_input_data"]))
 			$html .= '<ptl:var:' . $input_data_var_name . ' ' . str_replace(">", "&gt;", var_export($this->parseNewInputData($table["default_input_data"]), true)) . '/>';
 		else
-			$html .= '<ptl:var:' . $input_data_var_name . ' $' . $this->settings["ptl"]["input_data_var_name"] . '/>';
+			$html .= '<ptl:var:' . $input_data_var_name . ' @$' . $old_input_data_var_name . '/>';
 		
-		$old_input_data_var_name = $this->settings["ptl"]["input_data_var_name"];
 		$this->settings["ptl"]["input_data_var_name"] = $input_data_var_name;
 		
 		$html .= '<table';
@@ -638,7 +640,7 @@ class HtmlFormHandler {
 		$elements = isset($table["elements"]) ? $table["elements"] : null;
 		
 		if ($elements) {
-			$old_idx_var_name = $this->settings["ptl"]["idx_var_name"];
+			$old_idx_var_name = isset($this->settings["ptl"]["idx_var_name"]) ? $this->settings["ptl"]["idx_var_name"] : null;
 			$this->settings["ptl"]["idx_var_name"] = 'idx_' . $rand;
 			
 			$rows_class = !empty($table["rows_class"]) ? ' class="' . $this->parseSettingsAttributeValue($table["rows_class"], false, false, false, " ") . '"' : '';
@@ -660,7 +662,7 @@ class HtmlFormHandler {
 			$html .= '</tr>
 			</thead>
 			<tbody>
-				<ptl:if is_array($' . $input_data_var_name . ')>
+				<ptl:if is_array(@$' . $input_data_var_name . ')>
 					<ptl:foreach $' . $input_data_var_name . ' ' . $this->settings["ptl"]["idx_var_name"] . ' item>
 						<tr' . $rows_class . '>';
 			foreach ($elements as $element) 
@@ -739,14 +741,14 @@ class HtmlFormHandler {
 		$html = '';
 		$html_tag = !empty($tree["ordered"]) ? 'ol' : 'ul';
 		$rand = rand(1, 1000);
-		$input_data_var_name = $this->settings["ptl"]["input_data_var_name"] . "_$rand";
+		$old_input_data_var_name = isset($this->settings["ptl"]["input_data_var_name"]) ? $this->settings["ptl"]["input_data_var_name"] : null;
+		$input_data_var_name = $old_input_data_var_name . "_$rand";
 		
 		if (!empty($tree["default_input_data"]))
 			$html .= '<ptl:var:' . $input_data_var_name . ' ' . str_replace(">", "&gt;", var_export($this->parseNewInputData($tree["default_input_data"]), true)) . '/>';
 		else
-			$html .= '<ptl:var:' . $input_data_var_name . ' $' . $this->settings["ptl"]["input_data_var_name"] . '/>';
+			$html .= '<ptl:var:' . $input_data_var_name . ' @$' . $old_input_data_var_name . '/>';
 		
-		$old_input_data_var_name = $this->settings["ptl"]["input_data_var_name"];
 		$this->settings["ptl"]["input_data_var_name"] = $input_data_var_name;
 		
 		$html .= '<' . $html_tag;
@@ -759,7 +761,7 @@ class HtmlFormHandler {
 		if ($elements) {
 			$didvn = $this->default_input_data_var_name;
 			$this->settings["ptl"]["input_data_var_name"] = $didvn;
-			$old_idx_var_name = $this->settings["ptl"]["idx_var_name"];
+			$old_idx_var_name = isset($this->settings["ptl"]["idx_var_name"]) ? $this->settings["ptl"]["idx_var_name"] : null;
 			$this->settings["ptl"]["idx_var_name"] = 'i';
 			
 			$lis_class = !empty($tree["lis_class"]) ? ' class="' . $this->parseSettingsAttributeValue($tree["lis_class"], false, false, false, " ") . '"' : '';
@@ -773,7 +775,7 @@ class HtmlFormHandler {
 				preg_match("/<ptl:function:([\w]+) $didvn>/iu", $fields, $matches, PREG_OFFSET_CAPTURE); //'\w' means all words with '_' and 'u' means with accents and ç too. '/u' converts unicode to accents chars.
 				//print_r($matches);
 				
-				if ($matches[0]) {
+				if (!empty($matches[0])) {
 					$tag = "</ptl:function:" . $matches[1][0] . ">";
 					$start = $matches[0][1];
 					$end = strpos($fields, $tag, $start) + strlen($tag);
@@ -804,7 +806,7 @@ class HtmlFormHandler {
 			</ptl:function:createTree_' . $rand . '>';
 			
 			//Call Tree function
-			$html .= '<ptl:createTree_' . $rand . ' $' . $input_data_var_name . ' />';
+			$html .= '<ptl:createTree_' . $rand . ' @$' . $input_data_var_name . ' />';
 			
 			$this->settings["ptl"]["idx_var_name"] = $old_idx_var_name;
 		}
@@ -1232,10 +1234,14 @@ class HtmlFormHandler {
 					switch ($attr) {
 						case "extra_attributes":
 							if ($field["extra_attributes"]) {
-								if(is_array($field["extra_attributes"]))
+								if(is_array($field["extra_attributes"])) {
 									foreach ($field["extra_attributes"] as $f)
-										if (!empty($f["name"]))
-											$code .= ' ' . $this->parseSettingsValue($f["name"], $input_data, $idx) . '="' . (strtolower($f["name"]) == "class" ? $this->parseSettingsAttributeValue($f["value"], $input_data, $idx, false, " ") : $this->parseSettingsAttributeValue($f["value"], $input_data, $idx)) . '"';
+										if (!empty($f["name"])) {
+											$extra_attributes_value = isset($f["value"]) ? $f["value"] : null;
+											
+											$code .= ' ' . $this->parseSettingsValue($f["name"], $input_data, $idx) . '="' . (strtolower($f["name"]) == "class" ? $this->parseSettingsAttributeValue($extra_attributes_value, $input_data, $idx, false, " ") : $this->parseSettingsAttributeValue($extra_attributes_value, $input_data, $idx)) . '"';
+										}
+								}
 								else
 									$code .= ' ' . $field["extra_attributes"];
 							}
@@ -1411,7 +1417,7 @@ class HtmlFormHandler {
 			
 			if (is_array($available_values)) { //Preparing available_values according with settings from form task
 				$keys = array_keys($available_values);
-				$first_key = $keys[0];
+				$first_key = isset($keys[0]) ? $keys[0] : null;
 				$has_old_structure = isset($available_values[$first_key]["old_value"]) || isset($available_values[$first_key]["new_value"]);
 				
 				if ($has_old_structure) {
@@ -1631,8 +1637,12 @@ class HtmlFormHandler {
 						}
 						else if ($is_ptl && $m == '$' . $input_data_var_name) //#$input#, returns $input - Returns it-self. Note that $input_data_var_name only exists if PTL is active
 							$replacement = '$' . $input_data_var_name;
+						else if ($is_ptl && $m == '@$' . $input_data_var_name) //#@$input#, returns $input - Returns it-self. Note that $input_data_var_name only exists if PTL is active
+							$replacement = '@$' . $input_data_var_name;
 						else if ($m == '$' . $this->default_input_data_var_name) //#$input#, returns $input - Returns it-self.
 							$replacement = $is_ptl ? '$' . $this->default_input_data_var_name : $input_data;
+						else if ($m == '@$' . $this->default_input_data_var_name) //#@$input#, returns $input - Returns it-self.
+							$replacement = $is_ptl ? '@$' . $this->default_input_data_var_name : $input_data;
 						else if ($m == '$input' || $m == '$input_data') { //$this->default_input_data_var_name or $input_data_var_name should have this already covered, otherwise something is wrong with the above code.
 							echo "MAJOR ERROR in getParsedValue method in HTMLFormHandler.php and PTLFieldsUtilObj.js. Is missing here something... I should re-check the code of this method.";
 							//die();
@@ -1652,7 +1662,7 @@ class HtmlFormHandler {
 							}
 						}
 						else //if $value == #name#, returns $input["name"]
-							$replacement = $is_ptl ? '$' . $input_data_var_name . '[' . $m . ']' : $input_data[$m];
+							$replacement = $is_ptl ? '$' . $input_data_var_name . '[' . $m . ']' : (isset($input_data[$m]) ? $input_data[$m] : null);
 						
 						$aux = substr($value, $offset, $matches[0][$i][1] - $offset);
 						

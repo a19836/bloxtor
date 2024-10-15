@@ -4,10 +4,10 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$project = $_GET["project"];
-$block = $_GET["block"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$project = isset($_GET["project"]) ? $_GET["project"] : null;
+$block = isset($_GET["block"]) ? $_GET["block"] : null;
 
 /*The ENT_NOQUOTES will avoid converting the &quot; to ". If this is not here and if we have some form settings with PTL code like: 
 	$form_settings = array("ptl" => array("code" => "<ptl:echo str_replace('\"', '&quot;', \$var_aux_910) />"));
@@ -34,14 +34,16 @@ if ($project && $block && $post_data) {
 			//get block's module id
 			$block_params = CMSFileHandler::getFileCreateBlockParams($block_path, false, 1, 1);
 			//echo "<pre>block_params:";print_r($block_params);die();
-			$module_id = $block_params[0]["module_type"] == "string" ? $block_params[0]["module"] : "";
+			$module_id = isset($block_params[0]["module_type"]) && $block_params[0]["module_type"] == "string" ? $block_params[0]["module"] : "";
 			
 			$old_block_code_id = md5(file_get_contents($block_path));
 			$old_block_code_time = filemtime($block_path);
 			
 			//if module_id exists which means it has the block_settings
-			if ($module_id && $old_block_code_id == $post_data["block_code_id"] && $old_block_code_time == $post_data["block_code_time"]) {
-				$status = CMSFileHandler::setFileBlockSettingsPropertyValue($block_path, $post_data["setting_path"], $post_data["setting_value"]);
+			if ($module_id && isset($post_data["block_code_id"]) && $old_block_code_id == $post_data["block_code_id"] && isset($post_data["block_code_time"]) && $old_block_code_time == $post_data["block_code_time"]) {
+				$setting_path = isset($post_data["setting_path"]) ? $post_data["setting_path"] : null;
+				$setting_value = isset($post_data["setting_value"]) ? $post_data["setting_value"] : null;
+				$status = CMSFileHandler::setFileBlockSettingsPropertyValue($block_path, $setting_path, $setting_value);
 				
 				if ($status) {
 					clearstatcache(); //clear cache otherwise when we get the filemtime, it will get the same time than before.

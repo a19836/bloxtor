@@ -1,7 +1,7 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$path = $_GET["path"];
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 

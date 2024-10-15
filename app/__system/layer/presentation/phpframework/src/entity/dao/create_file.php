@@ -1,9 +1,9 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 
-$type = $_GET["type"];
-$path = $_GET["path"];
-$file_name = ucfirst($_GET["file_name"]);
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$file_name = isset($_GET["file_name"]) ? ucfirst($_GET["file_name"]) : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -18,14 +18,14 @@ if (file_exists($path) && $file_name) {
 	$contents = "";
 	
 	if ($type == "hibernatemodel" || $type == "objtype") {
-		$file_path .= $path_info["extension"] == "php" ? "" : ".php";
+		$file_path .= isset($path_info["extension"]) && $path_info["extension"] == "php" ? "" : ".php";
 		
 		$contents = $type == "hibernatemodel" ? getHibernateModelClassContents($path_info["filename"]) : getObjTypeClassContents($path_info["filename"]);
 		
 		if (!$contents)
 			$file_path = "";
 		else if (!PHPScriptHandler::isValidPHPContents($contents, $error_message)) { // in cae the user creates a class with a name: "as" or any other php reserved word.
-			echo $error_message ? $error_message : "Error creating $type with name: $file_name";
+			echo !empty($error_message) ? $error_message : "Error creating $type with name: $file_name";
 			die();
 		}
 	}
@@ -33,7 +33,8 @@ if (file_exists($path) && $file_name) {
 	$status = $file_path ? file_put_contents($file_path, $contents) !== false : false;
 }
 
-die($status);
+echo isset($status) ? $status : null;
+die();
 
 function getHibernateModelClassContents($class_name) {
 	include_once get_lib("org.phpframework.sqlmap.hibernate.HibernateModel"); //include HibernateModel file so all the dependents classes get included too and we can check if the class already exists
@@ -92,7 +93,7 @@ class ' . $class_name . ' extends ObjType {
 		parent::setData($data);
 		
 		//TODO: change the $this->data value or assign the $this->data\'s values to some properties
-		//sample: $this->status = $this->data["status"];
+		//sample: $this->status = isset($this->data["status"]) ? $this->data["status"] : null;
 	}
 	
 	//to be called if this class is to be used as a Parameter Class in the Data-Access Layers...

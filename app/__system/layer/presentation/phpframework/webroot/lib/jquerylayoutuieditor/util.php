@@ -28,7 +28,7 @@ function scanWidgets($dir, $options = null) {
 		$files = scandir($dir);
 		
 		//sort files
-		if ($options && $options["priority_files"]) {
+		if ($options && !empty($options["priority_files"])) {
 			$priority_files = $options["priority_files"];
 			$new_files = array();
 			
@@ -55,7 +55,7 @@ function scanWidgets($dir, $options = null) {
 						$result[$value] = $dir . DIRECTORY_SEPARATOR . $value . DIRECTORY_SEPARATOR . "settings.xml";
 					else {
 						$sub_options = $options;
-						$sub_options["priority_files"] = $priority_files ? $priority_files[$value] : null;
+						$sub_options["priority_files"] = isset($priority_files[$value]) ? $priority_files[$value] : null;
 						
 						$sub_result = scanWidgets($dir . DIRECTORY_SEPARATOR . $value, $sub_options); 
 						
@@ -74,8 +74,8 @@ function scanWidgets($dir, $options = null) {
 
 function filterWidgets($widgets, $widgets_root_path, $widgets_root_url, $options, $parent_prefix = "") {
 	if ($options) {
-		$allowed_widgets = $options && $options["allowed_widgets"] ? $options["allowed_widgets"] : null;
-		$avoided_widgets = $options && $options["avoided_widgets"] ? $options["avoided_widgets"] : null;
+		$allowed_widgets = $options && !empty($options["allowed_widgets"]) ? $options["allowed_widgets"] : null;
+		$avoided_widgets = $options && !empty($options["avoided_widgets"]) ? $options["avoided_widgets"] : null;
 		
 		if ($avoided_widgets || $allowed_widgets)
 			foreach ($widgets as $name => $sub_files) {
@@ -89,7 +89,7 @@ function filterWidgets($widgets, $widgets_root_path, $widgets_root_url, $options
 				}
 				else {
 					$widget = parseWidgetFile($sub_files, $widgets_root_path, $widgets_root_url);
-					$tag = $widget ? $widget["tag"] : null;
+					$tag = isset($widget["tag"]) ? $widget["tag"] : null;
 					
 					if ($avoided_widgets && in_array($tag, $avoided_widgets))
 						unset($widgets[$name]);
@@ -151,45 +151,45 @@ function parseWidgetFile($file_path, $widgets_root_path, $widgets_root_url) {
 		$content = str_replace("#widget_webroot_url#", $widget_root_url, $content); //replace url
 		$widget = XMLFileParser::parseXMLContentToArray($content, false, $file_path, false, false);
 		$widget = MyXML::complexArrayToBasicArray($widget);
-		$widget = $widget["widget"];
+		$widget = isset($widget["widget"]) ? $widget["widget"] : null;
 		
 		//If the menu_widget xml node is empty but has attributes, the MyXML::complexArrayToBasicArray will merge the attributes in to the node without the @ property. So we must prevent this case, so the widget be prepared for the getMenuWidgetHTML method
-		if (is_array($widget["menu_widget"]) && !array_key_exists("@", $widget["menu_widget"]))
+		if (isset($widget["menu_widget"]) && is_array($widget["menu_widget"]) && !array_key_exists("@", $widget["menu_widget"]))
 			$widget["menu_widget"] = array("@" => $widget["menu_widget"]);
 		
 		//If the template_widget xml node is empty but has attributes, the MyXML::complexArrayToBasicArray will merge the attributes in to the node without the @ property. So we must prevent this case, so the widget be prepared for the getMenuWidgetHTML method
-		if (is_array($widget["template_widget"]) && !array_key_exists("@", $widget["template_widget"]))
+		if (isset($widget["template_widget"]) && is_array($widget["template_widget"]) && !array_key_exists("@", $widget["template_widget"]))
 			$widget["template_widget"] = array("@" => $widget["template_widget"]);
 	}
 	
-	return $widget;
+	return isset($widget) ? $widget : null;
 }
 
 function getMenuWidgetHTML($file_path, $widgets_root_path, $widgets_root_url, &$menu_widgets_css_files, &$menu_widgets_js_files) {
 	$widget = parseWidgetFile($file_path, $widgets_root_path, $widgets_root_url);
-	$tag = $widget ? trim(str_replace(" ", "", $widget["tag"])) : null;
+	$tag = isset($widget["tag"]) ? trim(str_replace(" ", "", $widget["tag"])) : null;
 	
 	if ($tag) {
-		$label = $widget["label"] ? $widget["label"] : ucwords(trim(str_replace("_", " ", $tag)));
-		$settings = $widget["settings"] ? $widget["settings"] : array();
-		$callbacks = $settings ? $settings["callback"] : array();
+		$label = !empty($widget["label"]) ? $widget["label"] : ucwords(trim(str_replace("_", " ", $tag)));
+		$settings = !empty($widget["settings"]) ? $widget["settings"] : array();
+		$callbacks = !empty($settings["callback"]) ? $settings["callback"] : array();
 		$menu_title = $label;
 		$menu_attrs = "";
 		
 		//Preparing menu widget and correspondent callbacks
-		$menu_class = " menu-widget-$tag " . $settings["menu_class"];
+		$menu_class = " menu-widget-$tag " . (isset($settings["menu_class"]) ? $settings["menu_class"] : null);
 		
-		if (is_array($widget["menu_widget"])) {
-			$menu_attributes = $widget["menu_widget"]["@"];
-			$menu_html = $widget["menu_widget"]["value"];
+		if (isset($widget["menu_widget"]) && is_array($widget["menu_widget"])) {
+			$menu_attributes = isset($widget["menu_widget"]["@"]) ? $widget["menu_widget"]["@"] : null;
+			$menu_html = isset($widget["menu_widget"]["value"]) ? $widget["menu_widget"]["value"] : null;
 			
 			if ($menu_attributes) {
-				if ($menu_attributes["class"]) {
+				if (!empty($menu_attributes["class"])) {
 					$menu_class .= " " . $menu_attributes["class"];
 					unset($menu_attributes["class"]);
 				}
 				
-				if ($menu_attributes["title"]) {
+				if (!empty($menu_attributes["title"])) {
 					$menu_title .= $menu_attributes["title"];
 					unset($menu_attributes["title"]);
 				}
@@ -198,46 +198,46 @@ function getMenuWidgetHTML($file_path, $widgets_root_path, $widgets_root_url, &$
 			$menu_attrs .= convertWidgetXmlAttributesToHtmlAttributes($menu_attributes);
 		}
 		else
-			$menu_html = $widget["menu_widget"];
+			$menu_html = isset($widget["menu_widget"]) ? $widget["menu_widget"] : null;
 		
 		if (!$menu_html)
 			$menu_html = '<span>' . $label . '</span>';
 		
-		$menu_attrs .= $settings["create_widget_class"] ? ' data-create-widget-class="' . $settings["create_widget_class"] . '"' : '';
-		$menu_attrs .= $settings["create_widget_func"] ? ' data-create-widget-func="' . $settings["create_widget_func"] . '"' : '';
-		$menu_attrs .= $settings["template_header_class"] ? ' data-template-header-class="' . $settings["template_header_class"] . '"' : '';
-		$menu_attrs .= $settings["menu_settings_class"] ? ' data-menu-settings-class="' . $settings["menu_settings_class"] . '"' : '';
-		$menu_attrs .= $settings["menu_layer_class"] ? ' data-menu-layer-class="' . $settings["menu_layer_class"] . '"' : '';
+		$menu_attrs .= !empty($settings["create_widget_class"]) ? ' data-create-widget-class="' . $settings["create_widget_class"] . '"' : '';
+		$menu_attrs .= !empty($settings["create_widget_func"]) ? ' data-create-widget-func="' . $settings["create_widget_func"] . '"' : '';
+		$menu_attrs .= !empty($settings["template_header_class"]) ? ' data-template-header-class="' . $settings["template_header_class"] . '"' : '';
+		$menu_attrs .= !empty($settings["menu_settings_class"]) ? ' data-menu-settings-class="' . $settings["menu_settings_class"] . '"' : '';
+		$menu_attrs .= !empty($settings["menu_layer_class"]) ? ' data-menu-layer-class="' . $settings["menu_layer_class"] . '"' : '';
 		
-		$menu_attrs .= $callbacks["on_open_widget_header_func"] ? ' data-on-open-widget-header-func="' . $callbacks["on_open_widget_header_func"] . '"' : '';
-		$menu_attrs .= $callbacks["on_close_widget_header_func"] ? ' data-on-close-widget-header-func="' . $callbacks["on_close_widget_header_func"] . '"' : '';
-		$menu_attrs .= $callbacks["on_open_droppable_header_func"] ? ' data-on-open-droppable-header-func="' . $callbacks["on_open_droppable_header_func"] . '"' : '';
-		$menu_attrs .= $callbacks["on_close_droppable_header_func"] ? ' data-on-close-droppable-header-func="' . $callbacks["on_close_droppable_header_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_open_widget_header_func"]) ? ' data-on-open-widget-header-func="' . $callbacks["on_open_widget_header_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_close_widget_header_func"]) ? ' data-on-close-widget-header-func="' . $callbacks["on_close_widget_header_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_open_droppable_header_func"]) ? ' data-on-open-droppable-header-func="' . $callbacks["on_open_droppable_header_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_close_droppable_header_func"]) ? ' data-on-close-droppable-header-func="' . $callbacks["on_close_droppable_header_func"] . '"' : '';
 		
-		$menu_attrs .= $callbacks["on_drag_start_func"] ? ' data-on-drag-start-func="' . $callbacks["on_drag_start_func"] . '"' : '';
-		$menu_attrs .= $callbacks["on_drag_helper_func"] ? ' data-on-drag-helper-func="' . $callbacks["on_drag_helper_func"] . '"' : '';
-		$menu_attrs .= $callbacks["on_drag_stop_func"] ? ' data-on-drag-stop-func="' . $callbacks["on_drag_stop_func"] . '"' : '';
-		$menu_attrs .= $callbacks["on_parse_template_widget_html_func"] ? ' data-on-parse-template-widget-html-func="' . $callbacks["on_parse_template_widget_html_func"] . '"' : '';
-		$menu_attrs .= $callbacks["on_clean_template_widget_html_func"] ? ' data-on-clean-template-widget-html-func="' . $callbacks["on_clean_template_widget_html_func"] . '"' : '';
-		$menu_attrs .= $callbacks["on_clone_menu_widget_func"] ? ' data-on-clone-menu-widget-func="' . $callbacks["on_clone_menu_widget_func"] . '"' : '';
-		$menu_attrs .= $callbacks["on_create_template_widget_func"] ? ' data-on-create-template-widget-func="' . $callbacks["on_create_template_widget_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_drag_start_func"]) ? ' data-on-drag-start-func="' . $callbacks["on_drag_start_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_drag_helper_func"]) ? ' data-on-drag-helper-func="' . $callbacks["on_drag_helper_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_drag_stop_func"]) ? ' data-on-drag-stop-func="' . $callbacks["on_drag_stop_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_parse_template_widget_html_func"]) ? ' data-on-parse-template-widget-html-func="' . $callbacks["on_parse_template_widget_html_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_clean_template_widget_html_func"]) ? ' data-on-clean-template-widget-html-func="' . $callbacks["on_clean_template_widget_html_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_clone_menu_widget_func"]) ? ' data-on-clone-menu-widget-func="' . $callbacks["on_clone_menu_widget_func"] . '"' : '';
+		$menu_attrs .= !empty($callbacks["on_create_template_widget_func"]) ? ' data-on-create-template-widget-func="' . $callbacks["on_create_template_widget_func"] . '"' : '';
 		
-		$resizable = $settings["resizable"];
+		$resizable = isset($settings["resizable"]) ? $settings["resizable"] : null;
 		$menu_attrs .= $resizable != "" && $resizable != "0" && strtolower($resizable) != "false" ? ' data-resizable="1"' : '';
 		
-		$absolute_position = $settings["absolute_position"];
+		$absolute_position = isset($settings["absolute_position"]) ? $settings["absolute_position"] : null;
 		$menu_attrs .= $absolute_position != "" && $absolute_position != "0" && strtolower($absolute_position) != "false" ? ' data-absolute-position="1"' : '';
 		
 		//Preparing template widget
-		$template_node_name = $settings["template_node_name"] ? $settings["template_node_name"] : "div";
-		$template_class = " template-widget-$tag " . $settings["template_class"];
+		$template_node_name = !empty($settings["template_node_name"]) ? $settings["template_node_name"] : "div";
+		$template_class = " template-widget-$tag " . (isset($settings["template_class"]) ? $settings["template_class"] : "");
 		$template_attrs = "";
 		
-		if (is_array($widget["template_widget"])) {
-			$template_attributes = $widget["template_widget"]["@"];
-			$template_html = $widget["template_widget"]["value"];
+		if (isset($widget["template_widget"]) && is_array($widget["template_widget"])) {
+			$template_attributes = isset($widget["template_widget"]["@"]) ? $widget["template_widget"]["@"] : null;
+			$template_html = isset($widget["template_widget"]["value"]) ? $widget["template_widget"]["value"] : null;
 			
-			if ($template_attributes && $template_attributes["class"]) {
+			if ($template_attributes && !empty($template_attributes["class"])) {
 				$template_class .= " " . $template_attributes["class"];
 				unset($template_attributes["class"]);
 			}
@@ -245,17 +245,17 @@ function getMenuWidgetHTML($file_path, $widgets_root_path, $widgets_root_url, &$
 			$template_attrs .= convertWidgetXmlAttributesToHtmlAttributes($template_attributes);
 		}
 		else
-			$template_html = $widget["template_widget"];
+			$template_html = isset($widget["template_widget"]) ? $widget["template_widget"] : null;
 		
 		//Preparing widget properties and correspondent callbacks
 		$properties_attrs = "";
-		$properties_attrs .= $callbacks["on_open_properties_func"] ? ' data-on-open-properties-func="' . $callbacks["on_open_properties_func"] . '"' : '';
-		$properties_attrs .= $callbacks["on_close_properties_func"] ? ' data-on-close-properties-func="' . $callbacks["on_close_properties_func"] . '"' : '';
-		$properties_attrs .= $callbacks["on_before_save_properties_func"] ? ' data-on-before-save-open-properties-func="' . $callbacks["on_before_save_properties_func"] . '"' : '';
-		$properties_attrs .= $callbacks["on_after_save_properties_func"] ? ' data-on-after-save-open-properties-func="' . $callbacks["on_after_save_properties_func"] . '"' : '';
+		$properties_attrs .= !empty($callbacks["on_open_properties_func"]) ? ' data-on-open-properties-func="' . $callbacks["on_open_properties_func"] . '"' : '';
+		$properties_attrs .= !empty($callbacks["on_close_properties_func"]) ? ' data-on-close-properties-func="' . $callbacks["on_close_properties_func"] . '"' : '';
+		$properties_attrs .= !empty($callbacks["on_before_save_properties_func"]) ? ' data-on-before-save-open-properties-func="' . $callbacks["on_before_save_properties_func"] . '"' : '';
+		$properties_attrs .= !empty($callbacks["on_after_save_properties_func"]) ? ' data-on-after-save-open-properties-func="' . $callbacks["on_after_save_properties_func"] . '"' : '';
 		
 		//Preparing widget files
-		$files = $widget["files"];
+		$files = isset($widget["files"]) ? $widget["files"] : null;
 		
 		if ($files) {
 			$widget_abs_folder_path = dirname($file_path) . "/";
@@ -263,7 +263,7 @@ function getMenuWidgetHTML($file_path, $widgets_root_path, $widgets_root_url, &$
 			$widget_folder_path = substr($widget_folder_path, 0, 1) == "/" ? substr($widget_folder_path, 1) : $widget_folder_path;
 			$widget_root_url = $widgets_root_url . $widget_folder_path;
 			
-			if ($files["css"]) {
+			if (!empty($files["css"])) {
 				if (!is_array($files["css"]))
 					$files["css"] = array($files["css"]);
 				
@@ -274,7 +274,7 @@ function getMenuWidgetHTML($file_path, $widgets_root_path, $widgets_root_url, &$
 					}
 			}
 			
-			if ($files["js"]) {
+			if (!empty($files["js"])) {
 				if (!is_array($files["js"]))
 					$files["js"] = array($files["js"]);
 				
@@ -290,17 +290,19 @@ function getMenuWidgetHTML($file_path, $widgets_root_path, $widgets_root_url, &$
 		$html = '<li class="draggable menu-widget' . $menu_class . '" data-tag="' . $tag . '" title="' . $menu_title . '"' . $menu_attrs . '>'
 			. $menu_html
 			. '<' . $template_node_name . ' class="template-widget' . $template_class . '"' . $template_attrs . '>' . $template_html . '</' . $template_node_name . '>'
-			. '<div class="properties"' . $properties_attrs . '>' . $widget["properties"] . '</div>'
-			. ($widget["menu_css"] ? '<style>' . $widget["menu_css"] . '</style>' : '')
-			. ($widget["menu_js"] ? '<script>' . $widget["menu_js"] . '</script>' : '')
-			. ($widget["template_css"] ? '<div class="template-css">' . $widget["template_css"] . '</div>' : '')
-			. ($widget["template_js"] ? '<div class="template-js">' . $widget["template_js"] . '</div>' : '')
+			. '<div class="properties"' . $properties_attrs . '>' . (isset($widget["properties"]) ? $widget["properties"] : null) . '</div>'
+			. (!empty($widget["menu_css"]) ? '<style>' . $widget["menu_css"] . '</style>' : '')
+			. (!empty($widget["menu_js"]) ? '<script>' . $widget["menu_js"] . '</script>' : '')
+			. (!empty($widget["template_css"]) ? '<div class="template-css">' . $widget["template_css"] . '</div>' : '')
+			. (!empty($widget["template_js"]) ? '<div class="template-js">' . $widget["template_js"] . '</div>' : '')
 		. '</li>';
 		
 		return $html;
 	}
-	else
-		die("There is a widget without any TAG! All widgets must have a TAG! Error in file: $file_path!");
+	else {
+		echo "There is a widget without any TAG! All widgets must have a TAG! Error in file: $file_path!";
+		die();
+	}
 }
 
 function convertWidgetXmlAttributesToHtmlAttributes($attributes) {

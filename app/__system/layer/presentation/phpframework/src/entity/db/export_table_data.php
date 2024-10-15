@@ -5,11 +5,11 @@ include_once get_lib("org.phpframework.workflow.WorkFlowTaskHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$type = $_GET["type"];
-$table = str_replace("/", "", $_GET["table"]);
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
+$table = isset($_GET["table"]) ? str_replace("/", "", $_GET["table"]) : null;
 
 $PHPVariablesFileHandler = new PHPVariablesFileHandler($user_global_variables_file_path);
 $PHPVariablesFileHandler->startUserGlobalVariables();
@@ -28,12 +28,12 @@ if ($obj && is_a($obj, "DB")) {
 	
 	$sql = "select * from $table;";
 	
-	if ($_POST) {
+	if (!empty($_POST)) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 		
-		$sql = $_POST["sql"];
-		$export_type = $_POST["export_type"];
-		$doc_name = $_POST["doc_name"];
+		$sql = isset($_POST["sql"]) ? $_POST["sql"] : null;
+		$export_type = isset($_POST["export_type"]) ? $_POST["export_type"] : null;
+		$doc_name = isset($_POST["doc_name"]) ? $_POST["doc_name"] : null;
 		
 		if (!$sql) 
 			$error_message = "Please write a select sql statement.";
@@ -52,9 +52,9 @@ if ($obj && is_a($obj, "DB")) {
 				$str = "";
 				
 				if ($data && is_array($data)) {
-					$columns = $data["fields"];
+					$columns = isset($data["fields"]) ? $data["fields"] : null;
 					$columns_length = count($columns);
-					$results = $data["result"];
+					$results = isset($data["result"]) ? $data["result"] : null;
 					
 					$rows_delimiter = "\n";
 					$columns_delimiter = "\t";
@@ -106,10 +106,10 @@ if ($obj && is_a($obj, "DB")) {
 	$selected_tables_name = array();
 	if ($selected_tables)
 		foreach ($selected_tables as $selected_table)
-			$selected_tables_name[] = $selected_table["name"];
+			$selected_tables_name[] = isset($selected_table["name"]) ? $selected_table["name"] : null;
 	
 	$selected_table_exists = $obj->isTableInNamesList($selected_tables_name, $table);
-	$selected_table = $selected_table_exists ? $table : $selected_tables_name[0];
+	$selected_table = $selected_table_exists ? $table : ($selected_tables_name ? $selected_tables_name[0] : null);
 	$selected_table_attrs = $obj->listTableFields($selected_table);
 	$selected_table_attrs = array_keys($selected_table_attrs);
 }

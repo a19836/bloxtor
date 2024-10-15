@@ -40,7 +40,7 @@
 			<on_success_connection_drop>DBTableTaskPropertyObj.onTableConnectionDrop</on_success_connection_drop>
 			<on_success_connection_deletion>DBTableTaskPropertyObj.onSuccessConnectionDeletion</on_success_connection_deletion>
 			
-			<on_click_task>showTaskPropertiesIfExists</on_click_task>
+			<on_click_task>DBTableTaskPropertyObj.onClickTask</on_click_task>
 			<on_click_connection>showConnectionPropertiesIfExists</on_click_connection>
 		</callback>
 		<center_inner_elements>false</center_inner_elements>

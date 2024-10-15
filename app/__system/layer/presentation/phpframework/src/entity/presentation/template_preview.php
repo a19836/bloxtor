@@ -3,9 +3,9 @@ include_once $EVC->getUtilPath("CMSPresentationLayerUIHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -39,6 +39,9 @@ else if (!$path) {
 }
 
 function getProjectTemplateHtml($EVC, $user_global_variables_file_path, $html) {
+	//set some default vars from the index controller that might be used in the template html
+	$entity = null;
+	
 	$PHPVariablesFileHandler = new PHPVariablesFileHandler(array($user_global_variables_file_path, $EVC->getConfigPath("pre_init_config")));
 	$PHPVariablesFileHandler->startUserGlobalVariables();
 	
@@ -51,7 +54,7 @@ function getProjectTemplateHtml($EVC, $user_global_variables_file_path, $html) {
 	//saves html to temp file to be executed as php
 	$fhandle = tmpfile();
 	$md = stream_get_meta_data($fhandle);
-	$tmp_file_path = $md['uri'];
+	$tmp_file_path = isset($md['uri']) ? $md['uri'] : null;
 	
 	$pieces = str_split($html, 1024 * 4);
 	foreach ($pieces as $piece)

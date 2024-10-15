@@ -2,8 +2,27 @@
 include $EVC->getUtilPath("WorkFlowUIHandler");
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$obj_data = isset($obj_data) ? $obj_data : null;
+$db_drivers = isset($db_drivers) ? $db_drivers : null;
+$selected_db_broker = isset($selected_db_broker) ? $selected_db_broker : null;
+$selected_db_driver = isset($selected_db_driver) ? $selected_db_driver : null;
+$selected_type = isset($selected_type) ? $selected_type : null;
+$selected_table = isset($selected_table) ? $selected_table : null;
+$selected_tables_name = isset($selected_tables_name) ? $selected_tables_name : null;
+$selected_table_attrs = isset($selected_table_attrs) ? $selected_table_attrs : null;
+$map_php_types = isset($map_php_types) ? $map_php_types : null;
+$map_db_types = isset($map_db_types) ? $map_db_types : null;
+$item_type = isset($item_type) ? $item_type : null;
+$is_hbn_obj_equal_to_file_name = isset($is_hbn_obj_equal_to_file_name) ? $is_hbn_obj_equal_to_file_name : null;
+$file_path = isset($file_path) ? $file_path : null;
+$obj = isset($obj) ? $obj : null;
+$WorkFlowTaskHandler = isset($WorkFlowTaskHandler) ? $WorkFlowTaskHandler : null;
+
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 $is_obj_valid = $obj_data || !$map_id;
+
+$head = "";
+$main_content = "";
 
 if ($is_obj_valid) {
 	$get_layer_sub_files_url = $project_url_prefix . "admin/get_sub_files?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";

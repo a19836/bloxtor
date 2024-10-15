@@ -11,7 +11,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$stmt_type = strtolower($stmt->getType());
 		
 		if ($stmt_type == "expr_exit") {
-			$expr = $stmt->expr;
+			$expr = isset($stmt->expr) ? $stmt->expr : null;
+			
 			if ($expr) {
 				$expr_type = strtolower($expr->getType());
 			
@@ -41,22 +42,23 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"value" => $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"],
-			"type" => $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"],
+			"value" => isset($raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"] : null,
+			"type" => isset($raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$value = self::getVariableValueCode($properties["value"], $properties["type"]);
+		$value = isset($properties["value"]) ? $properties["value"] : null;
+		$value = self::getVariableValueCode($value, isset($properties["type"]) ? $properties["type"] : null);
 		
 		$code = $prefix_tab . "die($value);\n";
 		

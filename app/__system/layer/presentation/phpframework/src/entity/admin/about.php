@@ -14,7 +14,7 @@ if (is_array($li))
 		
 		$k = "";
 		for ($i = count($parts) - 1; $i >= 0; $i--)
-			$k .= $parts[$i][0];
+			$k .= isset($parts[$i][0]) ? $parts[$i][0] : null;
 		
 		if (!array_key_exists($k, $li))
 			$li_data[$k] = $v;

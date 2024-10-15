@@ -4,12 +4,12 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 $url = getProjectUrl($user_beans_folder_path, $user_global_variables_file_path);
 
 function getProjectUrl($user_beans_folder_path, $user_global_variables_file_path) {
-	$bean_name = $_GET["bean_name"];
-	$bean_file_name = $_GET["bean_file_name"];
-	$path = $_GET["path"];
+	$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+	$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+	$path = isset($_GET["path"]) ? $_GET["path"] : null;
 
-	$query_string = $_GET["query_string"];
-	$get_vars = $_GET["get_vars"];
+	$query_string = isset($_GET["query_string"]) ? $_GET["query_string"] : null;
+	$get_vars = isset($_GET["get_vars"]) ? $_GET["get_vars"] : null;
 	
 	$path = str_replace("../", "", $path);//for security reasons
 
@@ -28,6 +28,9 @@ function getProjectUrl($user_beans_folder_path, $user_global_variables_file_path
 			
 			$project_url_prefix = getProjectUrlPrefix($PEVC, $selected_project_id);
 			$project_url_prefix .= substr($project_url_prefix, -1) != "/" ? "/" : "";
+			
+			if (empty($P->settings["presentation_entities_path"]))
+				launch_exception(new Exception("'PresentationLayer->settings[presentation_entities_path]' cannot be undefined!"));
 			
 			$project_url_suffix = substr($path, strlen($selected_project_id . $P->settings["presentation_entities_path"]));
 			$project_url_suffix = file_exists($layer_path . $path) && !is_dir($layer_path . $path) ? substr($project_url_suffix, 0, strlen($project_url_suffix) - strlen($extension) - 1) : $project_url_suffix; //remove extension

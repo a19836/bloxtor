@@ -21,7 +21,7 @@ $head = '
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/db/execute_sql.css" charset="utf-8" />
 <script src="' . $project_url_prefix . 'js/db/execute_sql.js"></script>';
 
-$main_content .= '
+$main_content = '
 	<div class="top_bar' . ($popup ? ' in_popup' : '') . '">
 		<header>
 			<div class="title">Execute SQL in DB: \'' . $bean_name . '\'</div>
@@ -37,14 +37,14 @@ $main_content .= '
 	<div class="sql_results' . ($popup ? ' in_popup' : '') . '">
 		<table class="display compact">';
 
-$fields = $results["fields"];
-$rows = $results["result"];
+$fields = isset($results["fields"]) ? $results["fields"] : null;
+$rows = isset($results["result"]) ? $results["result"] : null;
 
 if ($fields) {
 	$main_content .= '<thead><tr>';
 	$t = count($fields);
 	for ($i = 0; $i < $t; $i++) {
-		$name = $fields[$i]->name;
+		$name = isset($fields[$i]->name) ? $fields[$i]->name : null;
 	
 		$main_content .= '<th class="table_header">' . $name . '</th>';
 	}
@@ -52,19 +52,19 @@ if ($fields) {
 }
 $main_content .= '<tbody>';
 
-if ($_POST) {
-	if ($exception_message) {
+if (!empty($_POST)) {
+	if (!empty($exception_message)) {
 		$main_content .= '<tr>
 			<td class="message error">
 				' . $exception_message . '
 			</td>
 		</tr>';
 	}
-	else if (!$is_select_sql) {
-		$message = $results ? "SQL executed successfully." : "SQL executed unsuccessfully.";
+	else if (empty($is_select_sql)) {
+		$message = !empty($results) ? "SQL executed successfully." : "SQL executed unsuccessfully.";
 		
 		$main_content .= '<tr>
-			<td class="message ' . ($results ? 'success' : 'error') . '" colspan="' . ($fields ? count($fields) : 0) . '">
+			<td class="message ' . (!empty($results) ? 'success' : 'error') . '" colspan="' . ($fields ? count($fields) : 0) . '">
 				' . $message . '
 				<script>
 					if (typeof window.parent.refreshAndShowLastNodeChilds == "function")
@@ -73,7 +73,7 @@ if ($_POST) {
 			</td>
 		</tr>';
 	}
-	else if (!$results || !is_array($rows) || empty($rows))
+	else if (empty($results) || !is_array($rows) || empty($rows))
 		$main_content .= '<tr><td class="empty" colspan="' . ($fields ? count($fields) : 0) . '">Empty results...</tr>';
 	else {
 		$t = count($rows);

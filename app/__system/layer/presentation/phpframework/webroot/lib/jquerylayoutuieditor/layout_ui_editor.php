@@ -320,7 +320,7 @@ $common_link = $parts[0] . "/__system/common/";
 </head>
 <body>
 <?
-if ($_SERVER["HTTP_HOST"] != "jplpinto.localhost")
+if (!isset($_SERVER["HTTP_HOST"]) || $_SERVER["HTTP_HOST"] != "jplpinto.localhost")
 	echo("<script>alert('Please configure your computer to point the host jplpinto.localhost to this IP, otherwise the layout ui editor won't work with the FormFieldsUtilObj!');</script>");
 ?>
 	<div class="layout-ui-editor reverse layout-ui-editor-1">

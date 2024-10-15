@@ -16,7 +16,11 @@ class MyS3Handler extends MyIOHandler {
 		$types = $this->getFileTypes();
 		$file_name = basename($file_path);
 		
-		return $file_name == "." ? $types["folder"] : $types[ self::getFileType($file_name) ];
+		if ($file_name == ".")
+			return isset($types["folder"]) ? $types["folder"] : null;
+		
+		$type = self::getFileType($file_name);
+		return isset($types[$type]) ? $types[$type] : null;
 	}
 	
 	/*
@@ -47,8 +51,8 @@ class MyS3Handler extends MyIOHandler {
 			$type = $this->getType($uri);
 			
 			$info = array();
-			$info["type"] = $type["id"];
-			$info["type_desc"] = $type["desc"];
+			$info["type"] = isset($type["id"]) ? $type["id"] : null;
+			$info["type_desc"] = isset($type["desc"]) ? $type["desc"] : null;
 			
 			if($info["type"] == 1) {
 				$info["path"] = $uri;

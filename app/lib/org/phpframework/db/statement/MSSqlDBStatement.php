@@ -2,6 +2,8 @@
 trait MSSqlDBStatement { //must be "trait" and not "class" bc this code will serve to be extended by the MSSqlDB class, whcih already have the extended "DB" class. Note that PHP only allows 1 extended class.
 	
 	public static function getCreateDBStatement($db_name, $options = false) {
+		$collation = null;
+		
 		if (!empty($options["encoding"])) {
 			$collation = self::$db_charsets_to_collations[ $options["encoding"] ];
 			$collation = $collation ? " COLLATE " . $collation : "";
@@ -246,7 +248,7 @@ trait MSSqlDBStatement { //must be "trait" and not "class" bc this code will ser
 			$collation = isset($attribute_data["collation"]) ? $attribute_data["collation"] : null;
 			//$comment = isset($attribute_data["comment"]) ? $attribute_data["comment"] : null; //comment not supported by ms-sql-server
 			
-			if ($flags)
+			if (!empty($flags))
 				foreach ($flags as $k => $v)
 					if ($k != "unsigned" && $k != "charset" && $k != "comment")
 						eval("\$$k = \$v;"); //may change the $auto_increment to true
@@ -471,7 +473,7 @@ trait MSSqlDBStatement { //must be "trait" and not "class" bc this code will ser
 			//mssql doesn't support the alter columns for IDENTITY (1,1). More info in https://social.msdn.microsoft.com/Forums/sqlserver/en-US/04d69ee6-d4f5-4f8f-a115-d89f7bcbc032/how-to-alter-column-to-identity11?forum=transactsql
 		}
 		
-		//die("<pre>".$sql);
+		//echo "<pre>".$sql;die();
 		return $sql;
 	}
 	
@@ -579,6 +581,7 @@ trait MSSqlDBStatement { //must be "trait" and not "class" bc this code will ser
 			$constraint_name = !empty($fk["name"]) ? $fk["name"] : (isset($fk["constraint_name"]) ? $fk["constraint_name"] : null);
 			$replication = !empty($fk["replication_code"]) ? $fk["replication_code"] : "";
 		   	//$check = !empty($fk["not_trusted_code"]) ? $fk["not_trusted_code"] : "";
+		   	$check = null;
 		   	
 			$attrs = is_array($attr_name) ? $attr_name : array($attr_name);
 			$ref_attrs = is_array($ref_attr_name) ? $ref_attr_name : array($ref_attr_name);
@@ -631,7 +634,7 @@ END;";
 		
 		$table_props = self::parseTableName($table, $options);
 		$table = isset($table_props["name"]) ? $table_props["name"] : null;
-		$index_name = "idx__{$table}__{$attribute}__pf" . rand();
+		$index_name = "idx__{$table}__" . implode("_", $attributes) . "__pf" . rand();
 		
 		return "CREATE INDEX $index_name ON $sql_table ([" . implode("], [", $attributes) . "]) $suffix";
 	}

@@ -7,8 +7,8 @@ include_once $EVC->getUtilPath("FlushCacheHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
 
 $PHPVariablesFileHandler = new PHPVariablesFileHandler($user_global_variables_file_path);
 $PHPVariablesFileHandler->startUserGlobalVariables();
@@ -17,12 +17,12 @@ $WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path
 $obj = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
 
 if ($obj && is_a($obj, "HibernateDataAccessLayer")) {	
-	$db_broker = $_POST["db_broker"];
-	$db_driver = $_POST["db_driver"];
-	$type = $_POST["type"];
-	$selected_tables = $_POST["st"];
-	$with_maps = $_POST["with_maps"] == "true" || $_POST["with_maps"] == "1";
-	$rel_type = $_POST["rel_type"];
+	$db_broker = isset($_POST["db_broker"]) ? $_POST["db_broker"] : null;
+	$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
+	$type = isset($_POST["type"]) ? $_POST["type"] : null;
+	$selected_tables = isset($_POST["st"]) ? $_POST["st"] : null;
+	$with_maps = isset($_POST["with_maps"]) && ($_POST["with_maps"] == "true" || $_POST["with_maps"] == "1");
+	$rel_type = isset($_POST["rel_type"]) ? $_POST["rel_type"] : null;
 	
 	$selected_tables = $selected_tables ? $selected_tables : array();
 	
@@ -39,7 +39,7 @@ if ($obj && is_a($obj, "HibernateDataAccessLayer")) {
 		for ($i = 0; $i < $t; $i++) {
 			$table = $tables[$i];
 
-			if (!empty($table)) {
+			if (!empty($table) && isset($table["name"])) {
 				$attrs = $obj->getBroker($db_broker)->getFunction("listTableFields", $table["name"], array("db_driver" => $db_driver));
 				$fks = $obj->getBroker($db_broker)->getFunction("listForeignKeys", $table["name"], array("db_driver" => $db_driver));
 	
@@ -59,11 +59,11 @@ if ($obj && is_a($obj, "HibernateDataAccessLayer")) {
 		
 		if ($rel_type == "relationships") {
 			$arr = $WorkFlowDataAccessHandler->getHibernateObjectArrayFromDBTaskFlow($table_name, false, $with_maps);
-			$relationships = $arr["class"][0]["childs"]["relationships"][0]["childs"];
+			$relationships = isset($arr["class"][0]["childs"]["relationships"][0]["childs"]) ? $arr["class"][0]["childs"]["relationships"][0]["childs"] : null;
 		}
 		else {
 			$arr = $WorkFlowDataAccessHandler->getQueryObjectsArrayFromDBTaskFlow($table_name, $with_maps);
-			$relationships = $arr["queries"][0]["childs"];
+			$relationships = isset($arr["queries"][0]["childs"]) ? $arr["queries"][0]["childs"] : null;
 		}
 		
 		if ($relationships) {

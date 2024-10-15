@@ -47,7 +47,7 @@ var manage_record_action_url = \'' . $manage_record_action_url . '\';
 var is_popup = ' . ($popup ? 1 : 0) . ';
 </script>';
 
-$main_content .= '
+$main_content = '
 <div class="manage_record' . ($popup ? ' in_popup' : '') . '">
 	<div class="top_bar' . ($popup ? ' in_popup' : '') . '">
 		<header>
@@ -67,22 +67,22 @@ $main_content .= '
 		</header>
 	</div>';
 
-if (!$table_exists)
+if (empty($table_exists))
 	$main_content .= '<div class="error">Table does not exist!</div>';
-else if (!$table_fields)
+else if (empty($table_fields))
 	$main_content .= '<div class="error">Table fields do not exist!</tr>';
-else if (!$results && $action != "insert")
+else if (empty($results) && $action != "insert")
 	$main_content .= '<div class="error">Record does not exists!</div>';
 else {
 	foreach ($pks as $field_name)
-		$main_content .= '<input type="hidden" name="' . $field_name . '" value="' . $results[$field_name] . '" />';
+		$main_content .= '<input type="hidden" name="' . $field_name . '" value="' . (isset($results[$field_name]) ? $results[$field_name] : "") . '" />';
 	
 	$main_content .= '<table>';
 	foreach ($table_fields as $field_name => $field) {
-		$field_value = $results[$field_name];
+		$field_value = isset($results[$field_name]) ? $results[$field_name] : null;
 		$is_binary = false;
 		$label = ucwords(str_replace(array("_", "-"), " ", strtolower($field_name)));
-		$field_html_type = $table_fields_types[$field_name];
+		$field_html_type = isset($table_fields_types[$field_name]) ? $table_fields_types[$field_name] : null;
 		$field_html_type = $field_html_type ? $field_html_type : "text";
 		
 		//prepare results data, converting binary to base64 or images
@@ -108,8 +108,9 @@ else {
 			$options = null;
 			
 			if (is_array($field_html_type)) {
-				$options = $field_html_type["options"];
-				$field_html_type = $options ? $field_html_type["type"] : "text";
+				$options = isset($field_html_type["options"]) ? $field_html_type["options"] : null;
+				$field_html_type = isset($field_html_type["type"]) ? $field_html_type["type"] : null;
+				$field_html_type = $options ? $field_html_type : "text";
 			}
 			
 			if ($field_html_type == "textarea")

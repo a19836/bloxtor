@@ -1,4 +1,5 @@
 <?php
+$edit_type = isset($edit_type) ? $edit_type : null;
 $edit_type_label = str_replace("_", " ", $edit_type);
 
 $head = '
@@ -22,5 +23,5 @@ $main_content = '
 	</header>
 </div>
 
-<div class="invalid">Error: Could not detect ' . $edit_type . '\'s path.' . ($error_message ? "<br/><br/>" . $error_message : "") . '</div>';
+<div class="invalid">Error: Could not detect ' . $edit_type . '\'s path.' . (!empty($error_message) ? "<br/><br/>" . $error_message : "") . '</div>';
 ?>

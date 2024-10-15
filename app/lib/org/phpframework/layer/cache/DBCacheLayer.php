@@ -66,13 +66,13 @@ class DBCacheLayer extends CacheLayer {
 			if ($constructor) {
 				$obj = false;
 				
-				if ($module["objects"][$constructor])
+				if (!empty($module["objects"][$constructor]))
 					$obj = $module["objects"][$constructor];
 				else {
 					if (!empty($this->modules_cache[$module_id]["bean_factory"]))
 						$BeanFactory = $this->modules_cache[$module_id]["bean_factory"];
 					else {
-						$this->initBeanObjs($module_id);
+						$this->initBeanObjs();
 					
 						$BeanFactory = new BeanFactory();
 						$BeanFactory->addObjects($this->bean_objs);

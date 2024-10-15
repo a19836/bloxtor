@@ -1,6 +1,6 @@
 <?php
 //print_r($tasks);
-$obj = $items;
+$obj = isset($items) ? $items : null;
 
 $EVC->setTemplate("json");
 ?>

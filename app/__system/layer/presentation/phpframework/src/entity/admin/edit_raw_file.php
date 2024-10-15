@@ -6,14 +6,14 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 UserAuthenticationHandler::checkUsersMaxNum($UserAuthenticationHandler);
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$item_type = $_GET["item_type"];
-$scroll_top = $_GET["scroll_top"];
-$create_dependencies = $_GET["create_dependencies"];
-$file_modified_time = $_GET["file_modified_time"];
-$popup = $_GET["popup"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$item_type = isset($_GET["item_type"]) ? $_GET["item_type"] : null;
+$scroll_top = isset($_GET["scroll_top"]) ? $_GET["scroll_top"] : null;
+$create_dependencies = isset($_GET["create_dependencies"]) ? $_GET["create_dependencies"] : null;
+$file_modified_time = isset($_GET["file_modified_time"]) ? $_GET["file_modified_time"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -44,9 +44,10 @@ if ($layer_path) { //bc of hackings, like trying to know the code for libs or sy
 	$file_path = $layer_path . $path;
 
 	$path_info = pathinfo($file_path);
-
+	$path_info_extension_lower = strtolower($path_info["extension"]);
+	
 	$available_extensions = array("xml" => "xml", "php" => "php", "js" => "javascript", "css" => "css", "" => "text", "txt" => "text", "html" => "html", "htm" => "html");
-	$editor_code_type = $available_extensions[ strtolower($path_info["extension"]) ];
+	$editor_code_type = isset($available_extensions[$path_info_extension_lower]) ? $available_extensions[$path_info_extension_lower] : null;
 	
 	if (!$editor_code_type) {
 		$mime_type = MimeTypeHandler::getFileMimeType($file_path);
@@ -65,13 +66,13 @@ if ($layer_path) { //bc of hackings, like trying to know the code for libs or sy
 		
 		$code = $file_exists ? file_get_contents($file_path) : "";
 		
-		if ($_POST && !$readonly) {
+		if (!empty($_POST) && empty($readonly)) {
 			$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 			UserAuthenticationHandler::checkActionsMaxNum($UserAuthenticationHandler);
 			
-			$new_code = $_POST["code"];
-			$code_id = $_POST["code_id"];
-			$force = $_POST["force"];
+			$new_code = isset($_POST["code"]) ? $_POST["code"] : null;
+			$code_id = isset($_POST["code_id"]) ? $_POST["code_id"] : null;
+			$force = isset($_POST["force"]) ? $_POST["force"] : null;
 			
 			$file_was_changed = $file_exists && $file_modified_time && $code_id != md5($code) && $file_modified_time < filemtime($file_path);
 			
@@ -105,7 +106,7 @@ if ($layer_path) { //bc of hackings, like trying to know the code for libs or sy
 				);
 			}
 			
-			if (!$do_not_die_on_save) {
+			if (empty($do_not_die_on_save)) {
 				echo json_encode($ret);
 				die();
 			}

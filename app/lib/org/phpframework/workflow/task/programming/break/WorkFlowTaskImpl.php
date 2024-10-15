@@ -11,7 +11,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$stmt_type = strtolower($stmt->getType());
 		
 		if ($stmt_type == "stmt_break") {
-			$value = $stmt->num && $stmt->num->value ? $stmt->num->value : "";
+			$value = !empty($stmt->num) && !empty($stmt->num->value) ? $stmt->num->value : "";
 			
 			$props = array(
 				"value" => $value,
@@ -28,22 +28,22 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"value" => $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"],
+			"value" => isset($raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
-		$value = is_numeric($properties["value"]) ? " " . $properties["value"] : "";
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
+		$value = isset($properties["value"]) && is_numeric($properties["value"]) ? " " . $properties["value"] : "";
 		
-		$code .= $prefix_tab . "break$value;\n";
+		$code = $prefix_tab . "break$value;\n";
 		
 		return $code; //break does not write the code after it-self. There are no tasks after!
 	}

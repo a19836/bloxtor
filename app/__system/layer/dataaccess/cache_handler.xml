@@ -2,10 +2,10 @@
 <beans>
 	<!-- START FILE SYSTEM HANDLER --> 
 	<bean name="ServiceCacheHandler" path="org.phpframework.cache.service.filesystem.FileSystemServiceCacheHandler" path_prefix="<?php echo LIB_PATH;?>">
-		<constructor_arg><?php echo $vars["dal_module_cache_maximum_size"]; ?></constructor_arg>
+		<constructor_arg><?php echo isset($vars["dal_module_cache_maximum_size"]) ? $vars["dal_module_cache_maximum_size"] : null; ?></constructor_arg>
 		
-		<property name="rootPath"><?php echo $vars["dal_cache_path"] . $vars["current_dal_module_id"]; ?></property>
-		<property name="defaultTTL"><?php echo $vars["dal_default_cache_ttl"]; ?></property>
+		<property name="rootPath"><?php echo (isset($vars["dal_cache_path"]) ? $vars["dal_cache_path"] : "") . (isset($vars["current_dal_module_id"]) ? $vars["current_dal_module_id"] : ""); ?></property>
+		<property name="defaultTTL"><?php echo isset($vars["dal_default_cache_ttl"]) ? $vars["dal_default_cache_ttl"] : null; ?></property>
 	</bean>
 	<!-- END FILE SYSTEM HANDLER --> 
 	

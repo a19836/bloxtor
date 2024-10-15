@@ -1,13 +1,16 @@
 <?php
 include_once $EVC->getUtilPath("AdminMenuUIHandler");
 
-if (!$is_admin_ui_expert_allowed) {
+if (empty($is_admin_ui_expert_allowed)) {
 	echo '<script>
 		alert("You don\'t have permission to access this Workspace!");
 		document.location="' . $project_url_prefix . 'auth/logout";
 	</script>';
 	die();
 }
+
+$filter_by_layout = isset($filter_by_layout) ? $filter_by_layout : null;
+$filter_by_layout_permission = isset($filter_by_layout_permission) ? $filter_by_layout_permission : null;
 
 $filter_by_layout_url_query = $filter_by_layout ? "&filter_by_layout=$filter_by_layout&filter_by_layout_permission=$filter_by_layout_permission" : "";
 

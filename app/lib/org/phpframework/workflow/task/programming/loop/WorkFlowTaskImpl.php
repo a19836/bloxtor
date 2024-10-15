@@ -13,10 +13,10 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$stmt_type = strtolower($stmt->getType());
 		
 		if ($stmt_type == "stmt_for" || $stmt_type == "stmt_do" || $stmt_type == "stmt_while") {
-			$init = $stmt->init;
-			$cond = $stmt->cond;
-			$loop = $stmt->loop;
-			$sub_stmts = $stmt->stmts;
+			$init = isset($stmt->init) ? $stmt->init : null;
+			$cond = isset($stmt->cond) ? $stmt->cond : null;
+			$loop = isset($stmt->loop) ? $stmt->loop : null;
+			$sub_stmts = isset($stmt->stmts) ? $stmt->stmts : null;
 			
 			$init = !$init || is_array($init) ? $init : array($init);
 			$cond = !$cond || is_array($cond) ? $cond : array($cond);
@@ -40,19 +40,20 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					}
 					
 					if ($var_name) {	
-						$expr_type = strtolower($item->expr->getType());
-						$value = $WorkFlowTaskCodeParser->printCodeExpr($item->expr);
+						$expr = isset($item->expr) ? $item->expr : null;
+						$expr_type = $expr ? strtolower($expr->getType()) : "";
+						$value = $WorkFlowTaskCodeParser->printCodeExpr($expr);
 						$value = $WorkFlowTaskCodeParser->getStmtValueAccordingWithType($value, $expr_type);
 						
 						$props = array(
 							"name" => $var_name,
 							"value" => $value,
-							"type" => $WorkFlowTaskCodeParser->getStmtType($item->expr),
+							"type" => $WorkFlowTaskCodeParser->getStmtType($expr),
 						);
 					}
 					else {
 						$props = array(
-							"code" => $this->printCodeExpr($item),
+							"code" => $WorkFlowTaskCodeParser->printCodeExpr($item),
 						);
 					}
 				
@@ -96,7 +97,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					}
 					else {
 						$props = array(
-							"code" => $this->printCodeExpr($item),
+							"code" => $WorkFlowTaskCodeParser->printCodeExpr($item),
 						);
 					}
 				
@@ -129,7 +130,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$exits[self::DEFAULT_EXIT_ID][] = array("task_id" => "#next_task#");
 			
 			//PREPARING EXITS AND INNER TASKS
-			if ($sub_inner_tasks) {
+			if ($sub_inner_tasks && isset($sub_inner_tasks[0]["id"])) {
 				$exits["start_exit"][] = array("task_id" => $sub_inner_tasks[0]["id"]);
 				
 				//The tasks inside of a loop should NOT be connected to any other tasks outside of the loop.
@@ -144,29 +145,29 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
-		$init = $raw_data["childs"]["properties"][0]["childs"]["init"];
-		$cond = $raw_data["childs"]["properties"][0]["childs"]["cond"][0]["childs"]["group"][0];
-		$inc = $raw_data["childs"]["properties"][0]["childs"]["inc"];
-		$execute_first_iteration = $raw_data["childs"]["properties"][0]["childs"]["execute_first_iteration"][0]["value"];
+		$init = isset($raw_data["childs"]["properties"][0]["childs"]["init"]) ? $raw_data["childs"]["properties"][0]["childs"]["init"] : null;
+		$cond = isset($raw_data["childs"]["properties"][0]["childs"]["cond"][0]["childs"]["group"][0]) ? $raw_data["childs"]["properties"][0]["childs"]["cond"][0]["childs"]["group"][0] : null;
+		$inc = isset($raw_data["childs"]["properties"][0]["childs"]["inc"]) ? $raw_data["childs"]["properties"][0]["childs"]["inc"] : null;
+		$execute_first_iteration = isset($raw_data["childs"]["properties"][0]["childs"]["execute_first_iteration"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["execute_first_iteration"][0]["value"] : null;
 		
 		//PREPARING INIT
 		$init_props = array();
 		$t = $init ? count($init) : 0;
 		for ($i = 0; $i < $t; $i++) {
-			$item = $init[$i]["childs"];
+			$item = isset($init[$i]["childs"]) ? $init[$i]["childs"] : null;
 			
 			if (isset($item["name"])) {
 				$init_props[] = array(
-					"name" => $item["name"][0]["value"],
-					"value" => $item["value"][0]["value"],
-					"type" => $item["type"][0]["value"],
+					"name" => isset($item["name"][0]["value"]) ? $item["name"][0]["value"] : null,
+					"value" => isset($item["value"][0]["value"]) ? $item["value"][0]["value"] : null,
+					"type" => isset($item["type"][0]["value"]) ? $item["type"][0]["value"] : null,
 				);
 			}
 			else {
 				$init_props[] = array(
-					"code" => $item["code"][0]["value"],
+					"code" => isset($item["code"][0]["value"]) ? $item["code"][0]["value"] : null,
 				);
 			}
 		}
@@ -175,17 +176,17 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$inc_props = array();
 		$t = $inc ? count($inc) : 0;
 		for ($i = 0; $i < $t; $i++) {
-			$item = $inc[$i]["childs"];
+			$item = isset($inc[$i]["childs"]) ? $inc[$i]["childs"] : null;
 			
 			if (isset($item["name"])) {
 				$inc_props[] = array(
-					"name" => $item["name"][0]["value"],
-					"inc_or_dec" => $item["inc_or_dec"][0]["value"],
+					"name" => isset($item["name"][0]["value"]) ? $item["name"][0]["value"] : null,
+					"inc_or_dec" => isset($item["inc_or_dec"][0]["value"]) ? $item["inc_or_dec"][0]["value"] : null,
 				);
 			}
 			else {
 				$inc_props[] = array(
-					"code" => $item["code"][0]["value"],
+					"code" => isset($item["code"][0]["value"]) ? $item["code"][0]["value"] : null,
 				);
 			}
 		}
@@ -201,14 +202,14 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$init = $properties["init"];
-		$cond = $properties["cond"];
-		$inc = $properties["inc"];
-		$execute_first_iteration = $properties["execute_first_iteration"];
+		$init = isset($properties["init"]) ? $properties["init"] : null;
+		$cond = isset($properties["cond"]) ? $properties["cond"] : null;
+		$inc = isset($properties["inc"]) ? $properties["inc"] : null;
+		$execute_first_iteration = isset($properties["execute_first_iteration"]) ? $properties["execute_first_iteration"] : null;
 		
 		//PREPARING INIT CODE
 		$init_delimiter = $execute_first_iteration == "1" ? ";\n$prefix_tab" : ", ";
@@ -219,10 +220,13 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$item = $init[$i];
 			
 			if (isset($item["name"])) {
-				$c = self::getVariableValueCode($item["name"], "variable") . " = " . self::getVariableValueCode($item["value"], $item["type"]);
+				$item_value = isset($item["value"]) ? $item["value"] : null;
+				$item_type = isset($item["type"]) ? $item["type"] : null;
+				
+				$c = self::getVariableValueCode($item["name"], "variable") . " = " . self::getVariableValueCode($item_value, $item_type);
 			}
 			else {
-				$c = trim($item["code"]);
+				$c = isset($item["code"]) ? trim($item["code"]) : "";
 				$c = substr($c, strlen($c) - 1) == ";" ? substr($c, 0, strlen($c) - 1) : $c;
 			}
 			
@@ -243,10 +247,10 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$item = $inc[$i];
 			
 			if (isset($item["name"])) {
-				$c = self::getVariableValueCode($item["name"], "variable") . ($item["inc_or_dec"] == "decrement" ? "--" : "++");
+				$c = self::getVariableValueCode($item["name"], "variable") . (isset($item["inc_or_dec"]) && $item["inc_or_dec"] == "decrement" ? "--" : "++");
 			}
 			else {
-				$c = trim($item["code"]);
+				$c = isset($item["code"]) ? trim($item["code"]) : "";
 				$c = substr($c, strlen($c) - 1) == ";" ? substr($c, 0, strlen($c) - 1) : $c;
 			}
 			
@@ -257,12 +261,15 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		
 		//PREPARING INNER TASKS CODE
 		$stops_id = array();
+		
 		if ($stop_task_id)
 			$stops_id = is_array($stop_task_id) ? $stop_task_id : array($stop_task_id);
-		if ($data["exits"][self::DEFAULT_EXIT_ID][0]) 
+		
+		if (!empty($data["exits"][self::DEFAULT_EXIT_ID][0]))
 			$stops_id = array_merge($stops_id, $data["exits"][self::DEFAULT_EXIT_ID]);
 		
-		$loop_code = self::printTask($tasks, $data["exits"]["start_exit"], $stops_id, $prefix_tab . "\t", $options);
+		$start_exit_task_id = isset($data["exits"]["start_exit"]) ? $data["exits"]["start_exit"] : null;
+		$loop_code = self::printTask($tasks, $start_exit_task_id, $stops_id, $prefix_tab . "\t", $options);
 		
 		//PREPARING MAIN CODE
 		if ($execute_first_iteration) {
@@ -287,7 +294,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$code .= $prefix_tab . "}\n";
 		}
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID][0], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID][0]) ? $data["exits"][self::DEFAULT_EXIT_ID][0] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

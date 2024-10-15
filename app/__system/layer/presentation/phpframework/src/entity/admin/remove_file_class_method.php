@@ -1,7 +1,7 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "delete");
 
-if ($_GET["method"] && $_GET["class"]) {
+if (!empty($_GET["method"]) && !empty($_GET["class"])) {
 	$file_type = "remove_file_class_method";
 	$_POST["r"] = true;//$_POST cannot be empty
 	

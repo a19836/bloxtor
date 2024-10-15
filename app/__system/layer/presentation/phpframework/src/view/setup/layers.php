@@ -47,12 +47,12 @@ $main_content = '<div id="layer_form"' . ($hide_setup ?'class="hide_setup"' : ''
 	<form method="post" style="display:none">
 		<input type="hidden" name="create_layers_workflow" value="1" />';
 
-if ($tasks_folders)
+if (!empty($tasks_folders))
 	foreach ($tasks_folders as $task_id => $folder)
 		$main_content .= '
 		<input type="hidden" name="tasks_folders[' . $task_id . ']" value="' . $folder . '" />';
 
-if ($tasks_labels)
+if (!empty($tasks_labels))
 	foreach ($tasks_labels as $task_id => $task_label)
 		$main_content .= '
 		<input type="hidden" name="tasks_labels[' . $task_id . ']" value="' . $task_label . '" />';

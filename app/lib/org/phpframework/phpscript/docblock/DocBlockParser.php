@@ -421,6 +421,10 @@ class DocBlockParser {
 				
 				if ($b > 0) {
 					$l = strlen($line);
+					
+					if (is_numeric($line))
+						$line = (string)$line; //bc of php > 7.4 if we use $var[$i] gives an warning
+					
 					for ($i = 0; $i < $l; $i++) {
 						$char = $line[$i];
 						
@@ -496,6 +500,7 @@ class DocBlockParser {
 	
 	private function parseAnnotationTagArgsIntoList($list, $body, $args_delimiter = " ") {
 		$args = array();
+		$remove_last_parentesis = null;
 		
 		$body = trim(str_replace(array("\n\r", "\n", "\t"), $args_delimiter, $body));
 		if (substr($body, 0, 1) != "(") {

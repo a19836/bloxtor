@@ -209,7 +209,7 @@ class RemoteDBLoginControlService extends CommonService {
 		$failed_login_attempts = isset($item["failed_login_attempts"]) ? $item["failed_login_attempts"] : null;
 		$failed_login_time = isset($item["failed_login_time"]) ? $item["failed_login_time"] : null;
 		
-		return $failed_login_attempts > $data["maximum_failed_attempts"] && $failed_login_time + $data["expired_time"] >= time();
+		return ($failed_login_attempts > $data["maximum_failed_attempts"]) && ($failed_login_time + $data["expired_time"] >= time());
 	}
 	
 	public function getAll($data) {

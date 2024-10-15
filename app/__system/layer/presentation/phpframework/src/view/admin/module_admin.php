@@ -1,4 +1,6 @@
 <?php
+$selected_project = isset($selected_project) ? $selected_project : null;
+
 $head = '
 <!-- Add Layout CSS file -->
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/layout.css" type="text/css" charset="utf-8" />
@@ -18,7 +20,7 @@ $main_content = '
 	
 	<form method="post">
 		<select name="project">';
-if ($projects) {
+if (!empty($projects)) {
 	$previous_folder = null;
 	
 	foreach ($projects as $project_name => $project) {

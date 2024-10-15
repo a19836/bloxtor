@@ -16,10 +16,10 @@ class WorkFlowBrokersSelectedDBVarsHandler {
 					if (empty($selected_dal_broker)) {
 						$selected_dal_broker = $broker_name;
 						
-					 	if ($GLOBALS["default_db_driver"] && in_array($GLOBALS["default_db_driver"], $db_brokers_drivers[$broker_name]))
+					 	if (!empty($GLOBALS["default_db_driver"]) && in_array($GLOBALS["default_db_driver"], $db_brokers_drivers[$broker_name]))
 							$selected_db_driver = $GLOBALS["default_db_driver"];
 						else if (!$selected_db_driver)
-							$selected_db_driver = $db_brokers_drivers[$broker_name][0];
+							$selected_db_driver = isset($db_brokers_drivers[$broker_name][0]) ? $db_brokers_drivers[$broker_name][0] : null;
 					}
 				}
 		
@@ -39,18 +39,18 @@ class WorkFlowBrokersSelectedDBVarsHandler {
 		
 		if ($selected_db_vars) {
 			if (array_key_exists("dal_broker", $selected_db_vars)) 
-				$code .= 'var default_dal_broker = "' . $selected_db_vars["dal_broker"] . '";';
+				$code .= 'var default_dal_broker = "' . (isset($selected_db_vars["dal_broker"]) ? $selected_db_vars["dal_broker"] : "") . '";';
 			
 			if (array_key_exists("db_driver", $selected_db_vars)) 
-				$code .= 'var default_db_driver = "' . $selected_db_vars["db_driver"] . '";';
+				$code .= 'var default_db_driver = "' . (isset($selected_db_vars["db_driver"]) ? $selected_db_vars["db_driver"] : "") . '";';
 			
 			if (array_key_exists("type", $selected_db_vars)) 
-				$code .= 'var default_db_type = "' . $selected_db_vars["type"] . '";';
+				$code .= 'var default_db_type = "' . (isset($selected_db_vars["type"]) ? $selected_db_vars["type"] : "") . '";';
 			
 			if (array_key_exists("db_table", $selected_db_vars)) 
-				$code .= 'var default_db_table = "' . $selected_db_vars["db_table"] . '";';
+				$code .= 'var default_db_table = "' . (isset($selected_db_vars["db_table"]) ? $selected_db_vars["db_table"] : "") . '";';
 			
-			if ($selected_db_vars["db_brokers_drivers"]) {
+			if (!empty($selected_db_vars["db_brokers_drivers"])) {
 				$code .= '
 				if (typeof db_brokers_drivers_tables_attributes == "undefined") {
 					var db_brokers_drivers_tables_attributes = {};';

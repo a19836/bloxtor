@@ -4,10 +4,10 @@ include_once $EVC->getUtilPath("WorkFlowDBHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$popup = $_GET["popup"];
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 if ($bean_name) {
 	$layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$bean_name";

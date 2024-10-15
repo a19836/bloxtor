@@ -1,22 +1,22 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-if ($_POST && $is_local_db) {
+if (!empty($_POST) && $is_local_db) {
 	$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 	
-	$username = $_POST["username"];
-	$password = $_POST["password"];
-	$permission_table_key = $_POST["permission_table_key"];
-	$user_table_key = $_POST["user_table_key"];
-	$user_type_table_key = $_POST["user_type_table_key"];
-	$object_type_table_key = $_POST["object_type_table_key"];
-	$user_type_permission_table_key = $_POST["user_type_permission_table_key"];
-	$user_user_type_table_key = $_POST["user_user_type_table_key"];
-	$login_control_table_key = $_POST["login_control_table_key"];
-	$user_stats_table_key = $_POST["user_stats_table_key"];
-	$layout_type_table_key = $_POST["layout_type_table_key"];
-	$layout_type_permission_table_key = $_POST["layout_type_permission_table_key"];
-	$reserved_db_table_name_table_key = $_POST["reserved_db_table_name_table_key"];
+	$username = isset($_POST["username"]) ? $_POST["username"] : null;
+	$password = isset($_POST["password"]) ? $_POST["password"] : null;
+	$permission_table_key = isset($_POST["permission_table_key"]) ? $_POST["permission_table_key"] : null;
+	$user_table_key = isset($_POST["user_table_key"]) ? $_POST["user_table_key"] : null;
+	$user_type_table_key = isset($_POST["user_type_table_key"]) ? $_POST["user_type_table_key"] : null;
+	$object_type_table_key = isset($_POST["object_type_table_key"]) ? $_POST["object_type_table_key"] : null;
+	$user_type_permission_table_key = isset($_POST["user_type_permission_table_key"]) ? $_POST["user_type_permission_table_key"] : null;
+	$user_user_type_table_key = isset($_POST["user_user_type_table_key"]) ? $_POST["user_user_type_table_key"] : null;
+	$login_control_table_key = isset($_POST["login_control_table_key"]) ? $_POST["login_control_table_key"] : null;
+	$user_stats_table_key = isset($_POST["user_stats_table_key"]) ? $_POST["user_stats_table_key"] : null;
+	$layout_type_table_key = isset($_POST["layout_type_table_key"]) ? $_POST["layout_type_table_key"] : null;
+	$layout_type_permission_table_key = isset($_POST["layout_type_permission_table_key"]) ? $_POST["layout_type_permission_table_key"] : null;
+	$reserved_db_table_name_table_key = isset($_POST["reserved_db_table_name_table_key"]) ? $_POST["reserved_db_table_name_table_key"] : null;
 	
 	if (empty($username) || empty($password) || empty($permission_table_key) || empty($user_table_key) || empty($user_type_table_key) || empty($object_type_table_key) || empty($user_type_permission_table_key) || empty($user_user_type_table_key) || empty($login_control_table_key) || empty($user_stats_table_key) || empty($layout_type_table_key) || empty($layout_type_permission_table_key) || empty($reserved_db_table_name_table_key)) {
 		$error_message = "You cannot have blank fields. Please fill all the fields with the correct values...";
@@ -62,7 +62,7 @@ if ($_POST && $is_local_db) {
 			$code = file_get_contents($authentication_config_file_path);
 			
 			//CHANGING PERMISSION KEY
-			if (!$error_message && $UserAuthenticationHandler->changePermissionTableEncryptionKey( CryptoKeyHandler::hexToBin($new_permission_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changePermissionTableEncryptionKey( CryptoKeyHandler::hexToBin($new_permission_table_key) )) {
 				$code = str_replace('$permission_table_encryption_key = CryptoKeyHandler::hexToBin("' . $permission_table_key . '");', '$permission_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_permission_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -75,7 +75,7 @@ if ($_POST && $is_local_db) {
 			}
 			
 			//CHANGING USER KEY
-			if (!$error_message && $UserAuthenticationHandler->changeUserTableEncryptionKey( CryptoKeyHandler::hexToBin($new_user_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changeUserTableEncryptionKey( CryptoKeyHandler::hexToBin($new_user_table_key) )) {
 				$code = str_replace('$user_table_encryption_key = CryptoKeyHandler::hexToBin("' . $user_table_key . '");', '$user_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_user_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -88,7 +88,7 @@ if ($_POST && $is_local_db) {
 			}
 			
 			//CHANGING USER TYPE KEY
-			if (!$error_message && $UserAuthenticationHandler->changeUserTypeTableEncryptionKey( CryptoKeyHandler::hexToBin($new_user_type_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changeUserTypeTableEncryptionKey( CryptoKeyHandler::hexToBin($new_user_type_table_key) )) {
 				$code = str_replace('$user_type_table_encryption_key = CryptoKeyHandler::hexToBin("' . $user_type_table_key . '");', '$user_type_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_user_type_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -101,7 +101,7 @@ if ($_POST && $is_local_db) {
 			}
 			
 			//CHANGING OBJECT TYPE KEY
-			if (!$error_message && $UserAuthenticationHandler->changeObjectTypeTableEncryptionKey( CryptoKeyHandler::hexToBin($new_object_type_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changeObjectTypeTableEncryptionKey( CryptoKeyHandler::hexToBin($new_object_type_table_key) )) {
 				$code = str_replace('$object_type_table_encryption_key = CryptoKeyHandler::hexToBin("' . $object_type_table_key . '");', '$object_type_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_object_type_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -114,7 +114,7 @@ if ($_POST && $is_local_db) {
 			}
 			
 			//CHANGING USER TYPE PERMISSION KEY
-			if (!$error_message && $UserAuthenticationHandler->changeUserTypePermissionTableEncryptionKey( CryptoKeyHandler::hexToBin($new_user_type_permission_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changeUserTypePermissionTableEncryptionKey( CryptoKeyHandler::hexToBin($new_user_type_permission_table_key) )) {
 				$code = str_replace('$user_type_permission_table_encryption_key = CryptoKeyHandler::hexToBin("' . $user_type_permission_table_key . '");', '$user_type_permission_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_user_type_permission_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -127,7 +127,7 @@ if ($_POST && $is_local_db) {
 			}
 			
 			//CHANGING USER USER TYPE KEY
-			if (!$error_message && $UserAuthenticationHandler->changeUserUserTypeTableEncryptionKey( CryptoKeyHandler::hexToBin($new_user_user_type_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changeUserUserTypeTableEncryptionKey( CryptoKeyHandler::hexToBin($new_user_user_type_table_key) )) {
 				$code = str_replace('$user_user_type_table_encryption_key = CryptoKeyHandler::hexToBin("' . $user_user_type_table_key . '");', '$user_user_type_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_user_user_type_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -140,7 +140,7 @@ if ($_POST && $is_local_db) {
 			}
 			
 			//CHANGING LOGIN CONTROL KEY
-			if (!$error_message && $UserAuthenticationHandler->changeLoginControlTableEncryptionKey( CryptoKeyHandler::hexToBin($new_login_control_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changeLoginControlTableEncryptionKey( CryptoKeyHandler::hexToBin($new_login_control_table_key) )) {
 				$code = str_replace('$login_control_table_encryption_key = CryptoKeyHandler::hexToBin("' . $login_control_table_key . '");', '$login_control_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_login_control_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -153,7 +153,7 @@ if ($_POST && $is_local_db) {
 			}
 			
 			//CHANGING USER STATS KEY
-			if (!$error_message && $UserAuthenticationHandler->changeUserStatsTableEncryptionKey( CryptoKeyHandler::hexToBin($new_user_stats_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changeUserStatsTableEncryptionKey( CryptoKeyHandler::hexToBin($new_user_stats_table_key) )) {
 				$code = str_replace('$user_stats_table_encryption_key = CryptoKeyHandler::hexToBin("' . $user_stats_table_key . '");', '$user_stats_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_user_stats_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -166,7 +166,7 @@ if ($_POST && $is_local_db) {
 			}
 			
 			//CHANGING LAYOUT TYPE KEY
-			if (!$error_message && $UserAuthenticationHandler->changeLayoutTypeTableEncryptionKey( CryptoKeyHandler::hexToBin($new_layout_type_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changeLayoutTypeTableEncryptionKey( CryptoKeyHandler::hexToBin($new_layout_type_table_key) )) {
 				$code = str_replace('$layout_type_table_encryption_key = CryptoKeyHandler::hexToBin("' . $layout_type_table_key . '");', '$layout_type_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_layout_type_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -179,7 +179,7 @@ if ($_POST && $is_local_db) {
 			}
 			
 			//CHANGING LAYOUT TYPE PERMISSION KEY
-			if (!$error_message && $UserAuthenticationHandler->changeLayoutTypePermissionTableEncryptionKey( CryptoKeyHandler::hexToBin($new_layout_type_permission_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changeLayoutTypePermissionTableEncryptionKey( CryptoKeyHandler::hexToBin($new_layout_type_permission_table_key) )) {
 				$code = str_replace('$layout_type_permission_table_encryption_key = CryptoKeyHandler::hexToBin("' . $layout_type_permission_table_key . '");', '$layout_type_permission_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_layout_type_permission_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -192,7 +192,7 @@ if ($_POST && $is_local_db) {
 			}
 			
 			//CHANGING RESERVED DB TABLE NAME KEY
-			if (!$error_message && $UserAuthenticationHandler->changeReservedDBTableNameTableEncryptionKey( CryptoKeyHandler::hexToBin($new_reserved_db_table_name_table_key) )) {
+			if (empty($error_message) && $UserAuthenticationHandler->changeReservedDBTableNameTableEncryptionKey( CryptoKeyHandler::hexToBin($new_reserved_db_table_name_table_key) )) {
 				$code = str_replace('$reserved_db_table_name_table_encryption_key = CryptoKeyHandler::hexToBin("' . $reserved_db_table_name_table_key . '");', '$reserved_db_table_name_table_encryption_key = CryptoKeyHandler::hexToBin("' . $new_reserved_db_table_name_table_key . '");', $code);
 				
 				if (file_put_contents($authentication_config_file_path, $code) === false) {
@@ -204,7 +204,7 @@ if ($_POST && $is_local_db) {
 				$error_message = "There was an error trying to change the DB keys for the table: 'reserved_db_table_name'. Please try again...";
 			}
 			
-			if (!$error_message) {
+			if (empty($error_message)) {
 				$status_message = "DB Keys changed successfully...";
 			}
 		}
@@ -218,19 +218,19 @@ if ($_POST && $is_local_db) {
 }
 
 $data = array(
-	"username" => $username,
-	"password" => $password,
-	"permission_table_key" => $permission_table_key,
-	"user_table_key" => $user_table_key,
-	"user_type_table_key" => $user_type_table_key,
-	"object_type_table_key" => $object_type_table_key,
-	"user_type_permission_table_key" => $user_type_permission_table_key,
-	"user_user_type_table_key" => $user_user_type_table_key,
-	"login_control_table_key" => $login_control_table_key,
-	"user_stats_table_key" => $user_stats_table_key,
-	"layout_type_table_key" => $layout_type_table_key,
-	"layout_type_permission_table_key" => $layout_type_permission_table_key,
-	"reserved_db_table_name_table_key" => $reserved_db_table_name_table_key,
+	"username" => isset($username) ? $username : null,
+	"password" => isset($password) ? $password : null,
+	"permission_table_key" => isset($permission_table_key) ? $permission_table_key : null,
+	"user_table_key" => isset($user_table_key) ? $user_table_key : null,
+	"user_type_table_key" => isset($user_type_table_key) ? $user_type_table_key : null,
+	"object_type_table_key" => isset($object_type_table_key) ? $object_type_table_key : null,
+	"user_type_permission_table_key" => isset($user_type_permission_table_key) ? $user_type_permission_table_key : null,
+	"user_user_type_table_key" => isset($user_user_type_table_key) ? $user_user_type_table_key : null,
+	"login_control_table_key" => isset($login_control_table_key) ? $login_control_table_key : null,
+	"user_stats_table_key" => isset($user_stats_table_key) ? $user_stats_table_key : null,
+	"layout_type_table_key" => isset($layout_type_table_key) ? $layout_type_table_key : null,
+	"layout_type_permission_table_key" => isset($layout_type_permission_table_key) ? $layout_type_permission_table_key : null,
+	"reserved_db_table_name_table_key" => isset($reserved_db_table_name_table_key) ? $reserved_db_table_name_table_key : null,
 );
 
 function getNewEncryptionKey() {

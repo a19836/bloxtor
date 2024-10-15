@@ -13,7 +13,7 @@ $head = '
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/db/db_dump.css" charset="utf-8" />
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/db/db_dump.js"></script>';
 
-$main_content .= '<div class="db_dump">
+$main_content = '<div class="db_dump">
 	<div class="top_bar">
 		<header>
 			<div class="title">DB Dump for DB: \'' . $bean_name . '\'</div>
@@ -23,7 +23,7 @@ $main_content .= '<div class="db_dump">
 		</header>
 	</div>';
 
-if ($_POST && $error_messsage)
+if (!empty($_POST) && !empty($error_messsage))
 	$main_content .= '<div class="error">' . $error_messsage . '</div>';
 
 $main_content .= '	
@@ -37,10 +37,12 @@ $main_content .= '
 			
 			<ul>';
 
-if ($tables)
+if (!empty($tables))
 	foreach ($tables as $table) {
-		$main_content .= '<li title="' . $table["name"] . '">
-				<input type="checkbox" name="tables[]" value="' . $table["name"] . '"' . (!$_POST && (!$selected_table || $selected_table == $table["name"]) ? ' checked' : '') . ' /> ' . $table["name"] . '
+		$table_name = isset($table["name"]) ? $table["name"] : null;
+		
+		$main_content .= '<li title="' . $table_name . '">
+				<input type="checkbox" name="tables[]" value="' . $table_name . '"' . (empty($_POST) && (empty($selected_table) || $selected_table == $table_name) ? ' checked' : '') . ' /> ' . $table_name . '
 		</li>';
 	}
 

@@ -33,13 +33,13 @@ var PTLFieldsUtilObj = {
 		 * This code was added 2019-10-06 because an input's previous_html containing a html encapsulated with double quotes, this is, something like is:
 		 * 	"<input type=\"hidden\" name=\"ma_article[article_id]\" value=\"#[idx][article_id]#\" />"
 		 * which would be converted to the following ptl:
-		 * 	<ptl:echo "\"<input type=\\"hidden\\" name=\\"ma_article[article_id]\\" value=\\"" \$input_734[\$idx_734][article_id] "\\" /&gt;\""/>
+		 * 	<ptl:echo "\"<input type=\\"hidden\\" name=\\"ma_article[article_id]\\" value=\\"" @\$input_734[\$idx_734][article_id] "\\" /&gt;\""/>
 		 * which is wrong!!!
 		 * So we need to fix this cases and remove all the encapsulated values which are strings and are not codes. The decapsulateEncapsulatedStrings function does this!
 		 * Basically this function will convert the example above in:
 		 * 	<input type="hidden" name="ma_article[article_id]" value="#[idx][article_id]#" />
 		 * which would be converted to the following ptl:
-		 * 	<ptl:echo "<input type=\"hidden\" name=\"ma_article[article_id]\" value=\"" \$input_389[\$idx_389][article_id] "\" /&gt;"/>
+		 * 	<ptl:echo "<input type=\"hidden\" name=\"ma_article[article_id]\" value=\"" @\$input_389[\$idx_389][article_id] "\" /&gt;"/>
 		 * which is correct!!!
 		 */
 		form_settings = this.decapsulateEncapsulatedStrings(form_settings);
@@ -181,7 +181,7 @@ var PTLFieldsUtilObj = {
 		
 		if (this.isPropNotEmpty(element, "ptl")) {
 			if (this.isPropNotEmpty(element["ptl"], "input_data_var_name") && this.input_data_var_name != element["ptl"]["input_data_var_name"])
-				code += '<ptl:var:' + element["ptl"]["input_data_var_name"] + ' \\$' + this.input_data_var_name + ' />';
+				code += '<ptl:var:' + element["ptl"]["input_data_var_name"] + ' @\\$' + this.input_data_var_name + ' />';
 			
 			code += element["ptl"]["code"];
 			
@@ -200,7 +200,7 @@ var PTLFieldsUtilObj = {
 				var old_input_data_var_name = this.input_data_var_name;
 				this.input_data_var_name = old_input_data_var_name + "_" + parseInt(Math.random() * 1000);
 				
-				code += '<ptl:var:' + this.input_data_var_name + ' \\$' + old_input_data_var_name + '[\\$' + this.idx_var_name + '] />';
+				code += '<ptl:var:' + this.input_data_var_name + ' @\\$' + old_input_data_var_name + '[\\$' + this.idx_var_name + '] />';
 			}
 			
 			code += element["table"] ? this.createTable(element["table"]) : this.createTree(element["tree"]);
@@ -303,7 +303,7 @@ var PTLFieldsUtilObj = {
 			if (this.isPropNotEmpty(table, "default_input_data") && table["default_input_data"])
 				code += '<ptl:var:' + input_data_var_name + ' ' + this.parseNewInputData(table["default_input_data"]) + '/>';
 			else
-				code += '<ptl:var:' + input_data_var_name + ' \\$' + this.input_data_var_name + '/>';
+				code += '<ptl:var:' + input_data_var_name + ' @\\$' + this.input_data_var_name + '/>';
 			
 			var old_input_data_var_name = this.input_data_var_name;
 			this.input_data_var_name = input_data_var_name;
@@ -334,7 +334,7 @@ var PTLFieldsUtilObj = {
 				code += '</tr>' +
 				'</thead>' +
 				'<tbody>' +
-				'	<ptl:if is_array(\\$' + input_data_var_name + ')>' +
+				'	<ptl:if is_array(@\\$' + input_data_var_name + ')>' +
 				'		<ptl:foreach \\$' + input_data_var_name + ' ' + this.idx_var_name + ' item>' +
 				'			<tr' + rows_class + '>';
 				$.each(elements, function (idx, element) {
@@ -372,7 +372,7 @@ var PTLFieldsUtilObj = {
 			if (this.isPropNotEmpty(tree, "default_input_data") && tree["default_input_data"])
 				code += '<ptl:var:' + input_data_var_name + ' ' + this.parseNewInputData(tree["default_input_data"]) + '/>';
 			else
-				code += '<ptl:var:' + input_data_var_name + ' \\$' + this.input_data_var_name + '/>';
+				code += '<ptl:var:' + input_data_var_name + ' @\\$' + this.input_data_var_name + '/>';
 			
 			var old_input_data_var_name = this.input_data_var_name;
 			this.input_data_var_name = input_data_var_name;
@@ -436,7 +436,7 @@ var PTLFieldsUtilObj = {
 				'</ptl:function:createTree_' + rand + '>';
 			
 				//Call Tree function
-				code += '<ptl:createTree_' + rand + ' \\$' + input_data_var_name + ' />';
+				code += '<ptl:createTree_' + rand + ' @\\$' + input_data_var_name + ' />';
 			
 				this.idx_var_name = old_idx_var_name;
 			}

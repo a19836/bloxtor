@@ -36,8 +36,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			return $props;
 		}
 		else if ($WorkFlowTaskCodeParser->isAssignExpr($stmt)) {
-			$expr = $stmt->expr;
-			$expr_type = strtolower($expr->getType());
+			$expr = isset($stmt->expr) ? $stmt->expr : null;
+			$expr_type = $expr ? strtolower($expr->getType()) : "";
 			
 			if ($expr_type == "expr_funccall" || $expr_type == "expr_methodcall" || $expr_type == "expr_staticcall" || $expr_type == "expr_new" || $expr_type == "expr_array") {
 				return null;
@@ -53,9 +53,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			//TERNARY is short if/else, something like: $x = $y == true ? 1 : 2;
 			if ($expr_type == "expr_ternary") {
 				//print_r($stmt);
-				$cond = $expr->cond;
-				$if = $expr->if;
-				$else = $expr->else;
+				$cond = isset($expr->cond) ? $expr->cond : null;
+				$if = isset($expr->if) ? $expr->if : null;
+				$else = isset($expr->else) ? $expr->else : null;
 				
 				$cond_code = $WorkFlowTaskCodeParser->printCodeExpr($cond);
 				$if_code = $WorkFlowTaskCodeParser->printCodeExpr($if);
@@ -65,11 +65,11 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				
 				$code = '<?php if (' . $cond_code . ') {' . $var_name . $if_code . ';} else {' . $var_name . $else_code . ';} ?>';
 				
-				$stmts = $WorkFlowTaskCodeParser->getPHPParserEmulative()->parse($code);
-				$stmts = $WorkFlowTaskCodeParser->getPHPParserTraverser()->traverse($stmts);
+				$stmts = $WorkFlowTaskCodeParser->getPHPMultipleParser()->parse($code);
+				$stmts = $WorkFlowTaskCodeParser->getPHPParserTraverser()->nodesTraverse($stmts);
 				$var_inner_tasks = self::createTasksPropertiesFromCodeStmts($stmts, $WorkFlowTaskCodeParser);
 				
-				if ($var_inner_tasks && $var_inner_tasks[0]["id"]) {
+				if ($var_inner_tasks && !empty($var_inner_tasks[0]["id"])) {
 					$exits = array(
 						self::DEFAULT_EXIT_ID => array("task_id" => $var_inner_tasks[0]["id"]),
 					);
@@ -100,11 +100,11 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"value" => $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"],
-			"type" => $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"],
+			"value" => isset($raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"] : null,
+			"type" => isset($raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"] : null,
 		);
 		
 		$properties = self::parseResultVariableProperties($raw_data, $properties);
@@ -113,26 +113,32 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$var_name = self::getPropertiesResultVariableCode($properties);
 		
 		if ($var_name) {
 			$code = $prefix_tab;
 			
-			$assignment = $properties["result_var_type"] == "variable" || (!isset($properties["result_var_type"]) && $properties["result_var_name"]) ? $properties["result_var_assignment"] : $properties["result_prop_assignment"];
+			$result_var_type = isset($properties["result_var_type"]) ? $properties["result_var_type"] : null;
+			$result_var_assignment = isset($properties["result_var_assignment"]) ? $properties["result_var_assignment"] : null;
+			$result_prop_assignment = isset($properties["result_prop_assignment"]) ? $properties["result_prop_assignment"] : null;
+			
+			$assignment = $result_var_type == "variable" || (!isset($result_var_type) && !empty($properties["result_var_name"])) ? $result_var_assignment : $result_prop_assignment;
 			$operator = self::getVariableAssignmentOperator($assignment);
 			
 			//$x++ or $x--
-			if (($properties["value"] === 1 || $properties["value"] === "1") && ($operator == "+=" || $operator == "-=")) {
+			$value = isset($properties["value"]) ? $properties["value"] : null;
+			
+			if (($value === 1 || $value === "1") && ($operator == "+=" || $operator == "-=")) {
 				$var_name = self::getPropertiesResultVariableCode($properties, false);
 				
 				$code .= $var_name . ($operator == "+=" ? "++" : "--");
 			}
 			else {
-				$value = self::getVariableValueCode($properties["value"], $properties["type"]);
+				$value = self::getVariableValueCode($value, isset($properties["type"]) ? $properties["type"] : null);
 				$code .= $var_name . $value;
 			}
 			
@@ -142,7 +148,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$code = "";
 		}
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

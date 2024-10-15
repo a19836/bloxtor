@@ -57,21 +57,21 @@ body,
 
 .install_template > .layer,
   .install_template > .project {
-	width:315px;
+	width:375px;
 	margin:5px auto;
 	text-align:right;
 	color:#999;
 }
 .install_template > .layer label,
   .install_template > .project label {
-	width:100px;
+	width:150px;
 	font-weight:normal;
 	display:inline-block;
 	text-align:left;
 }
 .install_template > .layer select,
   .install_template > .project select {
-	width:calc(100% - 110px);
+	width:calc(100% - 160px);
 	margin-right:5px;
 	font-size:inherit;
 	color:inherit;

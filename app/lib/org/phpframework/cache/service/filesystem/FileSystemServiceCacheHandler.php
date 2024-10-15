@@ -74,6 +74,8 @@ class FileSystemServiceCacheHandler extends ServiceCacheHandler {
 		$original_key = isset($settings["original_key"]) ? $settings["original_key"] : null;
 		$delete_mode = isset($settings["delete_mode"]) ? $settings["delete_mode"] : null;
 		
+		$found_files = null;
+		
 		//echo "<br>\nprefix:$prefix\n<br>key:$key\n<br>settings:";print_r($settings);
 		//echo "<br>\ngetServiceRuleToDeletePath:".$this->CacheRelatedServicesHandler->getServiceRuleToDeletePath($prefix, $type, $key_type, $original_key);
 		
@@ -93,7 +95,8 @@ class FileSystemServiceCacheHandler extends ServiceCacheHandler {
 		else {
 			$file_path = $this->getServicePath($prefix, $key, $type);
 			$file_path = $this->CacheFileHandler->getPath($file_path);
-			if($file_path) {
+			
+			if ($file_path) {
 				$found_files = array($file_path);
 			}
 			

@@ -116,18 +116,18 @@ class WordPressUrlsParser {
 						//check html for urls that start with absolute url: $wordpress_site_url
 						if (stripos($attr_value, $wordpress_site_url) === 0) {
 							$next_chars = trim(substr($attr_value, strlen($wordpress_site_url)));
-							$convert_url = !$next_char || preg_match("/^(\/|\\\/|\$|#|&)/", $next_chars); //check next char to be sure is not a letter
+							$convert_url = !$next_chars || preg_match("/^(\/|\\\\\/|\$|#|&)/", $next_chars); //check next char to be sure is not a letter
 						}
 						else if (substr($attr_value, 0, 2) == "//" && stripos(substr($attr_value, 2), $wordpress_site_url_without_protocol) === 0) {
 							$next_chars = trim(substr($attr_value, strlen($wordpress_site_url_without_protocol) + 2));
-							$convert_url = !$next_char || preg_match("/^(\/|\\\/|\$|#|&)/", $next_chars); //check next char to be sure is not a letter
+							$convert_url = !$next_chars || preg_match("/^(\/|\\\\\/|\$|#|&)/", $next_chars); //check next char to be sure is not a letter
 						}
 						
 						//if no matches, check for relative path
-						if (!$convert_url && !empty($options["parse_wordpress_relative_urls"]) && stripos($attr_value, $wordpress_site_url_path) !== false) {
+						if (!$convert_url && !empty($options["parse_wordpress_relative_urls"]) && isset($wordpress_site_url_path) && stripos($attr_value, $wordpress_site_url_path) !== false) {
 							$pos = stripos($attr_value, $wordpress_site_url_path);
 							$next_chars = trim(substr($attr_value, $pos + strlen($wordpress_site_url_path)));
-							$convert_url = !$next_char || preg_match("/^(\/|\\\/|\$|#|&)/", $next_chars); //check next char to be sure is not a letter
+							$convert_url = !$next_chars || preg_match("/^(\/|\\\\\/|\$|#|&)/", $next_chars); //check next char to be sure is not a letter
 						}
 						
 						if ($convert_url && !self::isAllowedWordPressUrl($attr_value, $options)) {
@@ -164,14 +164,14 @@ class WordPressUrlsParser {
 				
 				if ($pos !== false) {
 					$data = self::getUrlFromString($html, $wordpress_site_url, $pos, $options);
-					$full_url = $data[0];
-					$start = $data[1];
-					$offset = $data[2];
+					$full_url = isset($data[0]) ? $data[0] : null;
+					$start = isset($data[1]) ? $data[1] : null;
+					$offset = isset($data[2]) ? $data[2] : null;
 					//error_log("$full_url\n", 3, "/var/www/html/livingroop/default/tmp/test.log");
 					
 					$pos = stripos($full_url, $wordpress_site_url);
 					$next_chars = trim(substr($full_url, $pos + strlen($wordpress_site_url)));
-					$convert_url = !$next_char || preg_match("/^(\/|\\\/|\$|#|&|\"|')/", $next_chars); //check next char to be sure is not a letter
+					$convert_url = !$next_chars || preg_match("/^(\/|\\\\\/|\$|#|&|\"|')/", $next_chars); //check next char to be sure is not a letter
 					
 					if ($convert_url && !self::isAllowedWordPressUrl($full_url, $options)) {
 						//replace full_url by new_url
@@ -204,6 +204,9 @@ class WordPressUrlsParser {
 		$searched_url_length = strlen($searched_url);
 		$extra_delimiters = $options && isset($options["delimiters"]) ? $options["delimiters"] : "";
 		
+		if (is_numeric($html))
+			$html = (string)$html; //bc of php > 7.4 if we use $var[$i] gives an warning
+		
 		for ($i = $pos - 1; $i >= 0; $i--) {
 			$char = $html[$i];
 			
@@ -211,7 +214,7 @@ class WordPressUrlsParser {
 				$delimiters = array($char);
 				break;
 			}
-			else if ($extra_delimiters && $extra_delimiters[$char]) {
+			else if ($extra_delimiters && !empty($extra_delimiters[$char])) {
 				$delimiters = is_array($extra_delimiters[$char]) ? $extra_delimiters[$char] : array($extra_delimiters[$char]);
 				break;
 			}
@@ -246,6 +249,7 @@ class WordPressUrlsParser {
 			$wordpress_site_url = preg_replace("/\/+$/", "", $wordpress_site_url); //remove last slashes from $wordpress_site_url
 			$current_page_url = preg_replace("/\/+$/", "", $current_page_url); //remove last slashes from $wordpress_site_url
 			$current_page_url .= strpos($current_page_url, "?") === false ? "?" : "&";
+			$wordpress_site_url_path = $current_page_url_path = null;
 			
 			if (!empty($options["parse_wordpress_relative_urls"])) {
 				$wordpress_site_url_path = parse_url($wordpress_site_url, PHP_URL_PATH);
@@ -318,7 +322,7 @@ class WordPressUrlsParser {
 		if (isset($parts["scheme"])) {
 			$scheme = parse_url($url_to_replace, PHP_URL_SCHEME); //get protocol from url_to_replace
 			$cp_parts = parse_url($current_page_url);
-			$cpu = $scheme . "://" . $cp_parts["host"] . (isset($cp_parts["port"]) ? ":" . $cp_parts["port"] : "") . "/";
+			$cpu = $scheme . "://" . (isset($cp_parts["host"]) ? $cp_parts["host"] : "") . (isset($cp_parts["port"]) ? ":" . $cp_parts["port"] : "") . "/";
 			self::prepareRelativeUrl($url_to_replace, $cpu);
 		}
 		
@@ -376,7 +380,7 @@ class WordPressUrlsParser {
 							$convert_url = true;
 						else if (!empty($options["parse_wordpress_relative_urls"]) && stripos($param_value, $wordpress_site_url_path) !== false) { //check html for urls that start with relative url: $wordpress_site_url_path
 							$pos = stripos($param_value, $wordpress_site_url_path);
-							$convert_url = preg_match("/(|\s|\"|'|\/|\?|#)/", $param_value[$pos + 1]);
+							$convert_url = isset($param_value[$pos + 1]) ? preg_match("/(|\s|\"|'|\/|\?|#)/", $param_value[$pos + 1]) : false;
 						}
 						
 						if ($convert_url && !self::isAllowedWordPressUrl($param_value, $options)) {
@@ -517,7 +521,7 @@ class WordPressUrlsParser {
 	private static function isAllowedWordPressUrl($url, $options) {
 		if ($options && !empty($options["allowed_wordpress_urls"])) 
 			foreach ($options["allowed_wordpress_urls"] as $regex) {
-				$is_regex = $regex[0] == "/" && substr($regex, -1) == "/";
+				$is_regex = isset($regex[0]) && $regex[0] == "/" && substr($regex, -1) == "/";
 				
 				if ( ($is_regex && preg_match($regex, $url)) || (!$is_regex && $regex == $url) )
 					return true;

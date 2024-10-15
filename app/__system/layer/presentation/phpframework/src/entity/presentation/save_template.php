@@ -6,7 +6,7 @@ $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "w
 $file_type = "save_template";
 
 /*DEPRECATED with the new UI in edit_template_simple. Note that this file is being used for the edit_template_advanced too.
-if ($_POST["object"]["code"]) {
+if (!empty($_POST["object"]["code"])) {
 	$_POST["object"]["code"] = WorkFlowPresentationHandler::convertCodeTagsToHtmlTags($_POST["object"]["code"]);
 }*/
 

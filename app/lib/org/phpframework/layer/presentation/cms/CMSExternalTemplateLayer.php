@@ -36,6 +36,7 @@ class CMSExternalTemplateLayer {
 			}
 			
 			$template_params_type = isset($template_params["type"]) ? $template_params["type"] : null;
+			$code = null;
 			
 			switch($template_params_type) {
 				case "project": 
@@ -58,7 +59,7 @@ class CMSExternalTemplateLayer {
 					launch_exception(new Exception("No template code to parse! Invalid template params: " . var_export($template_params, true)));
 			}
 			
-			if ($ttl && $CacheHandler) 
+			if ($ttl && !empty($CacheHandler)) 
 				$CacheHandler->write($cached_file_name, $code);
 			
 			return $code;
@@ -82,15 +83,28 @@ class CMSExternalTemplateLayer {
 					$content = WordPressCMSBlockHandler::addTemplateXMLRegionsAndParamsToPHPTemplate($content);
 				
 				//prepare external vars
-				if (!empty($template_params["keep_original_project_url_prefix"]))
-					$external_vars = self::getExternalVarsFromProjectTemplateContents($EVC, $template_params, $external_vars);
+				if (!empty($template_params["keep_original_project_url_prefix"])) {
+					//set project global vars
+					$current_project_id = $EVC->getPresentationLayer()->getSelectedPresentationId();
+					$external_project_id = isset($template_params["external_project_id"]) ? $template_params["external_project_id"] : null;
+					$EVC->getPresentationLayer()->setSelectedPresentationId($external_project_id);
+					$GLOBALS["presentation_id"] = $external_project_id;
+					
+					$external_vars = self::getExternalVarsFromProjectTemplateContents($EVC, $external_vars);
+				}
 				
 				//parse php and return html
-				$code = PHPScriptHandler::parseContent($content, $external_vars);
+				$code = PHPScriptHandler::parseContent($content, $external_vars); //Note that the external_vars already contain the EVC set, which must be the same then the $EVC
 				
 				//replace regions and params xml code with real php code
 				$code = WordPressCMSBlockHandler::convertContentsHtmlToPHPTemplate($code);
 				//echo "<textarea>$code</textarea>";die();
+				
+				if (!empty($template_params["keep_original_project_url_prefix"])) {
+					//set original project global vars
+					$GLOBALS["presentation_id"] = $current_project_id;
+					$EVC->getPresentationLayer()->setSelectedPresentationId($current_project_id);
+				}
 				
 				//$code = $content;
 				
@@ -105,24 +119,12 @@ class CMSExternalTemplateLayer {
 			launch_exception(new Exception("No template id '$template_id' in template code 'parse_php_code.php'."));
 	}
 	
-	private static function getExternalVarsFromProjectTemplateContents($EVC, $template_params, $external_vars) {
-		$external_vars = $external_vars ? $external_vars : array();
-		
-		//set project global vars
-		$current_project_id = $EVC->getPresentationLayer()->getSelectedPresentationId();
-		$external_project_id = isset($template_params["external_project_id"]) ? $template_params["external_project_id"] : null;
-		$EVC->getPresentationLayer()->setSelectedPresentationId($external_project_id);
-		$GLOBALS["presentation_id"] = $external_project_id;
-		
+	private static function getExternalVarsFromProjectTemplateContents($EVC, $external_vars) {
 		//load config project_url_prefix var. Note: Do not load the other config vars bc they are specific from the external_project_id
 		include $EVC->getConfigPath("config");
 		
 		//only get the external_project_id url prefix
 		$external_vars["original_project_url_prefix"] = $project_url_prefix;
-		
-		//set original project global vars
-		$GLOBALS["presentation_id"] = $current_project_id;
-		$EVC->getPresentationLayer()->setSelectedPresentationId($current_project_id);
 		
 		return $external_vars;
 	}
@@ -139,7 +141,7 @@ class CMSExternalTemplateLayer {
 				$external_vars["block_local_variables"] = $block_local_variables;
 				
 				$content = file_get_contents($block_path);
-				$content .= '<?php echo $EVC->getCMSLayer()->getCMSBlockLayer()->getBlock($block_id); ?>';
+				$content .= '<?php echo $EVC->getCMSLayer()->getCMSBlockLayer()->getCurrentBlock(); ?>';
 				//echo "<textarea>$content</textarea>";die();
 				$code = PHPScriptHandler::parseContent($content, $external_vars);
 				$code = WordPressCMSBlockHandler::convertContentsHtmlToPHPTemplate($code);
@@ -157,6 +159,11 @@ class CMSExternalTemplateLayer {
 	}
 
 	private static function getTemplateCodeFromWordPressContents($EVC, $template_params, $external_vars) {
+		$set_error_handler = empty($GLOBALS["ignore_undefined_vars_errors"]);
+		
+		if ($set_error_handler)
+			set_error_handler("ignore_undefined_var_error_handler", E_WARNING);
+		
 		$url_query = isset($template_params["url_query"]) ? $template_params["url_query"] : null;
 		$db_driver = !empty($template_params["wordpress_installation_name"]) ? $template_params["wordpress_installation_name"] : (isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null); //db_driver name
 		$project_url_prefix = isset($external_vars["project_url_prefix"]) ? $external_vars["project_url_prefix"] : null;
@@ -180,15 +187,19 @@ class CMSExternalTemplateLayer {
 		$code = $content && isset($content["results"]["full_page_html"]) ? $content["results"]["full_page_html"] : "";
 		$code = WordPressCMSBlockHandler::convertContentsHtmlToPHPTemplate($code);
 		
+		if ($set_error_handler)
+			restore_error_handler();
+		
 		return $code;
 	}
 	
 	private static function getTemplateCodeFromUrlContents($EVC, $template_params, $external_vars) {
 		$url = isset($template_params["url"]) ? $template_params["url"] : null;
+		$code = null;
 		
 		if ($url) {
 			$url_host = parse_url($url, PHP_URL_HOST);
-			$current_host = explode(":", $_SERVER["HTTP_HOST"]); //maybe it contains the port
+			$current_host = isset($_SERVER["HTTP_HOST"]) ? explode(":", $_SERVER["HTTP_HOST"]) : null; //maybe it contains the port
 			$current_host = isset($current_host[0]) ? $current_host[0] : null;
 			
 			$settings = array(

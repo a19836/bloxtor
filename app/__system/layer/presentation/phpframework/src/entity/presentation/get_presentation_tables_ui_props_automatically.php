@@ -5,19 +5,19 @@ include_once $EVC->getUtilPath("CMSPresentationFormSettingsUIHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"];
-$db_layer = $_GET["db_layer"];
-$db_layer_file = $_GET["db_layer_file"];
-$db_driver = $_GET["db_driver"];
-$include_db_driver = $_GET["include_db_driver"];
-$type = $_GET["type"];
-$selected_tables = $_POST["st"] ? $_POST["st"] : $_GET["st"];
-$selected_tables_alias = $_POST["sta"] ? $_POST["sta"] : $_GET["sta"];
-$active_brokers = $_POST["ab"] ? $_POST["ab"] : $_GET["ab"];
-$active_brokers_folder = $_POST["abf"] ? $_POST["abf"] : $_GET["abf"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
+$db_layer = isset($_GET["db_layer"]) ? $_GET["db_layer"] : null;
+$db_layer_file = isset($_GET["db_layer_file"]) ? $_GET["db_layer_file"] : null;
+$db_driver = isset($_GET["db_driver"]) ? $_GET["db_driver"] : null;
+$include_db_driver = isset($_GET["include_db_driver"]) ? $_GET["include_db_driver"] : null;
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
+$selected_tables = !empty($_POST["st"]) ? $_POST["st"] : (isset($_GET["st"]) ? $_GET["st"] : null);
+$selected_tables_alias = !empty($_POST["sta"]) ? $_POST["sta"] : (isset($_GET["sta"]) ? $_GET["sta"] : null);
+$active_brokers = !empty($_POST["ab"]) ? $_POST["ab"] : (isset($_GET["ab"]) ? $_GET["ab"] : null);
+$active_brokers_folder = !empty($_POST["abf"]) ? $_POST["abf"] : (isset($_GET["abf"]) ? $_GET["abf"] : null);
 //echo "<pre>";print_r($selected_tables);print_r($selected_tables_alias);die();
 //echo "<pre>";print_r($_POST);die();
 
@@ -51,7 +51,7 @@ if ($path) {
 		else {//TRYING TO GET THE DB TABLES DIRECTLY FROM DB
 			if (!$db_layer_file) {
 				$db_driver_props = WorkFlowBeansFileHandler::getLayerDBDriverProps($user_global_variables_files_path, $user_beans_folder_path, $P, $db_driver);
-				$db_layer_file = $db_driver_props ? $db_driver_props[1] : null;
+				$db_layer_file = $db_driver_props && isset($db_driver_props[1]) ? $db_driver_props[1] : null;
 			}
 			
 			$WorkFlowDBHandler = new WorkFlowDBHandler($user_beans_folder_path, $user_global_variables_files_path);
@@ -61,7 +61,7 @@ if ($path) {
 		}
 		//echo "<pre>";print_r($tasks);die();
 		
-		$tasks = $tasks["tasks"];
+		$tasks = isset($tasks["tasks"]) ? $tasks["tasks"] : null;
 		$foreign_keys = $WorkFlowDataAccessHandler->getForeignKeys();
 		MyArray::arrKeysToLowerCase($foreign_keys, true);
 		//echo "<pre>";print_r($foreign_keys);
@@ -73,7 +73,7 @@ if ($path) {
 		//PREPARING BROKERS
 		$brokers = $P->getBrokers();
 		foreach ($brokers as $broker_name => $broker)
-			if (!$active_brokers[$broker_name])
+			if (empty($active_brokers[$broker_name]))
 				unset($brokers[$broker_name]);
 		
 		//PREPARING DB DRIVERS
@@ -92,7 +92,7 @@ if ($path) {
 		
 		$db_broker = $db_driver && $brokers && count($db_drivers) > 1 ? WorkFlowBeansFileHandler::getBrokersLocalDBBrokerNameForChildBrokerDBDriver($user_global_variables_files_path, $user_beans_folder_path, $brokers, $db_driver) : null;
 		//Do not add here $GLOBALS["default_db_broker"] bc it will be already passed automatically through the RESTClientBroker
-		$include_db_broker = $include_db_driver || count($layer_brokers_settings["db_brokers"]) > 1; //check if exists other db broker and if not, do not include db_broker, bc is the only one
+		$include_db_broker = $include_db_driver || (isset($layer_brokers_settings["db_brokers"]) && count($layer_brokers_settings["db_brokers"]) > 1); //check if exists other db broker and if not, do not include db_broker, bc is the only one
 		
 		$t = count($selected_tables);
 		for ($i = 0; $i < $t; $i++) {
@@ -144,11 +144,11 @@ function getPresentationTableUIProps($user_global_variables_file_path, $user_bea
 	
 	foreach ($brokers as $broker_name => $broker) {
 		$layer_props = WorkFlowBeansFileHandler::getLocalBeanLayerFromBroker($user_global_variables_file_path, $user_beans_folder_path, $broker);
-		$Layer = $layer_props[2];
+		$Layer = isset($layer_props[2]) ? $layer_props[2] : null;
 		
 		if ($Layer && (is_a($Layer, "DataAccessLayer") || is_a($Layer, "BusinessLogicLayer") || is_a($Layer, "DBLayer"))) {
 			$layer_object_id = $Layer->getLayerPathSetting();
-			$path = trim($active_brokers_folder[$broker_name]) ? trim($active_brokers_folder[$broker_name]) : "";
+			$path = isset($active_brokers_folder[$broker_name]) && trim($active_brokers_folder[$broker_name]) ? trim($active_brokers_folder[$broker_name]) : "";
 			
 			if ($path && substr($path, -1) != "/")
 				$path .= "/";
@@ -182,10 +182,14 @@ function getPresentationTableUIProps($user_global_variables_file_path, $user_bea
 					
 					if ($type == "relationships" || $type == "relationships_count") {
 						foreach ($prop as $tn => $rp) {
-							$SQLClient->loadXML($Layer->getLayerPathSetting() . "/" . $rp["path"]);
-							$query = $SQLClient->getQuery($rp["service_type"], $rp["service_id"]);
+							$rp_path = isset($rp["path"]) ? $rp["path"] : null;
+							$rp_service_type = isset($rp["service_type"]) ? $rp["service_type"] : null;
+							$rp_service_id = isset($rp["service_id"]) ? $rp["service_id"] : null;
+							
+							$SQLClient->loadXML($Layer->getLayerPathSetting() . "/" . $rp_path);
+							$query = $SQLClient->getQuery($rp_service_type, $rp_service_id);
 					
-							if ($query && $query["value"]) {
+							if ($query && !empty($query["value"])) {
 								$props[$broker_name][$type][$tn]["sql"] = str_replace(array("\t", "#searching_condition#"), "", $query["value"]);
 								$props[$broker_name][$type][$tn]["sql_type"] = "string";
 								
@@ -195,10 +199,14 @@ function getPresentationTableUIProps($user_global_variables_file_path, $user_bea
 						}
 					}
 					else {
-						$SQLClient->loadXML($Layer->getLayerPathSetting() . "/" . $prop["path"]);
-						$query = $SQLClient->getQuery($prop["service_type"], $prop["service_id"]);
-					
-						if ($query && $query["value"]) {
+						$prop_path = isset($prop["path"]) ? $prop["path"] : null;
+						$prop_service_type = isset($prop["service_type"]) ? $prop["service_type"] : null;
+						$prop_service_id = isset($prop["service_id"]) ? $prop["service_id"] : null;
+						
+						$SQLClient->loadXML($Layer->getLayerPathSetting() . "/" . $prop_path);
+						$query = $SQLClient->getQuery($prop_service_type, $prop_service_id);
+						
+						if ($query && !empty($query["value"])) {
 							$props[$broker_name][$type]["sql"] = str_replace(array("\t", "#searching_condition#"), "", $query["value"]);
 							$props[$broker_name][$type]["sql_type"] = "string";
 							
@@ -215,14 +223,16 @@ function getPresentationTableUIProps($user_global_variables_file_path, $user_bea
 				foreach ($props[$broker_name] as $type => $prop) {
 					if ($type == "relationships" || $type == "relationships_count") {
 						foreach ($prop as $tn => $rp) {
-							$props[$broker_name][$type][$tn]["sql"] = str_replace(array("\t", "#searching_condition#"), "", $rp["sql"]);
+							$rp_sql = isset($rp["sql"]) ? $rp["sql"] : null;
+							$props[$broker_name][$type][$tn]["sql"] = str_replace(array("\t", "#searching_condition#"), "", $rp_sql);
 							
 							if ($type == "relationships_count")
 								$props[$broker_name][$type][$tn]["sql"] = preg_replace("/\s*WHERE\s*1=1\s*$/", "", $props[$broker_name][$type][$tn]["sql"]);
 						}
 					}
 					else {
-						$props[$broker_name][$type]["sql"] = str_replace(array("\t", "#searching_condition#"), "", $prop["sql"]);
+						$prop_sql = isset($prop["sql"]) ? $prop["sql"] : null;
+						$props[$broker_name][$type]["sql"] = str_replace(array("\t", "#searching_condition#"), "", $prop_sql);
 						
 						if ($type == "count" || $type == "get_all")
 							$props[$broker_name][$type]["sql"] = preg_replace("/\s*WHERE\s*1=1\s*$/", "", $props[$broker_name][$type]["sql"]);
@@ -352,19 +362,19 @@ function getBusinessLogicProps($objs, $table_name, $table, $fks, $db_broker, $db
 		
 		for ($i = 0; $i < $t; $i++) {
 			$obj = $objs[$i];
-			$osl = strtolower($obj["service"]);
-			$opl = strtolower($obj["path"]);
+			$osl = isset($obj["service"]) ? strtolower($obj["service"]) : "";
+			$opl = isset($obj["path"]) ? strtolower($obj["path"]) : "";
 			
 			//remove namespace from service if exists
 			if (strpos($osl, "\\") !== false)
 				$osl = substr($osl, strrpos($osl, "\\") + 1);
 			
-			$cond = $obj["item_type"] == "method" && 
+			$cond = isset($obj["item_type"]) && $obj["item_type"] == "method" && 
 				($osl == $snl || ($sasl && $osl == $sasl)) && 
 				(stripos($opl, "/{$snl}.php") !== false || ($sasl && stripos($opl, "/{$sasl}.php") !== false));
 			
 			if ($cond) {
-				$name = $obj["name"];
+				$name = isset($obj["name"]) ? $obj["name"] : null;
 				$lower_name = strtolower($name);
 				$lower_class_name = strtolower($class_name);
 				$lower_class_alias = strtolower($class_alias);
@@ -460,17 +470,17 @@ function getBusinessLogicProps($objs, $table_name, $table, $fks, $db_broker, $db
 					$lower_name == "countitems"
 				) 
 					$type = "count";
-				else if ($foreign_methods[$name]) 
+				else if (!empty($foreign_methods[$name]))
 					$type = "relationships";
-				else if ($foreign_count_methods[$name]) 
+				else if (!empty($foreign_count_methods[$name]))
 					$type = "relationships_count";
 				
 				if ($type) {
 					$sn = stripos($opl, "/{$snl}.php") !== false ? $service_name : $service_alias;
 					
 					$prop = array(
-						"path" => $obj["path"],
-						"module_id" => dirname($obj["path"]),
+						"path" => isset($obj["path"]) ? $obj["path"] : null,
+						"module_id" => isset($obj["path"]) ? dirname($obj["path"]) : null,
 						//"module_id" => str_replace("/", ".", dirname($obj["path"])),  //2021-01-17 JP: Or it could be this code. It doesn't really matter. Even if there are folders with "." in the names, the system detects it. The module_id with "/" is faster before cache happens, but after the first call for this module, it doesn't really matter anymore bc the module_path is cached with the correspondent module_id.
 						"module_id_type" => "string",
 						"service_id" => "$sn.$name",
@@ -505,11 +515,11 @@ function getBusinessLogicProps($objs, $table_name, $table, $fks, $db_broker, $db
 						);
 					
 					if ($type == "relationships") {
-						$tn = $foreign_methods[$name];
+						$tn = isset($foreign_methods[$name]) ? $foreign_methods[$name] : null;
 						$props[$type][$tn] = $prop;
 					}
 					else if ($type == "relationships_count") {
-						$tn = $foreign_count_methods[$name];
+						$tn = isset($foreign_count_methods[$name]) ? $foreign_count_methods[$name] : null;
 						$props[$type][$tn] = $prop;
 					}
 					else
@@ -542,21 +552,25 @@ function getHibernateProps($objs, $table_name, $table, $fks, $db_broker, $db_dri
 		$t = count($fks); 
 		for ($i = 0; $i < $t; $i++) {
 			$fk = $fks[$i];
-			$foreign_table_name = strtolower($fk["child_table"]) == $tnl ? $fk["parent_table"] : $fk["child_table"];
+			$fk_type = isset($fk["type"]) ? $fk["type"] : null;
+			$fk_child_table = isset($fk["child_table"]) ? $fk["child_table"] : null;
+			$fk_parent_table = isset($fk["parent_table"]) ? $fk["parent_table"] : null;
+			
+			$foreign_table_name = strtolower($fk_child_table) == $tnl ? $fk_parent_table : $fk_child_table;
 			$foreign_table_alias = getTableAlias($foreign_table_name, $selected_tables_alias);
 			
-			$relationship_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_name, $foreign_table_name, $fk["type"]);
+			$relationship_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_name, $foreign_table_name, $fk_type);
 			$relationship_name = $relationship_name ? substr($relationship_name, strlen("get_")) : $relationship_name;//remove get_
 			$foreign_queries_name[$relationship_name] = $foreign_table_name;
 			
 			if ($table_alias) {
 				if ($foreign_table_alias) {
-					$relationship_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_alias, $foreign_table_alias, $fk["type"]);
+					$relationship_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_alias, $foreign_table_alias, $fk_type);
 					$relationship_name = $relationship_name ? substr($relationship_name, strlen("get_")) : $relationship_name;//remove get_
 					$foreign_queries_name[$relationship_name] = $foreign_table_name;
 				}
 				
-				$relationship_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_alias, $foreign_table_name, $fk["type"]);
+				$relationship_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_alias, $foreign_table_name, $fk_type);
 				$relationship_name = $relationship_name ? substr($relationship_name, strlen("get_")) : $relationship_name;//remove get_
 				$foreign_queries_name[$relationship_name] = $foreign_table_name;
 			}
@@ -572,20 +586,20 @@ function getHibernateProps($objs, $table_name, $table, $fks, $db_broker, $db_dri
 		
 		for ($i = 0; $i < $t; $i++) {
 			$obj = $objs[$i];
-			$otl = strtolower($obj["table"]);
-			$opl = strtolower($obj["path"]);
+			$otl = isset($obj["table"]) ? strtolower($obj["table"]) : null;
+			$opl = isset($obj["path"]) ? strtolower($obj["path"]) : null;
 			
-			$cond = $obj["item_type"] == "obj" && 
+			$cond = isset($obj["item_type"]) && $obj["item_type"] == "obj" && 
 				($otl == $tnl || ($table_alias && $otl == $tal)) && 
 				(stripos($opl, "/{$tnl}.xml") !== false || ($table_alias && stripos($opl, "/{$tal}.xml") !== false));
 			
 			if ($cond) {
 				$prop = array(
-					"path" => $obj["path"],
-					"module_id" => dirname($obj["path"]),
+					"path" => isset($obj["path"]) ? $obj["path"] : null,
+					"module_id" => isset($obj["path"]) ? dirname($obj["path"]) : null,
 					//"module_id" => str_replace("/", ".", dirname($obj["path"])), //2021-01-17 JP: Or it could be this code. It doesn't really matter. Even if there are folders with "." in the names, the system detects it. The module_id with "/" is faster before cache happens, but after the first call for this module, it doesn't really matter anymore bc the module_path is cached with the correspondent module_id.
 					"module_id_type" => "string",
-					"service_id" => $obj["name"],
+					"service_id" => isset($obj["name"]) ? $obj["name"] : null,
 					"service_id_type" => "string",
 					"service_method_type" => "string",
 					"sma_options_type" => "array",
@@ -620,24 +634,24 @@ function getHibernateProps($objs, $table_name, $table, $fks, $db_broker, $db_dri
 						);
 				}
 				
-				$queries = $obj["childs"];
+				$queries = isset($obj["childs"]) ? $obj["childs"] : null;
 				
 				//This part is for the queries which are foregin keys, because the other ones will be replaced by the native methods.
 				$queries_props = getIbatisProps($queries, $table_name, $table, $fks, $db_broker, $db_driver, $include_db_broker, $include_db_driver, $selected_tables_alias);
 				foreach ($queries_props as $type => $p) {
 					if ($type == "relationships" || $type == "relationships_count") {
 						foreach ($p as $tn => $rp) {
-							$prop["service_method"] = "call" . ucfirst(strtolower($rp["service_type"]));
-							$prop["sma_query_id"] = $rp["service_id"];
-							$prop["sma_query_id"] = $rp["service_id_type"];
+							$prop["service_method"] = "call" . (isset($rp["service_type"]) ? ucfirst(strtolower($rp["service_type"])) : "");
+							$prop["sma_query_id"] = isset($rp["service_id"]) ? $rp["service_id"] : null;
+							$prop["sma_query_id"] = isset($rp["service_id_type"]) ? $rp["service_id_type"] : null;
 							
 							$props[$type][$tn] = $prop;
 						}
 					}
 					else {
-						$prop["service_method"] = "call" . ucfirst(strtolower($p["service_type"]));
-						$prop["sma_query_id"] = $p["service_id"];
-						$prop["sma_query_id_type"] = $p["service_id_type"];
+						$prop["service_method"] = "call" . (isset($p["service_type"]) ? ucfirst(strtolower($p["service_type"])) : "");
+						$prop["sma_query_id"] = isset($p["service_id"]) ? $p["service_id"] : null;
+						$prop["sma_query_id_type"] = isset($p["service_id_type"]) ? $p["service_id_type"] : null;
 						$props[$type] = $prop;
 					}
 				}
@@ -648,13 +662,14 @@ function getHibernateProps($objs, $table_name, $table, $fks, $db_broker, $db_dri
 					$t = count($queries);
 					for ($i = 0; $i < $t; $i++) {
 						$query = $queries[$i];
+						$query_name = isset($query["name"]) ? $query["name"] : null;
 						
-						if ($query["item_type"] == "relationship" && $foreign_queries_name[ $query["name"] ]) {
+						if (isset($query["item_type"]) && $query["item_type"] == "relationship" && !empty($foreign_queries_name[$query_name])) {
 							$prop["service_method"] = "findRelationship";
-							$prop["sma_rel_name"] = $query["name"];
+							$prop["sma_rel_name"] = $query_name;
 							$prop["sma_rel_name_type"] = "string";
 							
-							$tn = $foreign_queries_name[ $query["name"] ];
+							$tn = $foreign_queries_name[$query_name];
 							$props["relationships"][$tn] = $prop;
 							
 							$prop["service_method"] = "countRelationship";
@@ -719,20 +734,20 @@ function getIbatisProps($objs, $table_name, $table, $fks, $db_broker, $db_driver
 		$t = count($objs);
 		for ($i = 0; $i < $t; $i++) {
 			$obj = $objs[$i];
-			$opl = strtolower($obj["path"]);
+			$opl = isset($obj["path"]) ? strtolower($obj["path"]) : null;
 			
-			$cond = $obj["item_type"] == "query" && 
+			$cond = isset($obj["item_type"]) && $obj["item_type"] == "query" && 
 				(stripos($opl, "/{$tnl}.xml") !== false || ($table_alias && stripos($opl, "/{$tal}.xml") !== false));
 			
 			if ($cond) {
-				$name = $obj["name"];
-				$query_type = $obj["query_type"];
+				$name = isset($obj["name"]) ? $obj["name"] : null;
+				$query_type = isset($obj["query_type"]) ? $obj["query_type"] : null;
 				$type = getQueryPropType($table_name, $table_alias, $foreign_queries_name, $foreign_queries_count_name, $query_type, $name);
 				
 				if ($type) {
 					$prop = array(
-						"path" => $obj["path"],
-						"module_id" => dirname($obj["path"]), 
+						"path" => isset($obj["path"]) ? $obj["path"] : null,
+						"module_id" => isset($obj["path"]) ? dirname($obj["path"]) : null, 
 						//"module_id" => str_replace("/", ".", dirname($obj["path"])),  //2021-01-17 JP: Or it could be this code. It doesn't really matter. Even if there are folders with "." in the names, the system detects it. The module_id with "/" is faster before cache happens, but after the first call for this module, it doesn't really matter anymore bc the module_path is cached with the correspondent module_id.
 						"module_id_type" => "string",
 						"service_type" => $query_type,
@@ -767,11 +782,11 @@ function getIbatisProps($objs, $table_name, $table, $fks, $db_broker, $db_driver
 						);
 					
 					if ($type == "relationships") {
-						$tn = $foreign_queries_name[$name];
+						$tn = isset($foreign_queries_name[$name]) ? $foreign_queries_name[$name] : null;
 						$props[$type][$tn] = $prop;
 					}
 					else if ($type == "relationships_count") {
-						$tn = $foreign_queries_count_name[$name];
+						$tn = isset($foreign_queries_count_name[$name]) ? $foreign_queries_count_name[$name] : null;
 						$props[$type][$tn] = $prop;
 					}
 					else
@@ -802,12 +817,12 @@ function getDBTableProps($table_name, $table, $fks, $db_broker, $db_driver, $inc
 	$arr = $WorkFlowDataAccessHandler->getQueryObjectsArrayFromDBTaskFlow($table_name);
 	//print_r($arr);die();
 	
-	if ($arr && $arr["queries"][0]["childs"]) 
+	if ($arr && !empty($arr["queries"][0]["childs"]))
 		foreach ($arr["queries"][0]["childs"] as $query_type => $type_queries) 
 			if ($type_queries) 
 				foreach ($type_queries as $query) {
-					$name = $query["@"]["id"];
-					$sql = $query["value"];
+					$name = isset($query["@"]["id"]) ? $query["@"]["id"] : null;
+					$sql = isset($query["value"]) ? $query["value"] : null;
 					
 					$type = getQueryPropType($table_name, $table_alias, $foreign_queries_name, $foreign_queries_count_name, $query_type, $name);
 					
@@ -843,11 +858,11 @@ function getDBTableProps($table_name, $table, $fks, $db_broker, $db_driver, $inc
 							);
 						
 						if ($type == "relationships") {
-							$tn = $foreign_queries_name[$name];
+							$tn = isset($foreign_queries_name[$name]) ? $foreign_queries_name[$name] : null;
 							$props[$type][$tn] = $prop;
 						}
 						else if ($type == "relationships_count") {
-							$tn = $foreign_queries_count_name[$name];
+							$tn = isset($foreign_queries_count_name[$name]) ? $foreign_queries_count_name[$name] : null;
 							$props[$type][$tn] = $prop;
 						}
 						else
@@ -1033,9 +1048,9 @@ function getQueryPropType($table_name, $table_alias, $foreign_queries_name, $for
 		)
 	) 
 		$type = "count";
-	else if ($foreign_queries_name[$query_name] && $query_type == "select")
+	else if (!empty($foreign_queries_name[$query_name]) && $query_type == "select")
 		$type = "relationships";
-	else if ($foreign_queries_count_name[$query_name] && $query_type == "select")
+	else if (!empty($foreign_queries_count_name[$query_name]) && $query_type == "select")
 		$type = "relationships_count";
 	
 	return $type;
@@ -1055,8 +1070,11 @@ function getForeignQueriesName($foreign_keys, $table_name, $selected_tables_alia
 		$t = count($foreign_keys); 
 		for ($i = 0; $i < $t; $i++) {
 			$fk = $foreign_keys[$i];
-			$lfkct = strtolower($fk["child_table"]);
-			$foreign_table_name = $lfkct == $ltn ? $fk["parent_table"] : $fk["child_table"];
+			$fk_type = isset($fk["type"]) ? $fk["type"] : null;
+			$fk_child_table = isset($fk["child_table"]) ? $fk["child_table"] : null;
+			$fk_parent_table = isset($fk["parent_table"]) ? $fk["parent_table"] : null;
+			$lfkct = strtolower($fk_child_table);
+			$foreign_table_name = $lfkct == $ltn ? $fk_parent_table : $fk_child_table;
 			$foreign_table_alias = getTableAlias($foreign_table_name, $selected_tables_alias);
 			
 			$lftn = strtolower($foreign_table_name);
@@ -1067,17 +1085,17 @@ function getForeignQueriesName($foreign_keys, $table_name, $selected_tables_alia
 			$lftap = $lfta ? CMSPresentationFormSettingsUIHandler::getPlural($lfta) : null;
 			$parsed_lftnp = str_replace(".", "_", $lftnp); //$lftnp may have the schema
 			
-			$query_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_name, $foreign_table_name, $fk["type"]);
+			$query_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_name, $foreign_table_name, $fk_type);
 			$names[$query_name] = $foreign_table_name;
 			//echo "$lfkct != $ltn => " . ($lfkct != $ltn) . " => $query_name\n<br>";
 			
 			if ($table_alias) {
 				if ($foreign_table_alias) {
-					$query_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_alias, $foreign_table_alias, $fk["type"]);
+					$query_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_alias, $foreign_table_alias, $fk_type);
 					$names[$query_name] = $foreign_table_name;
 				}
 				
-				$query_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_alias, $foreign_table_name, $fk["type"]);
+				$query_name = WorkFlowDataAccessHandler::getForeignTableQueryName($table_alias, $foreign_table_name, $fk_type);
 				$names[$query_name] = $foreign_table_name;
 			}
 			
@@ -1196,8 +1214,11 @@ function getForeignQueriesCountName($foreign_keys, $table_name, $selected_tables
 		$t = count($foreign_keys); 
 		for ($i = 0; $i < $t; $i++) {
 			$fk = $foreign_keys[$i];
-			$lfkct = strtolower($fk["child_table"]);
-			$foreign_table_name = $lfkct == $ltn ? $fk["parent_table"] : $fk["child_table"];
+			$fk_type = isset($fk["type"]) ? $fk["type"] : null;
+			$fk_child_table = isset($fk["child_table"]) ? $fk["child_table"] : null;
+			$fk_parent_table = isset($fk["parent_table"]) ? $fk["parent_table"] : null;
+			$lfkct = strtolower($fk_child_table);
+			$foreign_table_name = $lfkct == $ltn ? $fk_parent_table : $fk_child_table;
 			$foreign_table_alias = getTableAlias($foreign_table_name, $selected_tables_alias);
 			
 			$lftn = strtolower($foreign_table_name);
@@ -1208,17 +1229,17 @@ function getForeignQueriesCountName($foreign_keys, $table_name, $selected_tables
 			$lftap = $lfta ? CMSPresentationFormSettingsUIHandler::getPlural($lfta) : null;
 			$parsed_lftnp = str_replace(".", "_", $lftnp); //$lftnp may have the schema
 			
-			$query_name = WorkFlowDataAccessHandler::getForeignTableQueryCountName($table_name, $foreign_table_name, $fk["type"]);
+			$query_name = WorkFlowDataAccessHandler::getForeignTableQueryCountName($table_name, $foreign_table_name, $fk_type);
 			$names[$query_name] = $foreign_table_name;
 			//echo "$lfkct != $ltn => " . ($lfkct != $ltn) . " => $query_name\n<br>";
 			
 			if ($table_alias) {
 				if ($foreign_table_alias) {
-					$query_name = WorkFlowDataAccessHandler::getForeignTableQueryCountName($table_alias, $foreign_table_alias, $fk["type"]);
+					$query_name = WorkFlowDataAccessHandler::getForeignTableQueryCountName($table_alias, $foreign_table_alias, $fk_type);
 					$names[$query_name] = $foreign_table_name;
 				}
 				
-				$query_name = WorkFlowDataAccessHandler::getForeignTableQueryCountName($table_alias, $foreign_table_name, $fk["type"]);
+				$query_name = WorkFlowDataAccessHandler::getForeignTableQueryCountName($table_alias, $foreign_table_name, $fk_type);
 				$names[$query_name] = $foreign_table_name;
 			}
 			
@@ -1288,8 +1309,8 @@ function getForeignQueriesCountName($foreign_keys, $table_name, $selected_tables
 			
 			if ($lta) {
 				$names["total_" . $lta . "_" . $lftn] = $foreign_table_name;
-				$names["total_" . $parsed_lta . "_" . $parsed_lftn] = $foreign_table_name;
-				$names["total_" . $parsed_lta . "_" . $lftn] = $foreign_table_name;
+				$names["total_" . $parsed_ltn . "_" . $parsed_lftn] = $foreign_table_name;
+				$names["total_" . $parsed_ltn . "_" . $lftn] = $foreign_table_name;
 				$names["total_" . $lta . "_" . $parsed_lftn] = $foreign_table_name;
 			
 				if ($lfta)
@@ -1379,11 +1400,12 @@ function parseBeanObjects($bean_objs, $allowed_types, $folder_types, $UserAuthen
 	$filter_by_layout_permission = array(UserAuthenticationHandler::$PERMISSION_BELONG_NAME, UserAuthenticationHandler::$PERMISSION_REFERENCED_NAME);
 	
 	foreach ($bean_objs as $bn => $bo) {
-		$allowed_folder_type = in_array($bo["properties"]["item_type"], $folder_types);
-		$allowed_type = in_array($bo["properties"]["item_type"], $allowed_types);
+		$bean_item_type = isset($bo["properties"]["item_type"]) ? $bo["properties"]["item_type"] : null;
+		$allowed_folder_type = in_array($bean_item_type, $folder_types);
+		$allowed_type = in_array($bean_item_type, $allowed_types);
 		
 		if ($allowed_folder_type || $allowed_type) {
-			if ($bo["properties"]["path"]) {
+			if (!empty($bo["properties"]["path"])) {
 				$object_id = $layer_object_id . $bo["properties"]["path"];
 				
 				if (!$UserAuthenticationHandler->isInnerFilePermissionAllowed($object_id, "layer", "access"))
@@ -1395,10 +1417,10 @@ function parseBeanObjects($bean_objs, $allowed_types, $folder_types, $UserAuthen
 			if ($allowed_folder_type) {
 				$sub_objs = parseBeanObjects($bo, $allowed_types, $folder_types, $UserAuthenticationHandler, $layer_object_id, $filter_by_layout);
 				
-				if (in_array($bo["properties"]["item_type"], $allowed_types)) {
+				if (in_array($bean_item_type, $allowed_types)) {
 					$bo["properties"]["name"] = $bn;
 					$bo["properties"]["childs"] = $sub_objs;
-					$objs[] = $bo["properties"];
+					$objs[] = isset($bo["properties"]) ? $bo["properties"] : null;
 				}
 				else {
 					$objs = array_merge($objs, $sub_objs);
@@ -1406,7 +1428,7 @@ function parseBeanObjects($bean_objs, $allowed_types, $folder_types, $UserAuthen
 			}
 			else if ($allowed_type) {
 				$bo["properties"]["name"] = $bn;
-				$objs[] = $bo["properties"];
+				$objs[] = isset($bo["properties"]) ? $bo["properties"] : null;
 			}	
 		}
 	}

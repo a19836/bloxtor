@@ -42,19 +42,19 @@ $main_content = '
 		
 		<div class="name">
 			<label>Name: <span class="mandatory">*</span></label>
-			<input type="text" name="msg[name]" value="' . $data["name"] . '" data-allow-null="0" data-validation-message="Name cannot be undefined." placeHolder="Please write your name here..." required>
+			<input type="text" name="msg[name]" value="' . (isset($data["name"]) ? $data["name"] : "") . '" data-allow-null="0" data-validation-message="Name cannot be undefined." placeHolder="Please write your name here..." required>
 		</div>
 		<div class="email">
 			<label>Email: <span class="mandatory">*</span></label>
-			<input type="text" name="msg[email]" value="' . $data["email"] . '" data-allow-null="0" data-validation-message="Invalid email." data-validation-type="email" placeHolder="Please write your email here..." required>
+			<input type="text" name="msg[email]" value="' . (isset($data["email"]) ? $data["email"] : "") . '" data-allow-null="0" data-validation-message="Invalid email." data-validation-type="email" placeHolder="Please write your email here..." required>
 		</div>
 		<div class="phone">
 			<label>Phone:</label>
-			<input type="text" name="msg[phone]" value="' . $data["phone"] . '" data-validation-message="Invalid phone." data-validation-type="phone" placeholder="Please write your phone here...">
+			<input type="text" name="msg[phone]" value="' . (isset($data["phone"]) ? $data["phone"] : "") . '" data-validation-message="Invalid phone." data-validation-type="phone" placeholder="Please write your phone here...">
 		</div>
 		<div class="message">
 			<label>Message: <span class="mandatory">*</span></label>
-			<textarea name="msg[message]" data-allow-null="0" data-validation-message="Message cannot be undefined and must have at least 20 words." data-min-words="20" placeHolder="Please write here your question or message..." rows="5" required>' . $data["message"] . '</textarea>
+			<textarea name="msg[message]" data-allow-null="0" data-validation-message="Message cannot be undefined and must have at least 20 words." data-min-words="20" placeHolder="Please write here your question or message..." rows="5" required>' . (isset($data["message"]) ? $data["message"] : "") . '</textarea>
 		</div>
 		<div class="attachments">
 			<label>Attachments: <span class="icon add" onClick="addAttachment(this)">Add</span></label>

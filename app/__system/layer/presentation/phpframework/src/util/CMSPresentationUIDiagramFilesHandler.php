@@ -78,14 +78,16 @@ $allowed_list_and_edit_users_types = array(' . $allowed_list_and_edit_users_type
 		if ($vars)
 			$long_code .= '
 
-if (!$GLOBALS["UserSessionActivitiesHandler"]) {
+if (empty($GLOBALS["UserSessionActivitiesHandler"])) {
 	@include_once $EVC->getUtilPath("user_session_activities_handler", $EVC->getCommonProjectName());
-	@initUserSessionActivitiesHandler($EVC);
+	
+	if (function_exists("initUserSessionActivitiesHandler"))
+		initUserSessionActivitiesHandler($EVC);
 }
 
-if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_types) {
+if (!empty($GLOBALS["UserSessionActivitiesHandler"]) && $allowed_list_and_edit_users_types) {
 	$logged_user_data = $GLOBALS["UserSessionActivitiesHandler"]->getUserData();
-	$logged_user_type_ids = $logged_user_data ? $logged_user_data["user_type_ids"] : null;
+	$logged_user_type_ids = $logged_user_data && isset($logged_user_data["user_type_ids"]) ? $logged_user_data["user_type_ids"] : null;
 	$allowed = false;
 	
 	if (is_array($logged_user_type_ids))
@@ -107,8 +109,10 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 			
 			//replace previous code
 			$contents = preg_replace('/\$allowed_list_and_edit_users_types(\s*)=(\s*)([^;]*)(\s*);/i', '', $contents);
-			$contents = preg_replace('/if\s*\(\s*!\s*\$GLOBALS\s*\[\s*("|\')UserSessionActivitiesHandler("|\')\s*\]\s*\)\s*\{\s*@?include_once\s*\$EVC\s*\->\s*getUtilPath\s*\(\s*("|\')user_session_activities_handler("|\')\s*,\s*\$EVC\s*\->\s*getCommonProjectName\s*\(\s*\)\s*\)\s*;\s*@?initUserSessionActivitiesHandler\s*\(\s*\$EVC\s*\)\s*;\s*\}/i', '', $contents);
-			$contents = preg_replace('/if\s*\(\s*\$GLOBALS\[\s*("|\')UserSessionActivitiesHandler("|\')\s*\]\s*&&\s*\$allowed_list_and_edit_users_types\s*\)\s*\n*\s*\{\s*\n*\s*\$logged_user_data\s*=\s*\$GLOBALS\[\s*("|\')UserSessionActivitiesHandler("|\')\s*\]\-\>getUserData\(\)\s*;\s*\n*\s*\$logged_user_type_ids\s*=\s*\$logged_user_data\s*\?\s*\$logged_user_data\s*\[\s*("|\')user_type_ids("|\')\s*\]\s*\:\s*null\s*;\s*\n*\s*\$allowed\s*=\s*false\s*;\s*\n*if\s*\(\s*is_array\s*\(\s*\$logged_user_type_ids\s*\)\s*\)\s*\n*\s*foreach\s*\(\s*\$logged_user_type_ids\s*as\s*\$ut_id\s*\)\s*\n*\s*if\s*\(\s*in_array\s*\(\s*\$ut_id\s*,\s*\$allowed_list_and_edit_users_types\s*\)\s*\)\s*\{\s*\n*\$allowed\s*=\s*true\s*;\s*\n*\s*break\s*;\s*\n*\s*\}\s*\n*\s*if\s*\(\s*\!\s*\$allowed\s*\)\s*\n*\s*\}\s*\n*/i', '', $contents); //VERY CAREFULL WITH THIS REGEX!!!
+			$contents = preg_replace('/if\s*\(\s*!\s*\$GLOBALS\s*\[\s*("|\')UserSessionActivitiesHandler("|\')\s*\]\s*\)\s*\{\s*@?(include_once|include)\s*\$EVC\s*\->\s*getUtilPath\s*\(\s*("|\')user_session_activities_handler("|\')\s*,\s*\$EVC\s*\->\s*getCommonProjectName\s*\(\s*\)\s*\)\s*;\s*@?initUserSessionActivitiesHandler\s*\(\s*\$EVC\s*\)\s*;\s*\}/i', '', $contents);
+			$contents = preg_replace('/if\s*\(\s*empty\(\s*\$GLOBALS\s*\[\s*("|\')UserSessionActivitiesHandler("|\')\s*\]\s*\)\s*\)\s*\{\s*@?(include_once|include)\s*\$EVC\s*\->\s*getUtilPath\s*\(\s*("|\')user_session_activities_handler("|\')\s*,\s*\$EVC\s*\->\s*getCommonProjectName\s*\(\s*\)\s*\)\s*;\s*if\s*\(\s*function_exists\s*\(\s*("|\')initUserSessionActivitiesHandler("|\')\s*\)\s*\)\s*@?initUserSessionActivitiesHandler\s*\(\s*\$EVC\s*\)\s*;\s*\}/i', '', $contents);
+			
+			$contents = preg_replace('/if\s*\(\s*\$GLOBALS\[\s*("|\')UserSessionActivitiesHandler("|\')\s*\]\s*&&\s*\$allowed_list_and_edit_users_types\s*\)\s*\n*\s*\{\s*\n*\s*\$logged_user_data\s*=\s*\$GLOBALS\[\s*("|\')UserSessionActivitiesHandler("|\')\s*\]\-\>getUserData\(\)\s*;\s*\n*\s*\$logged_user_type_ids\s*=\s*\$logged_user_data(\s*&&\s*isset\s*\(\s*\$logged_user_data\[\s*("|\')user_type_ids("|\')\s*\]\s*\))?\s*\?\s*\$logged_user_data\s*\[\s*("|\')user_type_ids("|\')\s*\]\s*\:\s*null\s*;\s*\n*\s*\$allowed\s*=\s*false\s*;\s*\n*if\s*\(\s*is_array\s*\(\s*\$logged_user_type_ids\s*\)\s*\)\s*\n*\s*foreach\s*\(\s*\$logged_user_type_ids\s*as\s*\$ut_id\s*\)\s*\n*\s*if\s*\(\s*in_array\s*\(\s*\$ut_id\s*,\s*\$allowed_list_and_edit_users_types\s*\)\s*\)\s*\{\s*\n*\$allowed\s*=\s*true\s*;\s*\n*\s*break\s*;\s*\n*\s*\}\s*\n*\s*if\s*\(\s*\!\s*\$allowed\s*\)\s*\n*\s*\}\s*\n*/i', '', $contents); //VERY CAREFULL WITH THIS REGEX!!!
 			$contents = preg_replace('/\$[\w\$=\s]+\s*=\s*null\s*;\s*/iu', '', $contents); //'/u' means with accents and ç too. '/u' converts unicode to accents chars.
 			
 			$contents .= $long_code;
@@ -150,7 +154,7 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 					do {
 						preg_match('/(\$' . $var_name . ')(\s*)=(\s*)/iu', $contents, $matches, PREG_OFFSET_CAPTURE); //'/u' means with accents and ç too. '/u' converts unicode to accents chars.
 						
-						if ($matches[0]) {
+						if (!empty($matches[0])) {
 							$m = $matches[0];
 							$name_equal = $m[0];
 							$offset = $m[1];
@@ -181,7 +185,7 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 							$contents = str_replace($to_search, "", $contents);
 						}
 					}
-					while ($matches && $matches[0]);
+					while ($matches && !empty($matches[0]));
 				}
 			
 			$contents .= $code;
@@ -203,18 +207,18 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 	
 	public static function createPageFile($PEVC, $SystemUserCacheHandler, $cms_page_cache_path_prefix, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, $relative_path, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $authentication_list_and_edit_users, $authenticated_template, $non_authenticated_template, $template, &$table_statuses, &$js_funcs, &$js_code, $tasks, $task, $parent_task = false, $file_name_folder = false, &$permissions = false, &$settings_php_codes_list = false) {
 		$file_name = self::getTaskLabelFileName($task);
-		$task_tag = $task["tag"];
-		$files_to_create = $task["properties"]["files_to_create"];
-		$page_settings = $task["properties"]["page_settings"];
+		$task_tag = isset($task["tag"]) ? $task["tag"] : null;
+		$files_to_create = isset($task["properties"]["files_to_create"]) ? $task["properties"]["files_to_create"] : null;
+		$page_settings = isset($task["properties"]["page_settings"]) ? $task["properties"]["page_settings"] : null;
 		$authentication = null;
 		$authentication_files_relative_folder_path = trim($authentication_files_relative_folder_path);
 		
 		if ($authentication_files_relative_folder_path && substr($authentication_files_relative_folder_path, -1) != "/")
 			$authentication_files_relative_folder_path .= "/";
 		
-		$authentication = $task["properties"]["authentication_type"] ? array(
-			"authentication_type" => $task["properties"]["authentication_type"],
-			"authentication_users" => $task["properties"]["authentication_users"],
+		$authentication = !empty($task["properties"]["authentication_type"]) ? array(
+			"authentication_type" => isset($task["properties"]["authentication_type"]) ? $task["properties"]["authentication_type"] : null,
+			"authentication_users" => isset($task["properties"]["authentication_users"]) ? $task["properties"]["authentication_users"] : null,
 		) : null;
 		
 		if ($task_tag == "page") {
@@ -228,17 +232,17 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		
 		//prepare js functions, adding the generic javascript code, but only if page is main file, bc if not main page it means that the page will be included in another main page
 		if ($parent_task) {
-			$js_code .= ($js_code && $form_settings["js"] ? "\n" : "") . $form_settings["js"];
+			$js_code .= ($js_code && !empty($form_settings["js"]) ? "\n" : "") . (isset($form_settings["js"]) ? $form_settings["js"] : "");
 			$form_settings["js"] = "";
 		}
 		else {
 			$js = self::getGenericJSFunctions($js_funcs);
 			if ($js)
-				$form_settings["js"] = $js . "\n" . $js_code . "\n" . $form_settings["js"];
+				$form_settings["js"] = $js . "\n" . $js_code . "\n" . (isset($form_settings["js"]) ? $form_settings["js"] : "");
 		}
 		
 		//save to file
-		$status = self::createFile($PEVC, $SystemUserCacheHandler, $cms_page_cache_path_prefix, $relative_path . $file_name_folder . $file_name, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $authentication_list_and_edit_users, $authenticated_template, $non_authenticated_template, $template, $table_statuses, $form_settings, $task["id"], $files_to_create, "local", $authentication, $permissions, $page_settings, $settings_php_codes_list);
+		$status = self::createFile($PEVC, $SystemUserCacheHandler, $cms_page_cache_path_prefix, $relative_path . $file_name_folder . $file_name, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $authentication_list_and_edit_users, $authenticated_template, $non_authenticated_template, $template, $table_statuses, $form_settings, isset($task["id"]) ? $task["id"] : null, $files_to_create, "local", $authentication, $permissions, $page_settings, $settings_php_codes_list);
 		//print_r($table_statuses[$task["id"]]);die();
 		
 		return $status;
@@ -246,17 +250,17 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 
 	private static function getPageTaskUIFormSettings($PEVC, $SystemUserCacheHandler, $cms_page_cache_path_prefix, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, $relative_path, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $authentication_list_and_edit_users, $authenticated_template, $non_authenticated_template, $template, &$table_statuses, &$js_funcs, &$js_code, $tasks, $task, &$permissions, &$settings_php_codes_list) {
 		$file_name = self::getTaskLabelFileName($task);
-		$properties = $task["properties"];
-		$join_type = $properties["join_type"]; //join tabs or list
-		$links = $properties["links"];
-		$pre_form_settings = $properties["pre_form_settings"];
-		$pos_form_settings = $properties["pos_form_settings"];
-		$task_connections = $task["exits"]["default_exit"];
-		$task_connections = $task_connections[0] ? $task_connections : array($task_connections);
-		$inner_tasks = $task["tasks"];
-		$authentication = $task["properties"]["authentication_type"] ? array(
-			"authentication_type" => $task["properties"]["authentication_type"],
-			"authentication_users" => $task["properties"]["authentication_users"],
+		$properties = isset($task["properties"]) ? $task["properties"] : null;
+		$join_type = isset($properties["join_type"]) ? $properties["join_type"] : null; //join tabs or list
+		$links = isset($properties["links"]) ? $properties["links"] : null;
+		$pre_form_settings = isset($properties["pre_form_settings"]) ? $properties["pre_form_settings"] : null;
+		$pos_form_settings = isset($properties["pos_form_settings"]) ? $properties["pos_form_settings"] : null;
+		$task_connections = isset($task["exits"]["default_exit"]) ? $task["exits"]["default_exit"] : null;
+		$task_connections = !empty($task_connections[0]) ? $task_connections : array($task_connections);
+		$inner_tasks = isset($task["tasks"]) ? $task["tasks"] : null;
+		$authentication = !empty($task["properties"]["authentication_type"]) ? array(
+			"authentication_type" => isset($task["properties"]["authentication_type"]) ? $task["properties"]["authentication_type"] : null,
+			"authentication_users" => isset($task["properties"]["authentication_users"]) ? $task["properties"]["authentication_users"] : null,
 		) : null;
 		
 		$links = self::prepareLinks($links);
@@ -270,16 +274,16 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		
 		//prepare pre form_settings
 		if ($pre_form_settings) {
-			if ($pre_form_settings["actions"]) {
+			if (!empty($pre_form_settings["actions"])) {
 				$pre_form_settings["actions"] = isset($pre_form_settings["actions"]["action_type"]) || isset($pre_form_settings["actions"]["action_value"]) ? $pre_form_settings["actions"] : array($pre_form_settings["actions"]);
 				
 				$form_settings["actions"] = $pre_form_settings["actions"];
 			}
 			
-			if ($pre_form_settings["css"])
+			if (!empty($pre_form_settings["css"]))
 				$form_settings["css"] = $pre_form_settings["css"];
 			
-			if ($pre_form_settings["js"])
+			if (!empty($pre_form_settings["js"]))
 				$form_settings["js"] = $pre_form_settings["js"];
 		}
 		
@@ -294,8 +298,8 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 					return false;
 				
 				$form_settings["actions"] = array_merge($form_settings["actions"], $ifs["actions"]);
-				$form_settings["css"] .= $ifs["css"] ? "\n\n" . $ifs["css"] : "";
-				$form_settings["js"] .= $ifs["js"] ? "\n\n" . $ifs["js"] : "";
+				$form_settings["css"] .= !empty($ifs["css"]) ? "\n\n" . $ifs["css"] : "";
+				$form_settings["js"] .= !empty($ifs["js"]) ? "\n\n" . $ifs["js"] : "";
 			}
 			
 			//prepare join tabs
@@ -306,14 +310,14 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 				
 				$i = 0;
 				foreach ($inner_tasks as $inner_task_id => $inner_task) {
-					$label = ucwords(strtolower(str_replace("_", " ", $inner_task["label"])));
+					$label = isset($inner_task["label"]) ? ucwords(strtolower(str_replace("_", " ", $inner_task["label"]))) : "";
 					
 					$html .= '
 		<li><a href="#tab_content_' . $inner_task_id . '">' . $label . '</a></li>';
 					
 					$tabs_content_html .= '
 	<div id="tab_content_' . $inner_task_id . '" class="tab_content">
-		<ptl:echo \$' . $output_var_name . '[' . $i . ']/>
+		<ptl:echo @\$' . $output_var_name . '[' . $i . ']/>
 	</div>';
 					
 					$i++;
@@ -344,10 +348,10 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		if ($links)
 			foreach ($links as $link) {
 				$html_links .= '
-		<li class="link link-free ' . $link["class"] . '">
-			' . $link["previous_html"] . '
-			<a href="' . $link["url"] . '" title="' . $link["title"] . '"' . ($link["target"] ? 'target="' . $link["target"] . '"' : '') . '>' . $link["value"] . '</a>
-			' . $link["next_html"] . '
+		<li class="link link-free ' . (isset($link["class"]) ? $link["class"] : "") . '">
+			' . (isset($link["previous_html"]) ? $link["previous_html"] : "") . '
+			<a href="' . (isset($link["url"]) ? $link["url"] : "") . '" title="' . (isset($link["title"]) ? $link["title"] : "") . '"' . (!empty($link["target"]) ? 'target="' . $link["target"] . '"' : '') . '>' . (isset($link["value"]) ? $link["value"] : "") . '</a>
+			' . (isset($link["next_html"]) ? $link["next_html"] : "") . '
 		</li>';
 			}
 		
@@ -355,20 +359,21 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		if ($task_connections)
 			for ($i = 0; $i < count($task_connections); $i++) {
 				$task_connection = $task_connections[$i];
-				$connection_label = $task_connection["label"];
-				$connection_type = $task_connection["properties"]["connection_type"];
-				$connection_title = $task_connection["properties"]["connection_title"];
-				$connection_class = $task_connection["properties"]["connection_class"];
-				$connection_target = $task_connection["properties"]["connection_target"];
-				$target_task_id = $task_connection["task_id"];
+				$connection_label = isset($task_connection["label"]) ? $task_connection["label"] : null;
+				$connection_type = isset($task_connection["properties"]["connection_type"]) ? $task_connection["properties"]["connection_type"] : null;
+				$connection_title = isset($task_connection["properties"]["connection_title"]) ? $task_connection["properties"]["connection_title"] : null;
+				$connection_class = isset($task_connection["properties"]["connection_class"]) ? $task_connection["properties"]["connection_class"] : null;
+				$connection_target = isset($task_connection["properties"]["connection_target"]) ? $task_connection["properties"]["connection_target"] : null;
+				$target_task_id = isset($task_connection["task_id"]) ? $task_connection["task_id"] : null;
 				$target_task = self::getTaskByTaskId($tasks, $target_task_id);
+				$target_task_tag = isset($target_task["tag"]) ? $target_task["tag"] : null;
 				
-				if ($target_task && $target_task["tag"] != "page")
+				if ($target_task && $target_task_tag != "page")
 					$target_task = self::getTaskPageParentTask($tasks, $target_task); //get page parent task first
 				
 				if ($target_task) {
 					$target_task_url = '{$project_url_prefix}' . $relative_path . self::getTaskLabelFileName($target_task);
-					$target_task_label = ucwords(strtolower(str_replace("_", " ", $target_task["label"])));
+					$target_task_label = isset($target_task["label"]) ? ucwords(strtolower(str_replace("_", " ", $target_task["label"]))) : "";
 					
 					$connection_label = $connection_label ? $connection_label : $target_task_label;
 					$connection_title = $connection_title ? $connection_title : $connection_label;
@@ -412,16 +417,16 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		
 		//prepare pos form_settings
 		if ($pos_form_settings) {
-			if ($pos_form_settings["actions"]) {
+			if (!empty($pos_form_settings["actions"])) {
 				$pos_form_settings["actions"] = isset($pos_form_settings["actions"]["action_type"]) || isset($pos_form_settings["actions"]["action_value"]) ? $pos_form_settings["actions"] : array($pos_form_settings["actions"]);
 				
 				$form_settings["actions"] = array_merge($form_settings["actions"], $pos_form_settings["actions"]);
 			}
 			
-			if ($pos_form_settings["css"])
+			if (!empty($pos_form_settings["css"]))
 				$form_settings["css"] .= "\n\n" . $pos_form_settings["css"];
 			
-			if ($pos_form_settings["js"])
+			if (!empty($pos_form_settings["js"]))
 				$form_settings["js"] .= "\n\n" . $pos_form_settings["js"];
 		}
 		
@@ -429,23 +434,26 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 	}
 	
 	private static function getPanelTaskUIFormSettings($PEVC, $SystemUserCacheHandler, $cms_page_cache_path_prefix, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, $relative_path, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $authentication_list_and_edit_users, $authenticated_template, $non_authenticated_template, $template, &$table_statuses, &$js_funcs, &$js_code, $tasks, $task, $parent_task, $file_name_folder, $output_var_name = false, $authentication = null, &$permissions = false, &$settings_php_codes_list = false) {
-		$task_id = $task["id"];
-		$task_tag = $task["tag"];
-		$properties = $task["properties"];
-		$choose_db_table = $properties["choose_db_table"];
-		$db_table = $choose_db_table["db_table"];
-		$attributes = $properties["attributes"];
-		$actions = $properties["action"];
-		$links = $properties["links"];
-		$pre_form_settings = $properties["pre_form_settings"];
-		$pos_form_settings = $properties["pos_form_settings"];
-		$brokers_services_and_rules = $properties["brokers_services_and_rules"];
-		$pagination = $properties["pagination"];
-		$files_to_create = $properties["files_to_create"];
-		$inner_tasks = $task["tasks"];
-		$task_connections = $task["exits"]["default_exit"];
-		$task_connections = $task_connections[0] ? $task_connections : array($task_connections);
-		$users_perms = $properties["users_perms"];
+		$task_id = isset($task["id"]) ? $task["id"] : null;
+		$task_tag = isset($task["tag"]) ? $task["tag"] : null;
+		$properties = isset($task["properties"]) ? $task["properties"] : null;
+		$choose_db_table = isset($properties["choose_db_table"]) ? $properties["choose_db_table"] : null;
+		$db_table = isset($choose_db_table["db_table"]) ? $choose_db_table["db_table"] : null;
+		$db_driver = isset($choose_db_table["db_driver"]) ? $choose_db_table["db_driver"] : null;
+		$db_type = isset($choose_db_table["db_type"]) ? $choose_db_table["db_type"] : null;
+		$include_db_driver = isset($choose_db_table["include_db_driver"]) ? $choose_db_table["include_db_driver"] : null;
+		$attributes = isset($properties["attributes"]) ? $properties["attributes"] : null;
+		$actions = isset($properties["action"]) ? $properties["action"] : null;
+		$links = isset($properties["links"]) ? $properties["links"] : null;
+		$pre_form_settings = isset($properties["pre_form_settings"]) ? $properties["pre_form_settings"] : null;
+		$pos_form_settings = isset($properties["pos_form_settings"]) ? $properties["pos_form_settings"] : null;
+		$brokers_services_and_rules = isset($properties["brokers_services_and_rules"]) ? $properties["brokers_services_and_rules"] : null;
+		$pagination = isset($properties["pagination"]) ? $properties["pagination"] : null;
+		$files_to_create = isset($properties["files_to_create"]) ? $properties["files_to_create"] : null;
+		$inner_tasks = isset($task["tasks"]) ? $task["tasks"] : null;
+		$task_connections = isset($task["exits"]["default_exit"]) ? $task["exits"]["default_exit"] : null;
+		$task_connections = !empty($task_connections[0]) ? $task_connections : array($task_connections);
+		$users_perms = isset($properties["users_perms"]) ? $properties["users_perms"] : null;
 		
 		//prepare permissions
 		$permissions = array();
@@ -454,24 +462,29 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 				$users_perms = array($users_perms);
 			
 			foreach ($users_perms as $idx => $user_perm)
-				if (is_numeric($user_perm["user_type_id"]) && is_numeric($user_perm["activity_id"]))
+				if (isset($user_perm["user_type_id"]) && is_numeric($user_perm["user_type_id"]) && isset($user_perm["activity_id"]) && is_numeric($user_perm["activity_id"]))
 					$permissions[] = $user_perm;
 		}
 		
 		$links = self::prepareLinks($links);
-		$tables_alias = array($db_table => $choose_db_table["db_table_alias"]);
-		$is_parent_task_panel = $parent_task && ($parent_task["tag"] == "listing" || $parent_task["tag"] == "form" || $parent_task["tag"] == "view");
+		$tables_alias = array(
+			$db_table => isset($choose_db_table["db_table_alias"]) ? $choose_db_table["db_table_alias"] : null
+		);
+		
+		$is_parent_task_panel = $parent_task && isset($parent_task["tag"]) && ($parent_task["tag"] == "listing" || $parent_task["tag"] == "form" || $parent_task["tag"] == "view");
 		$is_parent_task_same_table = self::isSameTable($task, $parent_task);
 		
-		if ($task_tag == "listing")
-			$panel_type = $properties["listing_type"] == "tree" ? "list_form" : ($properties["listing_type"] == "multi_form" ? "multiple_form" : "list_table");
+		if ($task_tag == "listing") {
+			$listing_type = isset($properties["listing_type"]) ? $properties["listing_type"] : null;
+			$panel_type = $listing_type == "tree" ? "list_form" : ($listing_type == "multi_form" ? "multiple_form" : "list_table");
+		}
 		else //if ($task_tag == "form" || $task_tag == "view")
 			$panel_type = $is_parent_task_panel && !$is_parent_task_same_table ? "multiple_form" : "single_form";
 		
 		$file_name_folder .= self::getTaskLabelFileName($task) . "/";
 		
 		//prepare pagination
-		if (($panel_type == "list_table" || $panel_type == "list_form") && $pagination && $pagination["active"]) {
+		if (($panel_type == "list_table" || $panel_type == "list_form") && $pagination && !empty($pagination["active"])) {
 			if ($is_parent_task_panel) {
 				$pagination["on_click_js_func"] = "loadEmbededPageWithNewNavigation";
 				$js_funcs["ajax_navigation"] = true;
@@ -500,7 +513,7 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		
 		if ($attributes) //$attributes may be an array with numeric keys
 			foreach ($attributes as $k => $attribute) {
-				$attribute_name = $attribute["name"] ? $attribute["name"] : $k;
+				$attribute_name = !empty($attribute["name"]) ? $attribute["name"] : $k;
 				$attributes_by_name[$attribute_name] = $attribute;
 			}
 		
@@ -509,10 +522,10 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		//prepare settings
 		$settings[$db_table] = array(
 			"panel_type" => $panel_type,
-			"panel_id" => $task["id"],
-			"panel_class" => "task-panel " . $task["id"] . ($properties["interface_class"] ? " " . $properties["interface_class"] : ""),
-			"panel_previous_html" => $properties["interface_previous_html"],
-			"panel_next_html" => $properties["interface_next_html"],
+			"panel_id" => $task_id,
+			"panel_class" => "task-panel " . $task_id . (!empty($properties["interface_class"]) ? " " . $properties["interface_class"] : ""),
+			"panel_previous_html" => isset($properties["interface_previous_html"]) ? $properties["interface_previous_html"] : null,
+			"panel_next_html" => isset($properties["interface_next_html"]) ? $properties["interface_next_html"] : null,
 			"form_type" => "settings", //"settings" or "ptl"
 			"attributes" => array_keys($attributes),
 			"actions" => array(
@@ -524,7 +537,7 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		);
 		
 		//prepare conditions
-		if ($choose_db_table["db_table_conditions"]) {
+		if (!empty($choose_db_table["db_table_conditions"])) {
 			if (isset($choose_db_table["db_table_conditions"]["attribute"]) || isset($choose_db_table["db_table_conditions"]["value"]))
 				$choose_db_table["db_table_conditions"] = array($choose_db_table["db_table_conditions"]);
 		
@@ -537,23 +550,24 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		}
 		
 		//prepare table parent
-		if ($choose_db_table["db_table_parent"])
+		if (!empty($choose_db_table["db_table_parent"]))
 			$settings[$db_table]["table_parent"] = $choose_db_table["db_table_parent"]; //no need of the db_table_parent_alias. The db_table_parent is only needed to find the brokers services and rules automatically
 		
 		//check if service or rule is valid and if not unset this item.
 		if ($brokers_services_and_rules)
 			foreach ($brokers_services_and_rules as $bsr_type => $bsr) {
 				$invalid = false;
+				$brokers_layer_type = isset($bsr["brokers_layer_type"]) ? $bsr["brokers_layer_type"] : null;
 				
-				switch ($bsr["brokers_layer_type"]) {
+				switch ($brokers_layer_type) {
 					case "callbusinesslogic":
 					case "callibatisquery":
 					case "callhibernatemethod":
-						$invalid = !$bsr["service_id"];
+						$invalid = empty($bsr["service_id"]);
 						break;
 					case "getquerydata":
 					case "setquerydata":
-						$invalid = !$bsr["sql"];
+						$invalid = empty($bsr["sql"]);
 						break;
 				}
 				
@@ -564,28 +578,34 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		$settings[$db_table]["brokers"] = $brokers_services_and_rules;
 		
 		//for the single_form panel, force get action. The other don't need bc if the update or delete exists, the get will be initialized anyway!
-		$only_insert = ($brokers_services_and_rules["insert"] || $settings[$db_table]["actions"]["insert"]) && !$brokers_services_and_rules["update"] && !$brokers_services_and_rules["delete"] && !$settings[$db_table]["actions"]["update"] && !$settings[$db_table]["actions"]["delete"]; //This covers the case where we simply want a form to add a new object without any get. Which means that the get will only be created, if there is an update, delete or view action, this is, if there is not an unique insert action...
-		if ($panel_type == "single_form" && !$brokers_services_and_rules["get"] && !$only_insert)
+		$only_insert = (!empty($brokers_services_and_rules["insert"]) || !empty($settings[$db_table]["actions"]["insert"])) 
+					&& empty($brokers_services_and_rules["update"]) 
+					&& empty($brokers_services_and_rules["delete"]) 
+					&& empty($settings[$db_table]["actions"]["update"]) 
+					&& empty($settings[$db_table]["actions"]["delete"]); //This covers the case where we simply want a form to add a new object without any get. Which means that the get will only be created, if there is an update, delete or view action, this is, if there is not an unique insert action...
+		if ($panel_type == "single_form" && empty($brokers_services_and_rules["get"]) && !$only_insert)
 			$settings[$db_table]["actions"]["get"] = array("action" => "get");
 		
 		//if is_parent_task_panel and brokers_services_and_rules[get_all/count] does not exist, create correspondent conditions so the CMSPresentationFormSettingsUIHandler::getFormSettings can create the right sql query based in the db table fks. Do the samething if the task is a relationship page with a parent table.
 		//Note that the pks of the current table ($db_table) will be passed through the url query-string via $_GET.
-		if ($panel_type != "single_form" && !$brokers_services_and_rules["get_all"]) {
+		if ($panel_type != "single_form" && empty($brokers_services_and_rules["get_all"])) {
 			if ($is_parent_task_panel) {
-				//only if parent table is different than current table, we set the $settings[$db_table]["table_parent"] so the CMSPresentationFormSettingsUIHandler can then create the proper sql with the correspondent inner join between tables.
-				if ($parent_task["properties"]["choose_db_table"]["db_table"] != $db_table) 
-					$settings[$db_table]["table_parent"] = $parent_task["properties"]["choose_db_table"]["db_table"];
+				$parent_task_choose_db_table_db_table = isset($parent_task["properties"]["choose_db_table"]["db_table"]) ? $parent_task["properties"]["choose_db_table"]["db_table"] : null;
 				
-				$conditions = self::getGetParentChildTableConditions($user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $bean_name, $bean_file_name, $choose_db_table["db_driver"], $choose_db_table["db_type"], $parent_task["properties"]["choose_db_table"]["db_table"], $db_table);
+				//only if parent table is different than current table, we set the $settings[$db_table]["table_parent"] so the CMSPresentationFormSettingsUIHandler can then create the proper sql with the correspondent inner join between tables.
+				if ($parent_task_choose_db_table_db_table != $db_table) 
+					$settings[$db_table]["table_parent"] = $parent_task_choose_db_table_db_table;
+				
+				$conditions = self::getGetParentChildTableConditions($user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $bean_name, $bean_file_name, $db_driver, $db_type, $parent_task_choose_db_table_db_table, $db_table);
 				$settings[$db_table]["conditions"] = array_merge($settings[$db_table]["conditions"], $conditions);
 			}
-			else if ($brokers_services_and_rules["parents_get_all"] && $brokers_services_and_rules["parents_count"]) { //in case of relationships panels
+			else if (!empty($brokers_services_and_rules["parents_get_all"]) && !empty($brokers_services_and_rules["parents_count"])) { //in case of relationships panels
 				$settings[$db_table]["brokers"]["get_all"] = $brokers_services_and_rules["parents_get_all"];
 				$settings[$db_table]["brokers"]["count"] = $brokers_services_and_rules["parents_count"];
 				//print_r($settings);die();
 			}
-			else if ($choose_db_table["db_table_parent"]) {
-				$conditions = self::getGetParentChildTableConditions($user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $bean_name, $bean_file_name, $choose_db_table["db_driver"], $choose_db_table["db_type"], $choose_db_table["db_table_parent"], $db_table);
+			else if (!empty($choose_db_table["db_table_parent"])) {
+				$conditions = self::getGetParentChildTableConditions($user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $bean_name, $bean_file_name, $db_driver, $db_type, $choose_db_table["db_table_parent"], $db_table);
 				$settings[$db_table]["conditions"] = array_merge($settings[$db_table]["conditions"], $conditions);
 				//print_r($settings);die();
 			}
@@ -609,11 +629,12 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 			
 			foreach ($inner_tasks as $inner_task_id => $inner_task) {
 				//prepare links to open inner task
-				$inner_task_id = $inner_task["id"]; //same than panel_class
-				$inner_task_properties = $inner_task["properties"];
-				$parent_link_value = $inner_task_properties["parent_link_value"];
-				$parent_link_title = $inner_task_properties["parent_link_title"];
-				$interface_type = $inner_task_properties["interface_type"];
+				$inner_task_id = isset($inner_task["id"]) ? $inner_task["id"] : null; //same than panel_class
+				$inner_task_label = isset($inner_task["label"]) ? $inner_task["label"] : null;
+				$inner_task_properties = isset($inner_task["properties"]) ? $inner_task["properties"] : null;
+				$parent_link_value = isset($inner_task_properties["parent_link_value"]) ? $inner_task_properties["parent_link_value"] : null;
+				$parent_link_title = isset($inner_task_properties["parent_link_title"]) ? $inner_task_properties["parent_link_title"] : null;
+				$interface_type = isset($inner_task_properties["interface_type"]) ? $inner_task_properties["interface_type"] : null;
 				
 				$inner_task_file_url = '{$project_url_prefix}' . $relative_path . $file_name_folder . self::getTaskLabelFileName($inner_task);
 				$on_click = $interface_type == "popup" ? "return openPopup(this, '$inner_task_file_url')" : "return openEmbed(this, '$inner_task_file_url')";
@@ -622,19 +643,19 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 				
 				$settings[$db_table]["actions"]["links"][] = array(
 					"url" => "javascript:void(0)",
-					"value" => strlen($parent_link_value) ? $parent_link_value : $inner_task["label"],
-					"title" => strlen($parent_link_title) ? $parent_link_title : $inner_task["label"],
-					"class" => $inner_task_properties["parent_link_class"],
+					"value" => strlen($parent_link_value) ? $parent_link_value : $inner_task_label,
+					"title" => strlen($parent_link_title) ? $parent_link_title : $inner_task_label,
+					"class" => isset($inner_task_properties["parent_link_class"]) ? $inner_task_properties["parent_link_class"] : null,
 					"extra_attributes" => array(
 						array("name" => "onClick", "value" => $on_click)
 					),
-					"previous_html" => $inner_task_properties["parent_link_previous_html"],
-					"next_html" => $inner_task_properties["parent_link_next_html"],
+					"previous_html" => isset($inner_task_properties["parent_link_previous_html"]) ? $inner_task_properties["parent_link_previous_html"] : null,
+					"next_html" => isset($inner_task_properties["parent_link_next_html"]) ? $inner_task_properties["parent_link_next_html"] : null,
 				);
 				
 				if ($authentication) {
-					$inner_task["properties"]["authentication_type"] = $authentication["authentication_type"];
-					$inner_task["properties"]["authentication_users"] = $authentication["authentication_users"];
+					$inner_task["properties"]["authentication_type"] = isset($authentication["authentication_type"]) ? $authentication["authentication_type"] : null;
+					$inner_task["properties"]["authentication_users"] = isset($authentication["authentication_users"]) ? $authentication["authentication_users"] : null;
 				}
 				
 				//create inner tasks files
@@ -646,20 +667,21 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		if ($task_connections) 
 			for ($i = 0; $i < count($task_connections); $i++) {
 				$task_connection = $task_connections[$i];
-				$connection_label = $task_connection["label"];
-				$connection_type = $task_connection["properties"]["connection_type"];
-				$connection_title = $task_connection["properties"]["connection_title"];
-				$connection_class = $task_connection["properties"]["connection_class"];
-				$connection_target = $task_connection["properties"]["connection_target"];
-				$target_task_id = $task_connection["task_id"];
+				$connection_label = isset($task_connection["label"]) ? $task_connection["label"] : null;
+				$connection_type = isset($task_connection["properties"]["connection_type"]) ? $task_connection["properties"]["connection_type"] : null;
+				$connection_title = isset($task_connection["properties"]["connection_title"]) ? $task_connection["properties"]["connection_title"] : null;
+				$connection_class = isset($task_connection["properties"]["connection_class"]) ? $task_connection["properties"]["connection_class"] : null;
+				$connection_target = isset($task_connection["properties"]["connection_target"]) ? $task_connection["properties"]["connection_target"] : null;
+				$target_task_id = isset($task_connection["task_id"]) ? $task_connection["task_id"] : null;
 				$target_task = self::getTaskByTaskId($tasks, $target_task_id);
+				$target_task_tag = isset($target_task["tag"]) ? $target_task["tag"] : null;
 				
-				if ($target_task && $target_task["tag"] != "page")
+				if ($target_task && $target_task_tag != "page")
 					$target_task = self::getTaskPageParentTask($tasks, $target_task); //get page parent task first
 				
 				if ($target_task) {
 					$target_task_url = '{$project_url_prefix}' . $relative_path . self::getTaskLabelFileName($target_task);
-					$target_task_label = ucwords(strtolower(str_replace("_", " ", $target_task["label"])));
+					$target_task_label = isset($target_task["label"]) ? ucwords(strtolower(str_replace("_", " ", $target_task["label"]))) : "";
 					
 					$connection_label = $connection_label ? $connection_label : $target_task_label;
 					$connection_title = $connection_title ? $connection_title : $connection_label;
@@ -701,39 +723,39 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 				}
 			}
 		
-		$default_dal_broker = self::getDefaultDBDataAccessBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $choose_db_table["db_driver"]);
-		$default_db_broker = self::getDefaultDBBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $choose_db_table["db_driver"]);
-		$include_db_broker = self::getIncludeDBBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $choose_db_table["include_db_driver"]);
+		$default_dal_broker = self::getDefaultDBDataAccessBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $db_driver);
+		$default_db_broker = self::getDefaultDBBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $db_driver);
+		$include_db_broker = self::getIncludeDBBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $include_db_driver);
 		
-		$form_settings = CMSPresentationFormSettingsUIHandler::getFormSettings($user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, null, $default_dal_broker, $default_db_broker, $include_db_broker, $choose_db_table["db_driver"], $choose_db_table["include_db_driver"], $choose_db_table["db_type"], $tables_alias, $settings, false, $js_code, $output_var_name, $permissions, $settings_php_codes_list);
+		$form_settings = CMSPresentationFormSettingsUIHandler::getFormSettings($user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, null, $default_dal_broker, $default_db_broker, $include_db_broker, $db_driver, $include_db_driver, $db_type, $tables_alias, $settings, false, $js_code, $output_var_name, $permissions, $settings_php_codes_list);
 		
 		//prepare pre form_settings
 		if ($pre_form_settings) {
-			if ($pre_form_settings["actions"]) {
+			if (!empty($pre_form_settings["actions"])) {
 				$pre_form_settings["actions"] = isset($pre_form_settings["actions"]["action_type"]) || isset($pre_form_settings["actions"]["action_value"]) ? $pre_form_settings["actions"] : array($pre_form_settings["actions"]);
 				
 				$form_settings["actions"] = array_merge($pre_form_settings["actions"], $form_settings["actions"]);
 			}
 			
-			if ($pre_form_settings["css"])
-				$form_settings["css"] = $pre_form_settings["css"] . ($form_settings["css"] ? "\n\n" . $form_settings["css"] : "");
+			if (!empty($pre_form_settings["css"]))
+				$form_settings["css"] = $pre_form_settings["css"] . (!empty($form_settings["css"]) ? "\n\n" . $form_settings["css"] : "");
 			
-			if ($pre_form_settings["js"])
-				$form_settings["js"] = $pre_form_settings["js"] . ($form_settings["js"] ? "\n\n" . $form_settings["js"] : "");
+			if (!empty($pre_form_settings["js"]))
+				$form_settings["js"] = $pre_form_settings["js"] . (!empty($form_settings["js"]) ? "\n\n" . $form_settings["js"] : "");
 		}
 		
 		//prepare pos form_settings
 		if ($pos_form_settings) {
-			if ($pos_form_settings["actions"]) {
+			if (!empty($pos_form_settings["actions"])) {
 				$pos_form_settings["actions"] = isset($pos_form_settings["actions"]["action_type"]) || isset($pos_form_settings["actions"]["action_value"]) ? $pos_form_settings["actions"] : array($pos_form_settings["actions"]);
 				
 				$form_settings["actions"] = array_merge($form_settings["actions"], $pos_form_settings["actions"]);
 			}
 			
-			if ($pos_form_settings["css"])
+			if (!empty($pos_form_settings["css"]))
 				$form_settings["css"] .= "\n\n" . $pos_form_settings["css"];
 			
-			if ($pos_form_settings["js"])
+			if (!empty($pos_form_settings["js"]))
 				$form_settings["js"] .= "\n\n" . $pos_form_settings["js"];
 		}
 		
@@ -746,7 +768,7 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 				"condition_value" => "",
 				"action_value" => array(
 					"group_name" => "",
-					"actions" => $form_settings["actions"],
+					"actions" => isset($form_settings["actions"]) ? $form_settings["actions"] : null,
 				),
 			)
 		);
@@ -757,17 +779,17 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 	private static function prepareActionSettings($PEVC, $SystemUserCacheHandler, $cms_page_cache_path_prefix, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, $relative_path, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $authentication_list_and_edit_users, $authenticated_template, $non_authenticated_template, &$table_statuses, $file_name_folder, &$settings, $task_id, $files_to_create, $choose_db_table, $tables_alias, $db_table, $brokers_services_and_rules, $actions, $action_prefix, $action_type, $is_parent_task_panel, $panel_type, $output_var_name, $authentication, $permissions) {
 		$action_name = $action_prefix . $action_type;
 		
-		if ($actions[$action_name]) {
+		if (!empty($actions[$action_name])) {
 			$action_ajax_prefix_url = '{$project_url_prefix}' . $relative_path . substr($file_name_folder, 0, -1) . "_";
 			$is_panel_list = $panel_type == "list_table" || $panel_type == "list_form";
 			$is_multiple = $action_prefix == "multiple_";
-			$confirmation_message = $actions[$action_name . "_confirmation_message"];
-			$ok_msg_message = $actions[$action_name . "_ok_msg_message"];
-			$ok_msg_redirect_url = $actions[$action_name . "_ok_msg_redirect_url"];
-			$error_msg_message = $actions[$action_name . "_error_msg_message"];
-			$error_msg_redirect_url = $actions[$action_name . "_error_msg_redirect_url"];
+			$confirmation_message = isset($actions[$action_name . "_confirmation_message"]) ? $actions[$action_name . "_confirmation_message"] : null;
+			$ok_msg_message = isset($actions[$action_name . "_ok_msg_message"]) ? $actions[$action_name . "_ok_msg_message"] : null;
+			$ok_msg_redirect_url = isset($actions[$action_name . "_ok_msg_redirect_url"]) ? $actions[$action_name . "_ok_msg_redirect_url"] : null;
+			$error_msg_message = isset($actions[$action_name . "_error_msg_message"]) ? $actions[$action_name . "_error_msg_message"] : null;
+			$error_msg_redirect_url = isset($actions[$action_name . "_error_msg_redirect_url"]) ? $actions[$action_name . "_error_msg_redirect_url"] : null;
 			
-			if ($is_multiple && ($action_type == "insert" || $action_type == "update") && $actions["multiple_insert"] && $actions["multiple_update"])
+			if ($is_multiple && ($action_type == "insert" || $action_type == "update") && !empty($actions["multiple_insert"]) && !empty($actions["multiple_update"]))
 				$action_name = "multiple_insert_update";
 			
 			if ($is_parent_task_panel || $output_var_name || ($is_panel_list && $action_prefix == "single_")) {
@@ -812,7 +834,7 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		//create ajax action file: $action_ajax_prefix_url . $action_type
 		$settings_aux = array(
 			$db_table => array(
-				"form_type" => $settings["form_type"],
+				"form_type" => isset($settings["form_type"]) ? $settings["form_type"] : null,
 				"brokers" => array(),
 				"actions" => array(),
 			)
@@ -826,7 +848,7 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 			$action_types = array($action_type);
 		
 		foreach ($action_types as $at) {
-			if (!$brokers_services_and_rules[$at])
+			if (empty($brokers_services_and_rules[$at]))
 				$settings_aux[$db_table]["actions"][$action_name] = array(
 					"action" => $action_name,
 					"action_type" => "", //"" == default inline action, thi is, non ajax.
@@ -835,9 +857,9 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 				$settings_aux[$db_table]["brokers"][$at] = $brokers_services_and_rules[$at];
 				
 				if ($at == "update")
-					$settings_aux[$db_table]["brokers"]["update_pks"] = $brokers_services_and_rules["update_pks"];
+					$settings_aux[$db_table]["brokers"]["update_pks"] = isset($brokers_services_and_rules["update_pks"]) ? $brokers_services_and_rules["update_pks"] : null;
 				else if ($at != "insert")
-					$settings_aux[$db_table]["brokers"]["get"] = $brokers_services_and_rules["get"];
+					$settings_aux[$db_table]["brokers"]["get"] = isset($brokers_services_and_rules["get"]) ? $brokers_services_and_rules["get"] : null;
 			}
 		}
 		
@@ -847,11 +869,15 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 				"action_type" => "", //"" == default inline action, thi is, non ajax.
 			);
 		
-		$default_dal_broker = self::getDefaultDBDataAccessBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $choose_db_table["db_driver"]);
-		$default_db_broker = self::getDefaultDBBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $choose_db_table["db_driver"]);
-		$include_db_broker = self::getIncludeDBBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $choose_db_table["include_db_driver"]);
+		$db_driver = isset($choose_db_table["db_driver"]) ? $choose_db_table["db_driver"] : null;
+		$db_type = isset($choose_db_table["db_type"]) ? $choose_db_table["db_type"] : null;
+		$include_db_driver = isset($choose_db_table["include_db_driver"]) ? $choose_db_table["include_db_driver"] : null;
 		
-		$afs = CMSPresentationFormSettingsUIHandler::getFormSettings($user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, null, $default_dal_broker, $default_db_broker, $include_db_broker, $choose_db_table["db_driver"], $choose_db_table["include_db_driver"], $choose_db_table["db_type"], $tables_alias, $settings_aux, true, "", false, $permissions, $settings_php_codes_list);
+		$default_dal_broker = self::getDefaultDBDataAccessBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $db_driver);
+		$default_db_broker = self::getDefaultDBBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $db_driver);
+		$include_db_broker = self::getIncludeDBBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $include_db_driver);
+		
+		$afs = CMSPresentationFormSettingsUIHandler::getFormSettings($user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $webroot_cache_folder_path, $webroot_cache_folder_url, $bean_name, $bean_file_name, $path, null, $default_dal_broker, $default_db_broker, $include_db_broker, $db_driver, $include_db_driver, $db_type, $tables_alias, $settings_aux, true, "", false, $permissions, $settings_php_codes_list);
 		
 		self::createFile($PEVC, $SystemUserCacheHandler, $cms_page_cache_path_prefix, $relative_path . substr($file_name_folder, 0, -1) . "_" . $action_name, $overwrite, $files_creation_type, $vars_file_include_code, $authentication_files_relative_folder_path, $authentication_list_and_edit_users, $authenticated_template, $non_authenticated_template, "ajax", $table_statuses, $afs, $task_id, $files_to_create, "ajax", $authentication, $permissions, null, $settings_php_codes_list);
 	}
@@ -877,7 +903,7 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		$brokers = $PEVC->getPresentationLayer()->getBrokers();
 		$layer_brokers_settings = WorkFlowBeansFileHandler::getLayerBrokersSettings($user_global_variables_file_path, $user_beans_folder_path, $brokers);
 		
-		return count($layer_brokers_settings["db_brokers"]) > 1;
+		return isset($layer_brokers_settings["db_brokers"]) && count($layer_brokers_settings["db_brokers"]) > 1;
 	}
 	
 	private static function getDefaultDBDataAccessBroker($PEVC, $user_global_variables_file_path, $user_beans_folder_path, $db_driver) {
@@ -896,7 +922,7 @@ if ($GLOBALS["UserSessionActivitiesHandler"] && $allowed_list_and_edit_users_typ
 		//only add this openPopup, openIframePopup and openEmbed functions if there is any code in the inner tasks that apply
 		$js = '';
 		
-		if ($js_funcs["ajax_navigation"])
+		if (!empty($js_funcs["ajax_navigation"]))
 			$js .= '
 function loadEmbededPageWithNewNavigation(page_attr_name, page_num, type, panel_id, elm) {
 	var p = $(elm).parent().closest(".embeded-inner-task");
@@ -932,7 +958,7 @@ function loadEmbededPageWithNewNavigation(page_attr_name, page_num, type, panel_
 }
 ';
 		
-		if ($js_funcs["ajax_tab_navigation"])
+		if (!empty($js_funcs["ajax_tab_navigation"]))
 			$js .= '
 function loadTabPageWithNewNavigation(page_attr_name, page_num, type, panel_id, elm) {
 	var p = $(elm).parent().closest(".task-panel");
@@ -959,7 +985,7 @@ function loadTabPageWithNewNavigation(page_attr_name, page_num, type, panel_id, 
 }
 ';
 		
-		if ($js_funcs["embeded"])
+		if (!empty($js_funcs["embeded"]))
 			$js .= '
 function openEmbed(elm, url) {
 	elm = $(elm);
@@ -1019,7 +1045,7 @@ function openEmbed(elm, url) {
 }
 ';
 		
-		if ($js_funcs["popup"])
+		if (!empty($js_funcs["popup"]))
 			$js .= '
 function openPopup(elm, url) {
 	elm = $(elm);
@@ -1095,7 +1121,7 @@ function openPopup(elm, url) {
 }
 ';
 		
-		if ($js_funcs["iframe_popup"])
+		if (!empty($js_funcs["iframe_popup"]))
 			$js .= '
 function openIframePopup(elm, url) {
 	elm = $(elm);
@@ -1154,7 +1180,7 @@ function openIframePopup(elm, url) {
 }
 ';
 		
-		if ($js_funcs["parent"])
+		if (!empty($js_funcs["parent"]))
 			$js .= '
 function openParentLocation(elm, url) {
 	elm = $(elm);
@@ -1172,7 +1198,7 @@ function openParentLocation(elm, url) {
 }
 ';
 		
-		if ($js_funcs["embeded"] || $js_funcs["popup"] || $js_funcs["ajax_navigation"] || $js_funcs["ajax_tab_navigation"]) 
+		if (!empty($js_funcs["embeded"]) || !empty($js_funcs["popup"]) || !empty($js_funcs["ajax_navigation"]) || !empty($js_funcs["ajax_tab_navigation"])) 
 			$js .= '
 function prepareUrlContent(elm, url, handler) {
 	elm = $(elm);
@@ -1201,11 +1227,11 @@ function prepareUrlContent(elm, url, handler) {
 	/* UTILS FUNCTIONS */
 
 	private static function getTaskByTaskId($tasks, $selected_task_id) {
-		if ($tasks[$selected_task_id])
+		if (!empty($tasks[$selected_task_id]))
 			return $tasks[$selected_task_id];
 		
 		foreach ($tasks as $task_id => $task)
-			if ($task["tasks"]) {
+			if (!empty($task["tasks"])) {
 				$t = self::getTaskByTaskId($task["tasks"], $selected_task_id);
 				
 				if ($t)
@@ -1216,17 +1242,17 @@ function prepareUrlContent(elm, url, handler) {
 	}
 
 	private static function getTaskPageParentTask($tasks, $target_task, $parents = array()) {
-		$target_task_id = $target_task["id"];
+		$target_task_id = isset($target_task["id"]) ? $target_task["id"] : null;
 		
-		if ($tasks[$target_task_id]) {
+		if (!empty($tasks[$target_task_id])) {
 			foreach ($parents as $p)
-				if ($p["tag"] == "page")
+				if (isset($p["tag"]) && $p["tag"] == "page")
 					return $p;
 			return null;
 		}
 		
 		foreach ($tasks as $task_id => $task)
-			if ($task["tasks"]) {
+			if (!empty($task["tasks"])) {
 				$ps = $parents; //copy $parents to another var
 				$ps[] = $task;
 				
@@ -1248,16 +1274,27 @@ function prepareUrlContent(elm, url, handler) {
 	}
 
 	private static function getTaskLabelFileName($task) {
-		return self::getLabelFileName($task["label"]);
+		return isset($task["label"]) ? self::getLabelFileName($task["label"]) : "";
 	}
 
 	private static function isSameTable($task_1, $task_2, $stricted = false) {
+		$task_1_db_driver = isset($task_1["properties"]["choose_db_table"]["db_driver"]) ? $task_1["properties"]["choose_db_table"]["db_driver"] : null;
+		$task_2_db_driver = isset($task_2["properties"]["choose_db_table"]["db_driver"]) ? $task_2["properties"]["choose_db_table"]["db_driver"] : null;
+		
+		$task_1_db_type = isset($task_1["properties"]["choose_db_table"]["db_type"]) ? $task_1["properties"]["choose_db_table"]["db_type"] : null;
+		$task_2_db_type = isset($task_2["properties"]["choose_db_table"]["db_type"]) ? $task_2["properties"]["choose_db_table"]["db_type"] : null;
+		
+		$task_1_db_table = isset($task_1["properties"]["choose_db_table"]["db_table"]) ? $task_1["properties"]["choose_db_table"]["db_table"] : null;
+		$task_2_db_table = isset($task_2["properties"]["choose_db_table"]["db_table"]) ? $task_2["properties"]["choose_db_table"]["db_table"] : null;
+		
 		return $task_1 && $task_2 && 
-			$task_1["properties"] && $task_2["properties"] && 
-			$task_1["properties"]["choose_db_table"] && $task_2["properties"]["choose_db_table"] && 
-			$task_1["properties"]["choose_db_table"]["db_driver"] == $task_2["properties"]["choose_db_table"]["db_driver"] && 
-			(!$stricted || $task_1["properties"]["choose_db_table"]["db_type"] == $task_2["properties"]["choose_db_table"]["db_type"]) && 
-			$task_1["properties"]["choose_db_table"]["db_table"] == $task_2["properties"]["choose_db_table"]["db_table"];
+			!empty($task_1["properties"]) && 
+			!empty($task_2["properties"]) && 
+			!empty($task_1["properties"]["choose_db_table"]) && 
+			!empty($task_2["properties"]["choose_db_table"]) && 
+			$task_1_db_driver == $task_2_db_driver && 
+			(!$stricted || $task_1_db_type == $task_2_db_type) && 
+			$task_1_db_table == $task_2_db_table;
 	}
 
 	private static function prepareLinks(&$links) {
@@ -1280,7 +1317,7 @@ function prepareUrlContent(elm, url, handler) {
 			$obj = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
 			
 			$db_layer_file = $obj && is_a($obj, "Layer") ? WorkFlowBeansFileHandler::getLayerDBDriverProps($user_global_variables_file_path, $user_beans_folder_path, $obj, $db_driver) : null;
-			$db_layer_file = $db_layer_file ? $db_layer_file[1] : null;
+			$db_layer_file = $db_layer_file && isset($db_layer_file[1]) ? $db_layer_file[1] : null;
 			
 			if ($db_layer_file) {
 				$WorkFlowDBHandler = new WorkFlowDBHandler($user_beans_folder_path, $user_global_variables_file_path);
@@ -1322,8 +1359,8 @@ function prepareUrlContent(elm, url, handler) {
 			*/
 			
 			foreach ($parent_table_attrs as $attr)
-				if ($attr["primary_key"]) {
-					$attr_name = $attr["name"];
+				if (!empty($attr["primary_key"])) {
+					$attr_name = isset($attr["name"]) ? $attr["name"] : null;
 					
 					$conditions[] = array(
 						"column" => $attr_name,
@@ -1368,14 +1405,14 @@ function prepareUrlContent(elm, url, handler) {
 			"template" => $template,
 		);
 		
-		if ($page_settings && $page_settings["regions_blocks"]) {
+		if ($page_settings && !empty($page_settings["regions_blocks"])) {
 			if (isset($page_settings["regions_blocks"]["region"]) || isset($page_settings["regions_blocks"]["block"]) || isset($page_settings["regions_blocks"]["project"]))
 				$page_settings["regions_blocks"] = array($page_settings["regions_blocks"]);
 			
 			foreach ($page_settings["regions_blocks"] as $rb) {
-				$region = $rb["region"];
-				$block = $rb["block"];
-				$project = $rb["project"];
+				$region = isset($rb["region"]) ? $rb["region"] : null;
+				$block = isset($rb["block"]) ? $rb["block"] : null;
+				$project = isset($rb["project"]) ? $rb["project"] : null;
 				$project = $project == $selected_project_id ? null : $project;
 				
 				if ($region && $block)
@@ -1384,7 +1421,7 @@ function prepareUrlContent(elm, url, handler) {
 		}
 		
 		//prepare includes
-		if ($page_settings && $page_settings["includes"]) {
+		if ($page_settings && !empty($page_settings["includes"])) {
 			if (isset($page_settings["includes"]["path"]) || isset($page_settings["includes"]["once"])) 
 				$page_settings["includes"] = array($page_settings["includes"]);
 			
@@ -1394,7 +1431,7 @@ function prepareUrlContent(elm, url, handler) {
 		if ($vars_file_include_code) {
 			$exists = false;
 			foreach ($entity_settings["includes"] as $inc)
-				if (strpos($inc["path"], $vars_file_include_code) !== false) {
+				if (isset($inc["path"]) && strpos($inc["path"], $vars_file_include_code) !== false) {
 					$exists = true;
 					break;
 				}
@@ -1406,7 +1443,7 @@ function prepareUrlContent(elm, url, handler) {
 		if ($permissions || $authentication) {
 			$exists = false;
 			foreach ($entity_settings["includes"] as $inc) 
-				if (strpos($inc["path"], "user/include_user_session_activities_handler") !== false) {
+				if (isset($inc["path"]) && strpos($inc["path"], "user/include_user_session_activities_handler") !== false) {
 					$exists = true;
 					break;
 				}
@@ -1416,17 +1453,17 @@ function prepareUrlContent(elm, url, handler) {
 		}
 		
 		//prepare template params
-		if ($page_settings && $page_settings["template_params"]) {
+		if ($page_settings && !empty($page_settings["template_params"])) {
 			if (isset($page_settings["template_params"]["name"]) || isset($page_settings["template_params"]["value"])) 
 				$page_settings["template_params"] = array($page_settings["template_params"]);
 			
 			foreach ($page_settings["template_params"] as $tp) 
-				if ($tp["name"]) 
+				if (!empty($tp["name"]))
 					$entity_settings["template_params"][ $tp["name"] ] = $tp["value"];
 		}
 		
 		//must execute at the end bc it uses the $entity_settings
-		if ($authentication && $authentication["authentication_type"] == "authenticated") {
+		if ($authentication && isset($authentication["authentication_type"]) && $authentication["authentication_type"] == "authenticated") {
 			$authentication_users = $authentication["authentication_users"];
 			
 			if (is_array($authentication_users) && array_key_exists("user_type_id", $authentication_users))
@@ -1478,11 +1515,14 @@ function prepareUrlContent(elm, url, handler) {
 				
 				if ($create_page) {
 					$exists = false;
-					foreach ($entity_settings["regions_blocks"] as $rb) 
-						if ($rb["block"] == $block_id && !$rb["project"]) {
+					foreach ($entity_settings["regions_blocks"] as $rb) {
+						$rb_block = isset($rb["block"]) ? $rb["block"] : null;
+						
+						if ($rb_block == $block_id && empty($rb["project"])) {
 							$exists = true;
 							break;
 						}
+					}
 					
 					if (!$exists)
 						$entity_settings["regions_blocks"][] = array("region" => "Content", "block" => $block_id);
@@ -1509,11 +1549,14 @@ function prepareUrlContent(elm, url, handler) {
 				
 				if ($create_page) {
 					$exists = false;
-					foreach ($entity_settings["regions_blocks"] as $rb) 
-						if ($rb["block"] == $block_id && !$rb["project"]) {
+					foreach ($entity_settings["regions_blocks"] as $rb) {
+						$rb_block = isset($rb["block"]) ? $rb["block"] : null;
+						
+						if ($rb_block == $block_id && empty($rb["project"])) {
 							$exists = true;
 							break;
 						}
+					}
 					
 					if (!$exists)
 						$entity_settings["regions_blocks"][] = array("region" => "Content", "block" => $block_id);
@@ -1525,7 +1568,7 @@ function prepareUrlContent(elm, url, handler) {
 					self::preparePageSaveActionTime($PEVC, $SystemUserCacheHandler, $cms_page_cache_path_prefix, $page_id, $task_statuses);
 					
 					//saving access permission for page
-					if ($authentication_users)
+					if (!empty($authentication_users))
 						self::addPageUsersAccessPermission($PEVC, $authentication_users, $page_id);
 					
 					//saving other permissions for page
@@ -1556,7 +1599,7 @@ function prepareUrlContent(elm, url, handler) {
 		$exists_public_access = false;
 		if ($authentication_users)
 			foreach ($authentication_users as $idx => $authentication_user)
-				if ($authentication_user["user_type_id"] == UserUtil::PUBLIC_USER_TYPE_ID) {
+				if (isset($authentication_user["user_type_id"]) && $authentication_user["user_type_id"] == UserUtil::PUBLIC_USER_TYPE_ID) {
 					$exists_public_access = true;
 					break;
 				}
@@ -1586,10 +1629,13 @@ function prepareUrlContent(elm, url, handler) {
 			//add self::$auth_validation_block_id to page_settings
 			$exists_block = $extra_head_region = false;
 			foreach ($page_settings["regions_blocks"] as $rb) {
-				if (strtolower($rb["region"]) == "head")
-					$extra_head_region = $rb["region"];
-					
-				if ($rb["block"] == self::$auth_validation_block_id && !$rb["project"])
+				$rb_region = isset($rb["region"]) ? $rb["region"] : null;
+				$rb_block = isset($rb["block"]) ? $rb["block"] : null;
+				
+				if (strtolower($rb_region) == "head")
+					$extra_head_region = $rb_region;
+				
+				if ($rb_block == self::$auth_validation_block_id && empty($rb["project"]))
 					$exists_block = true;
 			}
 			
@@ -1629,17 +1675,17 @@ function prepareUrlContent(elm, url, handler) {
 				if (self::$edit_profile_page_id && !self::addPageUsersAccessPermission($PEVC, $authentication_users, self::$edit_profile_page_id, !$already_exists_edit_profile_page_id))
 					return false;
 				
-				if ($authentication_le_users) {
-					if (self::$list_and_edit_users_page_id && !self::addPageUsersAccessPermission($PEVC, $authentication_le_users, self::$list_and_edit_users_page_id, !$already_exists_list_and_edit_users_page_id))
+				if (!empty($authentication_le_users)) {
+					if (self::$list_and_edit_users_page_id && !self::addPageUsersAccessPermission($PEVC, $authentication_le_users, self::$list_and_edit_users_page_id, empty($already_exists_list_and_edit_users_page_id)))
 						return false;
 					
-					if (self::$list_users_page_id && !self::addPageUsersAccessPermission($PEVC, $authentication_le_users, self::$list_users_page_id, !$already_exists_list_users_page_id))
+					if (self::$list_users_page_id && !self::addPageUsersAccessPermission($PEVC, $authentication_le_users, self::$list_users_page_id, empty($already_exists_list_users_page_id)))
 						return false;
 					
-					if (self::$edit_user_page_id && !self::addPageUsersAccessPermission($PEVC, $authentication_le_users, self::$edit_user_page_id, !$already_exists_edit_user_page_id))
+					if (self::$edit_user_page_id && !self::addPageUsersAccessPermission($PEVC, $authentication_le_users, self::$edit_user_page_id, empty($already_exists_edit_user_page_id)))
 						return false;
 					
-					if (self::$add_user_page_id && !self::addPageUsersAccessPermission($PEVC, $authentication_le_users, self::$add_user_page_id, !$already_exists_add_user_page_id))
+					if (self::$add_user_page_id && !self::addPageUsersAccessPermission($PEVC, $authentication_le_users, self::$add_user_page_id, empty($already_exists_add_user_page_id)))
 						return false;
 				}
 			}
@@ -1662,12 +1708,12 @@ function prepareUrlContent(elm, url, handler) {
 					$utas = CMSPresentationUIAutomaticFilesHandler::getUserTypeActivityObjectsByObject($PEVC, self::$object_type_page_id, $page_object_id);
 					if ($utas)
 						foreach ($utas as $uta)
-							if ($uta["activity_id"] == self::$access_id)
-								$user_types_with_access_perm[] = $uta["user_type_id"];
+							if (isset($uta["activity_id"]) && $uta["activity_id"] == self::$access_id)
+								$user_types_with_access_perm[] = isset($uta["user_type_id"]) ? $uta["user_type_id"] : null;
 				//}
 				
 				foreach ($authentication_users as $idx => $authentication_user)
-					if (!in_array($authentication_user["user_type_id"], $user_types_with_access_perm) && !CMSPresentationUIAutomaticFilesHandler::insertUserTypeActivityObject($PEVC, $authentication_user["user_type_id"], self::$access_id, self::$object_type_page_id, $page_object_id))
+					if (isset($authentication_user["user_type_id"]) && !in_array($authentication_user["user_type_id"], $user_types_with_access_perm) && !CMSPresentationUIAutomaticFilesHandler::insertUserTypeActivityObject($PEVC, $authentication_user["user_type_id"], self::$access_id, self::$object_type_page_id, $page_object_id))
 						$status = false;
 			}
 			
@@ -1698,12 +1744,12 @@ function prepareUrlContent(elm, url, handler) {
 			
 			if ($utas)
 				foreach ($utas as $uta)
-					$user_types_ativities[] = $uta["activity_id"] . "_" . $uta["user_type_id"];
+					$user_types_ativities[] = (isset($uta["activity_id"]) ? $uta["activity_id"] : "") . "_" . (isset($uta["user_type_id"]) ? $uta["user_type_id"] : "");
 			
 			//add the correspondent permissions
 			if ($permissions)
 				foreach ($permissions as $idx => $permission)
-					if (is_numeric($permission["user_type_id"]) && is_numeric($permission["activity_id"]) && !in_array($permission["activity_id"] . "_" . $permission["user_type_id"], $user_types_ativities)) //Note that the access permission may already exists, so we only want to add the permissions that don't exist yet.
+					if (isset($permission["user_type_id"]) && is_numeric($permission["user_type_id"]) && isset($permission["activity_id"]) && is_numeric($permission["activity_id"]) && !in_array($permission["activity_id"] . "_" . $permission["user_type_id"], $user_types_ativities)) //Note that the access permission may already exists, so we only want to add the permissions that don't exist yet.
 						if (!CMSPresentationUIAutomaticFilesHandler::insertUserTypeActivityObject($PEVC, $permission["user_type_id"], $permission["activity_id"], self::$object_type_page_id, $page_object_id))
 							$status = false;
 			
@@ -1855,7 +1901,7 @@ $block_settings[$block_id] = array(
 	"validation_message" => "You are now logged out. <br>To go back to your login page please click <a href=\'{$project_url_prefix}' . $login_page_id . '\'>here</a>",
 	"validation_class" => "logout",
 	"validation_redirect" => "' . ($login_page_id ? '{$project_url_prefix}' . $login_page_id : "") . '",
-	"validation_ttl" => ' . ($login_page_id ? '($_GET["hide"] ? 0 : 5) . ""' : '""') . ',
+	"validation_ttl" => ' . ($login_page_id ? '(!empty($_GET["hide"]) ? 0 : 5) . ""' : '""') . ',
 	"validation_blocks_execution" => "do_nothing",
 	"non_validation_action" => "",
 	"non_validation_message" => "",
@@ -2844,7 +2890,7 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/edit_profile", $block
 					if ($vars_file_include_code) {
 						$exists = false;
 						foreach ($page_settings["includes"] as $inc)
-							if (strpos($inc["path"], $vars_file_include_code) !== false) {
+							if (isset($inc["path"]) && strpos($inc["path"], $vars_file_include_code) !== false) {
 								$exists = true;
 								break;
 							}
@@ -2854,9 +2900,12 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/edit_profile", $block
 					}
 					
 					//delete parent block id from regions
-					foreach ($page_settings["regions_blocks"] as $k => $rb) 
-						if ($rb["block"] == $parent_block_id && !$rb["project"])
+					foreach ($page_settings["regions_blocks"] as $k => $rb) {
+						$rb_block = isset($rb["block"]) ? $rb["block"] : null;
+						
+						if ($rb_block == $parent_block_id && empty($rb["project"]))
 							unset($page_settings["regions_blocks"][$k]);
+					}
 					
 					$page_settings["template_params"]["Page Title"] = "Edit Profile";
 					$page_settings["regions_blocks"][] = array("region" => "Content", "block" => self::$edit_profile_block_id);
@@ -3943,7 +3992,7 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/list_and_edit_users_w
 					if ($vars_file_include_code) {
 						$exists = false;
 						foreach ($page_settings["includes"] as $inc)
-							if (strpos($inc["path"], $vars_file_include_code) !== false) {
+							if (isset($inc["path"]) && strpos($inc["path"], $vars_file_include_code) !== false) {
 								$exists = true;
 								break;
 							}
@@ -3953,9 +4002,12 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/list_and_edit_users_w
 					}
 					
 					//delete parent block id from regions
-					foreach ($page_settings["regions_blocks"] as $k => $rb) 
-						if ($rb["block"] == $parent_block_id && !$rb["project"])
+					foreach ($page_settings["regions_blocks"] as $k => $rb) {
+						$rb_block = isset($rb["block"]) ? $rb["block"] : null;
+						
+						if ($rb_block == $parent_block_id && empty($rb["project"]))
 							unset($page_settings["regions_blocks"][$k]);
+					}
 					
 					$page_settings["template_params"]["Page Title"] = "List and Edit Users";
 					$page_settings["regions_blocks"][] = array("region" => "Content", "block" => self::$list_and_edit_users_block_id);
@@ -4590,7 +4642,7 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/list_users", $block_i
 					if ($vars_file_include_code) {
 						$exists = false;
 						foreach ($page_settings["includes"] as $inc)
-							if (strpos($inc["path"], $vars_file_include_code) !== false) {
+							if (isset($inc["path"]) && strpos($inc["path"], $vars_file_include_code) !== false) {
 								$exists = true;
 								break;
 							}
@@ -4600,9 +4652,12 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/list_users", $block_i
 					}
 					
 					//delete parent block id from regions
-					foreach ($page_settings["regions_blocks"] as $k => $rb) 
-						if ($rb["block"] == $parent_block_id && !$rb["project"])
+					foreach ($page_settings["regions_blocks"] as $k => $rb) {
+						$rb_block = isset($rb["block"]) ? $rb["block"] : null;
+						
+						if ($rb_block == $parent_block_id && empty($rb["project"]))
 							unset($page_settings["regions_blocks"][$k]);
+					}
 					
 					$page_settings["template_params"]["Page Title"] = "List Users";
 					$page_settings["regions_blocks"][] = array("region" => "Content", "block" => self::$list_users_block_id);
@@ -5354,7 +5409,7 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/edit_user", $block_id
 					if ($vars_file_include_code) {
 						$exists = false;
 						foreach ($page_settings["includes"] as $inc)
-							if (strpos($inc["path"], $vars_file_include_code) !== false) {
+							if (isset($inc["path"]) && strpos($inc["path"], $vars_file_include_code) !== false) {
 								$exists = true;
 								break;
 							}
@@ -5364,9 +5419,12 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/edit_user", $block_id
 					}
 					
 					//delete parent block id from regions
-					foreach ($page_settings["regions_blocks"] as $k => $rb) 
-						if ($rb["block"] == $parent_block_id && !$rb["project"])
+					foreach ($page_settings["regions_blocks"] as $k => $rb) {
+						$rb_block = isset($rb["block"]) ? $rb["block"] : null;
+						
+						if ($rb_block == $parent_block_id && empty($rb["project"]))
 							unset($page_settings["regions_blocks"][$k]);
+					}
 					
 					$page_settings["template_params"]["Page Title"] = "Edit User";
 					$page_settings["regions_blocks"][] = array("region" => "Content", "block" => self::$edit_user_block_id);
@@ -6120,7 +6178,7 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/edit_user", $block_id
 					if ($vars_file_include_code) {
 						$exists = false;
 						foreach ($page_settings["includes"] as $inc)
-							if (strpos($inc["path"], $vars_file_include_code) !== false) {
+							if (isset($inc["path"]) && strpos($inc["path"], $vars_file_include_code) !== false) {
 								$exists = true;
 								break;
 							}
@@ -6130,9 +6188,12 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/edit_user", $block_id
 					}
 					
 					//delete parent block id from regions
-					foreach ($page_settings["regions_blocks"] as $k => $rb) 
-						if ($rb["block"] == $parent_block_id && !$rb["project"])
+					foreach ($page_settings["regions_blocks"] as $k => $rb) {
+						$rb_block = isset($rb["block"]) ? $rb["block"] : null;
+						
+						if ($rb_block == $parent_block_id && empty($rb["project"]))
 							unset($page_settings["regions_blocks"][$k]);
+					}
 					
 					$page_settings["template_params"]["Page Title"] = "Add User";
 					$page_settings["regions_blocks"][] = array("region" => "Content", "block" => self::$add_user_block_id);
@@ -6242,7 +6303,7 @@ $EVC->getCMSLayer()->getCMSBlockLayer()->createBlock("user/edit_user", $block_id
 	private static function preparePageSaveActionTime($PEVC, $SystemUserCacheHandler, $cms_page_cache_path_prefix, $page_id, $task_statuses) {
 		$page_path = $PEVC->getEntityPath($page_id); //page_id may change in the createAndSaveEntityCode
 		
-		if ($task_statuses[$page_path]) {
+		if (!empty($task_statuses[$page_path])) {
 			$P = $PEVC->getPresentationLayer();
 			$layer_path = $P->getLayerPathSetting();
 			$selected_project_id = $P->getSelectedPresentationId();

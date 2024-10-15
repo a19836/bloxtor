@@ -13,13 +13,13 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$contents = '<?php ' . $code . ' ?>';
 			$classes = \PHPCodePrintingHandler::getPHPClassesFromString($contents);
 			$class_name = key($classes);
-			$props = $classes[$class_name];
+			$props = isset($classes[$class_name]) ? $classes[$class_name] : null;
 			$props = $props ? $props : array();
 			
-			if ($props["extends"] && is_array($props["extends"]))
+			if (!empty($props["extends"]) && is_array($props["extends"]))
 				$props["extends"] = implode(", ", $props["extends"]);
 			
-			if ($props["implements"] && is_array($props["implements"]))
+			if (!empty($props["implements"]) && is_array($props["implements"]))
 				$props["implements"] = implode(", ", $props["implements"]);
 			
 			$this->joinComments($props);
@@ -28,18 +28,18 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			
 			if (is_array($props["properties"]))
 				foreach ($props["properties"] as $k => $v) {
-					if ($v["var_type"] == "string" && ($v["value"][0] == '"' || $v["value"][0] == "'"))
+					if (isset($v["var_type"]) && $v["var_type"] == "string" && isset($v["value"]) && ($v["value"][0] == '"' || $v["value"][0] == "'"))
 						$props["properties"][$k]["value"] = substr($v["value"], 1, -1);
 					
 					$this->joinComments($props["properties"][$k]);
 					
-					if ($v["const"])
+					if (!empty($v["const"]))
 						$props["properties"][$k]["type"] = "const";
 				}
 			
-			if (is_array($props["methods"]))
+			if (isset($props["methods"]) && is_array($props["methods"]))
 				foreach ($props["methods"] as $k => $v) {
-					if (is_array($v["arguments"])) {
+					if (isset($v["arguments"]) && is_array($v["arguments"])) {
 						$args = array();
 						
 						foreach ($v["arguments"] as $args_k => $args_v) {
@@ -56,10 +56,10 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 						$props["methods"][$k]["arguments"] = $args;
 					}
 					
-					$props["methods"][$k]["code"] = \PHPCodePrintingHandler::getFunctionCodeFromString($contents, $v["name"], $class_name);
+					$props["methods"][$k]["code"] = \PHPCodePrintingHandler::getFunctionCodeFromString($contents, isset($v["name"]) ? $v["name"] : null, $class_name);
 				}
 			
-			$props["label"] = "Define " . self::prepareTaskPropertyValueLabelFromCodeStmt($props["class_name"]);
+			$props["label"] = "Define " . self::prepareTaskPropertyValueLabelFromCodeStmt(isset($props["class_name"]) ? $props["class_name"] : null);
 			
 			$props["exits"] = array(
 				self::DEFAULT_EXIT_ID => array(
@@ -73,8 +73,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	private function joinComments(&$props) {
-		if ($props["comments"] || $props["doc_comments"]) {
-			$doc_comments = $props["doc_comments"] ? implode("\n", $props["doc_comments"]) : "";
+		if (!empty($props["comments"]) || !empty($props["doc_comments"])) {
+			$doc_comments = !empty($props["doc_comments"]) ? implode("\n", $props["doc_comments"]) : "";
 			$doc_comments = trim($doc_comments);
 			$doc_comments = str_replace("\r", "", $doc_comments);
 			$doc_comments = preg_replace("/^\/[*]+\s*/", "", $doc_comments);
@@ -83,7 +83,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$doc_comments = preg_replace("/^\s*[*]*\s*/", "", $doc_comments);
 			$doc_comments = trim($doc_comments);
 			
-			$comments = is_array($props["comments"]) ? trim(implode("\n", $props["comments"])) : "";
+			$comments = isset($props["comments"]) && is_array($props["comments"]) ? trim(implode("\n", $props["comments"])) : "";
 			$comments .= $doc_comments ? "\n" . trim($doc_comments) : "";
 			$comments = str_replace(array("/*", "*/", "//"), "", $comments);
 			$comments = trim($comments);
@@ -94,20 +94,21 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"name" => $raw_data["childs"]["properties"][0]["childs"]["name"][0]["value"],
-			"extends" => $raw_data["childs"]["properties"][0]["childs"]["extends"][0]["value"],
-			"implements" => $raw_data["childs"]["properties"][0]["childs"]["implements"][0]["value"],
-			"abstract" => $raw_data["childs"]["properties"][0]["childs"]["abstract"][0]["value"],
-			"interface" => $raw_data["childs"]["properties"][0]["childs"]["interface"][0]["value"],
-			"comments" => $raw_data["childs"]["properties"][0]["childs"]["comments"][0]["value"],
+			"name" => isset($raw_data["childs"]["properties"][0]["childs"]["name"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["name"][0]["value"] : null,
+			"extends" => isset($raw_data["childs"]["properties"][0]["childs"]["extends"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["extends"][0]["value"] : null,
+			"implements" => isset($raw_data["childs"]["properties"][0]["childs"]["implements"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["implements"][0]["value"] : null,
+			"abstract" => isset($raw_data["childs"]["properties"][0]["childs"]["abstract"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["abstract"][0]["value"] : null,
+			"interface" => isset($raw_data["childs"]["properties"][0]["childs"]["interface"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["interface"][0]["value"] : null,
+			"comments" => isset($raw_data["childs"]["properties"][0]["childs"]["comments"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["comments"][0]["value"] : null,
 		);
 		
-		$aux = \MyXML::complexArrayToBasicArray($raw_data["childs"]["properties"][0]["childs"], array("lower_case_keys" => true));
-		$properties["properties"] = $aux["properties"];
-		$properties["methods"] = $aux["methods"];
+		$aux = isset($raw_data["childs"]["properties"][0]["childs"]) ? $raw_data["childs"]["properties"][0]["childs"] : null;
+		$aux = \MyXML::complexArrayToBasicArray($aux, array("lower_case_keys" => true));
+		$properties["properties"] = isset($aux["properties"]) ? $aux["properties"] : null;
+		$properties["methods"] = isset($aux["methods"]) ? $aux["methods"] : null;
 		
 		if ($properties["properties"]) {
 			$is_assoc = array_keys($properties["properties"]) !== range(0, count($properties["properties"]) - 1);
@@ -123,7 +124,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				$properties["methods"] = array($properties["methods"]);
 			
 			foreach ($properties["methods"] as $idx => $method) 
-				if ($method["arguments"]) {
+				if (!empty($method["arguments"])) {
 					$is_assoc = array_keys($method["arguments"]) !== range(0, count($method["arguments"]) - 1);
 					
 					if ($is_assoc)
@@ -135,17 +136,17 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		$code = "";
 		
-		$properties = $data["properties"];
-		$class_name = trim($properties["name"]);
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
+		$class_name = isset($properties["name"]) ? trim($properties["name"]) : "";
 		
 		if ($class_name) {
 			$code .= "\n";
 			$code .= $prefix_tab . str_replace("\n", "\n$prefix_tab", \PHPCodePrintingHandler::getClassString($properties)) . " {\n"; //str_replace bc of the comments
 			
-			if ($properties["properties"]) 
+			if (!empty($properties["properties"]))
 				foreach ($properties["properties"] as $property) {
 					$str = \PHPCodePrintingHandler::getClassPropertyString($property);
 					
@@ -153,14 +154,14 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 						$code .= $prefix_tab . "\t" . str_replace("\n", "\n$prefix_tab\t", $str) . "\n"; //str_replace bc of the comments
 				}
 			
-			if ($properties["methods"]) 
+			if (!empty($properties["methods"]))
 				foreach ($properties["methods"] as $method) {
-					if ($method["arguments"]) {
+					if (!empty($method["arguments"])) {
 						$args = array();
 						
 						foreach ($method["arguments"] as $arg) 
-							if (trim($arg["name"]))
-								$args[ $arg["name"] ] = self::getVariableValueCode($arg["value"], $arg["var_type"]);
+							if (isset($arg["name"]) && trim($arg["name"]))
+								$args[ $arg["name"] ] = self::getVariableValueCode(isset($arg["value"]) ? $arg["value"] : null, isset($arg["var_type"]) ? $arg["var_type"] : null);
 						
 						$method["arguments"] = $args;
 					}
@@ -170,7 +171,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					if ($str) {
 						$code .= "\n";
 						$code .= $prefix_tab . str_replace("\n", "\n$prefix_tab", $str) . " {\n"; //str_replace bc of the comments
-						$code .= $prefix_tab . "\t\t" . str_replace("\n", "\n$prefix_tab\t\t", $method["code"]) . "\n";
+						$code .= $prefix_tab . "\t\t" . (isset($method["code"]) ? str_replace("\n", "\n$prefix_tab\t\t", $method["code"]) : "") . "\n";
 						$code .= $prefix_tab . "\t}\n";
 						$code .= "\n";
 					}
@@ -180,8 +181,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$code .= $prefix_tab . "}\n";
 			$code .= "\n";
 		}
-			
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

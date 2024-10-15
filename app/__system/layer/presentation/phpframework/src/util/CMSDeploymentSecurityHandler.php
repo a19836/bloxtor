@@ -167,7 +167,7 @@ class CMSDeploymentSecurityHandler {
 					$contents = str_replace("?>", '$' . $var_name . ' = ' . $var_value . ';' . "\n?>", $contents, $count = 1);
 				
 				if (file_put_contents($file_path, $contents) === false)
-					$error_messages[] = "Error: Could not replace the security string: '$to_search' in file: '$file_path'";
+					$error_messages[] = "Error: Could not replace the security var: '$var_name' in file: '$file_path'";
 			}
 		}
 	}

@@ -7,7 +7,7 @@ $username = isset($_GET["username"]) ? $_GET["username"] : "";
 $password = isset($_GET["password"]) ? $_GET["password"] : "";
 $agreement = !empty($_COOKIE["lla"]) || $popup ? 1 : 0;//lla: login_license_agreement
 
-if ($_POST) {
+if (!empty($_POST)) {
 	$username = isset($_POST["username"]) ? $_POST["username"] : null;
 	$password = isset($_POST["password"]) ? $_POST["password"] : null;
 	$agreement = isset($_POST["agreement"]) ? $_POST["agreement"] : null;
@@ -65,7 +65,8 @@ if ($_POST) {
 			}
 			
 			header("Location: $url_back");
-			die("<script>document.location = '$url_back';</script>");
+			echo "<script>document.location = '$url_back';</script>";
+			die();
 		}
 	}
 	else {

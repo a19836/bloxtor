@@ -9,14 +9,14 @@ $template = '
 <php:define name "name">
 
 <div class="div_class">
-	<form action="?name=<?:echo $_GET[name]>" method="post">
+	<form action="?name=<?:echo @$_GET[name]>" method="post">
 		<php:for $i = 0; $i < 2; $i++>
-			<php:if $_GET[name] == 123 && 1 == 1>
+			<php:if @$_GET[name] == 123 && 1 == 1>
 				<input type="text" name="name" value="<php:echo $_GET[name]>" />
 			<php:elseif asd == 123>
-				<input type="text" name="name" value="<php:echo $_GET[name]>" />
+				<input type="text" name="name" value="<php:echo @$_GET[name]>" />
 			<ptl:else>
-				<textarea name="name"><?:echo $_GET[name]></textarea>
+				<textarea name="name"><?:echo @$_GET[name]></textarea>
 			</?:if>
 		</php:for>
 		
@@ -38,20 +38,24 @@ Some functions:
 	<php:funcXXX jp . pau (1 + 12.3412 1 < 2)>
 		funcxxx ("jp" . pau(1 + 12.3412, 1 < 2));
 	
-	<php:echo $_GET ? print_r($_GET, 1) : "NO GET ARRAY">
-		echo $_GET ? print_r($_GET, 1) : "NO GET ARRAY";
+	<php:echo @$_GET ? print_r($_GET, 1) : "NO GET ARRAY">
+		echo @$_GET ? print_r($_GET, 1) : "NO GET ARRAY";
 	<php:echo +$_GET[NAME]>
 		echo "+" . $_GET["NAME"];
 	<php:echo +.$_GET[NAME]>
 		echo "+" . $_GET["NAME"];
+	<php:echo +@$_GET[NAME]>
+		echo "+" . @$_GET["NAME"];
+	<php:echo +.@$_GET[NAME]>
+		echo "+" . @$_GET["NAME"];
 	<php:echo +2as()>
 		echo "+" . 2as();
 	<php:echo + ()>
 		echo "+" . "()";
 	<php:echo as +asdsd-12>
 		echo "as+asdsd-12";
-	<php:echo $_GET[NAME]>
-		echo $_GET["NAME"];
+	<php:echo @$_GET[NAME]>
+		echo @$_GET["NAME"];
 		
 		If NAME is a defined variable, ignore it and convert it to ["NAME"].
 		If you wish to call the defined NAME, we must do first:
@@ -78,8 +82,8 @@ Some functions:
 	<php:echo name intval($y) "," callFuncXX (asd, floatVal(123), array(1,2,asd))>
 		echo "name" . intval($y) . "," . callFuncXX("asd", floatVal(123), array(1, 2, "asd"));
 	
-	<ptl:echo $arr[$_GET[0]]$arr[ $_GET[$name ] ] or $arr[ $_GET[name ]][joao][paulo]>
-		echo $arr[$_GET[0]] . $arr[ $_GET[$name ] ] . "or" . $arr[ $_GET["name" ]]["joao"]["paulo"];
+	<ptl:echo @$arr[@$_GET[0]]$arr[ @$_GET[$name ] ] or $arr[ $_GET[name ]][joao][paulo]>
+		echo @$arr[@$_GET[0]] . $arr[ @$_GET[$name ] ] . "or" . $arr[ $_GET["name" ]]["joao"]["paulo"];
 	
 	<ptl:echo asd/ss{$var[asd][asd(asd 12)]}ss/asd>
 		echo "asd/ss" . {$var["asd"][asd("asd", 12)]} . "sd/ss{/asd";
@@ -90,6 +94,9 @@ Some functions:
 	<ptl:echo "asd/ss{$var[asd][asdss]}ss/asd">
 		echo "asd/ss{$var[asd][asdss]}ss/asd";
 		
+	<ptl:foo @$_GET[bar]>
+		foo(@$_GET["bar"]);
+	
 	<php:var:name '.' intval($y) . callFuncXX (asd, floatVal(123), array(1,2,asd), paulo>
 		$name = '.' . intval($y) . callFuncXX("asd", floatVal(123), array(1, 2, "asd"), "paulo");
 	
@@ -97,8 +104,8 @@ Some functions:
 		echo '- ';
 		$name = intval($y) + callFuncXX("asd", floatVal(123) . 2, array(1, 2, "asd"), ("joao" . "paulo"));
 	
-	<php:if $x == joao || intval($y) &gt; 1 && callFuncXX (12 floatVal(sads), array(1,2,asd))>
-		if ($x == "joao" || intval($y) > 1 && callFuncXX(12, floatVal("sads"), array(1, 2, "asd"))) {
+	<php:if @$x == joao || intval($y) &gt; 1 && callFuncXX (12 floatVal(sads), array(1,2,asd), @$_POST)>
+		if (@$x == "joao" || intval($y) > 1 && callFuncXX(12, floatVal("sads"), array(1, 2, "asd"), @$_POST)) {
 	
 	<php:elseif $x == joao || intval($y) &gt; 1 && callFuncXX (12 floatVal(sads), array(1,2,asd))>
 		} else if ($x == "joao" || intval($y) > 1 && callFuncXX(12, floatVal("sads"), array(1, 2, "asd"))) {
@@ -204,15 +211,27 @@ class PHPTemplateLanguage {
 	const CACHE_DIR_NAME = "ptl/";
 	
 	private $CacheHandler;
+	private $code_to_execute;
 	
 	public function setCacheHandler(IUserCacheHandler $CacheHandler) {
 		$this->CacheHandler = $CacheHandler;
 		$this->CacheHandler->config(false, false); //Disables serialize option
 	}
 	public function getCacheHandler() { return $this->CacheHandler; }
-     
+   
 	public function parseTemplate($template, $input_vars = false, $encoding = false) {
 		try {
+			$ignore_undefined_vars_errors = !empty($GLOBALS["ignore_undefined_vars_errors"]);
+			
+			if ($ignore_undefined_vars_errors)
+				set_error_handler(function($errno, $errstr, $errfile, $errline) {
+					$status = ignore_undefined_var_error_handler($errno, $errstr, $errfile, $errline); //global funciton defined in lib/org/phpframework/app.php
+					
+					debug_log("[PHPTemplateLanguage->parseTemplate] WARNING [$errno] $errstr on line $errline in file $errfile when tried to execute the following code:\n" . $this->code_to_execute, "debug");
+					
+					return $status;
+				}, E_WARNING);
+			
 			//echo "$template\n";
 			$code = $this->getTemplateCode($template, $encoding);
 			//echo "<textarea>$code</textarea>";die();
@@ -220,6 +239,8 @@ class PHPTemplateLanguage {
 			//echo "$code\n";
 			
 			if ($code) {
+				$this->code_to_execute = $code;
+				
 				if ($input_vars)
 					foreach ($input_vars as $name => $value)
 						if ($name)
@@ -254,6 +275,9 @@ class PHPTemplateLanguage {
 		catch(Exception $e) {
 			launch_exception(new PHPTemplateLanguageException(7, $code, $e));
 		}
+		
+		if ($ignore_undefined_vars_errors)
+			restore_error_handler();
 		
 		return $html;
 	}
@@ -401,6 +425,7 @@ class PHPTemplateLanguage {
 		//echo "tag:$tag\n";
 		//echo "tag_name:$tag_name\n";
 		//echo "tag_code:$tag_code\n";
+		$extra_tag_name = null;
 		
 		$pos = strpos($tag_name, ":");
 		if ($pos > 0) {
@@ -466,7 +491,7 @@ class PHPTemplateLanguage {
 					else if (strlen($arguments[1]) == 0 || $arguments[1][0] != '$')
 						launch_exception(new PHPTemplateLanguageException(4, array($tag, $arguments[1], "2nd")));
 					
-					if ($arguments[2]) {
+					if (!empty($arguments[2])) {
 						if (self::isString($arguments[2]))
 							$arguments[2] = '$' . substr($arguments[2], 1, -1);
 						else if (strlen($arguments[2]) == 0 || $arguments[2][0] != '$')
@@ -507,7 +532,7 @@ class PHPTemplateLanguage {
 			case "case":
 				$this->prepareTagFuncArgs($tag_code);
 				
-				if (self::isString($tag_code) || $tag_code[0] == '$')
+				if (self::isString($tag_code) || substr($tag_code, 0, 1) == '$' || substr($tag_code, 0, 2) == '@$')
 					return "case " . $tag_code . ":";
 				else
 					launch_exception(new PHPTemplateLanguageException(4, array($tag, $tag_code)));
@@ -633,6 +658,7 @@ class PHPTemplateLanguage {
 			
 			for ($i = $start; $i < $length; $i++) {
 				$char = $tag_code_chars[$i];
+				$next_char = $i + 1 < $length ? $tag_code_chars[$i + 1] : null;
 				//echo "char:$char|".count($arguments)."\n";
 				
 				if ($char == '"' && !$osq && !TextSanitizer::isMBCharEscaped($tag_code, $i, $tag_code_chars)) {
@@ -662,7 +688,7 @@ class PHPTemplateLanguage {
 					$osq = !$osq;
 				}
 				else if (!$odq && !$osq) {
-					if (($char == " " || $char == "," || $char == '"' || $char == "'" || $char == '$') && !TextSanitizer::isMBCharEscaped($tag_code, $i, $tag_code_chars)) { //check spaces and , (, is for the function args)
+					if (($char == " " || $char == "," || $char == '"' || $char == "'" || $char == '$' || ($char == "@" && $next_char == '$')) && !TextSanitizer::isMBCharEscaped($tag_code, $i, $tag_code_chars)) { //check spaces and , (, is for the function args)
 						//echo "enter space before ($char):";print_r($arguments);
 						$c = trim(implode("", array_slice($tag_code_chars, $start, $i - $start)));
 						
@@ -674,7 +700,12 @@ class PHPTemplateLanguage {
 						if (self::isDelimiter($char, $delimiters)) //in case of $char=="," and exists in the extra_delimiters, adds it to $arguments, so we know easily to diferenciate the multiple function arguments
 							$arguments[] = $char;
 						
-						$start = $char == '$' ? $i : $i + 1;
+						if ($char == '@') {
+							$start = $i;
+							$i = $i + 1;
+						}
+						else
+							$start = $char == '$' ? $i : $i + 1;
 						//echo "enter space after ($char):";print_r($arguments);
 					}
 					else if (in_array($char, $delimiters_chars)) { //check delimiters: conditions in if, for, elseif, echo, var...
@@ -694,8 +725,14 @@ class PHPTemplateLanguage {
 								$is_increment_pre = $is_increment_pos = false;
 								$is_operator = $item == ".";//check if is string increment/joint operator
 								
-								if ($item == "->" || $item == "-&gt;") //check if variable
-									$is_operator = $tag_code_chars[0] == '$';
+								if ($item == "->" || $item == "-&gt;") { //check if variable
+									if (isset($tag_code_chars[0])) {
+										if ($tag_code_chars[0] == '$')
+											$is_operator = true;
+										else if (isset($tag_code_chars[1]) && $tag_code_chars[0] == '@' && $tag_code_chars[1] == '$')
+											$is_operator = true;
+									}
+								}
 								else if (preg_match('/^' . $regex . '[ \w\$"\'\(]+/iu', $next_str) && ($item == "!" || preg_match('/[ \w"\'\)]+' . $regex . '$/iu', $prev_str))) //check if a math or conditional operator //'\w' means all words with '_' and '/u' means with accents and ç too.
 									$is_operator = true;
 								else if ($item == "+" || $item == "-") { //check if is increment operator: $i++ or --$i
@@ -747,7 +784,7 @@ class PHPTemplateLanguage {
 						else
 							$previous = count($arguments) > 0 ? $arguments[ count($arguments) - 1 ] : null;
 					
-						$is_var = $previous && preg_match('/^\$\{?\w/iu', trim($previous)); //'\w' means all words with '_' and '/u' means with accents and ç too.
+						$is_var = $previous && preg_match('/^@?\$\{?\w/iu', trim($previous)); //'\w' means all words with '_' and '/u' means with accents and ç too.
 						//echo "previous($is_var):$previous\n";
 						
 						if ($is_var) {
@@ -776,8 +813,8 @@ class PHPTemplateLanguage {
 						 	$this->prepareTagFuncArgs($sub_tag_code);
 						 			 	
 							//convert [name] into ["name"]
-							$sub_tag_code = preg_replace_callback("/\[([\w\"' \-\+\.]+)\]/u", function ($matches) { //'\w' means all words with '_' and '/u' means with accents and ç too.
-								return "[" . (!self::isString($matches[1]) && !is_numeric($matches[1]) && $matches[1][0] != '$' ? '"' . trim($matches[1]) . '"' : $matches[1]) . "]";
+							$sub_tag_code = preg_replace_callback('/\[([\$\w"\' \-\+\.]+)\]/u', function ($matches) { //'\w' means all words with '_' and '/u' means with accents and ç too.
+								return "[" . (!self::isString($matches[1]) && !is_numeric($matches[1]) && $matches[1][0] != '$' && substr($matches[1], 0, 2) != '@$' ? '"' . trim($matches[1]) . '"' : $matches[1]) . "]";
 							  }, $sub_tag_code);
 							  
 							if (empty($arguments) || strlen($p))
@@ -877,6 +914,7 @@ class PHPTemplateLanguage {
 			self::prepareArgumentsWithShortIfCode($arguments, $join, $numeric_only_delimiters);
 			//print_r($arguments);
 			
+			$join_trimmed = trim($join);
 			self::prepareArgumentsWithUnnecessaryFollowedStrings($arguments, $join_trimmed);
 			//echo "join_trimmed:$join_trimmed\n";
 			//print_r($arguments);
@@ -1047,7 +1085,7 @@ class PHPTemplateLanguage {
 						else
 							$previous = $arguments[ count($arguments) - 1 ];
 					
-						$is_var = $previous && preg_match('/^\$\{?\w/iu', trim($previous)); //'\w' means all words with '_' and '/u' means with accents and ç too.
+						$is_var = $previous && preg_match('/^@?\$\{?\w/iu', trim($previous)); //'\w' means all words with '_' and '/u' means with accents and ç too.
 						//echo "previous($is_var):$previous\n";
 						
 						if ($is_var) {
@@ -1375,9 +1413,9 @@ class PHPTemplateLanguage {
 									}
 									else if (in_array($arg, $join_delimiters)) //if is a delimiter to combine strings
 										$string_increment_delimiter = true;
-									else if (substr($arg, 0, 1) == '$' || self::isString($arg) || is_numeric($arg) || strtolower($arg) == "true" || strtolower($arg) == "false" || strtolower($arg) == "null") { //if a string or a var or a numeric value or boolean
+									else if (substr($arg, 0, 1) == '$' || substr($arg, 0, 2) == '@$' || self::isString($arg) || is_numeric($arg) || strtolower($arg) == "true" || strtolower($arg) == "false" || strtolower($arg) == "null") { //if a string or a var or a numeric value or boolean
 										if (!$string_increment_delimiter) { //if next char is not a join delimiter, stop!
-											$start_arg_idx = $j + 1;
+											$start_arg_idx = $j + (substr($arg, 0, 2) == '@$' ? 2 : 1);
 											break;
 										}
 										
@@ -1419,7 +1457,7 @@ class PHPTemplateLanguage {
 									}
 									else if (in_array($arg, $join_delimiters)) //if is a delimiter to combine strings
 										$string_increment_delimiter = true;
-									else if (substr($arg, 0, 1) == '$' || self::isString($arg) || is_numeric($arg) || strtolower($arg) == "true" || strtolower($arg) == "false" || strtolower($arg) == "null") { //if a string or a var or a numeric value or boolean
+									else if (substr($arg, 0, 1) == '$' || substr($arg, 0, 2) == '@$' || self::isString($arg) || is_numeric($arg) || strtolower($arg) == "true" || strtolower($arg) == "false" || strtolower($arg) == "null") { //if a string or a var or a numeric value or boolean
 										if (!$string_increment_delimiter) { //if next char is not a join delimiter, stop!
 											$end_arg_idx = $j - 1;
 											break;
@@ -1518,7 +1556,7 @@ class PHPTemplateLanguage {
 			$next_arg = $i + 1 < $t ? $arguments[$i + 1] : null;
 			//echo "!$prev_arg!$arg!$next_arg\n";
 			
-			if (substr($arg, 0, 1) == '$' && self::isString($prev_arg) && self::isString($next_arg)) { //Prepare variables: {$asd[0][1]} or {$a}
+			if ((substr($arg, 0, 1) == '$' || substr($arg, 0, 2) == '@$') && self::isString($prev_arg) && self::isString($next_arg)) { //Prepare variables: {$asd[0][1]} or {$a}
 				//Note that $prev_arg and $next_arg are strings with quotes
 				$closed = substr(trim(substr($next_arg, 1)), 0, 1) == "}";//remove first quote, then trim, then get first char
 				
@@ -1526,8 +1564,14 @@ class PHPTemplateLanguage {
 					$arguments[$i - 1] = substr($prev_arg, 0, -2) . substr($prev_arg, -1);//remove {
 					$arguments[$i + 1] = substr($next_arg, 0, 1) . substr(trim(substr($next_arg, 1)), 1);//Remove }
 				}
-				else if (substr($arg, 1, 1) == "{") {
-					$arguments[$i] = '$' . substr($arguments[$i], 2);//add {$var}
+				else if (substr($arg, 0, 1) == '$' && substr($arg, 1, 1) == "{") {
+					$arguments[$i] = '$' . substr($arguments[$i], 2);//add ${var}
+					
+					if ($closed)
+						$arguments[$i + 1] = substr($next_arg, 0, 1) . substr(trim(substr($next_arg, 1)), 1);//Remove }
+				}
+				else if (substr($arg, 0, 2) == '@$' && substr($arg, 2, 1) == "{") {
+					$arguments[$i] = '@$' . substr($arguments[$i], 3);//add @${var}
 					
 					if ($closed)
 						$arguments[$i + 1] = substr($next_arg, 0, 1) . substr(trim(substr($next_arg, 1)), 1);//Remove }
@@ -1654,7 +1698,9 @@ class PHPTemplateLanguage {
 	}
 	
 	private static function isString($arg) {
-		return ($arg[0] == '"' && substr($arg, -1) == '"') || ($arg[0] == "'" && substr($arg, -1) == "'");
+		return isset($arg[0]) && (
+			($arg[0] == '"' && substr($arg, -1) == '"') || ($arg[0] == "'" && substr($arg, -1) == "'")
+		);
 	}
 	
 	private static function isDelimiter($arg, $delimiters) {
@@ -1676,11 +1722,13 @@ class PHPTemplateLanguage {
 		
 		if (is_numeric($arg) || $arg_0 == '$')
 			return $arg;
+		if ($arg_0 == '@' && isset($arg[1]) && $arg[1] == '$')
+			return $arg;
 		else if ($arg_0 == '"')
 			return $arg . (substr($arg, -1) == '"' ? "" : '"');
 		else if ($arg_0 == "'")
 			return $arg . (substr($arg, -1) == "'" ? "" : "'");
-		else if (strtolower($arg) == "true" || strtolower($arg) == "false") //Then we recheck at the end, to replace the true or false which are strings instead of Booleans
+		else if (strtolower($arg) == "true" || strtolower($arg) == "false" || strtolower($arg) == "null") //Then we recheck at the end, to replace the true or false which are strings instead of Booleans
 			return $arg;
 		
 		//echo "arg:$arg\n";

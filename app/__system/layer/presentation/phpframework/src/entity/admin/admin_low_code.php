@@ -4,7 +4,7 @@ $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "a
 include $EVC->getEntityPath("admin/admin_citizen");
 //echo "<pre>";print_r($layers);die();
 
-if ($layers["presentation_layers"]) {
+if (!empty($layers["presentation_layers"])) {
 	$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
 	$Layer = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
 	$project_dir = dirname($project);

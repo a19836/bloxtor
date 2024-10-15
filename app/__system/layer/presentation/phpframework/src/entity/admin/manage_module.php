@@ -5,10 +5,10 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$module_id = $_GET["module_id"];
-$action = $_GET["action"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$module_id = isset($_GET["module_id"]) ? $_GET["module_id"] : null;
+$action = isset($_GET["action"]) ? $_GET["action"] : null;
 
 if ($module_id && $action) {
 	$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
@@ -21,6 +21,13 @@ if ($module_id && $action) {
 		$PHPVariablesFileHandler->startUserGlobalVariables();
 		
 		$PresentationLayer = $EVC->getPresentationLayer();
+		
+		if (empty($PresentationLayer->settings["presentation_modules_path"]))
+			launch_exception(new Exception("'PresentationLayer->settings[presentation_modules_path]' cannot be undefined!"));
+		
+		if (empty($PresentationLayer->settings["presentation_webroot_path"]))
+			launch_exception(new Exception("'PresentationLayer->settings[presentation_webroot_path]' cannot be undefined!"));
+		
 		$system_presentation_settings_module_path = $PresentationLayer->getLayerPathSetting() . $PresentationLayer->getCommonProjectName() . "/" . $PresentationLayer->settings["presentation_modules_path"] . $module_id;
 		$system_presentation_settings_webroot_module_path = $PresentationLayer->getLayerPathSetting() . $PresentationLayer->getCommonProjectName() . "/" . $PresentationLayer->settings["presentation_webroot_path"] . "module/$module_id";
 		
@@ -41,7 +48,7 @@ if ($module_id && $action) {
 			$layers = WorkFlowBeansFileHandler::getLocalBeanLayersFromBrokers($user_global_variables_file_path, $user_beans_folder_path, $P->getBrokers(), true);
 			$layers[$bean_name] = $P;
 			
-			$delete_system_module = deleteSystemModule($user_global_variables_file_paths, $user_beans_folder_path, $module_id, $system_presentation_settings_module_path, $system_presentation_settings_webroot_module_path, $layers);
+			$delete_system_module = deleteSystemModule($user_global_variables_file_path, $user_beans_folder_path, $module_id, $system_presentation_settings_module_path, $system_presentation_settings_webroot_module_path, $layers);
 			//echo "delete_system_module:$delete_system_module";die();
 			
 			$CMSModuleInstallationHandler = CMSModuleInstallationHandler::createCMSModuleInstallationHandlerObject($layers, $module_id, $system_presentation_settings_module_path, $system_presentation_settings_webroot_module_path);
@@ -63,7 +70,7 @@ function deleteSystemModule($user_global_variables_file_path, $user_beans_folder
 	//check if all $layers_to_check are the total number of all layers
 	if ($all_layers)
 		foreach ($all_layers as $bean_name => $obj) {
-			if (!$layers_to_check[$bean_name])
+			if (empty($layers_to_check[$bean_name]))
 				$excluded_layers[$bean_name] = $obj;
 		}
 	
@@ -76,5 +83,6 @@ function deleteSystemModule($user_global_variables_file_path, $user_beans_folder
 	return !$CMSModuleInstallationHandler->isModuleInstalled();
 }
 
-die($status);
+echo isset($status) ? $status : null;
+die();
 ?>

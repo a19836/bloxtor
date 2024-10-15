@@ -2,15 +2,16 @@
 include_once $EVC->getUtilPath("WorkFlowDataAccessHandler");
 include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$hbn_obj_id = $_GET["obj"];
-$relationship_type = $_GET["relationship_type"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$hbn_obj_id = isset($_GET["obj"]) ? $_GET["obj"] : null;
+$relationship_type = isset($_GET["relationship_type"]) ? $_GET["relationship_type"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
 $is_import_file = $relationship_type == "import";
+$queries_ids = isset($queries_ids) ? $queries_ids : null; //$queries_ids is init in the remove_hbn_query.php file
 
 $PHPVariablesFileHandler = new PHPVariablesFileHandler($user_global_variables_file_path);
 $PHPVariablesFileHandler->startUserGlobalVariables();
@@ -18,9 +19,9 @@ $PHPVariablesFileHandler->startUserGlobalVariables();
 $WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
 $obj = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
 
-if ($obj && is_a($obj, "DataAccessLayer") && $_POST) {
-	$object = $_POST["object"];
-	$overwrite = $_POST["overwrite"];
+if ($obj && is_a($obj, "DataAccessLayer") && !empty($_POST)) {
+	$object = isset($_POST["object"]) ? $_POST["object"] : null;
+	$overwrite = isset($_POST["overwrite"]) ? $_POST["overwrite"] : null;
 	
 	$layer_path = $obj->getLayerPathSetting();
 	$file_path = trim($layer_path . $path);//it should be a file. Not a folder.
@@ -76,7 +77,7 @@ if ($obj && is_a($obj, "DataAccessLayer") && $_POST) {
 			}
 		}
 		
-		if ($status) {
+		if (!empty($status)) {
 			$UserAuthenticationHandler->incrementUsedActionsTotal();
 			
 			//delete caches
@@ -88,5 +89,6 @@ if ($obj && is_a($obj, "DataAccessLayer") && $_POST) {
 
 $PHPVariablesFileHandler->endUserGlobalVariables();
 
-die($status);
+echo isset($status) ? $status : null;
+die();
 ?>

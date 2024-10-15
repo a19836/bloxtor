@@ -14,6 +14,7 @@ include_once get_lib("vendor.dao.test.MyItemHbnModel"); //if broker is REST, php
 include $EVC->getUtilPath("util");
 
 $step = isset($_GET["step"]) ? $_GET["step"] : null;
+$ids = $statuses = $new_id = null;
 
 echo "<br/>GET ITEM OBJ FROM AN OBJECT WHICH IS NOT REGISTER IN THE dataaccess/hibernate/xxx/SERVICES.xml:";
 $ItemObj = $EVC->getBroker()->callBusinessLogic("TEST", "get_obj", array("module" => "TEST", "service" => "ItemObjNotRegistered"));

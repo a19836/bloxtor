@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="icon" href="data:;base64,=" />
-	<?= $head;?>
+	<?= isset($head) ? $head : "";?>
 </head>
 <body>
 	<div id="container">

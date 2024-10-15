@@ -360,8 +360,9 @@ class HtmlDomHandler {
 					default:
 						$status = imagejpeg($im, $file_path);
 				}
-			
-				imagedestroy($im);
+				
+				if (function_exists("imagedestroy"))
+					@imagedestroy($im);
 			}
 		
 			if (!$status)

@@ -3,12 +3,12 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$selected_db_driver = $_GET["selected_db_driver"];
-$popup = $_GET["popup"];
-$filter_by_layout = $_GET["filter_by_layout"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$selected_db_driver = isset($_GET["selected_db_driver"]) ? $_GET["selected_db_driver"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -17,8 +17,8 @@ $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security rea
 $layers_beans = AdminMenuHandler::getLayers($user_global_variables_file_path);
 //echo "<pre>";print_r($layers_beans);die();
 
-if ($layers_beans && $layers_beans["presentation_layers"]) {
-	if ($bean_name && $bean_file_name && $path && $layers_beans["presentation_layers"][$bean_name] == $bean_file_name) {
+if ($layers_beans && !empty($layers_beans["presentation_layers"])) {
+	if ($bean_name && $bean_file_name && $path && !empty($layers_beans["presentation_layers"][$bean_name]) && $layers_beans["presentation_layers"][$bean_name] == $bean_file_name) {
 		$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $bean_file_name, $bean_name, $user_global_variables_file_path);
 		
 		$filter_by_layout = "$layer_bean_folder_name/" . preg_replace("/\/+$/", "", $path); //remove last slash from $path

@@ -48,15 +48,18 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$props = $WorkFlowTaskCodeParser->getObjectMethodProps($stmt);
 		
 		if ($props) {
-			$method_name = $props["method_name"];
+			$method_name = isset($props["method_name"]) ? $props["method_name"] : null;
 			
-			if (isset(self::$METHODS_ARGS[$method_name]) && empty($props["method_static"])) {
-				$exists = $status = is_array($WorkFlowTaskCodeParser->shared_objects["hibernate_vars"]) && in_array($props["method_obj"], $WorkFlowTaskCodeParser->shared_objects["hibernate_vars"]);
-				$code = "<?php\n" . $props["method_obj"] . "\n?>";
+			if (array_key_exists($method_name, self::$METHODS_ARGS) && empty($props["method_static"])) {
+				$hibernate_vars = isset($WorkFlowTaskCodeParser->shared_objects["hibernate_vars"]) ? $WorkFlowTaskCodeParser->shared_objects["hibernate_vars"] : null;
+				$method_obj = isset($props["method_obj"]) ? $props["method_obj"] : null;
+				$exists = $status = is_array($hibernate_vars) && in_array($method_obj, $hibernate_vars);
+				
+				$code = "<?php\n" . $method_obj . "\n?>";
 				
 				if (!$status) {
 					$tps = $WorkFlowTaskCodeParser->getParsedCodeAsArray($code);
-					$status = $tps["task"][0]["childs"]["tag"][0]["value"] == "callhibernateobject";
+					$status = isset($tps["task"][0]["childs"]["tag"][0]["value"]) && $tps["task"][0]["childs"]["tag"][0]["value"] == "callhibernateobject";
 				}
 				
 				if ($status) {
@@ -64,37 +67,39 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 						$props["broker_method_obj_type"] = "exists_hbn_var";
 					}
 					else {
-						$method_obj_stmts = $WorkFlowTaskCodeParser->getPHPParserEmulative()->parse($code);
+						$method_obj_stmts = $WorkFlowTaskCodeParser->getPHPMultipleParser()->parse($code);
 						$method_obj_props = $WorkFlowTaskCodeParser->getObjectMethodProps($method_obj_stmts[0]);
-					
-						$props["method_obj"] = $method_obj_props["method_obj"];
-						$props["module_id"] = self::getConfiguredParsedType($method_obj_props["method_args"][0]["value"]);
-						$props["module_id_type"] = $method_obj_props["method_args"][0]["type"];
-						$props["service_id"] = self::getConfiguredParsedType($method_obj_props["method_args"][1]["value"]);
-						$props["service_id_type"] = $method_obj_props["method_args"][1]["type"];
-						$props["options"] = $method_obj_props["method_args"][2]["value"];
-						$props["options_type"] = self::getConfiguredParsedType($method_obj_props["method_args"][2]["type"], array("", "string", "variable", "array"));
+						
+						$props["method_obj"] = isset($method_obj_props["method_obj"]) ? $method_obj_props["method_obj"] : null;
+						$props["module_id"] = isset($method_obj_props["method_args"][0]["value"]) ? $method_obj_props["method_args"][0]["value"] : null;
+						$props["module_id_type"] = isset($method_obj_props["method_args"][0]["type"]) ? self::getConfiguredParsedType($method_obj_props["method_args"][0]["type"]) : null;
+						$props["service_id"] = isset($method_obj_props["method_args"][1]["value"]) ? $method_obj_props["method_args"][1]["value"] : null;
+						$props["service_id_type"] = isset($method_obj_props["method_args"][1]["type"]) ? self::getConfiguredParsedType($method_obj_props["method_args"][1]["type"]) : null;
+						$props["options"] = isset($method_obj_props["method_args"][2]["value"]) ? $method_obj_props["method_args"][2]["value"] : null;
+						$props["options_type"] = isset($method_obj_props["method_args"][2]["type"]) ? self::getConfiguredParsedType($method_obj_props["method_args"][2]["type"], array("", "string", "variable", "array")) : null;
 					}
 					
-					$props["service_method"] = $props["method_name"];
+					$props["service_method"] = isset($props["method_name"]) ? $props["method_name"] : null;
 					$props["service_method_type"] = "string";
 					
 					if ($props["options_type"] == "array") {
-						$opt_stmts = $WorkFlowTaskCodeParser->getPHPParserEmulative()->parse("<?php\n" . $props["options"] . "\n?>");
+						$opt_stmts = $WorkFlowTaskCodeParser->getPHPMultipleParser()->parse("<?php\n" . $props["options"] . "\n?>");
 						//print_r($opt_stmts);
-						$props["options"] = $WorkFlowTaskCodeParser->getArrayItems($opt_stmts[0]->items);
+						$items = $WorkFlowTaskCodeParser->getStmtArrayItems($opt_stmts[0]);
+						$props["options"] = $WorkFlowTaskCodeParser->getArrayItems($items);
 					}
 					
 					$ma = self::$METHODS_ARGS[$method_name];
 					$ma = $ma ? $ma : array();
 					foreach ($ma as $arg_idx => $arg_name) {
 						$an = strtolower($arg_name);
-						$props["sma_" . $an] = $props["method_args"][$arg_idx]["value"];
-						$props["sma_" . $an . "_type"] = $props["method_args"][$arg_idx]["type"];
+						$props["sma_" . $an] = isset($props["method_args"][$arg_idx]["value"]) ? $props["method_args"][$arg_idx]["value"] : null;
+						$props["sma_" . $an . "_type"] = isset($props["method_args"][$arg_idx]["type"]) ? $props["method_args"][$arg_idx]["type"] : null;
 						
 						if ($props["sma_" . $an . "_type"] == "array") {
-							$sma_stmts = $WorkFlowTaskCodeParser->getPHPParserEmulative()->parse("<?php\n" . $props["sma_" . $an] . "\n?>");
-							$props["sma_" . $an] = $WorkFlowTaskCodeParser->getArrayItems($sma_stmts[0]->items);
+							$sma_stmts = $WorkFlowTaskCodeParser->getPHPMultipleParser()->parse("<?php\n" . $props["sma_" . $an] . "\n?>");
+							$items = $WorkFlowTaskCodeParser->getStmtArrayItems($sma_stmts[0]);
+							$props["sma_" . $an] = $WorkFlowTaskCodeParser->getArrayItems($items);
 						}
 						
 						if ($an == "data" || $an == "data_options" || $an == "parent_ids" || $an == "options")
@@ -107,7 +112,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					unset($props["method_args"]);
 					unset($props["method_static"]);
 					
-					$props["label"] = "Call " . ($props["service_id"] ? self::prepareTaskPropertyValueLabelFromCodeStmt($props["service_id"]) . "." : "") . self::prepareTaskPropertyValueLabelFromCodeStmt($props["service_method"]) . ($props["module_id"] ? " in " . self::prepareTaskPropertyValueLabelFromCodeStmt($props["module_id"]) : "");
+					$props["label"] = "Call " . (!empty($props["service_id"]) ? self::prepareTaskPropertyValueLabelFromCodeStmt($props["service_id"]) . "." : "") . self::prepareTaskPropertyValueLabelFromCodeStmt($props["service_method"]) . (!empty($props["module_id"]) ? " in " . self::prepareTaskPropertyValueLabelFromCodeStmt($props["module_id"]) : "");
 					
 					$props["exits"] = array(
 						self::DEFAULT_EXIT_ID => array(
@@ -115,7 +120,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 						),
 					);
 				
-				//print_r($props);
+					//print_r($props);
 					return $props;
 				}
 			}
@@ -123,39 +128,39 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
-		$options_type = $raw_data["childs"]["properties"][0]["childs"]["options_type"][0]["value"];
+		$options_type = isset($raw_data["childs"]["properties"][0]["childs"]["options_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["options_type"][0]["value"] : null;
 		if ($options_type == "array") {
-			$options = $raw_data["childs"]["properties"][0]["childs"]["options"];
+			$options = isset($raw_data["childs"]["properties"][0]["childs"]["options"]) ? $raw_data["childs"]["properties"][0]["childs"]["options"] : null;
 			$options = self::parseArrayItems($options);
 		}
 		else {
-			$options = $raw_data["childs"]["properties"][0]["childs"]["options"][0]["value"];
+			$options = isset($raw_data["childs"]["properties"][0]["childs"]["options"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["options"][0]["value"] : null;
 		}
 		
 		$properties = array(
-			"broker_method_obj_type" => $raw_data["childs"]["properties"][0]["childs"]["broker_method_obj_type"][0]["value"],
-			"method_obj" => $raw_data["childs"]["properties"][0]["childs"]["method_obj"][0]["value"],
-			"module_id" => $raw_data["childs"]["properties"][0]["childs"]["module_id"][0]["value"],
-			"module_id_type" => $raw_data["childs"]["properties"][0]["childs"]["module_id_type"][0]["value"],
-			"service_id" => $raw_data["childs"]["properties"][0]["childs"]["service_id"][0]["value"],
-			"service_id_type" => $raw_data["childs"]["properties"][0]["childs"]["service_id_type"][0]["value"],
+			"broker_method_obj_type" => isset($raw_data["childs"]["properties"][0]["childs"]["broker_method_obj_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["broker_method_obj_type"][0]["value"] : null,
+			"method_obj" => isset($raw_data["childs"]["properties"][0]["childs"]["method_obj"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["method_obj"][0]["value"] : null,
+			"module_id" => isset($raw_data["childs"]["properties"][0]["childs"]["module_id"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["module_id"][0]["value"] : null,
+			"module_id_type" => isset($raw_data["childs"]["properties"][0]["childs"]["module_id_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["module_id_type"][0]["value"] : null,
+			"service_id" => isset($raw_data["childs"]["properties"][0]["childs"]["service_id"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["service_id"][0]["value"] : null,
+			"service_id_type" => isset($raw_data["childs"]["properties"][0]["childs"]["service_id_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["service_id_type"][0]["value"] : null,
 			"options" => $options,
 			"options_type" => $options_type,
-			"service_method" => $raw_data["childs"]["properties"][0]["childs"]["service_method"][0]["value"],
-			"service_method_type" => $raw_data["childs"]["properties"][0]["childs"]["service_method_type"][0]["value"],
+			"service_method" => isset($raw_data["childs"]["properties"][0]["childs"]["service_method"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["service_method"][0]["value"] : null,
+			"service_method_type" => isset($raw_data["childs"]["properties"][0]["childs"]["service_method_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["service_method_type"][0]["value"] : null,
 		);
 		
-		$props = $raw_data["childs"]["properties"][0]["childs"];
+		$props = isset($raw_data["childs"]["properties"][0]["childs"]) ? $raw_data["childs"]["properties"][0]["childs"] : null;
 		if (is_array($props)) {
 			foreach ($props as $attr_name => $attr_value) {
 				if (substr($attr_name, 0, 4) == "sma_") {
 					if (substr($attr_name, -5) == "_type") {
-						$properties[$attr_name] = $attr_value[0]["value"];
+						$properties[$attr_name] = isset($attr_value[0]["value"]) ? $attr_value[0]["value"] : null;
 					}
 					else {
-						$properties[$attr_name] = $props[$attr_name . "_type"][0]["value"] == "array" ? self::parseArrayItems($attr_value) : $attr_value[0]["value"];
+						$properties[$attr_name] = isset($props[$attr_name . "_type"][0]["value"]) && $props[$attr_name . "_type"][0]["value"] == "array" ? self::parseArrayItems($attr_value) : (isset($attr_value[0]["value"]) ? $attr_value[0]["value"] : null);
 					}
 				}
 			}
@@ -167,34 +172,41 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
+		$broker_method_obj_type = isset($properties["broker_method_obj_type"]) ? $properties["broker_method_obj_type"] : null;
+		$module_id = isset($properties["module_id"]) ? $properties["module_id"] : null;
+		$module_id_type = isset($properties["module_id_type"]) ? $properties["module_id_type"] : null;
+		$service_id = isset($properties["service_id"]) ? $properties["service_id"] : null;
+		$service_id_type = isset($properties["service_id_type"]) ? $properties["service_id_type"] : null;
+		$service_method = isset($properties["service_method"]) ? $properties["service_method"] : null;
+		$service_method_type = isset($properties["service_method_type"]) ? $properties["service_method_type"] : null;
 		
 		$code = "";
-		if (($properties["broker_method_obj_type"] == "exists_hbn_var" || ($properties["module_id"] && $properties["service_id"])) && $properties["service_method"]) {
+		if (($broker_method_obj_type == "exists_hbn_var" || ($module_id && $service_id)) && $service_method) {
 			$var_name = self::getPropertiesResultVariableCode($properties);
 		
-			$method_obj = $properties["method_obj"];
+			$method_obj = isset($properties["method_obj"]) ? $properties["method_obj"] : null;
 			if ($method_obj) {
 				$static_pos = strpos($method_obj, "::");
 				$non_static_pos = strpos($method_obj, "->");
-				$method_obj = substr($method_obj, 0, 1) != '$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $method_obj : $method_obj;
+				$method_obj = substr($method_obj, 0, 1) != '$' && substr($method_obj, 0, 2) != '@$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $method_obj : $method_obj;
 				$method_obj .= "->";
 			}
 			
-			$service_method = self::getVariableValueCode($properties["service_method"], $properties["service_method_type"]);
-			$service_method = $properties["service_method_type"] == "string" ? str_replace('"', '', $service_method) : $service_method;
+			$service_method = self::getVariableValueCode($service_method, $service_method_type);
+			$service_method = $service_method_type == "string" ? str_replace('"', '', $service_method) : $service_method;
 			
-			$ma = self::$METHODS_ARGS[$service_method];
+			$ma = isset(self::$METHODS_ARGS[$service_method]) ? self::$METHODS_ARGS[$service_method] : null;
 			$ma = $ma ? $ma : array();
 			
 			$args = "";
 			foreach ($ma as $arg_idx => $arg_name) {
 				$an = strtolower($arg_name);
 				
-				$type = $properties["sma_" . $an . "_type"];
-				$value = $properties["sma_" . $an];
+				$type = isset($properties["sma_" . $an . "_type"]) ? $properties["sma_" . $an . "_type"] : null;
+				$value = isset($properties["sma_" . $an]) ? $properties["sma_" . $an] : null;
 				
 				$arg = $type == "array" ? self::getArrayString($value) : self::getVariableValueCode($value, $type);
 				$arg = isset($arg) && strlen($arg) ? $arg : "null";
@@ -203,23 +215,26 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			
 			$code  = $prefix_tab . $var_name;
 			$code .= $method_obj;
-			if ($properties["broker_method_obj_type"] != "exists_hbn_var") {
-				$opts_type = $properties["options_type"];
+			if ($broker_method_obj_type != "exists_hbn_var") {
+				$opts_type = isset($properties["options_type"]) ? $properties["options_type"] : null;
+				$opts = isset($properties["options"]) ? $properties["options"] : null;
+				
 				if ($opts_type == "array")
-					$opts = self::getArrayString($properties["options"]);
+					$opts = self::getArrayString($opts);
 				else
-					$opts = self::getVariableValueCode($properties["options"], $opts_type);
+					$opts = self::getVariableValueCode($opts, $opts_type);
 				
 				$code .= "callObject(";
-				$code .= self::getVariableValueCode($properties["module_id"], $properties["module_id_type"]) . ", ";
-				$code .= self::getVariableValueCode($properties["service_id"], $properties["service_id_type"]);
+				$code .= self::getVariableValueCode($module_id, $module_id_type) . ", ";
+				$code .= self::getVariableValueCode($service_id, $service_id_type);
 				$code .= $opts && $opts != "null" ? ", " . $opts : "";
 				$code .= ")->";
 			}
 			$code .= "$service_method(" . $args . ");\n";
 		}
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

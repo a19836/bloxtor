@@ -29,18 +29,19 @@ class SequentialLogicalActivitySettingsCodeCreator {
 		
 		if (is_array($items))
 			foreach ($items as $idx => $item_settings) {
-				$action_type = strtolower($item_settings["action_type"]);
-				$action_value = $item_settings["action_value"];
+				$action_type = isset($item_settings["action_type"]) ? strtolower($item_settings["action_type"]) : "";
+				$action_value = isset($item_settings["action_value"]) ? $item_settings["action_value"] : null;
 				$original_action_value = isset($original_items[$idx]["action_value"]) ? $original_items[$idx]["action_value"] : array();
-				$condition_type = strtolower($item_settings["condition_type"]);
-				$condition_value = $item_settings["condition_value"];
-				$action_description = $item_settings["action_description"];
+				$condition_type = isset($item_settings["condition_type"]) ? strtolower($item_settings["condition_type"]) : "";
+				$condition_value = isset($item_settings["condition_value"]) ? $item_settings["condition_value"] : null;
+				$action_description = isset($item_settings["action_description"]) ? $item_settings["action_description"] : null;
+				$result_var_name = isset($item_settings["result_var_name"]) ? $item_settings["result_var_name"] : null;
 				
 				if ($condition_type != "execute_if_code" && $condition_type != "execute_if_not_code")
 					$condition_value = self::prepareStringValue($condition_value);
 				
 				$items_code .= ($items_code ? "," : "") . "\n{$prefix}array(";
-				$items_code .= "\n$prefix\t" . '"result_var_name" => ' . self::prepareStringValue($item_settings["result_var_name"]);
+				$items_code .= "\n$prefix\t" . '"result_var_name" => ' . self::prepareStringValue($result_var_name);
 				$items_code .= ",\n$prefix\t" . '"action_type" => ' . self::prepareStringValue($action_type);
 				$items_code .= ",\n$prefix\t" . '"condition_type" => ' . self::prepareStringValue($condition_type);
 				$items_code .= ",\n$prefix\t" . '"condition_value" => ' . $condition_value;
@@ -49,8 +50,11 @@ class SequentialLogicalActivitySettingsCodeCreator {
 				switch ($action_type) {
 					case "html": //getting design form html settings
 						$task = $WorkFlowTaskHandler->getTasksByTag("createform");
-						$task = $task[0];
-						$task["properties"] = array("form_settings_data_type" => $action_value["form_settings_data_type"], "form_settings_data" => $action_value["form_settings_data"]);
+						$task = isset($task[0]) ? $task[0] : null;
+						$task["properties"] = array(
+							"form_settings_data_type" => isset($action_value["form_settings_data_type"]) ? $action_value["form_settings_data_type"] : null, 
+							"form_settings_data" => isset($action_value["form_settings_data"]) ? $action_value["form_settings_data"] : null
+						);
 						$task["obj"]->data = $task;
 						
 						$form_code = trim($task["obj"]->printCode(null, null, "$prefix\t"));
@@ -88,10 +92,10 @@ class SequentialLogicalActivitySettingsCodeCreator {
 							switch ($key) {
 								case "method_obj":
 									if ($v) {
-										$static_pos = strpos($v, "::") || ($action_type == "callobjectmethod" && $action_value["method_static"] == 1);
+										$static_pos = strpos($v, "::") || ($action_type == "callobjectmethod" && isset($action_value["method_static"]) && $action_value["method_static"] == 1);
 										$non_static_pos = strpos($v, "->");
-										$v = substr($v, 0, 1) != '$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $v : $v;
-										$v = substr($v, 0, 1) == '$' ? $v : '"' . $v . '"';
+										$v = substr($v, 0, 1) != '$' && substr($v, 0, 2) != '@$' && (!$static_pos || ($non_static_pos && $static_pos > $non_static_pos)) ? '$' . $v : $v;
+										$v = substr($v, 0, 1) == '$' || substr($v, 0, 2) == '@$' ? $v : '"' . $v . '"';
 										
 										$broker_code .= ($broker_code ? ',' : '') . "\n$prefix\t\t" . '"' . $key . '" => ' . $v;
 									}
@@ -111,10 +115,10 @@ class SequentialLogicalActivitySettingsCodeCreator {
 									
 									if (is_array($v))
 										foreach ($v as $vv)
-											if (is_array($vv["childs"]["value"][0]) && array_key_exists("value", $vv["childs"]["value"][0])) {
-												$vv_value = $vv["childs"]["value"][0]["value"];
-												$vv_type = $vv["childs"]["type"][0]["value"];
-											
+											if (isset($vv["childs"]["value"][0]) && is_array($vv["childs"]["value"][0]) && array_key_exists("value", $vv["childs"]["value"][0])) {
+												$vv_value = isset($vv["childs"]["value"][0]["value"]) ? $vv["childs"]["value"][0]["value"] : null;
+												$vv_type = isset($vv["childs"]["type"][0]["value"]) ? $vv["childs"]["type"][0]["value"] : null;
+												
 												$vv_value = WorkFlowTask::getVariableValueCode($vv_value, $vv_type);
 												$vv_value = strlen($vv_value) ? $vv_value : "null";
 											
@@ -126,20 +130,20 @@ class SequentialLogicalActivitySettingsCodeCreator {
 									break;
 									
 								case "sma_ids": //very important otherwise it will convert the sma_ids value to a variable by default and we want to have a string with the variable name to be created after it executes the hibernate insert action!
-									$v = substr($v, 0, 1) == '$' ? $v : '"' . $v . '"';
+									$v = substr($v, 0, 1) == '$' || substr($v, 0, 2) == '@$' ? $v : '"' . $v . '"';
 									$broker_code .= ($broker_code ? ',' : '') . "\n$prefix\t\t" . '"' . $key . '" => ' . $v;
 									break;
 								
 								default:
 									//for soapconnector
-									if ($is_soap_data_options && ($key == "options" || $key == "headers") && $action_value[$key . "_type"] == "options" && is_array($v)) {
+									if ($is_soap_data_options && ($key == "options" || $key == "headers") && isset($action_value[$key . "_type"]) && $action_value[$key . "_type"] == "options" && is_array($v)) {
 										$arr_code = '';
 										
 										if ($key == "options") {
 											foreach ($v as $vv) 
-												if ($vv["name"]) {
-													$vv_value = $vv["value"];
-													$vv_type = $vv["var_type"];
+												if (!empty($vv["name"])) {
+													$vv_value = isset($vv["value"]) ? $vv["value"] : null;
+													$vv_type = isset($vv["var_type"]) ? $vv["var_type"] : null;
 													
 													$vv_value = WorkFlowTask::getVariableValueCode($vv_value, $vv_type);
 													$vv_value = strlen($vv_value) ? $vv_value : "null";
@@ -155,8 +159,8 @@ class SequentialLogicalActivitySettingsCodeCreator {
 												
 												foreach ($headers_keys as $hk) 
 													if (array_key_exists($hk, $vv)) {
-														$vv_value = $vv[$hk];
-														$vv_type = $vv[$hk . "_type"];
+														$vv_value = isset($vv[$hk]) ? $vv[$hk] : null;
+														$vv_type = isset($vv[$hk . "_type"]) ? $vv[$hk . "_type"] : null;
 														
 														if ($hk == "must_understand" && $vv_type == "options" && !is_numeric($vv_value))
 															$vv_value = WorkFlowTask::getVariableValueCode($vv_value, "string");
@@ -181,14 +185,14 @@ class SequentialLogicalActivitySettingsCodeCreator {
 										break;
 									}
 									//for restconnector
-									else if ($is_rest_data_options && $key == "data" && $action_value[$key . "_type"] == "array" && is_array($v)) {
+									else if ($is_rest_data_options && $key == "data" && isset($action_value[$key . "_type"]) && $action_value[$key . "_type"] == "array" && is_array($v)) {
 										foreach ($v as $idx => $vv) {
-											if ($vv["key_type"] == "options")
+											if (isset($vv["key_type"]) && $vv["key_type"] == "options")
 												$v[$idx]["key_type"] = "string";
 											
-											if ($vv["key"] == "settings" && is_array($vv["items"]))
+											if (isset($vv["key"]) && $vv["key"] == "settings" && isset($vv["items"]) && is_array($vv["items"]))
 												foreach ($vv["items"] as $idj => $sub_vv) {
-													if ($sub_vv["key_type"] == "options")
+													if (isset($sub_vv["key_type"]) && $sub_vv["key_type"] == "options")
 														$v[$idx]["items"][$idj]["key_type"] = "string";
 												}
 										}
@@ -198,7 +202,7 @@ class SequentialLogicalActivitySettingsCodeCreator {
 									}
 									//for all
 									else if (array_key_exists($key . "_type", $action_value)) { //only do this for the real attributes. the Types will be ignored!
-										$key_type = $action_value[$key . "_type"];
+										$key_type = isset($action_value[$key . "_type"]) ? $action_value[$key . "_type"] : null;
 										if ($key_type == "array")
 											$v = str_replace("\n", "\n$prefix\t\t", WorkFlowTask::getArrayString($v));
 										else {
@@ -221,7 +225,7 @@ class SequentialLogicalActivitySettingsCodeCreator {
 							$action_value = $orig_action_value;
 							
 							if (array_key_exists("result_type", $action_value)) {
-								$vt = $action_value["result_type_type"] == "options" ? "string" : $action_value["result_type_type"];
+								$vt = isset($action_value["result_type_type"]) ? ($action_value["result_type_type"] == "options" ? "string" : $action_value["result_type_type"]) : null;
 								$v = WorkFlowTask::getVariableValueCode($action_value["result_type"], $vt);
 								$broker_code .= ',' . "\n$prefix\t\t" . '"result_type" => ' . (strlen($v) ? $v : "null");
 							}
@@ -240,38 +244,38 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						$items_code .= ",\n$prefix\t" . '"action_value" => array(';
 						
 						//prepare header fields
-						$items_code .= "\n$prefix\t\t" . '"dal_broker" => ' . self::prepareStringValue($action_value["dal_broker"]);
-						$items_code .= ",\n$prefix\t\t" . '"db_driver" => ' . self::prepareStringValue($action_value["db_driver"]);
-						$items_code .= ",\n$prefix\t\t" . '"db_type" => ' . self::prepareStringValue($action_value["db_type"]);
+						$items_code .= "\n$prefix\t\t" . '"dal_broker" => ' . self::prepareStringValue(isset($action_value["dal_broker"]) ? $action_value["dal_broker"] : null);
+						$items_code .= ",\n$prefix\t\t" . '"db_driver" => ' . self::prepareStringValue(isset($action_value["db_driver"]) ? $action_value["db_driver"] : null);
+						$items_code .= ",\n$prefix\t\t" . '"db_type" => ' . self::prepareStringValue(isset($action_value["db_type"]) ? $action_value["db_type"] : null);
 						
 						if ($action_type != "getinsertedid") {
 							//prepare table and sql fields
-							if ($action_value["table"]) {
+							if (!empty($action_value["table"])) {
 								$items_code .= ",\n$prefix\t\t" . '"table" => ' . self::prepareStringValue($action_value["table"]);
-								$attributes = $action_value["attributes"];
+								$attributes = isset($action_value["attributes"]) ? $action_value["attributes"] : null;
 								if ($attributes) {
 									$items_code .= ",\n$prefix\t\t" . '"attributes" => array(';
 									$attributes_code = '';
 									
 									foreach ($attributes as $attribute) { 
 										$attributes_code .= ($attributes_code ? "," : "") . "\n$prefix\t\t\tarray("
-											. "\n$prefix\t\t\t\t" . '"column" => ' . self::prepareStringValue($attribute["column"])
-											. ",\n$prefix\t\t\t\t" . '"value" => ' . self::prepareStringValue($attribute["value"])
+											. "\n$prefix\t\t\t\t" . '"column" => ' . self::prepareStringValue(isset($attribute["column"]) ? $attribute["column"] : null)
+											. ",\n$prefix\t\t\t\t" . '"value" => ' . self::prepareStringValue(isset($attribute["value"]) ? $attribute["value"] : null)
 										. ",\n$prefix\t\t\t)";
 									}
 									
 									$items_code .= $attributes_code . "\n$prefix\t\t" . ')';
 								}
 								
-								$conditions = $action_value["conditions"];
+								$conditions = isset($action_value["conditions"]) ? $action_value["conditions"] : null;
 								if ($conditions) {
 									$items_code .= ",\n$prefix\t\t" . '"conditions" => array(';
 									$conditions_code = '';
 									
 									foreach ($conditions as $condition) { 
 										$conditions_code .= ($conditions_code ? "," : "") . "\n$prefix\t\t\tarray("
-											. "\n$prefix\t\t\t\t" . '"column" => ' . self::prepareStringValue($condition["column"])
-											. ",\n$prefix\t\t\t\t" . '"value" => ' . self::prepareStringValue($condition["value"])
+											. "\n$prefix\t\t\t\t" . '"column" => ' . self::prepareStringValue(isset($condition["column"]) ? $condition["column"] : null)
+											. ",\n$prefix\t\t\t\t" . '"value" => ' . self::prepareStringValue(isset($condition["value"]) ? $condition["value"] : null)
 										. ",\n$prefix\t\t\t)";
 									}
 									
@@ -279,15 +283,15 @@ class SequentialLogicalActivitySettingsCodeCreator {
 								}
 							}
 							else
-								$items_code .= ",\n$prefix\t\t" . '"sql" => ' . self::prepareStringValue($action_value["sql"]);
+								$items_code .= ",\n$prefix\t\t" . '"sql" => ' . self::prepareStringValue(isset($action_value["sql"]) ? $action_value["sql"] : null);
 						}
 						
 						//prepare footer fields
 						$options_code = "";
-						if ($action_value["options_type"] == "array")
-							$options_code = str_replace("\n", "\n$prefix\t\t", WorkFlowTask::getArrayString($action_value["options"]));
+						if (isset($action_value["options_type"]) && $action_value["options_type"] == "array")
+							$options_code = str_replace("\n", "\n$prefix\t\t", WorkFlowTask::getArrayString(isset($action_value["options"]) ? $action_value["options"] : null));
 						else
-							$options_code = WorkFlowTask::getVariableValueCode($action_value["options"], $action_value["options_type"]);
+							$options_code = WorkFlowTask::getVariableValueCode(isset($action_value["options"]) ? $action_value["options"] : null, isset($action_value["options_type"]) ? $action_value["options_type"] : null);
 						
 						$items_code .= ",\n$prefix\t\t" . '"options" => ' . (strlen($options_code) ? $options_code : "null");
 						
@@ -307,8 +311,8 @@ class SequentialLogicalActivitySettingsCodeCreator {
 					case "alert_msg_and_stop":
 					case "alert_msg_and_redirect":
 						$items_code .= ",\n$prefix\t" . '"action_value" => array(';
-						$items_code .= "\n$prefix\t\t" . '"message" => ' . self::prepareStringValue($action_value["message"]);
-						$items_code .= ",\n$prefix\t\t" . '"redirect_url" => ' . self::prepareStringValue($action_value["redirect_url"]);
+						$items_code .= "\n$prefix\t\t" . '"message" => ' . self::prepareStringValue(isset($action_value["message"]) ? $action_value["message"] : null);
+						$items_code .= ",\n$prefix\t\t" . '"redirect_url" => ' . self::prepareStringValue(isset($action_value["redirect_url"]) ? $action_value["redirect_url"] : null);
 						$items_code .= "\n$prefix\t" . ')';
 						break;
 						
@@ -317,8 +321,8 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						$redirect_url = null;
 						
 						if (is_array($action_value)) {
-							$redirect_type = $action_value["redirect_type"];
-							$redirect_url = $action_value["redirect_url"];
+							$redirect_type = isset($action_value["redirect_type"]) ? $action_value["redirect_type"] : null;
+							$redirect_url = isset($action_value["redirect_url"]) ? $action_value["redirect_url"] : null;
 						}
 						else
 							$redirect_url = $action_value;
@@ -332,32 +336,37 @@ class SequentialLogicalActivitySettingsCodeCreator {
 					case "return_previous_record":
 					case "return_next_record":
 					case "return_specific_record":
+						$records_variable_name = isset($action_value["records_variable_name"]) ? $action_value["records_variable_name"] : null;
+						$index_variable_name = isset($action_value["index_variable_name"]) ? $action_value["index_variable_name"] : null;
+						
 						$items_code .= ",\n$prefix\t" . '"action_value" => array(';
-						$items_code .= "\n$prefix\t\t" . '"records_variable_name" => ' . (substr($action_value["records_variable_name"], 0, 1) == '$' ? $action_value["records_variable_name"] : self::prepareStringValue($action_value["records_variable_name"])); //it could be a real variable with already an array inside
-						$items_code .= ",\n$prefix\t\t" . '"index_variable_name" => ' . self::prepareStringValue($action_value["index_variable_name"]);
+						$items_code .= "\n$prefix\t\t" . '"records_variable_name" => ' . (substr($records_variable_name, 0, 1) == '$' || substr($records_variable_name, 0, 2) == '@$' ? $records_variable_name : self::prepareStringValue($records_variable_name)); //it could be a real variable with already an array inside
+						$items_code .= ",\n$prefix\t\t" . '"index_variable_name" => ' . self::prepareStringValue($index_variable_name);
 						$items_code .= "\n$prefix\t" . ')';
 						break;
 						
 					case "check_logged_user_permissions":
 						$items_code .= ",\n$prefix\t" . '"action_value" => array(';
-						$items_code .= "\n$prefix\t\t" . '"all_permissions_checked" => ' . ($action_value["all_permissions_checked"] ? 1 : 0);
+						$items_code .= "\n$prefix\t\t" . '"all_permissions_checked" => ' . (!empty($action_value["all_permissions_checked"]) ? 1 : 0);
 						
-						$entity_path_var_name = trim($action_value["entity_path_var_name"]) ? trim($action_value["entity_path_var_name"]) : '$entity_path';
-						$entity_path_var_name = (substr($entity_path_var_name, 0, 1) != '$' ? '$' : '') . $entity_path_var_name;
+						$entity_path_var_name = isset($action_value["entity_path_var_name"]) ? $action_value["entity_path_var_name"] : null;
+						$entity_path_var_name = trim($entity_path_var_name) ? trim($entity_path_var_name) : '$entity_path';
+						$entity_path_var_name = (substr($entity_path_var_name, 0, 1) != '$' && substr($entity_path_var_name, 0, 2) != '@$' ? '$' : '') . $entity_path_var_name;
 						$items_code .= ",\n$prefix\t\t" . '"entity_path" => ' . $entity_path_var_name;
 						
-						$luid = substr($action_value["logged_user_id"], 0, 1) == '$' ? $action_value["logged_user_id"] : self::prepareStringValue($action_value["logged_user_id"]);
+						$luid = isset($action_value["logged_user_id"]) ? $action_value["logged_user_id"] : null;
+						$luid = substr($luid, 0, 1) == '$' || substr($luid, 0, 2) == '@$' ? $luid : self::prepareStringValue($luid);
 						$items_code .= ",\n$prefix\t\t" . '"logged_user_id" => ' . $luid;
 						
-						$users_perms = $action_value["users_perms"];
+						$users_perms = isset($action_value["users_perms"]) ? $action_value["users_perms"] : null;
 						if ($users_perms) {
 							$items_code .= ",\n$prefix\t\t" . '"users_perms" => array(';
 							$users_perms_code = '';
 							
 							foreach ($users_perms as $user_perm) { 
 								$users_perms_code .= ($users_perms_code ? "," : "") . "\n$prefix\t\t\tarray("
-									. "\n$prefix\t\t\t\t" . '"user_type_id" => ' . self::prepareStringValue($user_perm["user_type_id"])
-									. ",\n$prefix\t\t\t\t" . '"activity_id" => ' . self::prepareStringValue($user_perm["activity_id"])
+									. "\n$prefix\t\t\t\t" . '"user_type_id" => ' . self::prepareStringValue(isset($user_perm["user_type_id"]) ? $user_perm["user_type_id"] : null)
+									. ",\n$prefix\t\t\t\t" . '"activity_id" => ' . self::prepareStringValue(isset($user_perm["activity_id"]) ? $user_perm["activity_id"] : null)
 								. ",\n$prefix\t\t\t)";
 							}
 							
@@ -382,7 +391,7 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						
 					case "array": //getting array settings
 						$task = $WorkFlowTaskHandler->getTasksByTag("createform");
-						$task = $task[0];
+						$task = isset($task[0]) ? $task[0] : null;
 						$task["properties"] = array("form_input_data_type" => "array", "form_input_data" => $action_value);
 						$task["obj"]->data = $task;
 						
@@ -397,8 +406,8 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						$operator = null;
 						
 						if (is_array($action_value)) {
-							$string = $action_value["string"];
-							$operator = $action_value["operator"];
+							$string = isset($action_value["string"]) ? $action_value["string"] : null;
+							$operator = isset($action_value["operator"]) ? $action_value["operator"] : null;
 						}
 						
 						$type = PHPUICodeExpressionHandler::getValueType($string, array("non_set_type" => "string", "empty_string_type" => "string"));
@@ -418,8 +427,8 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						$operator = null;
 						
 						if (is_array($action_value)) {
-							$var = $action_value["variable"];
-							$operator = $action_value["operator"];
+							$var = isset($action_value["variable"]) ? $action_value["variable"] : null;
+							$operator = isset($action_value["operator"]) ? $action_value["operator"] : null;
 						}
 						
 						$var = trim($var);
@@ -444,9 +453,9 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						break;
 					
 					case "validate_variable":
-						$method = $action_value["method"];
-						$variable = $action_value["variable"];
-						$offset = $action_value["offset"];
+						$method = isset($action_value["method"]) ? $action_value["method"] : null;
+						$variable = isset($action_value["variable"]) ? $action_value["variable"] : null;
+						$offset = isset($action_value["offset"]) ? $action_value["offset"] : null;
 						
 						if ($method && $variable) {
 							$items_code .= ",\n$prefix\t" . '"action_value" => array(';
@@ -458,13 +467,13 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						break;
 					
 					case "list_report": //getting variable settings. It could be a simply variable name, or a variable with $ or something like #foo[bar]# or a composite type like: "#" . $x . "[bar]#"
-						$var = trim($action_value["variable"]);
+						$var = isset($action_value["variable"]) ? trim($action_value["variable"]) : "";
 						
 						if ($var) {
 							$var = self::prepareVariableNameValue($var);
-							$type = trim($action_value["type"]);
-							$doc_name = trim($action_value["doc_name"]);
-							$continue = trim($action_value["continue"]);
+							$type = isset($action_value["type"]) ? trim($action_value["type"]) : "";
+							$doc_name = isset($action_value["doc_name"]) ? trim($action_value["doc_name"]) : "";
+							$continue = isset($action_value["continue"]) ? trim($action_value["continue"]) : "";
 							
 							$items_code .= ",\n$prefix\t" . '"action_value" => array(';
 							$items_code .= "\n$prefix\t\t" . '"type" => ' . self::prepareStringValue($type);
@@ -477,9 +486,9 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						break;
 					
 					case "call_block": 
-						$block = trim($action_value["block"]);
-						$project = trim($action_value["project"]);
-						$block_local_variables_var_name = trim($action_value["block_local_variables_var_name"]);
+						$block = isset($action_value["block"]) ? trim($action_value["block"]) : "";
+						$project = isset($action_value["project"]) ? trim($action_value["project"]) : "";
+						$block_local_variables_var_name = isset($action_value["block_local_variables_var_name"]) ? trim($action_value["block_local_variables_var_name"]) : "";
 						
 						$items_code .= ",\n$prefix\t" . '"action_value" => array(';
 						$items_code .= "\n$prefix\t\t" . '"block" => ' . self::prepareStringValue($block);
@@ -489,8 +498,8 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						break;
 					
 					case "call_view": 
-						$view = trim($action_value["view"]);
-						$project = trim($action_value["project"]);
+						$view = isset($action_value["view"]) ? trim($action_value["view"]) : "";
+						$project = isset($action_value["project"]) ? trim($action_value["project"]) : "";
 						
 						$items_code .= ",\n$prefix\t" . '"action_value" => array(';
 						$items_code .= "\n$prefix\t\t" . '"view" => ' . self::prepareStringValue($view);
@@ -500,8 +509,8 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						break;
 						
 					case "include_file":
-						$path = trim($action_value["path"]);
-						$once = trim($action_value["once"]);
+						$path = isset($action_value["path"]) ? trim($action_value["path"]) : "";
+						$once = isset($action_value["once"]) ? trim($action_value["once"]) : "";
 						
 						$type = PHPUICodeExpressionHandler::getValueType($path, array("non_set_type" => "string", "empty_string_type" => "string"));
 						
@@ -519,7 +528,7 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						$items_code .= ",\n$prefix\t" . '"action_value" => array(';
 						
 						if (is_array($action_value) && array_key_exists("code", $action_value)) {
-							$code = $action_value["code"];
+							$code = isset($action_value["code"]) ? $action_value["code"] : null;
 							$fc = substr($code, 0, 1);
 							$lc = substr($code, -1);
 							$at = PHPUICodeExpressionHandler::getValueType($code, array("non_set_type" => "string", "empty_string_type" => "string"));
@@ -534,10 +543,10 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						}
 						else {
 							//it could be a real variable with already an array inside
-							$include_graph_library = self::prepareStringValue($action_value["include_graph_library"]); 
-							$width = self::prepareStringValue($action_value["width"]); 
-							$height = self::prepareStringValue($action_value["height"]);
-							$labels_variable = trim($action_value["labels_variable"]);
+							$include_graph_library = self::prepareStringValue(isset($action_value["include_graph_library"]) ? $action_value["include_graph_library"] : null); 
+							$width = self::prepareStringValue(isset($action_value["width"]) ? $action_value["width"] : null); 
+							$height = self::prepareStringValue(isset($action_value["height"]) ? $action_value["height"] : null);
+							$labels_variable = isset($action_value["labels_variable"]) ? trim($action_value["labels_variable"]) : "";
 							$labels_variable = $labels_variable ? self::prepareVariableNameValue($labels_variable) : self::prepareStringValue($labels_variable);
 							
 							$data_sets_code = '';
@@ -579,20 +588,26 @@ class SequentialLogicalActivitySettingsCodeCreator {
 						break;
 					
 					case "loop": //getting string settings
+						$records_variable_name = isset($action_value["records_variable_name"]) ? $action_value["records_variable_name"] : null;
+						$records_start_index = isset($action_value["records_start_index"]) ? $action_value["records_start_index"] : null;
+						$records_end_index = isset($action_value["records_end_index"]) ? $action_value["records_end_index"] : null;
+						$array_item_key_variable_name = isset($action_value["array_item_key_variable_name"]) ? $action_value["array_item_key_variable_name"] : null;
+						$array_item_value_variable_name = isset($action_value["array_item_value_variable_name"]) ? $action_value["array_item_value_variable_name"] : null;
+						
 						$items_code .= ",\n$prefix\t" . '"action_value" => array(';
-						$items_code .= "\n$prefix\t\t" . '"records_variable_name" => ' . (substr($action_value["records_variable_name"], 0, 1) == '$' ? $action_value["records_variable_name"] : self::prepareStringValue($action_value["records_variable_name"])); //it could be a real variable with already an array inside
-						$items_code .= ",\n$prefix\t\t" . '"records_start_index" => ' . self::prepareStringValue($action_value["records_start_index"]);
-						$items_code .= ",\n$prefix\t\t" . '"records_end_index" => ' . self::prepareStringValue($action_value["records_end_index"]);
-						$items_code .= ",\n$prefix\t\t" . '"array_item_key_variable_name" => ' . self::prepareStringValue($action_value["array_item_key_variable_name"]);
-						$items_code .= ",\n$prefix\t\t" . '"array_item_value_variable_name" => ' . self::prepareStringValue($action_value["array_item_value_variable_name"]);
-						$items_code .= ",\n$prefix\t\t" . '"actions" => ' . self::getActionItemsCode($action_value["actions"], $WorkFlowTaskHandler, $prefix . "\t\t\t", $original_action_value["actions"]);
+						$items_code .= "\n$prefix\t\t" . '"records_variable_name" => ' . (substr($records_variable_name, 0, 1) == '$' || substr($records_variable_name, 0, 2) == '@$' ? $records_variable_name : self::prepareStringValue($records_variable_name)); //it could be a real variable with already an array inside
+						$items_code .= ",\n$prefix\t\t" . '"records_start_index" => ' . self::prepareStringValue($records_start_index);
+						$items_code .= ",\n$prefix\t\t" . '"records_end_index" => ' . self::prepareStringValue($records_end_index);
+						$items_code .= ",\n$prefix\t\t" . '"array_item_key_variable_name" => ' . self::prepareStringValue($array_item_key_variable_name);
+						$items_code .= ",\n$prefix\t\t" . '"array_item_value_variable_name" => ' . self::prepareStringValue($array_item_value_variable_name);
+						$items_code .= ",\n$prefix\t\t" . '"actions" => ' . self::getActionItemsCode(isset($action_value["actions"]) ? $action_value["actions"] : null, $WorkFlowTaskHandler, $prefix . "\t\t\t", isset($original_action_value["actions"]) ? $original_action_value["actions"] : null);
 						$items_code .= "\n$prefix\t" . ')';
 						break;
 						
 					case "group": //getting string settings
 						$items_code .= ",\n$prefix\t" . '"action_value" => array(';
-						$items_code .= "\n$prefix\t\t" . '"group_name" => ' . self::prepareStringValue($action_value["group_name"]);
-						$items_code .= ",\n$prefix\t\t" . '"actions" => ' . self::getActionItemsCode($action_value["actions"], $WorkFlowTaskHandler, $prefix . "\t\t\t", $original_action_value["actions"]);
+						$items_code .= "\n$prefix\t\t" . '"group_name" => ' . self::prepareStringValue(isset($action_value["group_name"]) ? $action_value["group_name"] : null);
+						$items_code .= ",\n$prefix\t\t" . '"actions" => ' . self::getActionItemsCode(isset($action_value["actions"]) ? $action_value["actions"] : null, $WorkFlowTaskHandler, $prefix . "\t\t\t", isset($original_action_value["actions"]) ? $original_action_value["actions"] : null);
 						$items_code .= "\n$prefix\t" . ')';
 						break;
 				}
@@ -609,7 +624,7 @@ class SequentialLogicalActivitySettingsCodeCreator {
 		
 		if (($fc == "#" && $lc == "#") || ($fc == '"' && $lc == '"') || ($fc == "'" && $lc == "'"))
 			$var = self::prepareStringValue($var);
-		else if ($fc != '$') {
+		else if ($fc != '$' && substr($var, 0, 2) != '@$') {
 			$type = PHPUICodeExpressionHandler::getValueType($var, array("non_set_type" => "string", "empty_string_type" => "string"));
 			
 			if ($type == "string")
@@ -632,7 +647,7 @@ class SequentialLogicalActivitySettingsCodeCreator {
 		if (($fc == '"' && $lc == '"') || ($fc == "'" && $lc == "'"))
 			return $value;
 		
-		if ($fc == '$') {
+		if ($fc == '$') { //TODO: missing @$
 			$vars = CMSPresentationFormSettingsUIHandler::getVariablesFromText($value);
 			
 			if ($vars[0] == trim($value))

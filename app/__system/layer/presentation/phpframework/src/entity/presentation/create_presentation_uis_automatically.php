@@ -8,10 +8,10 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -38,45 +38,45 @@ if ($path) {
 			$LayoutTypeProjectHandler = new LayoutTypeProjectHandler($UserAuthenticationHandler, $user_global_variables_file_path, $user_beans_folder_path, $bean_file_name, $bean_name);
 			$LayoutTypeProjectHandler->filterLayerBrokersDBDriversPropsFromLayoutName($db_drivers, $filter_by_layout); //filter db_drivers by $filter_by_layout
 			
-			if ($_POST["step_3"]) {
+			if (!empty($_POST["step_3"])) {
 				$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 				
 				//Preparing table alias
-				$selected_tables_alias = json_decode($_POST["sta"], true);
+				$selected_tables_alias = isset($_POST["sta"]) ? json_decode($_POST["sta"], true) : null;
 				//echo "<pre>";print_r($selected_tables_alias);die();
 				if ($selected_tables_alias) 
 					foreach ($selected_tables_alias as $table_name => $table_alias)
 						$selected_tables_alias[$table_name] = strtolower(str_replace(array("-", " "), "_", $table_alias));
 				
-				$statuses = json_decode($_POST["statuses"], true);
+				$statuses = isset($_POST["statuses"]) ? json_decode($_POST["statuses"], true) : null;
 				$statuses = $statuses ? $statuses : array();
 				//print_r($statuses);die();
 			}
-			else if ($_POST["step_2"]) {
+			else if (!empty($_POST["step_2"])) {
 				$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 				
 				//PREPARING TABLES
-				$db_driver = $_POST["db_driver"];
-				$include_db_driver = $_POST["include_db_driver"];
-				$db_layer = $_POST["db_layer"];
-				$db_layer_file = $_POST["db_layer_file"];
-				$type = $_POST["type"];
-				$authenticated_template = $_POST["authenticated_template"];
-				$non_authenticated_template = $_POST["non_authenticated_template"];
-				$force_user_action = $_POST["force_user_action"];
-				$selected_tables = $_POST["st"];
-				$selected_tables_alias = $_POST["sta"];
-				$overwrite = $_POST["overwrite"];
-				$with_items_list_ui = $_POST["with_items_list_ui"];
-				$with_view_item_ui = $_POST["with_view_item_ui"];
-				$with_insert_item_form_ui = $_POST["with_insert_item_form_ui"];
-				$with_update_item_form_ui = $_POST["with_update_item_form_ui"];
-				$with_fks_ui = $_POST["with_fks_ui"];
-				$active_brokers = $_POST["active_brokers"];
-				$active_brokers_folder = $_POST["active_brokers_folder"];
-				$users_perms = $_POST["users_perms"];
-				$users_perms_folder = $_POST["users_perms_folder"];
-				$list_and_edit_users = $_POST["list_and_edit_users"];
+				$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
+				$include_db_driver = isset($_POST["include_db_driver"]) ? $_POST["include_db_driver"] : null;
+				$db_layer = isset($_POST["db_layer"]) ? $_POST["db_layer"] : null;
+				$db_layer_file = isset($_POST["db_layer_file"]) ? $_POST["db_layer_file"] : null;
+				$type = isset($_POST["type"]) ? $_POST["type"] : null;
+				$authenticated_template = isset($_POST["authenticated_template"]) ? $_POST["authenticated_template"] : null;
+				$non_authenticated_template = isset($_POST["non_authenticated_template"]) ? $_POST["non_authenticated_template"] : null;
+				$force_user_action = isset($_POST["force_user_action"]) ? $_POST["force_user_action"] : null;
+				$selected_tables = isset($_POST["st"]) ? $_POST["st"] : null;
+				$selected_tables_alias = isset($_POST["sta"]) ? $_POST["sta"] : null;
+				$overwrite = isset($_POST["overwrite"]) ? $_POST["overwrite"] : null;
+				$with_items_list_ui = isset($_POST["with_items_list_ui"]) ? $_POST["with_items_list_ui"] : null;
+				$with_view_item_ui = isset($_POST["with_view_item_ui"]) ? $_POST["with_view_item_ui"] : null;
+				$with_insert_item_form_ui = isset($_POST["with_insert_item_form_ui"]) ? $_POST["with_insert_item_form_ui"] : null;
+				$with_update_item_form_ui = isset($_POST["with_update_item_form_ui"]) ? $_POST["with_update_item_form_ui"] : null;
+				$with_fks_ui = isset($_POST["with_fks_ui"]) ? $_POST["with_fks_ui"] : null;
+				$active_brokers = isset($_POST["active_brokers"]) ? $_POST["active_brokers"] : null;
+				$active_brokers_folder = isset($_POST["active_brokers_folder"]) ? $_POST["active_brokers_folder"] : null;
+				$users_perms = isset($_POST["users_perms"]) ? $_POST["users_perms"] : null;
+				$users_perms_folder = isset($_POST["users_perms_folder"]) ? $_POST["users_perms_folder"] : null;
+				$list_and_edit_users = isset($_POST["list_and_edit_users"]) ? $_POST["list_and_edit_users"] : null;
 				//echo "<pre>";print_r($active_brokers);die();
 				//echo "<pre>";print_r($users_perms);die();
 				
@@ -90,8 +90,8 @@ if ($path) {
 					$tasks = $WorkFlowDataAccessHandler->getTasks();
 				}
 				else {//TRYING TO GET THE DB TABLES DIRECTLY FROM DB
-					$db_driver_props = $db_drivers[$db_driver];
-					$db_driver_bean_file_name = $db_driver_props[1];
+					$db_driver_props = isset($db_drivers[$db_driver]) ? $db_drivers[$db_driver] : null;
+					$db_driver_bean_file_name = isset($db_driver_props[1]) ? $db_driver_props[1] : null;
 					
 					if ($db_driver_bean_file_name) {
 						$WorkFlowDBHandler = new WorkFlowDBHandler($user_beans_folder_path, $user_global_variables_file_path);
@@ -102,7 +102,7 @@ if ($path) {
 				}
 				//echo "<pre>";print_r($tasks);die();
 				
-				$tasks = $tasks["tasks"];
+				$tasks = isset($tasks["tasks"]) ? $tasks["tasks"] : null;
 				$foreign_keys = $WorkFlowDataAccessHandler->getForeignKeys();
 				//echo "<pre>";print_r($foreign_keys);die();
 				
@@ -123,11 +123,12 @@ if ($path) {
 					
 						if ($table) {
 							foreach ($table as $attr_name => $attr_props) {
-								$fks = $attr_props["fk"];
+								$fks = isset($attr_props["fk"]) ? $attr_props["fk"] : null;
+								
 								if ($fks) {
 									$t2 = count($fks);
 									for ($j = 0; $j < $t2; $j++) {
-										$fk_table = $fks[$j]["table"];
+										$fk_table = isset($fks[$j]["table"]) ? $fks[$j]["table"] : null;
 								
 										if (!in_array($fk_table, $selected_tables)) {
 											$selected_tables[] = $fk_table;
@@ -144,7 +145,7 @@ if ($path) {
 				//PREPARING BROKERS
 				$brokers = $P->getBrokers();
 				foreach ($brokers as $broker_name => $broker)
-					if (!$active_brokers[$broker_name])
+					if (empty($active_brokers[$broker_name]))
 						unset($brokers[$broker_name]);
 				
 				$layer_brokers_settings = WorkFlowBeansFileHandler::getLayerBrokersSettings($user_global_variables_file_path, $user_beans_folder_path, $brokers, '$EVC->getBroker');
@@ -154,20 +155,20 @@ if ($path) {
 				$presentation_brokers[] = array(WorkFlowBeansFileHandler::getLayerNameFromBeanObject($bean_name, $P) . " (Self)", $bean_file_name, $bean_name);
 				$presentation_brokers_obj = array("default" => '$EVC->getPresentationLayer()');
 				
-				$business_logic_brokers = $layer_brokers_settings["business_logic_brokers"];
-				$business_logic_brokers_obj = $layer_brokers_settings["business_logic_brokers_obj"];
+				$business_logic_brokers = isset($layer_brokers_settings["business_logic_brokers"]) ? $layer_brokers_settings["business_logic_brokers"] : null;
+				$business_logic_brokers_obj = isset($layer_brokers_settings["business_logic_brokers_obj"]) ? $layer_brokers_settings["business_logic_brokers_obj"] : null;
 				
-				$data_access_brokers = $layer_brokers_settings["data_access_brokers"];
-				$data_access_brokers_obj = $layer_brokers_settings["data_access_brokers_obj"];
+				$data_access_brokers = isset($layer_brokers_settings["data_access_brokers"]) ? $layer_brokers_settings["data_access_brokers"] : null;
+				$data_access_brokers_obj = isset($layer_brokers_settings["data_access_brokers_obj"]) ? $layer_brokers_settings["data_access_brokers_obj"] : null;
 	
-				$ibatis_brokers = $layer_brokers_settings["ibatis_brokers"];
-				$ibatis_brokers_obj = $layer_brokers_settings["ibatis_brokers_obj"];
+				$ibatis_brokers = isset($layer_brokers_settings["ibatis_brokers"]) ? $layer_brokers_settings["ibatis_brokers"] : null;
+				$ibatis_brokers_obj = isset($layer_brokers_settings["ibatis_brokers_obj"]) ? $layer_brokers_settings["ibatis_brokers_obj"] : null;
 	
-				$hibernate_brokers = $layer_brokers_settings["hibernate_brokers"];
-				$hibernate_brokers_obj = $layer_brokers_settings["hibernate_brokers_obj"];
+				$hibernate_brokers = isset($layer_brokers_settings["hibernate_brokers"]) ? $layer_brokers_settings["hibernate_brokers"] : null;
+				$hibernate_brokers_obj = isset($layer_brokers_settings["hibernate_brokers_obj"]) ? $layer_brokers_settings["hibernate_brokers_obj"] : null;
 				
-				$db_brokers = $layer_brokers_settings["db_brokers"];
-				$db_brokers_obj = $layer_brokers_settings["db_brokers_obj"];
+				$db_brokers = isset($layer_brokers_settings["db_brokers"]) ? $layer_brokers_settings["db_brokers"] : null;
+				$db_brokers_obj = isset($layer_brokers_settings["db_brokers_obj"]) ? $layer_brokers_settings["db_brokers_obj"] : null;
 				
 				//PREPARING TASKS
 				$allowed_tasks = array();
@@ -189,16 +190,16 @@ if ($path) {
 				$WorkFlowTaskHandler->setCacheRootPath(LAYER_CACHE_PATH);
 				$WorkFlowTaskHandler->setAllowedTaskTags($allowed_tasks);
 			}
-			else if ($_POST["step_1"]) {
+			else if (!empty($_POST["step_1"])) {
 				$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 				
-				$db_driver = $_POST["db_driver"];
-				$include_db_driver = $_POST["include_db_driver"];
-				$db_layer = $_POST["db_layer"];
-				$db_layer_file = $_POST["db_layer_file"];
-				$type = $_POST["type"];
-				$authenticated_template = $_POST["authenticated_template"];
-				$force_user_action = $_POST["force_user_action"];
+				$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
+				$include_db_driver = isset($_POST["include_db_driver"]) ? $_POST["include_db_driver"] : null;
+				$db_layer = isset($_POST["db_layer"]) ? $_POST["db_layer"] : null;
+				$db_layer_file = isset($_POST["db_layer_file"]) ? $_POST["db_layer_file"] : null;
+				$type = isset($_POST["type"]) ? $_POST["type"] : null;
+				$authenticated_template = isset($_POST["authenticated_template"]) ? $_POST["authenticated_template"] : null;
+				$force_user_action = isset($_POST["force_user_action"]) ? $_POST["force_user_action"] : null;
 				//echo "<pre>";print_r($_POST);die();
 				
 				//prepare brokers
@@ -211,7 +212,7 @@ if ($path) {
 						$WorkFlowDataAccessHandler->setTasksFilePath($tasks_file_path);
 				
 						$tasks = $WorkFlowDataAccessHandler->getTasks();
-						$tables_name = array_keys($tasks["tasks"]);
+						$tables_name = isset($tasks["tasks"]) ? array_keys($tasks["tasks"]) : array();
 						//print_r($tables_name);
 					}
 					else {//TRYING TO GET THE DB TABLES DIRECTLY FROM DB
@@ -226,7 +227,8 @@ if ($path) {
 							
 							if ($tables)
 								foreach ($tables as $table)
-									$tables_name[] = $table["name"];
+									if (isset($table["name"]))
+										$tables_name[] = $table["name"];
 						}
 					}
 				}
@@ -264,6 +266,8 @@ if ($path) {
 				$available_templates = array_keys($available_templates);
 				
 				//prepare broker_path_to_filter
+				$broker_path_to_filter = null;
+				
 				if ($filter_by_layout) {
 					$layer_folder_name = WorkFlowBeansFileHandler::getLayerObjFolderName($P);
 					$broker_path_to_filter = substr($filter_by_layout, strlen($layer_folder_name) + 1) . "/";
@@ -273,16 +277,17 @@ if ($path) {
 			}
 			else {
 				//get default db driver
-				$default_db_driver = $GLOBALS["default_db_driver"];
+				$default_db_driver = isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null;
+				$db_layer = $db_layer_file = $include_db_driver = null;
 				
 				//prepare selected db driver
 				if ($db_drivers) {
-					$selected_db_driver = $db_drivers[$default_db_driver] ? $default_db_driver : key($db_drivers);
+					$selected_db_driver = !empty($db_drivers[$default_db_driver]) ? $default_db_driver : key($db_drivers);
 					$selected_db_driver_props = $db_drivers[$selected_db_driver];
 					
 					if ($selected_db_driver_props) {
-						$db_layer = $selected_db_driver_props[2];
-						$db_layer_file = $selected_db_driver_props[1];
+						$db_layer = isset($selected_db_driver_props[2]) ? $selected_db_driver_props[2] : null;
+						$db_layer_file = isset($selected_db_driver_props[1]) ? $selected_db_driver_props[1] : null;
 					}
 					
 					$include_db_driver = $selected_db_driver != $default_db_driver;

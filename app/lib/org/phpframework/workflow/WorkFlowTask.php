@@ -22,7 +22,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 	public function cloneTask() {
 		eval ('$WorkFlowTaskClone = new ' . get_class($this) . '();');
 		
-		if (!empty($WorkFlowTaskClone)) {
+		if ($WorkFlowTaskClone) {
 			$WorkFlowTaskClone->setTaskClassInfo( $this->task_class_info );
 			$WorkFlowTaskClone->data = $this->data;
 		}
@@ -476,17 +476,22 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 	
 	public static function createTasksPropertiesFromCodeStmts($stmts, $WorkFlowTaskCodeParser) {
 		if ($stmts) {
+			//print_r($stmts);
 			$tasks_properties = array();
 			$tasks_properties_inner_tasks = array();
+			$undefined_stmts = array();
 			
 			$available_statements = $WorkFlowTaskCodeParser->getAvailableStatements();
 			//print_r($available_statements);die();
-		
-			$undefined_stmts = array();
+			
+			$stmts = $WorkFlowTaskCodeParser->convertStmtsExpressionToSimpleStmts($stmts);
+			//print_r($stmts);
+			
 			foreach ($stmts as $stmt) {
 				$stmt_type = strtolower($stmt->getType());
 				//echo "stmt_type:$stmt_type\n";
 				$tasks = isset($available_statements[$stmt_type]) ? $available_statements[$stmt_type] : null;
+				//print_r($available_statements);
 				
 				$exists = false;
 				
@@ -535,18 +540,19 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 			$t = count($tasks_properties);
 			for ($i = 0; $i < $t; $i++) {
 				$current_task = $tasks_properties[$i];
-				$inner_tasks = $tasks_properties_inner_tasks[$i];
+				$inner_tasks = isset($tasks_properties_inner_tasks[$i]) ? $tasks_properties_inner_tasks[$i] : null;
 				
 				//GET NEXT TASK
 				do {
 					$i++;
-					$next_task = $tasks_properties[$i];
+					$next_task = isset($tasks_properties[$i]) ? $tasks_properties[$i] : null;
 					
 					if (isset($next_task["type"]) && $next_task["type"] == self::CONNECTOR_TASK_TYPE) {
-						$next_inner_tasks = $tasks_properties_inner_tasks[$i];
-						$next_task = !empty($next_inner_tasks[0]["type"]) ? $next_inner_tasks[0] : $next_inner_tasks[0][0];
+						$next_inner_tasks = isset($tasks_properties_inner_tasks[$i]) ? $tasks_properties_inner_tasks[$i] : null;
+						$next_task = !empty($next_inner_tasks[0]["type"]) ? $next_inner_tasks[0] : (isset($next_inner_tasks[0][0]) ? $next_inner_tasks[0][0] : null);
 					}
 				} while (!$next_task && $i < $t - 1);
+				
 				$i--;
 				
 				//echo $current_task["tag"]."->".$next_task["tag"]."\n";
@@ -610,7 +616,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 	}
 	
 	protected static function prepareTaskPropertyValueLabelFromCodeStmt($value) {
-		return substr($value, 0, 1) == '$' ? substr($value, 1) : $value;
+		return substr($value, 0, 1) == '$' ? substr($value, 1) : (substr($value, 0, 2) == '@$' ? substr($value, 2) : $value);
 	}
 	
 	public static function getTaskType($task_data) {
@@ -669,7 +675,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 			foreach ($includes as $include) {
 				$new_includes[] = array(
 					"type" => isset($include["@"]["type"]) ? $include["@"]["type"] : "",
-					"include" => $include["value"],
+					"include" => isset($include["value"]) ? $include["value"] : null,
 				);
 			}
 		}
@@ -796,7 +802,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 		$v = trim($variable);
 		
 		if ($type == "variable" && $v)
-			return (substr($v, 0, 1) != '$' ? '$' : '') . $v;
+			return (substr($v, 0, 1) != '$' && substr($v, 0, 2) != '@$' ? '$' : '') . $v;
 		else if ($type == "string" || $type == "date") {
 			/*
 			 * 2021-10-30: All comments below were copied from app/lib/org/phpframework/phpscript/PHPUICodeExpressionHandler::getArgumentCode.
@@ -869,7 +875,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 			
 			$operator = self::getVariableAssignmentOperator($var_assignment);
 			
-			return (substr($var_name, 0, 1) != '$' ? '$' : '') . $var_name . ($show_operator ? " $operator " : "");
+			return (substr($var_name, 0, 1) != '$' && substr($var_name, 0, 2) != '@$' ? '$' : '') . $var_name . ($show_operator ? " $operator " : "");
 		}
 		else if ( (isset($type) && $type == "obj_prop") || (!isset($type) && $obj_name && $prop_name) ) {
 			if (empty($obj_name) || empty($prop_name)) {
@@ -879,10 +885,10 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 			$operator = self::getVariableAssignmentOperator($prop_assignment);
 			
 			if ($static) {
-				return $obj_name . '::' . (substr($prop_name, 0, 1) != '$' ? '$' : '') . $prop_name . ($show_operator ? " $operator " : "");
+				return $obj_name . '::' . (substr($prop_name, 0, 1) != '$' && substr($prop_name, 0, 2) != '@$' ? '$' : '') . $prop_name . ($show_operator ? " $operator " : "");
 			}
 			else {
-				return (substr($obj_name, 0, 1) != '$' ? '$' : '') . $obj_name . '->' . $prop_name . ($show_operator ? " $operator " : "");
+				return (substr($obj_name, 0, 1) != '$' && substr($obj_name, 0, 2) != '@$' ? '$' : '') . $obj_name . '->' . $prop_name . ($show_operator ? " $operator " : "");
 			}
 		}
 		else if (!empty($echo)) {

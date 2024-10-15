@@ -7,11 +7,11 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$hbn_obj_id = $_GET["obj"];//this is only used to create automatically a specific object.
-$filter_by_layout = $_GET["filter_by_layout"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$hbn_obj_id = isset($_GET["obj"]) ? $_GET["obj"] : null;//this is only used to create automatically a specific object.
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -29,20 +29,20 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 	
 	$LayoutTypeProjectHandler = new LayoutTypeProjectHandler($UserAuthenticationHandler, $user_global_variables_file_path, $user_beans_folder_path, $bean_file_name, $bean_name);
 	
-	if ($_POST["step_2"]) {
+	if (!empty($_POST["step_2"])) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 		UserAuthenticationHandler::checkUsersMaxNum($UserAuthenticationHandler);
 		UserAuthenticationHandler::checkActionsMaxNum($UserAuthenticationHandler);
 		
 		//echo "<pre>";print_r($_POST);die();
-		$db_broker = $_POST["db_broker"];
-		$db_driver = $_POST["db_driver"];
-		$type = $_POST["type"];
-		$selected_tables = $_POST["st"];
-		$selected_tables_alias = $_POST["sta"];
-		$overwrite = $_POST["overwrite"];
-		$with_maps = $_POST["with_maps"] == "true" || $_POST["with_maps"] == "1";
-		$json = $_POST["json"];
+		$db_broker = isset($_POST["db_broker"]) ? $_POST["db_broker"] : null;
+		$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
+		$type = isset($_POST["type"]) ? $_POST["type"] : null;
+		$selected_tables = isset($_POST["st"]) ? $_POST["st"] : null;
+		$selected_tables_alias = isset($_POST["sta"]) ? $_POST["sta"] : null;
+		$overwrite = isset($_POST["overwrite"]) ? $_POST["overwrite"] : null;
+		$with_maps = isset($_POST["with_maps"]) && ($_POST["with_maps"] == "true" || $_POST["with_maps"] == "1");
+		$json = isset($_POST["json"]) ? $_POST["json"] : null;
 		
 		$selected_tables = is_array($selected_tables) ? $selected_tables : array();
 		
@@ -74,7 +74,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 				for ($i = 0; $i < $t; $i++) {
 					$table = $tables[$i];
 		
-					if (!empty($table)) {
+					if (!empty($table) && isset($table["name"])) {
 						$attrs = $obj->getBroker($db_broker)->getFunction("listTableFields", $table["name"], array("db_driver" => $db_driver));
 						$fks = $obj->getBroker($db_broker)->getFunction("listForeignKeys", $table["name"], array("db_driver" => $db_driver));
 			
@@ -87,13 +87,13 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 			}
 			
 			if ($selected_tables_alias) {
-				$tasks = $WorkFlowDataAccessHandler->getTasks($tasks);
+				$tasks = $WorkFlowDataAccessHandler->getTasks();
 				
 				foreach ($selected_tables_alias as $table_name => $table_alias) {
 					$table_alias = trim($table_alias);
-					$task_table_name = WorkFlowDBHandler::getTableTaskRealNameFromTasks($tasks["tasks"], $table_name);
+					$task_table_name = isset($tasks["tasks"]) ? WorkFlowDBHandler::getTableTaskRealNameFromTasks($tasks["tasks"], $table_name) : null;
 					
-					if ($table_alias && $tasks["tasks"][$task_table_name])
+					if ($table_alias && $task_table_name && !empty($tasks["tasks"][$task_table_name]))
 						$tasks["tasks"][$task_table_name]["alias"] = trim($table_alias);
 				}
 				
@@ -103,7 +103,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 			$t = count($selected_tables);
 			for ($i = 0; $i < $t; $i++) {
 				$table_name = $selected_tables[$i];
-				$table_alias = $selected_tables_alias[$table_name];
+				$table_alias = isset($selected_tables_alias[$table_name]) ? $selected_tables_alias[$table_name] : null;
 				
 				if (is_file($folder_path))
 					$file_path = $folder_path;
@@ -115,7 +115,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 				else if (!$overwrite)
 					while (file_exists($file_path)) {
 						$path_info = pathinfo($file_path);
-						$file_path = $path_info["dirname"] . "/" . $path_info["filename"] . "_" . rand(0, 100) . "." . $path_info["extension"];
+						$file_path = $path_info["dirname"] . "/" . $path_info["filename"] . "_" . rand(0, 100) . "." . (isset($path_info["extension"]) ? $path_info["extension"] : "");
 					}
 				
 				if ($obj->getType() == "hibernate")
@@ -135,12 +135,12 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 			die();
 		}
 	}
-	else if ($_POST["step_1"]) {
+	else if (!empty($_POST["step_1"])) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 
-		$db_broker = $_POST["db_broker"];
-		$db_driver = $_POST["db_driver"];
-		$type = $_POST["type"];
+		$db_broker = isset($_POST["db_broker"]) ? $_POST["db_broker"] : null;
+		$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
+		$type = isset($_POST["type"]) ? $_POST["type"] : null;
 		
 		if ($db_driver) {
 			if ($type == "diagram") {//TRYING TO GET THE DB TABLES FROM THE TASK FLOW
@@ -149,7 +149,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 				$WorkFlowDataAccessHandler->setTasksFilePath($tasks_file_path);
 				
 				$tasks = $WorkFlowDataAccessHandler->getTasks();
-				$tables_name = $tasks["tasks"] ? array_keys($tasks["tasks"]) : array();
+				$tables_name = !empty($tasks["tasks"]) ? array_keys($tasks["tasks"]) : array();
 				//print_r($tables_name);
 			}
 			else {//TRYING TO GET THE DB TABLES DIRECTLY FROM DB
@@ -157,9 +157,9 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 					$tables = $obj->getBroker($db_broker)->getFunction("listTables", null, array("db_driver" => $db_driver));
 					$tables_name = array();
 					if ($tables)
-						foreach ($tables as $table) {
-							$tables_name[] = $table["name"];
-						}
+						foreach ($tables as $table)
+							if (isset($table["name"]))
+								$tables_name[] = $table["name"];
 				}
 			}
 		}
@@ -178,7 +178,7 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 				
 				if (empty($selected_db_driver)) {
 					$selected_db_broker = $broker_name;
-					$selected_db_driver = $db_drivers[$broker_name][0];
+					$selected_db_driver = isset($db_drivers[$broker_name][0]) ? $db_drivers[$broker_name][0] : null;
 				}
 			}
 		}

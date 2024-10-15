@@ -4,15 +4,16 @@ include_once get_lib("org.phpframework.phpscript.PHPCodePrintingHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$type = $_GET["type"];
-$class_name = $_GET["class_name"];
-$method_id = $_GET["method"];
-$function_id = $_GET["function"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
+$class_name = isset($_GET["class_name"]) ? $_GET["class_name"] : null;
+$method_id = isset($_GET["method"]) ? $_GET["method"] : null;
+$function_id = isset($_GET["function"]) ? $_GET["function"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
+$pre_init_config_file_path = null;
 
 if ($bean_name == "dao") {
 	$UserAuthenticationHandler->checkInnerFilePermissionAuthentication("vendor/dao/$path", "layer", "access");
@@ -58,7 +59,7 @@ else {
 		
 		if ($item_type == "business_logic") {
 			$bean_objs = $obj->getPHPFrameWork()->getObjects();
-			$vars = is_array($bean_objs["vars"]) ? array_merge($bean_objs["vars"], $obj->settings) : $obj->settings;
+			$vars = isset($bean_objs["vars"]) && is_array($bean_objs["vars"]) ? array_merge($bean_objs["vars"], $obj->settings) : $obj->settings;
 			$vars["current_business_logic_module_path"] = $file_path;
 			$vars["current_business_logic_module_id"] = substr($path, 0, strlen($path) - 4);//remove ".php"
 			//$vars["current_business_logic_module_id"] = str_replace("/", ".", $vars["current_business_logic_module_id"]); //2021-01-17 JP: Or it could be this code. It doesn't really matter. Even if there are folders with "." in the names, the system detects it. The module_id with "/" is faster before cache happens, but after the first call for this module, it doesn't really matter anymore bc the module_path is cached with the correspondent module_id.
@@ -69,9 +70,9 @@ else {
 $PHPVariablesFileHandler = new PHPVariablesFileHandler(array($user_global_variables_file_path, $pre_init_config_file_path));
 $PHPVariablesFileHandler->startUserGlobalVariables();
 
-if ($path && $file_path && file_exists($file_path)) {
+if ($path && !empty($file_path) && file_exists($file_path)) {
 	//in case the $file_path has another include inside, like: $EVC->getModulePath("user/UserUtil");
-	if ($PEVC) {
+	if (!empty($PEVC)) {
 		$OLD_EVC = $EVC;
 		$EVC = $PEVC;
 	}
@@ -134,11 +135,11 @@ if ($path && $file_path && file_exists($file_path)) {
 			include_once $file_path;
 			
 			$functions = PHPCodePrintingHandler::getPHPClassesFromFile($file_path);
-			$functions = is_array($functions[0]["methods"]) ? $functions[0]["methods"] : array();
+			$functions = isset($functions[0]["methods"]) && is_array($functions[0]["methods"]) ? $functions[0]["methods"] : array();
 			
 			$props = array();
 			foreach ($functions as $func) {
-				$name = $func["name"];
+				$name = isset($func["name"]) ? $func["name"] : null;
 				
 				$reflect = new ReflectionFunction($name);
 				$comments = $reflect->getDocComment();
@@ -174,7 +175,7 @@ if ($path && $file_path && file_exists($file_path)) {
 				
 				//get params from docbook if file is from lib. This is very usefull bc if the lib is encrypted the params name will be encrypted too, so we must return the original name.
 				if ($bean_name == "lib") {
-					$SYSTEM_EVC = $OLD_EVC ? $OLD_EVC : $EVC;
+					$SYSTEM_EVC = !empty($OLD_EVC) ? $OLD_EVC : $EVC;
 					$docbook_file_path = $SYSTEM_EVC->getEntitiesPath() . "docbook/files" . substr($file_path, strlen( dirname(LIB_PATH) )) . ".ser";
 					
 					if (file_exists($docbook_file_path)) {
@@ -182,9 +183,9 @@ if ($path && $file_path && file_exists($file_path)) {
 						
 						if ($file_properties) {
 							if ($class_name && $method_id)
-								$docbook_params = $file_properties[$class_name]["methods"][$method_id]["arguments"];
+								$docbook_params = isset($file_properties[$class_name]["methods"][$method_id]["arguments"]) ? $file_properties[$class_name]["methods"][$method_id]["arguments"] : null;
 							else
-								$docbook_params = $file_properties[0]["methods"][$function_id]["arguments"];
+								$docbook_params = isset($file_properties[0]["methods"][$function_id]["arguments"]) ? $file_properties[0]["methods"][$function_id]["arguments"] : null;
 							
 							if ($docbook_params)
 								$docbook_params = array_keys($docbook_params);
@@ -198,7 +199,7 @@ if ($path && $file_path && file_exists($file_path)) {
 					);
 					
 					//if the lib is encrypted the param name will be encrypted too, so we must return the original name.
-					if ($docbook_params && $docbook_params[$i])
+					if ($docbook_params && !empty($docbook_params[$i]))
 						$item["name"] = substr($docbook_params[$i], 0, 1) == '$' ? substr($docbook_params[$i], 1) : $docbook_params[$i];
 					
 					if ($param->isDefaultValueAvailable()) {
@@ -221,7 +222,7 @@ if ($path && $file_path && file_exists($file_path)) {
 							$value = $value ? "true" : "false";
 						}
 						else {
-							$type = substr($value, 0, 1) == "$" && strpos($value, " ") === false ? "variable" : (!isset($value) ? "" : "string");
+							$type = (substr($value, 0, 1) == '$' || substr($value, 0, 2) == '@$') && strpos($value, " ") === false ? "variable" : (!isset($value) ? "" : "string");
 						}
 						
 						$item["value"] = $value;
@@ -234,7 +235,7 @@ if ($path && $file_path && file_exists($file_path)) {
 			break;
 	}
 	
-	if ($PEVC)
+	if (!empty($PEVC))
 		$EVC = $OLD_EVC;
 }
 

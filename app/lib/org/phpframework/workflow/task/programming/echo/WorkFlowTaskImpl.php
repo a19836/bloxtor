@@ -9,15 +9,15 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$stmt_type = strtolower($stmt->getType());
 		
 		if ($stmt_type == "stmt_echo") {
-			$exprs = $stmt->exprs;
+			$exprs = isset($stmt->exprs) ? $stmt->exprs : null;
 			
 			$code = "";
 			$type = "";
 			
 			if ($exprs) {
 				if (count($exprs) == 1) {
-					$expr = $exprs[0];
-					$expr_type = strtolower($expr->getType());
+					$expr = isset($exprs[0]) ? $exprs[0] : null;
+					$expr_type = $expr ? strtolower($expr->getType()) : "";
 					
 					if (!$WorkFlowTaskCodeParser->isAssignExpr($expr) && ($expr_type == "expr_funccall" || $expr_type == "expr_methodcall" || $expr_type == "expr_staticcall" || $expr_type == "expr_new" || $expr_type == "expr_array")) {
 						return null;
@@ -52,26 +52,28 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"value" => $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"],
-			"type" => $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"],
+			"value" => isset($raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"] : null,
+			"type" => isset($raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["type"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$value = self::getVariableValueCode($properties["value"], $properties["type"]);
+		$value = isset($properties["value"]) ? $properties["value"] : null;
+		$value = self::getVariableValueCode($value, isset($properties["type"]) ? $properties["type"] : null);
 		
 		$code = $value ? $prefix_tab . "echo $value;\n" : "";
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

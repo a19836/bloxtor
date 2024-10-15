@@ -1,7 +1,7 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "delete");
 
-if ($_GET["map"] && $_GET["query_type"]) {
+if (!empty($_GET["map"]) && !empty($_GET["query_type"])) {
 	$file_type = "save_map";
 	$_POST["object"] = array();
 	$_POST["overwrite"] = 1;

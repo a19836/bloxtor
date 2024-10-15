@@ -8,20 +8,20 @@ include_once get_lib("org.phpframework.compression.ZipHandler");
 
 class CMSProgramInstallationHandler extends CMSProgramExtraTableInstallationUtil implements ICMSProgramInstallationHandler {
 	protected $EVC;
-	protected $user_global_variables_file_path;
+	//protected $user_global_variables_file_path;
 	protected $user_beans_folder_path;
 	protected $workflow_paths_id;
 	protected $layer_beans_settings;
 	protected $layers;
-	protected $db_drivers;
+	//protected $db_drivers;
 	protected $layers_brokers_settings;
 	protected $vendors;
 	protected $projects;
-	protected $projects_evcs;
-	protected $program_id;
-	protected $unzipped_program_path;
-	protected $user_settings;
-	protected $UserAuthenticationHandler;
+	//protected $projects_evcs;
+	//protected $program_id;
+	//protected $unzipped_program_path;
+	//protected $user_settings;
+	//protected $UserAuthenticationHandler;
 	protected $program_path;
 	
 	protected $presentation_program_paths;
@@ -31,14 +31,14 @@ class CMSProgramInstallationHandler extends CMSProgramExtraTableInstallationUtil
 	protected $hibernate_program_paths;
 	protected $dao_program_path;
 	
-	protected $presentation_modules_paths;
-	protected $business_logic_modules_paths;
-	protected $ibatis_modules_paths;
-	protected $hibernate_modules_paths;
+	//protected $presentation_modules_paths;
+	//protected $business_logic_modules_paths;
+	//protected $ibatis_modules_paths;
+	//protected $hibernate_modules_paths;
 	
 	protected $reserved_files; //This is initialized in each program CMSProgramInstallationHandler class
-	protected $messages;
-	protected $errors;
+	//protected $messages;
+	//protected $errors;
 	
 	public function __construct($EVC, $user_global_variables_file_path, $user_beans_folder_path, $workflow_paths_id, $layer_beans_settings, $layers, $db_drivers, $layers_brokers_settings, $vendors, $projects, $projects_evcs, $program_id, $unzipped_program_path, $user_settings, $UserAuthenticationHandler = null) {
 		$this->EVC = $EVC;
@@ -305,30 +305,6 @@ class CMSProgramInstallationHandler extends CMSProgramExtraTableInstallationUtil
 		return empty($this->errors);
 	}
 	
-	/* MESSAGES FUNCTIONS */
-	
-	public function addMessage($message) {
-		return $this->messages[] = $message;
-	}
-	
-	public function getMessages() {
-		return $this->messages;
-	}
-	
-	public function existsMessage($message) {
-		return in_array($message, $this->messages);
-	}
-	
-	/* ERRORS FUNCTIONS */
-	
-	public function addError($error) {
-		return $this->errors[] = $error;
-	}
-	
-	public function getErrors() {
-		return $this->errors;
-	}
-	
 	/* OTHER FUNCTIONS */
 	
 	public static function getTmpRootFolderPath() {
@@ -427,10 +403,6 @@ class CMSProgramInstallationHandler extends CMSProgramExtraTableInstallationUtil
 	
 	/* DBS FUNCTIONS */
 	
-	protected function existsDBs() {
-		return count($this->db_drivers);
-	}
-	
 	protected function setDBsData($sql, &$statuses = null) {
 		$status = true;
 		
@@ -445,10 +417,10 @@ class CMSProgramInstallationHandler extends CMSProgramExtraTableInstallationUtil
 				catch(Exception $e) {
 					$s = false;
 					
-					if (!$this->errors["dbs"])
+					if (empty($this->errors["dbs"]))
 						$this->errors["dbs"] = array();
 					
-					$this->errors["dbs"][] = ($e->problem ? $e->problem : "") . $e->getMessage();
+					$this->errors["dbs"][] = (!empty($e->problem) ? $e->problem : "") . $e->getMessage();
 				}
 				
 				$statuses[] = $s;
@@ -476,10 +448,10 @@ class CMSProgramInstallationHandler extends CMSProgramExtraTableInstallationUtil
 					$results[] = $db_driver->getData($sql);
 				}
 				catch(Exception $e) {
-					if (!$this->errors["dbs"])
+					if (empty($this->errors["dbs"]))
 						$this->errors["dbs"] = array();
 					
-					$this->errors["dbs"][] = ($e->problem ? $e->problem : "") . $e->getMessage();
+					$this->errors["dbs"][] = (!empty($e->problem) ? $e->problem : "") . $e->getMessage();
 				}
 			}
 		}
@@ -1058,22 +1030,6 @@ class CMSProgramInstallationHandler extends CMSProgramExtraTableInstallationUtil
 		return $status;
 	}
 	
-	protected function getFolderPagesList($abs_path, $rel_path = "") {
-		$pages = array();
-		$files = array_diff(scandir($abs_path), array('..', '.'));
-		
-		foreach ($files as $f) {
-			$fp = $abs_path . $f;
-			
-			if (is_dir($fp))
-				$pages = array_merge($pages, $this->getFolderPagesList($abs_path . $f . "/", $rel_path . $f . "/"));
-			else
-				$pages[] = $rel_path . $f;
-		}
-		
-		return $pages;
-	}
-	
 	/*
 		$files_diagram_by_page = array("article_group" => "files_diagram/article_group.xml");
 		
@@ -1088,7 +1044,7 @@ class CMSProgramInstallationHandler extends CMSProgramExtraTableInstallationUtil
 		if ($this->presentation_program_paths && $files_diagram_by_page) {
 			foreach ($this->layers as $broker_name => $Layer)
 				if (is_a($Layer, "PresentationLayer")) {
-					$layer_bean_settings = $this->layer_beans_settings[$broker_name];
+					$layer_bean_settings = isset($this->layer_beans_settings[$broker_name]) ? $this->layer_beans_settings[$broker_name] : null;
 					$layer_bean_name = $layer_bean_settings && isset($layer_bean_settings[2]) ? $layer_bean_settings[2] : null;
 					
 					if ($layer_bean_name && $this->projects && !empty($this->projects[$broker_name]))
@@ -1153,8 +1109,12 @@ class CMSProgramInstallationHandler extends CMSProgramExtraTableInstallationUtil
 					if ($layer_type == "PresentationLayer") {
 						if ($this->projects && !empty($this->projects[$broker_name]))
 							foreach ($this->projects[$broker_name] as $project) {
-								if ($webroot) 
+								if ($webroot) {
+									if (empty($Layer->settings["presentation_webroot_path"]))
+										launch_exception(new Exception("\$Layer->settings[presentation_webroot_path] cannot be empty!"));
+									
 									$paths[] = $Layer->getLayerPathSetting() . $project . "/" . $Layer->settings["presentation_webroot_path"];
+								}
 								else
 									$paths[] = $Layer->getLayerPathSetting() . $project . "/";
 							}

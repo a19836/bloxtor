@@ -246,7 +246,7 @@ class MyArray {
 		
 		$var = strtolower(trim($variable));
 		
-		if (substr($var, 0, 1) == '$') 
+		if (substr($var, 0, 1) == '$' || substr($var, 0, 2) == '@$') 
 			return $variable;
 		else if (is_numeric($var))
 			return $variable;

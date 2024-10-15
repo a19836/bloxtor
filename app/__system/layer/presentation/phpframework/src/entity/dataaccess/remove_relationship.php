@@ -1,7 +1,7 @@
 <?php
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "delete");
 
-if ($_GET["query_id"] && $_GET["query_type"]) {
+if (!empty($_GET["query_id"]) && !empty($_GET["query_type"])) {
 	$file_type = "save_relationship";
 	$_POST["object"] = array();
 	$_POST["overwrite"] = 1;

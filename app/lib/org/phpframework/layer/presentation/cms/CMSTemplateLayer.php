@@ -105,16 +105,27 @@ class CMSTemplateLayer {
 		
 		$this->rendered_regions[$region_id] = true;
 		
-		$region_blocks = isset($this->regions[$region_id]) ? $this->regions[$region_id] : null;
+		$region_components = isset($this->regions[$region_id]) ? $this->regions[$region_id] : null;
+		$region_blocks_index = array();
+		$region_views_index = array();
 		
-		if (is_array($region_blocks))
-			foreach ($region_blocks as $block) {
-				$bt = isset($block[0]) ? $block[0] : null;
-				$b = isset($block[1]) ? $block[1] : null;
+		if (is_array($region_components))
+			foreach ($region_components as $component) {
+				$bt = isset($component[0]) ? $component[0] : null;
+				$b = isset($component[1]) ? $component[1] : null;
 				
-				$html .= $bt == 1 ? $b : (
-					$bt == 3 ? $this->CMSLayer->getCMSViewLayer()->getView($b) : $this->CMSLayer->getCMSBlockLayer()->getBlock($b)
-				);
+				if ($bt == 1)
+					$html .= $b;
+				else if ($bt == 3) {
+					$region_views_index[$b] = isset($region_views_index[$b]) ? $region_views_index[$b] + 1 : 0;
+					
+					$html .= $this->CMSLayer->getCMSViewLayer()->getView($b, $region_views_index[$b]);
+				}
+				else {
+					$region_blocks_index[$b] = isset($region_blocks_index[$b]) ? $region_blocks_index[$b] + 1 : 0;
+					
+					$html .= $this->CMSLayer->getCMSBlockLayer()->getBlock($b, $region_blocks_index[$b]);
+				}
 			}
 		
 		//parse html if apply and page properties allow it

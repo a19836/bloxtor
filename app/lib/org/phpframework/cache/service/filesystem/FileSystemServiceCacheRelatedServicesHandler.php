@@ -290,6 +290,7 @@ class FileSystemServiceCacheRelatedServicesHandler extends ServiceCacheRelatedSe
 	
 	public function getRegistrationKeyStatus($prefix, $key, $type) {
 		$status_file_path = $this->getRegistrationKeyStatusFilePath($prefix, $key, $type);
+		$cont = null;
 		
 		if($this->CacheHandler->getCacheFileHandler()->exists($status_file_path)) {
 			$cont = $this->CacheHandler->getCacheFileHandler()->getContent($status_file_path);

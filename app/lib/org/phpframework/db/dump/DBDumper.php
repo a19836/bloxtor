@@ -68,20 +68,26 @@ abstract class DBDumper implements IDBDumper {
 	
 	public function escapeTableAttributeAlias($alias) {
 		$delimiters = $this->DBDumperHandler->getDBDriver()->getAliasEnclosingDelimiters();
+		$delimiter_begin = isset($delimiters[0]) ? $delimiters[0] : null;
+		$delimiter_end = isset($delimiters[1]) ? $delimiters[1] : null;
 		
-		return $delimiters[0] . $alias . $delimiters[1];
+		return $delimiter_begin . $alias . $delimiter_end;
 	}
 	
 	public function escapeTable($table_name) {
 		$delimiters = $this->DBDumperHandler->getDBDriver()->getEnclosingDelimiters();
+		$delimiter_begin = isset($delimiters[0]) ? $delimiters[0] : null;
+		$delimiter_end = isset($delimiters[1]) ? $delimiters[1] : null;
 		
-		return $delimiters[0] . $table_name . $delimiters[1];
+		return $delimiter_begin . $table_name . $delimiter_end;
 	}
 
 	public function escapeTableAttribute($attr_name, $table_name = false) {
 		$delimiters = $this->DBDumperHandler->getDBDriver()->getEnclosingDelimiters();
+		$delimiter_begin = isset($delimiters[0]) ? $delimiters[0] : null;
+		$delimiter_end = isset($delimiters[1]) ? $delimiters[1] : null;
 		
-		return $table_name ? $delimiters[0] . $table_name . $delimiters[1] . "." . $delimiters[0] . $attr_name . $delimiters[1] : $delimiters[0] . $attr_name . $delimiters[1];
+		return $table_name ? $delimiter_begin . $table_name . $delimiter_end . "." . $delimiter_begin . $attr_name . $delimiter_end : $delimiter_begin . $attr_name . $delimiter_end;
 	}
 
 	/* Public util functions */

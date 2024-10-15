@@ -49,8 +49,8 @@ class BeanXMLParser {
 								
 								if (!empty($bean["path"]) && empty($bean["path_prefix"])) {
 									$lib_settings = get_lib_settings($bean["path"]);
-									$bean["path_prefix"] = $lib_settings[0];
-									$bean["path"] = $lib_settings[1];
+									$bean["path_prefix"] = isset($lib_settings[0]) ? $lib_settings[0] : null;
+									$bean["path"] = isset($lib_settings[1]) ? $lib_settings[1] : null;
 								}
 						
 								if(isset($bean["extend"]))

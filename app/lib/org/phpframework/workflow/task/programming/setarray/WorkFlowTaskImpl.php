@@ -8,16 +8,17 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	public function createTaskPropertiesFromCodeStmt($stmt, $WorkFlowTaskCodeParser, &$exits = null, &$inner_tasks = null) {
 		$stmt_type = strtolower($stmt->getType());
 		
-		if ($WorkFlowTaskCodeParser->isAssignExpr($stmt) || ($stmt_type == "stmt_echo" && count($stmt->exprs) == 1 && !$WorkFlowTaskCodeParser->isAssignExpr($stmt->exprs[0]))) {
+		if ($WorkFlowTaskCodeParser->isAssignExpr($stmt) || ($stmt_type == "stmt_echo" && isset($stmt->exprs) && count($stmt->exprs) == 1 && !$WorkFlowTaskCodeParser->isAssignExpr($stmt->exprs[0]))) {
 			//print_r($stmt);
-			$expr = $stmt_type == "stmt_echo" ? $stmt->exprs[0] : $stmt->expr;
-			$expr_type = strtolower($expr->getType());
+			$expr = $stmt_type == "stmt_echo" ? $stmt->exprs[0] : (isset($stmt->expr) ? $stmt->expr : null);
+			$expr_type = $expr ? strtolower($expr->getType()) : "";
 			
 			if ($expr_type == "expr_array") {
 				$props = $WorkFlowTaskCodeParser->getVariableNameProps($stmt);
 				$props = $props ? $props : array();
 				
-				$props["items"] = $WorkFlowTaskCodeParser->getArrayItems($expr->items);
+				$items = isset($expr->items) ? $expr->items : null;
+				$props["items"] = $WorkFlowTaskCodeParser->getArrayItems($items);
 				
 				$props["label"] = "Init " . $this->getPropertiesResultVariableCode($props, false);
 				
@@ -31,8 +32,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			}
 		}
 		else if ($stmt_type == "EXPR_array") {
+			$items = isset($stmt->items) ? $stmt->items : null;
 			$props = array(
-				"items" => $WorkFlowTaskCodeParser->getArrayItems($stmt->items),
+				"items" => $WorkFlowTaskCodeParser->getArrayItems($items),
 				"exits" => array(
 					self::DEFAULT_EXIT_ID => array(
 						"color" => "#426efa",
@@ -45,11 +47,11 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = self::parseResultVariableProperties($raw_data);
 		
-		$items = $raw_data["childs"]["properties"][0]["childs"]["items"];
+		$items = isset($raw_data["childs"]["properties"][0]["childs"]["items"]) ? $raw_data["childs"]["properties"][0]["childs"]["items"] : null;
 		$items = self::parseArrayItems($items);
 		$properties["items"] = $items;
 		
@@ -57,15 +59,17 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$var_name = self::getPropertiesResultVariableCode($properties);
 		
-		$code = $prefix_tab . $var_name . ltrim(self::getArrayString($properties["items"], $prefix_tab)) . ";\n";
+		$items = isset($properties["items"]) ? $properties["items"] : null;
+		$code = $prefix_tab . $var_name . ltrim(self::getArrayString($items, $prefix_tab)) . ";\n";
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

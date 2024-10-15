@@ -1,7 +1,7 @@
 <?php
 include $EVC->getViewPath("presentation/create_presentation_uis_diagram");
 
-if ($new_path) {
+if (!empty($new_path)) {
 	$page_name = $db_table . "_" . $task_tag . ($task_tag_action ? "_" . implode("_", $task_tag_action) : "");
 	
 	$head .= '

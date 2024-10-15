@@ -57,7 +57,7 @@ if ($layers_projects) {
 
 	foreach ($layers_projects as $bean_name => $layer_props) {
 		$main_content .= '
-				<option bean_name="' . $bean_name . '" bean_file_name="' . $layer_props["bean_file_name"] . '" layer_bean_folder_name="' . $layer_props["layer_bean_folder_name"] . '">' . $layer_props["item_label"] . '</option>';
+				<option bean_name="' . $bean_name . '" bean_file_name="' . (isset($layer_props["bean_file_name"]) ? $layer_props["bean_file_name"] : "") . '" layer_bean_folder_name="' . (isset($layer_props["layer_bean_folder_name"]) ? $layer_props["layer_bean_folder_name"] : "") . '">' . (isset($layer_props["item_label"]) ? $layer_props["item_label"] : "") . '</option>';
 	}
 	
 	$main_content .= '

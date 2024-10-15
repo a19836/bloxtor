@@ -22,48 +22,40 @@ abstract class TestUnit implements ITestUnit {
 				if (is_a($obj, "ILayer")) {
 					if (is_a($obj, "DBLayer")) {
 						$name = substr($bean_name, - strlen("DBLayer")) == "DBLayer" ? substr($bean_name, 0, strlen($bean_name) - strlen("DBLayer")) : $bean_name;
-						$name = WorkFlowBeansConverter::getBrokerNameFromRawLabel($name);
+						$name = self::getBrokerNameFromRawLabel($name);
 						$this->setLayerObject("db_layers", $name, $obj);
 					}
 					else if (is_a($obj, "IbatisDataAccessLayer")) {
 						$name = substr($bean_name, - strlen("IDALayer")) == "IDALayer" ? substr($bean_name, 0, strlen($bean_name) - strlen("IDALayer")) : $bean_name;
-						$name = WorkFlowBeansConverter::getBrokerNameFromRawLabel($name);
+						$name = self::getBrokerNameFromRawLabel($name);
 						$this->setLayerObject("ibatis_layers", $name, $obj);
 					}
 					else if (is_a($obj, "HibernateDataAccessLayer")) {
 						$name = substr($bean_name, - strlen("HDALayer")) == "HDALayer" ? substr($bean_name, 0, strlen($bean_name) - strlen("HDALayer")) : $bean_name;
-						$name = WorkFlowBeansConverter::getBrokerNameFromRawLabel($name);
+						$name = self::getBrokerNameFromRawLabel($name);
 						$this->setLayerObject("hibernate_layers", $name, $obj);
 					}
 					else if (is_a($obj, "BusinessLogicLayer")) {
 						$name = substr($bean_name, - strlen("BLLayer")) == "BLLayer" ? substr($bean_name, 0, strlen($bean_name) - strlen("BLLayer")) : $bean_name;
-						$name = WorkFlowBeansConverter::getBrokerNameFromRawLabel($name);
+						$name = self::getBrokerNameFromRawLabel($name);
 						$this->setLayerObject("business_logic_layers", $name, $obj);
 					}
 					else if (is_a($obj, "PresentationLayer")) {
 						$name = substr($bean_name, - strlen("PLayer")) == "PLayer" ? substr($bean_name, 0, strlen($bean_name) - strlen("PLayer")) : $bean_name;
-						$name = WorkFlowBeansConverter::getBrokerNameFromRawLabel($name);
+						$name = self::getBrokerNameFromRawLabel($name);
 						$this->setLayerObject("presentation_layers", $name, $obj);
 					}
 				}
 				else if (is_a($obj, "EVC")) {
-					$presentation_bean_name = null;
+					$layer_path = $obj->getPresentationLayer()->getLayerPathSetting();
+					$name = substr($layer_path, strlen(LAYER_PATH));
+					$name = substr($name, -1) == "/" ? substr($name, 0, -1) : $name;
 					
-					if ($bean->properties)
-						foreach ($bean->properties as $property)
-							if ($property->name == "presentationLayer") {
-								$presentation_bean_name = $property->reference;
-								break;
-							}
-					
-					if ($presentation_bean_name) { //$property->reference can be null
-						$name = substr($presentation_bean_name, - strlen("PLayer")) == "PLayer" ? substr($presentation_bean_name, 0, strlen($presentation_bean_name) - strlen("PLayer")) : $presentation_bean_name;
-						$name = WorkFlowBeansConverter::getBrokerNameFromRawLabel($name);
+					if ($name)
 						$this->setLayerObject("presentation_layers_evc", $name, $obj);
-					}
 				}
 				else if (is_a($obj, "DB")) {
-					$name = WorkFlowBeansConverter::getBrokerNameFromRawLabel($bean_name);
+					$name = self::getBrokerNameFromRawLabel($bean_name);
 					$this->setLayerObject("db_drivers", $name, $obj);
 				}
 			}
@@ -127,7 +119,7 @@ abstract class TestUnit implements ITestUnit {
 	private function prepareObjectLayername($type, &$name) {
 		if (!$name && isset($this->layers_objs[$type]) && is_array($this->layers_objs[$type])) {
 			$keys = array_keys($this->layers_objs[$type]);
-			$name = $keys[0];
+			$name = count($keys) ? $keys[0] : null;
 		}
 	}
 	
@@ -139,6 +131,13 @@ abstract class TestUnit implements ITestUnit {
 	}
 	public function getErrors() {
 		return $this->errors;
+	}
+	
+	private function getBrokerNameFromRawLabel($label) {
+		if (!class_exists("WorkFlowBeansConverter"))
+			launch_exception(new Exception("Class 'WorkFlowBeansConverter' must be loaded first!"));
+		
+		return WorkFlowBeansConverter::getBrokerNameFromRawLabel($label);
 	}
 }
 ?>

@@ -625,7 +625,7 @@ class AdminMenuHandler {
 		self::prepareAliases($Layer, $aliases);
 		$bean_objs["aliases"] = $aliases;
 		
-		$bean_objs = $objs ? array_replace($bean_objs, $objs) : array(); //if $Layer is DBLAyer then $objs is null
+		$bean_objs = !empty($objs) ? array_replace($bean_objs, $objs) : array(); //if $Layer is DBLAyer then $objs is null
 		
 		return $bean_objs;
 	}
@@ -703,6 +703,7 @@ class AdminMenuHandler {
 					else {
 						$path_info = pathinfo($file_path);
 						$file_extension = isset($path_info["extension"]) ? strtolower($path_info["extension"]) : "";
+						$type = null;
 						
 						if ($file_extension == "zip" && $allow_zip)
 							$type = "zip_file";
@@ -859,7 +860,7 @@ class AdminMenuHandler {
 	}
 	
 	private static function getBeanFilePathByBeanName($bean_name, $path = "") {
-		$path .= $path && subtr($path, -1) != "/" ? "/" : "";
+		$path .= $path && substr($path, -1) != "/" ? "/" : "";
 		$beans_files = scandir(BEAN_PATH . $path);
 		
 		if ($beans_files)
@@ -874,11 +875,12 @@ class AdminMenuHandler {
 					else {
 						$contents = file_get_contents($file_path);
 						preg_match('/<bean([^>]*)name="' . $bean_name . '"/', $contents, $matches, PREG_OFFSET_CAPTURE);
+						
 						if ($matches)
 							$bean_file_name = $relative_file_path;
 					}
 					
-					if ($bean_file_name) 
+					if (!empty($bean_file_name))
 						return str_replace("//", "/", $bean_file_name);
 				}
 	}

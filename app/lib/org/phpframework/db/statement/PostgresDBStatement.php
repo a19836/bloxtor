@@ -267,7 +267,7 @@ trait PostgresDBStatement { //must be "trait" and not "class" bc this code will 
 				if (!empty($key["attribute"])) {
 					$attrs = is_array($key["attribute"]) ? $key["attribute"] : array($key["attribute"]);
 					
-					$sql .= ",   " . ($key["name"] ? "CONSTRAINT " . $key["name"] . " " : "") . " UNIQUE (\"" . implode('", "', $attrs) . "\")";
+					$sql .= ",   " . (!empty($key["name"]) ? "CONSTRAINT " . $key["name"] . " " : "") . " UNIQUE (\"" . implode('", "', $attrs) . "\")";
 				}
 		
 		//This are not being used for now, but I should change the diagram to use this feature too
@@ -330,7 +330,7 @@ trait PostgresDBStatement { //must be "trait" and not "class" bc this code will 
 			$collation = isset($attribute_data["collation"]) ? $attribute_data["collation"] : null;
 			//$comment = isset($attribute_data["comment"]) ? $attribute_data["comment"] : null; //not used in pgsql server
 			
-			if ($flags)
+			if (!empty($flags))
 				foreach ($flags as $k => $v)
 					if ($k != "charset" && $k != "comment")
 						eval("\$$k = \$v;"); //may change the $auto_increment to true
@@ -631,7 +631,7 @@ trait PostgresDBStatement { //must be "trait" and not "class" bc this code will 
 			";
 		}
 		
-		//echo "<pre>";die($sql);
+		//echo "<pre>$sql";die();
 		return $sql;
 	}
 	

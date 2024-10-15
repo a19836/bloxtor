@@ -4,13 +4,13 @@ include_once $EVC->getUtilPath("CMSPresentationLayerUIHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$no_php_erros = $_GET["no_php_erros"];
-$include_jquery = $_GET["include_jquery"];
-$is_edit_template = $_GET["is_edit_template"];
-$is_edit_view = $_GET["is_edit_view"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$no_php_erros = isset($_GET["no_php_erros"]) ? $_GET["no_php_erros"] : null;
+$include_jquery = isset($_GET["include_jquery"]) ? $_GET["include_jquery"] : null;
+$is_edit_template = isset($_GET["is_edit_template"]) ? $_GET["is_edit_template"] : null;
+$is_edit_view = isset($_GET["is_edit_view"]) ? $_GET["is_edit_view"] : null;
 
 /*The ENT_NOQUOTES will avoid converting the &quot; to ". If this is not here and if we have some form settings with PTL code like: 
 	$form_settings = array("ptl" => array("code" => "<ptl:echo str_replace('\"', '&quot;', \$var_aux_910) />"));
@@ -27,13 +27,13 @@ The htmlspecialchars_decode is DEPRECATED bc I may want to have some code with &
 $data = json_decode( file_get_contents("php://input"), true);
 //echo "<pre>";print_r($_GET);print_r($data);die();
 
-$html_to_parse = $data["html_to_parse"];
-$template = $data["template"] ? $data["template"] : $_GET["template"];
-//$template_regions = $data["template_regions"];
-//$template_params = $data["template_params"];
-//$template_includes = $data["template_includes"];
-//$is_external_template = $data["is_external_template"];
-//$external_template_params = $data["external_template_params"];
+$html_to_parse = isset($data["html_to_parse"]) ? $data["html_to_parse"] : null;
+$template = !empty($data["template"]) ? $data["template"] : (isset($_GET["template"]) ? $_GET["template"] : null);
+//$template_regions = isset($data["template_regions"]) ? $data["template_regions"] : null;
+//$template_params = isset($data["template_params"]) ? $data["template_params"] : null;
+//$template_includes = isset($data["template_includes"]) ? $data["template_includes"] : null;
+//$is_external_template = isset($data["is_external_template"]) ? $data["is_external_template"] : null;
+//$external_template_params = isset($data["external_template_params"]) ? $data["external_template_params"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -69,11 +69,15 @@ else {
 }
 
 function getProjectTemplateHtml($EVC, $user_global_variables_file_path, $template, $data, $html_to_parse, $no_php_erros, $include_jquery, $is_edit_template, $is_edit_view, $system_project_url_prefix, $system_project_common_url_prefix, $system_get_page_block_simulated_html_url, $system_save_page_block_simulated_html_setting_url) {
-	$template_regions = $data["template_regions"];
-	$template_params = $data["template_params"];
-	$template_includes = $data["template_includes"];
-	$is_external_template = $data["is_external_template"];
-	$external_template_params = $data["external_template_params"];
+	//set some default vars from the index controller that might be used in the template html
+	$entity = null;
+	
+	//get data vars
+	$template_regions = isset($data["template_regions"]) ? $data["template_regions"] : null;
+	$template_params = isset($data["template_params"]) ? $data["template_params"] : null;
+	$template_includes = isset($data["template_includes"]) ? $data["template_includes"] : null;
+	$is_external_template = isset($data["is_external_template"]) ? $data["is_external_template"] : null;
+	$external_template_params = isset($data["external_template_params"]) ? $data["external_template_params"] : null;
 	
 	$PHPVariablesFileHandler = new PHPVariablesFileHandler(array($user_global_variables_file_path, $EVC->getConfigPath("pre_init_config")));
 	$PHPVariablesFileHandler->startUserGlobalVariables();
@@ -120,8 +124,8 @@ function getProjectTemplateHtml($EVC, $user_global_variables_file_path, $templat
 			$html_inc = "";
 			
 			foreach ($template_includes as $include) 
-				if ($include["path"])
-					$html_inc .= "\n" . "include" . ($include["once"] ? "_once" : "") . " " . $include["path"] . ";";
+				if (!empty($include["path"]))
+					$html_inc .= "\n" . "include" . (!empty($include["once"]) ? "_once" : "") . " " . $include["path"] . ";";
 			
 			if ($html_inc) {
 				$html_inc = "<?$html_inc\n?>\n";
@@ -139,14 +143,14 @@ function getProjectTemplateHtml($EVC, $user_global_variables_file_path, $templat
 		$body_props = WorkFlowPresentationHandler::getHtmlTagProps($html, "body", array("get_inline_code" => true));
 		$html_props = WorkFlowPresentationHandler::getHtmlTagProps($html, "html");
 		$code_exists = !empty(trim($html));
-		$non_standard_code = $code_exists && !$html_props["inline_code"] && !$head_props["inline_code"] && !$body_props["inline_code"];
+		$non_standard_code = $code_exists && empty($html_props["inline_code"]) && empty($head_props["inline_code"]) && empty($body_props["inline_code"]);
 		
 		//if non standard html file, like the template/ajax.php, then sets the body with the html.
 		if ($non_standard_code)
 			$body_props["inline_code"] = $html;
 		
-		$head_html = $head_props["inline_code"];
-		$body_html = $body_props["inline_code"];
+		$head_html = isset($head_props["inline_code"]) ? $head_props["inline_code"] : null;
+		$body_html = isset($body_props["inline_code"]) ? $body_props["inline_code"] : null;
 		
 		//find the code echo $EVC->getCMSLayer()->getCMSBlockLayer()->getBlock("xxx"); in body_html
 		$hard_coded_blocks = CMSFileHandler::getHardCodedRegionsBlocks($body_html);
@@ -201,7 +205,7 @@ function getProjectTemplateHtml($EVC, $user_global_variables_file_path, $templat
 		//saves html to temp file to be executed as php
 		$fhandle = tmpfile();
 		$md = stream_get_meta_data($fhandle);
-		$tmp_file_path = $md['uri'];
+		$tmp_file_path = isset($md['uri']) ? $md['uri'] : null;
 		
 		$pieces = str_split($html, 1024 * 4);
 		foreach ($pieces as $piece)
@@ -473,14 +477,14 @@ function replacePHPWithCommentsWithHardCodedBlocks($sub_text, $suffix_id, $hard_
 	//find the code echo $EVC->getCMSLayer()->getCMSBlockLayer()->getBlock("echostr_2");
 	if ($hard_coded_blocks)
 		foreach ($hard_coded_blocks as $b) {
-			$match = $b["match"];
+			$match = isset($b["match"]) ? $b["match"] : null;
 			
 			if ($match && strpos($sub_text, $match) !== false) {
-				$type = $b["type"];
-				$block = $b["block"];
-				$block_type = $b["block_type"];
-				$block_project = $b["block_project"];
-				$block_project_type = $b["block_project_type"];
+				$type = isset($b["type"]) ? $b["type"] : null;
+				$block = isset($b["block"]) ? $b["block"] : null;
+				$block_type = isset($b["block_type"]) ? $b["block_type"] : null;
+				$block_project = isset($b["block_project"]) ? $b["block_project"] : null;
+				$block_project_type = isset($b["block_project_type"]) ? $b["block_project_type"] : null;
 				
 				$block_str = PHPUICodeExpressionHandler::getArgumentCode($block, $block_type);
 				$block_project_str = PHPUICodeExpressionHandler::getArgumentCode($block_project, $block_project_type);
@@ -522,7 +526,7 @@ function replacePHPWithCommentsWithHardCodedBlocks($sub_text, $suffix_id, $hard_
 		Call view <span class="view_name">' . $block_str . '</span><span class="view_project"> in "<span>' . ($block_project ? $block_project_str : "") . '</span>" project.</span>
 	</div>
 	
-	<input class="view hidden" type="text" value="' . $view . '" />
+	<input class="view hidden" type="text" value="' . $block . '" />
 	<select class="region_view_type hidden">
 		<option value>default</option>
 		<option' . ($block_type == "string" ? " selected" : "") . '>string</option>
@@ -562,7 +566,7 @@ function removeSequentialLogicalActivitiesPHPCode($html) {
 		$c = $html_chars[$i];
 		
 		if ($c == "<") {
-			$next_char = $html_chars[$i + 1];
+			$next_char = $i + 1 < $l ? $html_chars[$i + 1] : null;
 			
 			if ($next_char == "?") { //start of php tag
 				$dqo = $sqo = false;
@@ -575,7 +579,7 @@ function removeSequentialLogicalActivitiesPHPCode($html) {
 						$dqo = !$dqo;
 					else if ($sub_c == "'" && !$dqo && !TextSanitizer::isMBCharEscaped($html, $j, $html_chars))
 						$sqo = !$sqo;
-					else if ($sub_c == "?" && $html_chars[$j + 1] == ">" && !$dqo && !$sqo) { //end of php tab
+					else if ($sub_c == "?" && $j + 1 < $l && $html_chars[$j + 1] == ">" && !$dqo && !$sqo) { //end of php tab
 						$php_code .= $sub_c . $html_chars[$j + 1];
 						break;
 					}
@@ -589,7 +593,7 @@ function removeSequentialLogicalActivitiesPHPCode($html) {
 				
 				while (preg_match("/\s*\->\s*addSequentialLogicalActivities\s*\(/", $php_code_clean, $matches, PREG_OFFSET_CAPTURE) && $matches && $matches[0]) {
 					$str = $matches[0][0];
-					$offset =$matches[0][1];
+					$offset = $matches[0][1];
 					$start_offset = $end_offset = null;
 					
 					$php_code_clean_chars = TextSanitizer::mbStrSplit($php_code_clean);
@@ -662,16 +666,16 @@ function getHeadHtmlPHPCode($EVC, $head_html, $template_regions, $template_param
 		$t = count($available_regions_list);
 		for ($i = 0; $i < $t; $i++) {
 			$region = $available_regions_list[$i];
-			$region_blocks = $template_regions[$region];
+			$region_blocks = isset($template_regions[$region]) ? $template_regions[$region] : null;
 			
 			if ($region_blocks) {
 				$t1 = count($region_blocks);
 				for ($j = 0; $j < $t1; $j++) {
 					$region_block = $region_blocks[$j];
-					$region = $region_block[0];
-					$block = $region_block[1];
-					$proj = $region_block[2];
-					$type = $region_block[3];
+					$region = isset($region_block[0]) ? $region_block[0] : null;
+					$block = isset($region_block[1]) ? $region_block[1] : null;
+					$proj = isset($region_block[2]) ? $region_block[2] : null;
+					$type = isset($region_block[3]) ? $region_block[3] : null;
 					$is_block = $type == 2 || $type == 3;
 					
 					$is_valid = !$is_block || !preg_match("/(^(\"|')?|\/)validate([^\/])*$/", $block); //ignore the blocks that are "validate" blocks, because this blocks usually redirect the page to another page. And the edit_simple_template_layout.php should show the current page independent if is validated or not.
@@ -695,7 +699,7 @@ function getHeadHtmlPHPCode($EVC, $head_html, $template_regions, $template_param
 	//prepare params
 	if ($template_params) {
 		$params_list = CMSPresentationLayerHandler::getAvailableTemplateParamsListFromCode($head_html);
-		$available_params_list = $params_list[0];
+		$available_params_list = isset($params_list[0]) ? $params_list[0] : null;
 		//print_r($available_params_list);print_r($template_params);die();
 		
 		$t = count($available_params_list);
@@ -703,7 +707,7 @@ function getHeadHtmlPHPCode($EVC, $head_html, $template_regions, $template_param
 			$param_name = $available_params_list[$i];
 			
 			if (array_key_exists($param_name, $template_params)) {
-				$param_value = $template_params[$param_name];
+				$param_value = isset($template_params[$param_name]) ? $template_params[$param_name] : null;
 				
 				$params[] = array(
 					"param" => $param_name,
@@ -743,7 +747,7 @@ function prepareEditableTemplate($EVC, $html, $template_regions, $template_param
 				$regions_blocks_list = array_merge($regions_blocks_list, $region_blocks);
 	
 	$selected_project_id = $EVC->getPresentationLayer()->getSelectedPresentationId();
-	$available_blocks_list = CMSPresentationLayerHandler::initBlocksListThroughRegionBlocks($PEVC, $regions_blocks_list, $selected_project_id);
+	$available_blocks_list = CMSPresentationLayerHandler::initBlocksListThroughRegionBlocks($EVC, $regions_blocks_list, $selected_project_id);
 	
 	$php_code = "";
 	//print_r($template_regions);die();
@@ -856,28 +860,28 @@ function getProjectTemplateRegionBlocksHtml($region_name, $region_blocks, $avail
 	//prepare region html
 	if ($region_blocks && is_array($region_blocks)) {
 		foreach ($region_blocks as $region_block) {
-			$block = $region_block[1];
+			$block = isset($region_block[1]) ? $region_block[1] : null;
 			
 			if ($block) {
-				$proj = $region_block[2];
-				$type = $region_block[3];
-				$rb_index = $region_block[4];
+				$proj = isset($region_block[2]) ? $region_block[2] : null;
+				$type = isset($region_block[3]) ? $region_block[3] : null;
+				$rb_index = isset($region_block[4]) ? $region_block[4] : null;
 				$block_hash = $type == 1 ? md5($block) : ($type == 2 || $type == 3 ? "block_" : "view_") . $block; //if html set md5
 				
-				if (is_numeric($rb_index) && $rb_index > $rb_indexes["$region_name-$block_hash-$proj"])
+				if (is_numeric($rb_index) && (!isset($rb_indexes["$region_name-$block_hash-$proj"]) || $rb_index > $rb_indexes["$region_name-$block_hash-$proj"]))
 					$rb_indexes["$region_name-$block_hash-$proj"] = $rb_index;
 			}
 		}
 		
 		foreach ($region_blocks as $region_block) {
-			$block = $region_block[1];
+			$block = isset($region_block[1]) ? $region_block[1] : null;
 			$exists = false;
 			//print_r($region_block);
 			
 			if ($block) {
-				$proj = $region_block[2];
-				$type = $region_block[3];
-				$rb_index = $region_block[4];
+				$proj = isset($region_block[2]) ? $region_block[2] : null;
+				$type = isset($region_block[3]) ? $region_block[3] : null;
+				$rb_index = isset($region_block[4]) ? $region_block[4] : null;
 				$block_hash = $type == 1 ? md5($block) : ($type == 2 || $type == 3 ? "block_" : "view_") . $block; //if html set md5
 				$is_block = $type == 2 || $type == 3;
 				$is_view = $type == 4 || $type == 5;
@@ -899,8 +903,8 @@ function getProjectTemplateRegionBlocksHtml($region_name, $region_blocks, $avail
 					$exists = false;
 					
 					if ($is_block) {
-						$apbl = $available_blocks_list[$sbp];
-						$exists = empty($block) || ($apbl && in_array($sb, $apbl));
+						$apbl = isset($available_blocks_list[$sbp]) ? $available_blocks_list[$sbp] : null;
+						$exists = !$sb || ($apbl && in_array($sb, $apbl));
 					}
 					
 					$class = $exists ? " active" : ($sb ? " invalid" : "");

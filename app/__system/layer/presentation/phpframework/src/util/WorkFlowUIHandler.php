@@ -54,7 +54,7 @@ class WorkFlowUIHandler {
 		
 		foreach ($this->tasks_settings as $group_id => $group_tasks) 
 			foreach ($group_tasks as $task_type => $task_settings) 
-				$tasks_groups_by_tag[$group_id][] = $task_settings["tag"];
+				$tasks_groups_by_tag[$group_id][] = isset($task_settings["tag"]) ? $task_settings["tag"] : null;
 		
 		return $tasks_groups_by_tag;
 	}
@@ -69,27 +69,29 @@ class WorkFlowUIHandler {
 		
 		$folder_id = $this->WorkFlowTaskHandler->getFolderId($tasks_folder_path);
 		$loaded_tasks = $this->WorkFlowTaskHandler->getLoadedTasks();
-		$folder_loaded_tasks = $loaded_tasks[$folder_id];
-		$folder_loaded_tasks_settings = $this->tasks_settings[$folder_id];
+		$folder_loaded_tasks = isset($loaded_tasks[$folder_id]) ? $loaded_tasks[$folder_id] : null;
+		$folder_loaded_tasks_settings = isset($this->tasks_settings[$folder_id]) ? $this->tasks_settings[$folder_id] : null;
 		//print_r($this->tasks_groups_by_tag);die();
 		
 		if ($folder_loaded_tasks_settings) 
 			foreach ($folder_loaded_tasks_settings as $task_id => $task_settings) {
-				$loaded_task = $folder_loaded_tasks[$task_id];
+				$loaded_task = isset($folder_loaded_tasks[$task_id]) ? $folder_loaded_tasks[$task_id] : null;
+				$loaded_task_path = isset($loaded_task["path"]) ? $loaded_task["path"] : null;
 				//print_r($loaded_task);print_r($task_settings);die();
 				
-				$relative_parent_folder_path = str_replace($tasks_folder_path, "", dirname(dirname($loaded_task["path"])));
+				$relative_parent_folder_path = str_replace($tasks_folder_path, "", dirname(dirname($loaded_task_path)));
 				$relative_parent_folder_path = substr($relative_parent_folder_path, 0, 1) == "/" ? substr($relative_parent_folder_path, 1) : $relative_parent_folder_path;
 				$pos = strpos($relative_parent_folder_path, "/");
 				$main_parent_name = $pos ? substr($relative_parent_folder_path, 0, $pos) : $relative_parent_folder_path;
 				
 				if ($main_parent_name) {
 					$main_parent_label = ucwords(strtolower(str_replace(array("_", "-"), " ", $main_parent_name)));
+					$task_settings_tag = isset($task_settings["tag"]) ? $task_settings["tag"] : null;
 					
 					if (isset($this->tasks_groups_by_tag[$main_parent_label])) 
-						$this->tasks_groups_by_tag[$main_parent_label][] = $task_settings["tag"];
+						$this->tasks_groups_by_tag[$main_parent_label][] = $task_settings_tag;
 					else
-						$this->tasks_groups_by_tag[$main_parent_label] = array($task_settings["tag"]);
+						$this->tasks_groups_by_tag[$main_parent_label] = array($task_settings_tag);
 				}
 			}
 		//print_r($this->tasks_groups_by_tag);die();
@@ -103,8 +105,8 @@ class WorkFlowUIHandler {
 <!-- Jquery Touch Punch to work on mobile devices with touch -->
 <script type="text/javascript" src="' . $this->common_webroot_url . 'vendor/jqueryuitouchpunch/jquery.ui.touch-punch.min.js"></script>';
 		
-		if (!$options["taskflowchart_already_included"]) {
-			if ($this->external_libs_url_prefix["jsplumb"])
+		if (empty($options["taskflowchart_already_included"])) {
+			if (!empty($this->external_libs_url_prefix["jsplumb"]))
 				$head .= '
 <!-- Add JSPlumb main JS and CSS files -->
 <script language="javascript" type="text/javascript" src="' . $this->external_libs_url_prefix["jsplumb"] . 'build/1.3.16/js/jquery.jsPlumb-1.3.16-all-min.js"></script>
@@ -138,7 +140,7 @@ class WorkFlowUIHandler {
 ';
 		}
 		
-		if (!$options["icons_and_edit_code_already_included"])
+		if (empty($options["icons_and_edit_code_already_included"]))
 			$head .= '
 <!-- Add Fontawsome Icons CSS -->
 <link rel="stylesheet" href="' . $this->common_webroot_url . 'vendor/fontawesome/css/all.min.css">
@@ -150,7 +152,7 @@ class WorkFlowUIHandler {
 <script type="text/javascript" src="' . $this->webroot_url . 'js/layout.js"></script>
 ';
 		
-		if ($options["ui_editor"] || $this->WorkFlowTaskHandler->getTasksByPrefix("createform", 1) || $this->WorkFlowTaskHandler->getTasksByPrefix("inlinehtml", 1))
+		if (!empty($options["ui_editor"]) || $this->WorkFlowTaskHandler->getTasksByPrefix("createform", 1) || $this->WorkFlowTaskHandler->getTasksByPrefix("inlinehtml", 1))
 			$head .= '
 <!-- Layout UI Editor - Color -->
 <script language="javascript" type="text/javascript" src="' . $this->common_webroot_url . 'js/color.js"></script>
@@ -211,13 +213,13 @@ class WorkFlowUIHandler {
 <link rel="stylesheet" href="' .  $this->webroot_url . 'css/layout_ui_editor_widget_resource_options.css" type="text/css" charset="utf-8" />
 <script language="javascript" type="text/javascript" src="' . $this->webroot_url . 'js/layout_ui_editor_widget_resource_options.js"></script>
 ';
-		else if ($options["tasks_css_and_js"])
+		else if (!empty($options["tasks_css_and_js"]))
 			$head .= '
 <!-- Add MD5 JS File -->
 <script language="javascript" type="text/javascript" src="' . $this->common_webroot_url . 'vendor/jquery/js/jquery.md5.js"></script>
 ';
 		
-		if ($options["tasks_css_and_js"])
+		if (!empty($options["tasks_css_and_js"]))
 			$head .= "\n<!-- Add TASKS JS and CSS files -->\n" . $this->printTasksCSSAndJS();
 		
 		return $head;
@@ -261,7 +263,7 @@ class WorkFlowUIHandler {
 		taskFlowChartObj.ContextMenu.main_workflow_menu_obj_id = "taskflowchart > .workflow_menu";
 		
 		taskFlowChartObj.Property.tasks_settings = ' . $this->getTasksSettingsObj() . ';
-		taskFlowChartObj.Container.tasks_containers = ' . $this->getTasksContainersByTaskType($this->tasks_containers) . ';
+		taskFlowChartObj.Container.tasks_containers = ' . $this->getTasksContainersByTaskType() . ';
 		
 		taskFlowChartObj.TaskFile.save_options = {
 			success: function(data, textStatus, jqXHR) {
@@ -367,10 +369,10 @@ class WorkFlowUIHandler {
 	
 	public function getDefaultMenus() {
 		$default_container = array_keys($this->tasks_containers);
-		$default_container = $default_container[0];
+		$default_container = isset($default_container[0]) ? $default_container[0] : null;
 	
 		//$if_task_type = $this->WorkFlowTaskHandler->getTaskTypeByPrefix("programming/if");
-		$default_task_type = $this->tasks_containers[$default_container][0];
+		$default_task_type = isset($this->tasks_containers[$default_container][0]) ? $this->tasks_containers[$default_container][0] : null;
 		
 		return array(
 			"File" => array(
@@ -415,12 +417,12 @@ class WorkFlowUIHandler {
 			$html .= '<ul' . ($class ? ' class="' . $class . '"' : '') . '>';
 			
 			foreach ($menus as $menu_name => $menu) {
-				$html .= '<li class="' . $menu["class"] . '" title="' . ($menu["title"] ? $menu["title"] : $menu_name) . '">';
+				$html .= '<li class="' . (isset($menu["class"]) ? $menu["class"] : "") . '" title="' . (!empty($menu["title"]) ? $menu["title"] : $menu_name) . '">';
 				
-				if ($menu["html"])
+				if (!empty($menu["html"]))
 					$html .= $menu["html"];
 				else
-					$html .= '<a' . ($menu["click"] ? ' onClick="' . $menu["click"] . '"' : '') . '>' . $menu_name . '</a>';
+					$html .= '<a' . (!empty($menu["click"]) ? ' onClick="' . $menu["click"] . '"' : '') . '>' . $menu_name . '</a>';
 				
 				if (!empty($menu["childs"]))
 					$html .= $this->getMenusContentAux($menu["childs"]);
@@ -435,7 +437,7 @@ class WorkFlowUIHandler {
 	}
 	
 	public function getContent($main_div_id = "taskflowchart") {
-		$reverse_class = $_COOKIE["main_navigator_side"] == "main_navigator_reverse" ? "" : "reverse";
+		$reverse_class = isset($_COOKIE["main_navigator_side"]) && $_COOKIE["main_navigator_side"] == "main_navigator_reverse" ? "" : "reverse";
 		
 		$main_content = '
 	<div id="' . $main_div_id . '" class="taskflowchart ' . $reverse_class . '">
@@ -473,7 +475,7 @@ class WorkFlowUIHandler {
 		$tasks_by_tag = array();
 		foreach ($this->tasks_settings as $group_id => $group_tasks)
 			foreach ($group_tasks as $task_type => $task_settings) {
-				$tag = $task_settings["tag"];
+				$tag = isset($task_settings["tag"]) ? $task_settings["tag"] : null;
 				
 				if ($tag)
 					$tasks_by_tag[$tag] = array($task_type, $task_settings);
@@ -493,9 +495,9 @@ class WorkFlowUIHandler {
 						$tag = $this->tasks_order_by_tag[$i];
 						
 						if (in_array($tag, $tags)) {
-							$task = $tasks_by_tag[$tag];
-							$task_type = $task[0];
-							$task_settings = $task[1];
+							$task = isset($tasks_by_tag[$tag]) ? $tasks_by_tag[$tag] : null;
+							$task_type = isset($task[0]) ? $task[0] : null;
+							$task_settings = isset($task[1]) ? $task[1] : null;
 							
 							if ($task_type && $task_settings) {
 								$added[] = $task_type;
@@ -509,9 +511,9 @@ class WorkFlowUIHandler {
 					for ($i = 0; $i < $t; $i++) {
 						$tag = $tags[$i];
 						
-						$task = $tasks_by_tag[$tag];
-						$task_type = $task[0];
-						$task_settings = $task[1];
+						$task = isset($tasks_by_tag[$tag]) ? $tasks_by_tag[$tag] : null;
+						$task_type = isset($task[0]) ? $task[0] : null;
+						$task_settings = isset($task[1]) ? $task[1] : null;
 						
 						if ($task_type && $task_settings && !in_array($task_type, $added)) {
 							$added[] = $task_type;
@@ -548,13 +550,13 @@ class WorkFlowUIHandler {
 				$t = count($this->tasks_order_by_tag);
 				for ($i = 0; $i < $t; $i++) {
 					$tag = $this->tasks_order_by_tag[$i];
-					$task = $tasks_by_tag[$tag];
-					$task_type = $task[0];
+					$task = isset($tasks_by_tag[$tag]) ? $tasks_by_tag[$tag] : null;
+					$task_type = isset($task[0]) ? $task[0] : null;
 					
-					if ($group_tasks[$task_type] && !in_array($task_type, $added)) {
+					if (!empty($group_tasks[$task_type]) && !in_array($task_type, $added)) {
 						$added[] = $task_type;
 						
-						$html_others .= $this->printTaskList($task_type, $group_tasks[$task_type]);
+						$html_others .= $this->printTaskList($task_type, isset($group_tasks[$task_type]) ? $group_tasks[$task_type] : null);
 					}
 				}
 				
@@ -578,9 +580,10 @@ class WorkFlowUIHandler {
 	}
 	
 	private function printTaskList($task_type, $task_settings) {
-		$task_tag = str_replace(" ", "_", $task_settings["tag"]);
+		$task_tag = isset($task_settings["tag"]) ? str_replace(" ", "_", $task_settings["tag"]) : "";
+		$task_label = isset($task_settings["label"]) ? $task_settings["label"] : null;
 		
-		return '<div class="task task_menu task_' . $task_type . ' task_' . $task_tag . '" type="' . $task_type . '" tag="' . $task_tag . '" title="' . str_replace('"', "&quot;", $task_settings["label"]) . '"><span>' . $task_settings["label"] . '</span></div>';
+		return '<div class="task task_menu task_' . $task_type . ' task_' . $task_tag . '" type="' . $task_type . '" tag="' . $task_tag . '" title="' . str_replace('"', "&quot;", $task_label) . '"><span>' . $task_label . '</span></div>';
 	}
 
 	public function printTasksProperties() {
@@ -595,7 +598,9 @@ class WorkFlowUIHandler {
 				
 				foreach ($tasks_settings as $group_id => $group_tasks) {
 					foreach ($group_tasks as $task_type => $task_settings) {
-						if ($task_settings["tag"] == $tag) {
+						$task_tag = isset($task_settings["tag"]) ? $task_settings["tag"] : null;
+						
+						if ($task_tag == $tag) {
 							if (!empty($task_settings["task_properties_html"])) {
 								$html .= '<div class="task_properties task_properties_' . $task_type . '">' . (is_array($task_settings) ? $task_settings["task_properties_html"] : $task_settings) . '</div>';
 							}
@@ -648,10 +653,10 @@ class WorkFlowUIHandler {
 		foreach ($this->tasks_settings as $group_id => $group_tasks)
 			foreach ($group_tasks as $task_type => $task_settings)
 				if (is_array($task_settings)) {
-					if ($task_settings["files"]["css"])
+					if (!empty($task_settings["files"]["css"]))
 						$css_files = array_merge($css_files, $task_settings["files"]["css"]);
 					
-					if ($task_settings["files"]["js"])
+					if (!empty($task_settings["files"]["js"]))
 						$js_files = array_merge($js_files, $task_settings["files"]["js"]);
 				}
 		
@@ -667,10 +672,10 @@ class WorkFlowUIHandler {
 		foreach ($this->tasks_settings as $group_id => $group_tasks) {
 			foreach ($group_tasks as $task_type => $task_settings) {
 				if (is_array($task_settings)) {
-					if (!empty(trim($task_settings["css"])))
+					if (isset($task_settings["css"]) && trim($task_settings["css"]))
 						$inline_css .= $task_settings["css"] . "\n";
 			
-					if (!empty(trim($task_settings["settings"]["js_code"])))
+					if (isset($task_settings["js_code"]) && trim($task_settings["settings"]["js_code"]))
 						$inline_js .= $task_settings["settings"]["js_code"] . "\n";
 				}
 			}
@@ -714,7 +719,7 @@ class WorkFlowUIHandler {
 		foreach ($this->tasks_settings as $group_id => $group_tasks) {
 			foreach ($group_tasks as $task_type => $task_settings) {
 				if (is_array($task_settings)) {
-					if (is_array($task_settings["settings"])) {
+					if (isset($task_settings["settings"]) && is_array($task_settings["settings"])) {
 						$html .= ($html != "{" ? ", " : "") . '"' . $task_type . '" : {';
 						
 						$idx = 0;

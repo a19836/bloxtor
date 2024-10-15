@@ -3,6 +3,8 @@
 
 include $EVC->getUtilPath("util");
 
+$ids = null;
+
 echo "<br/>DELETE THE CACHE FOR HIBERNATE:";
 $status = CacheHandlerUtil::deleteFolder(LAYER_CACHE_PATH . "sysdataaccess/hibernate/", false);
 	

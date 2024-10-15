@@ -19,6 +19,7 @@ class SequentialLogicalActivityResourceCreator {
 	private $bean_name;
 	private $bean_file_name;
 	private $path;
+	private $db_layer;
 	private $db_broker;
 	private $db_driver;
 	private $db_type;
@@ -62,7 +63,8 @@ class SequentialLogicalActivityResourceCreator {
 		$brokers = $this->PresentationLayer->getBrokers();
 		$selected_presentation_id = $this->PresentationLayer->getSelectedPresentationId();
 		
-		$this->include_db_driver = $db_driver != $GLOBALS["default_db_driver"];
+		$default_db_driver = isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null;
+		$this->include_db_driver = $db_driver != $default_db_driver;
 		
 		//prepare filter_by_layout
 		if ($this->filter_by_layout) {
@@ -129,11 +131,11 @@ class SequentialLogicalActivityResourceCreator {
 		$file_id = $this->getUtilFileId();
 		
 		$calling_parameters = array();
-		$resource_conditions = '\\$_GET["resource"] == "' . $resource_name . '"';
+		$resource_conditions = 'isset(\\$_GET["resource"]) && \\$_GET["resource"] == "' . $resource_name . '"';
 		$resource_conditions_bkp = $resource_conditions;
 		$resource_description = "";
 		$create_unsuccessfully_resource = false;
-		$conditions_exists = $resource_data && is_array($resource_data["conditions"]);
+		$conditions_exists = $resource_data && isset($resource_data["conditions"]) && is_array($resource_data["conditions"]);
 		
 		switch ($action_type) {
 			case "insert": 
@@ -141,9 +143,9 @@ class SequentialLogicalActivityResourceCreator {
 				//- $_POST[attributes] which are an array with attr_name:value format, this is: {attr_name_1:"...", attr_name_2:"..."}
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_POST["attributes"]', "type" => "")
+					array("value" => '@$_POST["attributes"]', "type" => "")
 				);
-				$resource_conditions .= ' && \\$_POST';
+				$resource_conditions .= ' && !empty(\\$_POST)';
 				$resource_description = "Insert data into table: " . $this->db_table . ".";
 				$create_unsuccessfully_resource = true;
 				break;
@@ -153,10 +155,10 @@ class SequentialLogicalActivityResourceCreator {
 				//- $_POST[conditions] which are an array with pk:value format, this is: {table_pk_1:1, table_pk_2:1}
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_POST["attributes"]', "type" => ""),
-					array("value" => '$_POST["conditions"]', "type" => ""),
+					array("value" => '@$_POST["attributes"]', "type" => ""),
+					array("value" => '@$_POST["conditions"]', "type" => ""),
 				);
-				$resource_conditions .= ' && \\$_POST';
+				$resource_conditions .= ' && !empty(\\$_POST)';
 				$resource_description = "Update data into table: " . $this->db_table . ".";
 				$create_unsuccessfully_resource = true;
 				break;
@@ -166,10 +168,10 @@ class SequentialLogicalActivityResourceCreator {
 				//- $_POST[conditions] which are an array with pk:value format, this is: [{table_pk_1:1, table_pk_2:1}, {table_pk_1:2, table_pk_2: 2}]
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_POST["attributes"]', "type" => ""),
-					array("value" => '$_POST["conditions"]', "type" => ""),
+					array("value" => '@$_POST["attributes"]', "type" => ""),
+					array("value" => '@$_POST["conditions"]', "type" => ""),
 				);
-				$resource_conditions .= ' && \\$_POST';
+				$resource_conditions .= ' && !empty(\\$_POST)';
 				$resource_description = "Update multiple records at once into table: " . $this->db_table . ".";
 				$create_unsuccessfully_resource = true;
 				break;
@@ -179,10 +181,10 @@ class SequentialLogicalActivityResourceCreator {
 				//- $_POST[conditions] which are an array with pk:value format, this is: {table_pk_1:1, table_pk_2:1}
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_POST["attributes"]', "type" => ""),
-					array("value" => '$_POST["conditions"]', "type" => ""),
+					array("value" => '@$_POST["attributes"]', "type" => ""),
+					array("value" => '@$_POST["conditions"]', "type" => ""),
 				);
-				$resource_conditions .= ' && \\$_POST';
+				$resource_conditions .= ' && !empty(\\$_POST)';
 				$resource_description = "Update an attribute from table: " . $this->db_table . ".";
 				$create_unsuccessfully_resource = true;
 				break;
@@ -192,10 +194,10 @@ class SequentialLogicalActivityResourceCreator {
 				//- $_POST[conditions] which are an array with pk:value format, this is: {table_pk_1:1, table_pk_2:1}
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_POST["attributes"]', "type" => ""),
-					array("value" => '$_POST["conditions"]', "type" => ""),
+					array("value" => '@$_POST["attributes"]', "type" => ""),
+					array("value" => '@$_POST["conditions"]', "type" => ""),
 				);
-				$resource_conditions .= ' && \\$_POST';
+				$resource_conditions .= ' && !empty(\\$_POST)';
 				$resource_description = "Insert or update an attribute from table: " . $this->db_table . ".";
 				$create_unsuccessfully_resource = true;
 				break;
@@ -205,10 +207,10 @@ class SequentialLogicalActivityResourceCreator {
 				//- $_POST[conditions] which are an array with pk:value format, this is: {table_pk_1:1, table_pk_2:1}
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_POST["attributes"]', "type" => ""),
-					array("value" => '$_POST["conditions"]', "type" => ""),
+					array("value" => '@$_POST["attributes"]', "type" => ""),
+					array("value" => '@$_POST["conditions"]', "type" => ""),
 				);
-				$resource_conditions .= ' && \\$_POST';
+				$resource_conditions .= ' && !empty(\\$_POST)';
 				$resource_description = "Insert or delete a record based if a value from an attribute, from table: " . $this->db_table . ", exists or not.";
 				$create_unsuccessfully_resource = true;
 				break;
@@ -218,10 +220,10 @@ class SequentialLogicalActivityResourceCreator {
 				//- $_POST[conditions] which are an array with pk:value format, this is: {table_pk_1:1, table_pk_2:1}
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_POST["attributes"]', "type" => ""),
-					array("value" => '$_POST["conditions"]', "type" => ""),
+					array("value" => '@$_POST["attributes"]', "type" => ""),
+					array("value" => '@$_POST["conditions"]', "type" => ""),
 				);
-				$resource_conditions .= ' && \\$_POST';
+				$resource_conditions .= ' && !empty(\\$_POST)';
 				$resource_description = "Delete all records and insert new ones, based in an attribute, from table: " . $this->db_table . ".";
 				$create_unsuccessfully_resource = true;
 				break;
@@ -230,9 +232,9 @@ class SequentialLogicalActivityResourceCreator {
 				//- $_POST[conditions] which are an array with pk:value format, this is: {table_pk_1:1, table_pk_2:1}
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_POST["conditions"]', "type" => ""),
+					array("value" => '@$_POST["conditions"]', "type" => ""),
 				);
-				$resource_conditions .= ' && \\$_POST';
+				$resource_conditions .= ' && !empty(\\$_POST)';
 				$resource_description = "Delete record from table: " . $this->db_table . ".";
 				$create_unsuccessfully_resource = true;
 				break;
@@ -241,9 +243,9 @@ class SequentialLogicalActivityResourceCreator {
 				//- $_POST[conditions] which are an array with pk:value format, this is: [{table_pk_1:1, table_pk_2:1}, {table_pk_1:2, table_pk_2: 2}]
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_POST["conditions"]', "type" => ""),
+					array("value" => '@$_POST["conditions"]', "type" => ""),
 				);
-				$resource_conditions .= ' && \\$_POST';
+				$resource_conditions .= ' && !empty(\\$_POST)';
 				$resource_description = "Delete multiple records at once from table: " . $this->db_table . ".";
 				$create_unsuccessfully_resource = true;
 				break;
@@ -251,7 +253,7 @@ class SequentialLogicalActivityResourceCreator {
 				//prepare resource to get an item correspondent to db_table based in $_GET[search_attrs] (key:value pair array)
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => $conditions_exists ? '#conditions#' : '$_GET["search_attrs"]', "type" => $conditions_exists ? "string" : ""),
+					array("value" => $conditions_exists ? '#conditions#' : '@$_GET["search_attrs"]', "type" => $conditions_exists ? "string" : ""),
 				);
 				$resource_description = "Get a record from table: " . $this->db_table . ".";
 				break;
@@ -259,13 +261,13 @@ class SequentialLogicalActivityResourceCreator {
 				//prepare resource to get items correspondent to db_table based in $_GET[search_attrs] (key:value pair array)
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_GET["items_limit_per_page"]', "type" => ""),
-					array("value" => '$_GET["page_items_start"]', "type" => ""),
-					array("value" => $conditions_exists ? '#conditions#' : '$_GET["search_attrs"]', "type" => $conditions_exists ? "string" : ""),
-					array("value" => '$_GET["search_types"]', "type" => ""),
-					array("value" => '$_GET["search_cases"]', "type" => ""),
-					array("value" => $conditions_exists ? ($resource_data["conditions_join"] ? '#conditions_join#' : '') : '$_GET["search_operators"]', "type" => $conditions_exists ? "string" : ""),
-					array("value" => '$_GET["sort_attrs"]', "type" => "")
+					array("value" => '@$_GET["items_limit_per_page"]', "type" => ""),
+					array("value" => '@$_GET["page_items_start"]', "type" => ""),
+					array("value" => $conditions_exists ? '#conditions#' : '@$_GET["search_attrs"]', "type" => $conditions_exists ? "string" : ""),
+					array("value" => '@$_GET["search_types"]', "type" => ""),
+					array("value" => '@$_GET["search_cases"]', "type" => ""),
+					array("value" => $conditions_exists ? ($resource_data["conditions_join"] ? '#conditions_join#' : '') : '@$_GET["search_operators"]', "type" => $conditions_exists ? "string" : ""),
+					array("value" => '@$_GET["sort_attrs"]', "type" => "")
 				);
 				$resource_description = "Get records from table: " . $this->db_table . ".";
 				break;
@@ -273,10 +275,10 @@ class SequentialLogicalActivityResourceCreator {
 				//prepare resource to count items correspondent to db_table based in $_GET[search_attrs] (key:value pair array)
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => $conditions_exists ? '#conditions#' : '$_GET["search_attrs"]', "type" => $conditions_exists ? "string" : ""),
-					array("value" => '$_GET["search_types"]', "type" => ""),
-					array("value" => '$_GET["search_cases"]', "type" => ""),
-					array("value" => $conditions_exists ? ($resource_data["conditions_join"] ? '#conditions_join#' : '') : '$_GET["search_operators"]', "type" => $conditions_exists ? "string" : ""),
+					array("value" => $conditions_exists ? '#conditions#' : '@$_GET["search_attrs"]', "type" => $conditions_exists ? "string" : ""),
+					array("value" => '@$_GET["search_types"]', "type" => ""),
+					array("value" => '@$_GET["search_cases"]', "type" => ""),
+					array("value" => $conditions_exists ? ($resource_data["conditions_join"] ? '#conditions_join#' : '') : '@$_GET["search_operators"]', "type" => $conditions_exists ? "string" : ""),
 				);
 				$resource_description = "Count records from table: " . $this->db_table . ".";
 				break;
@@ -284,13 +286,13 @@ class SequentialLogicalActivityResourceCreator {
 				//prepare resource to get items correspondent to resource_data[table] where the pk (resource_data[attribute]) is the key and the "name|description" attribute is the value of the returned array. Note that the the resource_data[table] is optional, and if not passed we need to get the correspondent pk.
 				$calling_parameters = array(
 					array("value" => '$EVC', "type" => ""),
-					array("value" => '$_GET["items_limit_per_page"]', "type" => ""),
-					array("value" => '$_GET["page_items_start"]', "type" => ""),
-					array("value" => $conditions_exists ? '#conditions#' : '$_GET["search_attrs"]', "type" => $conditions_exists ? "string" : ""),
-					array("value" => '$_GET["search_types"]', "type" => ""),
-					array("value" => '$_GET["search_cases"]', "type" => ""),
-					array("value" => $conditions_exists ? ($resource_data["conditions_join"] ? '#conditions_join#' : '') : '$_GET["search_operators"]', "type" => $conditions_exists ? "string" : ""),
-					array("value" => '$_GET["sort_attrs"]', "type" => "")
+					array("value" => '@$_GET["items_limit_per_page"]', "type" => ""),
+					array("value" => '@$_GET["page_items_start"]', "type" => ""),
+					array("value" => $conditions_exists ? '#conditions#' : '@$_GET["search_attrs"]', "type" => $conditions_exists ? "string" : ""),
+					array("value" => '@$_GET["search_types"]', "type" => ""),
+					array("value" => '@$_GET["search_cases"]', "type" => ""),
+					array("value" => $conditions_exists ? ($resource_data["conditions_join"] ? '#conditions_join#' : '') : '@$_GET["search_operators"]', "type" => $conditions_exists ? "string" : ""),
+					array("value" => '@$_GET["sort_attrs"]', "type" => "")
 				);
 				$resource_description = "Get key-value pair list from table: " . $this->db_table . ", where the key is the table primary key and the value is the table attribute label.";
 				break;
@@ -336,7 +338,7 @@ class SequentialLogicalActivityResourceCreator {
 					"action_value" => array(
 						"all_permissions_checked" => 0,
 						"entity_path" => '$entity_path',
-						"logged_user_id" => '$GLOBALS["logged_user_id"]',
+						"logged_user_id" => '"" . (isset($GLOBALS["logged_user_id"]) ? $GLOBALS["logged_user_id"] : "")',
 						"users_perms" => $user_perms,
 					)
 				);
@@ -493,17 +495,19 @@ class SequentialLogicalActivityResourceCreator {
 			return true;
 		else {
 			//prepare code
-			$code = 'if ($GLOBALS["logged_user_id"])
+			$code = 'if (!empty($GLOBALS["logged_user_id"]))
 	return $GLOBALS["logged_user_id"];
 
-if (!$GLOBALS["UserSessionActivitiesHandler"]) {
+if (empty($GLOBALS["UserSessionActivitiesHandler"])) {
 	@include_once $EVC->getUtilPath("user_session_activities_handler", $EVC->getCommonProjectName());
-	@initUserSessionActivitiesHandler($EVC);
+	
+	if (function_exists("initUserSessionActivitiesHandler"))
+		initUserSessionActivitiesHandler($EVC);
 }
 
-if ($GLOBALS["UserSessionActivitiesHandler"]) {
+if (!empty($GLOBALS["UserSessionActivitiesHandler"])) {
 	$user_data = $GLOBALS["UserSessionActivitiesHandler"]->getUserData();
-	return $user_data ? $user_data["user_id"] : 0;
+	return $user_data && isset($user_data["user_id"]) ? $user_data["user_id"] : 0;
 }
 
 return 0;';
@@ -552,7 +556,7 @@ return 0;';
 				$pks_auto_increment = array();
 				
 				foreach ($attrs as $attr_name => $attr)
-					if ($attr["primary_key"] && WorkFlowDataAccessHandler::isAutoIncrementedAttribute($attr))
+					if (!empty($attr["primary_key"]) && WorkFlowDataAccessHandler::isAutoIncrementedAttribute($attr))
 						$pks_auto_increment[] = $attr_name;
 				
 				//Add function to get th logged user id
@@ -584,7 +588,7 @@ return 0;';
 }';
 				
 				//prepare task in business logic layer
-				if ($task["item_type"] == "businesslogic") {
+				if (isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 					//echo "<pre>createInsertMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 					$bl_method_comments = "Insert parsed resource data into table: " . $this->db_table . ".";
 					$bl_parameters = array('attributes');
@@ -612,6 +616,7 @@ return 0;';
 		$update_task = $this->loadTask("update");
 		$update_pks_task = $this->loadTask("update_pks");
 		$get_task = $this->loadTask("get");
+		$common_options_code = null;
 		
 		if (!$update_task || !$update_pks_task || !$get_task) 
 			$error_message = "Error: Couldn't find any service for $action_type action.";
@@ -683,7 +688,7 @@ return 0;';
 				$pks_name = array();
 				
 				foreach ($attrs as $attr_name => $attr)
-					if ($attr["primary_key"])
+					if (!empty($attr["primary_key"]))
 						$pks_name[] = $attr_name;
 				
 				$no_pks = empty($pks_name);
@@ -756,7 +761,7 @@ return 0;';
 					//prepare get task code
 					$code .= '$data = ' . $get_task_code . ';';
 				
-					if ($get_task["item_type"] == "ibatis" || $get_task["item_type"] == "db")
+					if (isset($get_task["item_type"]) && ($get_task["item_type"] == "ibatis" || $get_task["item_type"] == "db"))
 						$code .= '
 		$data = $data ? $data[0] : null;';
 					
@@ -828,15 +833,24 @@ return 0;';
 					//prepare get task code
 					$code .= '$data = ' . $get_task_code . ';';
 				
-					if ($get_task["item_type"] == "ibatis" || $get_task["item_type"] == "db")
+					if (isset($get_task["item_type"]) && ($get_task["item_type"] == "ibatis" || $get_task["item_type"] == "db"))
 						$code .= '
 				$data = $data ? $data[0] : null;';
+					
+					//prepare code for empty files
+					$code_for_empty_files = '';
+					
+					foreach ($attrs as $attr_name => $attr)
+						if (empty($attr["primary_key"]) && isset($attr["type"]) && ObjTypeHandler::isDBTypeBlob($attr["type"]))
+							$code_for_empty_files .= '
+				if (isset($filtered_attributes["' . $attr_name . '"]) && isset($data["' . $attr_name . '"]) && empty($_FILES["' . $attr_name . '"]["tmp_name"])) $filtered_attributes["' . $attr_name . '"] = $data["' . $attr_name . '"];';
 					
 					//prepare data code
 					$code .= '
 				
 				if (!$data || !is_array($data))
 					return false;
+				' . $code_for_empty_files . '
 				
 				foreach ($filtered_attributes as $attr_name => $attr_value)
 					$data[$attr_name] = $attr_value;
@@ -857,6 +871,10 @@ return 0;';
 				}
 				
 				//prepare task in business logic layer
+				$update_task["item_type"] = isset($update_task["item_type"]) ? $update_task["item_type"] : null;
+				$update_pks_task["item_type"] = isset($update_pks_task["item_type"]) ? $update_pks_task["item_type"] : null;
+				$get_task["item_type"] = isset($get_task["item_type"]) ? $get_task["item_type"] : null;
+				
 				if (($update_task["item_type"] == "businesslogic" || $update_pks_task["item_type"] == "businesslogic" || $get_task["item_type"] == "businesslogic") && $update_broker_code == $update_pks_broker_code && $update_pks_broker_code == $get_broker_code) {
 					//echo "<pre>createUpdateMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 					$bl_method_comments = "Update parsed resource data into table: " . $this->db_table . ".";
@@ -921,7 +939,7 @@ return 0;';
 if ($attributes)
 	for ($i = 0, $t = count($attributes); $i < $t; $i++) {
 		$item_attributes = $attributes[$i];
-		$item_pks = $pks[$i];
+		$item_pks = isset($pks[$i]) ? $pks[$i] : null;
 		$is_insert = empty($item_pks);
 		
 		if ($is_insert && !self::insert($EVC, $item_attributes, $no_cache))
@@ -935,18 +953,18 @@ return $status;';
 			//prepare task in business logic layer
 			$task = $this->loadTask("update");
 			
-			if ($task && $task["item_type"] == "businesslogic") {
+			if ($task && isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createMultipleSaveMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 				$bl_method_comments = "Update multiple records at once parsed resource record into table: " . $this->db_table . ".";
 				$bl_code = '$status = true;
 
-$pks = $data["pks"];
-$attributes = $data["attributes"];
+$pks = isset($data["pks"]) ? $data["pks"] : null;
+$attributes = isset($data["attributes"]) ? $data["attributes"] : null;
 
 if ($attributes)
 	for ($i = 0, $t = count($attributes); $i < $t; $i++) {
 		$data["attributes"] = $attributes[$i];
-		$data["pks"] = $pks[$i];
+		$data["pks"] = isset($pks[$i]) ? $pks[$i] : null;
 		$is_insert = empty($pks[$i]);
 		
 		if ($is_insert && !$this->insert($data))
@@ -957,6 +975,7 @@ if ($attributes)
 
 return $status;';
 				$bl_task = $task;
+				$bl_task["service"]["service_id"] = isset($bl_task["service"]["service_id"]) ? $bl_task["service"]["service_id"] : null;
 				$bl_task["service"]["service_id"] = strstr($bl_task["service"]["service_id"], ".", true) . ".multipleSave";
 				$bl_task["service"]["method"] = "multipleSave";
 				
@@ -1022,6 +1041,7 @@ return $result;';
 				//echo "<pre>";print_r($update_task);die();
 				$common_options = $this->prepareBrokerSettingsCommonOptions($get_task, $update_task);
 				//echo "<pre>";print_r($common_options);print_r($get_task);print_r($update_task);die();
+				$common_options_code = null;
 				
 				if ($common_options) {
 					$dummy_task = $update_task;
@@ -1057,7 +1077,7 @@ return $result;';
 				$pks_name = array();
 				
 				foreach ($attrs as $attr_name => $attr)
-					if ($attr["primary_key"])
+					if (!empty($attr["primary_key"]))
 						$pks_name[] = $attr_name;
 				
 				$no_pks = empty($pks_name);
@@ -1074,7 +1094,7 @@ return $result;';
 				$pks_previous_code = str_replace("\n", "\n\t", $pks_previous_code);
 				
 				//to be shown after we get the Data from the DB. Is very important to show this before we execute the update task, bc we need to check the attributes that come from the DB, since some of them may contain wrong values, this is, if a numeric attribute returns null from the DB, but then the update task is IBATIS and contains a sql query with a numeric hashtag without quotes, then we will replace that hashtag by an empty string, which gives a sql error.
-				if ($update_task["item_type"] == "ibatis") { 
+				if (isset($update_task["item_type"]) && $update_task["item_type"] == "ibatis") { 
 					$attributes_next_code = self::getUpdateActionPreviousCode($this->tables, $this->db_table, $attributes_name, $update_task, $this->WorkFlowTaskHandler, $update_broker_code, '$data', false);
 					$attributes_next_code = str_replace("\n", "\n\t\t", $attributes_next_code);
 				}
@@ -1109,16 +1129,28 @@ return $result;';
 					$code .= $get_options_code;
 				}
 				
+				//prepare get data code
 				$code .= '$data = ' . $get_task_code . ';';
 			
-				if ($get_task["item_type"] == "ibatis" || $get_task["item_type"] == "db")
+				if (isset($get_task["item_type"]) && ($get_task["item_type"] == "ibatis" || $get_task["item_type"] == "db"))
 					$code .= '
 		$data = $data ? $data[0] : null;';
 				
+				//prepare code for empty files
+				$code_for_empty_files = '';
+				
+				foreach ($attrs as $attr_name => $attr)
+					if (empty($attr["primary_key"]) && isset($attr["type"]) && ObjTypeHandler::isDBTypeBlob($attr["type"]))
+						$code_for_empty_files .= '
+		if (isset($attributes["' . $attr_name . '"]) && isset($data["' . $attr_name . '"]) && empty($_FILES["' . $attr_name . '"]["tmp_name"])) $attributes["' . $attr_name . '"] = $data["' . $attr_name . '"];';
+				
+				
+				//prepare data code
 				$code .= '
 	
 		if (!$data || !is_array($data))
 			return false;
+		' . $code_for_empty_files . '
 		
 		foreach ($attributes as $attribute_name => $attribute_value)
 			$data[$attribute_name] = $attribute_value;
@@ -1131,7 +1163,7 @@ return $result;';
 				if ($no_pks)
 					$code .= 'foreach ($pks as $pk_name => $pk_value) {
 				$data["old_" . $pk_name] = $pk_value;
-				$data["new_" . $pk_name] = $attributes[$pk_name];
+				$data["new_" . $pk_name] = isset($attributes[$pk_name]) ? $attributes[$pk_name] : null;
 				unset($data[$pk_name]);
 			}
 			
@@ -1157,6 +1189,9 @@ return $result;';
 }';
 				
 				//prepare task in business logic layer
+				$get_task["item_type"] = isset($get_task["item_type"]) ? $get_task["item_type"] : null;
+				$update_task["item_type"] = isset($update_task["item_type"]) ? $update_task["item_type"] : null;
+				
 				if (($get_task["item_type"] == "businesslogic" || $update_task["item_type"] == "businesslogic") && $get_broker_code == $update_broker_code) {
 					//echo "<pre>createUpdateAttributeMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 					$bl_method_comments = "Update a parsed resource attribute from table: " . $this->db_table . ".";
@@ -1227,7 +1262,7 @@ return self::insert($EVC, $attributes, $no_cache);';
 			//prepare task in business logic layer
 			$task = $this->loadTask("update");
 			
-			if ($task && $task["item_type"] == "businesslogic") {
+			if ($task && isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createInsertUpdateAttributeMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 				$bl_method_comments = "Insert or update an attribute from table: " . $this->db_table . ".";
 				$bl_code = '$item_data = $this->get($data);
@@ -1235,12 +1270,13 @@ return self::insert($EVC, $attributes, $no_cache);';
 if (!empty($item_data))
 	return $this->updateAttribute($data);
 
-if (is_array($data["pks"]))
-	$data["attributes"] = is_array($data["attributes"]) ? array_merge($data["attributes"], $data["pks"]) : $data["pks"];
+if (isset($data["pks"]) && is_array($data["pks"]))
+	$data["attributes"] = isset($data["attributes"]) && is_array($data["attributes"]) ? array_merge($data["attributes"], $data["pks"]) : $data["pks"];
 
 return $this->insert($data);';
 				
 				$bl_task = $task;
+				$bl_task["service"]["service_id"] = isset($bl_task["service"]["service_id"]) ? $bl_task["service"]["service_id"] : null;
 				$bl_task["service"]["service_id"] = strstr($bl_task["service"]["service_id"], ".", true) . ".insertUpdateAttribute";
 				$bl_task["service"]["method"] = "insertUpdateAttribute";
 				
@@ -1325,13 +1361,13 @@ return !$exists || self::insert($EVC, $attributes, $no_cache);';
 			//prepare task in business logic layer
 			$task = $this->loadTask("insert");
 			
-			if ($task && $task["item_type"] == "businesslogic") {
+			if ($task && isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createInsertDeleteAttributeMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 				$bl_method_comments = "Insert or delete a record based if a value from an attribute, from table: " . $this->db_table . ", exists or not.";
 				$bl_code = '$exists = false;
 
 //note that the $data["attributes"] should only have 1 attribute name based in the html element that this action was called.
-if (is_array($data["attributes"]))
+if (isset($data["attributes"]) && is_array($data["attributes"]))
 	foreach ($data["attributes"] as $attr_name => $attr_value)
 		if ($attr_value) {
 			$exists = true;
@@ -1343,12 +1379,13 @@ $item_data = $this->get($data);
 if (!empty($item_data))
 	return $exists || $this->delete($data);
 
-if (is_array($data["pks"]))
-	$data["attributes"] = is_array($data["attributes"]) ? array_merge($data["attributes"], $data["pks"]) : $data["pks"];
+if (isset($data["pks"]) && is_array($data["pks"]))
+	$data["attributes"] = isset($data["attributes"]) && is_array($data["attributes"]) ? array_merge($data["attributes"], $data["pks"]) : $data["pks"];
 
 return !$exists || $this->insert($data);';
 				
 				$bl_task = $task;
+				$bl_task["service"]["service_id"] = isset($bl_task["service"]["service_id"]) ? $bl_task["service"]["service_id"] : null;
 				$bl_task["service"]["service_id"] = strstr($bl_task["service"]["service_id"], ".", true) . ".insertDeleteAttribute";
 				$bl_task["service"]["method"] = "insertDeleteAttribute";
 				
@@ -1462,7 +1499,7 @@ if (!empty($items))
 return $status;';
 			
 			//prepare task in business logic layer
-			if ($task && $task["item_type"] == "businesslogic") {
+			if ($task && isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createMultipleInsertDeleteAttributeMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 				$bl_method_comments = "Delete all records and insert new ones, based in an attribute, from table: " . $this->db_table . ", exists or not.";
 				$bl_code = str_replace('self::insert($EVC, $items[$i], $no_cache)', '$this->insert(array("attributes" => $items[$i], "options" => $options))', $code);
@@ -1516,7 +1553,7 @@ return $status;';
 				$pks_name = array();
 				
 				foreach ($attrs as $attr_name => $attr)
-					if ($attr["primary_key"])
+					if (!empty($attr["primary_key"]))
 						$pks_name[] = $attr_name;
 				
 				//prepare code
@@ -1545,7 +1582,7 @@ return $status;';
 }';
 				
 				//prepare task in business logic layer
-				if ($task["item_type"] == "businesslogic") {
+				if (isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 					//echo "<pre>createDeleteMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 					$bl_method_comments = "Delete parsed resource record from table: " . $this->db_table . ".";
 					$bl_parameters = array('pks');
@@ -1591,11 +1628,11 @@ return $status;';
 			//prepare task in business logic layer
 			$task = $this->loadTask("delete");
 			
-			if ($task && $task["item_type"] == "businesslogic") {
+			if ($task && isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createMultipleDeleteMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 				$bl_method_comments = "Delete multiple records at once parsed resource record from table: " . $this->db_table . ".";
 				$bl_code = '$status = true;
-$pks = $data["pks"];
+$pks = isset($data["pks"]) ? $data["pks"] : null;
 
 if ($pks)
 for ($i = 0, $t = count($pks); $i < $t; $i++) {
@@ -1607,6 +1644,7 @@ for ($i = 0, $t = count($pks); $i < $t; $i++) {
 
 return $status;';
 				$bl_task = $task;
+				$bl_task["service"]["service_id"] = isset($bl_task["service"]["service_id"]) ? $bl_task["service"]["service_id"] : null;
 				$bl_task["service"]["service_id"] = strstr($bl_task["service"]["service_id"], ".", true) . ".multipleDelete";
 				$bl_task["service"]["method"] = "multipleDelete";
 				
@@ -1617,7 +1655,10 @@ return $status;';
 					
 					$exists_logged_user_id_attribute = $this->containsLoggedUserIdAttribute();
 					
-					$code = '$data = array(
+					$code = '$options = array(
+	"no_cache" => $no_cache
+);
+$data = array(
 	"pks" => $pks,';
 					
 					if ($exists_logged_user_id_attribute)
@@ -1680,11 +1721,13 @@ return $result;';
 			$code .= '$result = ' . $task_code . ';
 ';
 			
-			if ($task["item_type"] == "ibatis" || $task["item_type"] == "db")
-				$code .= '
+			if (isset($task["item_type"])) {
+				if ($task["item_type"] == "ibatis" || $task["item_type"] == "db")
+					$code .= '
 $result = $result[0];';
-			else if ($task["item_type"] == "hibernate")
-				$code .= self::getHibernateGetActionNextCode('$result');
+				else if ($task["item_type"] == "hibernate")
+					$code .= self::getHibernateGetActionNextCode('$result');
+			}
 			
 			$next_code = self::getSelectItemActionNextCode($this->tables, $this->db_table, '$result');
 			$code .= $next_code ? '
@@ -1695,7 +1738,7 @@ $result = $result[0];';
 return $result;';
 			
 			//prepare task in business logic layer
-			if ($task["item_type"] == "businesslogic") {
+			if (isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createGetMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 				$bl_method_comments = "Get a parsed resource record from table: " . $this->db_table . ".";
 				$bl_parameters = array('pks');
@@ -1752,7 +1795,7 @@ return $result;';
 			
 			$code .= '$result = ' . $task_code . ';';
 			
-			if ($task["item_type"] == "hibernate")
+			if (isset($task["item_type"]) && $task["item_type"] == "hibernate")
 				$code .= self::getHibernateGetAllActionNextCode('$result');
 			
 			$next_code = self::getSelectItemsActionNextCode($this->tables, $this->db_table, '$result');
@@ -1764,7 +1807,7 @@ return $result;';
 return $result;';
 			
 			//prepare task in business logic layer
-			if ($task["item_type"] == "businesslogic") {
+			if (isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createGetAllMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 				$bl_method_comments = "Get parsed resource records from table: " . $this->db_table . ".";
 				$bl_parameters = array('conditions', 'conditions_type', 'conditions_case', 'conditions_join');
@@ -1819,15 +1862,15 @@ return $result;';
 			$code .= '$result = ' . $task_code . ';
 ';
 		
-			if ($task["item_type"] == "ibatis" || $task["item_type"] == "db")
+			if (isset($task["item_type"]) && ($task["item_type"] == "ibatis" || $task["item_type"] == "db"))
 				$code .= '
-return $result[0]["total"];';
+return isset($result[0]["total"]) ? $result[0]["total"] : null;';
 			else
 				$code .= '
 return $result;';
 			
 			//prepare task in business logic layer
-			if ($task["item_type"] == "businesslogic") {
+			if (isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createCountMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 				$bl_method_comments = "Count parsed resource records from table: " . $this->db_table . ".";
 				$bl_parameters = array('conditions', 'conditions_type', 'conditions_case', 'conditions_join');
@@ -1877,8 +1920,8 @@ return $result;';
 			if (!$options_settings)
 				$error_message = "Error: No primary attribute name when trying to create the getAllOptions method.";
 			else {
-				$keys = $options_settings["keys"];
-				$values = $options_settings["values"];
+				$keys = isset($options_settings["keys"]) ? $options_settings["keys"] : null;
+				$values = isset($options_settings["values"]) ? $options_settings["values"] : null;
 				
 				//prepare code
 				$code = $this->getTaskConditionsCode($task);
@@ -1892,7 +1935,7 @@ return $result;';
 				$code .= '$result = ' . $task_code . ';
 ';
 				
-				if ($task["item_type"] == "hibernate")
+				if (isset($task["item_type"]) && $task["item_type"] == "hibernate")
 					$code .= self::getHibernateGetAllActionNextCode('$result');
 				
 				$code .= '
@@ -1927,7 +1970,7 @@ if ($result)
 return $options;';
 				
 				//prepare task in business logic layer
-				if ($task["item_type"] == "businesslogic") {
+				if (isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 					//echo "<pre>createGetAllOptionsMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 					$bl_method_comments = "Get parsed resource key-value pair list from table: " . $this->db_table . ", where the key is the table primary key and the value is the table attribute label.";
 					$bl_parameters = array('conditions', 'conditions_type', 'conditions_case', 'conditions_join');
@@ -1965,7 +2008,7 @@ return $options;';
 		$parsed_code = str_replace($options_code, '', $code);
 		$has_logged_user_id = preg_match('/(\$[a-z]+\["logged_user_id"\]\s*=\s*)self::getLoggedUserId\(\$EVC\);/', $parsed_code);
 		
-		$bl_code = '$options = $data["options"];
+		$bl_code = '$options = isset($data["options"]) ? $data["options"] : null;
 $this->mergeOptionsWithBusinessLogicLayer($options);
 
 ';
@@ -1984,6 +2027,7 @@ $this->mergeOptionsWithBusinessLogicLayer($options);
 		$bl_task = $task;
 		
 		if ($method_name) {
+			$bl_task["service"]["service_id"] = isset($bl_task["service"]["service_id"]) ? $bl_task["service"]["service_id"] : null;
 			$bl_task["service"]["service_id"] = strstr($bl_task["service"]["service_id"], ".", true) . "." . $method_name;
 			$bl_task["service"]["method"] = $method_name;
 		}
@@ -2049,6 +2093,9 @@ return $result;';
 				$file_method_exists = false;
 				
 				if (!$file_exists) {
+					$task["service"]["path"] = isset($task["service"]["path"]) ? $task["service"]["path"] : null;
+					$task["service"]["service_id"] = isset($task["service"]["service_id"]) ? $task["service"]["service_id"] : null;
+					
 					$original_file_path = dirname($file_path) . "/" . basename($task["service"]["path"]);
 					$obj_data = PHPCodePrintingHandler::getClassFromFile($original_file_path, strstr($task["service"]["service_id"], ".", true));
 					
@@ -2057,8 +2104,8 @@ return $result;';
 						
 						$file_exists = PHPCodePrintingHandler::addClassToFile($file_path, array(
 							"name" => $class_name,
-							"extends" => $obj_data["extends"],
-							"includes" => $obj_data["includes"]
+							"extends" => isset($obj_data["extends"]) ? $obj_data["extends"] : null,
+							"includes" => isset($obj_data["includes"]) ? $obj_data["includes"] : null
 						));
 					}
 				}
@@ -2094,7 +2141,7 @@ return $result;';
 			
 			if ($class_name && $method_name) {
 				$bl_task = $task;
-				$bl_task["service"]["path"] = dirname($task["service"]["path"]) . "/$class_name.php";
+				$bl_task["service"]["path"] = (isset($task["service"]["path"]) ? dirname($task["service"]["path"]) : "") . "/$class_name.php";
 				$bl_task["service"]["service_id"] = "$class_name.$method_name";
 				$bl_task["service"]["obj"] = $class_name;
 				$bl_task["service"]["method"] = $method_name;
@@ -2114,11 +2161,11 @@ return $result;';
 		$class_name = $this->getTaskBusinessLogicResourceServiceClassName($task);
 		
 		if ($class_name) {
-			$service = $task["service"];
-			$bean_file_name = $task["bean_file_name"];
-			$bean_name = $task["bean_name"];
+			$service = isset($task["service"]) ? $task["service"] : null;
+			$bean_file_name = isset($task["bean_file_name"]) ? $task["bean_file_name"] : null;
+			$bean_name = isset($task["bean_name"]) ? $task["bean_name"] : null;
 			
-			if ($bean_name && $bean_file_name && $service["path"]) {
+			if ($bean_name && $bean_file_name && !empty($service["path"])) {
 				$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($this->user_beans_folder_path . $bean_file_name, $this->user_global_variables_file_path);
 				$obj = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
 				
@@ -2126,7 +2173,7 @@ return $result;';
 					$layer_path = $obj->getLayerPathSetting();
 					
 					if (is_dir($layer_path)) //be sure is not a rest broker and that layer folder really exists
-						return $layer_path . dirname($service["path"]) . "/$class_name.php";
+						return $layer_path . (isset($service["path"]) ? dirname($service["path"]) : "") . "/$class_name.php";
 				}
 			}
 		}
@@ -2135,8 +2182,8 @@ return $result;';
 	}
 	
 	private function getTaskBusinessLogicResourceServiceClassName($task) {
-		$service = $task["service"];
-		$service_id = $service["service_id"];
+		$service = isset($task["service"]) ? $task["service"] : null;
+		$service_id = isset($service["service_id"]) ? $service["service_id"] : null;
 		$class_name = strstr($service_id, ".", true);
 		
 		if ($class_name) {
@@ -2146,8 +2193,8 @@ return $result;';
 	}
 	
 	private function getTaskBusinessLogicResourceServiceClassMethodName($task) {
-		$service = $task["service"];
-		$service_id = $service["service_id"];
+		$service = isset($task["service"]) ? $task["service"] : null;
+		$service_id = isset($service["service_id"]) ? $service["service_id"] : null;
 		$method_name = strstr($service_id, ".");
 		
 		if ($method_name)
@@ -2159,12 +2206,15 @@ return $result;';
 		$exists_logged_user_id_attribute = false;
 		
 		if ($attrs)
-			foreach ($attrs as $attr_name => $attr)
-				if ( (ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name) || ObjTypeHandler::isDBAttributeNameAModifiedUserId($attr_name) ) && (ObjTypeHandler::isDBTypeNumeric($attr["type"]) || ObjTypeHandler::isPHPTypeNumeric($attr["type"]))) {
+			foreach ($attrs as $attr_name => $attr) {
+				$attr_type = isset($attr["type"]) ? $attr["type"] : null;
+				
+				if ( (ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name) || ObjTypeHandler::isDBAttributeNameAModifiedUserId($attr_name) ) && (ObjTypeHandler::isDBTypeNumeric($attr_type) || ObjTypeHandler::isPHPTypeNumeric($attr_type))) {
 					$exists_logged_user_id_attribute = true;
 					break;
 				}
-		
+			}
+			
 		return $exists_logged_user_id_attribute;
 	}
 	
@@ -2208,27 +2258,27 @@ return $result;';
 			if (is_array($tables_ui_props)) {
 				//$prop_type: "tables" or "brokers"
 				foreach ($tables_ui_props as $prop_type => $props) {
-					if (!$this->tables_ui_props[$prop_type])
+					if (empty($this->tables_ui_props[$prop_type]))
 						$this->tables_ui_props[$prop_type] = $props;
 					else if (is_array($props)) {
 						//$prop_type == "tables" then $prop_name is the $table_name where the $prop_value are the found brokers services
 						//$prop_type == "brokers" then $prop_name: "business_logic_broker_name", "ibatis_broker_name", "db_broker_name" and "hibernate_broker_name" where $prop_value is the $broker_name
 						foreach ($props as $prop_name => $prop_value) { 
-							if (!$this->tables_ui_props[$prop_type][$prop_name])
+							if (empty($this->tables_ui_props[$prop_type][$prop_name]))
 								$this->tables_ui_props[$prop_type][$prop_name] = $prop_value;
 							else if (is_array($prop_value) && $prop_type == "tables") {
 								$table_name = $prop_name;
 								
 								foreach ($prop_value as $broker_name => $broker_services) {
-									if (!$this->tables_ui_props[$prop_type][$table_name][$broker_name])
+									if (empty($this->tables_ui_props[$prop_type][$table_name][$broker_name]))
 										$this->tables_ui_props[$prop_type][$table_name][$broker_name] = $broker_services;
 									else if (is_array($broker_services))
 										foreach ($broker_services as $broker_service_type => $service) {
-											if (!$this->tables_ui_props[$prop_type][$table_name][$broker_name][$broker_service_type])
+											if (empty($this->tables_ui_props[$prop_type][$table_name][$broker_name][$broker_service_type]))
 												$this->tables_ui_props[$prop_type][$table_name][$broker_name][$broker_service_type] = $service;
 											else if (($broker_service_type == "relationships" || $broker_service_type == "relationships_count") && is_array($service))
 												foreach ($service as $foreign_table_name => $foreign_service)
-													if (!$this->tables_ui_props[$prop_type][$table_name][$broker_name][$broker_service_type][$foreign_table_name])
+													if (empty($this->tables_ui_props[$prop_type][$table_name][$broker_name][$broker_service_type][$foreign_table_name]))
 														$this->tables_ui_props[$prop_type][$table_name][$broker_name][$broker_service_type][$foreign_table_name] = $foreign_service;
 										}
 								}
@@ -2301,7 +2351,8 @@ return $result;';
 		//prepare db drivers
 		$db_drivers = WorkFlowBeansFileHandler::getLayerDBDrivers($this->user_global_variables_file_path, $this->user_beans_folder_path, $this->PresentationLayer, true);
 		
-		$selected_db_driver_props = $db_drivers[$this->db_driver];
+		$selected_db_driver_props = isset($db_drivers[$this->db_driver]) ? $db_drivers[$this->db_driver] : null;
+		$db_layer = $db_layer_file = null;
 		
 		if ($selected_db_driver_props) {
 			$db_layer = $selected_db_driver_props[2];
@@ -2351,9 +2402,9 @@ return $result;';
 		else { //TRYING TO GET THE DB TABLES DIRECTLY FROM DB
 			//get db driver object
 			$db_drivers = WorkFlowBeansFileHandler::getLayerDBDrivers($this->user_global_variables_file_path, $this->user_beans_folder_path, $this->PresentationLayer, true);
-			$db_driver_props = $db_drivers[$this->db_driver];
-			$db_driver_bean_file_name = $db_driver_props[1];
-			$db_driver_bean_name = $db_driver_props[2] ? $db_driver_props[2] : $this->db_driver;
+			$db_driver_props = isset($db_drivers[$this->db_driver]) ? $db_drivers[$this->db_driver] : null;
+			$db_driver_bean_file_name = isset($db_driver_props[1]) ? $db_driver_props[1] : null;
+			$db_driver_bean_name = !empty($db_driver_props[2]) ? $db_driver_props[2] : $this->db_driver;
 			//print_r($db_driver_props);die();
 			
 			if ($db_driver_bean_file_name && $db_driver_bean_name) {
@@ -2374,10 +2425,10 @@ return $result;';
 	//this function has the same name than in the create_presentation_uis_automatically.js
 	private function loadTask($broker_service_type) {
 		if ($this->db_table && $this->tables_ui_props && $this->layer_brokers_settings) {
-			$business_logic_brokers = $this->layer_brokers_settings["business_logic_brokers"];
-			$ibatis_brokers = $this->layer_brokers_settings["ibatis_brokers"];
-			$hibernate_brokers = $this->layer_brokers_settings["hibernate_brokers"];
-			$db_brokers = $this->layer_brokers_settings["db_brokers"];
+			$business_logic_brokers = isset($this->layer_brokers_settings["business_logic_brokers"]) ? $this->layer_brokers_settings["business_logic_brokers"] : null;
+			$ibatis_brokers = isset($this->layer_brokers_settings["ibatis_brokers"]) ? $this->layer_brokers_settings["ibatis_brokers"] : null;
+			$hibernate_brokers = isset($this->layer_brokers_settings["hibernate_brokers"]) ? $this->layer_brokers_settings["hibernate_brokers"] : null;
+			$db_brokers = isset($this->layer_brokers_settings["db_brokers"]) ? $this->layer_brokers_settings["db_brokers"] : null;
 			
 			$layer_brokers = array(
 				"businesslogic" => $business_logic_brokers, //first priority
@@ -2401,7 +2452,7 @@ return $result;';
 						$broker_bean_file_name = $b[1];
 						$broker_bean_name = $b[2];
 						
-						$service = $this->tables_ui_props["tables"][$real_table_name][$broker_name][$broker_service_type];
+						$service = isset($this->tables_ui_props["tables"][$real_table_name][$broker_name][$broker_service_type]) ? $this->tables_ui_props["tables"][$real_table_name][$broker_name][$broker_service_type] : null;
 						
 						if ($service) {
 							//echo "1";print_r($service);
@@ -2438,9 +2489,9 @@ return $result;';
 							$broker_tables_ui_props = $this->getTableUIProps($active_brokers, $active_brokers_folder, true);
 							//echo "<pre>broker_tables_ui_props:";print_r($broker_tables_ui_props);die();
 							
-							$real_broker_table_name = WorkFlowDBHandler::getTableTaskRealNameFromTasks($broker_tables_ui_props["tables"], $this->db_table);
+							$real_broker_table_name = WorkFlowDBHandler::getTableTaskRealNameFromTasks(isset($broker_tables_ui_props["tables"]) ? $broker_tables_ui_props["tables"] : null, $this->db_table);
 							
-							$service = $broker_tables_ui_props["tables"][$real_broker_table_name][$broker_name][$broker_service_type];
+							$service = isset($broker_tables_ui_props["tables"][$real_broker_table_name][$broker_name][$broker_service_type]) ? $broker_tables_ui_props["tables"][$real_broker_table_name][$broker_name][$broker_service_type] : null;
 							//echo "broker_service_type:$broker_service_type";print_r($broker_tables_ui_props["tables"][$real_broker_table_name][$broker_name]);
 							
 							if ($service) {
@@ -2529,9 +2580,9 @@ return $result;';
 				$url = $this->project_url_prefix . "phpframework/businesslogic/create_business_logic_objs_automatically?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=$path";
 				
 				$layer_brokers_settings = WorkFlowBeansFileHandler::getLayerBrokersSettings($this->user_global_variables_file_path, $this->user_beans_folder_path, $obj->getBrokers(), '');
-				$db_brokers = $layer_brokers_settings["db_brokers"];
-				$ibatis_brokers = $layer_brokers_settings["ibatis_brokers"];
-				$hibernate_brokers = $layer_brokers_settings["hibernate_brokers"];
+				$db_brokers = isset($layer_brokers_settings["db_brokers"]) ? $layer_brokers_settings["db_brokers"] : null;
+				$ibatis_brokers = isset($layer_brokers_settings["ibatis_brokers"]) ? $layer_brokers_settings["ibatis_brokers"] : null;
+				$hibernate_brokers = isset($layer_brokers_settings["hibernate_brokers"]) ? $layer_brokers_settings["hibernate_brokers"] : null;
 				
 				$layer_brokers = array(
 					"db" => $db_brokers, //first priority
@@ -2637,7 +2688,7 @@ return $result;';
 							//check if file was created and if so checks if the correspondent function exists based in broker_service_type. If yes copies the function to $default_service_file_abs_path, or if it doesn't exists, rename the created file to $default_service_file_abs_path.
 							if ($statuses) {
 								$item = $statuses[0];
-								$created_file_path = $item[0];
+								$created_file_path = isset($item[0]) ? $item[0] : null;
 								$created_file_abs_path = $obj->getLayerPathSetting() . $created_file_path;
 								
 								//if file was created successfully
@@ -2663,13 +2714,14 @@ return $result;';
 										//copy correspondent method from created_file_abs_path to default_service_file_abs_path
 										else if (file_exists($default_service_file_abs_path)) { 
 											$method_data["code"] = PHPCodePrintingHandler::getFunctionCodeFromFile($created_file_abs_path, $method_data["name"], $class_name);
-											$comments = is_array($method_data["comments"]) ? trim(implode("\n", $method_data["comments"])) : "";
-											$comments .= is_array($method_data["doc_comments"]) ? ($comments ? "\n" : "") . trim(implode("\n", $method_data["doc_comments"])) : "";
+											$comments = isset($method_data["comments"]) && is_array($method_data["comments"]) ? trim(implode("\n", $method_data["comments"])) : "";
+											$comments .= isset($method_data["doc_comments"]) && is_array($method_data["doc_comments"]) ? ($comments ? "\n" : "") . trim(implode("\n", $method_data["doc_comments"])) : "";
 											$method_data["comments"] = str_replace("\n\t", "\n", $comments);
 											
 											$class_data = PHPCodePrintingHandler::getClassOfFile($default_service_file_abs_path);
+											$class_data_name = isset($class_data["name"]) ? $class_data["name"] : null;
 											
-											$status = PHPCodePrintingHandler::addFunctionToFile($default_service_file_abs_path, $method_data, $class_data["name"]);
+											$status = PHPCodePrintingHandler::addFunctionToFile($default_service_file_abs_path, $method_data, $class_data_name);
 											//echo "addFunctionToFile:$status\n";
 											
 											@unlink($created_file_abs_path);
@@ -2680,8 +2732,11 @@ return $result;';
 											
 											if ($status) {
 												$class_data = PHPCodePrintingHandler::getClassOfFile($created_file_abs_path);
-												$src_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($class_data["name"], $class_data["namespace"]);
-												$dst_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace(pathinfo($created_file_abs_path, PATHINFO_FILENAME), $class_data["namespace"]);
+												$class_data_name = isset($class_data["name"]) ? $class_data["name"] : null;
+												$class_data_namespace = isset($class_data["namespace"]) ? $class_data["namespace"] : null;
+												
+												$src_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($class_data_name, $class_data_namespace);
+												$dst_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace(pathinfo($created_file_abs_path, PATHINFO_FILENAME), $class_data_namespace);
 												
 												$status = PHPCodePrintingHandler::renameClassFromFile($created_file_abs_path, $src_class_name, $dst_class_name);
 												
@@ -2749,7 +2804,7 @@ return $result;';
 				//check if file was created and if so checks if the correspondent function exists based in broker_service_type. If yes copies the function to $default_service_file_abs_path, or if it doesn't exists, rename the created file to $default_service_file_abs_path.
 				if ($statuses) {
 					$item = $statuses[0];
-					$created_file_path = $item[0];
+					$created_file_path = isset($item[0]) ? $item[0] : null;
 					$created_file_abs_path = $obj->getLayerPathSetting() . $created_file_path;
 					
 					//if file was created successfully
@@ -2774,7 +2829,7 @@ return $result;';
 													array(
 														"name" => $query_type,
 														"@" => array(
-															"id" => $rule_data["@"]["id"]
+															"id" => isset($rule_data["@"]["id"]) ? $rule_data["@"]["id"] : null
 														),
 														"value" => $sql = XMLFileParser::getValue($rule_data)
 													)
@@ -2848,7 +2903,7 @@ return $result;';
 					//check if file was created and if so checks if the correspondent function exists based in broker_service_type. If yes copies the function to $default_service_file_abs_path, or if it doesn't exists, rename the created file to $default_service_file_abs_path.
 					if ($statuses) {
 						$item = $statuses[0];
-						$created_file_path = $item[0];
+						$created_file_path = isset($item[0]) ? $item[0] : null;
 						$created_file_abs_path = $obj->getLayerPathSetting() . $created_file_path;
 						
 						if ($created_file_abs_path == $default_service_file_abs_path)
@@ -2861,15 +2916,19 @@ return $result;';
 
 	//this function has the same name than in the create_presentation_uis_automatically.js
 	private function loadTaskParams($task) {
-		$broker_name = $task["broker_name"];
-		$broker_bean_name = $task["bean_name"];
-		$broker_bean_file_name = $task["bean_file_name"];
-		$item_type = $task["item_type"];
-		$service = $task["service"];
+		$broker_name = isset($task["broker_name"]) ? $task["broker_name"] : null;
+		$broker_bean_name = isset($task["bean_name"]) ? $task["bean_name"] : null;
+		$broker_bean_file_name = isset($task["bean_file_name"]) ? $task["bean_file_name"] : null;
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
+		$service = isset($task["service"]) ? $task["service"] : null;
 		
 		$get_business_logic_properties_url = $this->project_url_prefix . "phpframework/businesslogic/get_business_logic_properties?bean_name=#bean_name#&bean_file_name=#bean_file_name#&path=#path#&service=#service#";
 		$get_query_properties_url = $this->project_url_prefix . "phpframework/dataaccess/get_query_properties?bean_name=#bean_name#&bean_file_name=#bean_file_name#&db_driver=#db_driver#&db_type=#db_type#&path=#path#&query_type=#query_type#&query=#query#&obj=#obj#&relationship_type=#relationship_type#";
 		$url = null;
+		
+		$service_path = isset($service["path"]) ? $service["path"] : null;
+		$service_id = isset($service["service_id"]) ? $service["service_id"] : null;
+		$service_type = isset($service["service_type"]) ? $service["service_type"] : null;
 		
 		//get params for this $service
 		switch ($item_type) {
@@ -2877,23 +2936,23 @@ return $result;';
 				$url = $get_business_logic_properties_url;
 				$url = str_replace("#bean_name#", $broker_bean_name, $url);
 				$url = str_replace("#bean_file_name#", $broker_bean_file_name, $url);
-				$url = str_replace("#path#", $service["path"], $url);
-				$url = str_replace("#service#", $service["service_id"], $url);
+				$url = str_replace("#path#", $service_path, $url);
+				$url = str_replace("#service#", $service_id, $url);
 				break;
 			case "ibatis":
 				$url = $get_query_properties_url;
 				$url = str_replace("#bean_name#", $broker_bean_name, $url);
 				$url = str_replace("#bean_file_name#", $broker_bean_file_name, $url);
-				$url = str_replace("#path#", $service["path"], $url);
+				$url = str_replace("#path#", $service_path, $url);
 				$url = str_replace("#db_driver#", $this->db_driver, $url);
 				$url = str_replace("#db_type#", $this->db_type, $url);
-				$url = str_replace("#query_type#", $service["service_type"], $url);
-				$url = str_replace("#query#", $service["service_id"], $url);
+				$url = str_replace("#query_type#", $service_type, $url);
+				$url = str_replace("#query#", $service_id, $url);
 				$url = str_replace("#obj#", "", $url);
 				$url = str_replace("#relationship_type#", "queries", $url);
 				break;
 			case "hibernate":
-				$method = $service["service_method"];
+				$method = isset($service["service_method"]) ? $service["service_method"] : null;
 				$relationship_type = "";
 				$query_type = "";
 				$available_native_methods = array("insert", "insertAll", "update", "updateAll", "insertOrUpdate", "insertOrUpdateAll", "updatePrimaryKeys", "delete", "deleteAll", "findById", "find", "count");
@@ -2903,7 +2962,7 @@ return $result;';
 				if (in_array($method, $available_native_methods))
 					$relationship_type = "native";
 				else if (in_array($method, $available_relationship_methods)) {
-					$method = $service["sma_rel_name"];
+					$method = isset($service["sma_rel_name"]) ? $service["sma_rel_name"] : null;
 					$relationship_type = "relationships";
 				}
 				else if (in_array($method, $available_query_methods)) {
@@ -2936,12 +2995,12 @@ return $result;';
 				$url = $get_query_properties_url;
 				$url = str_replace("#bean_name#", $broker_bean_name, $url);
 				$url = str_replace("#bean_file_name#", $broker_bean_file_name, $url);
-				$url = str_replace("#path#", $service["path"], $url);
+				$url = str_replace("#path#", $service_path, $url);
 				$url = str_replace("#db_driver#", $this->db_driver, $url);
 				$url = str_replace("#db_type#", $this->db_type, $url);
 				$url = str_replace("#query_type#", $query_type, $url);
 				$url = str_replace("#query#", $method, $url);
-				$url = str_replace("#obj#", $service["service_id"], $url);
+				$url = str_replace("#obj#", $service_id, $url);
 				$url = str_replace("#relationship_type#", $relationship_type, $url);
 				break;
 		}
@@ -2970,7 +3029,7 @@ return $result;';
 					$available_relationship_methods = array("findRelationships",  "findRelationship", "countRelationships",  "countRelationship");
 					$parameters_key = "sma_data";
 					
-					if (in_array($service["service_method"], $available_relationship_methods))
+					if (isset($service["service_method"]) && in_array($service["service_method"], $available_relationship_methods))
 						$parameters_key = "sma_parent_ids";
 				}
 				//echo "parameters_key:$parameters_key\n";
@@ -2987,12 +3046,12 @@ return $result;';
 
 	//this function has the same name than in the create_presentation_uis_automatically.js
 	private function loadTaskParamsWithDefaultValues($task, $var_prefix) {
-		$item_type = $task["item_type"];
-		$service = $task["service"];
-		$var_prefix = substr($var_prefix, 0, 1) == '$' ? $var_prefix : '$' . $var_prefix;
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
+		$service = isset($task["service"]) ? $task["service"] : null;
+		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
 		
 		if ($item_type == "db") {
-			$sql = $service["sql"];
+			$sql = isset($service["sql"]) ? $service["sql"] : null;
 			
 			if ($sql) {
 				preg_match_all("/#([^#]+)#/", $sql, $matches, PREG_PATTERN_ORDER);
@@ -3009,17 +3068,17 @@ return $result;';
 				
 				$service["sql"] = trim($sql);
 			}
-			else if ($task["is_db_dao_action_task"]) {
+			else if (!empty($task["is_db_dao_action_task"])) {
 				$items = array(
-					"attributes" => $service["attributes"], 
-					"conditions" => $service["conditions"]
+					"attributes" => isset($service["attributes"]) ? $service["attributes"] : null, 
+					"conditions" => isset($service["conditions"]) ? $service["conditions"] : null
 				);
 				
 				foreach ($items as $type => $a_or_c)
 					if (is_array($a_or_c)) {
 						foreach ($a_or_c as $idx => $param) {
-							$name = $param["key"];
-							$value = $param["value"];
+							$name = isset($param["key"]) ? $param["key"] : null;
+							$value = isset($param["value"]) ? $param["value"] : null;
 							
 							preg_match_all("/#([^#]+)#/", $value, $matches, PREG_PATTERN_ORDER);
 							
@@ -3055,7 +3114,7 @@ return $result;';
 				$available_relationship_methods = array("findRelationships",  "findRelationship", "countRelationships",  "countRelationship");
 				$parameters_key = "sma_data";
 				
-				if (in_array($service["service_method"], $available_relationship_methods))
+				if (isset($service["service_method"]) && in_array($service["service_method"], $available_relationship_methods))
 					$parameters_key = "sma_parent_ids";
 				
 				//prepare sma ids variable name
@@ -3067,7 +3126,7 @@ return $result;';
 			
 			if (is_array($items)) {
 				foreach ($items as $idx => $param) {
-					$name = $param["key"];
+					$name = isset($param["key"]) ? $param["key"] : null;
 					
 					$items[$idx]["value_type"] = "";
 					$items[$idx]["value"] = $var_prefix . '[\'' . $name . '\']';
@@ -3083,7 +3142,7 @@ return $result;';
 	}
 
 	private function loadTaskConditions($task) {
-		$item_type = $task["item_type"];
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
 		
 		if ($item_type == "businesslogic" || $item_type == "ibatis") {
 			$task["service"]["parameters"] = "data";
@@ -3093,18 +3152,21 @@ return $result;';
 			$task["service"]["sma_data"] = "data";
 			$task["service"]["sma_data_type"] = "variable";
 		}
-		else if ($item_type == "db" && $task["service"]["sql"] && $task["service"]["sql_type"] == "string")
+		else if ($item_type == "db" && !empty($task["service"]["sql"]) && isset($task["service"]["sql_type"]) && $task["service"]["sql_type"] == "string")
 			$task["service"]["sql"] .= ' WHERE $conds';
-		else if ($item_type == "db" && $task["is_db_dao_action_task"]) {
+		else if ($item_type == "db" && !empty($task["is_db_dao_action_task"])) {
 			$task["service"]["conditions"] = "conditions";
 			$task["service"]["conditions_type"] = "variable";
 			
 			//if not a variable, must be an array
-			if (($task["service"]["options_type"] != "variable" || !trim($task["service"]["options"])) && !is_array($task["service"]["options"]))
+			$task_service_options = isset($task["service"]["options"]) ? $task["service"]["options"] : null;
+			$task_service_options_type = isset($task["service"]["options_type"]) ? $task["service"]["options_type"] : null;
+			
+			if (($task_service_options_type != "variable" || !trim($task_service_options)) && !is_array($task_service_options))
 				$task["service"]["options"] = array();
 			
 			//add conditions_join to options
-			if (is_array($task["service"]["options"]))
+			if (isset($task["service"]["options"]) && is_array($task["service"]["options"]))
 				$task["service"]["options"][] = array(
 					"key" => "conditions_join",
 					"key_type" => "string",
@@ -3117,11 +3179,11 @@ return $result;';
 	}
 
 	private function loadTaskLimitAndStart($task) {
-		$item_type = $task["item_type"];
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
 		
 		//prepare limit and start
-		$options = $item_type == "hibernate" ? $task["service"]["sma_options"] : $task["service"]["options"];
-		$options_type = $item_type == "hibernate" ? $task["service"]["sma_options_type"] : $task["service"]["options_type"];
+		$options = $item_type == "hibernate" ? (isset($task["service"]["sma_options"]) ? $task["service"]["sma_options"] : null) : (isset($task["service"]["options"]) ? $task["service"]["options"] : null);
+		$options_type = $item_type == "hibernate" ? (isset($task["service"]["sma_options_type"]) ? $task["service"]["sma_options_type"] : null) : (isset($task["service"]["options_type"]) ? $task["service"]["options_type"] : null);
 		
 		if (!is_array($options)) {
 			$options = array();
@@ -3154,11 +3216,11 @@ return $result;';
 	}
 
 	private function loadSort($task) {
-		$item_type = $task["item_type"];
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
 		
 		//prepare limit and start
-		$options = $item_type == "hibernate" ? $task["service"]["sma_options"] : $task["service"]["options"];
-		$options_type = $item_type == "hibernate" ? $task["service"]["sma_options_type"] : $task["service"]["options_type"];
+		$options = $item_type == "hibernate" ? (isset($task["service"]["sma_options"]) ? $task["service"]["sma_options"] : null) : (isset($task["service"]["options"]) ? $task["service"]["options"] : null);
+		$options_type = $item_type == "hibernate" ? (isset($task["service"]["sma_options_type"]) ? $task["service"]["sma_options_type"] : null) : (isset($task["service"]["options_type"]) ? $task["service"]["options_type"] : null);
 		
 		if (!is_array($options)) {
 			$options = array();
@@ -3185,16 +3247,20 @@ return $result;';
 	}
 
 	private function resetTaskOptionNoCache($task) {
-		$item_type = $task["item_type"];
-		$options = $item_type == "hibernate" ? $task["service"]["sma_options"] : $task["service"]["options"];
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
+		$options = $item_type == "hibernate" ? (isset($task["service"]["sma_options"]) ? $task["service"]["sma_options"] : null) : (isset($task["service"]["options"]) ? $task["service"]["options"] : null);
 		
 		if (is_array($options))
-			foreach ($options as $idx => $option)
-				if ($option["key"] == "no_cache" && $option["key_type"] == "string") {
+			foreach ($options as $idx => $option) {
+				$option_key = isset($option["key"]) ? $option["key"] : null;
+				$option_key_type = isset($option["key_type"]) ? $option["key_type"] : null;
+				
+				if ($option_key == "no_cache" && $option_key_type == "string") {
 					$options[$idx]["value"] = "no_cache";
 					$options[$idx]["value_type"] = "variable";
 					break;
 				}
+			}
 		
 		if ($item_type == "hibernate")
 			$task["service"]["sma_options"] = $options;
@@ -3205,29 +3271,29 @@ return $result;';
 	}
 
 	private function getBrokerCode($task) {
-		$broker_name = $task["broker_name"];
-		$item_type = $task["item_type"];
+		$broker_name = isset($task["broker_name"]) ? $task["broker_name"] : null;
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
 		
 		switch ($item_type) {
-			case "businesslogic": return $this->layer_brokers_settings["business_logic_brokers_obj"][$broker_name];
-			case "ibatis": return $this->layer_brokers_settings["ibatis_brokers_obj"][$broker_name];
-			case "hibernate": return $this->layer_brokers_settings["hibernate_brokers_obj"][$broker_name];
-			case "db": return $this->layer_brokers_settings["db_brokers_obj"][$broker_name];
+			case "businesslogic": return isset($this->layer_brokers_settings["business_logic_brokers_obj"][$broker_name]) ? $this->layer_brokers_settings["business_logic_brokers_obj"][$broker_name] : null;
+			case "ibatis": return isset($this->layer_brokers_settings["ibatis_brokers_obj"][$broker_name]) ? $this->layer_brokers_settings["ibatis_brokers_obj"][$broker_name] : null;
+			case "hibernate": return isset($this->layer_brokers_settings["hibernate_brokers_obj"][$broker_name]) ? $this->layer_brokers_settings["hibernate_brokers_obj"][$broker_name] : null;
+			case "db": return isset($this->layer_brokers_settings["db_brokers_obj"][$broker_name]) ? $this->layer_brokers_settings["db_brokers_obj"][$broker_name] : null;
 		}
 		
 		return null;
 	}
 
 	private function getTaskConditionsCode($task) {
-		$item_type = $task["item_type"];
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
 		
 		$code = '//prepare $conditions based in $conditions_type: starts_with or ends_with
 if ($conditions)
 	foreach ($conditions as $attribute_name => $attribute_value) {
-		$attribute_condition_type = is_array($conditions_type) ? $conditions_type[$attribute_name] : $conditions_type;
+		$attribute_condition_type = is_array($conditions_type) ? (isset($conditions_type[$attribute_name]) ? $conditions_type[$attribute_name] : null) : $conditions_type;
 		$attribute_operator = $attribute_condition_type == "starts_with" || $attribute_condition_type == "ends_with" || $attribute_condition_type == "contains" ? "like" : $attribute_condition_type;
-		$attribute_case = is_array($conditions_case) ? $conditions_case[$attribute_name] : $conditions_case;
-		$attribute_join = is_array($conditions_join) ? $conditions_join[$attribute_name] : $conditions_join;
+		$attribute_case = is_array($conditions_case) ? (isset($conditions_case[$attribute_name]) ? $conditions_case[$attribute_name] : null) : $conditions_case;
+		$attribute_join = is_array($conditions_join) ? (isset($conditions_join[$attribute_name]) ? $conditions_join[$attribute_name] : null) : $conditions_join;
 		
 		if ($attribute_operator && $attribute_operator != "=" && $attribute_operator != "equal") {
 			if (is_array($attribute_value) && $attribute_operator != "in" && $attribute_operator != "not in") {
@@ -3247,7 +3313,7 @@ if ($conditions)
 				
 	    			$conditions[$attribute_name] = array(
 					"operator" => $attribute_operator,
-					"value" => ($attribute_operator == "in" || $attribute_operator == "not in") ? $attribute_value : (
+					"value" => $attribute_operator == "in" || $attribute_operator == "not in" ? $attribute_value : (
 						($attribute_condition_type == "starts_with" || $attribute_condition_type == "contains" ? "%" : "") . ($attribute_case == "insensitive" ? strtolower($attribute_value) : $attribute_value) . ($attribute_condition_type == "ends_with" || $attribute_condition_type == "contains" ? "%" : "")
 					),
 				);
@@ -3287,16 +3353,16 @@ $data = array(
 );
 ';
 		else if ($item_type == "db") {
-			if ($task["sql"])
+			if (!empty($task["sql"]))
 				$code .= '
 include_once get_lib("org.phpframework.db.DB");
 
 $conds = DB::getSQLConditions($conditions, $conditions_join);
 $conds = $conds ? $conds : "1=1";
 ';
-		else if ($task["is_db_dao_action_task"] && $task["service"]["options_type"] == "variable" && trim($task["service"]["options"])) {
+		else if (!empty($task["is_db_dao_action_task"]) && isset($task["service"]["options_type"]) && $task["service"]["options_type"] == "variable" && isset($task["service"]["options"]) && trim($task["service"]["options"])) {
 				$options_var_name = trim($task["service"]["options"]);
-				$options_var_name = substr($options_var_name, 0, 1) == '$' ? $options_var_name : '$' . $options_var_name;
+				$options_var_name = substr($options_var_name, 0, 1) == '$' || substr($options_var_name, 0, 2) == '@$' ? $options_var_name : '$' . $options_var_name;
 				
 				$code .= '
 ' . $options_var_name . ' = is_array(' . $options_var_name . ') ? ' . $options_var_name . ' : array();
@@ -3309,9 +3375,10 @@ $conds = $conds ? $conds : "1=1";
 	}
 
 	private function getTaskCode($action_type, $task, $broker_code, $prefix = "") {
-		$action_task_type = $task["item_type"] == "db" && $task["is_db_dao_action_task"] ? "dbdaoaction" : self::getActionTaskType($action_type, $task["item_type"]);
+		$action_task_type = isset($task["item_type"]) && $task["item_type"] == "db" && !empty($task["is_db_dao_action_task"]) ? "dbdaoaction" : self::getActionTaskType($action_type, isset($task["item_type"]) ? $task["item_type"] : null);
 		
-		$task_code = self::prepareBrokerCode($this->WorkFlowTaskHandler, $action_task_type, $task["service"]);
+		$task_code = self::prepareBrokerCode($this->WorkFlowTaskHandler, $action_task_type, isset($task["service"]) ? $task["service"] : null);
+		$code = null;
 		
 		if ($task_code) {
 			if ($prefix)
@@ -3355,7 +3422,7 @@ $conds = $conds ? $conds : "1=1";
 					if ($k == "access" || $k == "view" || $k == "show") {
 						if (is_string($v) || is_numeric($v) || !self::isAssociativeArray($v))
 							$aux = is_array($v) ? $v : array($v);
-						else if (is_array($v) && $v["user_type_ids"])
+						else if (is_array($v) && !empty($v["user_type_ids"]))
 							$aux = is_array($v["user_type_ids"]) ? $v["user_type_ids"] : array($v["user_type_ids"]);
 					}
 		}
@@ -3373,7 +3440,7 @@ $conds = $conds ? $conds : "1=1";
 			if (self::isAssociativeArray($permissions))
 				foreach ($permissions as $k => $v) 
 					if ($k == "access" || $k == "view" || $k == "show") {
-						if (self::isAssociativeArray($v) && $v["resources"])
+						if (self::isAssociativeArray($v) && !empty($v["resources"])) {
 							$resources = is_array($v["resources"]) ? $v["resources"] : array($v["resources"]);
 							$names = array();
 							
@@ -3382,13 +3449,14 @@ $conds = $conds ? $conds : "1=1";
 								$resource_name = $resource; //if is string
 								
 								if (self::isAssociativeArray($resource))
-									$resource_name = $resource["name"];
+									$resource_name = isset($resource["name"]) ? $resource["name"] : null;
 								
 								if ($resource_name)
 									$names[] = $resource;
 							}
 							
 							return $names;
+						}
 					}
 		}
 		
@@ -3397,8 +3465,8 @@ $conds = $conds ? $conds : "1=1";
 	
 	//copied from CMSPresentationFormSettingsUIHandler::getBrokerSettingsOptionsCode, so if you change this method, please mae the correspodnent changes in this other method too.
 	private static function getBrokerSettingsOptionsCode($WorkFlowTaskHandler, $action_type, $task) {
-		$item_type = $task["item_type"];
-		$service = $task["service"];
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
+		$service = isset($task["service"]) ? $task["service"] : null;
 		
 		switch ($item_type) {
 			case "businesslogic":
@@ -3465,13 +3533,17 @@ $conds = $conds ? $conds : "1=1";
 		//check if tasks options are arrays
 		$status = true;
 		
-		foreach ($tasks as &$task)
-			if ($task["service"]["options_type"] != "array" || !is_array($task["service"]["options"])) {
+		foreach ($tasks as &$task) {
+			$task_service_options = isset($task["service"]["options"]) ? $task["service"]["options"] : null;
+			$task_service_options_type = isset($task["service"]["options_type"]) ? $task["service"]["options_type"] : null;
+			
+			if ($task_service_options_type != "array" || !is_array($task_service_options)) {
 				$status = false;
 				break;
 			}
-			else if (is_array($task["service"]["options"]) && array_key_exists("key", $task["service"]["options"]))
-				$task["service"]["options"] = array($task["service"]["options"]);
+			else if (is_array($task_service_options) && array_key_exists("key", $task_service_options))
+				$task["service"]["options"] = array($task_service_options);
+		}
 		
 		unset($task); //remove the latest reference for the $task variable
 		
@@ -3483,19 +3555,29 @@ $conds = $conds ? $conds : "1=1";
 			$t = count($tasks);
 			
 			foreach ($tasks as $idx => $task) {
-				if ($task["service"]["options"])
+				if (!empty($task["service"]["options"]))
 					foreach ($task["service"]["options"] as $idy => $option) {
 						$exists_count = 1;
+						$option_key = isset($option["key"]) ? $option["key"] : null;
+						$option_key_type = isset($option["key_type"]) ? $option["key_type"] : null;
+						$option_value = isset($option["value"]) ? $option["value"] : null;
+						$option_value_type = isset($option["value_type"]) ? $option["value_type"] : null;
 						
 						for ($i = 0; $i < $t; $i++) {
 							$other_task = $tasks[$i];
 							
-							if ($i != $idx && $other_task["service"]["options"])
-								foreach ($other_task["service"]["options"] as $other_option)
-									if ($other_option["key"] == $option["key"] && $other_option["key_type"] == $option["key_type"] && $other_option["value"] == $option["value"] && $other_option["value_type"] == $option["value_type"]) {
+							if ($i != $idx && !empty($other_task["service"]["options"]))
+								foreach ($other_task["service"]["options"] as $other_option) {
+									$other_option_key = isset($other_option["key"]) ? $other_option["key"] : null;
+									$other_option_key_type = isset($other_option["key_type"]) ? $other_option["key_type"] : null;
+									$other_option_value = isset($other_option["value"]) ? $other_option["value"] : null;
+									$other_option_value_type = isset($other_option["value_type"]) ? $other_option["value_type"] : null;
+									
+									if ($other_option_key == $option_key && $other_option_key_type == $option_key_type && $other_option_value == $option_value && $other_option_value_type == $option_value_type) {
 										$exists_count++;
 										break;
 									}
+								}
 						}
 						
 						if ($exists_count == $t) {
@@ -3514,14 +3596,24 @@ $conds = $conds ? $conds : "1=1";
 			
 			for ($i = 0; $i < $t; $i++) {
 				$option = $common_options[$i];
+				$option_key = isset($option["key"]) ? $option["key"] : null;
+				$option_key_type = isset($option["key_type"]) ? $option["key_type"] : null;
+				$option_value = isset($option["value"]) ? $option["value"] : null;
+				$option_value_type = isset($option["value_type"]) ? $option["value_type"] : null;
 				
 				foreach ($tasks as $idx => &$task) {
-					if ($task["service"]["options"])
-						foreach ($task["service"]["options"] as $idy => $task_option) 
-							if ($task_option["key"] == $option["key"] && $task_option["key_type"] == $option["key_type"] && $task_option["value"] == $option["value"] && $task_option["value_type"] == $option["value_type"]) {
+					if (!empty($task["service"]["options"]))
+						foreach ($task["service"]["options"] as $idy => $task_option) {
+							$task_option_key = isset($task_option["key"]) ? $task_option["key"] : null;
+							$task_option_key_type = isset($task_option["key_type"]) ? $task_option["key_type"] : null;
+							$task_option_value = isset($task_option["value"]) ? $task_option["value"] : null;
+							$task_option_value_type = isset($task_option["value_type"]) ? $task_option["value_type"] : null;
+							
+							if ($task_option_key == $option_key && $task_option_key_type == $option_key_type && $task_option_value == $option_value && $task_option_value_type == $option_value_type) {
 								unset($task["service"]["options"][$idy]);
 								break;
 							}
+						}
 				}
 				
 				unset($task); //remove the latest reference for the $task variable
@@ -3537,7 +3629,7 @@ $conds = $conds ? $conds : "1=1";
 	//copied from CMSPresentationFormSettingsUIHandler::prepareBrokerCode, so if you change this method, please mae the correspodnent changes in this other method too.
 	private static function prepareBrokerCode($WorkFlowTaskHandler, $action_task_type, $task_properties) {
 		$task = $WorkFlowTaskHandler->getTasksByTag($action_task_type);
-		$task = $task[0];
+		$task = isset($task[0]) ? $task[0] : null;
 		
 		if ($task) {
 			$task["properties"] = $task_properties;
@@ -3564,11 +3656,11 @@ $conds = $conds ? $conds : "1=1";
 	}
 
 	private static function isDBPrimitiveTask($task) {
-		return in_array($task["item_type"], array("ibatis", "hibernate", "db"));
+		return isset($task["item_type"]) && in_array($task["item_type"], array("ibatis", "hibernate", "db"));
 	}
 	
 	private static function isIbatisTask($task) {
-		return $task["item_type"] == "ibatis";
+		return isset($task["item_type"]) && $task["item_type"] == "ibatis";
 	}
 
 	private static function getTableOptionsSettings($db_table, $tables, $resource_data) {
@@ -3578,8 +3670,8 @@ $conds = $conds ? $conds : "1=1";
 			$resource_data = array($resource_data);
 		
 		$attr_fk = WorkFlowDataAccessHandler::getTableAttributeFKTable($resource_data, $tables);
-		$fk_table = $attr_fk["table"];
-		$fk_attr = $attr_fk["attribute"];
+		$fk_table = isset($attr_fk["table"]) ? $attr_fk["table"] : null;
+		$fk_attr = isset($attr_fk["attribute"]) ? $attr_fk["attribute"] : null;
 		$fk_attrs = $fk_table ? WorkFlowDBHandler::getTableFromTables($tables, $fk_table) : null;
 		
 		//get the pks name $attribute_name
@@ -3587,7 +3679,7 @@ $conds = $conds ? $conds : "1=1";
 			$fk_attr = array();
 			
 			foreach ($fk_attrs as $attr_name => $attr)
-				if ($attr["primary_key"])
+				if (!empty($attr["primary_key"]))
 					$fk_attr[] = $attr_name;
 		}
 		
@@ -3611,7 +3703,7 @@ $conds = $conds ? $conds : "1=1";
 	//copied from CMSPresentationFormSettingsUIHandler::getInsertActionPreviousCode, so if you change this method, please mae the correspodnent changes in this other method too.
 	private static function getInsertActionPreviousCode($tables, $table_name, $attributes, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix, $is_insert_task = true, $is_update_task = false, $is_update_attribute_task = false) {
 		$code = "";
-		$var_prefix = substr($var_prefix, 0, 1) == '$' ? $var_prefix : '$' . $var_prefix;
+		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
 		
 		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
 		$is_db_primitive_action = self::isDBPrimitiveTask($task); //used when insert and update action
@@ -3619,14 +3711,14 @@ $conds = $conds ? $conds : "1=1";
 		$logged_user_id_code = null;
 		
 		foreach ($attributes as $attr_name) {
-			$attr = $attrs[$attr_name];
+			$attr = isset($attrs[$attr_name]) ? $attrs[$attr_name] : null;
 			$is_created_attribute = ObjTypeHandler::isDBAttributeNameACreatedDate($attr_name) || ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name);
 			
 			//if is an update action and is a create_date or create_by attribute, ignore attribute
-			if ($is_update_task && !$attr["primary_key"] && $is_created_attribute) 
+			if ($is_update_task && empty($attr["primary_key"]) && $is_created_attribute) 
 				continue;
 			
-			$type = $attr["type"];
+			$type = isset($attr["type"]) ? $attr["type"] : null;
 			$allow_null = !isset($attr["null"]) || $attr["null"];
 			$is_numeric_type = ObjTypeHandler::isDBTypeNumeric($type) || ObjTypeHandler::isPHPTypeNumeric($type);
 			$is_blob_type = ObjTypeHandler::isDBTypeBlob($type);
@@ -3634,25 +3726,26 @@ $conds = $conds ? $conds : "1=1";
 			$is_logged_user_id_attribute = (ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name) || ObjTypeHandler::isDBAttributeNameAModifiedUserId($attr_name)) && $is_numeric_type;
 			
 			//Note that the array_key_exists is very important bc of the update_attribute action, otherwisse we are adding attributes when the user only ask us to save another attribute. Is important too for the business logic services where we only want to check the values if they exists, bc the default value is already set inside of the business logic service.
-			$array_key_exists = $attr["primary_key"] || $task["item_type"] == "businesslogic" || $is_update_attribute_task || ($is_update_task && $is_created_attribute) ? 'array_key_exists("' . $attr_name . '", ' . $var_prefix . ') && ' : '';
+			$array_key_exists = !empty($attr["primary_key"]) || (isset($task["item_type"]) && $task["item_type"] == "businesslogic") || $is_update_attribute_task || ($is_update_task && $is_created_attribute) ? 'array_key_exists("' . $attr_name . '", ' . $var_prefix . ') && ' : '';
 			
 			//check if field is checkbox/boolean and if yes the default should be replaced by 0, bc it means the user set the checkbox to unchcekd which makes the browser to not include this attribute in the requests...
 			//Note that this must happens if strlen($attr["default"]) > 0 or if there is no $attr["default"]. In both cases this must happen! Unless it allows NULL, which in this case we don't need to set the default to 0, bc we can set it to null, as shown in the code in this function.
 			CMSPresentationFormSettingsUIHandler::prepareFormInputParameters($attr, $input_type);
-			$is_checkbox = (strlen($attr["default"]) || !$allow_null) && ($input_type == "checkbox" || $input_type == "radio") && $is_numeric_type;
+			$attr_default = isset($attr["default"]) ? $attr["default"] : null;
+			$is_checkbox = (strlen($attr_default) || !$allow_null) && ($input_type == "checkbox" || $input_type == "radio") && $is_numeric_type;
 			
 			if ($is_checkbox) 
 				$attr["default"] = 0; //discart on purpose the $attr["default"], bc the default value may be 1, and we want to set it to 0 instead, since if the user doesn't check the checkbox, it means the browser will return an empty string and we want to save his choice in the DB. If we leave the original $attr["default"] (that could be 1) than is the same that the user check the checkbox, which doesn't make sense.  
 			
 			//prepare code
-			if ($is_insert_task && $attr["primary_key"] && WorkFlowDataAccessHandler::isAutoIncrementedAttribute($attr)) {
+			if ($is_insert_task && !empty($attr["primary_key"]) && WorkFlowDataAccessHandler::isAutoIncrementedAttribute($attr)) {
 				$code .= self::getInsertActionPreviousCodeIfBrokerSettingsContainsAutoIncrementPrimaryKeys($table_name, $attr_name, $attr, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix);
 			}
 			else if ($allow_null && ($is_numeric_type || ObjTypeHandler::isDBTypeDate($type))) {
 				if ($is_db_primitive_action) {
 					$code .= 'if (isset(' . $var_prefix . '["' . $attr_name . '"]) && is_numeric(' . $var_prefix . '["' . $attr_name . '"]) && is_string(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] += 0;' . "\n"; //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
 					
-					$default = strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : '"DEFAULT"';
+					$default = isset($attr["default"]) && strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : '"DEFAULT"';
 					
 					if ((ObjTypeHandler::isDBAttributeNameACreatedDate($attr_name) || ObjTypeHandler::isDBAttributeNameAModifiedDate($attr_name)) && ObjTypeHandler::isDBTypeDate($type))
 						$default = $type == "date" ? 'date("Y-m-d")' : 'date("Y-m-d H:i:s")';
@@ -3662,7 +3755,7 @@ $conds = $conds ? $conds : "1=1";
 					}
 					else if (ObjTypeHandler::isDBAttributeValueACurrentTimestamp($default))
 						$default = 'date("Y-m-d H:i:s")';
-					else if (!strlen($attr["default"]) && ObjTypeHandler::isDBTypeDate($type))
+					else if (empty($attr["default"]) && !strlen($attr["default"]) && ObjTypeHandler::isDBTypeDate($type))
 						$default = $is_ibatis ? '"null"' : 'null';
 					
 					//only add the array_key_exists if is update_attribute action, bc this is a primitive action which needs to have the default values set in the $var_prefix even if there is no $attr_name yet...
@@ -3676,7 +3769,7 @@ $conds = $conds ? $conds : "1=1";
 					if ($is_logged_user_id_attribute)
 						$logged_user_id_code = $var_prefix . '["logged_user_id"] = self::getLoggedUserId($EVC);' . "\n";
 					else if ($is_checkbox) //set checkbox value to 0, bc by default the browser will return an empty string. if we don't set this value to 0, then the business logic will set the default value that could be 1, and we don't want this.
-						$default = $attr["default"]; //Note that the $attr["default"] was already changed to 0 above.
+						$default = isset($attr["default"]) ? $attr["default"] : null; //Note that the $attr["default"] was already changed to 0 above.
 					
 					//note that here will be always with array_key_exists 
 					$code .= 'if (' . $array_key_exists . '!strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
@@ -3685,10 +3778,10 @@ $conds = $conds ? $conds : "1=1";
 			else if ($is_db_primitive_action && $is_numeric_type) { //for the cases with a checkbox where the value doesn't exist and is numeric
 				$code .= 'if (isset(' . $var_prefix . '["' . $attr_name . '"]) && is_numeric(' . $var_prefix . '["' . $attr_name . '"]) && is_string(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] += 0;' . "\n"; //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
 				
-				if ($attr["primary_key"])
+				if (!empty($attr["primary_key"]))
 					$code .= 'if (' . $array_key_exists . '!is_numeric(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] = "null";' . "\n"; //This is on purpose so it can return empty records or don't do nothing in the DB, bc if the user wrote a pk with a non numeric value, it means is trying to do some hack.
 				else {
-					$default = strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : '"DEFAULT"';
+					$default = isset($attr["default"]) && strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : '"DEFAULT"';
 					
 					if ($is_logged_user_id_attribute) {
 						$logged_user_id_code = '$logged_user_id = self::getLoggedUserId($EVC);' . "\n";
@@ -3698,7 +3791,7 @@ $conds = $conds ? $conds : "1=1";
 					$code .= 'if (' . $array_key_exists . '!strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
 				}
 			}
-			else if ($task["item_type"] == "businesslogic" && ($is_numeric_type || ObjTypeHandler::isDBTypeBoolean($type))) {
+			else if (isset($task["item_type"]) && $task["item_type"] == "businesslogic" && ($is_numeric_type || ObjTypeHandler::isDBTypeBoolean($type))) {
 				//reset the values to default, bc if they are a boolean or a tinyint (with length 1) and have an empty string, they need to be set to null, otherwise they will give an error in the business logic services, bc will not be set correctly with the default values. Note that the default values will be set by the business logic services.
 				//$default = strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : 'null';
 				$default = 'null';
@@ -3708,11 +3801,11 @@ $conds = $conds ? $conds : "1=1";
 					$logged_user_id_code = $var_prefix . '["logged_user_id"] = self::getLoggedUserId($EVC);' . "\n";
 					
 					//If this attribute has an empty value and has no default and cannot be null, them it will give an error in the business logic service, bc this attribute cannot be null. So we set the logged_user_id as default value.
-					if (!strlen($attr["default"]) && !$allow_null)
+					if (empty($attr["default"]) && !strlen($attr["default"]) && !$allow_null)
 						$default = $var_prefix . '["logged_user_id"] > 0 ? ' . $var_prefix . '["logged_user_id"] : ' . $default;
 				}
 				else if ($is_checkbox) //set checkbox value to 0, bc by default the browser will return an empty string. if we don't set this value to 0, then the business logic will set the default value that could be 1, and we don't want this.
-					$default = $attr["default"]; //Note that the $attr["default"] was already changed to 0 above.
+					$default = isset($attr["default"]) ? $attr["default"] : null; //Note that the $attr["default"] was already changed to 0 above.
 				
 				//note that here will be always with array_key_exists 
 				$code .= 'if (' . $array_key_exists . '!is_numeric(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
@@ -3730,33 +3823,34 @@ $conds = $conds ? $conds : "1=1";
 
 	//copied from CMSPresentationFormSettingsUIHandler::getInsertActionPreviousCodeIfBrokerSettingsContainsAutoIncrementPrimaryKeys, so if you change this method, please mae the correspodnent changes in this other method too.
 	private static function getInsertActionPreviousCodeIfBrokerSettingsContainsAutoIncrementPrimaryKeys($table_name, $attr_name, $attr, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix) {
-		$item_type = $task["item_type"];
-		$service = $task["service"];
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
+		$service = isset($task["service"]) ? $task["service"] : null;
 		$data = null;
-		$var_prefix = substr($var_prefix, 0, 1) == '$' ? $var_prefix : '$' . $var_prefix;
+		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
+		$service_method = isset($service["service_method"]) ? $service["service_method"] : null; 
 		
 		//checks if auto increment pk exists in attributes
-		if ($item_type == "ibatis" && $service["service_type"] == "insert") 
-			$data = $service["parameters"];
+		if ($item_type == "ibatis" && isset($service["service_type"]) && $service["service_type"] == "insert") 
+			$data = isset($service["parameters"]) ? $service["parameters"] : null;
 		else if ($item_type == "db") {
-			if ($service["sql"])
+			if (!empty($service["sql"]))
 				$data = $service["sql"];
-			else if ($task["is_db_dao_action_task"])
+			else if (!empty($task["is_db_dao_action_task"]))
 				$data = $service["attributes"];
 		}
-		else if ($item_type == "hibernate" && ($service["service_method"] == "getData" || $service["service_method"] == "setData")) 
-			$data = $service["sma_sql"];
-		else if ($item_type == "hibernate" && ($service["service_method"] == "insert" || $service["service_method"] == "callInsert")) 
-			$data = $service["sma_data"];
-		else if ($item_type == "hibernate" && $service["service_method"] == "callQuery" && $service["sma_query_type"] == "insert")
-			$data = $service["sma_data"];
+		else if ($item_type == "hibernate" && ($service_method == "getData" || $service_method == "setData")) 
+			$data = isset($service["sma_sql"]) ? $service["sma_sql"] : null;
+		else if ($item_type == "hibernate" && ($service_method == "insert" || $service_method == "callInsert")) 
+			$data = isset($service["sma_data"]) ? $service["sma_data"] : null;
+		else if ($item_type == "hibernate" && $service_method == "callQuery" && isset($service["sma_query_type"]) && $service["sma_query_type"] == "insert")
+			$data = isset($service["sma_data"]) ? $service["sma_data"] : null;
 		
 		$exists = false;
 		
 		if ($data) {
 			if (is_array($data)) {
 				foreach ($data as $item) {
-					if (array_key_exists("value", $item) && $item["value_type"] == "string" && (
+					if (array_key_exists("value", $item) && isset($item["value_type"]) && $item["value_type"] == "string" && (
 						$item["value"] == $var_prefix . "['$attr_name']" || 
 						$item["value"] == $var_prefix . '["' . $attr_name . '"]' || 
 						strpos($item["value"], '{' . $var_prefix . '["' . $attr_name . '"]}') !== false || 
@@ -3770,12 +3864,15 @@ $conds = $conds ? $conds : "1=1";
 			else { //parse sql
 				$sql_data = DB::convertDefaultSQLToObject($data);
 				
-				if ($sql_data["type"] == "insert" && $sql_data["attributes"]) 
-					foreach ($sql_data["attributes"] as $attr)
-						if ($attr["column"] == $attr_name) {
+				if (isset($sql_data["type"]) && $sql_data["type"] == "insert" && !empty($sql_data["attributes"]))
+					foreach ($sql_data["attributes"] as $attr) {
+						$attr_column = isset($attr["column"]) ? $attr["column"] : null;
+						
+						if ($attr_column == $attr_name) {
 							$exists = true;
 							break;
 						}
+					}
 			}
 		}
 		
@@ -3794,16 +3891,16 @@ $conds = $conds ? $conds : "1=1";
 	//copied from CMSPresentationFormSettingsUIHandler::getInsertActionNextCode, so if you change this method, please mae the correspodnent changes in this other method too.
 	private static function getInsertActionNextCode($pks_auto_increment, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix) {
 		$code = "";
-		$var_prefix = substr($var_prefix, 0, 1) == '$' ? $var_prefix : '$' . $var_prefix;
+		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
 		
 		if ($pks_auto_increment) {
-			$item_type = $task["item_type"];
-			$service = $task["service"];
+			$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
+			$service = isset($task["service"]) ? $task["service"] : null;
 			$is_db_primitive_action = self::isDBPrimitiveTask($task); //used when insert and update action
 			
-			if ($item_type == "hibernate" && $service["service_method"] == "insert") {
-				$sma_ids = $service["sma_ids"];
-				$pk = $pks_auto_increment[0];
+			if ($item_type == "hibernate" && isset($service["service_method"]) && $service["service_method"] == "insert") {
+				$sma_ids = isset($service["sma_ids"]) ? $service["sma_ids"] : null;
+				$pk = isset($pks_auto_increment[0]) ? $pks_auto_increment[0] : null;
 				
 				$code .= $var_prefix . ' = $' . $sma_ids . '["' . $pk . '"];';
 			}
@@ -3831,10 +3928,12 @@ if (' . $var_prefix . ') {
 		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
 		
 		foreach ($attributes as $attr_name) {
-			$attr = $attrs[$attr_name];
+			$attr = isset($attrs[$attr_name]) ? $attrs[$attr_name] : null;
 			
-			if ($attr["primary_key"]) {
-				if (ObjTypeHandler::isDBTypeNumeric($attr["type"]) || ObjTypeHandler::isPHPTypeNumeric($attr["type"]))
+			if (!empty($attr["primary_key"])) {
+				$attr_type = isset($attr["type"]) ? $attr["type"] : null;
+				
+				if (ObjTypeHandler::isDBTypeNumeric($attr_type) || ObjTypeHandler::isPHPTypeNumeric($attr_type))
 					$code .= 'if (array_key_exists("' . $attr_name . '", ' . $var_prefix . ') && !is_numeric(' . $var_prefix . '["' . $attr_name . '"])) $status = false;' . "\n";
 				else
 					$code .= 'if (array_key_exists("' . $attr_name . '", ' . $var_prefix . ') && !strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) $status = false;' . "\n";
@@ -3848,13 +3947,13 @@ if (' . $var_prefix . ') {
 	private static function getHibernateGetActionNextCode($var_prefix) {
 		return ""; //this function is deprecated bc the hibernate returns the same result array than ibatis
 		
-		$var_prefix = substr($var_prefix, 0, 1) == '$' ? $var_prefix : '$' . $var_prefix;
+		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
 		
 		return '
 if (' . $var_prefix . ') {
 	$hbn_object_name = array_keys(' . $var_prefix . ');
-	$hbn_object_name = $hbn_object_name[0];
-' .	 $var_prefix . ' = ' . $var_prefix . '[$hbn_object_name];
+	$hbn_object_name = isset($hbn_object_name[0]) ? $hbn_object_name[0] : null;
+' .	 $var_prefix . ' = isset(' . $var_prefix . '[$hbn_object_name]) ? ' . $var_prefix . '[$hbn_object_name] : null;
 }
 ';
 	}
@@ -3863,12 +3962,12 @@ if (' . $var_prefix . ') {
 	private static function getSelectItemActionNextCode($tables, $table_name, $var_prefix, $attrs_name_to_filter = null) {
 		$code = "";
 		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
-		$var_prefix = substr($var_prefix, 0, 1) == '$' ? $var_prefix : '$' . $var_prefix;
+		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
 		
 		if ($attrs)
 			foreach ($attrs as $attr_name => $attr)
 				if (!is_array($attrs_name_to_filter) || in_array($attr_name, $attrs_name_to_filter))
-					if (ObjTypeHandler::isDBTypeDate($attr["type"]))
+					if (isset($attr["type"]) && ObjTypeHandler::isDBTypeDate($attr["type"]))
 						$code .= 'if (' . $var_prefix . '["' . $attr_name . '"] == "0000-00-00 00:00:00" || ' . $var_prefix . '["' . $attr_name . '"] == "0000-00-00") ' . $var_prefix . '["' . $attr_name . '"] = "";' . "\n";
 		
 		return $code;
@@ -3878,18 +3977,18 @@ if (' . $var_prefix . ') {
 	private static function getHibernateGetAllActionNextCode($var_prefix) {
 		return ""; //this function is deprecated bc the hibernate returns the same result array than ibatis
 		
-		$var_prefix = substr($var_prefix, 0, 1) == '$' ? $var_prefix : '$' . $var_prefix;
+		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
 		
 		return '
 if (' . $var_prefix . ') {
 	$hbn_object_name = array_keys(' . $var_prefix . '[0]);
-	$hbn_object_name = $hbn_object_name[0];
+	$hbn_object_name = isset($hbn_object_name[0]) ? $hbn_object_name[0] : null;
 
 	$items = array();
 	$t = count(' . $var_prefix . ');
 
 	for ($i = 0; $i < $t; $i++)
-		$items[] = ' . $var_prefix . '[$i][$hbn_object_name];
+		$items[] = isset(' . $var_prefix . '[$i][$hbn_object_name]) ? ' . $var_prefix . '[$i][$hbn_object_name] : null;
 
 	' . $var_prefix . ' = $items;
 }
@@ -3900,11 +3999,11 @@ if (' . $var_prefix . ') {
 	private static function getSelectItemsActionNextCode($tables, $table_name, $var_prefix) {
 		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
 		$db_date_attrs = array();
-		$var_prefix = substr($var_prefix, 0, 1) == '$' ? $var_prefix : '$' . $var_prefix;
+		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
 		
 		if ($attrs)
 			foreach ($attrs as $attr_name => $attr) 
-				if (ObjTypeHandler::isDBTypeDate($attr["type"]))
+				if (isset($attr["type"]) && ObjTypeHandler::isDBTypeDate($attr["type"]))
 					$db_date_attrs[] = $attr_name;
 		
 		if ($db_date_attrs) {
@@ -3912,7 +4011,7 @@ if (' . $var_prefix . ') {
 	foreach (' . $var_prefix . ' as $k => &$v) {' . "\n";
 			
 			foreach ($db_date_attrs as $attr_name)
-				$code .= "\t\t" . 'if ($v["' . $attr_name . '"] == "0000-00-00 00:00:00" || $v["' . $attr_name . '"] == "0000-00-00") $v["' . $attr_name . '"] = "";' . "\n";
+				$code .= "\t\t" . 'if (isset($v["' . $attr_name . '"]) && ($v["' . $attr_name . '"] == "0000-00-00 00:00:00" || $v["' . $attr_name . '"] == "0000-00-00")) $v["' . $attr_name . '"] = "";' . "\n";
 			
 			$code .= "\t}\n";
 			
@@ -3925,16 +4024,16 @@ if (' . $var_prefix . ') {
 	//copied from CMSPresentationFormSettingsUIHandler::convertQueryDataTaskToSimpleTask, so if you change this method, please mae the correspodnent changes in this other method too.
 	//convert getquerydata and setquerydata to insert/update/delete/select task groups
 	private static function convertQueryDataTaskToSimpleTask(&$task, $tables) {
-		$item_type = $task["item_type"];
-		$service = $task["service"];
+		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
+		$service = isset($task["service"]) ? $task["service"] : null;
 		
 		if ($item_type == "db") {
 			$data = null;
 			$sql_type = "select"; //if no sql, show "select" task group with empty sql.
 			
-			if ($service["sql"]) {
+			if (!empty($service["sql"])) {
 				$data = DB::convertDefaultSQLToObject($service["sql"]);
-				$sql_type = $data ? $data["type"] : null;
+				$sql_type = $data && isset($data["type"]) ? $data["type"] : null;
 			}
 		
 			$sql_type_valid = $sql_type == "insert" || $sql_type == "update" || $sql_type == "delete" || $sql_type == "select";
@@ -3943,39 +4042,41 @@ if (' . $var_prefix . ') {
 			if ($sql_type_valid) {
 				//if sql exists and data is valid
 				if ($data) {
-					$data["main_table"] = $data["table"];
+					$data["main_table"] = isset($data["table"]) ? $data["table"] : null;
 					$old_sql = DB::convertObjectToDefaultSQL($data); //get old sql through DB
 					
 					$new_data = array(
-						"type" => $data["type"],
-						"main_table" => $data["main_table"],
-						"attributes" => $data["attributes"],
-						"conditions" => $data["conditions"],
-						"limit" => $data["limit"],
-						"start" => $data["start"],
+						"type" => isset($data["type"]) ? $data["type"] : null,
+						"main_table" => isset($data["main_table"]) ? $data["main_table"] : null,
+						"attributes" => isset($data["attributes"]) ? $data["attributes"] : null,
+						"conditions" => isset($data["conditions"]) ? $data["conditions"] : null,
+						"limit" => isset($data["limit"]) ? $data["limit"] : null,
+						"start" => isset($data["start"]) ? $data["start"] : null,
 					);
 					$new_sql = DB::convertObjectToDefaultSQL($new_data); //get new sql through DB
 					
 					//check if is a simple sql and can be converted to insert/update/delete/select task group
-					$is_simple_sql = $new_sql == $old_sql && (!$data["limit"] || !$service["options"] || is_array($service["options"])); //if limit exists and options are an array or null. Note that $service["options"] could be a variable.
+					$is_simple_sql = $new_sql == $old_sql && (empty($data["limit"]) || empty($service["options"]) || is_array($service["options"])); //if limit exists and options are an array or null. Note that $service["options"] could be a variable.
 					
 					if ($is_simple_sql) {
+						$data_type = isset($data["type"]) ? $data["type"] : null;
+						
 						//check if all $data["attributes"] are in $tables[table], bc it could be a select with a count(*)
-						if ($data["type"] == "select" && $data["attributes"] && $tables[ $data["table"] ])
+						if ($data_type == "select" && !empty($data["attributes"]) && !empty($tables[ $data["table"] ]))
 							foreach ($data["attributes"] as $attr)
-								if (!$tables[ $data["table"] ][ $attr["column"] ]) {
+								if (empty($tables[ $data["table"] ][ $attr["column"] ])) {
 									$is_simple_sql = false;
 									break;
 								}
 						
 						//check if sql is not a simple select statement with only 1 table without joins, group by or sorts
-						if ($data["type"] == "select" && ($data["keys"] || $data["groups_by"] || $data["sorts"]))
+						if ($data_type == "select" && (!empty($data["keys"]) || !empty($data["groups_by"]) || !empty($data["sorts"])))
 							$is_simple_sql = false;
 						
 						//check if conditions have operators that are "="
-						if ($data["conditions"] && ($data["type"] == "update" || $data["type"] == "delete" || $data["type"] == "select"))
+						if (!empty($data["conditions"]) && ($data_type == "update" || $data_type == "delete" || $data_type == "select"))
 							foreach ($data["conditions"] as $attr)
-								if ($attr["operator"] && $attr["operator"] != "=") {
+								if (!empty($attr["operator"]) && $attr["operator"] != "=") {
 									$is_simple_sql = false;
 									break;
 								}
@@ -3987,27 +4088,27 @@ if (' . $var_prefix . ') {
 							unset($service["sql_type"]);
 							
 							//on insert action, remove primary key auto_increment if exists
-							if ($data["type"] == "insert" && $data["attributes"] && $tables[ $data["table"] ])
+							if ($data_type == "insert" && !empty($data["attributes"]) && !empty($tables[ $data["table"] ]))
 								foreach ($data["attributes"] as $idx => $attr) {
-									$attr = $tables[ $data["table"] ][ $attr["column"] ];
+									$attr = isset($tables[ $data["table"] ][ $attr["column"] ]) ? $tables[ $data["table"] ][ $attr["column"] ] : null;
 									
-									if ($attr && $attr["primary_key"] && WorkFlowDataAccessHandler::isAutoIncrementedAttribute($attr))
+									if ($attr && !empty($attr["primary_key"]) && WorkFlowDataAccessHandler::isAutoIncrementedAttribute($attr))
 										unset($data["attributes"][$idx]);
 								}
 							
 							//add new settings
 							$task["is_db_dao_action_task"] = true;
-							$service["method_name"] = $data["type"] == "insert" ? "insertObject" : (
-								$data["type"] == "update" ? "updateObject" : (
-									$data["type"] == "delete" ? "deleteObject" : "findObjects"
+							$service["method_name"] = $data_type == "insert" ? "insertObject" : (
+								$data_type == "update" ? "updateObject" : (
+									$data_type == "delete" ? "deleteObject" : "findObjects"
 								)
 							);
-							$service["table_name"] = $data["table"]; 
+							$service["table_name"] = isset($data["table"]) ? $data["table"] : null; 
 							$service["table_name_type"] = "string"; 
 							$service["attributes_type"] = "array";
 							$service["attributes"] = array();
 							
-							if ($data["attributes"] && ($data["type"] == "insert" || $data["type"] == "update" || $data["type"] == "select"))
+							if (!empty($data["attributes"]) && ($data_type == "insert" || $data_type == "update" || $data_type == "select"))
 								foreach ($data["attributes"] as $idx => $attr)
 									$service["attributes"][] = array(
 										"key" => $attr["column"],
@@ -4019,7 +4120,7 @@ if (' . $var_prefix . ') {
 							$service["conditions_type"] = "array";
 							$service["conditions"] = array();
 							
-							if ($data["conditions"] && ($data["type"] == "insert" || $data["type"] == "update" || $data["type"] == "delete" || $data["type"] == "select"))
+							if (!empty($data["conditions"]) && ($data_type == "insert" || $data_type == "update" || $data_type == "delete" || $data_type == "select"))
 								foreach ($data["conditions"] as $idx => $attr) 
 									$service["conditions"][] = array(
 										"key" => $attr["column"],
@@ -4033,15 +4134,15 @@ if (' . $var_prefix . ') {
 					}
 					
 					//prepare limit and start in options, if exists
-					if ($data["limit"] && (!$service["options"] || is_array($service["options"]))) { //if limit exists options must be an array or null
-						$limit = $data["limit"];
-						$start = $data["start"];
+					if (!empty($data["limit"]) && (empty($service["options"]) || is_array($service["options"]))) { //if limit exists options must be an array or null
+						$limit = isset($data["limit"]) ? $data["limit"] : null;
+						$start = isset($data["start"]) ? $data["start"] : null;
 						$service["options_type"] = "array"; //set to array.
-						$service["options"] = is_array($service["options"]) ? $service["options"] : array(); //if null, set it to an array
+						$service["options"] = isset($service["options"]) && is_array($service["options"]) ? $service["options"] : array(); //if null, set it to an array
 						$exists_limit = $exists_start = false;
 						
 						//if sql exists, remove limit and start from sql, bc it will be added in the options
-						if ($service["sql"]) { 
+						if (!empty($service["sql"])) { 
 							$other_data = $data;
 							unset($other_data["limit"]);
 							unset($other_data["start"]);
@@ -4049,18 +4150,19 @@ if (' . $var_prefix . ') {
 						}
 						
 						//replace existent limit and start with right values
-						foreach ($service["options"] as $idx => $v) {
-							if ($v["key"] == "limit" && $v["key_type"] == "string") { //Overwrite limit in options
-								$service["options"][$idx]["value"] = $limit; //note that limit can be #xxx#. It doesn't need a numeric value
-								$service["options"][$idx]["value_type"] = "string";
-								$exists_limit = true;
+						foreach ($service["options"] as $idx => $v) 
+							if (isset($v["key"]) && isset($v["key_type"])) {
+								if ($v["key"] == "limit" && $v["key_type"] == "string") { //Overwrite limit in options
+									$service["options"][$idx]["value"] = $limit; //note that limit can be #xxx#. It doesn't need a numeric value
+									$service["options"][$idx]["value_type"] = "string";
+									$exists_limit = true;
+								}
+								else if (strlen("$start") && $v["key"] == "start" && $v["key_type"] == "string") { //Overwrite start in options
+									$service["options"][$idx]["value"] = $start; //note that limit can be #xxx#. It doesn't need a numeric value. If start is 0, discard $start.
+									$service["options"][$idx]["value_type"] = "string";
+									$exists_start = true;
+								}
 							}
-							else if (strlen("$start") && $v["key"] == "start" && $v["key_type"] == "string") { //Overwrite start in options
-								$service["options"][$idx]["value"] = $start; //note that limit can be #xxx#. It doesn't need a numeric value. If start is 0, discard $start.
-								$service["options"][$idx]["value_type"] = "string";
-								$exists_start = true;
-							}
-						}
 						
 						//add limit to options
 						if (!$exists_limit)

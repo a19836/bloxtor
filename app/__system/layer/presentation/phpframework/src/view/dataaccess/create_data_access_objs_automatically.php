@@ -1,6 +1,9 @@
 <?php
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$folder_path = isset($folder_path) ? $folder_path : null;
+$obj = isset($obj) ? $obj : null;
+
 $head = '
 <!-- Add Fontawsome Icons CSS -->
 <link rel="stylesheet" href="' . $project_common_url_prefix . 'vendor/fontawesome/css/all.min.css">
@@ -17,7 +20,7 @@ $head = '
 
 $main_content = '';
 
-if ($_POST["step_2"]) {
+if (!empty($_POST["step_2"])) {
 	$exists_any_status_ok = false;
 	$exists_any_status_error = false;
 	
@@ -35,24 +38,25 @@ if ($_POST["step_2"]) {
 				<th class="status">Status</th>
 			</tr>';
 	
-	$t = count($selected_tables);
-	for ($i = 0; $i < $t; $i++) {
-		$data = $statuses[$i];
-		
-		$main_content .= '
+	if (!empty($selected_tables)) {
+		$t = count($selected_tables);
+		for ($i = 0; $i < $t; $i++) {
+			$data = isset($statuses[$i]) ? $statuses[$i] : null;
+			
+			$main_content .= '
 			<tr>
-				<td class="path">' . preg_replace("/\/+/", "/", $data[0]) . '</td>
+				<td class="path">' . (isset($data[0]) ? preg_replace("/\/+/", "/", $data[0]) : "") . '</td>
 				<td class="name">' . $selected_tables[$i] . '</td>
-				<td class="status status_' . ($data[2] ? "ok" : "error") . '">' . ($data[2] ? "OK" : "ERROR") . '</td>
+				<td class="status status_' . (!empty($data[2]) ? "ok" : "error") . '">' . (!empty($data[2]) ? "OK" : "ERROR") . '</td>
 			</tr>';
-		
-		if ($data[2])
-			$exists_any_status_ok = true;
-		else
-			$exists_any_status_error = true;
+			
+			if (!empty($data[2]))
+				$exists_any_status_ok = true;
+			else
+				$exists_any_status_error = true;
+		}
 	}
-	
-	if (empty($selected_tables))
+	else
 		$main_content .= '<tr><td colspan="3" style="text-align:center;">No elements available</td></tr>';
 	
 	$main_content .= '</table>';
@@ -66,7 +70,12 @@ if ($_POST["step_2"]) {
 		$main_content .= '<script>if (window.parent.refreshAndShowLastNodeChilds) window.parent.refreshAndShowLastNodeChilds();</script>';
 		//$main_content .= '<script>if (window.parent.refreshLastNodeParentChilds) window.parent.refreshLastNodeParentChilds();</script>';
 }
-else if ($_POST["step_1"]) {
+else if (!empty($_POST["step_1"])) {
+	$folder_path = isset($folder_path) ? $folder_path : null;
+	$db_broker = isset($db_broker) ? $db_broker : null;
+	$db_driver = isset($db_driver) ? $db_driver : null;
+	$type = isset($type) ? $type : null;
+			
 	$main_content .= '<div class="select_tables">
 		<div class="top_bar">
 			<header>
@@ -128,10 +137,13 @@ else if ($_POST["step_1"]) {
 	</div>';
 }
 else {
+	$db_drivers = isset($db_drivers) ? $db_drivers : null;
+	$folder_path = isset($folder_path) ? $folder_path : null;
+	$selected_db_broker = isset($selected_db_broker) ? $selected_db_broker : null;
+	
 	$head .= '<script>
 		var db_drivers = ' . json_encode($db_drivers) . ';
 	</script>';
-	
 	
 	$main_content .= '<div class="select_brokers">
 		<div class="top_bar">
@@ -169,7 +181,7 @@ else {
 				<label>DB Driver:</label>
 				<select name="db_driver">';
 
-		$selected_db_drivers = $db_drivers[$selected_db_broker];
+		$selected_db_drivers = isset($db_drivers[$selected_db_broker]) ? $db_drivers[$selected_db_broker] : null;
 		if ($selected_db_drivers)
 			foreach ($selected_db_drivers as $db_driver_name => $db_driver_props)
 				$main_content .= '<option value="' . $db_driver_name . '" ' . ($selected_db_driver == $db_driver_name ? 'selected' : '') . '>' . $db_driver_name . ($db_driver_props ? '' : ' (Rest)') . '</option>';

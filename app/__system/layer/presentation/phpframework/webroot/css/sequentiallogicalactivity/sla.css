@@ -569,6 +569,10 @@ body:not(.dark_theme) .sla .tabs.tabs_icons li.ui-tabs-active a {
 	margin-left:5px;
 	margin-right:5px;
 }
+.sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .attributes li input[type=text],
+   .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .conditions li input[type=text] {
+	width:180px;
+}
 .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .attributes li .attr_value:before,
    .sla_main_groups .sla_group_item > .sla_group_body.selected_task_properties .database_action_body .database_action_table > .conditions li .attr_value:before {
 	content:" = ";

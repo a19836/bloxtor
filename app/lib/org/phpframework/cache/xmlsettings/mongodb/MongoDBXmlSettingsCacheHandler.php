@@ -40,7 +40,7 @@ class MongoDBXmlSettingsCacheHandler extends XmlSettingsCacheHandler {
 			
 			return $this->MongoDBHandler->set($colletion_name, $key, array(
 				"content" => $cont,
-				"expire" => $this->cache_ttl ? $this->cache_ttl + time() : 0;
+				"expire" => $this->cache_ttl ? $this->cache_ttl + time() : 0
 			));
 		}
 		return false;

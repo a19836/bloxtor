@@ -30,9 +30,9 @@ class WorkFlowDeploymentHandler {
 			//print_r($server_template);
 			
 			if ($server_template) {
-				$template_properties = $server_template["properties"];
-				$template_tasks = $template_properties["task"];
-				$template_actions = $template_properties["actions"];
+				$template_properties = isset($server_template["properties"]) ? $server_template["properties"] : null;
+				$template_tasks = isset($template_properties["task"]) ? $template_properties["task"] : null;
+				$template_actions = isset($template_properties["actions"]) ? $template_properties["actions"] : null;
 				
 				//checks if server template licence data is validated accordingly with the current licence
 				$error_messages = array();
@@ -44,10 +44,10 @@ class WorkFlowDeploymentHandler {
 				//checks if there is any active tasks that are not in layers diagram.
 				if ($status && $template_tasks)
 					foreach ($template_tasks as $task) {
-						$task_label = $task["label"];
-						$task_props = $task["properties"];
+						$task_label = isset($task["label"]) ? $task["label"] : null;
+						$task_props = isset($task["properties"]) ? $task["properties"] : null;
 						
-						if ($task_props && $task_props["active"]) {
+						if ($task_props && !empty($task_props["active"])) {
 							$task = $layer_tasks_by_label[$task_label];
 							
 							if (!$task) {
@@ -68,7 +68,7 @@ class WorkFlowDeploymentHandler {
 					foreach ($template_actions as $idx => $template_action)
 						foreach ($template_action as $action_type => $action) 
 							if (($action_type == "run_test_units" || $action_type == "copy_files") && (!isset($action["active"]) || $action["active"])) {
-								$files = is_array($action["files"]) ? $action["files"] : array($action["files"]);
+								$files = isset($action["files"]) ? (is_array($action["files"]) ? $action["files"] : array($action["files"])) : null;
 								
 								if ($files)
 									foreach ($files as $idy => $file) 

@@ -13,7 +13,7 @@ class ParamAnnotation extends Annotation {
 		
 		if (!empty($args["name"])) {
 			$name = self::parseValue($args["name"]);
-			$name = substr($name, 0, 1) == '$' ? substr($name, 1) : $name;
+			$name = substr($name, 0, 1) == '$' ? substr($name, 1) : (substr($name, 0, 2) == '@$' ? substr($name, 2) : $name);
 			$new_args["name"] = $name;
 			
 			if (strpos($name, "[") !== false) {//options[0]name or options[name] ==> options"]["0"]["name
@@ -63,7 +63,7 @@ class ParamAnnotation extends Annotation {
 			
 			if (isset($method_param_name)) {
 				//check if mandatory. Check only if Key exists in the $method_params_data. Note that its value can be null. The mandatory only check if the key exists, independent if the value is set or not.
-				if ($this->args["mandatory"])
+				if (!empty($this->args["mandatory"]))
 					eval ('$status = (is_array($method_params_data) && array_key_exists("' . $method_param_name . '", $method_params_data)) || (is_object($method_params_data) && property_exists($method_params_data, "' . $method_param_name . '"));');
 				
 				if ($status) {

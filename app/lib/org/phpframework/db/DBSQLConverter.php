@@ -207,7 +207,7 @@ trait DBSQLConverter {
 		
 		if ($table_name) {
 			$options = is_array($options) ? $options : array();
-			$conditions_join = isset($data["conditions_join"]) ? $data["conditions_join"] : null;
+			$conditions_join = isset($options["conditions_join"]) ? $options["conditions_join"] : null;
 			$extra_sql_conditions = isset($options["sql_conditions"]) ? $options["sql_conditions"] : null;
 			
 			$sql_conditions = self::getSQLConditions($conditions, $conditions_join);
@@ -571,17 +571,19 @@ trait DBSQLConverter {
 			}
 			
 			$join_keys = array();
+			$join_key_index = null;
+			
 			if ($f_column && $f_table) {
 				$table_alias = $f_table == $table_name ? $f_table . "_aux" : SQLQueryHandler::getAlias($f_table);
 				$join_key_index = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($f_table) . ($table_alias != $f_table ? " {$table_alias}" : "") . " ON ";
 				
 				//Add new inner join table in case of multiple tables in joins
 				$join_key_index_aux = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($p_table) . " ON ";
-				if ($joins[ $join_key_index ] && $p_table && $p_table != $table_name && !$joins[ $join_key_index_aux ]) {
+				if (!empty($joins[ $join_key_index ]) && $p_table && $p_table != $table_name && empty($joins[ $join_key_index_aux ])) {
 					$join_key_index = $join_key_index_aux;
 				}
 				
-				$join_keys = is_array($joins[ $join_key_index ]) ? $joins[ $join_key_index ] : array();
+				$join_keys = isset($joins[ $join_key_index ]) && is_array($joins[ $join_key_index ]) ? $joins[ $join_key_index ] : array();
 				
 				if($p_column) {
 					$join_sql = " " . self::prepareTableAttributeWithFunction($f_column, $table_alias) . " $operator " . self::prepareTableAttributeWithFunction($p_column, $p_table);
@@ -608,7 +610,7 @@ trait DBSQLConverter {
 				$table_alias = $p_table == $table_name ? $p_table . "_aux" : SQLQueryHandler::getAlias($p_table);
 				$join_key_index = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($p_table) . ($table_alias != $p_table ? " {$table_alias}" : "") . " ON ";
 				
-				$join_keys = is_array($joins[ $join_key_index ]) ? $joins[ $join_key_index ] : array();
+				$join_keys = isset($joins[ $join_key_index ]) && is_array($joins[ $join_key_index ]) ? $joins[ $join_key_index ] : array();
 				
 				$join_sql = " " . self::prepareTableAttributeWithFunction($p_column, $table_alias) . " $operator {$value}";
 				if(!in_array($join_sql, $join_keys)) {
@@ -619,7 +621,7 @@ trait DBSQLConverter {
 				$table_alias = $f_table == $table_name ? $f_table . "_aux" : SQLQueryHandler::getAlias($f_table);
 				$join_key_index = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($f_table) . ($table_alias != $f_table ? " {$table_alias}" : "") . " ON ";
 				
-				$join_keys = is_array($joins[ $join_key_index ]) ? $joins[ $join_key_index ] : array();
+				$join_keys = isset($joins[ $join_key_index ]) && is_array($joins[ $join_key_index ]) ? $joins[ $join_key_index ] : array();
 				
 				$join_sql = " " . self::prepareTableAttributeWithFunction($f_column, $table_alias) . " $operator {$value}";
 				if(!in_array($join_sql, $join_keys)) {
@@ -964,7 +966,7 @@ trait DBSQLConverter {
 	
 	public static function createBaseExprValue($value) {
 		//check if current class is an abastract class, bc the getSQLConditions method can be called from the DB abstract class which will then generate a php error, if we call the abstract methods: isReservedWord and isReservedWordFunction.
-		$current_class_name = get_class();
+		$current_class_name = get_called_class();
 		$class = new ReflectionClass($current_class_name);
 		$abstract = $class->isAbstract();
 		
@@ -973,7 +975,7 @@ trait DBSQLConverter {
 			$contains_reserved_word = self::isReservedWordFunction($value); //check if contains a function
 		}
 		
-		return $value == "DEFAULT" || $is_reserved_word || $contains_reserved_word ? $value : SQLQueryHandler::createBaseExprValue($value);
+		return $value == "DEFAULT" || !empty($is_reserved_word) || !empty($contains_reserved_word) ? $value : SQLQueryHandler::createBaseExprValue($value);
 	}
 	
 	public static function createBaseExprValueForOperatorIn($value) {

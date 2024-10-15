@@ -1,12 +1,12 @@
 <?php
 $p = $o = 0;
 
-$func = function foo($x = 2) {
+function foo($x = 2) {
 	$y = $x;
 	return $y + $x;
 }
 
-class Foo implements Y, X extends W {
+class Foo extends W implements Y, X {
 	var $x;
 	private $bar1 = "asd \$o asd";
 	public static $bar2;
@@ -111,18 +111,18 @@ class X {
 function d() {
 	$d = "JP";
 	global $p, $o;
-?>
-	<div class="something not a varialbe $asd">
+	
+	$x="
+	<div class=\"something not a varialbe $asd\">
 		<span>
-		<?= X::t($d) ?>
+		" . X::t($d) . "
 		</span>
-	</div>
-<?
+	</div>";
 
 	echo "bla $o asd:" . $p;
 }
 
-$w = $func() . $_SERVER["HTTP_HOST"];
+$w = $func() . (isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : null);
 $q = "<html> \$o
 	<body>
 		<h1>" . foo($w) . "</h1>

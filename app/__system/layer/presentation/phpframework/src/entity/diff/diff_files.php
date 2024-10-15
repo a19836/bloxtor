@@ -4,14 +4,14 @@ include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$src_bean_name = $_GET["src_bean_name"];
-$src_bean_file_name = $_GET["src_bean_file_name"];
-$src_item_type = $_GET["src_item_type"];
-$src_path = $_GET["src_path"];
-$dst_bean_name = $_GET["dst_bean_name"];
-$dst_bean_file_name = $_GET["dst_bean_file_name"];
-$dst_item_type = $_GET["dst_item_type"];
-$dst_path = $_GET["dst_path"];
+$src_bean_name = isset($_GET["src_bean_name"]) ? $_GET["src_bean_name"] : null;
+$src_bean_file_name = isset($_GET["src_bean_file_name"]) ? $_GET["src_bean_file_name"] : null;
+$src_item_type = isset($_GET["src_item_type"]) ? $_GET["src_item_type"] : null;
+$src_path = isset($_GET["src_path"]) ? $_GET["src_path"] : null;
+$dst_bean_name = isset($_GET["dst_bean_name"]) ? $_GET["dst_bean_name"] : null;
+$dst_bean_file_name = isset($_GET["dst_bean_file_name"]) ? $_GET["dst_bean_file_name"] : null;
+$dst_item_type = isset($_GET["dst_item_type"]) ? $_GET["dst_item_type"] : null;
+$dst_path = isset($_GET["dst_path"]) ? $_GET["dst_path"] : null;
 //echo "<pre>";print_r($_GET);echo "</pre>";
 
 $src_path = str_replace("../", "", $src_path);//for security reasons

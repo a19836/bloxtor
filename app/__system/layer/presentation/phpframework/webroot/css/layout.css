@@ -1535,7 +1535,7 @@ body .workflow_message .status span.close_message::before,
 }
 .with_top_bar_tab #ui > .taskflowchart .edit_function_code.with_title > #code, 
   .with_top_bar_tab #ui > .taskflowchart .edit_function_code.with_title > #ui {
-	height:calc(100% - 90px);
+	height:calc(100% - 150px);
 }
 
 .with_top_bar_tab #ui > .taskflowchart #code > .ace_editor,

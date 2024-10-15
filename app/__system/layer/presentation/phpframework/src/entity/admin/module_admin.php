@@ -4,11 +4,11 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$group_module_id = $_GET["group_module_id"];
-$filter_by_layout = $_GET["filter_by_layout"]; //optional
-$popup = $_GET["popup"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$group_module_id = isset($_GET["group_module_id"]) ? $_GET["group_module_id"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null; //optional
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
 
@@ -25,8 +25,8 @@ $LayoutTypeProjectHandler->filterPresentationLayerProjectsByUserAndLayoutPermiss
 	$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $bean_file_name, $bean_name, $user_global_variables_file_path);
 	$selected_project = strpos($filter_by_layout, "$layer_bean_folder_name/") === 0 ? substr($filter_by_layout, strlen("$layer_bean_folder_name/")) : null;
 	
-	if ($_POST) {
-		$project = $_POST["project"];
+	if (!empty($_POST)) {
+		$project = isset($_POST["project"]) ? $_POST["project"] : null;
 		
 		if ($project) {
 			$url = $project_url_prefix . "phpframework/module/$group_module_id/admin/index?bean_name=$bean_name&bean_file_name=$bean_file_name&filter_by_layout=$filter_by_layout&path=$project" . ($popup ? "&popup=$popup" : "");

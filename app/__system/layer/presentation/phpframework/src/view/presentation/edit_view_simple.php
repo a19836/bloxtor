@@ -2,9 +2,59 @@
 include $EVC->getUtilPath("CMSPresentationLayerUIHandler");
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$file_path = isset($file_path) ? $file_path : null;
+$P = isset($P) ? $P : null;
+$db_drivers_options = isset($db_drivers_options) ? $db_drivers_options : null;
+$sla_settings = isset($sla_settings) ? $sla_settings : null;
+$selected_project_id = isset($selected_project_id) ? $selected_project_id : null;
+$file_modified_time = isset($file_modified_time) ? $file_modified_time : null;
+$cached_modified_date = isset($cached_modified_date) ? $cached_modified_date : null;
+
+$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+$business_logic_brokers = isset($business_logic_brokers) ? $business_logic_brokers : null;
+$data_access_brokers = isset($data_access_brokers) ? $data_access_brokers : null;
+$ibatis_brokers = isset($ibatis_brokers) ? $ibatis_brokers : null;
+$hibernate_brokers = isset($hibernate_brokers) ? $hibernate_brokers : null;
+$db_brokers = isset($db_brokers) ? $db_brokers : null;
+
+$presentation_brokers_obj = isset($presentation_brokers_obj) ? $presentation_brokers_obj : null;
+$business_logic_brokers_obj = isset($business_logic_brokers_obj) ? $business_logic_brokers_obj : null;
+$data_access_brokers_obj = isset($data_access_brokers_obj) ? $data_access_brokers_obj : null;
+$ibatis_brokers_obj = isset($ibatis_brokers_obj) ? $ibatis_brokers_obj : null;
+$hibernate_brokers_obj = isset($hibernate_brokers_obj) ? $hibernate_brokers_obj : null;
+$db_brokers_obj = isset($db_brokers_obj) ? $db_brokers_obj : null;
+
+$is_external_template = isset($is_external_template) ? $is_external_template : null;
+$available_blocks_list = isset($available_blocks_list) ? $available_blocks_list : null;
+$regions_blocks_list = isset($regions_blocks_list) ? $regions_blocks_list : null;
+$block_params_values_list = isset($block_params_values_list) ? $block_params_values_list : null;
+$blocks_join_points = isset($blocks_join_points) ? $blocks_join_points : null;
+$defined_regions_list = isset($defined_regions_list) ? $defined_regions_list : null;
+$available_params_values_list = isset($available_params_values_list) ? $available_params_values_list : null;
+$available_regions_list = isset($available_regions_list) ? $available_regions_list : null;
+$selected_or_default_template = isset($selected_or_default_template) ? $selected_or_default_template : null;
+$template_region_blocks = isset($template_region_blocks) ? $template_region_blocks : null;
+$template_params_values_list = isset($template_params_values_list) ? $template_params_values_list : null;
+$set_template = isset($set_template) ? $set_template : null;
+$selected_template = isset($selected_template) ? $selected_template : null;
+$available_templates = isset($available_templates) ? $available_templates : null;
+$installed_wordpress_folders_name = isset($installed_wordpress_folders_name) ? $installed_wordpress_folders_name : null;
+$available_block_params_list = isset($available_block_params_list) ? $available_block_params_list : null;
+$includes = isset($includes) ? $includes : null;
+$available_params_list = isset($available_params_list) ? $available_params_list : null;
+$tasks_contents = isset($tasks_contents) ? $tasks_contents : null;
+$db_drivers = isset($db_drivers) ? $db_drivers : null;
+$presentation_projects = isset($presentation_projects) ? $presentation_projects : null;
+$brokers_db_drivers = isset($brokers_db_drivers) ? $brokers_db_drivers : null;
+$view_params_values_list = isset($view_params_values_list) ? $view_params_values_list : null;
+
 $view_includes = array_map(function($include) { 
-	$inc_path = PHPUICodeExpressionHandler::getArgumentCode($include["path"], $include["path_type"]);
-	return array("path" => $inc_path, "once" => $include["once"]); 
+	$inc_path = isset($include["path"]) ? $include["path"] : null;
+	$inc_path = PHPUICodeExpressionHandler::getArgumentCode($inc_path, isset($include["path_type"]) ? $include["path_type"] : null);
+	return array(
+		"path" => $inc_path, 
+		"once" => isset($include["once"]) ? $include["once"] : null
+	); 
 }, $includes);
 
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
@@ -49,7 +99,7 @@ $template_preview_html_url = $project_url_prefix . "phpframework/presentation/te
 $edit_webroot_file_url = $project_url_prefix . "phpframework/admin/edit_raw_file?bean_name=$bean_name&bean_file_name=$bean_file_name&item_type=presentation&path=#path#&popup=1";
 $create_webroot_file_url = $project_url_prefix . "phpframework/admin/manage_file?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=$selected_project_id/webroot/#folder#&action=create_file&item_type=presentation&extra=#file_name#";
 
-$head = $sla_head;
+$head = isset($sla_head) ? $sla_head : null;
 $head .= '
 <!-- Add Layout CSS and JS files -->
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/layout.css" type="text/css" charset="utf-8" />
@@ -79,7 +129,7 @@ $head .= '
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/presentation/module_join_points.js"></script>
 
 <script>
-' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, $selected_db_vars) . '
+' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, isset($selected_db_vars) ? $selected_db_vars : null) . '
 var layer_type = "pres";
 var file_modified_time = ' . $file_modified_time . '; //for version control
 
@@ -104,15 +154,15 @@ var create_webroot_file_url = \'' . $create_webroot_file_url . '\';
 
 var layer_default_template = \'' . $selected_template . '\';
 var common_project_name = \'' . $PEVC->getCommonProjectName() . '\';
-var selected_project_url_prefix = \'' . $selected_project_url_prefix . '\';
-var selected_project_common_url_prefix = \'' . $selected_project_common_url_prefix . '\';
+var selected_project_url_prefix = \'' . (isset($selected_project_url_prefix) ? $selected_project_url_prefix : null) . '\';
+var selected_project_common_url_prefix = \'' . (isset($selected_project_common_url_prefix) ? $selected_project_common_url_prefix : null) . '\';
 
 var sla_settings_obj = ' . json_encode($sla_settings_obj) . ';
 var brokers_db_drivers = ' . json_encode($brokers_db_drivers) . ';
-var access_activity_id = ' . (is_numeric($access_activity_id) ? $access_activity_id : "null") . ';
+var access_activity_id = ' . (isset($access_activity_id) && is_numeric($access_activity_id) ? $access_activity_id : "null") . ';
 ';
 
-$head .= $sla_js_head;
+$head .= isset($sla_js_head) ? $sla_js_head : null;
 $head .= WorkFlowPresentationHandler::getPresentationBrokersHtml($presentation_brokers, $choose_bean_layer_files_from_file_manager_url, $get_file_properties_url, $upload_bean_layer_files_from_file_manager_url);
 $head .= WorkFlowPresentationHandler::getBusinessLogicBrokersHtml($business_logic_brokers, $choose_bean_layer_files_from_file_manager_url, $get_file_properties_url);
 $head .= WorkFlowPresentationHandler::getDataAccessBrokersHtml($data_access_brokers, $choose_bean_layer_files_from_file_manager_url);
@@ -122,7 +172,7 @@ $head .= '</script>';
 $head .= CMSPresentationLayerUIHandler::getHeader($project_url_prefix, $project_common_url_prefix, $get_available_blocks_list_url, $get_block_params_url, $create_entity_code_url, $available_blocks_list, $regions_blocks_list, $block_params_values_list, $view_includes, $blocks_join_points, $view_params_values_list, $selected_project_id, false, $head);
 $head .= LayoutTypeProjectUIHandler::getHeader();
 
-$query_string = preg_replace("/dont_save_cookie=([^&])*/", "", str_replace(array("&edit_view_type=advanced", "&edit_view_type=simple"), "", $_SERVER["QUERY_STRING"]));
+$query_string = isset($_SERVER["QUERY_STRING"]) ? preg_replace("/dont_save_cookie=([^&])*/", "", str_replace(array("&edit_view_type=advanced", "&edit_view_type=simple"), "", $_SERVER["QUERY_STRING"])) : "";
 
 $pos = strpos($file_path, "/src/view/") + strlen("/src/view/");
 $view_prefix = substr($file_path, 0, $pos);
@@ -157,19 +207,19 @@ $main_content = '
 		</header>
 	</div>';
 
-if ($obj_data) {
-	$code = $obj_data["code"];
+if (!empty($obj_data)) {
+	$code = isset($obj_data["code"]) ? $obj_data["code"] : null;
 	
 	$doc_type_props = WorkFlowPresentationHandler::getHtmlTagProps($code, "!DOCTYPE");
 	$html_props = WorkFlowPresentationHandler::getHtmlTagProps($code, "html");
 	$head_props = WorkFlowPresentationHandler::getHtmlTagProps($code, "head", array("get_inline_code" => true));
 	$body_props = WorkFlowPresentationHandler::getHtmlTagProps($code, "body", array("get_inline_code" => true));
 	$code_exists = !empty(trim($code));
-	$non_standard_code = $code_exists && !$html_props["inline_code"] && !$head_props["inline_code"] && !$body_props["inline_code"];
+	$non_standard_code = $code_exists && empty($html_props["inline_code"]) && empty($head_props["inline_code"]) && empty($body_props["inline_code"]);
 	
 	//$is_body_code_valid = WorkFlowPresentationHandler::validateHtmlTagsBeforeConvertingToCodeTags($body_props["inline_code"]);//It should be always false because the CKEDITOR has a problem and deforms the view code. DO NOT USE THE CKEDITOR TO EDIT VIEWS!!!
 	//$body_props["inline_code"] = $is_body_code_valid ? WorkFlowPresentationHandler::convertHtmlTagsToCodeTags($body_props["inline_code"]) : $body_props["inline_code"]; //NO NEED FOR THIS ANYMORE, BC WE ARE USING A PERSONALIZED LAYOUT UI AND WE ARE NOT USING ANYMORE THE CKEDITOR. 
-	$is_code_valid = !$code_exists || $html_props["inline_code"] || $html_props["html_attributes"] || $head_props["inline_code"] || $head_props["html_attributes"] || $body_props["inline_code"] || $body_props["html_attributes"];//NOW IS ALWAYS TRUE BECAUSE WE HAVE A PERSONALIZED LAYOUT UI AND WE ARE NOT USING ANYMORE THE CKEDITOR. However if the code is a non standard html code, without body and head tags, then we should alert the user and so, the code should be considered as invalid.
+	$is_code_valid = !$code_exists || !empty($html_props["inline_code"]) || !empty($html_props["html_attributes"]) || !empty($head_props["inline_code"]) || !empty($head_props["html_attributes"]) || !empty($body_props["inline_code"]) || !empty($body_props["html_attributes"]);//NOW IS ALWAYS TRUE BECAUSE WE HAVE A PERSONALIZED LAYOUT UI AND WE ARE NOT USING ANYMORE THE CKEDITOR. However if the code is a non standard html code, without body and head tags, then we should alert the user and so, the code should be considered as invalid.
 	
 	//if non standard html file, then sets the body with the html. Execute this after the $is_code_valid var, otherwise the statement: '$body_props["inline_code"] = $code', will mess the code above.
 	if ($non_standard_code)
@@ -208,10 +258,12 @@ if ($obj_data) {
 	$view_region_blocks = array_map(function($n) { return ""; }, array_flip($available_regions_list)); //sets regions with default value: ""
 	if ($regions_blocks_list)
 		foreach ($regions_blocks_list as $rbl) {
-			if (!is_array($view_region_blocks[ $rbl[0] ]))
-				$view_region_blocks[ $rbl[0] ] = array();
+			$rbl_region = isset($rbl[0]) ? $rbl[0] : null;
 			
-			$view_region_blocks[ $rbl[0] ][] = $rbl;
+			if (!isset($view_region_blocks[$rbl_region]) || !is_array($view_region_blocks[$rbl_region]))
+				$view_region_blocks[$rbl_region] = array();
+			
+			$view_region_blocks[$rbl_region][] = $rbl;
 		}
 	
 	$edit_simple_template_layout_data = array(
@@ -254,7 +306,7 @@ if ($obj_data) {
 			</div>
 			
 			<div id="resource_settings" class="resource_settings">
-				' . SequentialLogicalActivityUIHandler::getSLAHtml($EVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $tasks_contents, $db_drivers, $presentation_projects, $WorkFlowUIHandler, array(
+				' . SequentialLogicalActivityUIHandler::getSLAHtml($EVC, $PEVC, $project_url_prefix, $project_common_url_prefix, $layout_ui_editor_user_widget_folders_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $tasks_contents, $db_drivers, $presentation_projects, $WorkFlowUIHandler, array(
 					"save_func" => "saveView",
 				)) . '
 			</div>

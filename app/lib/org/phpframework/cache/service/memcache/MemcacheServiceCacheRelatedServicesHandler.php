@@ -90,7 +90,7 @@ class MemcacheServiceCacheRelatedServicesHandler extends ServiceCacheRelatedServ
 		
 		$ns = $this->getFileNS($dir_path);
 		
-		$data = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME);
+		$data = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, self::MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME);
 		$data = !empty($data) ? unserialize($data) : false;
 		
 		if (is_array($data)) {
@@ -137,7 +137,7 @@ class MemcacheServiceCacheRelatedServicesHandler extends ServiceCacheRelatedServ
 		
 		$ns = $this->getFileNS($dir_path);
 		
-		$data = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME);
+		$data = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, self::MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME);
 		$data = !empty($data) ? unserialize($data) : false;
 		
 		if (is_array($data)) {
@@ -194,7 +194,7 @@ class MemcacheServiceCacheRelatedServicesHandler extends ServiceCacheRelatedServ
 		if(!$registered) {
 			$new_file_name = uniqid();
 			
-			$data = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME);
+			$data = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, self::MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME);
 			$data = !empty($data) ? unserialize($data) : false;
 			
 			if (!is_array($data)) {
@@ -204,7 +204,7 @@ class MemcacheServiceCacheRelatedServicesHandler extends ServiceCacheRelatedServ
 			$data[] = $new_file_name;
 			$cont = serialize($data);
 			
-			if ($this->CacheHandler->getMemcacheHandler()->nsSet($ns, MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME, $cont)) {
+			if ($this->CacheHandler->getMemcacheHandler()->nsSet($ns, self::MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME, $cont)) {
 				$arr = array($key => true);
 				$cont = serialize($arr);
 				

@@ -59,6 +59,12 @@
 			vertical-align:middle;
 			display:block;
 			word-break:break-all;
+			
+			/* Just in case the parent node overwrites some of these styles */
+			text-transform:none;
+			font-weight:normal;
+			font-family:arial;
+			font-size:12px;
 		}
 		body > .droppable.borders .template-widget.template-widget-php:before {
 			content:"";
@@ -156,7 +162,7 @@
 				var php_content = widget.children(".php-content");
 				var default_text = php_content.html();
 				
-				php_content.html(html_element ? "" : (default_text ? default_text : "&lt;? echo 'Via PHP code'; ?&gt;"));
+				php_content.html(html_element ? "" : (default_text ? default_text : "&lt;?php echo 'Via PHP code'; ?&gt;"));
 				
 				if (html_element) {
 					var is_recreate = me.isRecreateWidget(html_element);

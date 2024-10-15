@@ -10,6 +10,8 @@ class LayoutTypeProjectHandler {
 	
 	private $loaded_layouts = array();
 	private $loaded_layouts_type_permissions_by_object = array();
+	private $layer_db_drivers_props = null;
+	private $layer_objs = null;
 	
 	public function __construct($UserAuthenticationHandler, $global_variables_file_path, $beans_folder_path, $bean_file_name = null, $bean_name = null) {
 		$this->UserAuthenticationHandler = $UserAuthenticationHandler;
@@ -60,16 +62,19 @@ class LayoutTypeProjectHandler {
 				//load permissions
 				$this->UserAuthenticationHandler->loadLayoutPermissions($filter_by_layout, UserAuthenticationHandler::$LAYOUTS_TYPE_FROM_PROJECT_ID);
 				
-				$dnf = $options && $options["do_not_filter_by_layout"] ? $options["do_not_filter_by_layout"] : null;
+				$dnf = $options && !empty($options["do_not_filter_by_layout"]) ? $options["do_not_filter_by_layout"] : null;
 			}
 			
 			foreach ($layers_projects as $bean_name => $props) {
-				$bean_file_name = $props["bean_file_name"];
+				$bean_file_name = isset($props["bean_file_name"]) ? $props["bean_file_name"] : null;
 				
 				$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($this->beans_folder_path . $bean_file_name, $bean_name, $this->global_variables_file_path);
 				$layer_object_id = LAYER_PATH . $layer_bean_folder_name;
 				
-				$do_not_filter_layer_by_layout = $dnf && $dnf["bean_name"] == $bean_name && $dnf["bean_file_name"] == $bean_file_name;
+				$dnf_bean_name = isset($dnf["bean_name"]) ? $dnf["bean_name"] : null;
+				$dnf_bean_file_name = isset($dnf["bean_file_name"]) ? $dnf["bean_file_name"] : null;
+				
+				$do_not_filter_layer_by_layout = !empty($dnf) && $dnf_bean_name == $bean_name && $dnf_bean_file_name == $bean_file_name;
 				//echo "do_not_filter_layer_by_layout:$do_not_filter_layer_by_layout\n<br>";
 				
 				if (!$this->UserAuthenticationHandler->isInnerFilePermissionAllowed($layer_object_id, "layer", "access"))
@@ -78,7 +83,8 @@ class LayoutTypeProjectHandler {
 					unset($layers_projects[$bean_name]);
 				else {
 					$LayoutTypeProjectHandler = new LayoutTypeProjectHandler($this->UserAuthenticationHandler, $this->global_variables_file_path, $this->beans_folder_path, $bean_file_name, $bean_name);
-					$LayoutTypeProjectHandler->filterPresentationLayerProjectsByUserAndLayoutPermissions($layers_projects[$bean_name]["projects"], $filter_by_layout, $filter_by_layout_permission, $options);
+					$layers_bean_projects = isset($layers_projects[$bean_name]["projects"]) ? $layers_projects[$bean_name]["projects"] : null;
+					$LayoutTypeProjectHandler->filterPresentationLayerProjectsByUserAndLayoutPermissions($layers_bean_projects, $filter_by_layout, $filter_by_layout_permission, $options);
 					//echo "<pre>";print_r($layers_projects[$bean_name]["projects"]);die();
 				}
 			}
@@ -99,14 +105,19 @@ class LayoutTypeProjectHandler {
 				//load permissions
 				$this->UserAuthenticationHandler->loadLayoutPermissions($filter_by_layout, UserAuthenticationHandler::$LAYOUTS_TYPE_FROM_PROJECT_ID);
 				
-				$dnf = $options && $options["do_not_filter_by_layout"] ? $options["do_not_filter_by_layout"] : null;
-				$do_not_filter_layer_by_layout = $dnf && $dnf["bean_name"] == $this->bean_name && $dnf["bean_file_name"] == $this->bean_file_name;
+				$dnf = $options && !empty($options["do_not_filter_by_layout"]) ? $options["do_not_filter_by_layout"] : null;
+				$dnf_bean_name = isset($dnf["bean_name"]) ? $dnf["bean_name"] : null;
+				$dnf_bean_file_name = isset($dnf["bean_file_name"]) ? $dnf["bean_file_name"] : null;
+				
+				$do_not_filter_layer_by_layout = $dnf && $dnf_bean_name == $this->bean_name && $dnf_bean_file_name == $this->bean_file_name;
 				//echo "do_not_filter_layer_by_layout:$do_not_filter_layer_by_layout\n<br>";
 			}
 			
+			$dnf_project = isset($dnf["project"]) ? $dnf["project"] : null;
+			
 			foreach ($projects as $project_name => $project_props) {
 				$fn_layer_object_id = "$layer_object_id/$project_name";
-				$do_not_filter_project_by_layout = $do_not_filter_layer_by_layout && $project_name == $dnf["project"];
+				$do_not_filter_project_by_layout = !empty($do_not_filter_layer_by_layout) && $project_name == $dnf_project;
 				//echo "$project_name:".$dnf["project"]."\n<br>";
 				//echo "do_not_filter_project_by_layout:$do_not_filter_project_by_layout\n<br>";
 				
@@ -122,11 +133,11 @@ class LayoutTypeProjectHandler {
 		if ($db_drivers && $url && strpos($url, "?") !== false) {
 			$query_string = substr($url, strpos($url, "?") + 1); //Do not use parse_url bc the $url contains bean_name=#bean_name# and the parse_url will parse incorrect the url bc of the "#" char.
 			parse_str($query_string, $arr);
-			$filter_by_layout = $arr["filter_by_layout"];
+			$filter_by_layout = isset($arr["filter_by_layout"]) ? $arr["filter_by_layout"] : null;
 			//echo "filter_by_layout:$filter_by_layout\n";die();
 			
 			if ($filter_by_layout)
-				$this->filterLayerBrokersDBDriversPropsFromLayoutName($db_drivers, $filter_by_layout, $arr["filter_by_layout_permission"]);
+				$this->filterLayerBrokersDBDriversPropsFromLayoutName($db_drivers, $filter_by_layout, isset($arr["filter_by_layout_permission"]) ? $arr["filter_by_layout_permission"] : null);
 		}
 	}
 	
@@ -201,6 +212,9 @@ class LayoutTypeProjectHandler {
 			$PresentationLayer = $WorkFlowBeansFileHandler->getBeanObject($this->bean_name);
 			
 			if ($PresentationLayer) {
+				if (empty($PresentationLayer->settings["presentation_webroot_path"])) //used in edit_entity_advanced.php
+					launch_exception(new Exception("'PresentationLayer->settings[presentation_webroot_path]' cannot be undefined!"));
+				
 				$webroot_file_relative_path = $PresentationLayer->settings["presentation_webroot_path"];
 				$is_path_a_project = $project_path ? is_dir("$project_path/$webroot_file_relative_path") : false;
 				
@@ -234,7 +248,7 @@ class LayoutTypeProjectHandler {
 		
 		if ($layout_type_name) {
 			$layout_type_data = $this->getLayoutTypeDataByName($layout_type_name);
-			return $layout_type_data && $layout_type_data["layout_type_id"];
+			return $layout_type_data && !empty($layout_type_data["layout_type_id"]);
 		}
 		
 		return false;
@@ -277,7 +291,7 @@ class LayoutTypeProjectHandler {
 		
 		if ($layout_type_name) {
 			$layout_type_data = $this->getLayoutTypeDataByName($layout_type_name);
-			$layout_type_id = $layout_type_data ? $layout_type_data["layout_type_id"] : null;
+			$layout_type_id = $layout_type_data && isset($layout_type_data["layout_type_id"]) ? $layout_type_data["layout_type_id"] : null;
 			
 			//add new layout if not exists
 			if (!$layout_type_id)
@@ -349,10 +363,10 @@ class LayoutTypeProjectHandler {
 		if (is_array($layout_type_permissions)) { //it could be with no permissions...
 			foreach ($layout_type_permissions as $ltp) {
 				$data = array(
-					"layout_type_id" => $ltp["layout_type_id"], 
-					"permission_id" => $ltp["permission_id"], 
-					"object_type_id" => $ltp["object_type_id"], 
-					"old_object_id" => $ltp["object_id"], 
+					"layout_type_id" => isset($ltp["layout_type_id"]) ? $ltp["layout_type_id"] : null, 
+					"permission_id" => isset($ltp["permission_id"]) ? $ltp["permission_id"] : null, 
+					"object_type_id" => isset($ltp["object_type_id"]) ? $ltp["object_type_id"] : null, 
+					"old_object_id" => isset($ltp["object_id"]) ? $ltp["object_id"] : null, 
 					"new_object_id" => $new_object_id
 				);
 				
@@ -360,10 +374,10 @@ class LayoutTypeProjectHandler {
 					$status = false;
 				
 				//update $this->loaded_layouts_type_permissions_by_object
-				if ($this->layoutTypePermissionObjectExists($ltp["layout_type_id"], $ltp["object_type_id"], $ltp["object_id"])) {
-					$this->loaded_layouts_type_permissions_by_object[ $ltp["layout_type_id"] ][ $ltp["object_type_id"] ][$new_object_id] = $this->loaded_layouts_type_permissions_by_object[ $ltp["layout_type_id"] ][ $ltp["object_type_id"] ][ $ltp["object_id"] ];
+				if ($this->layoutTypePermissionObjectExists($data["layout_type_id"], $data["object_type_id"], $data["old_object_id"])) {
+					$this->loaded_layouts_type_permissions_by_object[ $data["layout_type_id"] ][ $data["object_type_id"] ][$new_object_id] = $this->loaded_layouts_type_permissions_by_object[ $data["layout_type_id"] ][ $data["object_type_id"] ][ $data["old_object_id"] ];
 					
-					unset($this->loaded_layouts_type_permissions_by_object[ $ltp["layout_type_id"] ][ $ltp["object_type_id"] ][ $ltp["object_id"] ]);
+					unset($this->loaded_layouts_type_permissions_by_object[ $data["layout_type_id"] ][ $data["object_type_id"] ][ $data["old_object_id"] ]);
 				}
 			}
 		}
@@ -377,7 +391,7 @@ class LayoutTypeProjectHandler {
 		
 		if ($layout_type_old_name && $layout_type_new_name) {
 			$layout_type_data = $this->getLayoutTypeDataByName($layout_type_old_name);
-			$layout_type_id = $layout_type_data ? $layout_type_data["layout_type_id"] : null;
+			$layout_type_id = $layout_type_data && isset($layout_type_data["layout_type_id"]) ? $layout_type_data["layout_type_id"] : null;
 			
 			if ($layout_type_id) {
 				$layout_type_data["name"] = $layout_type_new_name;
@@ -385,10 +399,10 @@ class LayoutTypeProjectHandler {
 				if ($this->UserAuthenticationHandler->updateLayoutType($layout_type_data)) {
 					//rename project permission
 					$object_types = $this->UserAuthenticationHandler->getAvailableObjectTypes();
-					$layer_object_type_id = $object_types["layer"];
+					$layer_object_type_id = isset($object_types["layer"]) ? $object_types["layer"] : null;
 					
 					//$permissions = $this->UserAuthenticationHandler->getAvailablePermissions();
-					//$belong_permission_id = $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ];
+					//$belong_permission_id = isset($permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ]) ? $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ] : null;
 					
 					$old_object_id = $this->getLayoutTypePermissionObjectIdFromFilePath(LAYER_PATH . $layout_type_old_name);
 					$new_object_id = $this->getLayoutTypePermissionObjectIdFromFilePath(LAYER_PATH . $layout_type_new_name);
@@ -434,7 +448,7 @@ class LayoutTypeProjectHandler {
 			$this->removeDefaultLayoutTypeNameProjectFolders($layout_type_name);
 			
 			$layout_type_data = $this->getLayoutTypeDataByName($layout_type_name);
-			$layout_type_id = $layout_type_data ? $layout_type_data["layout_type_id"] : null;
+			$layout_type_id = $layout_type_data && isset($layout_type_data["layout_type_id"]) ? $layout_type_data["layout_type_id"] : null;
 			
 			if ($layout_type_id)
 				return $this->UserAuthenticationHandler->deleteLayoutTypePermissionsByConditions(array("layout_type_id" => $layout_type_id))
@@ -478,7 +492,7 @@ class LayoutTypeProjectHandler {
 			
 			if ($layout_type_name) {
 				$layout_type_data = $this->getLayoutTypeDataByName($layout_type_name);
-				$layout_type_id = $layout_type_data ? $layout_type_data["layout_type_id"] : null;
+				$layout_type_id = $layout_type_data && isset($layout_type_data["layout_type_id"]) ? $layout_type_data["layout_type_id"] : null;
 				
 				//add new layout if not exists
 				if (!$layout_type_id) {
@@ -494,11 +508,11 @@ class LayoutTypeProjectHandler {
 				
 				if ($layout_type_id) {
 					$object_types = $this->UserAuthenticationHandler->getAvailableObjectTypes();
-					$layer_object_type_id = $object_types["layer"];
+					$layer_object_type_id = isset($object_types["layer"]) ? $object_types["layer"] : null;
 					
 					$permissions = $this->UserAuthenticationHandler->getAvailablePermissions();
-					$belong_permission_id = $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ];
-					$referenced_permission_id = $permissions[ UserAuthenticationHandler::$PERMISSION_REFERENCED_NAME ];
+					$belong_permission_id = isset($permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ]) ? $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ] : null;
+					$referenced_permission_id = isset($permissions[ UserAuthenticationHandler::$PERMISSION_REFERENCED_NAME ]) ? $permissions[ UserAuthenticationHandler::$PERMISSION_REFERENCED_NAME ] : null;
 					
 					//add reference for this specific module. this will be used in "modules list" in the "WorkFlowPresentationHandler::getCodeEditorHtml", in case the user doesn't have access to the common project but has this modules referenced.
 					$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($this->beans_folder_path . $this->bean_file_name, $this->global_variables_file_path);
@@ -549,14 +563,14 @@ class LayoutTypeProjectHandler {
 		
 		if ($layer_objs && $projects) {
 			$object_types = $this->UserAuthenticationHandler->getAvailableObjectTypes();
-			$layer_object_type_id = $object_types["layer"];
+			$layer_object_type_id = isset($object_types["layer"]) ? $object_types["layer"] : null;
 			
 			$permissions = $this->UserAuthenticationHandler->getAvailablePermissions();
-			$belong_permission_id = $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ];
+			$belong_permission_id = isset($permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ]) ? $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ] : null;
 			
 			foreach ($layer_objs as $broker_name => $layer_obj) 
 				if (is_a($layer_obj, "PresentationLayer")) {
-					$layer_projects = $projects[$broker_name];
+					$layer_projects = isset($projects[$broker_name]) ? $projects[$broker_name] : null;
 					
 					if ($layer_projects) {
 						$layer_path = $layer_obj->getLayerPathSetting();
@@ -567,7 +581,7 @@ class LayoutTypeProjectHandler {
 							
 							if ($layout_type_name) {
 								$layout_type_data = $this->getLayoutTypeDataByName($layout_type_name);
-								$layout_type_id = $layout_type_data ? $layout_type_data["layout_type_id"] : null;
+								$layout_type_id = $layout_type_data && isset($layout_type_data["layout_type_id"]) ? $layout_type_data["layout_type_id"] : null;
 								
 								//add new layout if not exists
 								if (!$layout_type_id) {
@@ -633,7 +647,7 @@ class LayoutTypeProjectHandler {
 		$this->validateBeanNameAndBeanFileName();
 		
 		$layout_type_data = $this->getLayoutTypeDataByName($layout_type_name);
-		$layout_type_id = $layout_type_data ? $layout_type_data["layout_type_id"] : null;
+		$layout_type_id = $layout_type_data && isset($layout_type_data["layout_type_id"]) ? $layout_type_data["layout_type_id"] : null;
 		
 		//if layout type doesnt exists, returns false (Do not create layout type bc it means the user removed it before on purpose!)
 		if (!$layout_type_id)
@@ -649,10 +663,10 @@ class LayoutTypeProjectHandler {
 		
 		//insert new permission object
 		$object_types = $this->UserAuthenticationHandler->getAvailableObjectTypes();
-		$layer_object_type_id = $object_types["layer"];
+		$layer_object_type_id = isset($object_types["layer"]) ? $object_types["layer"] : null;
 		
 		$permissions = $this->UserAuthenticationHandler->getAvailablePermissions();
-		$belong_permission_id = $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ];
+		$belong_permission_id = isset($permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ]) ? $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ] : null;
 		
 		$object_id = $this->getLayoutTypePermissionObjectIdFromFilePath($file_path);
 		
@@ -672,13 +686,17 @@ class LayoutTypeProjectHandler {
 		$status = true;
 		
 		if (is_array($layout_type_permissions)) //it could be with no permissions...
-			foreach ($layout_type_permissions as $ltp)
-				if (!$repeated[ $ltp["layout_type_id"] ][ $ltp["object_type_id"] ]) {
-					$repeated[ $ltp["layout_type_id"] ][ $ltp["object_type_id"] ] = 1;
+			foreach ($layout_type_permissions as $ltp) {
+				$layout_type_id = isset($ltp["layout_type_id"]) ? $ltp["layout_type_id"] : null;
+				$object_type_id = isset($ltp["object_type_id"]) ? $ltp["object_type_id"] : null;
+				
+				if (empty($repeated[$layout_type_id][$object_type_id])) {
+					$repeated[$layout_type_id][$object_type_id] = 1;
 					
-					if (!$this->renameLayoutTypePermissionObjectId($ltp["layout_type_id"], $ltp["object_type_id"], $old_object_id, $new_object_id))
+					if (!$this->renameLayoutTypePermissionObjectId($layout_type_id, $object_type_id, $old_object_id, $new_object_id))
 						$status = false;
 				}
+			}
 		
 		return $status;
 	}
@@ -700,7 +718,7 @@ class LayoutTypeProjectHandler {
 		$this->validateBeanNameAndBeanFileName();
 		
 		$layout_type_data = $this->getLayoutTypeDataByName($layout_type_name);
-		$layout_type_id = $layout_type_data ? $layout_type_data["layout_type_id"] : null;
+		$layout_type_id = $layout_type_data && isset($layout_type_data["layout_type_id"]) ? $layout_type_data["layout_type_id"] : null;
 		
 		//if layout type doesnt exists, returns false (Do not create layout type bc it means the user removed it before on purpose!)
 		if (!$layout_type_id)
@@ -714,12 +732,12 @@ class LayoutTypeProjectHandler {
 			$layout_type_name_suffix = substr($layout_type_name, 0, strlen($presentation_layer_bean_folder_name)) == $presentation_layer_bean_folder_name ? substr($layout_type_name, strlen($presentation_layer_bean_folder_name)) : null;
 			
 			$object_types = $this->UserAuthenticationHandler->getAvailableObjectTypes();
-			$layer_object_type_id = $object_types["layer"];
+			$layer_object_type_id = isset($object_types["layer"]) ? $object_types["layer"] : null;
 			
 			$permissions = $this->UserAuthenticationHandler->getAvailablePermissions();
 			$belong_permission_id = $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ];
 			
-			$db_layers_type = $layers["db_layers"];
+			$db_layers_type = isset($layers["db_layers"]) ? $layers["db_layers"] : null;
 			$exists = false;
 			$status = true;
 			
@@ -730,7 +748,9 @@ class LayoutTypeProjectHandler {
 					if ($driver_name == $db_driver_name) {
 						$exists = true;
 						
-						$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($this->beans_folder_path . $layer["properties"]["bean_file_name"], $layer["properties"]["bean_name"], $this->global_variables_file_path);
+						$layer_bean_name = isset($layer["properties"]["bean_name"]) ? $layer["properties"]["bean_name"] : null;
+						$layer_bean_file_name = isset($layer["properties"]["bean_file_name"]) ? $layer["properties"]["bean_file_name"] : null;
+						$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($this->beans_folder_path . $layer_bean_file_name, $layer_bean_name, $this->global_variables_file_path);
 						$layer_object_id = LAYER_PATH . "$layer_bean_folder_name/"; //layer_bean_folder_name is for the db_data
 						
 						$object_id = $this->getLayoutTypePermissionObjectIdFromFilePath($layer_object_id . $driver_name_bean_name);
@@ -761,7 +781,7 @@ class LayoutTypeProjectHandler {
 	private function createDefaultLayoutTypeProjectPermissions($layout_type_id, $create_layers_project_folder_if_not_exists = true, $filter_layers_by_access = true) {
 		if ($layout_type_id) {
 			$layout_type_data = $this->UserAuthenticationHandler->getLayoutType($layout_type_id);
-			$layout_type_name = $layout_type_data ? $layout_type_data["name"] : null;
+			$layout_type_name = $layout_type_data && isset($layout_type_data["name"]) ? $layout_type_data["name"] : null;
 			
 			if ($layout_type_name) {
 				$layers = AdminMenuHandler::getLayersFiles($this->global_variables_file_path);
@@ -772,10 +792,10 @@ class LayoutTypeProjectHandler {
 					$layout_type_name_suffix = substr($layout_type_name, 0, strlen($presentation_layer_bean_folder_name)) == $presentation_layer_bean_folder_name ? substr($layout_type_name, strlen($presentation_layer_bean_folder_name)) : null;
 					
 					$object_types = $this->UserAuthenticationHandler->getAvailableObjectTypes();
-					$layer_object_type_id = $object_types["layer"];
+					$layer_object_type_id = isset($object_types["layer"]) ? $object_types["layer"] : null;
 					
 					$permissions = $this->UserAuthenticationHandler->getAvailablePermissions();
-					$belong_permission_id = $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ];
+					$belong_permission_id = isset($permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ]) ? $permissions[ UserAuthenticationHandler::$PERMISSION_BELONG_NAME ] : null;
 					
 					//add presentation self project permission
 					$object_id = $this->getLayoutTypePermissionObjectIdFromFilePath(LAYER_PATH . $layout_type_name);
@@ -806,11 +826,14 @@ class LayoutTypeProjectHandler {
 							foreach ($layer_type as $layer_name => $layer) {
 								$exists = true;
 								
+								$layer_bean_name = isset($layer["properties"]["bean_name"]) ? $layer["properties"]["bean_name"] : null;
+								$layer_bean_file_name = isset($layer["properties"]["bean_file_name"]) ? $layer["properties"]["bean_file_name"] : null;
+								
 								if ($filter_layers_by_access)
-									$exists = $beans_files_path && $beans_files_path[ $layer["properties"]["bean_name"] ][0] == $this->beans_folder_path . $layer["properties"]["bean_file_name"];
+									$exists = $beans_files_path && isset($beans_files_path[$layer_bean_name][0]) && $beans_files_path[$layer_bean_name][0] == $this->beans_folder_path . $layer_bean_file_name;
 								
 								if ($exists) {
-									$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($this->beans_folder_path . $layer["properties"]["bean_file_name"], $layer["properties"]["bean_name"], $this->global_variables_file_path);
+									$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($this->beans_folder_path . $layer_bean_file_name, $layer_bean_name, $this->global_variables_file_path);
 									
 									//add db layer permission
 									if ($layer_type_name == "db_layers") {
@@ -888,7 +911,10 @@ class LayoutTypeProjectHandler {
 					foreach ($layers as $layer_type_name => $layer_type)
 						if (in_array($layer_type_name, array("business_logic_layers", "data_access_layers")))
 							foreach ($layer_type as $layer_name => $layer) {
-								$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($this->beans_folder_path . $layer["properties"]["bean_file_name"], $layer["properties"]["bean_name"], $this->global_variables_file_path);
+								$layer_bean_name = isset($layer["properties"]["bean_name"]) ? $layer["properties"]["bean_name"] : null;
+								$layer_bean_file_name = isset($layer["properties"]["bean_file_name"]) ? $layer["properties"]["bean_file_name"] : null;
+								
+								$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($this->beans_folder_path . $layer_bean_file_name, $layer_bean_name, $this->global_variables_file_path);
 								$old_layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$layout_type_old_name_suffix";
 								$new_layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$layout_type_new_name_suffix";
 								
@@ -925,7 +951,10 @@ class LayoutTypeProjectHandler {
 					foreach ($layers as $layer_type_name => $layer_type)
 						if (in_array($layer_type_name, array("business_logic_layers", "data_access_layers")))
 							foreach ($layer_type as $layer_name => $layer) {
-								$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($this->beans_folder_path . $layer["properties"]["bean_file_name"], $layer["properties"]["bean_name"], $this->global_variables_file_path);
+								$layer_bean_name = isset($layer["properties"]["bean_name"]) ? $layer["properties"]["bean_name"] : null;
+								$layer_bean_file_name = isset($layer["properties"]["bean_file_name"]) ? $layer["properties"]["bean_file_name"] : null;
+								
+								$layer_bean_folder_name = WorkFlowBeansFileHandler::getLayerBeanFolderName($this->beans_folder_path . $layer_bean_file_name, $layer_bean_name, $this->global_variables_file_path);
 								$layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$layout_type_name_suffix";
 								
 								if (is_dir($layer_object_id)) {
@@ -976,7 +1005,7 @@ class LayoutTypeProjectHandler {
 			
 			//check if already exists
 			if ($layouts_type_permissions_by_object && $this->layoutTypePermissionObjectExists($layout_type_id, $object_type_id, $old_object_id)) {
-				$this->loaded_layouts_type_permissions_by_object[$layout_type_id][$object_type_id][$new_object_id] = $this->loaded_layouts_type_permissions_by_object[$layout_type_id][$object_type_id][$old_object_id];
+				$this->loaded_layouts_type_permissions_by_object[$layout_type_id][$object_type_id][$new_object_id] = isset($this->loaded_layouts_type_permissions_by_object[$layout_type_id][$object_type_id][$old_object_id]) ? $this->loaded_layouts_type_permissions_by_object[$layout_type_id][$object_type_id][$old_object_id] : null;
 				
 				unset($this->loaded_layouts_type_permissions_by_object[$layout_type_id][$object_type_id][$old_object_id]);
 				
@@ -988,7 +1017,7 @@ class LayoutTypeProjectHandler {
 	}
 	
 	private function getLayoutTypeDataByName($layout_type_name, $force = false) {
-		if (!$force && $this->loaded_layouts[$layout_type_name])
+		if (!$force && !empty($this->loaded_layouts[$layout_type_name]))
 			return $this->loaded_layouts[$layout_type_name];
 		
 		$layouts = $this->UserAuthenticationHandler->searchLayoutTypes(array(
@@ -996,7 +1025,7 @@ class LayoutTypeProjectHandler {
 			"name" => $layout_type_name
 		));
 		
-		if ($layouts && $layouts[0]) {
+		if ($layouts && !empty($layouts[0])) {
 			$this->loaded_layouts[$layout_type_name] = $layouts[0];
 			
 			return $layouts[0];
@@ -1006,16 +1035,21 @@ class LayoutTypeProjectHandler {
 	}
 	
 	private function getLayoutTypePermissionsByObject($layout_type_id, $force = false) {
-		if ($layout_type_id && ($force || !$this->loaded_layouts_type_permissions_by_object[$layout_type_id])) {
+		if ($layout_type_id && ($force || empty($this->loaded_layouts_type_permissions_by_object[$layout_type_id]))) {
 			$layout_type_permissions = $this->UserAuthenticationHandler->searchLayoutTypePermissions(array("layout_type_id" => $layout_type_id));
 			
 			if (is_array($layout_type_permissions)) {//it could be with no permissions...
-				foreach ($layout_type_permissions as $ltp)
-					$this->loaded_layouts_type_permissions_by_object[$layout_type_id][ $ltp["object_type_id"] ][ $ltp["object_id"] ][] = $ltp["permission_id"];
+				foreach ($layout_type_permissions as $ltp) {
+					$object_type_id = isset($ltp["object_type_id"]) ? $ltp["object_type_id"] : null;
+					$object_id = isset($ltp["object_id"]) ? $ltp["object_id"] : null;
+					$permission_id = isset($ltp["permission_id"]) ? $ltp["permission_id"] : null;
+					
+					$this->loaded_layouts_type_permissions_by_object[$layout_type_id][$object_type_id][$object_id][] = $permission_id;
+				}
 			}
 		}
 		
-		return $layout_type_id ? $this->loaded_layouts_type_permissions_by_object[$layout_type_id] : null;
+		return $layout_type_id && isset($this->loaded_layouts_type_permissions_by_object[$layout_type_id]) ? $this->loaded_layouts_type_permissions_by_object[$layout_type_id] : null;
 	}
 		
 	/* PRIVATE UTILS */

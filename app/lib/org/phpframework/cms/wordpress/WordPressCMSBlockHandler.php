@@ -54,8 +54,8 @@ class WordPressCMSBlockHandler {
 				$method = $matches[1][$idx][0] == "region" ? "renderRegion" : "getParam";
 				
 				$region = trim( substr($html, $start_pos, $end_pos - $start_pos) );
-				$region = $region[0] == '"' && substr($region, -1) == '"' ? stripcslashes(substr($region, 1, -1)) : $region;
-				$region = $region[0] == "'" && substr($region, -1) == "'" ? stripcslashes(substr($region, 1, -1)) : $region;
+				$region = isset($region[0]) && $region[0] == '"' && substr($region, -1) == '"' ? stripcslashes(substr($region, 1, -1)) : $region;
+				$region = isset($region[0]) && $region[0] == "'" && substr($region, -1) == "'" ? stripcslashes(substr($region, 1, -1)) : $region;
 				
 				//echo "$region|$method<br>";
 				$str = substr($html, $match[1], ($end_pos + 3) - $match[1]);
@@ -94,7 +94,7 @@ class WordPressCMSBlockHandler {
 				}
 				else if ($end_php_tag_pos && (!$semi_colon_pos || $semi_colon_pos > $end_php_tag_pos)) {
 					$pos = $end_php_tag_pos + 2;
-					$replacement = "<? echo '$replacement'; ?>";
+					$replacement = "<?php echo '$replacement'; ?>";
 				}
 				
 				if ($pos) {
@@ -149,7 +149,7 @@ class WordPressCMSBlockHandler {
 				launch_exception(new Exception('You are calling multiple wordpress instances with different templates, so you must defined the "wordpress_request_content_url" settings when creating a WordPressCMSBlockHandler object!'));
 			
 			//prepare curl url with correspondent query_string and hash
-			$url_parts = parse_url($_SERVER["REQUEST_URI"]);
+			$url_parts = isset($_SERVER["REQUEST_URI"]) ? parse_url($_SERVER["REQUEST_URI"]) : null;
 			$url .= !empty($url_parts["query"]) ? (strpos($url, "?") !== false ? "" : "?") . $url_parts["query"] : ""; //Note: cannot use $_SERVER["QUERY_STRING"] bc is invalid.
 			$url .= !empty($url_parts["fragment"]) ? "#" . $url_parts["fragment"] : "";
 			
@@ -168,11 +168,11 @@ class WordPressCMSBlockHandler {
 			
 			//set current_page_url for the curl request
 			$current_protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on" ? "https" : "http";
-			$current_page_url = $current_protocol . "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]; //get current page url
+			$current_page_url = $current_protocol . "://" . (isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "") . (isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : ""); //get current page url
 			$post_data["options"]["current_page_url"] = $current_page_url;
 			
 			//set request method type
-			$post_data["options"]["request_method"] = $_SERVER['REQUEST_METHOD'];
+			$post_data["options"]["request_method"] = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
 			
 			//add a new header with an authentication token encrypted with: time() . "_" . md5(serialize($post_data));
 			if (!empty($this->settings["wordpress_request_content_encryption_key"])) {
@@ -187,7 +187,7 @@ class WordPressCMSBlockHandler {
 				$post_data = array("data" => $cipher_text);
 			}
 			
-			$post = $_POST;
+			$post = isset($_POST) ? $_POST : null;
 			$post = $post ? $post : array();
 			$post["phpframework_wordpress_data"] = $post_data;
 			
@@ -199,7 +199,7 @@ class WordPressCMSBlockHandler {
 				"post" => $post, 
 				"cookie" => $current_host == $url_host ? $_COOKIE : null,
 				"settings" => array(
-					"referer" => $_SERVER["HTTP_REFERER"],
+					"referer" => isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : null,
 					"follow_location" => 0, //must be false - check bellow
 					"connection_timeout" => isset($this->settings["wordpress_request_content_connection_timeout"]) ? $this->settings["wordpress_request_content_connection_timeout"] : null,
 				)
@@ -207,7 +207,7 @@ class WordPressCMSBlockHandler {
 			
 			if (!empty($_SERVER["AUTH_TYPE"]) && !empty($_SERVER["PHP_AUTH_USER"])) {
 				$settings["settings"]["http_auth"] = $_SERVER["AUTH_TYPE"];
-				$settings["settings"]["user_pwd"] = $_SERVER["PHP_AUTH_USER"] . ":" . $_SERVER["PHP_AUTH_PW"];
+				$settings["settings"]["user_pwd"] = $_SERVER["PHP_AUTH_USER"] . ":" . (isset($_SERVER["PHP_AUTH_PW"]) ? $_SERVER["PHP_AUTH_PW"] : "");
 			}
 			
 			$previous_redirect = null;
@@ -320,8 +320,8 @@ class WordPressCMSBlockHandler {
 			//prepare local vars
 			$wp_relative_file_path = null;
 			$query_string = null;
-			$old_get_vars = $_GET;
-			$old_request_vars = $_REQUEST;
+			$old_get_vars = isset($_GET) ? $_GET : null;
+			$old_request_vars = isset($_REQUEST) ? $_REQUEST : null;
 			$new_vars = array();
 			
 			//prepare current page url with block_id
@@ -329,7 +329,7 @@ class WordPressCMSBlockHandler {
 				$current_page_url = $options["current_page_url"];
 			else {
 				$current_protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on" ? "https" : "http";
-				$current_page_url = $current_protocol . "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]; //get current page url
+				$current_page_url = $current_protocol . "://" . (isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "") . (isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : ""); //get current page url
 			}
 			
 			WordPressUrlsParser::prepareUrl($current_page_url);
@@ -370,7 +370,7 @@ class WordPressCMSBlockHandler {
 			$project_common_relative_url_prefix = parse_url($project_common_url_prefix, PHP_URL_PATH);
 			$project_common_relative_url_prefix .= substr($project_common_relative_url_prefix, -1) != "/" ? "/" : "";
 			
-			$wordpress_folder_relative_prefix = WordPressUrlsParser::WORDPRESS_FOLDER_PREFIX . "/" . $this->settings["wordpress_folder"] . "/"; //do not add a slash as the first character.
+			$wordpress_folder_relative_prefix = WordPressUrlsParser::WORDPRESS_FOLDER_PREFIX . "/" . (isset($this->settings["wordpress_folder"]) ? $this->settings["wordpress_folder"] : "") . "/"; //do not add a slash as the first character.
 			$wordpress_folder_path = $EVC->getWebrootPath("common") . $wordpress_folder_relative_prefix;
 			$wordpress_request_uri = $project_common_relative_url_prefix . $wordpress_folder_relative_prefix;
 			$wordpress_request_file = $this->getWordPressUriFile($wordpress_folder_relative_prefix);
@@ -378,7 +378,7 @@ class WordPressCMSBlockHandler {
 			//echo "wordpress_folder_relative_prefix:$wordpress_folder_relative_prefix<br>wordpress_folder_path:$wordpress_folder_path<br>wordpress_request_uri:$wordpress_request_uri<br>wordpress_request_file:$wordpress_request_file<br>wordpress_request_url_prefix:$wordpress_request_url_prefix";die();
 			
 			if (!file_exists($wordpress_folder_path))
-				launch_exception(new Exception("WordPress installation with folder '" . $this->settings["wordpress_folder"] . "' doesn't exists!"));
+				launch_exception(new Exception("WordPress installation with folder '" . (isset($this->settings["wordpress_folder"]) ? $this->settings["wordpress_folder"] : "") . "' doesn't exists!"));
 			
 			if ($block_id == $phpframework_block_id || !$phpframework_block_id) {
 				//error_log("GET in $block_id:".print_r($_GET, 1), 3, "/var/www/html/livingroop/default/tmp/test.log");
@@ -468,9 +468,9 @@ class WordPressCMSBlockHandler {
 	public static function prepareRedirectUrl(&$location, $cookies_prefix) {
 		$wordpress_site_url = site_url() . "/";
 		
-		if (substr($location, 0, strlen($wordpress_site_url)) == $wordpress_site_url && $_COOKIE[$cookies_prefix . "_parse_wordpress_urls"]) {
+		if (substr($location, 0, strlen($wordpress_site_url)) == $wordpress_site_url && !empty($_COOKIE[$cookies_prefix . "_parse_wordpress_urls"])) {
 			//check if phpframework cookie exists
-			$phpframework_url = $_COOKIE[$cookies_prefix . "_phpframework_url"];
+			$phpframework_url = isset($_COOKIE[$cookies_prefix . "_phpframework_url"]) ? $_COOKIE[$cookies_prefix . "_phpframework_url"] : null;
 			
 			if ($phpframework_url) {
 				//clean url with previous vars
@@ -483,8 +483,8 @@ class WordPressCMSBlockHandler {
 					$options = array(
 						"allowed_wordpress_urls" => unserialize($_COOKIE[$cookies_prefix . "_allowed_wordpress_urls"]),
 						"parse_wordpress_urls" => $_COOKIE[$cookies_prefix . "_parse_wordpress_urls"],
-						"parse_wordpress_relative_urls" => $_COOKIE[$cookies_prefix . "_parse_wordpress_relative_urls"],
-						"phpframework_block_id" => $GLOBALS["current_phpframework_block_id"] ? $GLOBALS["current_phpframework_block_id"] : $_GET["phpframework_block_id"], //overwrite the block id in the $phpframework_url.
+						"parse_wordpress_relative_urls" => isset($_COOKIE[$cookies_prefix . "_parse_wordpress_relative_urls"]) ? $_COOKIE[$cookies_prefix . "_parse_wordpress_relative_urls"] : null,
+						"phpframework_block_id" => !empty($GLOBALS["current_phpframework_block_id"]) ? $GLOBALS["current_phpframework_block_id"] : (isset($_GET["phpframework_block_id"]) ? $_GET["phpframework_block_id"] : null), //overwrite the block id in the $phpframework_url.
 					);
 					
 					//error_log("old location:$location\n", 3, "/var/www/html/livingroop/default/tmp/test.log");
@@ -500,8 +500,8 @@ class WordPressCMSBlockHandler {
 	}
 	
 	private function getWordPressUriFile($wordpress_folder_relative_prefix) {
-		$presentation_id = $GLOBALS["presentation_id"];
-		$script_name = $_SERVER["SCRIPT_NAME"];
+		$presentation_id = isset($GLOBALS["presentation_id"]) ? $GLOBALS["presentation_id"] : null;
+		$script_name = isset($_SERVER["SCRIPT_NAME"]) ? $_SERVER["SCRIPT_NAME"] : null;
 		$system_phpframework = "/__system/layer/presentation/phpframework/webroot/"; //hard code bc this will never be changed.
 		
 		$parts = explode($system_phpframework, $script_name); //This is used when the this class is called from the __system

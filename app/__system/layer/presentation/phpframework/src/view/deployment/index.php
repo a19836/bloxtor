@@ -8,12 +8,12 @@ $WorkFlowUIHandler = new WorkFlowUIHandler($WorkFlowTaskHandler, $project_url_pr
 $SubWorkFlowUIHandler = new WorkFlowUIHandler($SubWorkFlowTaskHandler, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
 
 $template_tasks_types_by_tag = array(
-	"server" => $WorkFlowTaskHandler->getTasksByTag("server")[0]["type"],
-	"presentation" => $WorkFlowTaskHandler->getTasksByTag("presentation")[0]["type"],
-	"businesslogic" => $WorkFlowTaskHandler->getTasksByTag("businesslogic")[0]["type"],
-	"dataaccess" => $WorkFlowTaskHandler->getTasksByTag("dataaccess")[0]["type"],
-	"db" => $WorkFlowTaskHandler->getTasksByTag("db")[0]["type"],
-	"dbdriver" => $WorkFlowTaskHandler->getTasksByTag("dbdriver")[0]["type"],
+	"server" => isset($WorkFlowTaskHandler->getTasksByTag("server")[0]["type"]) ? $WorkFlowTaskHandler->getTasksByTag("server")[0]["type"] : null,
+	"presentation" => isset($WorkFlowTaskHandler->getTasksByTag("presentation")[0]["type"]) ? $WorkFlowTaskHandler->getTasksByTag("presentation")[0]["type"] : null,
+	"businesslogic" => isset($WorkFlowTaskHandler->getTasksByTag("businesslogic")[0]["type"]) ? $WorkFlowTaskHandler->getTasksByTag("businesslogic")[0]["type"] : null,
+	"dataaccess" => isset($WorkFlowTaskHandler->getTasksByTag("dataaccess")[0]["type"]) ? $WorkFlowTaskHandler->getTasksByTag("dataaccess")[0]["type"] : null,
+	"db" => isset($WorkFlowTaskHandler->getTasksByTag("db")[0]["type"]) ? $WorkFlowTaskHandler->getTasksByTag("db")[0]["type"] : null,
+	"dbdriver" => isset($WorkFlowTaskHandler->getTasksByTag("dbdriver")[0]["type"]) ? $WorkFlowTaskHandler->getTasksByTag("dbdriver")[0]["type"] : null,
 );
 
 $choose_bean_layer_files_from_file_manager_url = $project_url_prefix . "admin/get_sub_files?bean_name=#bean_name#&bean_file_name=#bean_file_name#&path=#path#";
@@ -59,7 +59,7 @@ ServerTaskPropertyObj.template_workflow_html += \'' . str_replace("<script>", "<
 ServerTaskPropertyObj.get_layers_tasks_file_url = \'' . $project_url_prefix . 'workflow/get_workflow_file?path=layer\';
 ServerTaskPropertyObj.validate_template_properties_url = \'' . $validate_template_properties_url . '\';
 ServerTaskPropertyObj.deploy_template_to_server_url = \'' . $deploy_template_to_server_url . '\';
-ServerTaskPropertyObj.template_tasks_types_by_tag = ' . json_encode($template_tasks_types_by_tag) . ';
+ServerTaskPropertyObj.template_tasks_types_by_tag = ' . (isset($template_tasks_types_by_tag) ? json_encode($template_tasks_types_by_tag) : "null") . ';
 ServerTaskPropertyObj.server_time_diff_in_milliseconds = (' . time() . ' * 1000) - (new Date()).getTime();
 ServerTaskPropertyObj.on_choose_template_flow_layer_file_callback = onChooseTemplateTaskLayerFile;
 ServerTaskPropertyObj.on_choose_template_file_callback = onChooseTemplateFile;
@@ -97,7 +97,9 @@ foreach ($layer_brokers_settings as $k => $layer_brokers)
 		
 		for ($i = 0; $i < $t; $i++) {
 			$l = $layer_brokers[$i];
-			$head .= '
+			
+			if (!empty($l[2])) {
+				$head .= '
 				if (main_layers_properties.' . $l[2] . ') {
 					if (!main_layers_properties.' . $l[2] . '.ui.folder.hasOwnProperty("attributes"))
 						main_layers_properties.' . $l[2] . '.ui.folder.attributes = {};
@@ -129,8 +131,8 @@ foreach ($layer_brokers_settings as $k => $layer_brokers)
 					if (!main_layers_properties.' . $l[2] . '.ui.cms_resource.attributes.hasOwnProperty("file_path"))
 						main_layers_properties.' . $l[2] . '.ui.cms_resource.attributes.file_path = "#path#";';
 			
-			if ($k == "presentation_brokers")
-				$head .= '
+				if ($k == "presentation_brokers")
+					$head .= '
 					if (!main_layers_properties.' . $l[2] . '.ui.project_folder.hasOwnProperty("attributes"))
 						main_layers_properties.' . $l[2] . '.ui.project_folder.attributes = {};
 					
@@ -143,8 +145,9 @@ foreach ($layer_brokers_settings as $k => $layer_brokers)
 					if (!main_layers_properties.' . $l[2] . '.ui.project.attributes.hasOwnProperty("file_path"))
 						main_layers_properties.' . $l[2] . '.ui.project.attributes.file_path = "#path#";';
 			
-			$head .= '
+				$head .= '
 				}';
+			}
 		}
 	}
 
@@ -234,9 +237,9 @@ foreach ($layer_brokers_settings as $k => $layer_brokers)
 		
 		for ($i = 0; $i < $t; $i++) {
 			$l = $layer_brokers[$i];
-			$layer_name = $l[0];
-			$bean_file_name = $l[1];
-			$bean_name = $l[2];
+			$layer_name = isset($l[0]) ? $l[0] : null;
+			$bean_file_name = isset($l[1]) ? $l[1] : null;
+			$bean_name = isset($l[2]) ? $l[2] : null;
 			$url = str_replace("#bean_file_name#", $bean_file_name, str_replace("#bean_name#", $bean_name, $choose_bean_layer_files_from_file_manager_url));
 			$url .= $k == "presentation_brokers" ? "&item_type=presentation" : "";
 			

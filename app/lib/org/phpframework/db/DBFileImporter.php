@@ -139,8 +139,12 @@ class DBFileImporter {
 		if ($columns_attributes)
 			foreach ($columns_attributes as $idx => $attribute_name)
 				if ($attribute_name) {
-					$data[] = array("column" => $attribute_name, "value" => $columns_values[$idx]);
-					$data_by_attr_name[$attribute_name] = $columns_values[$idx];
+					$value = isset($columns_values[$idx]) ? $columns_values[$idx] : null;
+					$data[] = array(
+						"column" => $attribute_name, 
+						"value" => $value
+					);
+					$data_by_attr_name[$attribute_name] = $value;
 				}
 		
 		if (!$data) { //if no data it means that $columns_attributes don't have any attribute_name, so nothing should be done!
@@ -158,7 +162,10 @@ class DBFileImporter {
 			
 			foreach ($pks as $pk)
 				if (in_array($pk, $columns_attributes))
-					$conditions[] = array("column" => $pk, "value" => $data_by_attr_name[$pk]);
+					$conditions[] = array(
+						"column" => $pk, 
+						"value" => isset($data_by_attr_name[$pk]) ? $data_by_attr_name[$pk] : null
+					);
 			
 			$sql = $this->DBDriver->convertObjectToSQL(array(
 				"type" => "select",
@@ -178,7 +185,7 @@ class DBFileImporter {
 				"type" => "update",
 				"main_table" => $table,
 				"attributes" => $data,
-				"conditions" => $conditions,
+				"conditions" => isset($conditions) ? $conditions : null,
 			));
 		else
 			$sql = $this->DBDriver->convertObjectToSQL(array(

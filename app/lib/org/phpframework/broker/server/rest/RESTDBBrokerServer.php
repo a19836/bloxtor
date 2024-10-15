@@ -11,7 +11,7 @@ class RESTDBBrokerServer extends RESTBrokerServer {
 	protected function executeWebServiceResponse() {
 		$parts = explode("/", $this->url);
 		$method = strtolower($parts[0]);
-		$method_name = strtolower($parts[1]);//only for the getFunction, otherwise is empty
+		$method_name = isset($parts[1]) ? strtolower($parts[1]) : "";//only for the getFunction, otherwise is empty
 		
 		$method_exists = true;
 		
@@ -54,12 +54,12 @@ class RESTDBBrokerServer extends RESTBrokerServer {
 				break;
 			case "getinsertedid": 
 				$func = "getInsertedId";
-				$func_args = array("options" => $options);
+				$func_args = array("options" => $this->options);
 				$result = $this->LocalBrokerServer->getInsertedId($this->options);
 				break;
 			case "insertobject": 
 				$func = "insertObject";
-				$func_args = array("parameters" => $this->parameters, "options" => $options);
+				$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 				$result = $this->LocalBrokerServer->insertObject(
 					isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 					isset($this->parameters["attributes"]) ? $this->parameters["attributes"] : null,
@@ -68,7 +68,7 @@ class RESTDBBrokerServer extends RESTBrokerServer {
 				break;
 			case "updateobject": 
 				$func = "updateObject";
-				$func_args = array("parameters" => $this->parameters, "options" => $options);
+				$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 				$result = $this->LocalBrokerServer->updateObject(
 					isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 					isset($this->parameters["attributes"]) ? $this->parameters["attributes"] : null,
@@ -78,7 +78,7 @@ class RESTDBBrokerServer extends RESTBrokerServer {
 				break;
 			case "deleteobject": 
 				$func = "deleteObject";
-				$func_args = array("parameters" => $this->parameters, "options" => $options);
+				$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 				$result = $this->LocalBrokerServer->deleteObject(
 					isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 					isset($this->parameters["conditions"]) ? $this->parameters["conditions"] : null,
@@ -87,7 +87,7 @@ class RESTDBBrokerServer extends RESTBrokerServer {
 				break;
 			case "findobjects": 
 				$func = "findObjects";
-				$func_args = array("parameters" => $this->parameters, "options" => $options);
+				$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 				$result = $this->LocalBrokerServer->findObjects(
 					isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 					isset($this->parameters["attributes"]) ? $this->parameters["attributes"] : null,
@@ -97,7 +97,7 @@ class RESTDBBrokerServer extends RESTBrokerServer {
 				break;
 			case "countobjects": 
 				$func = "countObjects";
-				$func_args = array("parameters" => $this->parameters, "options" => $options);
+				$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 				$result = $this->LocalBrokerServer->countObjects(
 					isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 					isset($this->parameters["conditions"]) ? $this->parameters["conditions"] : null,
@@ -106,7 +106,7 @@ class RESTDBBrokerServer extends RESTBrokerServer {
 				break;
 			case "findrelationshipobjects": 
 				$func = "findRelationshipObjects";
-				$func_args = array("parameters" => $this->parameters, "options" => $options);
+				$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 				$result = $this->LocalBrokerServer->findRelationshipObjects(
 					isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 					isset($this->parameters["rel_elm"]) ? $this->parameters["rel_elm"] : null,
@@ -116,7 +116,7 @@ class RESTDBBrokerServer extends RESTBrokerServer {
 				break;
 			case "countrelationshipobjects": 
 				$func = "countRelationshipObjects";
-				$func_args = array("parameters" => $this->parameters, "options" => $options);
+				$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 				$result = $this->LocalBrokerServer->countRelationshipObjects(
 					isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 					isset($this->parameters["rel_elm"]) ? $this->parameters["rel_elm"] : null,
@@ -126,7 +126,7 @@ class RESTDBBrokerServer extends RESTBrokerServer {
 				break;
 			case "findObjectsColumnMax": 
 				$func = "findObjectsColumnMax";
-				$func_args = array("parameters" => $this->parameters, "options" => $options);
+				$func_args = array("parameters" => $this->parameters, "options" => $this->options);
 				$result = $this->LocalBrokerServer->findObjectsColumnMax(
 					isset($this->parameters["table_name"]) ? $this->parameters["table_name"] : null,
 					isset($this->parameters["attribute_name"]) ? $this->parameters["attribute_name"] : null,

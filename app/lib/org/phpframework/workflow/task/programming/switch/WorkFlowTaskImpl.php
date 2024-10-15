@@ -11,8 +11,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$stmt_type = strtolower($stmt->getType());
 		
 		if ($stmt_type == "stmt_switch") {
-			$cond = $stmt->cond;
-			$cases = $stmt->cases;
+			$cond = isset($stmt->cond) ? $stmt->cond : null;
+			$cases = isset($stmt->cases) ? $stmt->cases : null;
 			
 			if (!$cond) {
 				return null;
@@ -20,7 +20,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			
 			$object_type =  $WorkFlowTaskCodeParser->getStmtType($cond);
 			$object_var = $WorkFlowTaskCodeParser->printCodeExpr($cond);
-			$object_var = $object_type == "variable" && substr($object_var, 0, 1) == "$" ? substr($object_var, 1, strlen($object_var)) : $object_var;
+			$object_var = $object_type == "variable" && substr($object_var, 0, 1) == '$' ? substr($object_var, 1, strlen($object_var)) : ($object_type == "variable" && substr($object_var, 0, 2) == '@$' ? substr($object_var, 2, strlen($object_var)) : $object_var);
 			
 			$props = array(
 				"object_var" => $object_var,
@@ -38,8 +38,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$t = $cases ? count($cases) : 0;
 			for ($i = 0; $i < $t; $i++) {
 				$case = $cases[$i];
-				$case_cond = $case->cond;
-				$case_stmts = $case->stmts;
+				$case_cond = isset($case->cond) ? $case->cond : null;
+				$case_stmts = isset($case->stmts) ? $case->stmts : null;
 				
 				if ($case_cond) { //case xxx:
 					$case_type = strtolower($case_cond->getType());
@@ -52,7 +52,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 						"exit" => "e" . hash('crc32b', $case_cond) . "_exit",//it must always start with a letter, so we added the char 'e' at the beginning.
 					);
 					
-					$idx = count($props["cases"]["case"]);
+					$idx = isset($props["cases"]["case"]) ? count($props["cases"]["case"]) : 0;
 					
 					$cases_without_break[$idx] = $this->existsCaseBreakStmtInStmts($case_stmts) == false;
 					
@@ -80,7 +80,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$exits = array();
 			$inner_tasks = array();
 			
-			if ($default_inner_tasks && $default_inner_tasks[0]["id"]) {
+			if ($default_inner_tasks && !empty($default_inner_tasks[0]["id"])) {
 				$exits[ $props["default"]["exit"] ][] = array("task_id" => $default_inner_tasks[0]["id"]);
 				
 				$WorkFlowTaskCodeParser->addNextTaskToUndefinedTaskExits($default_inner_tasks[count($default_inner_tasks) - 1]);
@@ -100,7 +100,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					$idx_aux = $idx + 1;
 					$has_break = false;
 					while ($props["cases"]["case"][$idx_aux]) {
-						if ($cases_inner_tasks[$idx_aux] && $cases_inner_tasks[$idx_aux][0]["id"]) {
+						if ($cases_inner_tasks[$idx_aux] && !empty($cases_inner_tasks[$idx_aux][0]["id"])) {
 							if ($case_inner_tasks)
 								$WorkFlowTaskCodeParser->replaceNextTaskInNotBreakTasksExits($case_inner_tasks, $cases_inner_tasks[$idx_aux][0]);
 							
@@ -116,7 +116,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					}
 					
 					//if last case does not have a break either, relate it with the default code, if exists any...
-					if (!$has_break && $default_inner_tasks && $default_inner_tasks[0]["id"]) {
+					if (!$has_break && $default_inner_tasks && !empty($default_inner_tasks[0]["id"])) {
 						if ($case_inner_tasks)
 							$WorkFlowTaskCodeParser->replaceNextTaskInNotBreakTasksExits($case_inner_tasks, $default_inner_tasks[0]);
 						$case_inner_tasks =  array_merge($case_inner_tasks, $default_inner_tasks);
@@ -124,14 +124,16 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				}
 				
 				//init case exits
-				if ($case_inner_tasks && $case_inner_tasks[0]["id"]) { //if break exists and contains some code
+				$case_exit = isset($case["exit"]) ? $case["exit"] : null;
+				
+				if ($case_inner_tasks && !empty($case_inner_tasks[0]["id"])) { //if break exists and contains some code
 					$WorkFlowTaskCodeParser->addNextTaskToUndefinedTaskExits($case_inner_tasks[count($case_inner_tasks) - 1]);
 					
-					$exits[ $case["exit"] ][] = array("task_id" => $case_inner_tasks[0]["id"]);
+					$exits[$case_exit][] = array("task_id" => $case_inner_tasks[0]["id"]);
 					$inner_tasks[] = $case_inner_tasks;
 				}
 				else
-					$exits[ $case["exit"] ][] = array("task_id" => "#next_task#");
+					$exits[$case_exit][] = array("task_id" => "#next_task#");
 			}
 			//print_r($inner_tasks);
 			
@@ -156,7 +158,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$new_case_stmts = array();
 			foreach ($case_stmts as $case_stmt) {
 				$is_break = strtolower($case_stmt->getType()) == "stmt_break";
-				$value = $is_break && $case_stmt->num && is_numeric($case_stmt->num->value) && $case_stmt->num->value > 1 ? $case_stmt->num->value : 1;
+				$value = $is_break && !empty($case_stmt->num) && isset($case_stmt->num->value) && is_numeric($case_stmt->num->value) && $case_stmt->num->value > 1 ? $case_stmt->num->value : 1;
 				
 				if (!$is_break || $value > 1) //adds non break tasks or breaks with skip level more than 1
 					$new_case_stmts[] = $case_stmt;
@@ -166,9 +168,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
-		$cases = $raw_data["childs"]["properties"][0]["childs"]["cases"][0]["childs"]["case"];
+		$cases = isset($raw_data["childs"]["properties"][0]["childs"]["cases"][0]["childs"]["case"]) ? $raw_data["childs"]["properties"][0]["childs"]["cases"][0]["childs"]["case"] : null;
 		
 		$new_cases = array();
 		if (is_array($cases)) {
@@ -185,14 +187,14 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			}
 		}
 		
-		$default = $raw_data["childs"]["properties"][0]["childs"]["default"][0];
+		$default = isset($raw_data["childs"]["properties"][0]["childs"]["default"][0]) ? $raw_data["childs"]["properties"][0]["childs"]["default"][0] : null;
 		$default = isset($default["@"]["exit"]) ? $default["@"]["exit"] : (isset($default["childs"]["exit"][0]["value"]) ? $default["childs"]["exit"][0]["value"] : null);
 		
 		$default_ids = isset($task["exits"][strtolower($default)]) ? $task["exits"][strtolower($default)] : null;
 		
 		$properties = array(
-			"object_var" => $raw_data["childs"]["properties"][0]["childs"]["object_var"][0]["value"],
-			"object_type" => $raw_data["childs"]["properties"][0]["childs"]["object_type"][0]["value"],
+			"object_var" => isset($raw_data["childs"]["properties"][0]["childs"]["object_var"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["object_var"][0]["value"] : null,
+			"object_type" => isset($raw_data["childs"]["properties"][0]["childs"]["object_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["object_type"][0]["value"] : null,
 			"cases" => $new_cases,
 			"default" => array(
 				"exit" => $default_ids,
@@ -203,11 +205,12 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$common_exit_task_id = self::getCommonTaskExitIdFromTaskPaths($tasks, $data["id"]);
+		$common_exit_task_id = isset($data["id"]) ? $data["id"] : null;
+		$common_exit_task_id = self::getCommonTaskExitIdFromTaskPaths($tasks, $common_exit_task_id);
 		
 		$stops_id = array();
 		if ($stop_task_id)
@@ -216,30 +219,38 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$stops_id[] = $common_exit_task_id;
 		//echo "common_exit_task_id:$common_exit_task_id, ".implode(",", $stop_task_id).".\n";
 		
-		$object_var = self::getVariableValueCode($properties["object_var"], $properties["object_type"]);
+		$object_var = isset($properties["object_var"]) ? $properties["object_var"] : null;
+		$object_var = self::getVariableValueCode($object_var, isset($properties["object_type"]) ? $properties["object_type"] : null);
+		
+		$default_exit_id = isset($properties["default"]["exit"][0]) ? $properties["default"]["exit"][0] : null;
 		
 		$code = $prefix_tab . "switch(" . $object_var . ") {\n";
-		$t = $properties["cases"] ? count($properties["cases"]) : 0;
+		$t = !empty($properties["cases"]) ? count($properties["cases"]) : 0;
 		for($i = 0; $i < $t; $i++) {
 			$case = $properties["cases"][$i];
 			
 			//Prepare case stops id and try to avoid some repeated code
 			$case_stops_id = $stops_id;
-			$next_case_exit_id = $i + 1 < $t ? $properties["cases"][$i + 1]["exit"][0] : $properties["default"]["exit"][0];
-			$is_next_case_related = self::checkIfCaseIsRelatedWithNextCase($tasks, $case["exit"][0], $next_case_exit_id);//This detects if a case doesn't have break at the end and is connected with the code from the next case.
+			$next_case_exit_id = isset($properties["cases"][$i + 1]["exit"][0]) ? $properties["cases"][$i + 1]["exit"][0] : null;
+			$next_case_exit_id = $i + 1 < $t ? $next_case_exit_id : $default_exit_id;
+			$is_next_case_related = self::checkIfCaseIsRelatedWithNextCase($tasks, isset($case["exit"][0]) ? $case["exit"][0] : null, $next_case_exit_id);//This detects if a case doesn't have break at the end and is connected with the code from the next case.
 			if ($is_next_case_related) 
 				$case_stops_id[] = $next_case_exit_id;
 			
 			//print case
-			$case_code = self::printTask($tasks, $case["exit"], $case_stops_id, $prefix_tab . "\t\t", $options);
+			$case_exit_id = isset($case["exit"]) ? $case["exit"] : null;
+			$case_code = self::printTask($tasks, $case_exit_id, $case_stops_id, $prefix_tab . "\t\t", $options);
 			$case_code = $case_code ? $case_code : "\n"; //if there is no code it means that the case is connected is the next case.
 			
-			$code .= $prefix_tab . "\tcase " . (is_numeric($case["value"]) ? $case["value"] : '"' . $case["value"] . '"') . ": ";
+			$case_value = isset($case["value"]) ? $case["value"] : null;
+			
+			$code .= $prefix_tab . "\tcase " . (is_numeric($case_value) ? $case_value : '"' . $case_value . '"') . ": ";
 			$code .= $case_code;
 			$code .= $is_next_case_related ? '' : $prefix_tab . "\t\tbreak;\n"; //even if already exists a BREAK task, we still write the break. bc usually we won't have any break. But if exists already a break, there is no problem either, bc only the first break will be executed. The only case where we don't want to hard-code the BREAK, is if this case is related with the next case.
 		}
 		
-		$default_code = self::printTask($tasks, $properties["default"]["exit"], $stops_id, $prefix_tab . "\t\t", $options);
+		$default_exit_ids = isset($properties["default"]["exit"]) ? $properties["default"]["exit"] : null;
+		$default_code = self::printTask($tasks, $default_exit_ids, $stops_id, $prefix_tab . "\t\t", $options);
 		if ($default_code)
 			$code .= $prefix_tab . "\tdefault: " . $default_code; //only show default if there is some code to write.
 		

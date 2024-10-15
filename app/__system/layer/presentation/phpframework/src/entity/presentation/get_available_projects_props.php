@@ -4,11 +4,11 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"];
-$include_empty_project_folders = $_GET["include_empty_project_folders"]; //This is used in the choose_available_project
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
+$include_empty_project_folders = isset($_GET["include_empty_project_folders"]) ? $_GET["include_empty_project_folders"] : null; //This is used in the choose_available_project
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -35,7 +35,7 @@ if ($path) {
 				"project" => $selected_project_id
 			)
 		));
-		$available_projects_props = $pres_layers_projects_props[$bean_name]["projects"];
+		$available_projects_props = isset($pres_layers_projects_props[$bean_name]["projects"]) ? $pres_layers_projects_props[$bean_name]["projects"] : null;
 		//echo "<pre>";print_r($available_projects_props);die();
 		
 		$PHPVariablesFileHandler->endUserGlobalVariables();

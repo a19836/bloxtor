@@ -3,13 +3,13 @@ include_once $EVC->getUtilPath("PHPVariablesFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$popup = $_GET["popup"];
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 if (isset($_POST["save"])) {
 	$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 	
-	$vars_name = $_POST["vars_name"];
-	$vars_value = $_POST["vars_value"];
+	$vars_name = isset($_POST["vars_name"]) ? $_POST["vars_name"] : null;
+	$vars_value = isset($_POST["vars_value"]) ? $_POST["vars_value"] : null;
 	
 	$global_variables = array();
 	

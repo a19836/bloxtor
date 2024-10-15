@@ -4,17 +4,17 @@ include_once $EVC->getUtilPath("FlushCacheHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
-$filter_by_layout = $_GET["filter_by_layout"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
 
-$status = false;
+$status = $actions = $error_message = $flush_cache = false;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 	$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
 	$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($bean_name, $path);
 	
@@ -32,16 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 			$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($file_path, "layer", "access");
 			UserAuthenticationHandler::checkUsersMaxNum($UserAuthenticationHandler);
 			
-			$action_type = $_POST["action_type"];
-			$resource_name = $_POST["resource_name"];
-			$resource_data = $_POST["resource_data"];
-			$db_broker = $_POST["db_broker"];
-			$db_driver = $_POST["db_driver"];
-			$db_type = $_POST["db_type"];
-			$db_table = $_POST["db_table"];
-			$db_table_alias = $_POST["db_table_alias"];
-			$no_cache = $_POST["no_cache"];
-			$permissions = $_POST["permissions"];
+			$action_type = isset($_POST["action_type"]) ? $_POST["action_type"] : null;
+			$resource_name = isset($_POST["resource_name"]) ? $_POST["resource_name"] : null;
+			$resource_data = isset($_POST["resource_data"]) ? $_POST["resource_data"] : null;
+			$db_broker = isset($_POST["db_broker"]) ? $_POST["db_broker"] : null;
+			$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
+			$db_type = isset($_POST["db_type"]) ? $_POST["db_type"] : null;
+			$db_table = isset($_POST["db_table"]) ? $_POST["db_table"] : null;
+			$db_table_alias = isset($_POST["db_table_alias"]) ? $_POST["db_table_alias"] : null;
+			$no_cache = isset($_POST["no_cache"]) ? $_POST["no_cache"] : null;
+			$permissions = isset($_POST["permissions"]) ? $_POST["permissions"] : null;
 			
 			$folder_path = $PEVC->getUtilsPath() . "resource";
 			
@@ -49,19 +49,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $path) {
 				mkdir($folder_path, 0755, true);
 			
 			if (is_dir($folder_path)) {
-				$selected_db_driver = $db_driver ? $db_driver : $GLOBALS["default_db_driver"];
+				$selected_db_driver = $db_driver ? $db_driver : (isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null);
 				$selected_db_table = $db_table;
 				$selected_db_table_alias = $db_table_alias;
 				
 				//if get_all_options but there is no resource_data, stays with default table and table_alias
 				if ($action_type == "get_all_options" && $resource_data) {
-					if (array_key_exists("table", $resource_data) && $resource_data["table"]) {
+					if (array_key_exists("table", $resource_data) && !empty($resource_data["table"])) {
 						$selected_db_table = $resource_data["table"];
-						$selected_db_table_alias = $resource_data["table_alias"];
+						$selected_db_table_alias = isset($resource_data["table_alias"]) ? $resource_data["table_alias"] : null;
 					}
-					else if (is_array($resource_data[0]) && $resource_data[0]["table"]) {
+					else if (isset($resource_data[0]) && is_array($resource_data[0]) && !empty($resource_data[0]["table"])) {
 						$selected_db_table = $resource_data[0]["table"];
-						$selected_db_table_alias = $resource_data[0]["table_alias"];
+						$selected_db_table_alias = isset($resource_data[0]["table_alias"]) ? $resource_data[0]["table_alias"] : null;
 					}
 				}
 				

@@ -3,12 +3,12 @@ include_once $EVC->getUtilPath("WorkFlowDBHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$table = $_GET["table"];
-$popup = $_GET["popup"];
-$sql = $_GET["sql"];
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$table = isset($_GET["table"]) ? $_GET["table"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
+$sql = isset($_GET["sql"]) ? $_GET["sql"] : null;
 
 if ($bean_name) {
 	$layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$bean_name";
@@ -16,16 +16,16 @@ if ($bean_name) {
 	
 	$WorkFlowDBHandler = new WorkFlowDBHandler($user_beans_folder_path, $user_global_variables_file_path);
 	
-	if ($_POST) {
+	if (!empty($_POST)) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 		
-		$sql = $_POST["sql"];
+		$sql = isset($_POST["sql"]) ? $_POST["sql"] : null;
 		
 		if ($sql) {
 			$DBDriver = $WorkFlowDBHandler->getBeanObject($bean_file_name, $bean_name);
 			
 			$data = $DBDriver->convertSQLToObject($sql);
-			$is_select_sql = $data && $data["type"] == "select";
+			$is_select_sql = $data && isset($data["type"]) && $data["type"] == "select";
 			
 			try {
 				if ($is_select_sql)
@@ -34,7 +34,7 @@ if ($bean_name) {
 					$results = $DBDriver->setData($sql);
 			}
 			catch(Exception $e) {
-				$exception_message = $e->problem;
+				$exception_message = isset($e->problem) ? $e->problem : null;
 			}
 		}
 	}

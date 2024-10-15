@@ -62,16 +62,18 @@ class MSSqlDBDumper extends DBDumper {
 			$on_update = !empty($r["on_update"]) ? " ON UPDATE " . $r["on_update"] : "";
 			$replication = !empty($r["replication_code"]) ? $r["replication_code"] : "";
 			//$check = !empty($r["not_trusted_code"]) ? $r["not_trusted_code"] : "";
+			$check = null;
 			
 			$fk_sql = ($cn ? "CONSTRAINT [" . $cn . "] " : "") . " FOREIGN KEY ([" . $cc . "]) REFERENCES [" . $pt . "] ([" . $pc . "]) $on_delete $on_update $replication $check";
 		   	
-			if ( ($cn && $fks_to_ignore[$cn]) || (
+			if ( ($cn && !empty($fks_to_ignore[$cn])) || (
 				$fks_to_ignore[$cc] && 
 				$fks_to_ignore[$cc][$pt] && 
 				$fks_to_ignore[$cc][$pt][$pc]
 			)) {
-				$fk = $fks_to_ignore[$cn] ? $fks_to_ignore[$cn] : $fks_to_ignore[$cc][$pt][$pc];
-				$this->DBDumperHandler->setTableExtraSql($fk["parent_table"], "ALTER TABLE [$table_name] ADD $fk_sql;" . PHP_EOL);
+				$fk = !empty($fks_to_ignore[$cn]) ? $fks_to_ignore[$cn] : $fks_to_ignore[$cc][$pt][$pc];
+				$fk_table = isset($fk["parent_table"]) ? $fk["parent_table"] : null;
+				$this->DBDumperHandler->setTableExtraSql($fk_table, "ALTER TABLE [$table_name] ADD $fk_sql;" . PHP_EOL);
 			}
 			else
 				$sql .= "," . PHP_EOL . "    " . $fk_sql;
@@ -140,7 +142,7 @@ class MSSqlDBDumper extends DBDumper {
 
 		//bc mssql server doesn't allow manual inserts on auto-increment pks by default, we must execute this sql first
 		$CompressionHandler->write("SET IDENTITY_INSERT [" . $table_name . "] ON;".PHP_EOL);
-
+		
 		// colNames is used to get the name of the columns when using complete-insert
 		if (!empty($db_dumper_settings['complete-insert']))
 			$attr_names = $this->DBDumperHandler->getTableAttributesNames($table_name);
@@ -191,7 +193,7 @@ class MSSqlDBDumper extends DBDumper {
     
 	public function createStandInTableForView($view_name, $inner_sql) {
 		return "CREATE TABLE " . $this->escapeTable($view_name) . " (".
-			PHP_EOL.$innerSql.PHP_EOL.");".PHP_EOL;
+			PHP_EOL . $inner_sql . PHP_EOL . ");" . PHP_EOL;
 	}
 
 	public function getTableAttributeProperties($attr_type) {

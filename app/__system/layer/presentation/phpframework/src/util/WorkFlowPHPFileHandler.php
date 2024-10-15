@@ -1,6 +1,5 @@
 <?php
 include_once get_lib("org.phpframework.phpscript.PHPCodePrintingHandler");
-//include_once get_lib("lib.vendor.phpparser.lib.bootstrap");
 include_once $EVC->getUtilPath("WorkFlowQueryHandler");
 
 class WorkFlowPHPFileHandler {
@@ -97,22 +96,22 @@ class WorkFlowPHPFileHandler {
 	}
 	
 	public static function saveClass($file_path, $object, $class_id = false, $rename_file_with_class = true) {
-		$new_class_id = $object["name"];
+		$new_class_id = isset($object["name"]) ? $object["name"] : null;
 		
 		if ($file_path && $new_class_id) {
 			$obj_id = $class_id ? $class_id : $new_class_id;
 			$file_path = is_file($file_path) ? $file_path : "$file_path/$obj_id.php";
 			
 			//PREPARING PROPERTIES CODE
-			if ($object["properties"]) {
-				$props = empty($object["properties"]) || is_array($object["properties"]) ? $object["properties"] : array($object["properties"]);
+			if (!empty($object["properties"])) {
+				$props = is_array($object["properties"]) ? $object["properties"] : array($object["properties"]);
 				
 				$code = "";
 				$t = $props ? count($props) : 0;
 				for ($i = 0; $i < $t; $i++)
 					$code .= PHPCodePrintingHandler::getClassPropertyString($props[$i]) . "\n";
 				
-				if (!empty($code))
+				if ($code)
 					$object["code"] = $code;
 			}
 			
@@ -127,10 +126,11 @@ class WorkFlowPHPFileHandler {
 			$t = count($object["includes"]);
 			for ($i = 0; $i < $t; $i++) {
 				$include = $object["includes"][$i];
-				$include_path_type = $include["var_type"];
-				$include_path = $include_path_type == "string" ? "\"" . addcslashes($include["path"], '"') . "\"" : $include["path"];
+				$include_path_type = isset($include["var_type"]) ? $include["var_type"] : null;
+				$include_path = isset($include["path"]) ? $include["path"] : null;
+				$include_path = $include_path_type == "string" ? "\"" . addcslashes($include_path, '"') . "\"" : $include_path;
 				
-				$new_includes[] = array($include_path, $include["once"]);
+				$new_includes[] = array($include_path, isset($include["once"]) ? $include["once"] : null);
 			}
 			
 			$object["includes"] = $new_includes;
@@ -138,20 +138,30 @@ class WorkFlowPHPFileHandler {
 			//SAVE CLASS
 			if ($class_id) {
 				$class_settings = PHPCodePrintingHandler::decoupleClassNameWithNameSpace($class_id);
+				$class_settings_id = isset($class_settings["name"]) ? $class_settings["name"] : null;
 				
 				//Don't allow to add multiple classes with the same name, otherwise it will give a php error. Check if $new_class_id already exists and if it does returns false, but only if $new_class_id is a new class name
-				$existent_class_data = $class_settings["name"] != $new_class_id ? self::getClassData($file_path, $new_class_id) : null;
+				$existent_class_data = $class_settings_id != $new_class_id ? self::getClassData($file_path, $new_class_id) : null;
 				
 				//Note that we must compare again the name, bc the getClassData returns the classes by comparing the lower name and in this case we need check the case sensitive, bc the user may want to change the name to another case letter, like this example: from "Aservice" to "AService"
-				if ($existent_class_data && $existent_class_data["name"] == $new_class_id && $existent_class_data["namespace"] == $object["namespace"]) //check case (sensitive)
-					return false;
+				if ($existent_class_data) {
+					$existent_class_data_name = isset($existent_class_data["name"]) ? $existent_class_data["name"] : null;
+					$existent_class_data_namespace = isset($existent_class_data["namespace"]) ? $existent_class_data["namespace"] : null;
+					$object_namespace = isset($object["namespace"]) ? $object["namespace"] : null;
+					
+					if ($existent_class_data_name == $new_class_id && $existent_class_data_namespace == $object_namespace) //check case (sensitive)
+						return false;
+				}
 				
 				//Note: PHPCodePrintingHandler::editClassFromFile function already contains the replacement of the namespaces. So do not add the PHPCodePrintingHandler::removeNamespacesFromFile function here.
 				PHPCodePrintingHandler::removeUsesFromFile($file_path);
 				PHPCodePrintingHandler::removeIncludesFromFile($file_path);
 				PHPCodePrintingHandler::editClassCommentsFromFile($file_path, $class_id, "");
 				
-				$status = PHPCodePrintingHandler::editClassFromFile($file_path, array("name" => $class_settings["name"], "namespace" => $class_settings["namespace"]), $object);
+				$status = PHPCodePrintingHandler::editClassFromFile($file_path, array(
+					"name" => $class_settings_id, 
+					"namespace" => isset($class_settings["namespace"]) ? $class_settings["namespace"] : null
+				), $object);
 			}
 			else {
 				//Don't allow to add multiple classes with the same name, otherwise it will give a php error. Check if $new_class_id already exists and if it does returns false
@@ -161,14 +171,14 @@ class WorkFlowPHPFileHandler {
 					return false;
 				
 				//discard includes that already exists in file
-				if ($object["includes"]) {
+				if (!empty($object["includes"])) {
 					$file_includes = PHPCodePrintingHandler::getIncludesFromFile($file_path);
 					
 					if ($file_includes) {
 						$file_includes_path = array();
 						
 						foreach ($file_includes as $inc)
-							$file_includes_path[] = $inc[0];
+							$file_includes_path[] = isset($inc[0]) ? $inc[0] : null;
 						
 						foreach ($object["includes"] as $idx => $inc)
 							if (in_array($inc[0], $file_includes_path))
@@ -189,7 +199,7 @@ class WorkFlowPHPFileHandler {
 			}
 		}
 		
-		return $status;
+		return isset($status) ? $status : null;
 	}
 	
 	public static function removeClass($file_path, $class_id, $remove_file_if_no_class = true) {
@@ -214,7 +224,7 @@ class WorkFlowPHPFileHandler {
 	}
 	
 	public static function saveClassMethod($file_path, $object, $class_id, $method_id = false) {
-		$new_method_id = $object["name"];
+		$new_method_id = isset($object["name"]) ? $object["name"] : null;
 		
 		if ($file_path && is_file($file_path) && $class_id && $new_method_id) {
 			self::prepareObjectArguments($object);
@@ -241,7 +251,7 @@ class WorkFlowPHPFileHandler {
 			}
 		}
 		
-		return $status;
+		return isset($status) ? $status : null;
 	}
 	
 	public static function removeClassMethod($file_path, $class_id, $method_id) {
@@ -249,7 +259,7 @@ class WorkFlowPHPFileHandler {
 	}
 	
 	public static function saveFunction($file_path, $object, $function_id = false) {
-		$new_function_id = $object["name"];
+		$new_function_id = isset($object["name"]) ? $object["name"] : null;
 		
 		if ($file_path && $new_function_id) {
 			self::prepareObjectArguments($object);
@@ -258,8 +268,8 @@ class WorkFlowPHPFileHandler {
 			$path_info = pathinfo($file_path);
 			
 			if (is_file($file_path)) {
-				if ($object["file_name"] && strtolower($path_info["filename"]) != strtolower($object["file_name"])) {
-					$extension = $path_info["extension"] ? $path_info["extension"] : "php";
+				if (!empty($object["file_name"]) && strtolower($path_info["filename"]) != strtolower($object["file_name"])) {
+					$extension = !empty($path_info["extension"]) ? $path_info["extension"] : "php";
 					$new_file_path = $path_info["dirname"] . "/" . ($object["file_name"] ? $object["file_name"] : "functions") . "." . $extension;
 					
 					//Don't allow to add multiple functions with the same name, otherwise it will give a php error. Check if $new_function_id already exists and if it does returns false, but only if $new_function_id is a new function name
@@ -293,7 +303,7 @@ class WorkFlowPHPFileHandler {
 				}
 			}
 			else {
-				$new_file_path = $file_path . "/" . ($object["file_name"] ? $object["file_name"] : "functions") . ".php";
+				$new_file_path = $file_path . "/" . (!empty($object["file_name"]) ? $object["file_name"] : "functions") . ".php";
 				
 				//Don't allow to add multiple functions with the same name, otherwise it will give a php error. Check if $new_function_id already exists and if it does returns false, but only if $new_function_id is a new function name
 				$existent_function_data = self::getFunctionData($new_file_path, $new_function_id);
@@ -305,7 +315,7 @@ class WorkFlowPHPFileHandler {
 			}
 		}
 		
-		return $status;
+		return isset($status) ? $status : null;
 	}
 	
 	public static function removeFunction($file_path, $function_id) {
@@ -313,9 +323,9 @@ class WorkFlowPHPFileHandler {
 	}
 	
 	public static function saveIncludesAndNamespacesAndUses($file_path, $object) {
-		return self::saveUses($file_path, $object["uses"]) &&
-			  self::saveIncludes($file_path, $object["includes"]) && 
-			  self::saveNamespaces($file_path, $object["namespaces"]);
+		return self::saveUses($file_path, isset($object["uses"]) ? $object["uses"] : null) &&
+			  self::saveIncludes($file_path, isset($object["includes"]) ? $object["includes"] : null) && 
+			  self::saveNamespaces($file_path, isset($object["namespaces"]) ? $object["namespaces"] : null);
 	}
 	
 	private static function saveNamespaces($file_path, $namespaces) {
@@ -350,10 +360,11 @@ class WorkFlowPHPFileHandler {
 			$t = count($includes);
 			for ($i = 0; $i < $t; $i++) {
 				$include = $includes[$i];
-				$include_path_type = $include["var_type"];
-				$include_path = $include_path_type == "string" ? "\"" . addcslashes($include["path"], '"') . "\"" : $include["path"];
+				$include_path_type = isset($include["var_type"]) ? $include["var_type"] : null;
+				$include_path = isset($include["path"]) ? $include["path"] : null;
+				$include_path = $include_path_type == "string" ? "\"" . addcslashes($include_path, '"') . "\"" : $include_path;
 				
-				$new_includes[] = array($include_path, $include["once"]);
+				$new_includes[] = array($include_path, isset($include["once"]) ? $include["once"] : null);
 			}
 			
 			$status = PHPCodePrintingHandler::addIncludesToFile($file_path, $new_includes);
@@ -370,9 +381,9 @@ class WorkFlowPHPFileHandler {
 			for ($i = 0; $i < $t; $i++) {
 				$arg = $object["arguments"][$i];
 				
-				$name = $arg["name"];
-				$value = $arg["value"];
-				$var_type = $arg["var_type"];
+				$name = isset($arg["name"]) ? $arg["name"] : null;
+				$value = isset($arg["value"]) ? $arg["value"] : null;
+				$var_type = isset($arg["var_type"]) ? $arg["var_type"] : null;
 				
 				$new_arguments[$name] = $var_type != "string" && empty($value) && !is_numeric($value) ? null : ($var_type == "string" ? "\"" . addcslashes($value, '"') . "\"" : $value);
 			}
@@ -393,17 +404,18 @@ class WorkFlowPHPFileHandler {
 				$t = $annotations ? count($annotations) : 0;
 				for ($i = 0; $i < $t; $i++) {
 					$annotation = $annotations[$i];
-					$name = trim($annotation["name"]);
+					$name = isset($annotation["name"]) ? trim($annotation["name"]) : "";
+					$desc = isset($annotation["desc"]) ? trim($annotation["desc"]) : "";
 					
 					$args = "";
 					$args .= $name ? ($args ? ", " : "") . "name=" . $name : "";
-					$args .= trim($annotation["type"]) ? ($args ? ", " : "") . "type=" . $annotation["type"] : "";
-					$args .= trim($annotation["not_null"]) ? ($args ? ", " : "") . "not_null=1" : "";
-					$args .= strlen(trim($annotation["default"])) ? ($args ? ", " : "") . "default=" . $annotation["default"] : "";
-					$args .= trim($annotation["others"]) ? ($args ? ", " : "") . $annotation["others"] : "";
+					$args .= isset($annotation["type"]) && trim($annotation["type"]) ? ($args ? ", " : "") . "type=" . $annotation["type"] : "";
+					$args .= isset($annotation["not_null"]) && trim($annotation["not_null"]) ? ($args ? ", " : "") . "not_null=1" : "";
+					$args .= isset($annotation["default"]) && strlen(trim($annotation["default"])) ? ($args ? ", " : "") . "default=" . $annotation["default"] : "";
+					$args .= isset($annotation["others"]) && trim($annotation["others"]) ? ($args ? ", " : "") . $annotation["others"] : "";
 					
-					if ($args || trim($annotation["desc"])) {
-						$comments .= " * @$at ($args) " . addcslashes($annotation["desc"], '"') . "\n";
+					if ($args || trim($desc)) {
+						$comments .= " * @$at ($args) " . addcslashes($desc, '"') . "\n";
 					}
 				}
 			}
@@ -441,8 +453,8 @@ class WorkFlowPHPFileHandler {
 	}
 	
 	public static function getInludeHTML($include = false) {
-		$include_value = $include ? $include[0] : "";
-		$include_once = $include && $include[1];
+		$include_value = isset($include[0]) ? $include[0] : "";
+		$include_once = $include && !empty($include[1]);
 		$include_type = substr($include_value, 0, 1) == '"' || substr($include_value, 0, 1) == '"' ? "string" : "";
 		
 		$include_value = trim($include_value);
@@ -467,13 +479,13 @@ class WorkFlowPHPFileHandler {
 	}
 	
 	public static function getPropertyHTML($property = false) {
-		$prop_name = $property["name"];
-		$prop_value = $property["value"];
-		$prop_var_type = $property["var_type"];
+		$prop_name = isset($property["name"]) ? $property["name"] : null;
+		$prop_value = isset($property["value"]) ? $property["value"] : null;
+		$prop_var_type = isset($property["var_type"]) ? $property["var_type"] : null;
 		$comments = "";
 		
-		if ($property["comments"] || $property["doc_comments"]) {
-			$doc_comments = $property["doc_comments"] ? implode("\n", $property["doc_comments"]) : "";
+		if (!empty($property["comments"]) || !empty($property["doc_comments"])) {
+			$doc_comments = !empty($property["doc_comments"]) ? implode("\n", $property["doc_comments"]) : "";
 			$doc_comments = trim($doc_comments);
 			$doc_comments = str_replace("\r", "", $doc_comments);
 			$doc_comments = preg_replace("/^\/[*]+\s*/", "", $doc_comments);
@@ -482,7 +494,7 @@ class WorkFlowPHPFileHandler {
 			$doc_comments = preg_replace("/^\s*[*]*\s*/", "", $doc_comments);
 			$doc_comments = trim($doc_comments);
 			
-			$comments = is_array($property["comments"]) ? trim(implode("\n", $property["comments"])) : "";
+			$comments = isset($property["comments"]) && is_array($property["comments"]) ? trim(implode("\n", $property["comments"])) : "";
 			$comments .= $doc_comments ? "\n" . trim($doc_comments) : "";
 			$comments = str_replace(array("/*", "*/", "//"), "", $comments);
 			$comments = trim($comments);
@@ -515,15 +527,18 @@ class WorkFlowPHPFileHandler {
 				<td class="type">
 					<select>';
 		
+		$type = isset($property["type"]) ? $property["type"] : null;
+		$const = isset($property["const"]) ? $property["const"] : null;
+		
 		$t = count($types);
 		for ($i = 0; $i < $t; $i++) 
-			$html .= '<option' . (strtolower($types[$i]) == $property["type"] || ($types[$i] == "const" && $property["const"]) ? " selected" : "") . '>' . $types[$i] . '</option>';
-				
+			$html .= '<option' . (strtolower($types[$i]) == $type || ($types[$i] == "const" && $const) ? " selected" : "") . '>' . $types[$i] . '</option>';
+		
 		$html .= '
 					</select>
 				</td>
 				<td class="static">
-					<input type="checkbox" value="1" ' . ($property["static"] ? "checked" : "" ) . ' />
+					<input type="checkbox" value="1" ' . (!empty($property["static"]) ? "checked" : "" ) . ' />
 				</td>
 				<td class="var_type">
 					<select>';
@@ -585,11 +600,11 @@ class WorkFlowPHPFileHandler {
 		$name = $type = $not_null = $default = $description = $others = "";
 		
 		if (is_array($attrs)) {
-			$name = $attrs["name"];
-			$type = $attrs["type"];
+			$name = isset($attrs["name"]) ? $attrs["name"] : null;
+			$type = isset($attrs["type"]) ? $attrs["type"] : null;
 			$not_null = !empty($attrs["not_null"]);
-			$default = $attrs["default"];
-			$description = str_replace('\\"', '"', $attrs["desc"]);
+			$default = isset($attrs["default"]) ? $attrs["default"] : null;
+			$description = isset($attrs["desc"]) ? str_replace('\\"', '"', $attrs["desc"]) : "";
 		
 			foreach ($attrs as $k => $v) {
 				if ($k != "name" && $k != "type" && $k != "not_null" && $k != "default" && $k != "desc" && $k != "sub_name") {

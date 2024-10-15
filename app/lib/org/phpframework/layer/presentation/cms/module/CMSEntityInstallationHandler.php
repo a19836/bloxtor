@@ -64,7 +64,7 @@ class CMSEntityInstallationHandler implements ICMSEntityInstallationHandler {
 	}
 	
 	public function uninstall() {
-		return CMSModuleUtil::deleteFolder($this->template_folder_path) && CMSModuleUtil::deleteFolder($this->webroot_folder_path);
+		return CMSModuleUtil::deleteFolder($this->blocks_folder_path) && CMSModuleUtil::deleteFolder($this->webroot_folder_path);
 	}
 	
 	public static function getTmpRootFolderPath() {

@@ -4,8 +4,8 @@ include get_lib("org.phpframework.workflow.WorkFlowTaskCodeParser");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$path = $_GET["path"];
-$path_extra = $_GET["path_extra"];
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$path_extra = isset($_GET["path_extra"]) ? $_GET["path_extra"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $path_extra = str_replace("../", "", $path_extra);//for security reasons
@@ -30,14 +30,14 @@ if (isset($_POST)) {
 	$WorkFlowTaskHandler->setCacheRootPath(LAYER_CACHE_PATH);
 	$WorkFlowTaskHandler->addTasksFoldersPath($code_workflow_editor_user_tasks_folders_path);
 	
-	$loaded_tasks_settings_cache_id = $_GET["loaded_tasks_settings_cache_id"];
+	$loaded_tasks_settings_cache_id = isset($_GET["loaded_tasks_settings_cache_id"]) ? $_GET["loaded_tasks_settings_cache_id"] : null;
 	$loaded_tasks_settings = $WorkFlowTaskHandler->getCachedLoadedTasksSettings($loaded_tasks_settings_cache_id); //Do not use getLoadedTasksSettings bc we want to get the loaded tasks settings with the corespondent $loaded_tasks_settings_cache_id
 	
 	if ($loaded_tasks_settings) {
 		$allowed_tasks_tag = array();
 		foreach ($loaded_tasks_settings as $group_id => $group_tasks) 
 			foreach ($group_tasks as $task_type => $task_settings) 
-				$allowed_tasks_tag[] = $task_settings["tag"];
+				$allowed_tasks_tag[] = isset($task_settings["tag"]) ? $task_settings["tag"] : null;
 		
 		if ($allowed_tasks_tag) 
 			$WorkFlowTaskHandler->setAllowedTaskTags($allowed_tasks_tag);

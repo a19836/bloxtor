@@ -2,9 +2,11 @@
 class UserAuthenticationUIHandler {
 	
 	public static function getMenu($UserAuthenticationHandler, $project_url_prefix, $page_code = null) {
+		$username = isset($UserAuthenticationHandler->auth["user_data"]["username"]) ? $UserAuthenticationHandler->auth["user_data"]["username"] : null;
+		
 		return '
 		<ul>
-			<li class="current_user">Current User: "' . $UserAuthenticationHandler->auth["user_data"]["username"] . '"</li>
+			<li class="current_user">Current User: "' . $username . '"</li>
 			<li class="manage_menu_item' . ($page_code == "user/manage_users" ? ' active' : '') . '"><a href="' . $project_url_prefix . 'user/manage_users">Manage Users</a></li>
 			<!--li' . ($page_code == "user/edit_user" ? ' class="active"' : '') . '><a href="' . $project_url_prefix . 'user/edit_user">Add User</a></li-->
 			

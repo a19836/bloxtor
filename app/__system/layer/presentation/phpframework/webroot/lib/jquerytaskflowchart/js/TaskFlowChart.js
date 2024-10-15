@@ -6768,10 +6768,10 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 					position.top += st;
 				}
 				
-				tasks[task_id].offset_left = position.left;
-				tasks[task_id].offset_top = position.top;
-				tasks[task_id].width = task.outerWidth();//task.width(); //get outer width instead, bc the task can have some paddings
-				tasks[task_id].height = task.outerHeight();//task.height(); //get outer height instead, bc the task can have some paddings
+				tasks[task_id].offset_left = parseInt(position.left);
+				tasks[task_id].offset_top = parseInt(position.top);
+				tasks[task_id].width = parseInt(task.outerWidth());//task.width(); //get outer width instead, bc the task can have some paddings
+				tasks[task_id].height = parseInt(task.outerHeight());//task.height(); //get outer height instead, bc the task can have some paddings
 				tasks[task_id].properties = WF.TaskFlow.tasks_properties[task_id];
 				tasks[task_id].exits = {exit : new Array()};
 				
@@ -7647,8 +7647,8 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 						var task_data = tasks_data[task.id];
 						
 						if ($.isPlainObject(task_data)) { //if task already exists
-							task.offset_left = task_data.offset_left;
-							task.offset_top = task_data.offset_top;
+							task.offset_left = parseInt(task_data.offset_left);
+							task.offset_top = parseInt(task_data.offset_top);
 						}
 						else { //if task not exists yet
 							//check if top and left are inside of forbidden area
@@ -7662,8 +7662,8 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 							}
 							
 							//update task offset
-							task.offset_left = left;
-							task.offset_top = top;
+							task.offset_left = parseInt(left);
+							task.offset_top = parseInt(top);
 							
 							//set next offsets
 							var task_width = task.width ? task.width : 200;

@@ -3,11 +3,11 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-if ($_POST) {
+if (!empty($_POST)) {
 	$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 
-	$user_type_id = $_POST["user_type_id"];
-	$permissions_by_objects = $_POST["permissions_by_objects"];
+	$user_type_id = isset($_POST["user_type_id"]) ? $_POST["user_type_id"] : null;
+	$permissions_by_objects = isset($_POST["permissions_by_objects"]) ? $_POST["permissions_by_objects"] : null;
 	
 	if ($user_type_id && $UserAuthenticationHandler->updateUserTypesByObjectsPermissions($user_type_id, $permissions_by_objects))
 		$status_message = "User Type Permissions were saved correctly";
@@ -18,9 +18,9 @@ if ($_POST) {
 $user_types = $UserAuthenticationHandler->getAvailableUserTypes();
 $permissions = $UserAuthenticationHandler->getAvailablePermissions();
 $object_types = $UserAuthenticationHandler->getAvailableObjectTypes();
-$page_object_type_id = $object_types["page"];
-$layer_object_type_id = $object_types["layer"];
-$admin_ui_object_type_id = $object_types["admin_ui"];
+$page_object_type_id = isset($object_types["page"]) ? $object_types["page"] : null;
+$layer_object_type_id = isset($object_types["layer"]) ? $object_types["layer"] : null;
+$admin_ui_object_type_id = isset($object_types["admin_ui"]) ? $object_types["admin_ui"] : null;
 
 //preparing permissions - removing permissions correspondent to project_types
 unset($permissions[UserAuthenticationHandler::$PERMISSION_BELONG_NAME]);
@@ -36,8 +36,10 @@ foreach ($projects as $project) {
 	$folder_path = $EVC->getEntitiesPath($project);
 	$items = CMSPresentationLayerHandler::getFolderFilesList($folder_path, $folder_path);
 	
-	foreach ($items as $file_path => $file)
-		if ($file["type"] != "folder") {
+	foreach ($items as $file_path => $file) {
+		$file_type = isset($file["type"]) ? $file["type"] : null;
+		
+		if ($file_type != "folder") {
 			$extension = pathinfo($file_path, PATHINFO_EXTENSION);
 			if (strtolower($extension) == "php") {
 				$fp = substr($file_path, 0, -4);
@@ -47,12 +49,15 @@ foreach ($projects as $project) {
 					$files[] = $fp;
 			}
 		}
+	}
 	
 	$folder_path = $EVC->getModulesPath($project);
 	$items = CMSPresentationLayerHandler::getFolderFilesList($folder_path, $folder_path);
 	
-	foreach ($items as $file_path => $file)
-		if ($file["type"] != "folder") {
+	foreach ($items as $file_path => $file) {
+		$file_type = isset($file["type"]) ? $file["type"] : null;
+		
+		if ($file_type != "folder") {
 			$extension = pathinfo($file_path, PATHINFO_EXTENSION);
 			if (strtolower($extension) == "php") {
 				$fp = substr($file_path, 0, -4);
@@ -62,6 +67,7 @@ foreach ($projects as $project) {
 					$files[] = $fp;
 			}
 		}
+	}
 }
 
 $pages = array();
@@ -69,10 +75,10 @@ foreach ($files as $file) {
 	$contents = file_get_contents(APP_PATH . $file);
 	preg_match_all('/\$UserAuthenticationHandler->checkPresentationFileAuthentication\(\$(\w+), ([^)]+)\)/u', $contents, $matches, PREG_PATTERN_ORDER); //'/u' means with accents and ç too.
 	
-	if ($matches[2])
+	if (!empty($matches[2]))
 		foreach ($matches[2] as $match) {
 			preg_match_all('/array([ ]*)\((.+)/u', $match, $sub_matches, PREG_PATTERN_ORDER); //'/u' means with accents and ç too.
-			$sub_matches = explode(",", str_replace(array("'", '"'), "", $sub_matches[2][0] ? $sub_matches[2][0] : $match));
+			$sub_matches = explode(",", str_replace(array("'", '"'), "", !empty($sub_matches[2][0]) ? $sub_matches[2][0] : $match));
 			
 			foreach ($sub_matches as $m)
 				$pages[$file][ strtolower(trim($m)) ] = true;
@@ -101,17 +107,21 @@ $layers_props = array();
 foreach ($raw_layers as $layer_type_name => $layer_type)
 	foreach ($layer_type as $layer_name => $layer) {
 		$lln = strtolower($layer_name);
+		$layer_properties = isset($layer["properties"]) ? $layer["properties"] : null;
+		$layer_bean_name = isset($layer_properties["bean_name"]) ? $layer_properties["bean_name"] : null;
+		$layer_bean_file_name = isset($layer_properties["bean_file_name"]) ? $layer_properties["bean_file_name"] : null;
+		
 		$layers[$layer_type_name][$lln] = array();
-		$layers_label[$layer_type_name][$lln] = isset($layer["properties"]["item_label"]) ? $layer["properties"]["item_label"] : $lln;
-		$layers_object_id[$layer_type_name][$lln] = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $layer["properties"]["bean_file_name"], $layer["properties"]["bean_name"], $user_global_variables_file_path);
-		$layers_props[$layer_type_name][$lln] = $layer["properties"];
+		$layers_label[$layer_type_name][$lln] = isset($layer_properties["item_label"]) ? $layer_properties["item_label"] : $lln;
+		$layers_object_id[$layer_type_name][$lln] = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $layer_bean_file_name, $layer_bean_name, $user_global_variables_file_path);
+		$layers_props[$layer_type_name][$lln] = $layer_properties;
 		
 		if ($layer_type_name == "db_layers") {
 			foreach ($layer as $driver_name => $driver) 
 				if ($driver_name != "properties" && $driver_name != "aliases")
 					$layers[$layer_type_name][$lln][$driver_name] = array();
 		}
-		else if ($layer_type_name == "presentation_layers" && is_array($presentation_layers_projects[$layer_name]["projects"]))
+		else if ($layer_type_name == "presentation_layers" && isset($presentation_layers_projects[$layer_name]["projects"]) && is_array($presentation_layers_projects[$layer_name]["projects"]))
 			foreach ($presentation_layers_projects[$layer_name]["projects"] as $project_name => $p) {
 				$parts = explode("/", $project_name);
 				$parts_prefix = "";

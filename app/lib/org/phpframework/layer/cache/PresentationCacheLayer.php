@@ -6,7 +6,7 @@ class PresentationCacheLayer extends CacheLayer {
 	public function initBeanObjs($module_id) {
 		if(!$this->bean_objs) {
 			$this->bean_objs = $this->Layer->getPHPFrameWork()->getObjects();
-			$this->bean_objs["vars"] = isset($this->bean_objs["vars"]) && iis_array($this->bean_objs["vars"]) ? $this->bean_objs["vars"] : array();
+			$this->bean_objs["vars"] = isset($this->bean_objs["vars"]) && is_array($this->bean_objs["vars"]) ? $this->bean_objs["vars"] : array();
 			$this->bean_objs["vars"] = array_merge($this->bean_objs["vars"], $this->Layer->settings, $this->settings);
 		}
 		else

@@ -23,6 +23,8 @@ class PHPFrameWorkHandler {
 	
 	public function setPHPFrameWork($PHPFrameWork) {$this->phpframeworks[$this->phpframework_obj_name] = $PHPFrameWork;}
 	public function getPHPFrameWork() {
+		$PHPFrameWork = null;
+		
 		if (isset($this->phpframeworks[$this->phpframework_obj_name])) 
 			$PHPFrameWork = $this->phpframeworks[$this->phpframework_obj_name];
 		else if ($this->phpframework_obj_name) {
@@ -89,7 +91,7 @@ class PHPFrameWorkHandler {
 			$t = count($this->beans_file_paths);
 			
 			for ($i = 0; $i < $t; $i++) 
-				$PHPFrameWork->loadBeansFile($this->beans_file_path[$i]);
+				$PHPFrameWork->loadBeansFile($this->beans_file_paths[$i]);
 		}
 	}
 	

@@ -3,6 +3,9 @@ include $EVC->getUtilPath("WorkFlowPresentationHandler");
 include $EVC->getUtilPath("WorkFlowUIHandler");
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$folder_path = isset($folder_path) ? $folder_path : null;
+$P = isset($P) ? $P : null;
+
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 
 $head = '
@@ -19,7 +22,9 @@ $head = '
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/presentation/create_presentation_uis_automatically.css" type="text/css" charset="utf-8" />
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/presentation/create_presentation_uis_automatically.js"></script>';
 
-if ($_POST["step_3"]) {
+$main_content = "";
+
+if (!empty($_POST["step_3"])) {
 	$main_content .= '
 	<div class="statuses">
 		<div class="top_bar">
@@ -40,22 +45,23 @@ if ($_POST["step_3"]) {
 	
 	$exists_status_ok = false;
 	
-	foreach ($statuses as $table_name => $table_statuses) {
-		$table_alias = $selected_tables_alias[$table_name];
-		
-		foreach ($table_statuses as $file_path => $status) {
-			$status = ($status ? "ok" : "error");
+	if (!empty($statuses))
+		foreach ($statuses as $table_name => $table_statuses) {
+			$table_alias = isset($selected_tables_alias[$table_name]) ? $selected_tables_alias[$table_name] : null;
 			
-			$main_content .= '<tr>
-				<td class="table_name">' . $table_name . ($table_alias ? " => $table_alias" : "") . '</td>
-				<td class="file_path">' . $file_path . '</td>
-				<td class="status status_' . $status . '">' . strtoupper($status) . '</td>
-			</tr>';
-			
-			if ($status) 
-				$exists_status_ok = true;
+			foreach ($table_statuses as $file_path => $status) {
+				$status = ($status ? "ok" : "error");
+				
+				$main_content .= '<tr>
+					<td class="table_name">' . $table_name . ($table_alias ? " => $table_alias" : "") . '</td>
+					<td class="file_path">' . $file_path . '</td>
+					<td class="status status_' . $status . '">' . strtoupper($status) . '</td>
+				</tr>';
+				
+				if ($status) 
+					$exists_status_ok = true;
+			}
 		}
-	}
 	
 	$main_content .= '
 		</table>
@@ -81,8 +87,8 @@ if ($_POST["step_3"]) {
 		</script>';
 	}
 }
-else if ($_POST["step_2"]) {
-	if ($active_brokers && $selected_tables) {
+else if (!empty($_POST["step_2"])) {
+	if (!empty($active_brokers) && !empty($selected_tables)) {
 		//PREPARING TABLES PROPS
 		//Any change here must be replicated in the method: SequentialLogicalActivityResourceCreator::getTableUIProps
 		$create_presentation_uis_files_automatically_url = $project_url_prefix . "phpframework/presentation/create_presentation_uis_files_automatically?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=$path&db_layer=$db_layer&db_layer_file=$db_layer_file&db_driver=$db_driver&include_db_driver=$include_db_driver&type=$type&authenticated_template=$authenticated_template&non_authenticated_template=$non_authenticated_template&overwrite=$overwrite&users_perms_folder=$users_perms_folder";
@@ -125,10 +131,10 @@ else if ($_POST["step_2"]) {
 		foreach ($tasks_settings as $group_id => $group_tasks)
 			foreach ($group_tasks as $task_type => $task_settings)
 				if (is_array($task_settings)) {
-					$tag = $task_settings["tag"];
-					$js_load_functions[$tag] = $task_settings["settings"]["callback"]["on_load_task_properties"];
-					$js_submit_functions[$tag] = $task_settings["settings"]["callback"]["on_submit_task_properties"];
-					$js_complete_functions[$tag] = $task_settings["settings"]["callback"]["on_complete_task_properties"];
+					$tag = isset($task_settings["tag"]) ? $task_settings["tag"] : null;
+					$js_load_functions[$tag] = isset($task_settings["settings"]["callback"]["on_load_task_properties"]) ? $task_settings["settings"]["callback"]["on_load_task_properties"] : null;
+					$js_submit_functions[$tag] = isset($task_settings["settings"]["callback"]["on_submit_task_properties"]) ? $task_settings["settings"]["callback"]["on_submit_task_properties"] : null;
+					$js_complete_functions[$tag] = isset($task_settings["settings"]["callback"]["on_complete_task_properties"]) ? $task_settings["settings"]["callback"]["on_complete_task_properties"] : null;
 				}
 		
 		$choose_bean_layer_files_from_file_manager_url = $project_url_prefix . "admin/get_sub_files?bean_name=#bean_name#&bean_file_name=#bean_file_name#$filter_by_layout_url_query&path=#path#";
@@ -181,8 +187,8 @@ else if ($_POST["step_2"]) {
 		var force_user_action = ' . ($force_user_action ? 1 : 0) . ';
 		
 		var tables = ' . json_encode($tables) . ';
-		var tables_ui_props = ' . ($tables_ui_props["tables"] ? json_encode($tables_ui_props["tables"]) : "null") . ';
-		var brokers_props = ' . ($tables_ui_props["brokers"] ? json_encode($tables_ui_props["brokers"]) : "null") . ';
+		var tables_ui_props = ' . (!empty($tables_ui_props["tables"]) ? json_encode($tables_ui_props["tables"]) : "null") . ';
+		var brokers_props = ' . (!empty($tables_ui_props["brokers"]) ? json_encode($tables_ui_props["brokers"]) : "null") . ';
 		
 		tables = tables ? tables : {};
 		tables_ui_props = tables_ui_props ? tables_ui_props : {};
@@ -296,7 +302,7 @@ else if ($_POST["step_2"]) {
 	else if (empty($active_brokers))
 		$main_content .= '<div class="main_error">No brokers active. Please go back and select at least one broker...</div>';
 }
-else if ($_POST["step_1"]) {
+else if (!empty($_POST["step_1"])) {
 	$head .= '<script>
 		var users_management_admin_panel_url = \'' . $project_url_prefix . "phpframework/module/user/admin/index?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path" . '\';
 	</script>';
@@ -408,7 +414,7 @@ else if ($_POST["step_1"]) {
 					<iframe></iframe>
 				</div>';
 		
-		if ($available_user_types && $available_activities) {
+		if (!empty($available_user_types) && !empty($available_activities)) {
 			$main_content .= '
 				<table>
 					<tr>
@@ -506,8 +512,6 @@ else {
 	else if (!is_dir($folder_path)) 
 		$main_content .= '<div class="error">You can only execute this action inside of a folder.</div>';
 	else if (!empty($db_drivers)) {
-		$db_layer = $db_layer_file = null;
-		
 		$main_content .= '
 			<script>
 				var default_db_driver = "' . $default_db_driver . '";
@@ -518,8 +522,12 @@ else {
 				<select name="db_driver" onChange="onChangeDBDriver(this)">';
 		
 		if ($db_drivers)
-			foreach ($db_drivers as $db_driver_name => $db_driver_props)
-				$main_content .= '<option bean_file_name="' . $db_driver_props[1] . '" bean_name="' . $db_driver_props[2] . '" value="' . $db_driver_name . '"' . ($selected_db_driver == $db_driver_name ? " selected" : "") . '>' . $db_driver_name . ($db_driver_props ? '' : ' (Rest)') . '</option>'; //only show the ocal db drivers, this is ignore all the dbdrivers coming from REST brokers.
+			foreach ($db_drivers as $db_driver_name => $db_driver_props) {
+				$db_driver_bean_file_name = isset($db_driver_props[1]) ? $db_driver_props[1] : null;
+				$db_driver_bean_name = isset($db_driver_props[2]) ? $db_driver_props[2] : null;
+				
+				$main_content .= '<option bean_file_name="' . $db_driver_bean_file_name . '" bean_name="' . $db_driver_bean_name . '" value="' . $db_driver_name . '"' . ($selected_db_driver == $db_driver_name ? " selected" : "") . '>' . $db_driver_name . ($db_driver_props ? '' : ' (Rest)') . '</option>'; //only show the ocal db drivers, this is ignore all the dbdrivers coming from REST brokers.
+			}
 		
 		$main_content .= '	
 				</select>

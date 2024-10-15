@@ -9,15 +9,15 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	public function createTaskPropertiesFromCodeStmt($stmt, $WorkFlowTaskCodeParser, &$exits = null, &$inner_tasks = null) {
 		$props = $WorkFlowTaskCodeParser->getObjectMethodProps($stmt);
 		
-		if ($props && $props["method_name"] == "upload" && $props["method_static"] && $props["method_obj"] == "UploadHandler") {
-			$args = $props["method_args"];
+		if ($props && isset($props["method_name"]) && $props["method_name"] == "upload" && !empty($props["method_static"]) && isset($props["method_obj"]) && $props["method_obj"] == "UploadHandler") {
+			$args = isset($props["method_args"]) ? $props["method_args"] : null;
 			
-			$file = $args[0]["value"];
-			$file_type = $args[0]["type"];
-			$dst_folder = $args[1]["value"];
-			$dst_folder_type = $args[1]["type"];
-			$validation = $args[2]["value"];
-			$validation_type = $args[2]["type"];
+			$file = isset($args[0]["value"]) ? $args[0]["value"] : null;
+			$file_type = isset($args[0]["type"]) ? $args[0]["type"] : null;
+			$dst_folder = isset($args[1]["value"]) ? $args[1]["value"] : null;
+			$dst_folder_type = isset($args[1]["type"]) ? $args[1]["type"] : null;
+			$validation = isset($args[2]["value"]) ? $args[2]["value"] : null;
+			$validation_type = isset($args[2]["type"]) ? $args[2]["type"] : null;
 			
 			$props["file"] = $file;
 			$props["file_type"] = self::getConfiguredParsedType($file_type);
@@ -25,9 +25,10 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$props["dst_folder_type"] = self::getConfiguredParsedType($dst_folder_type);
 			
 			if ($validation_type == "array") {
-				$param_stmts = $WorkFlowTaskCodeParser->getPHPParserEmulative()->parse("<?php\n" . $validation . "\n?>");
+				$param_stmts = $WorkFlowTaskCodeParser->getPHPMultipleParser()->parse("<?php\n" . $validation . "\n?>");
 				//print_r($param_stmts);
-				$validation = $WorkFlowTaskCodeParser->getArrayItems($param_stmts[0]->items);
+				$items = $WorkFlowTaskCodeParser->getStmtArrayItems($param_stmts[0]);
+				$validation = $WorkFlowTaskCodeParser->getArrayItems($items);
 			}
 			
 			$props["validation"] = $validation;
@@ -52,23 +53,23 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
-		$validation_type = $raw_data["childs"]["properties"][0]["childs"]["validation_type"][0]["value"];
+		$validation_type = isset($raw_data["childs"]["properties"][0]["childs"]["validation_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["validation_type"][0]["value"] : null;
 		if ($validation_type == "array") {
-			$validation = $raw_data["childs"]["properties"][0]["childs"]["validation"];
+			$validation = isset($raw_data["childs"]["properties"][0]["childs"]["validation"]) ? $raw_data["childs"]["properties"][0]["childs"]["validation"] : null;
 			$validation = self::parseArrayItems($validation);
 		}
 		else {
-			$validation = $raw_data["childs"]["properties"][0]["childs"]["validation"][0]["value"];
+			$validation = isset($raw_data["childs"]["properties"][0]["childs"]["validation"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["validation"][0]["value"] : null;
 		}
 		
 		$properties = array(
-			"method" => $raw_data["childs"]["properties"][0]["childs"]["method"][0]["value"],
-			"file" => $raw_data["childs"]["properties"][0]["childs"]["file"][0]["value"],
-			"file_type" => $raw_data["childs"]["properties"][0]["childs"]["file_type"][0]["value"],
-			"dst_folder" => $raw_data["childs"]["properties"][0]["childs"]["dst_folder"][0]["value"],
-			"dst_folder_type" => $raw_data["childs"]["properties"][0]["childs"]["dst_folder_type"][0]["value"],
+			"method" => isset($raw_data["childs"]["properties"][0]["childs"]["method"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["method"][0]["value"] : null,
+			"file" => isset($raw_data["childs"]["properties"][0]["childs"]["file"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["file"][0]["value"] : null,
+			"file_type" => isset($raw_data["childs"]["properties"][0]["childs"]["file_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["file_type"][0]["value"] : null,
+			"dst_folder" => isset($raw_data["childs"]["properties"][0]["childs"]["dst_folder"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["dst_folder"][0]["value"] : null,
+			"dst_folder_type" => isset($raw_data["childs"]["properties"][0]["childs"]["dst_folder_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["dst_folder_type"][0]["value"] : null,
 			"validation" => $validation,
 			"validation_type" => $validation_type,
 		);
@@ -79,26 +80,31 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$var_name = self::getPropertiesResultVariableCode($properties);
 		
-		$file = self::getVariableValueCode($properties["file"], $properties["file_type"]);
-		$dst_folder = self::getVariableValueCode($properties["dst_folder"], $properties["dst_folder_type"]);
+		$file = isset($properties["file"]) ? $properties["file"] : null;
+		$file = self::getVariableValueCode($file, isset($properties["file_type"]) ? $properties["file_type"] : null);
 		
-		$validation_type = $properties["validation_type"];
+		$dst_folder = isset($properties["dst_folder"]) ? $properties["dst_folder"] : null;
+		$dst_folder = self::getVariableValueCode($dst_folder, isset($properties["dst_folder_type"]) ? $properties["dst_folder_type"] : null);
+		
+		$validation_type = isset($properties["validation_type"]) ? $properties["validation_type"] : null;
+		$validation = isset($properties["validation"]) ? $properties["validation"] : null;
 		if ($validation_type == "array")
-			$validation = self::getArrayString($properties["validation"]);
+			$validation = self::getArrayString($validation);
 		else
-			$validation = self::getVariableValueCode($properties["validation"], $validation_type);
+			$validation = self::getVariableValueCode($validation, $validation_type);
 		
 		$code = $prefix_tab . $var_name . "UploadHandler::upload($file, $dst_folder";
 		$code .= $validation ? ", $validation" : "";
 		$code .= ");\n";
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

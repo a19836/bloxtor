@@ -147,8 +147,8 @@ class MyFileManager extends MyIOManager {
 		
 		$result = array();
 		$result["files"] = $this->prepareFiles($files);
-		$result["is_truncate"] = $is_truncate;
-		$result["last_marker"] = $is_truncate ? $last_marker : "";
+		$result["is_truncate"] = isset($files["is_truncate"]) ? $files["is_truncate"] : null;
+		$result["last_marker"] = $result["is_truncate"] && isset($files["last_marker"]) ? $files["last_marker"] : "";
 		return $result;
 	}
 

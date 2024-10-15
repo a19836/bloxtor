@@ -181,7 +181,7 @@ trait DBStatic {
 			$parts = explode(":", $options['server']);
 			$options['host'] = $parts[0];
 			
-			if ($parts[1] && empty($options['port']))
+			if (!empty($parts[1]) && empty($options['port']))
 				$options['port'] = $parts[1];
 		}
 		
@@ -551,7 +551,7 @@ trait DBStatic {
 			if ($items)
 				$args[] = $items;
 		
-		return call_user_func_array("array_intersect_key", $args);
+		return @call_user_func_array("array_intersect_key", $args); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 	}
 	
 	public static function getAllColumnAutoIncrementTypesByType() {
@@ -614,7 +614,7 @@ trait DBStatic {
 			if ($items)
 				$args[] = $items;
 		
-		return call_user_func_array("array_intersect_key", $args);
+		return @call_user_func_array("array_intersect_key", $args); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 	}
 	
 	public static function getAllCurrentTimestampAvailableValuesByType() {
@@ -680,7 +680,7 @@ trait DBStatic {
 			if ($items)
 				$args[] = $items;
 		
-		return call_user_func_array("array_intersect_key", $args);
+		return @call_user_func_array("array_intersect_key", $args); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 	}
 	
 	public static function getAllColumnTypesHiddenPropsByType() {
@@ -714,7 +714,7 @@ trait DBStatic {
 		foreach ($array_with_multiple_arrays as $type => $items)
 			$args[] = $items ? $items : array();
 		
-		return array_values( call_user_func_array("array_intersect", $args) );
+		return array_values( @call_user_func_array("array_intersect", $args) ); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 	}
 	
 	public static function getAllReservedWordsByType() {
@@ -761,6 +761,9 @@ trait DBStatic {
 			$end = strlen($sql);
 			$delimiter_length = strlen($delimiter);
 			
+			if (is_numeric($sql))
+				$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
+			
 			for ($i = 0 ; $i < $end; $i++) {
 				$char = $sql[$i];
 				
@@ -768,17 +771,17 @@ trait DBStatic {
 					$open_double_quotes = !$open_double_quotes;
 				else if ($char == "'" && !TextSanitizer::isCharEscaped($sql, $i) && !$open_double_quotes) 
 					$open_single_quotes = !$open_single_quotes;
-				else if ($remove_comments && $char == "\n" && $sql[$i + 1] == "-" && $sql[$i + 2] == "-" && !$open_double_quotes && !$open_single_quotes) { //jump comments and avoid conflits
+				else if ($remove_comments && $char == "\n" && $i + 2 < $end && $sql[$i + 1] == "-" && $sql[$i + 2] == "-" && !$open_double_quotes && !$open_single_quotes) { //jump comments and avoid conflits
 					$pos = strpos($sql, "\n", $i + 3);
 					$pos = is_numeric($pos) ? $pos : $end;
 					$i = $pos - 1; //previous char from \n, so the next char is \n and it parses again the next comment. This is very important, otherwise it will not parse the next comments and the query will still contain comments.
 				}
-				else if ($remove_comments && $i == 0 && $sql[$i] == "-" && $sql[$i + 1] == "-" && !$open_double_quotes && !$open_single_quotes) { //jump comments and avoid conflits
+				else if ($remove_comments && $i == 0 && $sql[$i] == "-" && $i + 1 < $end && $sql[$i + 1] == "-" && !$open_double_quotes && !$open_single_quotes) { //jump comments and avoid conflits
 					$pos = strpos($sql, "\n", $i + 2);
 					$pos = is_numeric($pos) ? $pos : $end;
 					$i = $pos - 1; //previous char from \n, so the next char is \n and it parses again the next comment. This is very important, otherwise it will not parse the next comments and the query will still contain comments.
 				}
-				else if ($remove_comments && $char == "/" && $sql[$i + 1] == "*" && !$open_double_quotes && !$open_single_quotes) { //jump comments and avoid conflits
+				else if ($remove_comments && $char == "/" && $i + 1 < $end && $sql[$i + 1] == "*" && !$open_double_quotes && !$open_single_quotes) { //jump comments and avoid conflits
 					$pos = strpos($sql, "*/", $i + 2);
 					$pos = is_numeric($pos) ? $pos : $end;
 					$i = $pos + 1;
@@ -869,6 +872,9 @@ trait DBStatic {
 			$end = strlen($sql);
 			$new_sql = "";
 			
+			if (is_numeric($sql))
+				$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
+			
 			for ($i = 0 ; $i < $end; $i++) {
 				$char = $sql[$i];
 			
@@ -876,7 +882,7 @@ trait DBStatic {
 					$open_double_quotes = !$open_double_quotes;
 				else if ($char == "'" && !TextSanitizer::isCharEscaped($sql, $i) && !$open_double_quotes) 
 					$open_single_quotes = !$open_single_quotes;
-				else if ($char == "\n" && $sql[$i + 1] == "-" && $sql[$i + 2] == "-" && !$open_double_quotes && !$open_single_quotes) { //remove comments
+				else if ($char == "\n" && $i + 2 < $end && $sql[$i + 1] == "-" && $sql[$i + 2] == "-" && !$open_double_quotes && !$open_single_quotes) { //remove comments
 					$new_sql .= substr($sql, $start, ($i - $start) + 1); //Do not trim bc there could be a end-line at the beggining of the substr that should not be removed, otherwise we are combining 2 lines and maybe 2 words that should not be combined!
 					
 					$pos = strpos($sql, "\n", $i + 3);
@@ -884,7 +890,7 @@ trait DBStatic {
 					$start = $pos;
 					$i = $pos - 1; //previous char from \n, so the next char is \n and it parses again the next comment. This is very important, otherwise it will not parse the next comments and the query will still contain comments.
 				}
-				else if ($i == 0 && $sql[$i] == "-" && $sql[$i + 1] == "-" && !$open_double_quotes && !$open_single_quotes) { //remove comments
+				else if ($i == 0 && $sql[$i] == "-" && $i + 1 < $end && $sql[$i + 1] == "-" && !$open_double_quotes && !$open_single_quotes) { //remove comments
 					$new_sql .= substr($sql, $start, ($i - $start)); //Do not trim bc there could be a end-line at the beggining of the substr that should not be removed, otherwise we are combining 2 lines and maybe 2 words that should not be combined!
 					
 					$pos = strpos($sql, "\n", $i + 2);
@@ -892,7 +898,7 @@ trait DBStatic {
 					$start = $pos;
 					$i = $pos - 1; //previous char from \n, so the next char is \n and it parses again the next comment. This is very important, otherwise it will not parse the next comments and the query will still contain comments.
 				}
-				else if ($char == "/" && $sql[$i + 1] == "*" && !$open_double_quotes && !$open_single_quotes) { //remove comments
+				else if ($char == "/" && $i + 1 < $end && $sql[$i + 1] == "*" && !$open_double_quotes && !$open_single_quotes) { //remove comments
 					$new_sql .= substr($sql, $start, ($i - $start)); //Do not trim bc there could be a end-line at the beggining of the substr that should not be removed, otherwise we are combining 2 lines and maybe 2 words that should not be combined!
 					
 					$pos = strpos($sql, "*/", $i + 2);
@@ -921,6 +927,9 @@ trait DBStatic {
 		
 		$end = strlen($sql);
 		$new_sql = "";
+		
+		if (is_numeric($sql))
+			$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
 		
 		for ($i = 0 ; $i < $end; $i++) {
 			$char = $sql[$i];
@@ -989,10 +998,10 @@ trait DBStatic {
 	 * @param $delimiters_to_replace	array where first item is the start delimiter and second is the end delimiter
 	 */
 	public static function replaceSQLEnclosingDelimiter($sql, $delimiters_to_search, $delimiters_to_replace) {
-		$start_delimiter_to_search = is_array($delimiters_to_search) ? $delimiters_to_search[0] : $delimiters_to_search;
-		$end_delimiter_to_search = is_array($delimiters_to_search) ? $delimiters_to_search[1] : $delimiters_to_search;
-		$start_delimiter_to_replace = is_array($delimiters_to_replace) ? $delimiters_to_replace[0] : $delimiters_to_replace;
-		$end_delimiter_to_replace = is_array($delimiters_to_replace) ? $delimiters_to_replace[1] : $delimiters_to_replace;
+		$start_delimiter_to_search = is_array($delimiters_to_search) ? (isset($delimiters_to_search[0]) ? $delimiters_to_search[0] : null) : $delimiters_to_search;
+		$end_delimiter_to_search = is_array($delimiters_to_search) ? (isset($delimiters_to_search[1]) ? $delimiters_to_search[1] : null) : $delimiters_to_search;
+		$start_delimiter_to_replace = is_array($delimiters_to_replace) ? (isset($delimiters_to_replace[0]) ? $delimiters_to_replace[0] : null) : $delimiters_to_replace;
+		$end_delimiter_to_replace = is_array($delimiters_to_replace) ? (isset($delimiters_to_replace[1]) ? $delimiters_to_replace[1] : null) : $delimiters_to_replace;
 		
 		if (!$end_delimiter_to_search)
 			$end_delimiter_to_search = $start_delimiter_to_search;
@@ -1010,6 +1019,9 @@ trait DBStatic {
 			$start_delimiter_length = strlen($start_delimiter_to_search);
 			$end_delimiter_length = strlen($end_delimiter_to_search);
 			
+			if (is_numeric($sql))
+				$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
+		
 			for ($i = 0 ; $i < $end; $i++) {
 				$char = $sql[$i];
 			
@@ -1059,8 +1071,8 @@ trait DBStatic {
 		$parts = SQLQueryHandler::parseTableName($table_name_1);
 		$size = count($parts);
 		$name_1 = trim($parts[$size - 1]);
-		$schema_1 = trim($parts[$size - 2]);
-		$database_1 = trim($parts[$size - 3]);
+		$schema_1 = isset($parts[$size - 2]) ? trim($parts[$size - 2]) : null;
+		$database_1 = isset($parts[$size - 3]) ? trim($parts[$size - 3]) : null;
 		
 		if (!$schema_1)
 			$schema_1 = $options && !empty($options["schema"]) ? $options["schema"] : "";
@@ -1071,8 +1083,8 @@ trait DBStatic {
 		$parts = SQLQueryHandler::parseTableName($table_name_2);
 		$size = count($parts);
 		$name_2 = trim($parts[$size - 1]);
-		$schema_2 = trim($parts[$size - 2]);
-		$database_2 = trim($parts[$size - 3]);
+		$schema_2 = isset($parts[$size - 2]) ? trim($parts[$size - 2]) : null;
+		$database_2 = isset($parts[$size - 3]) ? trim($parts[$size - 3]) : null;
 		
 		if (!$schema_2)
 			$schema_2 = $options && !empty($options["schema"]) ? $options["schema"] : "";
@@ -1107,8 +1119,8 @@ trait DBStatic {
 			$parts = SQLQueryHandler::parseTableName($table_to_search);
 			$size = count($parts);
 			$name_to_search = trim($parts[$size - 1]);
-			$schema_to_search = trim($parts[$size - 2]);
-			$database_to_search = trim($parts[$size - 3]);
+			$schema_to_search = isset($parts[$size - 2]) ? trim($parts[$size - 2]) : null;
+			$database_to_search = isset($parts[$size - 3]) ? trim($parts[$size - 3]) : null;
 			
 			if (!$schema_to_search)
 				$schema_to_search = $options && !empty($options["schema"]) ? $options["schema"] : "";
@@ -1121,8 +1133,8 @@ trait DBStatic {
 				$parts = SQLQueryHandler::parseTableName($table_name);
 				$size = count($parts);
 				$name = trim($parts[$size - 1]);
-				$schema = trim($parts[$size - 2]);
-				$database = trim($parts[$size - 3]);
+				$schema = isset($parts[$size - 2]) ? trim($parts[$size - 2]) : null;
+				$database = isset($parts[$size - 3]) ? trim($parts[$size - 3]) : null;
 				
 				if (!$schema)
 					$schema = $options && !empty($options["schema"]) ? $options["schema"] : "";
@@ -1240,7 +1252,7 @@ trait DBStatic {
 	
 	protected static function convertColumnTypeToDB($type, &$flags = null) {
 		$php_to_db_column_types = static::getPHPToDBColumnTypes(); //must be "static" and "self" bc we are calling an abstract static method
-		$db_type = $php_to_db_column_types[$type];//do not change with the strtolower otherwise it may become slow.
+		$db_type = isset($php_to_db_column_types[$type]) ? $php_to_db_column_types[$type] : null;//do not change with the strtolower otherwise it may become slow.
 		
 		if (is_array($db_type)) {
 			$flags = $db_type;
@@ -1254,7 +1266,7 @@ trait DBStatic {
 	protected static function convertColumnTypeFromDB($type, &$flags = null) {
 		if ($type) {
 			$db_to_php_column_types = static::getDBToPHPColumnTypes(); //must be "static" and "self" bc we are calling an abstract static method
-			$php_type = $db_to_php_column_types[$type];//do not change with the strtolower otherwise it may become slow.
+			$php_type = isset($db_to_php_column_types[$type]) ? $db_to_php_column_types[$type] : null;//do not change with the strtolower otherwise it may become slow.
 			
 			if (is_array($php_type)) {
 				$flags = $php_type;
@@ -1277,7 +1289,7 @@ trait DBStatic {
 			foreach ($db_column_types_ignored_props as $type => $items)
 				$args[] = $items ? $items : array();
 			
-			return array_values( call_user_func_array("array_intersect", $args) );
+			return array_values( @call_user_func_array("array_intersect", $args) ); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 		}
 		
 		return array();
@@ -1285,19 +1297,19 @@ trait DBStatic {
 	
 	protected static function ignoreColumnTypeDBProp($type, $prop_name) {
 		$db_column_types_ignored_props = static::getDBColumnTypesIgnoredProps(); //must be "static" and "self" bc we are calling an abstract static method
-		$type_props = $db_column_types_ignored_props[$type]; //do not change with the strtolower otherwise it may become slow.
+		$type_props = isset($db_column_types_ignored_props[$type]) ? $db_column_types_ignored_props[$type] : null; //do not change with the strtolower otherwise it may become slow.
 		
 		return is_array($type_props) ? in_array($prop_name, $type_props) : false;
 	}
 	
 	protected static function getDefaultValueForColumnType($type) {
 		$default_values = static::getDBColumnDefaultValuesByType();
-		return $default_values[$type];
+		return isset($default_values[$type]) ? $default_values[$type] : null;
 	}
 	
 	protected static function getMandatoryLengthForColumnType($type) {
 		$mandatory_lengths = static::getDBColumnMandatoryLengthTypes();
-		return $mandatory_lengths[$type];
+		return isset($mandatory_lengths[$type]) ? $mandatory_lengths[$type] : null;
 	}
 	
 	protected static function isReservedWord($value) {
@@ -1325,6 +1337,9 @@ trait DBStatic {
 		$semicolon = false;
 		$end = strlen($value);
 		
+		if (is_numeric($value))
+			$value = (string)$value; //bc of php > 7.4 if we use $value[$i] gives an warning
+		
 		for ($i = 0 ; $i < $end; $i++) {
 			$char = $value[$i];
 			
@@ -1332,15 +1347,15 @@ trait DBStatic {
 				$open_double_quotes = !$open_double_quotes;
 			else if ($char == "'" && !TextSanitizer::isCharEscaped($value, $i) && !$open_double_quotes && !$is_multi_line_comment_open && !$is_single_line_comment_open && !$is_dash_line_comment_open) 
 				$open_single_quotes = !$open_single_quotes;
-			else if ($char == "/" && $value[$i + 1] == "*" && !$open_double_quotes && !$open_single_quotes && !$is_multi_line_comment_open && !$is_single_line_comment_open && !$is_dash_line_comment_open) 
+			else if ($char == "/" && $i + 1 < $end && $value[$i + 1] == "*" && !$open_double_quotes && !$open_single_quotes && !$is_multi_line_comment_open && !$is_single_line_comment_open && !$is_dash_line_comment_open) 
 				$is_multi_line_comment_open = true;
-			else if ($char == "*" && $value[$i + 1] == "/" && !$open_double_quotes && !$open_single_quotes && $is_multi_line_comment_open && !$is_single_line_comment_open && !$is_dash_line_comment_open) 
+			else if ($char == "*" && $i + 1 < $end && $value[$i + 1] == "/" && !$open_double_quotes && !$open_single_quotes && $is_multi_line_comment_open && !$is_single_line_comment_open && !$is_dash_line_comment_open) 
 				$is_multi_line_comment_open = false;
-			else if ($char == "/" && $value[$i + 1] == "/" && !$open_double_quotes && !$open_single_quotes && !$is_multi_line_comment_open && !$is_single_line_comment_open && !$is_dash_line_comment_open) 
+			else if ($char == "/" && $i + 1 < $end && $value[$i + 1] == "/" && !$open_double_quotes && !$open_single_quotes && !$is_multi_line_comment_open && !$is_single_line_comment_open && !$is_dash_line_comment_open) 
 				$is_single_line_comment_open = true;
 			else if ($char == "\n" && !$open_double_quotes && !$open_single_quotes && !$is_multi_line_comment_open && $is_single_line_comment_open && !$is_dash_line_comment_open) 
 				$is_single_line_comment_open = false;
-			else if ($char == "-" && $value[$i + 1] == "-" && !$open_double_quotes && !$open_single_quotes && !$is_multi_line_comment_open && !$is_single_line_comment_open && !$is_dash_line_comment_open) 
+			else if ($char == "-" && $i + 1 < $end && $value[$i + 1] == "-" && !$open_double_quotes && !$open_single_quotes && !$is_multi_line_comment_open && !$is_single_line_comment_open && !$is_dash_line_comment_open) 
 				$is_dash_line_comment_open = true;
 			else if ($char == "\n" && !$open_double_quotes && !$open_single_quotes && !$is_multi_line_comment_open && !$is_single_line_comment_open && $is_dash_line_comment_open) 
 				$is_dash_line_comment_open = false;
@@ -1353,16 +1368,16 @@ trait DBStatic {
 	
 	protected static function parseTableName($table, $options = false) {
 		$enclosing_delimiters = static::getEnclosingDelimiters();
-		$start_delimiter = is_array($enclosing_delimiters) ? $enclosing_delimiters[0] : $enclosing_delimiters;
-		$end_delimiter = is_array($enclosing_delimiters) ? $enclosing_delimiters[1] : $enclosing_delimiters;
+		$start_delimiter = is_array($enclosing_delimiters) ? (isset($enclosing_delimiters[0]) ? $enclosing_delimiters[0] : null) : $enclosing_delimiters;
+		$end_delimiter = is_array($enclosing_delimiters) ? (isset($enclosing_delimiters[1]) ? $enclosing_delimiters[1] : null) : $enclosing_delimiters;
 		$end_delimiter = $end_delimiter ? $end_delimiter : $start_delimiter;
 		
 		$parts = SQLQueryHandler::parseTableName($table, $start_delimiter, $end_delimiter);
 		
 		$size = count($parts);
 		$table_name = trim($parts[$size - 1]);
-		$table_schema = trim($parts[$size - 2]);
-		$table_database = trim($parts[$size - 3]);
+		$table_schema = isset($parts[$size - 2]) ? trim($parts[$size - 2]) : null;
+		$table_database = isset($parts[$size - 3]) ? trim($parts[$size - 3]) : null;
 		
 		if (!$table_schema)
 			$table_schema = $options && !empty($options["schema"]) ? $options["schema"] : static::getDefaultSchema();
@@ -1381,8 +1396,8 @@ trait DBStatic {
 		$database = isset($table_props["database"]) ? $table_props["database"] : null;
 		
 		$enclosing_delimiters = static::getEnclosingDelimiters();
-		$start_delimiter = is_array($enclosing_delimiters) ? $enclosing_delimiters[0] : $enclosing_delimiters;
-		$end_delimiter = is_array($enclosing_delimiters) ? $enclosing_delimiters[1] : $enclosing_delimiters;
+		$start_delimiter = is_array($enclosing_delimiters) ? (isset($enclosing_delimiters[0]) ? $enclosing_delimiters[0] : null) : $enclosing_delimiters;
+		$end_delimiter = is_array($enclosing_delimiters) ? (isset($enclosing_delimiters[1]) ? $enclosing_delimiters[1] : null) : $enclosing_delimiters;
 		$end_delimiter = $end_delimiter ? $end_delimiter : $start_delimiter;
 		
 		return ($database ? "$start_delimiter$database$end_delimiter." : "") . ($schema ? "$start_delimiter$schema$end_delimiter." : "") . "$start_delimiter$name$end_delimiter";
@@ -1428,7 +1443,7 @@ trait DBStatic {
 			if ($items)
 				$args[] = $items;
 		
-		return call_user_func_array("array_intersect", $args);
+		return @call_user_func_array("array_intersect", $args); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 	}
 	
 	protected static function parseExtraSettings($extra_settings) {

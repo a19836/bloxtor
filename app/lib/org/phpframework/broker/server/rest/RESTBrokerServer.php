@@ -55,7 +55,7 @@ abstract class RESTBrokerServer extends BrokerServer implements IRESTBrokerServe
 	 */
 	protected function prepareWebServiceRequest($url, &$verified = null) {
 		//getting post data
-		$post = $_POST ? $_POST : array();
+		$post = !empty($_POST) ? $_POST : array();
 		$data = array_key_exists("data", $post) ? $post["data"] : null;
 		$response_type = array_key_exists("response_type", $post) ? $post["response_type"] : (isset($this->settings["response_type"]) ? $this->settings["response_type"] : null);
 		$verified = true;
@@ -76,7 +76,7 @@ abstract class RESTBrokerServer extends BrokerServer implements IRESTBrokerServe
 		
 		//prepare data if applyied
 		if (!empty($this->settings["request_encryption_key"]) && $data) {
-			$key = $key ? $key : CryptoKeyHandler::hexToBin($this->settings["request_encryption_key"]);
+			$key = CryptoKeyHandler::hexToBin($this->settings["request_encryption_key"]);
 			$cipher_bin = CryptoKeyHandler::hexToBin($data);
 			$data = CryptoKeyHandler::decryptSerializedObject($cipher_bin, $key);
 		}

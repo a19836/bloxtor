@@ -77,7 +77,7 @@ class PublicPrivateKeyHandler {
 		
 		$this->error = false;
 			
-		if (!is_resource($private_pem_key))
+		if (!is_resource($private_pem_key) && !is_object($private_pem_key))
 			$private_pem_key = openssl_pkey_get_private($private_pem_key, $passphrase); // $passphrase is required if your key is encoded (suggested) 
 		
 		$string = str_split($string, $this->encrypt_block_size);
@@ -105,7 +105,7 @@ class PublicPrivateKeyHandler {
 		
 		$this->error = false;
 			
-		if (!is_resource($public_pem_key))
+		if (!is_resource($public_pem_key) && !is_object($public_pem_key))
 			$public_pem_key = openssl_pkey_get_public($public_pem_key); 
 		
 		//decode must be done before spliting for getting the binary String

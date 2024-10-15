@@ -207,6 +207,33 @@ some html here
 <php:function:foo $x $y = a((as ass) 3 as)></php:function>
 <php:foreach array((12.3412 as) jp) $item></php:foreach>
 <php:foreach array((we rr) as as) k $item></php:foreach>';*/
+$template = '
+<php:echo @$_GET ? print_r($_GET, 1) : "NO GET ARRAY">
+<php:echo +@$_GET[NAME]>
+<php:echo +.@$_GET[NAME]>
+<php:echo @$_GET[NAME]>
+<ptl:echo @$arr[@$_GET[0]]$arr[ @$_GET[$name ] ] or $arr[ $_GET[name ]][joao][paulo]>
+<ptl:foo @$_GET[bar]>
+<php:if @$x == joao || intval($y) &gt; 1 && callFuncXX (12 floatVal(sads), array(1,2,asd), @$_POST)>
+<ptl:echo @$_GET ? foo((we rr) as as) : null />
+
+<ptl:if isset($item[menus]) && is_array($item[menus])>
+<ptl:if !empty($item[menus]) || empty($_GET[name])>
+<ptl:echo isset($item[class]) ? $item[class] : null/>
+<ptl:if !empty($_GET[all]) || !empty($_GET[tag])>
+<ptl:echo !empty($_GET[all]) ? "Articles in all categories" : "Articles in category: \'" (!empty($_GET[tag_label]) ? $_GET[tag_label] : $_GET[tag]) "\'" />
+<ptl:echo !empty($_GET[all]) ? \' active\' : \'\' />
+<ptl:echo isset($_GET[tag]) && isset($item[url]) && $_GET[tag] == $item[url] ? \' active\' : "" />
+<ptl:var:user_name isset($user[username]) ? $user[username] : null/>
+<ptl:var:user_label !empty($user[name]) ? $user[name] " - " $user_name : $user_name />
+<ptl:echo isset($_GET[user_id]) && isset($user[user_id]) && $_GET[user_id] == $user[user_id] ? \' active\' : \'\' />
+
+<div class="appointment-sessions-count">
+   <ptl:echo @$input[last_appointment_sessions_stats][sessions_count] . (@$input[last_appointment_sessions_stats][treatments_count] ? " / " . (@$input[last_appointment_sessions_stats][treatments_total] / @$input[last_appointment_sessions_stats][treatments_count]) : "")/>
+   <br/>
+   <ptl:echo (@$input[last_appointment_sessions_stats][sessions_count] * @$input[last_appointment_sessions_stats][treatments_count]) . " / " . @$input[last_appointment_sessions_stats][treatments_total] . (@$input[last_appointment_sessions_stats][sessions_treatments_count] ? " + " . @$input[last_appointment_sessions_stats][sessions_treatments_count] . \' \' : "")/>
+</div>
+';
 
 echo "********************* TEMPLATE ***************************\n";
 echo "$template\n";

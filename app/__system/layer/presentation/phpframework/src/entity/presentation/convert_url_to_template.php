@@ -5,9 +5,9 @@ include_once $EVC->getUtilPath("ConvertRemoteUrlHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$path = $_GET["path"];
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 
@@ -25,14 +25,15 @@ if ($bean_name && $bean_file_name && $path) {
 		//$raw_post_data = htmlspecialchars_decode( file_get_contents("php://input") );
 		$raw_post_data = file_get_contents("php://input");
 		
-		if ($_POST || $raw_post_data) {
+		if (!empty($_POST) || $raw_post_data) {
 			$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 			$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($PEVC->getTemplatesPath(), "layer", "access");
 			
-			if ($_POST["load"]) {
-				$url = $_POST["url"];
+			if (!empty($_POST["load"])) {
+				$url = isset($_POST["url"]) ? $_POST["url"] : null;
 				
 				if ($url) {
+					$real_url = null;
 					$html = ConvertRemoteUrlHandler::getUrlHtml($url, $real_url);
 					$url = $real_url;
 					
@@ -44,14 +45,14 @@ if ($bean_name && $bean_file_name && $path) {
 			else {
 				$settings = json_decode($raw_post_data, true); //Not working 
 				
-				if ($settings["save"] && $settings["template_name"]) {
+				if (!empty($settings["save"]) && !empty($settings["template_name"])) {
 					$template_name = str_replace(array("../", "./"), "", $settings["template_name"]);
-					$layout_name = str_replace(array("../", "./", "/", "\\"), "", $settings["layout_name"]);
-					$url = $settings["url"];
-					$doc_type = $settings["doc_type"];
-					$html = trim($settings["html"]);
-					$regions = $settings["regions"];
-					$params = $settings["params"];
+					$layout_name = isset($settings["layout_name"]) ? str_replace(array("../", "./", "/", "\\"), "", $settings["layout_name"]) : "";
+					$url = isset($settings["url"]) ? $settings["url"] : null;
+					$doc_type = isset($settings["doc_type"]) ? $settings["doc_type"] : null;
+					$html = isset($settings["html"]) ? trim($settings["html"]) : "";
+					$regions = isset($settings["regions"]) ? $settings["regions"] : null;
+					$params = isset($settings["params"]) ? $settings["params"] : null;
 					
 					if (!$layout_name)
 						$layout_name = "index";

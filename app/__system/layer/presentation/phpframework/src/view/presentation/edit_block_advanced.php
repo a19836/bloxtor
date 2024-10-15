@@ -3,6 +3,24 @@ include $EVC->getUtilPath("WorkFlowUIHandler");
 include $EVC->getUtilPath("WorkFlowPresentationHandler");
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$file_path = isset($file_path) ? $file_path : null;
+$P = isset($P) ? $P : null;
+$db_drivers_options = isset($db_drivers_options) ? $db_drivers_options : null;
+
+$presentation_brokers = isset($presentation_brokers) ? $presentation_brokers : null;
+$business_logic_brokers = isset($business_logic_brokers) ? $business_logic_brokers : null;
+$data_access_brokers = isset($data_access_brokers) ? $data_access_brokers : null;
+$ibatis_brokers = isset($ibatis_brokers) ? $ibatis_brokers : null;
+$hibernate_brokers = isset($hibernate_brokers) ? $hibernate_brokers : null;
+$db_brokers = isset($db_brokers) ? $db_brokers : null;
+
+$presentation_brokers_obj = isset($presentation_brokers_obj) ? $presentation_brokers_obj : null;
+$business_logic_brokers_obj = isset($business_logic_brokers_obj) ? $business_logic_brokers_obj : null;
+$data_access_brokers_obj = isset($data_access_brokers_obj) ? $data_access_brokers_obj : null;
+$ibatis_brokers_obj = isset($ibatis_brokers_obj) ? $ibatis_brokers_obj : null;
+$hibernate_brokers_obj = isset($hibernate_brokers_obj) ? $hibernate_brokers_obj : null;
+$db_brokers_obj = isset($db_brokers_obj) ? $db_brokers_obj : null;
+
 $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQuery($filter_by_layout);
 
 $WorkFlowUIHandler = new WorkFlowUIHandler($WorkFlowTaskHandler, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
@@ -55,10 +73,10 @@ $head .= '
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/presentation/edit_block_advanced.js"></script>
 
 <script>
-' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, $selected_db_vars) . '
+' . WorkFlowBrokersSelectedDBVarsHandler::printSelectedDBVarsJavascriptCode($project_url_prefix, $bean_name, $bean_file_name, isset($selected_db_vars) ? $selected_db_vars : null) . '
 var layer_type = "pres";
-var selected_project_id = "' . $selected_project_id . '";
-var file_modified_time = ' . $file_modified_time . '; //for version control
+var selected_project_id = "' . (isset($selected_project_id) ? $selected_project_id : "") . '";
+var file_modified_time = ' . (isset($file_modified_time) ? $file_modified_time : "null") . '; //for version control
 
 var get_workflow_file_url = \'' . $get_workflow_file_url . '\';
 var save_object_url = \'' . $save_url . '\';
@@ -74,7 +92,7 @@ var edit_task_source_url = \'' . $edit_task_source_url . '\';
 
 var templates_regions_html_url = \'' . $templates_regions_html_url . '\'; //used in widget: src/view/presentation/common_editor_widget/template_region/import_region_html.xml which is used in the Layout_ui_editor from the taskflowchart->inlinehtml and createform tasks.
 
-var brokers_db_drivers = ' . json_encode($brokers_db_drivers) . ';
+var brokers_db_drivers = ' . (isset($brokers_db_drivers) ? json_encode($brokers_db_drivers) : "null") . ';
 
 ProgrammingTaskUtil.on_programming_task_edit_source_callback = onProgrammingTaskEditSource;
 ProgrammingTaskUtil.on_programming_task_choose_created_variable_callback = onProgrammingTaskChooseCreatedVariable;
@@ -162,7 +180,7 @@ $head .= WorkFlowPresentationHandler::getDaoLibAndVendorBrokersHtml($choose_dao_
 $head .= WorkFlowPresentationHandler::getDataAccessBrokersHtml($data_access_brokers, $choose_bean_layer_files_from_file_manager_url);
 $head .= '</script>';
 
-$query_string = preg_replace("/dont_save_cookie=([^&])*/", "", str_replace(array("&edit_block_type=advanced", "&edit_block_type=simple"), "", $_SERVER["QUERY_STRING"]));
+$query_string = isset($_SERVER["QUERY_STRING"]) ? preg_replace("/dont_save_cookie=([^&])*/", "", str_replace(array("&edit_block_type=advanced", "&edit_block_type=simple"), "", $_SERVER["QUERY_STRING"])) : "";
 
 $main_content = '
 	<div class="top_bar' . ($popup ? " in_popup" : "") . '">
@@ -175,7 +193,7 @@ $main_content = '
 		</header>
 	</div>';
 
-if ($obj_data) {
+if (!empty($obj_data)) {
 	//prepare file manager popups
 	$main_content .= WorkFlowPresentationHandler::getChooseFromFileManagerPopupHtml($bean_name, $bean_file_name, $choose_bean_layer_files_from_file_manager_url, $choose_dao_files_from_file_manager_url, $choose_lib_files_from_file_manager_url, $choose_vendor_files_from_file_manager_url, $db_brokers, $data_access_brokers, $ibatis_brokers, $hibernate_brokers, $business_logic_brokers, $presentation_brokers);
 
@@ -196,7 +214,7 @@ if ($obj_data) {
 			<div class="code_menu top_bar_menu" onClick="openSubmenu(this)">
 				' . WorkFlowPresentationHandler::getCodeEditorMenuHtml(array("save_func" => "saveBlock")) . '
 			</div>
-			<textarea>' . htmlspecialchars($obj_data["code"], ENT_NOQUOTES) . '</textarea>
+			<textarea>' . (isset($obj_data["code"]) ? htmlspecialchars($obj_data["code"], ENT_NOQUOTES) : "") . '</textarea>
 		</div>
 	
 		<div id="ui">' . WorkFlowPresentationHandler::getTaskFlowContentHtml($WorkFlowUIHandler, array("save_func" => "saveBlock")) . '</div>

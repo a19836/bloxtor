@@ -13,20 +13,21 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$props = $WorkFlowTaskCodeParser->getObjectMethodProps($stmt);
 		
 		if ($props) {
-			$method_name = $props["method_name"];
+			$method_name = isset($props["method_name"]) ? $props["method_name"] : null;
 			
-			if ($method_name == $this->method_name && $props["method_static"] && $props["method_obj"] == $this->method_obj) {
-				$args = $props["method_args"];
+			if ($method_name == $this->method_name && !empty($props["method_static"]) && isset($props["method_obj"]) && $props["method_obj"] == $this->method_obj) {
+				$args = isset($props["method_args"]) ? $props["method_args"] : null;
 				
-				$data = $args[0]["value"];
-				$data_type = $args[0]["type"];
+				$data = isset($args[0]["value"]) ? $args[0]["value"] : null;
+				$data_type = isset($args[0]["type"]) ? $args[0]["type"] : null;
 				
-				$result_type = $args[1]["value"];
-				$result_type_type = $args[1]["type"];
+				$result_type = isset($args[1]["value"]) ? $args[1]["value"] : null;
+				$result_type_type = isset($args[1]["type"]) ? $args[1]["type"] : null;
 				
 				if ($data_type == "array") {
-					$data_stmts = $WorkFlowTaskCodeParser->getPHPParserEmulative()->parse("<?php\n" . $data . "\n?>");
-					$data = $WorkFlowTaskCodeParser->getArrayItems($data_stmts[0]->items);
+					$data_stmts = $WorkFlowTaskCodeParser->getPHPMultipleParser()->parse("<?php\n" . $data . "\n?>");
+					$items = $WorkFlowTaskCodeParser->getStmtArrayItems($data_stmts[0]);
+					$data = $WorkFlowTaskCodeParser->getArrayItems($items);
 				}
 				
 				unset($props["method_obj"]);
@@ -53,21 +54,21 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
-		$data_type = $raw_data["childs"]["properties"][0]["childs"]["data_type"][0]["value"];
+		$data_type = isset($raw_data["childs"]["properties"][0]["childs"]["data_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["data_type"][0]["value"] : null;
 		if ($data_type == "array") {
-			$data = $raw_data["childs"]["properties"][0]["childs"]["data"];
+			$data = isset($raw_data["childs"]["properties"][0]["childs"]["data"]) ? $raw_data["childs"]["properties"][0]["childs"]["data"] : null;
 			$data = self::parseArrayItems($data);
 		}
 		else
-			$data = $raw_data["childs"]["properties"][0]["childs"]["data"][0]["value"];
+			$data = isset($raw_data["childs"]["properties"][0]["childs"]["data"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["data"][0]["value"] : null;
 		
 		$properties = array(
 			"data" => $data,
 			"data_type" => $data_type,
-			"result_type" => $raw_data["childs"]["properties"][0]["childs"]["result_type"][0]["value"],
-			"result_type_type" => $raw_data["childs"]["properties"][0]["childs"]["result_type_type"][0]["value"],
+			"result_type" => isset($raw_data["childs"]["properties"][0]["childs"]["result_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["result_type"][0]["value"] : null,
+			"result_type_type" => isset($raw_data["childs"]["properties"][0]["childs"]["result_type_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["result_type_type"][0]["value"] : null,
 		);
 		
 		$properties = self::parseResultVariableProperties($raw_data, $properties);
@@ -76,21 +77,26 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$var_name = self::getPropertiesResultVariableCode($properties);
 		
-		$dt_type = $properties["data_type"];
+		$dt_type = isset($properties["data_type"]) ? $properties["data_type"] : null;
+		$dt = isset($properties["data"]) ? $properties["data"] : null;
 		if ($dt_type == "array")
-			$dt = self::getArrayString($properties["data"]);
+			$dt = self::getArrayString($dt);
 		else
-			$dt = self::getVariableValueCode($properties["data"], $dt_type);
+			$dt = self::getVariableValueCode($dt, $dt_type);
 		
-		$code  = $prefix_tab . $var_name . $this->method_obj . "::" . $this->method_name . "(" . $dt . ($properties["result_type"] ? ", " . self::getVariableValueCode($properties["result_type"], $properties["result_type_type"]) : "" ) . ");\n";
+		$result_type_type = isset($properties["result_type_type"]) ? $properties["result_type_type"] : null;
+		$result_type = isset($properties["result_type"]) ? $properties["result_type"] : null;
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$code  = $prefix_tab . $var_name . $this->method_obj . "::" . $this->method_name . "(" . $dt . ($result_type ? ", " . self::getVariableValueCode($result_type, $result_type_type) : "" ) . ");\n";
+		
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

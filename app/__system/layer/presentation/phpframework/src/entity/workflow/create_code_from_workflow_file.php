@@ -4,8 +4,8 @@ include_once get_lib("org.phpframework.workflow.WorkFlowTaskHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$path = $_GET["path"];
-$path_extra = $_GET["path_extra"];
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$path_extra = isset($_GET["path_extra"]) ? $_GET["path_extra"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $path_extra = str_replace("../", "", $path_extra);//for security reasons
@@ -28,10 +28,13 @@ if ($task_file_path && file_exists($task_file_path)) {
 			$t = count($loops);
 			for ($i = 0; $i < $t; $i++) {
 				$loop = $loops[$i];
-				$is_loop_allowed = $loop[2];
+				$is_loop_allowed = isset($loop[2]) ? $loop[2] : null;
 			
 				if (!$is_loop_allowed)
-					$obj["error"]["infinit_loop"][] = array("source_task_id" => $loop[0], "target_task_id" => $loop[1]);
+					$obj["error"]["infinit_loop"][] = array(
+						"source_task_id" => isset($loop[0]) ? $loop[0] : null,
+						"target_task_id" => isset($loop[1]) ? $loop[1] : null
+					);
 			}
 		}
 	}

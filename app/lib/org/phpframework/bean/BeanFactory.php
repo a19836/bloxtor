@@ -50,7 +50,7 @@ class BeanFactory {
 					$sub_total = count($s["extend"]);
 					for ($j = 0; $j < $sub_total; $j++) {
 						$extended_class_name = $s["extend"][$j];
-						$s["bean_to_extend"][$extended_class_name] = self::getBeanSettingsByName($settings, $extended_class_name);
+						$s["bean_to_extend"][$extended_class_name] = BeanSettingsFileFactory::getBeanSettingsByName($settings, $extended_class_name);
 					}
 				}
 				

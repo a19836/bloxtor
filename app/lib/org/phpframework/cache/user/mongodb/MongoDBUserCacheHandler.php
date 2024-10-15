@@ -33,7 +33,7 @@ class MongoDBUserCacheHandler extends UserCacheHandler {
 			
 			return $this->MongoDBHandler->set($colletion_name, $key, array(
 				"content" => $cont,
-				"expire" => $this->ttl ? $this->ttl + time() : 0;
+				"expire" => $this->ttl ? $this->ttl + time() : 0
 			));
 		}
 		return false;

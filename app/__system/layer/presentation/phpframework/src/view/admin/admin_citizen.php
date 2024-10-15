@@ -1,13 +1,23 @@
 <?php
 include_once $EVC->getUtilPath("AdminMenuUIHandler");
 
-if (!$is_admin_ui_citizen_allowed) {
+if (empty($is_admin_ui_citizen_allowed)) {
 	echo '<script>
 		alert("You don\'t have permission to access this Workspace!");
 		document.location="' . $project_url_prefix . 'auth/logout";
 	</script>';
 	die();
 }
+
+$filter_by_layout = isset($filter_by_layout) ? $filter_by_layout : null;
+$filter_by_layout_permission = isset($filter_by_layout_permission) ? $filter_by_layout_permission : null;
+$project = isset($project) ? $project : null;
+$db_driver_layer_folder_name = isset($db_driver_layer_folder_name) ? $db_driver_layer_folder_name : null;
+$db_driver_bean_name = isset($db_driver_bean_name) ? $db_driver_bean_name : null;
+$db_driver_bean_file_name = isset($db_driver_bean_file_name) ? $db_driver_bean_file_name : null;
+$db_driver_layer_bean_file_name = isset($db_driver_layer_bean_file_name) ? $db_driver_layer_bean_file_name : null;
+$db_driver_layer_bean_name = isset($db_driver_layer_bean_name) ? $db_driver_layer_bean_name : null;
+$db_driver_broker_name = isset($db_driver_broker_name) ? $db_driver_broker_name : null;
 
 $switch_project_url = $project_url_prefix . "admin?bean_name=$bean_name&bean_file_name=$bean_file_name&project=#project#";
 $logged_name = $UserAuthenticationHandler->auth["user_data"]["name"] ? $UserAuthenticationHandler->auth["user_data"]["name"] : $UserAuthenticationHandler->auth["user_data"]["username"];
@@ -21,12 +31,12 @@ $head .= '
 <script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/admin/admin_citizen.js"></script>
 
 <script>
-menu_item_properties = ' . json_encode($menu_item_properties) . ';
+menu_item_properties = ' . (isset($menu_item_properties) ? json_encode($menu_item_properties) : "null") . ';
 </script>';
 
 $main_content = '';
 
-if (!$projects) 
+if (empty($projects)) 
 	$main_content .= '<script>alert("Error: No projects available! Please contact your sysadmin...");</script>';
 
 $main_content .= '
@@ -52,7 +62,7 @@ $main_content .= '
 					</a>
 				</li>
 				
-				' . getProjectsHtml($projects, $switch_project_url) . '
+				' . getProjectsHtml(isset($projects) ? $projects : null, $switch_project_url) . '
 			</ul>
 		</li>
 		<li class="dashboard">
@@ -63,7 +73,7 @@ $main_content .= '
 		</li>
 	</ul>
 	<ul class="dropdown-2">
-		' . ($is_db_layer_allowed ? '
+		' . (!empty($is_db_layer_allowed) ? '
 		<li class="db with_sub_menu">
 			<a class="item_header" href="javascript:void(0)" onClick="showSubMenu(this);">
 				<i class="selected"></i>
@@ -125,7 +135,7 @@ $main_content .= '
 			</ul>
 		' : '') . '
 		</li>
-		' . ($layers["presentation_layers"] ? '
+		' . (!empty($layers["presentation_layers"]) ? '
 			<li class="pages">
 				<a class="item_header" href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . "{$project_url_prefix}phpframework/presentation/list?element_type=entity&bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=$project" . '">
 					<i class="selected"></i>
@@ -165,7 +175,7 @@ $main_content .= '
 					<label>Webroot</label>
 				</a>
 			</li>
-			' . ($util_exists ? '<li class="utils with_sub_menu">
+			' . (!empty($util_exists) ? '<li class="utils with_sub_menu">
 				<a class="item_header" href="javascript:void(0)" onClick="showSubMenu(this);">
 					<i class="selected"></i>
 					<span class="fas fa-radiation logo"></span>
@@ -201,7 +211,7 @@ $main_content .= '
 			
 			<ul>';
 	
-	if ($layers["presentation_layers"])
+	if (!empty($layers["presentation_layers"]))
 		$main_content .= '
 				<li class="edit_global_variables">
 					<a class="item_header" href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . "{$project_url_prefix}phpframework/presentation/edit_project_global_variables?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=$project/src/config/pre_init_config.php" . '">
@@ -232,11 +242,11 @@ $main_content .= '
 					</a>
 				</li>';
 	
-	if ($layers) {
-		if ($layers["data_access_layers"])
+	if (!empty($layers)) {
+		if (!empty($layers["data_access_layers"]))
 			foreach ($layers["data_access_layers"] as $layer_name => $layer) {
-				$bn = $layer["properties"]["bean_name"];
-				$bfn = $layer["properties"]["bean_file_name"];
+				$bn = isset($layer["properties"]["bean_name"]) ? $layer["properties"]["bean_name"] : null;
+				$bfn = isset($layer["properties"]["bean_file_name"]) ? $layer["properties"]["bean_file_name"] : null;
 				$label = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $bfn, $bn, $user_global_variables_file_path);
 				
 				$main_content .= '
@@ -249,10 +259,10 @@ $main_content .= '
 				</li>';
 			}
 		
-		if ($layers["business_logic_layers"])
+		if (!empty($layers["business_logic_layers"]))
 			foreach ($layers["business_logic_layers"] as $layer_name => $layer) {
-				$bn = $layer["properties"]["bean_name"];
-				$bfn = $layer["properties"]["bean_file_name"];
+				$bn = isset($layer["properties"]["bean_name"]) ? $layer["properties"]["bean_name"] : null;
+				$bfn = isset($layer["properties"]["bean_file_name"]) ? $layer["properties"]["bean_file_name"] : null;
 				$label = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $bfn, $bn, $user_global_variables_file_path);
 				
 				$main_content .= '
@@ -274,14 +284,14 @@ $main_content .= '
 						<label>Tools</label>
 					</a>
 				</li>
-				' . ($is_switch_admin_ui_allowed ? '<li class="switch_admin_ui">
+				' . (!empty($is_switch_admin_ui_allowed) ? '<li class="switch_admin_ui">
 					<a class="item_header" href="' . $project_url_prefix . 'admin/admin_uis">
 						<i class="selected"></i>
 						<span class="fas fa-th-large logo"></span>
 						<label>Switch Workspace</label>
 					</a>
 				</li>' : '') . '
-				' . ($is_flush_cache_allowed ? '<li class="flush_cache">
+				' . (!empty($is_flush_cache_allowed) ? '<li class="flush_cache">
 					<a class="item_header" href="javascript:void(0)" onClick="flushCacheFromAdmin(\'' . $project_url_prefix . 'admin/flush_cache\');">
 						<i class="selected"></i>
 						<span class="fas fa-broom logo"></span>
@@ -325,9 +335,11 @@ function getProjectsHtml($projects, $switch_project_url) {
 	
 	if ($projects)
 		foreach ($projects as $project_name => $project_props) {
-			if ($project_props["is_project"]) {
-				$html .= '<li class="project' . ($project_props["is_selected"] ? " shown_project" : "") . '">
-							<a class="item_header" href="' . str_replace("#project#", $project_props["element_type_path"], $switch_project_url) . '" title="' . $project_name . '">
+			if (!empty($project_props["is_project"])) {
+				$element_type_path = isset($project_props["element_type_path"]) ? $project_props["element_type_path"] : null;
+				
+				$html .= '<li class="project' . (!empty($project_props["is_selected"]) ? " shown_project" : "") . '">
+							<a class="item_header" href="' . str_replace("#project#", $element_type_path, $switch_project_url) . '" title="' . $project_name . '">
 								<i class="selected"></i>
 								<span class="fas fa-globe logo"></span>
 								<label>' . $project_name . '</label>

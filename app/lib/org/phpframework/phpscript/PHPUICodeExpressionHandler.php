@@ -14,7 +14,7 @@ class PHPUICodeExpressionHandler {
 			return $arg ? "true" : "false";
 		
 		if ($arg_type == "variable")
-			return (substr($arg, 0, 1) != '$' ? "$" : "") . $arg;
+			return (substr($arg, 0, 1) != '$' && substr($arg, 0, 2) != '@$' ? '$' : "") . $arg;
 		
 		if ($arg_type == "string") {
 			/*
@@ -127,34 +127,34 @@ class PHPUICodeExpressionHandler {
 			//remove empty strings, bc to check if is a php code, we must first to remove the empty strings to check the rules bellow. If we have the code: '$x . $y', we need to convert it first to: '$x.$y', in order to check the rules bellow. However do not remove the empty quotes...
 			$new_tokens = array();
 			for ($i = 0; $i < $t; $i++)
-				if (trim($tokens[$i][0]) || $tokens[$i][1]) //avoid removing the empty quotes...
+				if (trim($tokens[$i][0]) || !empty($tokens[$i][1])) //avoid removing the empty quotes...
 					$new_tokens[] = $tokens[$i];
 			
 			//echo "value:$value\n";print_r($new_tokens);
 			
 			$t = count($new_tokens);
 			if ($t) {
-				if ($t == 1 && ($new_tokens[0][1] == "php" || $new_tokens[0][1] == "variable" || $new_tokens[0][1] == "quotes")) //if is php code with php open and close tags or a variable or quotes
+				if ($t == 1 && isset($new_tokens[0][1]) && ($new_tokens[0][1] == "php" || $new_tokens[0][1] == "variable" || $new_tokens[0][1] == "quotes")) //if is php code with php open and close tags or a variable or quotes
 					return true;
 				
 				$exists_variables_or_quotes_joinned = false;
 				$parenthesis = 0;
 				
 				for ($i = 0; $i < $t; $i++) {
-					$tt = $new_tokens[$i][1];
-					$ntt = $i + 1 < $t ? $new_tokens[$i + 1][1] : null;
+					$tt = isset($new_tokens[$i][1]) ? $new_tokens[$i][1] : null;
+					$ntt = $i + 1 < $t && isset($new_tokens[$i + 1][1]) ? $new_tokens[$i + 1][1] : null;
 					
 					if ($tt == "variable" || $tt == "quotes") {
 						if ($i >= 0 && $i + 2 < $t) { //first or middle char and if exists next char, but that is not the last char.
 							if ($ntt != "operator") //we cannot have variables or quotes before something else than an operator. If char is variable/quotes, next char must be operator.
 								return false;
-							else if ($new_tokens[$i + 1][0] == ".") //if there is a variable or quotes followed by an operator join ".", is php code! This solve the case: '"" . foo("as")'
+							else if ($i + 1 < $t && $new_tokens[$i + 1][0] == ".") //if there is a variable or quotes followed by an operator join ".", is php code! This solve the case: '"" . foo("as")'
 								$exists_variables_or_quotes_joinned = true; 
 						}
 						else if ($i + 1 <= $t && $i - 1 > 0) { //last or middle char and if exists previous char, but that is not the first char.
-							if ($new_tokens[$i - 1][1] != "operator") //we cannot have variables or quotes after something else than an operator. If char is variable/quotes, previous char must be a operator.
+							if (!isset($new_tokens[$i - 1][1]) || $new_tokens[$i - 1][1] != "operator") //we cannot have variables or quotes after something else than an operator. If char is variable/quotes, previous char must be a operator.
 								return false;
-							else if ($new_tokens[$i - 1][0] == ".") //if there is a variable or quotes preceeded by an operator join ".", is php code! This solve the case: 'foo() . "dd"'
+							else if (isset($new_tokens[$i - 1][0]) && $new_tokens[$i - 1][0] == ".") //if there is a variable or quotes preceeded by an operator join ".", is php code! This solve the case: 'foo() . "dd"'
 								$exists_variables_or_quotes_joinned = true; 
 						}
 					}
@@ -178,18 +178,18 @@ class PHPUICodeExpressionHandler {
 	public static function isSimpleVariable($value) {
 		$value = trim($value);
 		
-		if (substr($value, 0, 1) == '$') {
+		if (substr($value, 0, 1) == '$' || substr($value, 0, 2) == '@$') {
 			$tokens = self::parseCode($value);
 			$t = count($tokens);
 			
 			//remove empty strings, bc to check if is a php code, we must first to remove the empty strings to check the rules bellow. If we have the code: '$x . $y', we need to convert it first to: '$x.$y', in order to check the rules bellow. However do not remove the empty quotes...
 			$new_tokens = array();
 			for ($i = 0; $i < $t; $i++)
-				if (trim($tokens[$i][0]) || $tokens[$i][1]) //avoid removing the empty quotes...
+				if (trim($tokens[$i][0]) || !empty($tokens[$i][1])) //avoid removing the empty quotes...
 					$new_tokens[] = $tokens[$i];
 			
 			$t = count($new_tokens);
-			if ($t == 1 && $new_tokens[0][1] == "variable")
+			if ($t == 1 && isset($new_tokens[0][1]) && $new_tokens[0][1] == "variable")
 				return true;
 		}
 		return false;	
@@ -245,10 +245,15 @@ class PHPUICodeExpressionHandler {
 					$current_type = !$osq ? "" : "quotes";
 					$offset = !$osq ? $i + 1 : $i;
 				}
-				else if ($char == "$" && !$osq && !$odq) { //for variables
+				else if (($char == '$' || ($char == '@' && $i + 1 < $l && $text_chars[$i + 1] == '$')) && !$osq && !$odq) { //for variables
+					$is_ignore_var = $char == "@";
+					
+					if ($is_ignore_var)
+						$i++;
+					
 					$str = implode("", array_slice($text_chars, $i));
 					preg_match('/^\$[\w]+/u', $str, $match); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars.
-					$match = $match[0];
+					$match = isset($match[0]) ? $match[0] : null;
 					
 					if ($match) {
 						$bc = 0;
@@ -286,11 +291,15 @@ class PHPUICodeExpressionHandler {
 								break;
 						}
 						
-						$str = implode("", array_slice($text_chars, $offset, $i - $offset));
+						$str = implode("", array_slice($text_chars, $offset, $i - $offset - ($is_ignore_var ? 1 : 0)));
 						if ($str)
 							$tokens[] = array($str, $current_type);
 						
 						$str = implode("", array_slice($text_chars, $i, $j - $i));
+						
+						if ($is_ignore_var)
+							$str = "@" . $str;
+						
 						$tokens[] = array($str, "variable");
 						$current_type = "";
 						$i = $j - 1;
@@ -423,7 +432,7 @@ class PHPUICodeExpressionHandler {
 					$current_type = !$osq ? "" : "quotes";
 					$offset = !$osq ? $i + 1 : $i;
 				}
-				else if ($char == "$" && !$osq && !$odq) { //for variables
+				else if ($char == '$' && !$osq && !$odq) { //for variables
 					preg_match('/^\$[\w]+/u', substr($text, $i), $match); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars.
 					$match = $match[0];
 					

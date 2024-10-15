@@ -76,7 +76,10 @@ class CMSModuleLayer {
 	}
 	
 	public function executeModule($module_id, &$settings = false, $cms_settings = false) {
+		$has_cache = false;
 		$is_cache_active = $this->CMSLayer->isCacheActive();
+		$result = null;
+		
 		if($is_cache_active) {
 			$CacheLayer = $this->CMSLayer->getCacheLayer()->getCMSModuleCacheLayer();
 			
@@ -115,7 +118,7 @@ class CMSModuleLayer {
 	}
 	
 	public function getModuleObj($module_id, $only_if_enabled = true) {
-		$modules_id = substr($modules_id, strlen($modules_id) - 1, 1) == "/" ? substr($modules_id, 0, strlen($modules_id) - 1) : $modules_id;
+		$module_id = substr($module_id, -1) == "/" ? substr($module_id, 0, -1) : $module_id;
 		$folder_path = $this->getModulesFolderPath() . $module_id . "/";
 		$file_path = CMSModuleHandler::getCMSModuleHandlerImplFilePath($folder_path);
 		$class = "CMSModule\\" . str_replace("/", "\\", str_replace(" ", "_", trim($module_id))) . "\\CMSModuleHandlerImpl";
@@ -158,7 +161,7 @@ class CMSModuleLayer {
 	}
 	
 	public function getModuleSimulatorObj($module_id, $only_if_enabled = true) {
-		$modules_id = substr($modules_id, strlen($modules_id) - 1, 1) == "/" ? substr($modules_id, 0, strlen($modules_id) - 1) : $modules_id;
+		$module_id = substr($module_id, -1) == "/" ? substr($module_id, 0, -1) : $module_id;
 		$folder_path = $this->getModulesFolderPath() . $module_id . "/";
 		$file_path = CMSModuleSimulatorHandler::getCMSModuleSimulatorHandlerImplFilePath($folder_path);
 		$class = "CMSModule\\" . str_replace("/", "\\", str_replace(" ", "_", trim($module_id))) . "\\CMSModuleSimulatorHandlerImpl";
@@ -312,7 +315,8 @@ class CMSModuleLayer {
 			if (strtolower($ext) == "php") {
 				$vars = array("module" => $module, "EVC" => $this->CMSLayer->getEVC());
 				$external_vars = $external_vars ? array_merge($external_vars, $vars) : $vars;
-				$content = PHPScriptHandler::parseContent($content, $external_vars);
+				$return_values = array();
+				$content = PHPScriptHandler::parseContent($content, $external_vars, $return_values);
 			}
 		
 			return $content;

@@ -13,8 +13,10 @@ class SQLMapResultHandler extends SQLMap {
 			
 			if ($o2i) {
 				foreach ($sorts as $i => $sort) {
-					if (isset($sort["column"]) && !empty($o2i[ $sort["column"] ])) {
-						$sorts[$i]["column"] = $o2i[ $sort["column"] ];
+					$sort_column = isset($sort["column"]) ? $sort["column"] : null;
+					
+					if (!empty($o2i[$sort_column])) {
+						$sorts[$i]["column"] = $o2i[$sort_column];
 					}
 				}
 			}

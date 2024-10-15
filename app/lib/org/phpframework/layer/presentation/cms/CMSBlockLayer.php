@@ -28,6 +28,7 @@ class CMSBlockLayer {
 		if ($this->isBlockExecutionValid($block_id)) {
 			$this->current_block_id = $block_id;//To be used by the join points and stop blocks action
 			
+			$has_cache = false;
 			$is_cache_active = $this->CMSLayer->isCacheActive();
 			
 			if ($is_cache_active) {
@@ -51,8 +52,10 @@ class CMSBlockLayer {
 					$CacheLayer->check($block_id, $orig_settings, $result);
 			}
 			
-			$this->blocks[$block_id] = $result;
-			$this->blocks_settings[$block_id] = $settings;
+			//Is very important to add the block result inside of an array, bc if the block is called multiple times inside of the same entity/page (with the same or different $block_local_variables - it doesn't really matter), then we should save multiple results (equal or different, depending of the correspondent $block_local_variables), otherwise when we render a region the last saved block id, will overwrite all the previous saved block' results (with the same block id).
+			//Additionally if we call this block together with createBlockHtml and then the createBlock again for the same block id, when we render a region, only the last block result will appear before and after the createBlockHtml.
+			$this->blocks[$block_id][] = isset($result) ? $result : null;
+			$this->blocks_settings[$block_id][] = $settings;
 		}
 	}
 	
@@ -69,8 +72,10 @@ class CMSBlockLayer {
 				}
 			}
 			
-			$this->blocks[$block_id] = $html;
-			$this->blocks_settings[$block_id] = null;
+			//Is very important to add the block result inside of an array, bc if the block is called multiple times inside of the same entity/page (with the same or different $block_local_variables - it doesn't really matter), then we should save multiple results (equal or different, depending of the correspondent $block_local_variables), otherwise when we render a region the last saved block id, will overwrite all the previous saved block' results (with the same block id).
+			//Additionally if we call this block together with createBlock and then the createBlockHtml again for the same block id, when we render a region, only the last block html will appear before and after the createBlock.
+			$this->blocks[$block_id][] = $html;
+			$this->blocks_settings[$block_id][] = null;
 		}
 	}
 	
@@ -89,32 +94,38 @@ class CMSBlockLayer {
 	public function getCurrentBlockId() { return $this->current_block_id; }
 	
 	public function getBlocks() { return $this->blocks; }
-	public function getBlock($block_id) { 
-		return isset($this->blocks[$block_id]) ? $this->blocks[$block_id] : null;
+	public function getBlock($block_id, $index = 0) {
+		$this->prepareSavedBlockIndex($block_id, $index);
+		return isset($this->blocks[$block_id][$index]) ? $this->blocks[$block_id][$index] : null;
 	}
 	public function existsBlock($block_id) {
 		return $this->blocks && array_key_exists($block_id, $this->blocks);
 	}
-	public function getCurrentBlock() { 
+	public function getCurrentBlock($index = -1) { //get the output/result from the last saved block
 		$block_id = $this->getCurrentBlockId();
-		return $block_id && isset($this->blocks[$block_id]) ? $this->blocks[$block_id] : null; 
+		$this->prepareSavedBlockIndex($block_id, $index);
+		return isset($this->blocks[$block_id][$index]) ? $this->blocks[$block_id][$index] : null; 
 	}
 	
 	public function getBlocksSettings() { return $this->blocks_settings; }
 	
-	public function getBlockSettings($block_id) { 
-		return isset($this->blocks_settings[$block_id]) ? $this->blocks_settings[$block_id] : null;
+	public function getBlockSettings($block_id, $index = 0) { 
+		$this->prepareSavedBlockIndex($block_id, $index);
+		return isset($this->blocks_settings[$block_id][$index]) ? $this->blocks_settings[$block_id][$index] : null;
 	}
-	public function getCurrentBlockSettings() { 
+	public function getCurrentBlockSettings($index = -1) { //get the last saved block settings
 		$block_id = $this->getCurrentBlockId();
-		return $block_id && isset($this->blocks_settings[$block_id]) ? $this->blocks_settings[$block_id] : null; 
+		$this->prepareSavedBlockIndex($block_id, $index);
+		return isset($this->blocks_settings[$block_id][$index]) ? $this->blocks_settings[$block_id][$index] : null; 
 	}
-	public function getBlockSetting($block_id, $setting_name) { 
-		return isset($this->blocks_settings[$block_id][$setting_name]) ? $this->blocks_settings[$block_id][$setting_name] : null;
+	public function getBlockSetting($block_id, $setting_name, $index = 0) { 
+		$this->prepareSavedBlockIndex($block_id, $index);
+		return isset($this->blocks_settings[$block_id][$index][$setting_name]) ? $this->blocks_settings[$block_id][$index][$setting_name] : null;
 	}
-	public function getCurrentBlockSetting($setting_name) { 
+	public function getCurrentBlockSetting($setting_name, $index = -1) { //get a specific setting from the last saved block settings
 		$block_id = $this->getCurrentBlockId();
-		return $block_id && isset($this->blocks_settings[$block_id][$setting_name]) ? $this->blocks_settings[$block_id][$setting_name] : null; 
+		$this->prepareSavedBlockIndex($block_id, $index);
+		return isset($this->blocks_settings[$block_id][$index][$setting_name]) ? $this->blocks_settings[$block_id][$index][$setting_name] : null; 
 	}
 	
 	public function getBlockIdFromFilePath($file_path, $project_id = false) {
@@ -142,6 +153,17 @@ class CMSBlockLayer {
 			$block_id = str_replace("." . $extension, "", $block_id);
 		
 		return $block_id;
+	}
+	
+	private function prepareSavedBlockIndex($block_id, &$index) {
+		if (isset($this->blocks[$block_id])) {
+			$index = is_numeric($index) ? $index : 0;
+			
+			if ($index == -1) //get last saved block
+				$index = count($this->blocks[$block_id]) - 1;
+		}
+		
+		return $index;
 	}
 	
 	/* STOP EXECUTION FUNCTIONS */
@@ -188,20 +210,20 @@ class CMSBlockLayer {
 	
 	public function stopCurrentBlock() { 
 		$block_id = $this->getCurrentBlockId();
-		$this->stopBlock($this->block_id); 
+		$this->stopBlock($block_id); 
 	}
 	public function startCurrentBlock() { 
 		$block_id = $this->getCurrentBlockId();
-		$this->startBlock($this->block_id); 
+		$this->startBlock($block_id); 
 	}
 	
 	public function stopCurrentBlockRegions() { 
 		$block_id = $this->getCurrentBlockId();
-		$this->stopBlockRegions($this->block_id); 
+		$this->stopBlockRegions($block_id); 
 	}
 	public function startCurrentBlockRegions() { 
 		$block_id = $this->getCurrentBlockId();
-		$this->startBlockRegions($this->block_id); 
+		$this->startBlockRegions($block_id); 
 	}
 	
 	public function isAllBlocksExecutionValid() { 
@@ -228,7 +250,7 @@ class CMSBlockLayer {
 	}
 	public function isCurrentBlockExecutionValid() { 
 		$block_id = $this->getCurrentBlockId();
-		return $this->isBlockExecutionValid($this->block_id); 
+		return $this->isBlockExecutionValid($block_id); 
 	}
 	
 	public function addBlockRegion($block_id, $region_id) {

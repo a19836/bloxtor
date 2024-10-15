@@ -3,13 +3,13 @@ include_once $EVC->getUtilPath("WorkFlowDataAccessHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$layer_bean_folder_name = $_GET["layer_bean_folder_name"];
-$bean_name = $_GET["bean_name"];
-$bean_file_name = $_GET["bean_file_name"];
-$table = $_GET["table"];
-$db_type = $_GET["db_type"] ? $_GET["db_type"] : "diagram";
-$action = $_GET["action"];
-$popup = $_GET["popup"];
+$layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_bean_folder_name"] : null;
+$bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
+$bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
+$table = isset($_GET["table"]) ? $_GET["table"] : null;
+$db_type = !empty($_GET["db_type"]) ? $_GET["db_type"] : "diagram";
+$action = isset($_GET["action"]) ? $_GET["action"] : null;
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 if ($bean_name && $table) {
 	$layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$bean_name";
@@ -37,7 +37,7 @@ if ($bean_name && $table) {
 				$tasks_tables = $WorkFlowDataAccessHandler->getTasksAsTables();
 				$task_table_name = $DBDriver->getTableInNamesList(array_keys($tasks_tables), $table);
 				
-				$exists = $task_table_name && $tasks_tables[$task_table_name];
+				$exists = $task_table_name && !empty($tasks_tables[$task_table_name]);
 			}
 			
 			//prepare tables and fields according with db type if doesn't exists in diagram or if db_type is "db"
@@ -49,7 +49,7 @@ if ($bean_name && $table) {
 				
 				$t = count($fks);
 				for ($i = 0; $i < $t; $i++) {
-					$fk_table = $fks[$i]["parent_table"];
+					$fk_table = isset($fks[$i]["parent_table"]) ? $fks[$i]["parent_table"] : null;
 					$attrs = $DBDriver->listTableFields($fk_table);
 					$tables_data[$fk_table] = array($attrs, null);
 				}
@@ -64,27 +64,27 @@ if ($bean_name && $table) {
 			$task_table_name = $DBDriver->getTableInNamesList(array_keys($tasks_tables), $table);
 			
 			//update table_fields according with db type
-			if ($task_table_name && $tasks_tables[$task_table_name])
+			if ($task_table_name && !empty($tasks_tables[$task_table_name]))
 				$table_fields = $tasks_tables[$task_table_name];
 			//echo "<pre>";print_r($table_fields);die();
 			
 			//prepare pks
 			$pks = array();
 			foreach ($table_fields as $field_name => $field)
-				if ($field["primary_key"]) 
+				if (!empty($field["primary_key"]))
 					$pks[] = $field_name;
 			
 			//prepare conditions
-			$conditions = $_GET["conditions"];
+			$conditions = isset($_GET["conditions"]) ? $_GET["conditions"] : null;
 			if ($conditions)
 				foreach ($conditions as $field_name => $field_value)
-					if (!$table_fields[$field_name])
+					if (empty($table_fields[$field_name]))
 						unset($conditions[$field_name]);
 			
 			//prepare results
 			if ($conditions) {
 				$results = $DBDriver->findObjects($table, null, $conditions);
-				$results = $results[0];
+				$results = isset($results[0]) ? $results[0] : null;
 				//echo "<pre>";print_r($results);die();
 			}
 			
@@ -97,30 +97,34 @@ if ($bean_name && $table) {
 			$boolean_types = $DBDriver->getDBColumnBooleanTypes();
 			
 			foreach ($table_fields as $field_name => $field) {
-				$field_type = $field["type"];
+				$field_type = isset($field["type"]) ? $field["type"] : null;
 				$options = array();
 				
 				//prepare options if apply
-				if ($field["fk"] && $field["fk"][0]) {
+				if (!empty($field["fk"]) && !empty($field["fk"][0])) {
 					$fk = WorkFlowDataAccessHandler::getTableAttributeFKTable($field["fk"], $tasks_tables);
-					$fk_table = $fk["table"];
-					$fk_attribute = $fk["attribute"];
+					$fk_table = isset($fk["table"]) ? $fk["table"] : null;
+					$fk_attribute = isset($fk["attribute"]) ? $fk["attribute"] : null;
 					
 					$fk_count = $DBDriver->countObjects($fk_table);
 					
 					if ($fk_count < 1000) { //for performance issues only allow this feature if not more than x records in the DB.
-						$fk_table_attributes = $tasks_tables[$fk_table];
+						$fk_table_attributes = isset($tasks_tables[$fk_table]) ? $tasks_tables[$fk_table] : null;
 						$title_attr = WorkFlowDataAccessHandler::getTableAttrTitle($fk_table_attributes, $fk_table); //if there is no name, title or label, sets $fk_attribute
 						$title_attr = $title_attr ? $title_attr : $fk_attribute; //set $title_attr to $fk_attr if not exist. In this case the getAllOptions will simply return the a list with key/value pair like: 'primary key/primary key'.
 						
 						$fk_results = $DBDriver->findObjects($fk_table, array($fk_attribute, $title_attr), null);
 						
 						if ($fk_results) {
-							if ($field["null"])
+							if (!empty($field["null"]))
 								$options[""] = "";
 							
-							foreach ($fk_results as $fk_result)
-								$options[ $fk_result[$fk_attribute] ] = ($title_attr != $fk_attribute ? $fk_result[$fk_attribute] . " - " : "") . $fk_result[$title_attr];
+							foreach ($fk_results as $fk_result) {
+								$fkra = isset($fk_result[$fk_attribute]) ? $fk_result[$fk_attribute] : null;
+								$fkrt = isset($fk_result[$title_attr]) ? $fk_result[$title_attr] : null;
+								
+								$options[$fkra] = ($title_attr != $fk_attribute ? $fkra . " - " : "") . $fkrt;
+							}
 						}
 					}
 				}

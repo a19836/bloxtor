@@ -15,7 +15,7 @@ abstract class CMSModuleHandler implements ICMSModuleHandler {
 	
 	public function setCMSSettings($cms_settings) { $this->cms_settings = $cms_settings; }
 	public function getCMSSettings() { return $this->cms_settings; }
-	public function getCMSSetting($name) { return is_array($this->cms_settings) ? $this->cms_settings[$name] : null; }
+	public function getCMSSetting($name) { return is_array($this->cms_settings) && isset($this->cms_settings[$name]) ? $this->cms_settings[$name] : null; }
 	
 	public function enable() { $this->enabled = true; }
 	public function disable() { $this->enabled = false; }

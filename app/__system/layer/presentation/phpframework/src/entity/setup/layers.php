@@ -4,18 +4,18 @@ include_once $EVC->getUtilPath("FlushCacheHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$hide_setup = $_GET["hide_setup"];
-$hide_cancel_btn = $_GET["hide_cancel_btn"];
-$hide_beginner_btn = $_GET["hide_beginner_btn"];
-$strict_connections_to_one_level = $_GET["strict_connections_to_one_level"];
+$hide_setup = isset($_GET["hide_setup"]) ? $_GET["hide_setup"] : null;
+$hide_cancel_btn = isset($_GET["hide_cancel_btn"]) ? $_GET["hide_cancel_btn"] : null;
+$hide_beginner_btn = isset($_GET["hide_beginner_btn"]) ? $_GET["hide_beginner_btn"] : null;
+$strict_connections_to_one_level = isset($_GET["strict_connections_to_one_level"]) ? $_GET["strict_connections_to_one_level"] : null;
 
 include $EVC->getEntityPath("/layer/diagram");
 
-$tasks_file_path = $workflow_paths_id[$workflow_path_id];
+$tasks_file_path = isset($workflow_paths_id[$workflow_path_id]) ? $workflow_paths_id[$workflow_path_id] : null;
 
-if ($_POST["create_layers_workflow"]) {	
-	$tasks_folders = $_POST["tasks_folders"];
-	$tasks_labels = $_POST["tasks_labels"];
+if (!empty($_POST["create_layers_workflow"])) {
+	$tasks_folders = isset($_POST["tasks_folders"]) ? $_POST["tasks_folders"] : null;
+	$tasks_labels = isset($_POST["tasks_labels"]) ? $_POST["tasks_labels"] : null;
 	
 	$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 	
@@ -68,11 +68,11 @@ if ($_POST["create_layers_workflow"]) {
 						if ($deprecated_folders)
 							$msg .= "\\n\\nHowever there are some deprecated folders in your LAYERS directory, this is, probably these folders correspond to some deleted layers.\\nPlease talk with your sysadmin to remove them permanently.\\n\\nDEPRECATED FOLDERS: '" . implode("','", $deprecated_folders) . "'\\n";
 						
-						if ($extra_message)
+						if (!empty($extra_message))
 							$msg .= "\\n\\n" . $extra_message . "\\n";
 						
 						if ($continue) {
-							if ($is_inside_of_iframe)
+							if (!empty($is_inside_of_iframe))
 								echo '<script>
 									alert("' . $msg . '\nCMS will now be reloaded...\n\nNote that if you created any new layer, you must now set the proper permissions in the \'User Management\' panel.");
 									
@@ -117,10 +117,13 @@ else {
 	$tasks_folders = array();
 	$tasks_labels = array();
 	
-	if ($tasks["tasks"])
+	if (!empty($tasks["tasks"]))
 		foreach ($tasks["tasks"] as $task) {
-			$tasks_folders[ $task["id"] ] = WorkFlowBeansConverter::getVariableNameFromRawLabel($task["label"]);
-			$tasks_labels[ $task["id"] ] = $task["label"];
+			$task_id = isset($task["id"]) ? $task["id"] : null;
+			$task_label = isset($task["id"]) ? $task["id"] : null;
+			
+			$tasks_folders[$task_id] = WorkFlowBeansConverter::getVariableNameFromRawLabel($task_label);
+			$tasks_labels[$task_id] = $task_label;
 		}
 }
 ?>

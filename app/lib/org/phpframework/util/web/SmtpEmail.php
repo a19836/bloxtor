@@ -1,7 +1,7 @@
 <?php
 //load external lib dynamically bc is a LGPL licence, which means our framework must work without this library also. This means if the user doesn't have this library installed or if he removes it, our code still needs to work.
-if (file_exists( get_lib("lib.vendor.phpmailer.PHPMailerAutoload") ))
-	include_once get_lib("lib.vendor.phpmailer.PHPMailerAutoload");
+if (file_exists( get_lib("lib.vendor.phpmailer.vendor.autoload") ))
+	include_once get_lib("lib.vendor.phpmailer.vendor.autoload");
 
 class SmtpEmail {
 	private $smtp_host;
@@ -126,8 +126,8 @@ class SmtpEmail {
 				$attachment_name = "";
 				
 				if (is_array($attachment)) {
-					$attachment_path = $attachment["path"];
-					$attachment_name = $attachment["name"];
+					$attachment_path = isset($attachment["path"]) ? $attachment["path"] : null;
+					$attachment_name = isset($attachment["name"]) ? $attachment["name"] : null;
 				}
 				
 				if ($attachment_path && file_exists($attachment_path))

@@ -29,10 +29,10 @@ $main_content = '<div id="terms_and_conditions">
 		<div class="title">
 			<h1>Terms and Conditions</h1>
 		</div>
-		<iframe class="license" src="' . $project_url_prefix . 'license">' . $terms_and_conditions . '</iframe>
+		<iframe class="license" src="' . $project_url_prefix . 'license"></iframe>
 		<div class="acceptance">
 			<label>
-				<input type="checkbox" name="acceptance" value="1" allownull="false" validationmessage="Please accept the terms and conditions first." required ' . ($_POST["acceptance"] ? "checked" : "") . ' />
+				<input type="checkbox" name="acceptance" value="1" allownull="false" validationmessage="Please accept the terms and conditions first." required ' . (!empty($_POST["acceptance"]) ? "checked" : "") . ' />
 				Please accept the terms and conditions.
 			</label>
 		</div>

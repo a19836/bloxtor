@@ -21,7 +21,7 @@ class PostgresDB extends DB {
 	public function __construct() {
 		if (!$this->default_php_extension_type) {
 			$exts = self::getAvailablePHPExtensionTypes();
-			$this->default_php_extension_type = $exts[0];
+			$this->default_php_extension_type = isset($exts[0]) ? $exts[0] : null;
 		}
 	}
 	
@@ -119,7 +119,7 @@ class PostgresDB extends DB {
 						$pdo_settings[PDO::ATTR_PERSISTENT] = true;
 					
 					//prepare extra settings
-					$extra_pdo_settings = self::parseExtraSettingsAsPDOSettings($this->options["extra_settings"]);
+					$extra_pdo_settings = isset($this->options["extra_settings"]) ? self::parseExtraSettingsAsPDOSettings($this->options["extra_settings"]) : null;
 					
 					if ($extra_pdo_settings)
 						foreach ($extra_pdo_settings as $pdos_name => $pdos_value)
@@ -266,7 +266,7 @@ class PostgresDB extends DB {
 				if ($this->ping())
 					switch ($this->default_php_extension_type) {
 						case "pg": $closed = pg_close($this->link); break;
-						case "odbc": $closed = odbc_close($this->link); break;
+						case "odbc": odbc_close($this->link); $closed = true;break;
 					}
 				
 				if ($closed) {
@@ -502,13 +502,19 @@ class PostgresDB extends DB {
 					
 					return $records;
 			}
-		} catch(Exception $e) {
+		} 
+		catch(Exception $e) {
+			return launch_exception(new SQLException(8, $e, array($result, $array_type)));
+		}
+		catch(Error $e) {
 			return launch_exception(new SQLException(8, $e, array($result, $array_type)));
 		}
 	}
 	 
 	public function fetchField($result, $offset) {
 		try {
+			$field = null;
+			
 			try {
 				switch ($this->default_php_extension_type) {
 					case "pg": 
@@ -560,13 +566,13 @@ class PostgresDB extends DB {
 			case "pdo": return is_a($result, "PDOStatement");
 		}
 		
-		return is_resource($result);
+		return is_resource($result) || is_object($result);
 	}
 	 
 	public function listTables($db_name = false, $options = false) {
 		$tables = array();
 		
-		$db_name = $db_name ? $db_name : (!$this->isDBSelected() && $this->options["db_name"] ? $this->options["db_name"] : null);
+		$db_name = $db_name ? $db_name : (!$this->isDBSelected() && !empty($this->options["db_name"]) ? $this->options["db_name"] : null);
 		
 		$options = $options ? $options : array();
 		$options["return_type"] = "result";
@@ -576,7 +582,7 @@ class PostgresDB extends DB {
 		if($result)
 			foreach ($result as $table)
 			    	$tables[] = array(
-				    	"name" => (!empty($table["table_schema"]) && empty($this->options["schema"]) ? $table["table_schema"] . "." : "") . $table["table_name"], //Only add schema if is not defined in options
+				    	"name" => (!empty($table["table_schema"]) && empty($this->options["schema"]) ? $table["table_schema"] . "." : "") . (isset($table["table_name"]) ? $table["table_name"] : null), //Only add schema if is not defined in options
 				    	"table_name" => isset($table["table_name"]) ? $table["table_name"] : null,
 				    	"schema" => isset($table["table_schema"]) ? $table["table_schema"] : null
 			    	);
@@ -644,7 +650,7 @@ class PostgresDB extends DB {
 		$sql = self::getTableFieldsStatement($table, $db_name, $this->options);
 		
 		$table_props = self::parseTableName($table, $options);
-		$table_name = $table_props["name"];
+		$table_name = isset($table_props["name"]) ? $table_props["name"] : null;
 		
 		if (empty($this->options["db_name"]))
 			return launch_exception(new SQLException(19, null, $sql));

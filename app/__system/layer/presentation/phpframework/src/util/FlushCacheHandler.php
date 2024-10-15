@@ -29,10 +29,10 @@ class FlushCacheHandler {
 		CacheHandlerUtil::deleteFolder($webroot_cache_folder_path, false);
 		
 		//Delete tmp workflows
-		CacheHandlerUtil::deleteFolder( dirname($workflow_paths_id["business_logic_workflow_tmp"]) );
-		CacheHandlerUtil::deleteFolder( dirname($workflow_paths_id["presentation_workflow_tmp"]) );
-		CacheHandlerUtil::deleteFolder( dirname($workflow_paths_id["presentation_block_workflow_tmp"]) );
-		CacheHandlerUtil::deleteFolder( dirname($workflow_paths_id["presentation_block_form_tmp"]) );
+		!empty($workflow_paths_id["business_logic_workflow_tmp"]) && CacheHandlerUtil::deleteFolder( dirname($workflow_paths_id["business_logic_workflow_tmp"]) );
+		!empty($workflow_paths_id["presentation_workflow_tmp"]) && CacheHandlerUtil::deleteFolder( dirname($workflow_paths_id["presentation_workflow_tmp"]) );
+		!empty($workflow_paths_id["presentation_block_workflow_tmp"]) && CacheHandlerUtil::deleteFolder( dirname($workflow_paths_id["presentation_block_workflow_tmp"]) );
+		!empty($workflow_paths_id["presentation_block_form_tmp"]) && CacheHandlerUtil::deleteFolder( dirname($workflow_paths_id["presentation_block_form_tmp"]) );
 		
 		//Delete generic CACHE_PATH
 		CacheHandlerUtil::deleteFolder(CACHE_PATH, false);
@@ -47,8 +47,8 @@ class FlushCacheHandler {
 		$files = CMSPresentationLayerHandler::getPresentationLayersProjectsFiles($user_global_variables_file_path, $user_beans_folder_path);
 		if (is_array($files))
 			foreach ($files as $layer_name => $layer_props)
-				if (is_array($layer_props["projects"])) {
-					$bean_file_name = $layer_props["bean_file_name"];
+				if (isset($layer_props["projects"]) && is_array($layer_props["projects"])) {
+					$bean_file_name = isset($layer_props["bean_file_name"]) ? $layer_props["bean_file_name"] : null;
 					$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
 					$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($layer_name);
 				
@@ -106,7 +106,7 @@ class FlushCacheHandler {
 	private static function getUserTmpPath($user_global_variables_file_path) {
 		$PHPVariablesFileHandler = new PHPVariablesFileHandler($user_global_variables_file_path);
 		$PHPVariablesFileHandler->startUserGlobalVariables();
-		$user_tmp_path = $GLOBALS["tmp_path"];
+		$user_tmp_path = isset($GLOBALS["tmp_path"]) ? $GLOBALS["tmp_path"] : null;
 		$PHPVariablesFileHandler->endUserGlobalVariables();
 		
 		return $user_tmp_path;

@@ -4,7 +4,13 @@ include_once $EVC->getUtilPath("WorkFlowTasksFileHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$actions_settings = $_POST["actions"];
+$path = isset($_GET["path"]) ? $_GET["path"] : null;
+$path_extra = isset($_GET["path_extra"]) ? $_GET["path_extra"] : null;
+
+$path = str_replace("../", "", $path);//for security reasons
+$path_extra = str_replace("../", "", $path_extra);//for security reasons
+
+$actions_settings = isset($_POST["actions"]) ? $_POST["actions"] : null;
 $status = false;
 
 if (isset($actions_settings)) {
@@ -21,8 +27,8 @@ if (isset($actions_settings)) {
 	$tasks_settings = $WorkFlowTaskHandler->getLoadedTasksSettings();
 	$slaitemsingle = $WorkFlowTaskHandler->getTasksByTag("slaitemsingle");
 	$slaitemgroup = $WorkFlowTaskHandler->getTasksByTag("slaitemgroup");
-	$all_others_task_type_id = $slaitemsingle[0]["type"];
-	$loop_or_group_task_type_id = $slaitemgroup[0]["type"];
+	$all_others_task_type_id = isset($slaitemsingle[0]["type"]) ? $slaitemsingle[0]["type"] : null;
+	$loop_or_group_task_type_id = isset($slaitemgroup[0]["type"]) ? $slaitemgroup[0]["type"] : null;
 	
 	//print_r($actions_settings);
 	$tasks = array();
@@ -33,10 +39,11 @@ if (isset($actions_settings)) {
 	prepareActionsTasks($actions_settings, $tasks, $loop_or_group_task_type_id, $all_others_task_type_id, $repeated_tasks_id, $offset_top, $offset_left);
 	
 	$tasks_ids = array_keys($tasks);
-	$tasks[ $tasks_ids[0] ]["start"] = 1;
+	$first_task_id = isset($tasks_ids[0]) ? $tasks_ids[0] : null;
+	$tasks[$first_task_id]["start"] = 1;
 	$tasks = array("tasks" => $tasks);
 	
-	$task_file_path = WorkFlowTasksFileHandler::getTaskFilePathByPath($workflow_paths_id, $_GET["path"], $_GET["path_extra"]);
+	$task_file_path = WorkFlowTasksFileHandler::getTaskFilePathByPath($workflow_paths_id, $path, $path_extra);
 	$status = WorkFlowTasksFileHandler::createTasksFile($task_file_path, $tasks);
 }
 
@@ -49,7 +56,8 @@ function prepareActionsTasks($actions, &$tasks, $loop_or_group_task_type_id, $al
 	
 	if ($actions)
 		foreach ($actions as $i => $action) {
-			$action_type = $action["action_type"];
+			$action_type = isset($action["action_type"]) ? $action["action_type"] : null;
+			$action_sub_actions = isset($action["action_value"]["actions"]) ? $action["action_value"]["actions"] : null;
 			
 			$task_id = getActionTaskId($action, $loop_or_group_task_type_id, $all_others_task_type_id, $repeated_tasks_id);
 			$repeated_tasks_id[] = $task_id;
@@ -84,24 +92,24 @@ function prepareActionsTasks($actions, &$tasks, $loop_or_group_task_type_id, $al
 			
 			//prepare task exits
 			if ($is_loop_or_group) {
-				if (is_array($action["action_value"]["actions"]) && $action["action_value"]["actions"][0]) 
+				if (is_array($action_sub_actions) && !empty($action_sub_actions[0]))
 					$task_exits["inside_group_exit"] = array(
-						"task_id" => getActionTaskId($action["action_value"]["actions"][0], $loop_or_group_task_type_id, $all_others_task_type_id, $repeated_tasks_id),
+						"task_id" => getActionTaskId($action_sub_actions[0], $loop_or_group_task_type_id, $all_others_task_type_id, $repeated_tasks_id),
 					);
 				
-				if ($actions[$i + 1])
+				if (!empty($actions[$i + 1]))
 					$task_exits["outside_group_exit"] = array(
 						"task_id" => getActionTaskId($actions[$i + 1], $loop_or_group_task_type_id, $all_others_task_type_id, $repeated_tasks_id),
 					);
 			}
-			else if ($actions[$i + 1])
+			else if (!empty($actions[$i + 1]))
 				$task_exits["default_exit"] = array(
 					"task_id" => getActionTaskId($actions[$i + 1], $loop_or_group_task_type_id, $all_others_task_type_id, $repeated_tasks_id),
 				);
 			
 			
 			$tasks[$task_id] = array(
-				"label" => ($action["result_var_name"] ? '$' . $action["result_var_name"] . " = " : "") . $action_type . " (...)",
+				"label" => (!empty($action["result_var_name"]) ? '$' . $action["result_var_name"] . " = " : "") . $action_type . " (...)",
 				"id" => $task_id,
 				"type" => $task_type,
 				"tag" => $task_tag,
@@ -118,7 +126,7 @@ function prepareActionsTasks($actions, &$tasks, $loop_or_group_task_type_id, $al
 			
 			//must be at the end, this is the current $task must be added before the inner tasks, so we can add the start flag to the first item in the function above.
 			if ($is_loop_or_group)
-				prepareActionsTasks($action["action_value"]["actions"], $tasks, $loop_or_group_task_type_id, $all_others_task_type_id, $repeated_tasks_id, $offset_top + floor($height / 2), $offset_left + $width + 50);
+				prepareActionsTasks($action_sub_actions, $tasks, $loop_or_group_task_type_id, $all_others_task_type_id, $repeated_tasks_id, $offset_top + floor($height / 2), $offset_left + $width + 50);
 			
 			$offset_top += $height + 50;
 			$offset_left += $width + 50;
@@ -126,7 +134,8 @@ function prepareActionsTasks($actions, &$tasks, $loop_or_group_task_type_id, $al
 }
 
 function getActionTaskId($action, $loop_or_group_task_type_id, $all_others_task_type_id, $repeated_tasks_id) {
-	$task_type = $action["action_type"] == "loop" || $action["action_type"] == "group" ? $loop_or_group_task_type_id : $all_others_task_type_id;
+	$action_type = isset($action["action_type"]) ? $action["action_type"] : null;
+	$task_type = $action_type == "loop" || $action_type == "group" ? $loop_or_group_task_type_id : $all_others_task_type_id;
 	$task_id = "task_" . $task_type . "_" . md5(serialize($action));
 	
 	while (in_array($task_id, $repeated_tasks_id))

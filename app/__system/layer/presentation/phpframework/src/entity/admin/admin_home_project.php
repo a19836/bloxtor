@@ -4,8 +4,8 @@ include_once $EVC->getUtilPath("VideoTutorialHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$active_tab = $_GET["active_tab"];
-$filter_by_layout = $_GET["filter_by_layout"];
+$active_tab = isset($_GET["active_tab"]) ? $_GET["active_tab"] : null;
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
 $filter_by_layout_permission = UserAuthenticationHandler::$PERMISSION_BELONG_NAME;
 
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -18,10 +18,12 @@ $filtered_tutorials = VideoTutorialHandler::filterTutorials($tutorials, $entity,
 //prepare project_details and presentation brokers
 $presentation_brokers = array();
 $project_details = null;
+$project_default_template = null;
+$layer_bean_folder_name = null;
 
 $layers = AdminMenuHandler::getLayers($user_global_variables_file_path);
 
-$presentation_layers = $layers["presentation_layers"];
+$presentation_layers = isset($layers["presentation_layers"]) ? $layers["presentation_layers"] : null;
 if (is_array($presentation_layers))
 	foreach ($presentation_layers as $bn => $bfn) {
 		$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bfn, $user_global_variables_file_path);
@@ -33,6 +35,12 @@ if (is_array($presentation_layers))
 			$presentation_brokers[] = array($presentation_broker_name, $bfn, $bn);
 			$proj_name = substr($filter_by_layout, strlen($layer_bean_folder_name));
 			
+			if (empty($P->settings["presentation_entities_path"]))
+				launch_exception(new Exception("'PresentationLayer->settings[presentation_entities_path]' cannot be undefined!"));
+			
+			if (empty($P->settings["presentation_webroot_path"]))
+				launch_exception(new Exception("'PresentationLayer->settings[presentation_webroot_path]' cannot be undefined!"));
+			
 			$layer_path = $P->getLayerPathSetting();
 			$is_project = $proj_name ? is_dir($layer_path . $proj_name . "/" . $P->settings["presentation_webroot_path"]) : false;
 			
@@ -42,7 +50,7 @@ if (is_array($presentation_layers))
 				
 				$project_details = CMSPresentationLayerHandler::getPresentationLayerProjectFiles($user_global_variables_file_path, $user_beans_folder_path, $bean_file_name, $bean_name, $layer_path, $proj_name, "", false, 0, true);
 				
-				$project_id = $project_details["element_type_path"];
+				$project_id = isset($project_details["element_type_path"]) ? $project_details["element_type_path"] : null;
 				$project_id = preg_replace("/^[\/]+/", "", $project_id); //remove start /
 				$project_id = preg_replace("/[\/]+$/", "", $project_id); //remove end /
 				$project_details["project_id"] = $project_id;
@@ -60,7 +68,7 @@ if (is_array($presentation_layers))
 				$available_templates_props = CMSPresentationLayerHandler::getAvailableTemplatesProps($PEVC, $project_id, $available_templates);
 				
 				//default template
-				$project_default_template = $GLOBALS["project_default_template"];
+				$project_default_template = isset($GLOBALS["project_default_template"]) ? $GLOBALS["project_default_template"] : null;
 				
 				//num_of_created_pages
 				$files = CMSPresentationLayerHandler::getFolderFilesTree($layer_path, $layer_path . $proj_name . "/" . $P->settings["presentation_entities_path"], false, -1);
@@ -82,9 +90,11 @@ function countProjectPages($files) {
 	
 	if ($files)
 		foreach ($files as $file_name => $file_props) {
-			if ($file_props["type"] == "php_file")
+			$file_type = isset($file_props["type"]) ? $file_props["type"] : null;
+			
+			if ($file_type == "php_file")
 				$num_of_created_pages++;
-			else if ($file_props["type"] == "folder")
+			else if ($file_type == "folder" && isset($file_props["sub_files"]))
 				$num_of_created_pages += countProjectPages($file_props["sub_files"]);
 		}
 	

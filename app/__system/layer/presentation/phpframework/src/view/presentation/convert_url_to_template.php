@@ -1,6 +1,9 @@
 <?php
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
+$selected_project = isset($selected_project) ? $selected_project : null;
+$P = isset($P) ? $P : null;
+
 $head = '
 <!-- Add Fontawsome Icons CSS -->
 <link rel="stylesheet" href="' . $project_common_url_prefix . 'vendor/fontawesome/css/all.min.css">

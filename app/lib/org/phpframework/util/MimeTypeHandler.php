@@ -865,7 +865,8 @@ class MimeTypeHandler {
 	*/
 	public static function getTypeByExtension($extension, $filters = null) {
 		$extensions = self::getAvailableTypesByExtensions($filters);
-		return isset($extensions[ strtolower($extension) ]) ? $extensions[ strtolower($extension) ] : null;
+		$extension_lower = strtolower($extension);
+		return isset($extensions[$extension_lower]) ? $extensions[$extension_lower] : null;
 	}
 	
 	/**
@@ -873,7 +874,8 @@ class MimeTypeHandler {
 	*/
 	public static function getTypeByMimeType($mime_type, $filters = null) {
 		$types = self::getAvailableTypesByMimeType($filters);
-		return isset($types[ strtolower($mime_type) ]) ? $types[ strtolower($mime_type) ] : null;
+		$mime_type_lower = strtolower($mime_type);
+		return isset($types[$mime_type_lower]) ? $types[$mime_type_lower] : null;
 	}
 	
 	/*

@@ -49,7 +49,7 @@ abstract class ServiceCacheHandler implements IServiceCacheHandler {
 	}
 	
 	private function getServiceRelativePath($key) {
-		return $key ? CacheHandlerUtil::getCacheFilePath( $this->getHashedServiceKeyPath($key) ) : $file_path;
+		return $key ? CacheHandlerUtil::getCacheFilePath( $this->getHashedServiceKeyPath($key) ) : null;
 	}
 	
 	private function getHashedServiceKeyPath($key) {

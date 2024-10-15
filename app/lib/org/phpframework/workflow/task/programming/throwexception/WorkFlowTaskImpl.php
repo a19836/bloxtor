@@ -9,7 +9,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$stmt_type = strtolower($stmt->getType());
 		
 		if ($stmt_type == "stmt_throw") {
-			$expr = $stmt->expr;
+			$expr = isset($stmt->expr) ? $stmt->expr : null;
 			
 			$props = $WorkFlowTaskCodeParser->getNewObjectProps($expr);
 			if ($props) {
@@ -24,7 +24,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				return $props;
 			}
 			else {
-				$expr_type = strtolower($expr->getType());
+				$expr_type = $expr ? strtolower($expr->getType()) : "";
 				
 				$code = $WorkFlowTaskCodeParser->printCodeExpr($expr);
 				$code = $WorkFlowTaskCodeParser->getStmtValueAccordingWithType($code, $expr_type);
@@ -47,14 +47,14 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"exception_type" => $raw_data["childs"]["properties"][0]["childs"]["exception_type"][0]["value"],
-			"class_name" => $raw_data["childs"]["properties"][0]["childs"]["class_name"][0]["value"],
-			"class_args" => $raw_data["childs"]["properties"][0]["childs"]["class_args"],
-			"exception_var_name" => $raw_data["childs"]["properties"][0]["childs"]["exception_var_name"][0]["value"],
-			"exception_var_type" => $raw_data["childs"]["properties"][0]["childs"]["exception_var_type"][0]["value"],
+			"exception_type" => isset($raw_data["childs"]["properties"][0]["childs"]["exception_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["exception_type"][0]["value"] : null,
+			"class_name" => isset($raw_data["childs"]["properties"][0]["childs"]["class_name"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["class_name"][0]["value"] : null,
+			"class_args" => isset($raw_data["childs"]["properties"][0]["childs"]["class_args"]) ? $raw_data["childs"]["properties"][0]["childs"]["class_args"] : null,
+			"exception_var_name" => isset($raw_data["childs"]["properties"][0]["childs"]["exception_var_name"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["exception_var_name"][0]["value"] : null,
+			"exception_var_type" => isset($raw_data["childs"]["properties"][0]["childs"]["exception_var_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["exception_var_type"][0]["value"] : null,
 		);
 		
 		$properties = self::parseResultVariableProperties($raw_data, $properties);
@@ -63,22 +63,29 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
+		
+		$exception_type = isset($properties["exception_type"]) ? $properties["exception_type"] : null;
+		$exception_var_name = isset($properties["exception_var_name"]) ? $properties["exception_var_name"] : null;
+		$class_name = isset($properties["class_name"]) ? $properties["class_name"] : null;
 		
 		$code = "";
-		if ($properties["exception_type"] == "new" && trim($properties["class_name"])) {
+		if ($exception_type == "new" && trim($class_name)) {
 			$var_name = self::getPropertiesResultVariableCode($properties);
 			
-			$args = self::getParametersString($properties["class_args"]);
-			$code = $prefix_tab . "throw " . ($var_name ? "$var_name = " : "") . "new " . $properties["class_name"] . "($args);\n";
+			$args = isset($properties["class_args"]) ? $properties["class_args"] : null;
+			$args = self::getParametersString($args);
+			$code = $prefix_tab . "throw " . ($var_name ? "$var_name = " : "") . "new " . $class_name . "($args);\n";
 		}
-		else if ($properties["exception_type"] == "existent" && trim($properties["exception_var_name"])) {
-			$var_name = self::getVariableValueCode($properties["exception_var_name"], $properties["exception_var_type"]);
+		else if ($exception_type == "existent" && trim($exception_var_name)) {
+			$exception_var_type = isset($properties["exception_var_type"]) ? $properties["exception_var_type"] : null;
+			$var_name = self::getVariableValueCode($exception_var_name, $exception_var_type);
 			$code = $prefix_tab . "throw $var_name;\n";
 		}
 		
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
 		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
 	}
 }

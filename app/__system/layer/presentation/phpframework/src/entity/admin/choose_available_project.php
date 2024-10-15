@@ -5,11 +5,11 @@ include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
-$filter_by_layout = $_GET["filter_by_layout"]; //optional
-$selected_layout_project = $_GET["selected_layout_project"]; //optional
-$popup = $_GET["popup"];
-$folder_to_filter = $_GET["folder_to_filter"];
-$redirect_path = urldecode($_GET["redirect_path"]);
+$filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null; //optional
+$selected_layout_project = isset($_GET["selected_layout_project"]) ? $_GET["selected_layout_project"] : null; //optional
+$popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
+$folder_to_filter = isset($_GET["folder_to_filter"]) ? $_GET["folder_to_filter"] : null;
+$redirect_path = isset($_GET["redirect_path"]) ? urldecode($_GET["redirect_path"]) : null;
 $redirect_path = $redirect_path ? $redirect_path : "admin";
 //echo "redirect_path:$redirect_path";die();
 
@@ -32,13 +32,13 @@ $selected_project_id = null;
 
 if ($layers_projects)
 	foreach ($layers_projects as $bean_name => $layer_props) {
-		$layers_projects[$bean_name]["layer_bean_folder_name"] = WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $layer_props["bean_file_name"], $bean_name, $user_global_variables_file_path);
+		$layers_projects[$bean_name]["layer_bean_folder_name"] = !empty($layer_props["bean_file_name"]) ? WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $layer_props["bean_file_name"], $bean_name, $user_global_variables_file_path) : null;
 		
-		if (count($layer_props["projects"])) {
+		if (!empty($layer_props["projects"])) {
 			$projects_exists = true;
 			
 			foreach ($layer_props["projects"] as $proj_id => $proj_props)
-				if ($proj_props["path"] == LAYER_PATH . $selected_layout_project) {
+				if (isset($proj_props["path"]) && $proj_props["path"] == LAYER_PATH . $selected_layout_project) {
 					$selected_project_id = $proj_id;
 					break;
 				}

@@ -9,15 +9,15 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$props = $WorkFlowTaskCodeParser->getFunctionProps($stmt);
 		
 		if ($props) {
-			$func_name = $props["func_name"];
-			$args = $props["func_args"];
+			$func_name = isset($props["func_name"]) ? $props["func_name"] : null;
+			$args = isset($props["func_args"]) ? $props["func_args"] : null;
 			
 			if ($func_name && strtolower($func_name) == "debug_log") {
 				if (count($args) <= 2) {
-					$message = $args[0]["value"];
-					$message_type = $args[0]["type"];
-					$log_type = $args[1]["value"];
-					$log_type_type = $args[1]["type"];
+					$message = isset($args[0]["value"]) ? $args[0]["value"] : null;
+					$message_type = isset($args[0]["type"]) ? $args[0]["type"] : null;
+					$log_type = isset($args[1]["value"]) ? $args[1]["value"] : null;
+					$log_type_type = isset($args[1]["type"]) ? $args[1]["type"] : null;
 					
 					unset($props["func_name"]);
 					unset($props["func_args"]);
@@ -28,7 +28,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					$props["log_type"] = $log_type;
 					$props["log_type_type"] = self::getConfiguredParsedType($log_type_type);
 					
-					$props["label"] = "Define date " . self::prepareTaskPropertyValueLabelFromCodeStmt($props["format"]);
+					$format = isset($props["format"]) ? $props["format"] : null;
+					$props["label"] = "Define date " . self::prepareTaskPropertyValueLabelFromCodeStmt($format);
 					
 					$props["exits"] = array(
 						self::DEFAULT_EXIT_ID => array(
@@ -43,31 +44,35 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"message" => $raw_data["childs"]["properties"][0]["childs"]["message"][0]["value"],
-			"message_type" => $raw_data["childs"]["properties"][0]["childs"]["message_type"][0]["value"],
-			"log_type" => $raw_data["childs"]["properties"][0]["childs"]["log_type"][0]["value"],
-			"log_type_type" => $raw_data["childs"]["properties"][0]["childs"]["log_type_type"][0]["value"],
+			"message" => isset($raw_data["childs"]["properties"][0]["childs"]["message"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["message"][0]["value"] : null,
+			"message_type" => isset($raw_data["childs"]["properties"][0]["childs"]["message_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["message_type"][0]["value"] : null,
+			"log_type" => isset($raw_data["childs"]["properties"][0]["childs"]["log_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["log_type"][0]["value"] : null,
+			"log_type_type" => isset($raw_data["childs"]["properties"][0]["childs"]["log_type_type"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["log_type_type"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$message = self::getVariableValueCode($properties["message"], $properties["message_type"]);
-		$log_type = self::getVariableValueCode($properties["log_type"], $properties["log_type_type"]);
+		$message = isset($properties["message"]) ? $properties["message"] : null;
+		$message = self::getVariableValueCode($message, isset($properties["message_type"]) ? $properties["message_type"] : null);
+		
+		$log_type = isset($properties["log_type"]) ? $properties["log_type"] : null;
+		$log_type = self::getVariableValueCode($log_type, isset($properties["log_type_type"]) ? $properties["log_type_type"] : null);
 		
 		$code = $prefix_tab . "debug_log($message";
 		$code .= $log_type ? ", $log_type" : "";
 		$code .= ");\n";
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID]) ? $data["exits"][self::DEFAULT_EXIT_ID] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

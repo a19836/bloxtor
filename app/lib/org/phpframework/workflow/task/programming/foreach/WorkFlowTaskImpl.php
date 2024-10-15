@@ -11,10 +11,10 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$stmt_type = strtolower($stmt->getType());
 		
 		if ($stmt_type == "stmt_foreach") {
-			$expr = $stmt->expr;
-			$keyVar = $stmt->keyVar;
-			$valueVar = $stmt->valueVar;
-			$sub_stmts = $stmt->stmts;
+			$expr = isset($stmt->expr) ? $stmt->expr : null;
+			$keyVar = isset($stmt->keyVar) ? $stmt->keyVar : null;
+			$valueVar = isset($stmt->valueVar) ? $stmt->valueVar : null;
+			$sub_stmts = isset($stmt->stmts) ? $stmt->stmts : null;
 			
 			$obj = $WorkFlowTaskCodeParser->printCodeExpr($expr);
 			$key = $keyVar ? $WorkFlowTaskCodeParser->printCodeExpr($keyVar) : "";
@@ -43,7 +43,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$exits = array();
 			$exits[self::DEFAULT_EXIT_ID][] = array("task_id" => "#next_task#");
 			
-			if ($sub_inner_tasks) {
+			if ($sub_inner_tasks && isset($sub_inner_tasks[0]["id"])) {
 				$exits["start_exit"][] = array("task_id" => $sub_inner_tasks[0]["id"]);
 				
 				//The tasks inside of a loop should NOT be connected to any other tasks outside of the loop.
@@ -58,35 +58,36 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	}
 	
 	public function parseProperties(&$task) {
-		$raw_data = $task["raw_data"];
+		$raw_data = isset($task["raw_data"]) ? $task["raw_data"] : null;
 		
 		$properties = array(
-			"obj" => $raw_data["childs"]["properties"][0]["childs"]["obj"][0]["value"],
-			"key" => $raw_data["childs"]["properties"][0]["childs"]["key"][0]["value"],
-			"value" => $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"],
+			"obj" => isset($raw_data["childs"]["properties"][0]["childs"]["obj"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["obj"][0]["value"] : null,
+			"key" => isset($raw_data["childs"]["properties"][0]["childs"]["key"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["key"][0]["value"] : null,
+			"value" => isset($raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["value"][0]["value"] : null,
 		);
 		
 		return $properties;
 	}
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
-		$data = $this->data;
+		$data = isset($this->data) ? $this->data : null;
 		
-		$properties = $data["properties"];
+		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$stops_id = array();
 		if ($stop_task_id)
 			$stops_id = is_array($stop_task_id) ? $stop_task_id : array($stop_task_id);
-		if ($data["exits"][self::DEFAULT_EXIT_ID][0]) 
+		if (!empty($data["exits"][self::DEFAULT_EXIT_ID][0]))
 			$stops_id = array_merge($stops_id, $data["exits"][self::DEFAULT_EXIT_ID]);
 		
 		//PREPARING INNER TASKS CODE
-		$loop_code = self::printTask($tasks, $data["exits"]["start_exit"], $stops_id, $prefix_tab . "\t", $options);
+		$exit_task_id = isset($data["exits"]["start_exit"]) ? $data["exits"]["start_exit"] : null;
+		$loop_code = self::printTask($tasks, $exit_task_id, $stops_id, $prefix_tab . "\t", $options);
 		
 		//PREPARING MAIN CODE
-		$obj = $properties["obj"] ? self::getVariableValueCode($properties["obj"], "variable") : null;
-		$key = $properties["key"] ? self::getVariableValueCode($properties["key"], "variable") : null;
-		$value = $properties["value"] ? self::getVariableValueCode($properties["value"], "variable") : null;
+		$obj = !empty($properties["obj"]) ? self::getVariableValueCode($properties["obj"], "variable") : null;
+		$key = !empty($properties["key"]) ? self::getVariableValueCode($properties["key"], "variable") : null;
+		$value = !empty($properties["value"]) ? self::getVariableValueCode($properties["value"], "variable") : null;
 		
 		if ($obj && $value) {
 			$key = $key ? "$key => " : "";
@@ -100,7 +101,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$code = "";
 		}
 		
-		return $code . self::printTask($tasks, $data["exits"][self::DEFAULT_EXIT_ID][0], $stop_task_id, $prefix_tab, $options);
+		$exit_task_id = isset($data["exits"][self::DEFAULT_EXIT_ID][0]) ? $data["exits"][self::DEFAULT_EXIT_ID][0] : null;
+		return $code . self::printTask($tasks, $exit_task_id, $stop_task_id, $prefix_tab, $options);
 	}
 }
 ?>

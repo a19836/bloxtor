@@ -44,7 +44,9 @@ class MyXML extends SimpleXMLElement {
 					
 					$exists = true;
 					for($t = 0; $t < $t2; $t++) {
-						if($mxn_node->getAttribute($condition_keys[$t]) != $conditions[ $condition_keys[$t] ]) {
+						$condition_key = $condition_keys[$t];
+						
+						if($mxn_node->getAttribute($condition_key) != $conditions[$condition_key]) {
 							$exists = false;
 							break;
 						}
@@ -180,7 +182,7 @@ class MyXML extends SimpleXMLElement {
 							if ($from_decimal)
 								$v = html_entity_decode($v);
 							
-							$k = ($prefix ? $prefix . ":" : "") . $key;
+							$k = ($prefix ? $prefix . ":" : "") . $k;
 							$node_attrs[$k] = $v;
 						}
 				}
