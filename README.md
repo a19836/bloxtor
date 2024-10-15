@@ -7,6 +7,7 @@ The concept is to provide a centralized AI-powered web development platform with
 Discover more about Bloxtor on our homepage: [https://www.bloxtor.com]
 
 - All installations steps are in [INSTALL.md](./INSTALL.md).
+- Explore the Framework: Start learning how to work with Bloxtor by following the steps in [LEARN.md](./LEARN.md).
 - Please read our documentation [here](https://bloxtor.com/onlineitframeworktutorial/).
 - Please watch our video tutorials [here](https://bloxtor.com/onlineitframeworktutorial/?block_id=video/simple).
 - Please read the Bloxtor terms and conditions at [LICENSE.md](./LICENSE.md).
@@ -74,8 +75,16 @@ We are excited to open-source Bloxtor and welcome new contributors with open arm
 
 ## Versions
 
+### Version 1.2
+
+This is the Bloxtor version for PHP 7.3 or higher (tested until PHP8.4).
+What was fixed:
+- Transformed framework to work in PHP 7.3, 7.4, 8.0, 8.2, 8.3 and 8.4;
+- Errors fixed;
+
 ### Version 1.1
-	
+
+Bloxtor version for PHP 5.6 or higher (tested until PHP 7.2).
 What was fixed:
 - Transform framework to be more user-friendly;
 - Was added tutorials (documentation and videos);
@@ -86,5 +95,5 @@ What was fixed:
 	
 What was fixed:
 - Was added new design to the framework;
-- A bunch of errors were fixed;
+- Errors fixed;
 
