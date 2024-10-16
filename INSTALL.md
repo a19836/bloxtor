@@ -70,6 +70,10 @@
 	In linux, to enable the mod_rewrite in apache, try to execute this command: 
 		`sudo a2enmod rewrite`
 	
+	Note that you must have your apache (or web server) configured to read the htaccess settings, having the following options in your vhost:
+		Options FollowSymLinks
+		AllowOverride All
+	
 	(optional) For security and performance reasons, we recommend you to update your php.ini files with:
 
 	`short_open_tag = On`

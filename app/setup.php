@@ -200,6 +200,12 @@ $html = "<ol>
 			<li>sudo a2enmod rewrite</li>
 		</ul>
 		<br/>
+		Note that you must have your apache (or web server) configured to read the htaccess settings, having the following options in your vhost:
+		<ul>
+			<li>Options FollowSymLinks</li>
+			<li>AllowOverride All</li>
+		</ul>
+		<br/>
 		(optional) For security and performance reasons, we recommend you to update your php.ini files with:
 		<ul>
 			<li>short_open_tag = On</li>
