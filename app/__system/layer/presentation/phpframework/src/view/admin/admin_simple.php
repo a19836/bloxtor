@@ -80,7 +80,7 @@ $main_content = '
 						<li class="label"><a>Select a Project:</a></li>';
 	
 	$selected_project_name = "";
-	$is_single_presentation_layer = count($presentation_projects_by_layer_label_and_folders) == 1;
+	$is_single_presentation_layer = is_array($presentation_projects_by_layer_label_and_folders) && count($presentation_projects_by_layer_label_and_folders) == 1;
 	
 	foreach ($presentation_projects_by_layer_label_and_folders as $layer_label => $projs) {
 		if (!$is_single_presentation_layer) //only show presentation layer if is not the only one.

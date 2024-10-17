@@ -27,7 +27,10 @@ var selected_project_id = "' . $selected_project_id . '";
 var show_programs_on_add_project = ' . ($get_store_programs_url ? "true" : "false") . ';
 
 $(function () {
-	updateLayerProjects("' . $folder_to_filter . '");
+	if (!$.isEmptyObject(layers_props))
+		updateLayerProjects("' . $folder_to_filter . '");
+	else //if no layers_props, it menas there is no presentation layer
+		alert("Error: No presentation layer has been created. The framework installation may not have been completed. If so, please complete the framework setup.");
 });
 </script>';
 $head .= HeatMapHandler::getHtml($project_url_prefix);
