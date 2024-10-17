@@ -74,8 +74,6 @@ $tmp_path = preg_replace("/\/\/+/", "/", $tmp_path);
 
 $files = array(
 	$tmp_path,
-	$installation_dir . "tmp/",
-	$installation_dir . "app/tmp/",
 	$installation_dir . "files/",
 	$installation_dir . "vendor/", //This must have write permission too bc of the hacking solution and bc the user can create sub-files too.
 	$installation_dir . "vendor/dao/",
@@ -150,6 +148,16 @@ $optional_files = array(
 	$installation_dir . "app/lib/vendor/phpmailer/", 
 	$installation_dir . "app/lib/vendor/xsssanitizer/", 
 );
+
+if ($tmp_path != $installation_dir . "tmp/") {
+	array_unshift($files, $installation_dir . "tmp/");
+	$optional_files[] = $installation_dir . "tmp/";
+}
+
+if ($tmp_path != $installation_dir . "app/tmp/") {
+	array_unshift($files, $installation_dir . "app/tmp/");
+	$optional_files[] = $installation_dir . "app/tmp/";
+}
 
 $html = "<ol>
 	<li>Please point the Document Root from your WebServer to the $dir_path folder!</li>
