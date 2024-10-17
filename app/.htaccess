@@ -12,10 +12,10 @@
 # See http://php.net/manual/en/configuration.changes.modes.php
 # See http://php.net/manual/en/info.configuration.php#ini.max-input-vars
 # Note that this settings cannot be set dynamically in the php code...
-php_value max_input_vars 10000
-php_value suhosin.get.max_vars 10000
-php_value suhosin.post.max_vars 10000
-php_value suhosin.request.max_vars 10000
+#php_value max_input_vars 10000
+#php_value suhosin.get.max_vars 10000
+#php_value suhosin.post.max_vars 10000
+#php_value suhosin.request.max_vars 10000
 
 #max_execution_time = 1000	 ; Maximum execution time of each script, in seconds
 #max_input_time = -1 ; Maximum amount of time each script may spend parsing request data

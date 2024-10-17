@@ -9,6 +9,7 @@
 	+ The idea is to allow the developers from the Presentation and Business Logic layers, to call any controller defined in Laravel/Symphony, by calling '...->getBroker("name of Laravel/Symphony layer")->callController(...)'.
 	+ Addionally the developer can access directly the Laravel/Symphony framework, through the url, if this layer has the REST setting activate.
 - Integrate Bloxtor with Github so the developer can have code versioning, this is, code versioning for the developer code, the code inside of the 'app' folder. 
+- Integrate a chatbot into Bloxtor to help developers understand how the frameworks work and what steps they must follow to achieve their goals.
 - Integrate AI in the Page, Template and View editors to create beautiful HTML automatically and add that html to the correspondent region.
 - Integrate AI in the Logic Editor to create php code automatically, according with a developer description.
 - Integrate AI in the SQL editor to create statements automatically, according with a developer description.
