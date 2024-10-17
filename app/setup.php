@@ -361,7 +361,7 @@ $html = "<ol>
 			<li>sudo a2enmod rewrite</li>
 		</ul>
 		<br/>
-		Note that you must have your apache (or web server) configured to read the htaccess settings, having the following options in your vhost:
+		Note that you must have your apache (or web server) configured to read this framework htaccess files. Please be sure that you have the following settings for the framework root directory, in your correspondent web server conf file:
 		<ul>
 			<li>AllowOverride All<br/>
 			<br/>
