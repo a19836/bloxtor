@@ -50,6 +50,97 @@
 	<h1>SETUP</h1>
 	<div class="setup">
 <?php
+function checkFilesPermission($files, $optional_files, $check_folder_sub_files, &$main_status) {
+	$file_statuses = array();
+	
+	foreach ($files as $file) {
+		$optional = in_array($file, $optional_files);
+		$exists = file_exists($file);
+		
+		if ($exists || !$optional) {
+			$is_writable = $exists ? is_writable($file) : false;
+			$file_statuses[$file] = array($is_writable, null);
+			
+			if (!$is_writable)
+				$main_status = false;
+		}
+	}
+	
+	foreach ($file_statuses as $file => $file_props) {
+		$is_writable = $file_props[0];
+		
+		if ($is_writable) {
+			$check_sub_files = in_array($file, $check_folder_sub_files);
+			
+			if ($check_sub_files) {
+				$incorrect_sub_files = checkSubFilesPermission($file, $optional_files, $main_status);
+				
+				if (count($incorrect_sub_files) > 0)
+					$file_statuses[$file][1] = $incorrect_sub_files;
+			}
+		}
+	}
+	
+	$html = "<ul>";
+	
+	foreach ($file_statuses as $file => $file_props) {
+		$is_writable = $file_props[0];
+		$incorrect_sub_files = $file_props[1];
+		$path = $exists && !empty(realpath($file)) ? realpath($file) : $file;
+		
+		$html .= "<li>" . $path . ": <span class=\"" . ($is_writable ? "writeable" : "non_writeable") . "\">" . ($is_writable ? "OK" : "NON WRITEABLE") . "<span>";
+		
+		if ($incorrect_sub_files) {
+			$html .= "<ul>";
+			
+			foreach ($incorrect_sub_files as $sub_file)
+				if (!in_array($sub_file, $files))
+					$html .= "<li>" . $sub_file . ": <span class=\"non_writeable\">NON WRITEABLE<span></li>";
+			
+			$html .= "</ul>";
+		}
+		
+		$html .= "</li>\n";
+	}
+	
+	$html .= "</ul>";
+	
+	return $html;
+}
+
+function checkSubFilesPermission($file, $optional_files, &$main_status) {
+	$incorrect_files = array();
+	
+	if (is_dir($file)) {
+		$file .= substr($file, -1) != "/" ? "/" : "";
+		$sub_files = array_diff(scandir($file), array("..", ".", ".gitkeep", ".htaccess", ".htpasswd", ".git"));
+		
+		if ($sub_files) {
+			foreach ($sub_files as $i => $sub_file) {
+				$sub_file = $file . $sub_file;
+				$optional = in_array($sub_file, $optional_files);
+				
+				if (!$optional) {
+					$is_writable = is_writable($sub_file);
+					
+					if (!$is_writable) {
+						$incorrect_files[] = $sub_file;
+						$main_status = false;
+					}
+					else if (is_dir($sub_file)) {
+						$incorrect_sub_files = checkSubFilesPermission($sub_file, $optional_files, $main_status);
+						
+						if (count($incorrect_sub_files) > 0)
+							$incorrect_files = array_merge($incorrect_files, $incorrect_sub_files);
+					}
+				}
+			}
+		}
+	}
+	
+	return $incorrect_files;
+}
+
 $dir_path = str_replace(DIRECTORY_SEPARATOR, "/", __DIR__) . "/";
 $installation_dir = dirname($dir_path) . "/";
 $main_status = true;
@@ -100,6 +191,7 @@ $files = array(
 	
 	$installation_dir . "app/config/",
 	$installation_dir . "app/layer/", 
+	$installation_dir . "app/layer/.htaccess",
 	$installation_dir . "app/lib/vendor/", 
 	
 	$installation_dir . "app/__system/config/global_settings.php", 
@@ -131,8 +223,6 @@ $files = array(
 
 //These files may not exist in the beginning
 $optional_files = array(
-	$installation_dir . "tmp/",
-	$installation_dir . "app/tmp/",
 	$installation_dir . "files/",
 	
 	$installation_dir . "other/authdb/layout_type.tbl",
@@ -149,14 +239,42 @@ $optional_files = array(
 	$installation_dir . "app/lib/vendor/xsssanitizer/", 
 );
 
+$check_folder_sub_files = array(
+	$tmp_path,
+	$installation_dir . "files/",
+	$installation_dir . "vendor/",
+	
+	$installation_dir . "other/authdb/",
+	$installation_dir . "other/workflow/",
+	
+	$installation_dir . "app/config/",
+	$installation_dir . "app/layer/",  
+	
+	$installation_dir . "app/__system/layer/presentation/phpframework/webroot/__system/", 
+	$installation_dir . "app/__system/layer/presentation/test/webroot/__system/", 
+	
+	$installation_dir . "app/__system/layer/presentation/common/webroot/__system/",
+	$installation_dir . "app/__system/layer/presentation/common/src/module/",
+	$installation_dir . "app/__system/layer/presentation/common/webroot/module/",
+	
+	//dependecies
+	$installation_dir . "app/__system/layer/presentation/common/webroot/vendor/ckeditor/", 
+	$installation_dir . "app/__system/layer/presentation/common/webroot/vendor/tinymce/", 
+	$installation_dir . "app/lib/vendor/phpjavascriptpacker/", 
+	$installation_dir . "app/lib/vendor/phpmailer/", 
+	$installation_dir . "app/lib/vendor/xsssanitizer/", 
+);
+
 if ($tmp_path != $installation_dir . "tmp/") {
 	array_unshift($files, $installation_dir . "tmp/");
 	$optional_files[] = $installation_dir . "tmp/";
+	$check_folder_sub_files[] = $installation_dir . "tmp/";
 }
 
 if ($tmp_path != $installation_dir . "app/tmp/") {
 	array_unshift($files, $installation_dir . "app/tmp/");
 	$optional_files[] = $installation_dir . "app/tmp/";
+	$check_folder_sub_files[] = $installation_dir . "app/tmp/";
 }
 
 $html = "<ol>
@@ -374,23 +492,7 @@ $html = "<ol>
 	&nbsp;&nbsp;&nbsp;sudo setsebool -P httpd_can_network_connect 1<br/>
 	</li>
 	<li>Please be sure that your WebServer has write permissions to the following files:
-		<ul>";
-foreach ($files as $file) {
-	$optional = in_array($file, $optional_files);
-	$status = false;
-	$exists = file_exists($file);
-	
-	if ($exists || !$optional) {
-		$status = $exists ? is_writable($file) : false;
-		$path = $exists && !empty(realpath($file)) ? realpath($file) : $file;
-		
-		$html .= "<li>" . $path . ": <span class=\"" . ($status ? "writeable" : "non_writeable") . "\">" . ($status ? "OK" : "NON WRITEABLE") . "<span></li>\n";
-		
-		if(!$status)
-			$main_status = false;
-	}
-}
-$html .= "	</ul>
+		" . checkFilesPermission($files, $optional_files, $check_folder_sub_files, $main_status) . "
 	</li>
 	<li>If some of the above files are <span class=\"non_writeable\">NON WRITEABLE</span>, please change their permissions or owner and refresh this page.</li>
 	<li class=\"" . ($main_status ? "" : "disable") . "\">If all the files above are <span class=\"writeable\">OK</span>, please click <span class=\"continue\">" . ($main_status ? "<a href=\"__system/setup/\">HERE</a>" : "HERE") . "</span> to login and continue with the setup...<br/>(To login please use the username: \"admin\" and the password: \"admin\".)</li>

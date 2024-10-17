@@ -6,10 +6,10 @@ $main_content = '<div id="end">
 			<h1>Congratulations. Setup is done!</h1>
 		</div>
 		<div class="info">
-			Please don\'t forget to delete the setup.php file and change your login password <a href="' . $manage_user_url . '">here</a>.
+			Please don\'t forget to delete the setup.php file and change your login password <a href="' . $manage_user_url . '" target="manage_user">here</a>.
 			<br/>
 			<br/>
-			To go to your project please click here: <a href="' . $project_url_prefix . '../">here</a>
+			To go to your project please click here: <a href="' . $project_url_prefix . '../" target="project">here</a>
 			<br/>
 			To go to the admin panel please click here: <a href="' . $project_url_prefix . 'phpframework/admin/">here</a>
 		</div>

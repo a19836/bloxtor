@@ -178,6 +178,7 @@ To check if this is OFF please type the following commands:
 9. Configure apache document root to the <absolute path to framework>/ folder
 
 10. Restart apache and open the setup.php (htttp://<your installation domain>/setup.php) file in your browser and follow instructions... The setup.php file is in the <absolute path to framework>/app/ folder, but the <absolute path to framework>/.htaccess file will redirect the 'htttp://<your installation domain>/setup.php' to the app folder, so don't worry...
+Note that during the installation process you will need to login with the user/pass: admin/admin
 
 11. Note that if you wish to have a local TMP folder, you can create a TMP folder inside of the <absolute path to framework> folder and the system will detect it automatically, or you can always set another TMP folder in the global variables. Don't forget to give write permission to apache.
 
