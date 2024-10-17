@@ -171,8 +171,8 @@ $html = "<ol>
 		<br>
 		If some module is missing you need to execute the command bellow in Linux to install the following packages:
 		<ul>
-			<li style=\"white-space:nowrap;\">sudo apt-get/yum install php-common php-cli php-bcmath php-curl php-gd php-mbstring php-mysql/php-mysqlnd php-pgsql php-xml php-ssh2 php-json</li>
-			<li style=\"white-space:nowrap;\">(optional) If you wish to install other extra packages please run: sudo apt-get/yum install php-soap php-opcache php-dbg php-process php-odbc php-pdo php-fpm php-dba php-dbg</li>
+			<li style=\"white-space:nowrap;\">sudo apt/apt-get/yum install php-common php-cli php-bcmath php-curl php-gd php-mbstring php-mysql/php-mysqlnd php-pgsql php-xml php-ssh2 php-json</li>
+			<li style=\"white-space:nowrap;\">(optional) If you wish to install other extra packages please run: sudo apt/apt-get/yum install php-soap php-opcache php-dbg php-process php-odbc php-pdo php-fpm php-dba php-dbg</li>
 		</ul>
 		
 		<br>
@@ -259,6 +259,7 @@ $html = "<ol>
 		<ul>
 			<li style=\"white-space:nowrap;\">
 				[mysqld]<br>
+				#the idea is to remove the NO_ZERO_IN_DATE and NO_ZERO_DATE settings in the sql-mode.<br>
 				#if mysql version < 8<br>
 				sql-mode=\"ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\"<br>
 				<br>

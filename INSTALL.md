@@ -50,9 +50,9 @@
 	`zlib (is installed by default)`
 
 	If some module is missing you need to execute the command bellow in Linux to install the following packages:
-		`sudo apt-get/yum install php-common php-cli php-bcmath php-curl php-gd php-mbstring php-mysql/php-mysqlnd php-pgsql php-xml php-ssh2 php-json`
+		`sudo apt/apt-get/yum install php-common php-cli php-bcmath php-curl php-gd php-mbstring php-mysql/php-mysqlnd php-pgsql php-xml php-ssh2 php-json`
 
-	(optional) If you wish to install other extra packages please run: `sudo apt-get/yum install php-soap php-opcache php-dbg php-process php-odbc php-pdo php-fpm php-dba php-dbg`
+	(optional) If you wish to install other extra packages please run: `sudo apt/apt-get/yum install php-soap php-opcache php-dbg php-process php-odbc php-pdo php-fpm php-dba php-dbg`
 	
 	(optional) If you wish to connect to mssql-server, please install the "mssql-server" package. If you are not able to install this package on linux os, please follow the tutorials in order to install the odbc drivers for mssql-server:
 	- https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver15
@@ -120,12 +120,13 @@
 
 4. (optional) Then go to your /etc/mysql/my.cnf and add the following line:
 	`[mysqld]`
+	`#the idea is to remove the NO_ZERO_IN_DATE and NO_ZERO_DATE settings in the sql-mode.`
 	`#if mysql version < 8`
 	`sql-mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"`
 
 	`#if mysql version >= 8`
 	`sql-mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"`
-
+	
 	`max_allowed_packet=250M`
 	`wait_timeout=28800`
 
