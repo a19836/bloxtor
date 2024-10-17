@@ -86,10 +86,6 @@
 	`date.timezone = Europe/Lisbon`
 
 	`open_basedir = "<your cms installation dir>"`
-	`sys_temp_dir = "<your cms installation dir>/tmp"`
-	`upload_tmp_dir = "<your cms installation dir>/tmp"`
-	`session.save_path = "<your cms installation dir>/tmp"`
-	`soap.wsdl_cache_dir = "<your cms installation dir>/tmp"`
 
 	`error_reporting = E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT`
 	`display_errors = Off`
@@ -105,6 +101,13 @@
 	`allow_url_include = Off`
 
 	`disable_functions = dl,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,exec,shell_exec,passthru,system,proc_open,popen,parse_ini_file,show_source	`
+
+	(optional) Additionally for security reasons also, if you have a tmp folder created, we recommend you to update your php.ini files with:
+	
+	`sys_temp_dir = "<your cms installation dir>/tmp"`
+	`upload_tmp_dir = "<your cms installation dir>/tmp"`
+	`session.save_path = "<your cms installation dir>/tmp"`
+	`soap.wsdl_cache_dir = "<your cms installation dir>/tmp"`
 
 	(optional) And if possible this too (but only if you get request body limit exceed):
 		`max_input_time = 360`
@@ -176,7 +179,7 @@ To check if this is OFF please type the following commands:
 
 10. Restart apache and open the setup.php (htttp://<your installation domain>/setup.php) file in your browser and follow instructions... The setup.php file is in the <absolute path to framework>/app/ folder, but the <absolute path to framework>/.htaccess file will redirect the 'htttp://<your installation domain>/setup.php' to the app folder, so don't worry...
 
-11. Note that if you wish to have a local TMP folder, you can create a TMP folder inside of the <absolute path to framework> folder and the system will detect it automatically, or you can always set another TMP folder in the global variables.
+11. Note that if you wish to have a local TMP folder, you can create a TMP folder inside of the <absolute path to framework> folder and the system will detect it automatically, or you can always set another TMP folder in the global variables. Don't forget to give write permission to apache.
 
 12. Then (if apply) for each project, add the cronjobs (in case you have the workerpool module installed):
 	`* * * * * sudo -u www-data php <absolute path to framework>/app/layer/presentation/<project_name>/webroot/script.php  --documentroot="<absolute path to framework>/" --url="http://<project_url>/module/workerpool/run_worker_pool_script" --urlpath="module/workerpool/run_worker_pool_script" --loglevel=3`

@@ -54,12 +54,29 @@ $dir_path = str_replace(DIRECTORY_SEPARATOR, "/", __DIR__) . "/";
 $installation_dir = dirname($dir_path) . "/";
 $main_status = true;
 
+//prepare TMP_PATH - This code must be the exactly the same that in the app.php file.
+$local_installation_name = isset($_SERVER["SCRIPT_NAME"]) ? strstr($_SERVER["SCRIPT_NAME"], "/" . basename(__DIR__) . "/", true) : null;
+$document_root = (!empty($_SERVER["CONTEXT_DOCUMENT_ROOT"]) ? $_SERVER["CONTEXT_DOCUMENT_ROOT"] : (isset($_SERVER["DOCUMENT_ROOT"]) ? $_SERVER["DOCUMENT_ROOT"] : null) ) . "/"; //Use CONTEXT_DOCUMENT_ROOT if exist, instead of DOCUMENT_ROOT, bc if a virtual host has an alias to this folder, the DOCUMENT_ROOT will be the folder of the virtual host and not this folder. Here is an example: Imagine that you have a Virtual host with a DOCUMENT_ROOT /var/www/html/livingroop/ and an Alias: /test/ pointing to /var/www/html/test/. Additionally this file (app.php) is in /var/www/html/test/. According with this requirements the DOCUMENT_ROOT is /var/www/html/livingroop/, but we would like to get /var/www/html/test/. So we must use the CONTEXT_DOCUMENT_ROOT to get the right document root.
+
+//Settings the $tmp_path if the DOCUMENT_ROOT is based in specific domain and the DOCUMENT_ROOT folder contains the app/ and tmp/ folders. 
+//This means, we can have multiple installations with independent $tmp_path, this is: /var/www/html/installation1/app/ /var/www/html/installation2/trunk/app/ /var/www/html/installation3/app/, etc...
+if ($local_installation_name && is_dir($document_root . $local_installation_name . "/tmp/"))
+	$tmp_path = $document_root . $local_installation_name . "/tmp/";
+else if (is_dir($document_root . "/tmp/"))
+	$tmp_path = $document_root . "/tmp/";
+else //Settings $tmp_path with default system temp folder
+	$tmp_path = (sys_get_temp_dir() ? sys_get_temp_dir() : "/tmp") . "/phpframework/";
+
+$tmp_path = preg_replace("/\/\/+/", "/", $tmp_path);
+
 //create TMP_PATH if not created already:
-$tmp_path = (sys_get_temp_dir() ? sys_get_temp_dir() : "/tmp") . "/phpframework/";//This code must be the exactly the same that in the app.php file.
 @mkdir($tmp_path, 0755, true);
 
 $files = array(
-	$tmp_path,  
+	$tmp_path,
+	$installation_dir . "tmp/",
+	$installation_dir . "app/tmp/",
+	$installation_dir . "files/",
 	$installation_dir . "vendor/", //This must have write permission too bc of the hacking solution and bc the user can create sub-files too.
 	$installation_dir . "vendor/dao/",
 	$installation_dir . "vendor/codeworkfloweditor/",
@@ -101,6 +118,13 @@ $files = array(
 	$installation_dir . "app/__system/layer/presentation/common/webroot/module/",
 	$installation_dir . "app/__system/layer/presentation/common/webroot/vendor/", 
 	
+	//dependecies
+	$installation_dir . "app/__system/layer/presentation/common/webroot/vendor/ckeditor/", 
+	$installation_dir . "app/__system/layer/presentation/common/webroot/vendor/tinymce/", 
+	$installation_dir . "app/lib/vendor/phpjavascriptpacker/", 
+	$installation_dir . "app/lib/vendor/phpmailer/", 
+	$installation_dir . "app/lib/vendor/xsssanitizer/", 
+	
 	//paths for the Licence hacking consequence - if client doesn't pay licence, we will delete these folders and so, they must have write permission. Check if all sub-folders have the same permission too.
 	//$installation_dir . "app/",
 	//$installation_dir . "app/lib/",
@@ -109,11 +133,22 @@ $files = array(
 
 //These files may not exist in the beginning
 $optional_files = array(
+	$installation_dir . "tmp/",
+	$installation_dir . "app/tmp/",
+	$installation_dir . "files/",
+	
 	$installation_dir . "other/authdb/layout_type.tbl",
 	$installation_dir . "other/authdb/layout_type_permission.tbl",
 	
 	$installation_dir . "app/__system/layer/presentation/test/webroot/__system/",
 	$installation_dir . "app/__system/layer/presentation/common/webroot/__system/",
+	
+	//dependecies
+	$installation_dir . "app/__system/layer/presentation/common/webroot/vendor/ckeditor/", 
+	$installation_dir . "app/__system/layer/presentation/common/webroot/vendor/tinymce/", 
+	$installation_dir . "app/lib/vendor/phpjavascriptpacker/", 
+	$installation_dir . "app/lib/vendor/phpmailer/", 
+	$installation_dir . "app/lib/vendor/xsssanitizer/", 
 );
 
 $html = "<ol>
@@ -218,10 +253,6 @@ $html = "<ol>
 			<li>date.timezone = Europe/Lisbon</li>
 			
 			<li>open_basedir = \"" . $installation_dir . "\"</li>
-			<li>sys_temp_dir = \"" . $installation_dir . "tmp\"</li>
-			<li>upload_tmp_dir = \"" . $installation_dir . "tmp\"</li>
-			<li>session.save_path = \"" . $installation_dir . "tmp\"</li>
-			<li>soap.wsdl_cache_dir = \"" . $installation_dir . "tmp\"</li>
 
 			<li>error_reporting = E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT</li>
 			<li>display_errors = Off</li>
@@ -237,6 +268,13 @@ $html = "<ol>
 			<li>allow_url_include = Off</li>
 
 			<li style=\"overflow-wrap:break-word;\">disable_functions = dl,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,exec,shell_exec,passthru,system,proc_open,popen,parse_ini_file,show_source</li>	
+		</ul>
+		(optional) Additionally for security reasons also, if you have a tmp folder created, we recommend you to update your php.ini files with:
+		<ul>
+			<li>sys_temp_dir = \"" . ($tmp_path ? $tmp_path : $installation_dir . "tmp/") . "\"</li>
+			<li>upload_tmp_dir = \"" . ($tmp_path ? $tmp_path : $installation_dir . "tmp/") . "\"</li>
+			<li>session.save_path = \"" . ($tmp_path ? $tmp_path : $installation_dir . "tmp/") . "\"</li>
+			<li>soap.wsdl_cache_dir = \"" . ($tmp_path ? $tmp_path : $installation_dir . "tmp/") . "\"</li>
 		</ul>
 		<br/>
 		(optional) And if possible the following ones too (but only if you get request body limit exceed):
