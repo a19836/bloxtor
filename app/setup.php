@@ -204,7 +204,7 @@ $html = "<ol>
 		<ul>
 			<li>AllowOverride All<br/>
 			<br/>
-			#in case you have symbolic links in your root directory<br/>
+			#(optional) in case you have symbolic links in your root directory<br/>
 			Options FollowSymLinks</li>
 		</ul>
 		<br/>
