@@ -3,22 +3,59 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="icon" href="data:;base64,=" />
-	<link rel="stylesheet" href="__system/common/css/global.css" type="text/css" charset="utf-8" />
 	<style>
 		body {width:100%; font-family:verdana,courier,arial; font-size:14px; overflow:overlay;}
-		h1 {text-align:center; width:100%; height:30px; font-size:20px; color:#333; margin-top:20px;}
-		ul {padding-left:0px !important;}
-		li {margin-top:10px; margin-left:20px !important;}
-		ol {margin-left:20px !important;}
-		ol li {list-style:number !important; margin-top:20px;}
-		ul {margin-left:20px !important; margin-top:10px;}
-		ul li {list-style:square !important; margin-top:0px; font-style:italic;}
+		
 		.setup {width:1000px; margin:0 auto;}
+		.setup .title {text-align:center; width:100%; height:30px; font-size:20px; color:#333; margin-top:20px;}
+		.setup ul {padding-left:0px !important;}
+		.setup li {margin-top:10px; margin-left:20px !important;}
+		.setup ol {margin-left:20px !important;}
+		.setup ol li {list-style:number !important; margin-top:20px;}
+		.setup ul {margin-left:20px !important; margin-top:10px;}
+		.setup ul li {list-style:square !important; margin-top:0px; font-style:italic;}
 		.writeable {color:#009900; font-weight:bold;}
 		.non_writeable {color:#CC0000; font-weight:bold;}
+		.looks_ok {color:#009900; font-weight:bold;}
+		.looks_non_ok {color:#ffaa00; font-weight:bold;}
 		.continue , .continue a {font-weight:bold; font-style:italic;}
 		.enjoy {width:100%; text-align:center; margin-top:50px; margin-bottom:20px;}
 		.disable, .disable .writeable, .disable .continue {color:#999;}
+		
+		/* md file */
+		.md_file {
+			height:300px;
+			max-height:80vh;
+			margin:10px 0 0;
+			padding:20px;
+			resize:vertical;
+			background:#ddd;
+			border:1px solid #ccc;
+			border-radius:5px;
+			overflow:auto;
+		}
+		.md_file h2 {
+			margin-top:40px;
+		}
+		.md_file h3 {
+			margin-top:40px;
+		}
+		.md_file blockquote {
+			font: 14px/22px normal helvetica, sans-serif;
+			margin-top: 10px;
+			margin-bottom: 10px;
+			margin-left: 0px;
+			padding-left: 15px;
+			border-left: 3px solid #FC3C44;
+		}
+		.md_file code {
+			width:100%;
+			padding:5px;
+			display:block;
+			background:#eee;
+			font-family:"Times new Roman";
+			overflow:auto;
+		}
 		
 		/* SCROLLBARS */
 		::-webkit-scrollbar {
@@ -47,8 +84,8 @@
 	</style>
 </head>
 <body>
-	<h1>SETUP</h1>
 	<div class="setup">
+		<h1 class="title">SETUP</h1>
 <?php
 function checkFilesPermission($files, $optional_files, $check_folder_sub_files, &$main_status) {
 	$file_statuses = array();
@@ -88,14 +125,14 @@ function checkFilesPermission($files, $optional_files, $check_folder_sub_files, 
 		$incorrect_sub_files = $file_props[1];
 		$path = $exists && !empty(realpath($file)) ? realpath($file) : $file;
 		
-		$html .= "<li>" . $path . ": <span class=\"" . ($is_writable ? "writeable" : "non_writeable") . "\">" . ($is_writable ? "OK" : "NON WRITEABLE") . "<span>";
+		$html .= "<li>" . $path . ": " . printWritableStatus($is_writable);
 		
 		if ($incorrect_sub_files) {
 			$html .= "<ul>";
 			
 			foreach ($incorrect_sub_files as $sub_file)
 				if (!in_array($sub_file, $files))
-					$html .= "<li>" . $sub_file . ": <span class=\"non_writeable\">NON WRITEABLE<span></li>";
+					$html .= "<li>" . $sub_file . ": " . printWritableStatus(false) . "</li>";
 			
 			$html .= "</ul>";
 		}
@@ -109,6 +146,7 @@ function checkFilesPermission($files, $optional_files, $check_folder_sub_files, 
 }
 
 function checkSubFilesPermission($file, $optional_files, &$main_status) {
+	return array();//TODO remove this line
 	$incorrect_files = array();
 	
 	if (is_dir($file)) {
@@ -141,13 +179,23 @@ function checkSubFilesPermission($file, $optional_files, &$main_status) {
 	return $incorrect_files;
 }
 
+function printWritableStatus($status) {
+	return $status ? '<span class="writeable">OK</span>' : '<span class="non_writeable">NON WRITEABLE</span>';
+}
+
+function printOptionalStatus($status) {
+	return $status ? '<span class="looks_ok">LOOKS OK</span>' : '<span class="looks_non_ok">PLEASE CHECK</span>';
+}
+
 $dir_path = str_replace(DIRECTORY_SEPARATOR, "/", __DIR__) . "/";
 $installation_dir = dirname($dir_path) . "/";
 $main_status = true;
 
 //prepare TMP_PATH - This code must be the exactly the same that in the app.php file.
-$local_installation_name = isset($_SERVER["SCRIPT_NAME"]) ? strstr($_SERVER["SCRIPT_NAME"], "/" . basename(__DIR__) . "/", true) : null;
+$script_name = isset($_SERVER["SCRIPT_NAME"]) ? $_SERVER["SCRIPT_NAME"] : null;
+$local_installation_name = strstr($script_name, "/" . basename(__DIR__) . "/", true);
 $document_root = (!empty($_SERVER["CONTEXT_DOCUMENT_ROOT"]) ? $_SERVER["CONTEXT_DOCUMENT_ROOT"] : (isset($_SERVER["DOCUMENT_ROOT"]) ? $_SERVER["DOCUMENT_ROOT"] : null) ) . "/"; //Use CONTEXT_DOCUMENT_ROOT if exist, instead of DOCUMENT_ROOT, bc if a virtual host has an alias to this folder, the DOCUMENT_ROOT will be the folder of the virtual host and not this folder. Here is an example: Imagine that you have a Virtual host with a DOCUMENT_ROOT /var/www/html/livingroop/ and an Alias: /test/ pointing to /var/www/html/test/. Additionally this file (app.php) is in /var/www/html/test/. According with this requirements the DOCUMENT_ROOT is /var/www/html/livingroop/, but we would like to get /var/www/html/test/. So we must use the CONTEXT_DOCUMENT_ROOT to get the right document root.
+$document_root = preg_replace("/[\/]+/", "/", $document_root);
 
 //Settings the $tmp_path if the DOCUMENT_ROOT is based in specific domain and the DOCUMENT_ROOT folder contains the app/ and tmp/ folders. 
 //This means, we can have multiple installations with independent $tmp_path, this is: /var/www/html/installation1/app/ /var/www/html/installation2/trunk/app/ /var/www/html/installation3/app/, etc...
@@ -277,227 +325,111 @@ if ($tmp_path != $installation_dir . "app/tmp/") {
 	$check_folder_sub_files[] = $installation_dir . "app/tmp/";
 }
 
+$document_root_status = $installation_dir == $document_root;
+$php_version_status = version_compare(PHP_VERSION, '5.6', '>=');
+$loaded_extensions = array_map("strtolower", get_loaded_extensions());
+
+$parsedown_path = $installation_dir . "app/lib/vendor/parsedown/Parsedown.php";
+$md_contents = file_get_contents($installation_dir . "INSTALL.md");
+
+if (file_exists($parsedown_path)) {
+	include_once $parsedown_path;
+
+	$Parsedown = new Parsedown();
+	$inner_html = $Parsedown->text($md_contents);
+	$inner_html = str_replace("<p>.</p>", "<p>&nbsp;</p>", $inner_html);
+}
+else {
+	$inner_html = '<pre>' . str_replace("<br/>", "\n", str_replace("\n.\n", "\n\n", $md_contents)) . '</pre>';
+}
+
 $html = "<ol>
-	<li>Please point the Document Root from your WebServer to the $dir_path folder!</li>
-	<li>Install the PHP 5.6 or higher (tested until PHP 8.4).</li>
+	<li>Follow instructions from the INSTALL.md, this is:
+		<div class=\"md_file\">
+			$inner_html
+		</div>
+		<br/>
+		<h3>Continue below but only if you have followed the instructions above correctly!</h3>
+		<br/>
+	</li>
+	<li>Confirm if the Document Root of your web-server vhost conf file points to the folder: $installation_dir. " . printOptionalStatus($document_root_status) . "</li>
+	<li>Confirm if your PHP version is 5.6 or higher (Bloxtor is tested until PHP 8.4). " . printOptionalStatus($php_version_status) . "</li>
 	<li>Please be sure that you have PHP installed and all the following modules:
 		<ul>
-			<li>bcmath (is installed by default)</li>
-			<li>bz2 (is installed by default)</li>
-			<li>ctype (is installed by default)</li>
-			<li>curl (is installed by default)</li>
-			<li>dom (is installed by default)</li>
-			<li>date (is installed by default)</li>
-			<li>exif (is installed by default)</li>
-			<li>fileinfo (is installed by default)</li>
-			<li>filter (is installed by default)</li>
-			<li>ftp (is installed by default)</li>
-			<li>gd</li>
-			<li>hash (is installed by default)</li>
-			<li>imap (is installed by default)</li>
-			<li>intl (is installed by default)</li>
-			<li>json (is installed by default)</li>
-			<li>libxml (is installed by default)</li>
-			<li>mbstring (is installed by default)</li>
-			<li>memcache</li>
-			<li>mongodb</li>
-			<li>mysqli (is installed by default)</li>
-			<li>odbc (is installed by default)</li>
-			<li>openssl (is installed by default)</li>
-			<li>pcre (is installed by default)</li>
-			<li>pdo</li>
-			<li>pdo_mysql</li>
-			<li>pdo_odbc</li>
-			<li>pdo_pgsql</li>
-			<li>pdo_sqlite</li>
-			<li>pgsql</li>
+			<li>bcmath " . printOptionalStatus(in_array("bcmath", $loaded_extensions)) . "</li>
+			<li>bz2 (optional)</li>
+			<li>ctype (optional)</li>
+			<li>curl " . printOptionalStatus(in_array("curl", $loaded_extensions)) . "</li>
+			<li>dom " . printOptionalStatus(in_array("dom", $loaded_extensions)) . "</li>
+			<li>date " . printOptionalStatus(in_array("date", $loaded_extensions)) . "</li>
+			<li>exif " . printOptionalStatus(in_array("exif", $loaded_extensions)) . "</li>
+			<li>fileinfo " . printOptionalStatus(in_array("fileinfo", $loaded_extensions)) . "</li>
+			<li>filter " . printOptionalStatus(in_array("filter", $loaded_extensions)) . "</li>
+			<li>ftp " . printOptionalStatus(in_array("ftp", $loaded_extensions)) . "</li>
+			<li>gd " . printOptionalStatus(in_array("gd", $loaded_extensions)) . "</li>
+			<li>hash " . printOptionalStatus(in_array("hash", $loaded_extensions)) . "</li>
+			<li>imap " . printOptionalStatus(in_array("imap", $loaded_extensions)) . "</li>
+			<li>intl (optional)</li>
+			<li>json " . printOptionalStatus(in_array("json", $loaded_extensions)) . "</li>
+			<li>libxml " . printOptionalStatus(in_array("libxml", $loaded_extensions)) . "</li>
+			<li>mbstring " . printOptionalStatus(in_array("mbstring", $loaded_extensions)) . "</li>
+			<li>memcache (optional)</li>
+			<li>mongodb (optional)</li>
+			<li>mysqli (or mysql or mysqlnd - optional)</li>
+			<li>odbc (optional)</li>
+			<li>openssl " . printOptionalStatus(in_array("openssl", $loaded_extensions)) . "</li>
+			<li>pcre " . printOptionalStatus(in_array("pcre", $loaded_extensions)) . "</li>
+			<li>pdo (optional)</li>
+			<li>pdo_mysql (optional)</li>
+			<li>pdo_odbc (optional)</li>
+			<li>pdo_pgsql (optional)</li>
+			<li>pdo_sqlite (optional)</li>
+			<li>pgsql " . printOptionalStatus(in_array("pgsql", $loaded_extensions)) . "</li>
 			<li>posix (is installed by default - optional)</li>
-			<li>reflection (is installed by default)</li>
-			<li>session (is installed by default)</li>
-			<li>simplexml (is installed by default)</li>
-			<li>sqlite3</li>
+			<li>reflection " . printOptionalStatus(in_array("reflection", $loaded_extensions)) . "</li>
+			<li>session " . printOptionalStatus(in_array("session", $loaded_extensions)) . "</li>
+			<li>simplexml " . printOptionalStatus(in_array("simplexml", $loaded_extensions)) . "</li>
+			<li>sqlite3 (optional)</li>
 			<li>soap (optional)</li>
-			<li>ssh2</li>
-			<li>tokenizer (is installed by default)</li>
-			<li>xml (is installed by default)</li>
-			<li>xmlreader (is installed by default)</li>
-			<li>xmlrpc (is installed by default)</li>
-			<li>xmlwriter (is installed by default)</li>
-			<li>xsl (is installed by default)</li>
-			<li>zend opcache (is installed by default)</li>
-			<li>zip (is installed by default)</li>
-			<li>zlib (is installed by default)</li>
+			<li>ssh2 " . printOptionalStatus(in_array("ssh2", $loaded_extensions)) . "</li>
+			<li>tokenizer " . printOptionalStatus(in_array("tokenizer", $loaded_extensions)) . "</li>
+			<li>xml " . printOptionalStatus(in_array("xml", $loaded_extensions)) . "</li>
+			<li>xmlreader (optional)</li>
+			<li>xmlrpc (optional)</li>
+			<li>xmlwriter (optional)</li>
+			<li>xsl " . printOptionalStatus(in_array("xsl", $loaded_extensions)) . "</li>
+			<li>zend (op)cache (optional)</li>
+			<li>zip " . printOptionalStatus(in_array("zip", $loaded_extensions)) . "</li>
+			<li>zlib " . printOptionalStatus(in_array("zlib", $loaded_extensions)) . "</li>
 		</ul>
-		
-		<br>
-		If some module is missing you need to execute the command bellow in Linux to install the following packages:
-		<ul>
-			<li style=\"white-space:nowrap;\">sudo apt/apt-get/yum install php-common php-cli php-bcmath php-curl php-gd php-mbstring php-mysql/php-mysqlnd php-pgsql php-xml php-ssh2 php-json</li>
-			<li style=\"white-space:nowrap;\">(optional) If you wish to install other extra packages please run: sudo apt/apt-get/yum install php-soap php-opcache php-dbg php-process php-odbc php-pdo php-fpm php-dba php-dbg</li>
-		</ul>
-		
-		<br>
-		(optional) If you wish to connect to mssql-server, please install the 'mssql-server' package. If you are not able to install this package on linux os, please follow the tutorials in order to install the odbc drivers for mssql-server:
-		<ul>
-			<li><a href='https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver15' target='_blank'>https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver15</a></li>
-			<li><a href='https://www.easysoft.com/developer/languages/php/sql_server_unix_tutorial.html' target='_blank'>https://www.easysoft.com/developer/languages/php/sql_server_unix_tutorial.html</a></li>
-			<li><a href='https://www.easysoft.com/products/data_access/odbc-sql-server-driver/manual/installation.html#852113' target='_blank'>https://www.easysoft.com/products/data_access/odbc-sql-server-driver/manual/installation.html#852113</a></li>
-		</ul>
-		After your odbc driver be installed, it should be present in the file: /etc/odbc.ini, otherwise add the following lines:
-		<ul>
-			<li style=\"white-space:nowrap;\">
-				[ODBC Driver 17 for SQL Server]<br>
-				Description=Microsoft ODBC Driver 17 for SQL Server<br>
-				Driver=/opt/microsoft/msodbcsql17/lib64/libmsodbcsql-17.7.so.2.1<br>
-				UsageCount=1<br>
-			</li>
-		</ul>
-		Note that the Driver path should be to your driver.
 	</li>
-	<li>Please be sure that your WebServer has the mod_rewrite enable and the php.ini files are well configured.<br/>
-		<br/>
-		In linux, to enable the mod_rewrite in apache, try to execute this command: 
+	<li>Confirm if your WebServer has the mod_rewrite enable " . printOptionalStatus($document_root == dirname(__DIR__) . "/") . "</li>
+	<li>If web-server modsecurity is enabled, confirm if /etc/modsecurity/modsecurity.conf is well configured according with our recomendations in INSTALL.md, but only if you get request body limit exceed errors.</li>
+	<li>Confirm if php.ini files are well configured according with the recomendations in INSTALL.md:
 		<ul>
-			<li>sudo a2enmod rewrite</li>
-		</ul>
-		<br/>
-		Note that you must have your apache (or web server) configured to read this framework htaccess files. Please be sure that you have the following settings for the framework root directory, in your correspondent web server conf file:
-		<ul>
-			<li>AllowOverride All<br/>
-			<br/>
-			#(optional) in case you have symbolic links in your root directory<br/>
-			Options FollowSymLinks</li>
-		</ul>
-		<br/>
-		(optional) For security and performance reasons, we recommend you to update your php.ini files with:
-		<ul>
-			<li>short_open_tag = On</li>
-			<li>max_execution_time = 1000</li>
-			<li>variables_order = \"EGPCS\"</li>
-			<li>upload_max_filesize = 150M</li>
-			<li>post_max_size = 150M</li>
-			<li>date.timezone = Europe/Lisbon</li>
+			<li>short_open_tag = On " . printOptionalStatus(ini_get("short_open_tag") == "1") . "</li>
+			<li>variables_order = \"EGPCS\" " . printOptionalStatus(ini_get("variables_order") == "EGPCS") . "</li>
+			<li>date.timezone = Europe/Lisbon " . printOptionalStatus(ini_get("date.timezone") == "Europe/Lisbon") . "</li>
+			<li>error_reporting = E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT " . printOptionalStatus(ini_get("error_reporting") == "22519") . "</li>
 			
-			<li>open_basedir = \"" . $installation_dir . "\"</li>
+			<li>upload_max_filesize = 150M " . printOptionalStatus(ini_get("upload_max_filesize") == "150M") . "</li>
+			<li>post_max_size = 150M " . printOptionalStatus(ini_get("post_max_size") == "150M") . "</li>
 
-			<li>error_reporting = E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT</li>
-			<li>display_errors = Off</li>
-			<li>display_startup_errors = Off</li>
-			<li>log_errors = On</li>
-
-			<li>expose_php = Off</li>
-			<li>mail.add_x_header = Off</li>
-			<li>session.cookie_httponly = On</li>
-			<li>session.cookie_secure = On</li>
-			<li>session.use_strict_mode = On</li>
-			<li>allow_url_fopen = Off</li>
-			<li>allow_url_include = Off</li>
-
-			<li style=\"overflow-wrap:break-word;\">disable_functions = dl,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,exec,shell_exec,passthru,system,proc_open,popen,parse_ini_file,show_source</li>	
-		</ul>
-		(optional) Additionally for security reasons also, if you have a tmp folder created, we recommend you to update your php.ini files with:
-		<ul>
-			<li>sys_temp_dir = \"" . ($tmp_path ? $tmp_path : $installation_dir . "tmp/") . "\"</li>
-			<li>upload_tmp_dir = \"" . ($tmp_path ? $tmp_path : $installation_dir . "tmp/") . "\"</li>
-			<li>session.save_path = \"" . ($tmp_path ? $tmp_path : $installation_dir . "tmp/") . "\"</li>
-			<li>soap.wsdl_cache_dir = \"" . ($tmp_path ? $tmp_path : $installation_dir . "tmp/") . "\"</li>
-		</ul>
-		<br/>
-		(optional) And if possible the following ones too (but only if you get request body limit exceed):
-		<ul>
-			<li>max_input_time = 360</li>
-			<li>memory_limit = 1024M</li>
-			<li>max_input_vars = 10000</li>
-			<li>suhosin.get.max_vars = 10000 (if apply)</li>
-			<li>suhosin.post.max_vars = 10000 (if apply)</li>
-			<li>suhosin.request.max_vars = 10000 (if apply)</li>
-		</ul>
-		<br/>
-		Note that, if you decide to follow our recommendation, you should make these changes in the php.ini from apache and cli mode. Usually these files are located in:
-		<ul>
-			<li>/etc/php/apache2/php.ini</li>
-			<li>/etc/php/cli/php.ini</li>
-		</ul>
-	</li>
-	<li>(optional) Go to your /etc/mysql/my.cnf and add the following line:
-		<ul>
-			<li style=\"white-space:nowrap;\">
-				[mysqld]<br>
-				#the idea is to remove the NO_ZERO_IN_DATE and NO_ZERO_DATE settings in the sql-mode.<br>
-				#if mysql version < 8<br>
-				sql-mode=\"ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\"<br>
-				<br>
-				#if mysql version >= 8<br>
-				sql-mode=\"ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION\"<br>
-				<br>
-				max_allowed_packet=250M<br>
-				wait_timeout=28800<br>
-				max_allowed_packet=100M<br>
-				<br>
-				# Enable mysql_native_password plugin if mysql version is 8 or bigger<br>
-				mysql_native_password=ON<br>
-				<br>
-			</li>
-			<li>
-				[mysqld_safe]<br>
-				max_allowed_packet=100M<br>
-				<br>
-			</li>
-			<li>
-				[client]<br>
-				max_allowed_packet=100M<br>
-				<br>
-			</li>
-			<li>
-				[mysql]<br>
-				max_allowed_packet=100M<br>
-				<br>
-			</li>
-			<li>
-				[mysqldump]<br>
-				max_allowed_packet=100M<br>
-				<br>
-			</li>
-		</ul>
-	</li>
-	<li>(optional) Change the correspondent apache security configurations, if active - (Only if you get request body limit exceed), by adding of changing the following lines to the file /etc/modsecurity/modsecurity.conf:
-		<ul>
-			<li>#to 32MB:<br>
-			SecRequestBodyLimit 32768000</li>
+			<li>max_execution_time = 1000 " . printOptionalStatus(ini_get("max_execution_time") == "1000") . "</li>
+			<li>max_input_time = 360 " . printOptionalStatus(ini_get("max_input_time") == "360") . "</li>
+			<li>max_input_vars = 10000 " . printOptionalStatus(ini_get("max_input_vars") == "10000") . "</li>
 			
-			<li>#to 640KB:<br>
-			SecRequestBodyNoFilesLimit 655360</li>
-			
-			<li>#to 16MB:<br>
-			SecRequestBodyInMemoryLimit 16384000</li>
-			
-			<li>#to 32MB:<br>
-			SecResponseBodyLimit 32768000</li>
+			<li>memory_limit = 1024M " . printOptionalStatus(ini_get("memory_limit") == "1024M") . "</li>
 		</ul>
 	</li>
-	<li>(optional) Change the following apache configurations if apply (this is, inside of your virtual-host configuration add the following lines):
-		<ul>
-			<li>LimitInternalRecursion 100</li>
-			<li>LimitRequestBody 0</li>
-			<li>LimitRequestFields 10000000</li>
-			<li>LimitRequestFieldSize 10000000</li>
-			<li>LimitRequestLine 10000000</li>
-			<li>LimitXMLRequestBody 10000000</li>
-		</ul>
-	</li>
-	<li>In CentOS is probably that the apache has the external network connections blocked which doesn't allow the mysql connect with the DBs. To check if this is OFF please type the following commands:<br/>
-	&nbsp;&nbsp;&nbsp;sudo getsebool -a | grep httpd_can_network<br/>
-	<br/>
-	If the httpd_can_network_connect is OFF, you should enable them by typing:<br/>
-	&nbsp;&nbsp;&nbsp;sudo setsebool -P httpd_can_network_connect 1<br/>
-	</li>
-	<li>Please be sure that your WebServer has write permissions to the following files:
+	<li>If mysql server is installed, confirm if /etc/mysql/my.cnf is well configured according with the recomendations in INSTALL.md</li>
+	<li>On CentOS, confirm if web-server can make external connections to mysql servers.</li>
+	<li>Please be sure that your web-server has write permissions to the following files:
 		" . checkFilesPermission($files, $optional_files, $check_folder_sub_files, $main_status) . "
-	</li>
-	<li>If some of the above files are <span class=\"non_writeable\">NON WRITEABLE</span>, please change their permissions or owner and refresh this page.</li>
+	<br/>If some of the above files are <span class=\"non_writeable\">NON WRITEABLE</span>, please change their permissions or owner and refresh this page.</li>
 	<li class=\"" . ($main_status ? "" : "disable") . "\">If all the files above are <span class=\"writeable\">OK</span>, please click <span class=\"continue\">" . ($main_status ? "<a href=\"__system/setup/\">HERE</a>" : "HERE") . "</span> to login and continue with the setup...<br/>(To login please use the username: \"admin\" and the password: \"admin\".)</li>
 	<li>Then after you finish the setup, please go to \"User Management\" panel and change your login password...</li>
-	<li>Delete the setup.php file.</li>
+	<li>(optional) Delete the setup.php and INSTALL.md files.</li>
 	</ol>";
 
 echo $html;
