@@ -34,11 +34,11 @@ trait DBSQLConverter {
 			//version 2
 			$sql_attrs = "";
 			$sql_values = "";
-			$check_reserved_values = isset($options["check_reserved_values"]) ? $options["check_reserved_values"] : true;
+			$ignore_reserved_values = isset($options["ignore_reserved_values"]) ? $options["ignore_reserved_values"] : false;
 			
 			foreach($attributes as $key => $value) {
 				$sql_attrs .= (strlen($sql_attrs) ? ", " : "") . SQLQueryHandler::getParsedSqlColumnName($key);
-				$sql_values .= (strlen($sql_values) ? ", " : "") . self::createBaseExprValue($value, $check_reserved_values);
+				$sql_values .= (strlen($sql_values) ? ", " : "") . self::createBaseExprValue($value, $ignore_reserved_values);
 			}
 			
 			if ($sql_attrs) 
@@ -68,9 +68,9 @@ trait DBSQLConverter {
 			$conditions_join = isset($options["conditions_join"]) ? $options["conditions_join"] : null;
 			$all = isset($options["all"]) ? $options["all"] : null;
 			$extra_sql_conditions = isset($options["sql_conditions"]) ? $options["sql_conditions"] : null;
-			$check_reserved_values = isset($options["check_reserved_values"]) ? $options["check_reserved_values"] : true;
+			$ignore_reserved_values = isset($options["ignore_reserved_values"]) ? $options["ignore_reserved_values"] : false;
 			
-			$sql_conditions = self::getSQLConditions($conditions, $conditions_join, "", $check_reserved_values);
+			$sql_conditions = self::getSQLConditions($conditions, $conditions_join, "", $ignore_reserved_values);
 			$sql_conditions .= $extra_sql_conditions ? ($sql_conditions ? " AND " : "") . $extra_sql_conditions : "";
 			
 			if ($sql_conditions || $all) {
@@ -94,7 +94,7 @@ trait DBSQLConverter {
 				$sql_attrs = "";
 				
 				foreach($attributes as $key => $value)
-					$sql_attrs .= ($sql_attrs ? ", " : "") . SQLQueryHandler::getParsedSqlColumnName($key) . "=" . self::createBaseExprValue($value, $check_reserved_values);
+					$sql_attrs .= ($sql_attrs ? ", " : "") . SQLQueryHandler::getParsedSqlColumnName($key) . "=" . self::createBaseExprValue($value, $ignore_reserved_values);
 				
 				$sql_where = $sql_conditions ? " WHERE {$sql_conditions}" : "";
 				$sql = "UPDATE " . SQLQueryHandler::getParsedSqlTableName($table_name) . " SET {$sql_attrs}{$sql_where}";
@@ -122,9 +122,9 @@ trait DBSQLConverter {
 			$conditions_join = isset($options["conditions_join"]) ? $options["conditions_join"] : null;
 			$all = isset($options["all"]) ? $options["all"] : null;
 			$extra_sql_conditions = isset($options["sql_conditions"]) ? $options["sql_conditions"] : null;
-			$check_reserved_values = isset($options["check_reserved_values"]) ? $options["check_reserved_values"] : true;
+			$ignore_reserved_values = isset($options["ignore_reserved_values"]) ? $options["ignore_reserved_values"] : false;
 			
-			$sql_conditions = self::getSQLConditions($conditions, $conditions_join, "", $check_reserved_values);
+			$sql_conditions = self::getSQLConditions($conditions, $conditions_join, "", $ignore_reserved_values);
 			$sql_conditions .= $extra_sql_conditions ? ($sql_conditions ? " AND " : "") . $extra_sql_conditions : "";
 			
 			if($sql_conditions || $all) {
@@ -159,9 +159,9 @@ trait DBSQLConverter {
 			$conditions_join = isset($options["conditions_join"]) ? $options["conditions_join"] : null;
 			$sorts = isset($options["sorts"]) ? $options["sorts"] : null;
 			$extra_sql_conditions = isset($options["sql_conditions"]) ? $options["sql_conditions"] : null;
-			$check_reserved_values = isset($options["check_reserved_values"]) ? $options["check_reserved_values"] : true;
+			$ignore_reserved_values = isset($options["ignore_reserved_values"]) ? $options["ignore_reserved_values"] : false;
 			
-			$sql_conditions = self::getSQLConditions($conditions, $conditions_join, "", $check_reserved_values);
+			$sql_conditions = self::getSQLConditions($conditions, $conditions_join, "", $ignore_reserved_values);
 			$sql_conditions .= $extra_sql_conditions ? ($sql_conditions ? " AND " : "") . $extra_sql_conditions : "";
 			$sql_sort = self::getSQLSort($sorts);
 			
@@ -213,9 +213,9 @@ trait DBSQLConverter {
 			$options = is_array($options) ? $options : array();
 			$conditions_join = isset($options["conditions_join"]) ? $options["conditions_join"] : null;
 			$extra_sql_conditions = isset($options["sql_conditions"]) ? $options["sql_conditions"] : null;
-			$check_reserved_values = isset($options["check_reserved_values"]) ? $options["check_reserved_values"] : true;
+			$ignore_reserved_values = isset($options["ignore_reserved_values"]) ? $options["ignore_reserved_values"] : false;
 			
-			$sql_conditions = self::getSQLConditions($conditions, $conditions_join, "", $check_reserved_values);
+			$sql_conditions = self::getSQLConditions($conditions, $conditions_join, "", $ignore_reserved_values);
 			$sql_conditions .= $extra_sql_conditions ? ($sql_conditions ? " AND " : "") . $extra_sql_conditions : "";
 			
 			$sql = "SELECT count(*) AS total FROM " . SQLQueryHandler::getParsedSqlTableName($table_name);
@@ -261,16 +261,16 @@ trait DBSQLConverter {
 			$groups_by = isset($rel_elm["groups_by"]) ? $rel_elm["groups_by"] : null;
 			$sorts = !empty($options["sorts"]) && empty($rel_elm["sorts"]) ? $options["sorts"] : (isset($rel_elm["sorts"]) ? $rel_elm["sorts"] : null);
 			$extra_sql_conditions = isset($options["sql_conditions"]) ? $options["sql_conditions"] : null;
-			$check_reserved_values = isset($options["check_reserved_values"]) ? $options["check_reserved_values"] : true;
+			$ignore_reserved_values = isset($options["ignore_reserved_values"]) ? $options["ignore_reserved_values"] : false;
 			
-			$sql_conditions = self::getSQLRelationshipConditions($conditions, $table_name, $parent_conditions, $check_reserved_values);
+			$sql_conditions = self::getSQLRelationshipConditions($conditions, $table_name, $parent_conditions, $ignore_reserved_values);
 			$sql_conditions .= $extra_sql_conditions ? ($sql_conditions ? " AND " : "") . $extra_sql_conditions : "";
 			$sql_groups_by = self::getSQLRelationshipGroupBy($groups_by, $table_name);
 			$sql_sort = self::getSQLRelationshipSort($sorts, $table_name, ($sql_groups_by ? true : false));
 			
 			$sql = "SELECT ";
 			$sql .= self::getSQLRelationshipAttributes($attributes, $table_name, $keys);
-			$sql .= " FROM " . SQLQueryHandler::getParsedSqlTableName($table_name) . " " . self::getSQLRelationshipJoins($keys, $table_name, $check_reserved_values);
+			$sql .= " FROM " . SQLQueryHandler::getParsedSqlTableName($table_name) . " " . self::getSQLRelationshipJoins($keys, $table_name, $ignore_reserved_values);
 			$sql .= $sql_conditions || $extra_sql_conditions ? " WHERE $sql_conditions" : "";
 			$sql .= $sql_groups_by ? " " . $sql_groups_by : "";
 			
@@ -309,13 +309,13 @@ trait DBSQLConverter {
 			$conditions = isset($rel_elm["conditions"]) ? $rel_elm["conditions"] : null;
 			$groups_by = isset($rel_elm["groups_by"]) ? $rel_elm["groups_by"] : null;
 			$extra_sql_conditions = isset($options["sql_conditions"]) ? $options["sql_conditions"] : null;
-			$check_reserved_values = isset($options["check_reserved_values"]) ? $options["check_reserved_values"] : true;
+			$ignore_reserved_values = isset($options["ignore_reserved_values"]) ? $options["ignore_reserved_values"] : false;
 			
-			$sql_conditions = self::getSQLRelationshipConditions($conditions, $table_name, $parent_conditions, $check_reserved_values);
+			$sql_conditions = self::getSQLRelationshipConditions($conditions, $table_name, $parent_conditions, $ignore_reserved_values);
 			$sql_conditions .= $extra_sql_conditions ? ($sql_conditions ? " AND " : "") . $extra_sql_conditions : "";
 			$sql_group_by = self::getSQLRelationshipGroupBy($groups_by, $table_name);
 			
-			$sql = " FROM " . SQLQueryHandler::getParsedSqlTableName($table_name) . " " . self::getSQLRelationshipJoins($keys, $table_name, $check_reserved_values);
+			$sql = " FROM " . SQLQueryHandler::getParsedSqlTableName($table_name) . " " . self::getSQLRelationshipJoins($keys, $table_name, $ignore_reserved_values);
 			$sql .= $sql_conditions ? " WHERE {$sql_conditions}" : "";
 			$sql .= $sql_group_by ? " " . $sql_group_by : "";
 			
@@ -353,19 +353,19 @@ trait DBSQLConverter {
 		<condition><![CDATA[length(item.title) > 0 and item.status=1]]></condition>	
 	*/
 	//used too in app/__system/layer/presentation/phpframework/src/util/CMSPresentationFormSettingsUIHandler.php
-	public static function getSQLRelationshipConditions($conditions, $table_name = false, $parent_conditions = false, $check_reserved_values = true) {
+	public static function getSQLRelationshipConditions($conditions, $table_name = false, $parent_conditions = false, $ignore_reserved_values = false) {
 		$sql = "";
 		
 		if(is_array($parent_conditions)) 
-			$sql .= ($sql ? " AND " : "") . self::getSQLConditions($parent_conditions, null, $table_name, $check_reserved_values);
+			$sql .= ($sql ? " AND " : "") . self::getSQLConditions($parent_conditions, null, $table_name, $ignore_reserved_values);
 			/*foreach($parent_conditions as $key => $value) 
-				$sql .= ($sql ? " AND " : "") . self::prepareTableAttributeWithFunction($key, $table_name) . "=" . self::createBaseExprValue($value, $check_reserved_values);*/
+				$sql .= ($sql ? " AND " : "") . self::prepareTableAttributeWithFunction($key, $table_name) . "=" . self::createBaseExprValue($value, $ignore_reserved_values);*/
 		
 		$t = $conditions ? count($conditions) : 0;
 		$is_numeric_array = $t == 0 || ( array_keys($conditions) === range(0, $t - 1) );
 		
 		if (!$is_numeric_array) //if associative array
-			$sql .= ($sql ? " AND " : "") . self::getSQLConditions($conditions, null, $table_name, $check_reserved_values);
+			$sql .= ($sql ? " AND " : "") . self::getSQLConditions($conditions, null, $table_name, $ignore_reserved_values);
 		else
 			for ($i = 0; $i < $t; $i++) {
 				$condition = $conditions[$i];
@@ -396,11 +396,11 @@ trait DBSQLConverter {
 							$lo = strtolower($operator);
 							
 							if ($lo == "in" || $lo == "not in")
-								$value = self::createBaseExprValueForOperatorIn($value, $check_reserved_values);
+								$value = self::createBaseExprValueForOperatorIn($value, $ignore_reserved_values);
 							else if ($lo == "is" || $lo == "is not")
-								$value = self::createBaseExprValueForOperatorIs($value, $check_reserved_values);
+								$value = self::createBaseExprValueForOperatorIs($value, $ignore_reserved_values);
 							else
-								$value = self::createBaseExprValue($value, $check_reserved_values);
+								$value = self::createBaseExprValue($value, $ignore_reserved_values);
 							
 							$cond = array(
 								$column => array(
@@ -408,8 +408,8 @@ trait DBSQLConverter {
 									"value" => $value
 								)
 							);
-							$sql .= ($sql ? " AND " : "") . self::getSQLConditions($cond, null, $table, $check_reserved_values);
-							//$sql .= ($sql ? " AND " : "") . self::prepareTableAttributeWithFunction($column, $table) . " {$operator} " . self::createBaseExprValue($value, $check_reserved_values);
+							$sql .= ($sql ? " AND " : "") . self::getSQLConditions($cond, null, $table, $ignore_reserved_values);
+							//$sql .= ($sql ? " AND " : "") . self::prepareTableAttributeWithFunction($column, $table) . " {$operator} " . self::createBaseExprValue($value, $ignore_reserved_values);
 						}
 					}
 				}
@@ -540,7 +540,7 @@ trait DBSQLConverter {
 		- left
 		- right
 	*/
-	protected static function getSQLRelationshipJoins($keys, $table_name, $check_reserved_values = true) {
+	protected static function getSQLRelationshipJoins($keys, $table_name, $ignore_reserved_values = false) {
 		$joins = array();
 		
 		$t = $keys ? count($keys) : 0;
@@ -570,11 +570,11 @@ trait DBSQLConverter {
 			
 			if ($value_exists) {
 				if ($lo == "in" || $lo == "not in")
-					$value = self::createBaseExprValueForOperatorIn($value, $check_reserved_values);
+					$value = self::createBaseExprValueForOperatorIn($value, $ignore_reserved_values);
 				else if ($lo == "is" || $lo == "is not")
-					$value = self::createBaseExprValueForOperatorIs($value, $check_reserved_values);
+					$value = self::createBaseExprValueForOperatorIs($value, $ignore_reserved_values);
 				else
-					$value = self::createBaseExprValue($value, $check_reserved_values);
+					$value = self::createBaseExprValue($value, $ignore_reserved_values);
 			}
 			
 			$join_keys = array();
@@ -841,7 +841,7 @@ trait DBSQLConverter {
 	);
 	R: `a`.`type` = 0 AND `a`.`employee_id` = '2' AND `a`.`appointment_id` != 0 AND (((`da`.`begin_date` <= '2019-06-25 08:20:00' AND `da`.`end_date` >= '2019-06-25 08:20:00')) OR (`da`.`begin_date` >= '2019-06-25 08:20:00' AND `da`.`begin_date` <= '2019-06-25 08:35:00'))
 	*/
-	public static function getSQLConditions($conditions, $join = false, $key_table_name = "", $check_reserved_values = true) {
+	public static function getSQLConditions($conditions, $join = false, $key_table_name = "", $ignore_reserved_values = false) {
 		$sql = "";
 		
 		if (is_array($conditions)) {
@@ -852,7 +852,7 @@ trait DBSQLConverter {
 				$ukey = strtoupper($key);
 				
 				if ($ukey == "AND" || $ukey == "OR" || (is_numeric($key) && is_array($value))) {
-					$sub_sql = is_array($value) ? self::getSQLConditions($value, $ukey, $key_table_name, $check_reserved_values) : (is_string($value) && $value ? $value : "");
+					$sub_sql = is_array($value) ? self::getSQLConditions($value, $ukey, $key_table_name, $ignore_reserved_values) : (is_string($value) && $value ? $value : "");
 					
 					$sql .= $sub_sql ? ($sql ? " $join " : "") . "(" . $sub_sql . ")" : "";
 				}
@@ -884,19 +884,19 @@ trait DBSQLConverter {
 								}
 								
 								if ($operator == "in" || $operator == "not in")
-									$c .= "$key_str $operator " . self::createBaseExprValueForOperatorIn($val, $check_reserved_values);
+									$c .= "$key_str $operator " . self::createBaseExprValueForOperatorIn($val, $ignore_reserved_values);
 								else if ($operator == "is" || $operator == "is not")
-									$c .= "$key_str $operator " . self::createBaseExprValueForOperatorIs($val, $check_reserved_values);
+									$c .= "$key_str $operator " . self::createBaseExprValueForOperatorIs($val, $ignore_reserved_values);
 								else
-									$c .= "$key_str $operator " . self::createBaseExprValue($val, $check_reserved_values);
+									$c .= "$key_str $operator " . self::createBaseExprValue($val, $ignore_reserved_values);
 							}
 							else
-								$c .= "$key_str = " . self::createBaseExprValue($v, $check_reserved_values);
+								$c .= "$key_str = " . self::createBaseExprValue($v, $ignore_reserved_values);
 						}
 						$sql .= $c;
 					}
 					else
-						$sql .= "$key_str = " . self::createBaseExprValue($value, $check_reserved_values);
+						$sql .= "$key_str = " . self::createBaseExprValue($value, $ignore_reserved_values);
 				}
 			}
 		}
@@ -971,13 +971,13 @@ trait DBSQLConverter {
 		return $tn . $attr_name;
 	}
 	
-	public static function createBaseExprValue($value, $check_reserved_values = true) {
+	public static function createBaseExprValue($value, $ignore_reserved_values = false) {
 		if (is_array($value)) {
 			$value = isset($value["value"]) ? $value["value"] : null;
-			$check_reserved_values = isset($value["check_reserved_values"]) ? $value["check_reserved_values"] : null;
+			$ignore_reserved_values = isset($value["ignore_reserved_values"]) ? $value["ignore_reserved_values"] : $ignore_reserved_values;
 		}
 		
-		if ($check_reserved_values) {
+		if ($ignore_reserved_values) {
 			//check if current class is an abastract class, bc the getSQLConditions method can be called from the DB abstract class which will then generate a php error, if we call the abstract methods: isReservedWord and isReservedWordFunction.
 			$current_class_name = get_called_class();
 			$class = new ReflectionClass($current_class_name);
@@ -994,31 +994,31 @@ trait DBSQLConverter {
 		return !empty($is_reserved_word) || !empty($contains_reserved_word) ? $value : SQLQueryHandler::createBaseExprValue($value);
 	}
 	
-	public static function createBaseExprValueForOperatorIn($value, $check_reserved_values = true) {
+	public static function createBaseExprValueForOperatorIn($value, $ignore_reserved_values = false) {
 		if (version_compare(PHP_VERSION, '7.1', '<')) {
-			$GLOBALS["createBaseExprValueForOperatorIn_check_reserved_values"] = $check_reserved_values;
+			$GLOBALS["createBaseExprValueForOperatorIn_ignore_reserved_values"] = $ignore_reserved_values;
 			$create_expr_value_func = function($v) {
-				return self::createBaseExprValue($v, $GLOBALS["createBaseExprValueForOperatorIn_check_reserved_values"]);
+				return self::createBaseExprValue($v, $GLOBALS["createBaseExprValueForOperatorIn_ignore_reserved_values"]);
 			};
 		}
 		else
-			$create_expr_value_func = function($v) use ($check_reserved_values) {
-				return self::createBaseExprValue($v, $check_reserved_values);
+			$create_expr_value_func = function($v) use ($ignore_reserved_values) {
+				return self::createBaseExprValue($v, $ignore_reserved_values);
 			};
 		
 		return SQLQueryHandler::createBaseExprValueForOperatorIn($value, $create_expr_value_func);
 	}
 	
-	public static function createBaseExprValueForOperatorIs($value, $check_reserved_values = true) {
+	public static function createBaseExprValueForOperatorIs($value, $ignore_reserved_values = false) {
 		if (version_compare(PHP_VERSION, '7.1', '<')) {
-			$GLOBALS["createBaseExprValueForOperatorIs_check_reserved_values"] = $check_reserved_values;
+			$GLOBALS["createBaseExprValueForOperatorIs_ignore_reserved_values"] = $ignore_reserved_values;
 			$create_expr_value_func = function($v) {
-				return self::createBaseExprValue($v, $GLOBALS["createBaseExprValueForOperatorIs_check_reserved_values"]);
+				return self::createBaseExprValue($v, $GLOBALS["createBaseExprValueForOperatorIs_ignore_reserved_values"]);
 			};
 		}
 		else
-			$create_expr_value_func = function($v) use ($check_reserved_values) {
-				return self::createBaseExprValue($v, $check_reserved_values);
+			$create_expr_value_func = function($v) use ($ignore_reserved_values) {
+				return self::createBaseExprValue($v, $ignore_reserved_values);
 			};
 		
 		return SQLQueryHandler::createBaseExprValueForOperatorIs($value, $create_expr_value_func);
