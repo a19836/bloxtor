@@ -20,7 +20,7 @@
 	`json (is installed by default)`
 	`libxml (is installed by default)`
 	`mbstring (is installed by default)`
-	`memcache`
+	`memcache (optional)`
 	`mongodb`
 	`mysqli (is installed by default)`
 	`odbc (is installed by default)`
