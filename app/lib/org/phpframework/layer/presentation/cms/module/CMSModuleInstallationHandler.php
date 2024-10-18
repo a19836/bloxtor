@@ -24,6 +24,7 @@ class CMSModuleInstallationHandler implements ICMSModuleInstallationHandler {
 	protected $db_drivers;
 	protected $reserved_files; //This is initialized in each module CMSModuleInstallationHandler class
 	protected $used_db_drivers;
+	protected $exists_data_to_install_to_dbs;
 	protected $messages;
 	
 	public function __construct($layers, $module_id, $system_presentation_settings_module_path, $system_presentation_settings_webroot_module_path, $unzipped_module_path = "", $selected_db_driver = false, $UserAuthenticationHandler = null) {
@@ -43,6 +44,7 @@ class CMSModuleInstallationHandler implements ICMSModuleInstallationHandler {
 		
 		$this->db_drivers = $this->getLayersDBDrivers($selected_db_driver);
 		$this->used_db_drivers = array();
+		$this->exists_data_to_install_to_dbs = false;
 		
 		$this->reserved_files = array();
 		$this->messages = array();
@@ -296,6 +298,10 @@ class CMSModuleInstallationHandler implements ICMSModuleInstallationHandler {
 		return $all_used;
 	}
 	
+	public function existsDataToInstallToDBs() {
+		return $this->exists_data_to_install_to_dbs;
+	}
+	
 	public function detectedLayerByClass($layer_class) {
 		if (is_array($this->layers)) 
 			foreach ($this->layers as $Layer)
@@ -447,6 +453,8 @@ class CMSModuleInstallationHandler implements ICMSModuleInstallationHandler {
 			launch_exception(new Exception("Error: There is no DB defined!"));
 			return false;
 		}
+		
+		$this->exists_data_to_install_to_dbs = true;
 		
 		$status = true;
 		$exception_msg = null;

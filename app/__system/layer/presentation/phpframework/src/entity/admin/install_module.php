@@ -68,6 +68,7 @@ $LayoutTypeProjectHandler->filterPresentationLayerProjectsByUserAndLayoutPermiss
 		//This is very important bc in case there is no project, we must still let the modules get installed!
 		if (!$pre_init_configs)
 			$pre_init_configs[] = false;
+		//echo "<pre>";print_r($pre_init_configs);die();
 		
 		//download zip_url
 		$files_to_close = array();
@@ -229,7 +230,7 @@ $LayoutTypeProjectHandler->filterPresentationLayerProjectsByUserAndLayoutPermiss
 											$s = $CMSModuleInstallationHandler->install();
 											
 											if ($s) {
-												if ($CMSModuleInstallationHandler->areAllDBDriversUsed())
+												if ($CMSModuleInstallationHandler->existsDataToInstallToDBs() && !$CMSModuleInstallationHandler->areAllDBDriversUsed())
 													$messages[$module_id][$project_name][] = array("msg" => "STATUS: OK, BUT NO DB DRIVERS EXECUTED BC THEY WERE ALREADY EXECUTED BEFORE!", "type" => "alert");
 												/*else
 													$messages[$module_id][$project_name][] = array("msg" => "STATUS: OK", "type" => "ok");*/
