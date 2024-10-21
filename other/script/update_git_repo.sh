@@ -16,7 +16,7 @@ NOW=`/bin/date "+%Y-%m-%d %H:%M"`
 
 if [ "$DEST" != "" ] && [ -d "$DEST/app" ]
 then
-	echo "Preparing Framework folder"
+	echo "Preparing Framework folder Permissions"
 	/bin/chown -R $SUDO_USER:$SUDO_USER "$DEST"
 	
 	echo "Undo all previous changes"
@@ -24,6 +24,9 @@ then
 	
 	echo "Get all new changes"
 	/bin/git pull $DEST
+	
+	echo "Preparing Framework folder Permissions"
+	/bin/chown -R $SUDO_USER:$SUDO_USER "$DEST"
 	
 	echo "Setting permissions"
 	/bin/bash "$DEST/other/script/set_perms.sh" "$DEST"
