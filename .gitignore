@@ -48,6 +48,7 @@ app/__system/layer/presentation/common/webroot/vendor/ckeditor
 !app/layer/.htaccess
 !other/authdb/
 !other/frameworkscreenshots/
+!other/script/
 !other/workflow/
 !other/workflow/.gitkeep
 !tmp/.htaccess
