@@ -330,6 +330,8 @@ if ($tmp_path != $installation_dir . "app/tmp/") {
 $document_root_status = $installation_dir == $document_root;
 $php_version_status = version_compare(PHP_VERSION, '5.6', '>=');
 $loaded_extensions = array_map("strtolower", get_loaded_extensions());
+$current_user_info = function_exists("posix_getpwuid") ? posix_getpwuid(posix_getuid()) : null; //posix_getpwuid does not exists in windows
+$is_apache_user = isset($current_user_info["name"]) && $current_user_info["name"] == "www-data";
 
 $parsedown_path = $installation_dir . "app/lib/vendor/parsedown/Parsedown.php";
 $md_contents = file_get_contents($installation_dir . "INSTALL.md");
@@ -387,7 +389,7 @@ $html = "<ol>
 			<li>pdo_pgsql (optional)</li>
 			<li>pdo_sqlite (optional)</li>
 			<li>pgsql " . printOptionalStatus(in_array("pgsql", $loaded_extensions)) . "</li>
-			<li>posix (is installed by default - optional)</li>
+			<li>posix " . printOptionalStatus(in_array("posix", $loaded_extensions)) . "</li>
 			<li>reflection " . printOptionalStatus(in_array("reflection", $loaded_extensions)) . "</li>
 			<li>session " . printOptionalStatus(in_array("session", $loaded_extensions)) . "</li>
 			<li>simplexml " . printOptionalStatus(in_array("simplexml", $loaded_extensions)) . "</li>
@@ -405,7 +407,8 @@ $html = "<ol>
 			<li>zlib " . printOptionalStatus(in_array("zlib", $loaded_extensions)) . "</li>
 		</ul>
 	</li>
-	<li>Confirm if your WebServer has the mod_rewrite enable " . printOptionalStatus($document_root == dirname(__DIR__) . "/") . "</li>
+	<li>Confirm if your web-server user is www-data or you updated the correct user in the set_perms.sh script " . printOptionalStatus($is_apache_user) . "</li>
+	<li>Confirm if your web-server has the mod_rewrite enable " . printOptionalStatus($document_root == dirname(__DIR__) . "/") . "</li>
 	<li>If web-server modsecurity is enabled, confirm if /etc/modsecurity/modsecurity.conf is well configured according with our recomendations in INSTALL.md, but only if you get request body limit exceed errors.</li>
 	<li>Confirm if php.ini files are well configured according with the recomendations in INSTALL.md:
 		<ul>
