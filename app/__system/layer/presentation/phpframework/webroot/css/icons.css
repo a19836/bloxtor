@@ -216,6 +216,9 @@
 	left:-1px;
 	font-size:20px;
 }
+.icon.download::before {
+	content:"\f019";
+}
 .icon.chat::before {
 	content:"\f4ad";
 }
