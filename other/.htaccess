@@ -1,0 +1,10 @@
+# Important for security, prevents someone from executing malicious files. Not that this doesn't avoid the hacker to upload a .htaccess which overwrites this settings. To prevent this, you need to add the AllowOverwrite None to the apache conf file.
+deny from all
+
+SetHandler none
+SetHandler default-handler
+
+Options All -ExecCGI -Indexes
+php_flag engine off
+RemoveHandler .cgi .php .php2 .php3 .php4 .php5 .php6 .php7 .phtml .htm .shtml .pl .plx .ppl .perl .py .pyc .pyo .jsp .asp
+
