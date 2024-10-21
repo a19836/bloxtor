@@ -36,6 +36,7 @@ trait DBStatic {
 	abstract public static function getDBColumnAutoIncrementTypes();
 	abstract public static function getDBBooleanTypeAvailableValues();
 	abstract public static function getDBCurrentTimestampAvailableValues();
+	abstract public static function getAttributeValueReservedWords();
 	abstract public static function getReservedWords();
 	abstract public static function getDefaultSchema();
 	abstract public static function getIgnoreConnectionOptions();
@@ -717,6 +718,34 @@ trait DBStatic {
 		return array_values( @call_user_func_array("array_intersect", $args) ); //Note that the @ is very important here bc in PHP 8 this gives an warning, this is: 'Warning: Array to string conversion in...'
 	}
 	
+	public static function getAllAttributeValueReservedWordsByType() {
+		if (!empty(self::$saved_data_by_func["getAllAttributeValueReservedWordsByType"]))
+			return self::$saved_data_by_func["getAllAttributeValueReservedWordsByType"];
+		
+		$drivers = self::getAvailableDriverClassNames();
+		$items = array();
+		
+		foreach ($drivers as $driver_class) {
+			if (!class_exists($driver_class))
+				include_once get_lib("org.phpframework.db.driver.$driver_class");
+			
+			$type = $driver_class::getType();
+			$items[$type] = $driver_class::getAttributeValueReservedWords();
+		}
+		
+		self::$saved_data_by_func["getAllAttributeValueReservedWordsByType"] = $items;
+		
+		return $items;
+	}
+	
+	public static function getAllAttributeValueReservedWords() {
+		return array_values( self::mergeItems( self::getAllAttributeValueReservedWordsByType() ) );
+	}
+	
+	public static function getAllSharedAttributeValueReservedWords() {
+		return array_values( self::intersectItems( self::getAllAttributeValueReservedWordsByType() ) );
+	}
+	
 	public static function getAllReservedWordsByType() {
 		if (!empty(self::$saved_data_by_func["getAllReservedWordsByType"]))
 			return self::$saved_data_by_func["getAllReservedWordsByType"];
@@ -1310,6 +1339,11 @@ trait DBStatic {
 	protected static function getMandatoryLengthForColumnType($type) {
 		$mandatory_lengths = static::getDBColumnMandatoryLengthTypes();
 		return isset($mandatory_lengths[$type]) ? $mandatory_lengths[$type] : null;
+	}
+	
+	protected static function isAttributeValueReservedWord($value) {
+		$attribute_value_reserved_words = static::getAttributeValueReservedWords();
+		return isset($value) && is_array($attribute_value_reserved_words) && in_array(strtoupper(trim($value)), $attribute_value_reserved_words);
 	}
 	
 	protected static function isReservedWord($value) {

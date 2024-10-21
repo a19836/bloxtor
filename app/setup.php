@@ -273,6 +273,8 @@ $files = array(
 $optional_files = array(
 	$installation_dir . "files/",
 	
+	$installation_dir . "other/authdb/login_control.tbl",
+	$installation_dir . "other/authdb/user_stats.tbl",
 	$installation_dir . "other/authdb/layout_type.tbl",
 	$installation_dir . "other/authdb/layout_type_permission.tbl",
 	

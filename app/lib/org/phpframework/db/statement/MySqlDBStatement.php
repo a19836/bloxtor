@@ -229,7 +229,7 @@ trait MySqlDBStatement { //must be "trait" and not "class" bc this code will ser
 			$comment = !self::ignoreColumnTypeDBProp($type, "comment") ? $comment : null;
 			
 			//Prepare default value
-			$is_reserved_word = self::isReservedWord($default); //check if is a reserved word
+			$is_reserved_word = self::isAttributeValueReservedWord($default); //check if is a reserved word
 			$contains_reserved_word = self::isReservedWordFunction($default); //check if contains a function
 			$is_numeric_type = in_array($type, self::getDBColumnNumericTypes());
 			$default = isset($default) && $is_numeric_type && !is_numeric($default) && !$is_reserved_word && !$contains_reserved_word ? null : $default; //remove default if numeric field and default is not numeric.
@@ -239,7 +239,7 @@ trait MySqlDBStatement { //must be "trait" and not "class" bc this code will ser
 				$default = self::getDefaultValueForColumnType($type); //if not null set a default value
 				
 				//Do it again bc the $default changed
-				$is_reserved_word = self::isReservedWord($default); //check if is a reserved word. 
+				$is_reserved_word = self::isAttributeValueReservedWord($default); //check if is a reserved word. 
 				$contains_reserved_word = self::isReservedWordFunction($default); //check if contains a function
 			}
 			else*/
@@ -248,7 +248,7 @@ trait MySqlDBStatement { //must be "trait" and not "class" bc this code will ser
 				$default = self::getDefaultValueForColumnType($type); //set a default value with the correct value in case is an empty string
 				
 				//Do it again bc the $default changed
-				$is_reserved_word = self::isReservedWord($default); //check if is a reserved word. 
+				$is_reserved_word = self::isAttributeValueReservedWord($default); //check if is a reserved word. 
 				$contains_reserved_word = self::isReservedWordFunction($default); //check if contains a function
 			}
 			

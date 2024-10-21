@@ -353,7 +353,7 @@ trait PostgresDBStatement { //must be "trait" and not "class" bc this code will 
 			//$comment = !self::ignoreColumnTypeDBProp($type, "comment") ? $comment : null; //not used in pgsql server
 			
 			//Prepare default value
-			$is_reserved_word = self::isReservedWord($default); //check if is a reserved word
+			$is_reserved_word = self::isAttributeValueReservedWord($default); //check if is a reserved word
 			$contains_reserved_word = self::isReservedWordFunction($default); //check if contains a function
 			$is_numeric_type = in_array($type, self::getDBColumnNumericTypes());
 			$default = isset($default) && $is_numeric_type && !is_numeric($default) && !$is_reserved_word && !$contains_reserved_word ? null : $default; //remove default if numeric field and default is not numeric.
@@ -362,7 +362,7 @@ trait PostgresDBStatement { //must be "trait" and not "class" bc this code will 
 				$default = self::getDefaultValueForColumnType($type); //if not null set a default value
 				
 				//Do it again bc the $default changed
-				$is_reserved_word = self::isReservedWord($default); //check if is a reserved word. 
+				$is_reserved_word = self::isAttributeValueReservedWord($default); //check if is a reserved word. 
 				$contains_reserved_word = self::isReservedWordFunction($default); //check if contains a function
 			}
 			//When an attribute is a DATE or a numeric and the default value is an empty string, the DB server gives an error, not inserting/updating the attribute with the new type, bc I cannot set a Date or numeric attribute with the default value: ''. This means we need to set the correct default the value, even if the attribute is NULL.
@@ -370,7 +370,7 @@ trait PostgresDBStatement { //must be "trait" and not "class" bc this code will 
 				$default = self::getDefaultValueForColumnType($type); //set a default value with the correct value in case is an empty string
 				
 				//Do it again bc the $default changed
-				$is_reserved_word = self::isReservedWord($default); //check if is a reserved word. 
+				$is_reserved_word = self::isAttributeValueReservedWord($default); //check if is a reserved word. 
 				$contains_reserved_word = self::isReservedWordFunction($default); //check if contains a function
 			}
 			
@@ -493,7 +493,7 @@ trait PostgresDBStatement { //must be "trait" and not "class" bc this code will 
 			if (!$parsed_data["null"]) {
 				//If attribute is NOT NULL, update all null values with the default value, before it change it to NOT NULL. This is, if we have an attribute which is NULL and we are trying to change it to NOT NULL, and if this attribute contains any record with a NULL value, mssql will not let me modify this attribute to NOT NULL, giving a sql error. So we need to update first all records with NULL values.
 				if (empty($parsed_data["primary_key"]) && isset($parsed_data["default"])) { //$has_default cannot be here bc it includes the $attribute_data["has_default"] and in this case we want the $parsed_data["default"] which contains the real default value set by the getCreateTableAttributeStatement method.
-					$is_reserved_word = self::isReservedWord($parsed_data["default"]); //check if is a reserved word
+					$is_reserved_word = self::isAttributeValueReservedWord($parsed_data["default"]); //check if is a reserved word
 					$contains_reserved_word = self::isReservedWordFunction($parsed_data["default"]); //check if contains a function
 					$default = is_numeric($parsed_data["default"]) || $is_reserved_word || $contains_reserved_word ? $parsed_data["default"] : "'" . $parsed_data["default"] . "'";
 					
@@ -553,7 +553,7 @@ trait PostgresDBStatement { //must be "trait" and not "class" bc this code will 
 			";
 		}
 		else if ($has_default) { //add default value to non auto-incremented atributes, including pks. Note that postgres doesn't allow default for primary keys.
-			$is_reserved_word = self::isReservedWord($parsed_data["default"]); //check if is a reserved word
+			$is_reserved_word = self::isAttributeValueReservedWord($parsed_data["default"]); //check if is a reserved word
 			$contains_reserved_word = self::isReservedWordFunction($parsed_data["default"]); //check if contains a function
 			$default = is_numeric($parsed_data["default"]) || $is_reserved_word || $contains_reserved_word ? $parsed_data["default"] : "'" . $parsed_data["default"] . "'"; //must be single quotes 
 			$sql .= "

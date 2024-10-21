@@ -109,6 +109,10 @@ trait MySqlDBStatic {
 		return static::$db_current_timestamp_available_values;
 	}
 	
+	public static function getAttributeValueReservedWords() {
+		return static::$attribute_value_reserved_words;
+	}
+	
 	public static function getReservedWords() {
 		return static::$reserved_words;
 	}

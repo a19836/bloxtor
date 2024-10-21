@@ -1424,7 +1424,15 @@ class SQLQueryHandler {
 		//return is_numeric($v) ? $value : (substr($v, 0, 1) == "#" && substr($v, strlen($v) - 1, 1) == "#" ? $value : "'" . addcslashes($value, "\\'") . "'");
 		
 		//return is_numeric($v) ? $value : "'" . addcslashes($value, "\\'") . "'";
-		return $value === null ? "null" : (is_numeric($value) && !is_string($value) ? $value : "'" . addcslashes($value, "\\'") . "'");
+		
+		if ($value === null)
+			return "null";
+		else if ($value === true)
+			return "true";
+		else if ($value === false)
+			return "false";
+		else
+			return is_numeric($value) && !is_string($value) ? $value : "'" . addcslashes($value, "\\'") . "'";
 	}
 	
 	//it's used in the DB too.

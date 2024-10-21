@@ -28,6 +28,7 @@ interface IDB {
 	public static function getDBColumnAutoIncrementTypes();
 	public static function getDBBooleanTypeAvailableValues();
 	public static function getDBCurrentTimestampAvailableValues();
+	public static function getAttributeValueReservedWords();
 	public static function getReservedWords();
 	public static function getDefaultSchema();
 	public static function getIgnoreConnectionOptions();
@@ -200,6 +201,9 @@ interface IDB {
 	public static function getAllColumnTypesHiddenPropsByType();
 	public static function getAllColumnTypesHiddenProps();
 	public static function getAllSharedColumnTypesHiddenProps();
+	public static function getAllAttributeValueReservedWordsByType();
+	public static function getAllAttributeValueReservedWords();
+	public static function getAllSharedAttributeValueReservedWords();
 	public static function getAllReservedWordsByType();
 	public static function getAllReservedWords();
 	public static function getAllSharedReservedWords();
