@@ -20,12 +20,15 @@ then
 	/bin/chown -R $SUDO_USER:$SUDO_USER "$DEST"
 	
 	echo "Undo all previous changes"
+	#note that all updated files will be root owner
 	/bin/git checkout $DEST/*
 	
 	echo "Get all new changes"
+	#note that all updated files will be root owner
 	/bin/git pull $DEST
 	
 	echo "Preparing Framework folder Permissions"
+	#set files owner to original owner
 	/bin/chown -R $SUDO_USER:$SUDO_USER "$DEST"
 	
 	echo "Setting permissions"
