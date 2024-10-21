@@ -14,7 +14,7 @@ $head = '
 ';
 
 $main_content = '
-<div class="git_update">
+<div class="framework_update">
 	<div class="top_bar">
 		<header>
 			<div class="title">Git Update</div>
@@ -28,20 +28,31 @@ if ($is_remote_update_allowed) {
 
 	if ($step == 2 || ($step == 1 && empty($changed_files))) {
 		$output = !empty($output) ? implode("\n", $output) : "No output detected.<br/>Please talk with your sysadmin to be sure everything runned as planned.";
-		$main_content .= '<label>Update finished!</label>
+		$main_content .= '<div>Update finished!</div>
 		<pre class="code">' . $output . '</pre>';
 	}
 	else if ($step == 1 && !empty($changed_files)) {
+		$changed_authdb = false;
+		
+		foreach ($changed_files as $file)
+			if (preg_match("/^other\/authdb\/\w+\.tbl$/", $file)) {
+				$changed_authdb = true;
+				break;
+			}
+		$changed_authdb = false;
+		
 		$main_content .= '
-			<label>We detected that the following system files were changed:</label>
+			<div>We detected that the following system files were changed:</div>
 			<ul><li>' . implode('</li><li>', $changed_files) . '</li></ul>
 			
-			<div>If you continue, all the changes will be discarded and replaced with the original files.<br/>To continue with the update, please click on the button below.</div>
+			<div class="warning"><u>If you continue, all changes will be discarded and replaced with the original files</u>.<br/>If you want to keep your changes and merge them with the new ones, contact your system administrator to perform the update manually.</div>
+			' . ($changed_authdb ? '<div class="warning">Please note that your authdb has changed, which means you may have changed/created user credentials, or defined new permissions or user types or something similar...<br/><strong>If you continue you will loose all your changes.</strong></div>' : '') . '
+			<div>To proceed to the update, discarding your changes, please click on the button below.</div>
 			<input type="submit" name="update" value="Continue updating"/>';
 	}
 	else
 		$main_content .= '
-			<label>To update to the latest version of the Framework please click in the following button:</label>
+			<div>To update to the latest version of the Framework please click in the following button:</div>
 			<div>
 				<input type="submit" name="update" value="Update to the latest version"/>
 			<div>';
@@ -49,8 +60,9 @@ if ($is_remote_update_allowed) {
 	$main_content .= '</form>';
 }
 else
-	$main_content .= '<label>The update failed due to permission issues.<br/>Please contact your system administrator to run the following command on your server as root user:</label>
-	<pre class="command">sudo /bin/bash "' . CMS_PATH . '"other/script/update_git_repo.sh "' . CMS_PATH . '"</pre>';
+	$main_content .= '<div><strong>Update NOT possible, due to permission issues.</strong><br/>Please contact your system administrator to run the following command on your server as root user:</div>
+	<pre class="command">sudo /bin/bash "' . CMS_PATH . '"other/script/update_git_repo.sh "' . CMS_PATH . '"</pre>
+	<div>If you want to keep your changes and merge them with the new ones, contact your system administrator to perform the update manually.</div>';
 
 $main_content .= '</div>';
 ?>

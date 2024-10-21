@@ -12,29 +12,38 @@ body,
 }
 
 /* GIT UPDATE */
-.git_update {
+.framework_update {
 	min-width:400px;
 	margin:0 auto;
 	padding:40px;
 	text-align:center;
 }
-.git_update ul {
+.framework_update ul {
 	width:400px;
 	max-width:100%;
 	margin:20px auto;
 	text-align:left;
 }
-.git_update ul li {
+.framework_update ul li {
 	list-style:disc;
 	font-weight:bold;
 }
-.git_update input[type=submit] {
+.framework_update input[type=submit] {
 	margin-top:20px;
 }
-.git_update pre.code {
-	height:250px;
+.framework_update .warning {
+	margin:20px 0;
 	padding:20px;
-	margin-top:20px;
+	display:block;
+	color:var(--main-iframe-color);
+	background:var(--main-iframe-bg);
+	border:1px solid var(--resize-bar-border);
+	border-radius:3px;
+}
+.framework_update pre.code {
+	height:250px;
+	margin:20px 0;
+	padding:20px;
 	display:block;
 	color:var(--main-iframe-color);
 	background:var(--main-iframe-bg);
@@ -42,9 +51,9 @@ body,
 	border-radius:3px;
 	overflow:auto;
 }
-.git_update pre.command {
+.framework_update pre.command {
+	margin:20px 0;
 	padding:20px;
-	margin-top:20px;
 	display:block;
 	color:var(--main-iframe-color);
 	background:var(--main-iframe-bg);
