@@ -1,0 +1,7 @@
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+   
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteRule (.*) ../app/__system/presentation/phpframework/error?file=$1 [L,NC]
+</IfModule>
