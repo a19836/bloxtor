@@ -24,6 +24,10 @@ app/__system/layer/presentation/test/webroot/__system/*
 app/config/*
 app/layer/*
 
+#auth files
+other/authdb/login_control.tbl
+other/authdb/user_stats.tbl
+
 #GPL libraries
 app/__system/layer/presentation/phpframework/webroot/vendor/wordpress.zip
 
