@@ -1,4 +1,4 @@
-# Bloxtor framework 
+# Bloxtor framework
 
 ## What is Bloxtor
 

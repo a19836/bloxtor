@@ -21,6 +21,8 @@ Please note you must accept and should follow the *Bloxtor Code of Conduct* in a
 1. Login to your [GitHub](https://github.com/login) account.
 2. Open the Bloxtor [repo](https://github.com/a19836/bloxtor) in your browser.
 3. Fork this repo, i.e. forking the Bloxtor repo, means that you will create a "cloned" repo in your account, but where this new repo is linked to our Bloxtor repo. By default, GitHub fills in the name and description of your new repo, if not, give it a name and type a description that you like. Then click **Create fork**.
+
+	**DO NOT EDIT DIRECTLY THE ORIGINAL BLOXTOR [REPO](https://github.com/a19836/bloxtor) OR CREATE NEW BRANCHES ON IT - ALWAYS FORK THE REPO FIRST**
 4. Clone your repo on your local server, this is, copy the url for your new repo, go to your local terminal and type:
 ```
 #Replace <url> by your repo url. Eg. git clone https://github.com/YOUR-USERNAME/bloxtor
