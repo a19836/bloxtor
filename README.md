@@ -77,7 +77,7 @@ We are excited to open-source Bloxtor and welcome new contributors with open arm
 
 ### Version 1.2
 
-This is the Bloxtor version for PHP 7.3 or higher (tested until PHP8.4).
+This is the Bloxtor version for PHP 5.6 or higher (tested until PHP8.4).
 What was fixed:
 - Transformed framework to work in PHP 7.3, 7.4, 8.0, 8.2, 8.3 and 8.4;
 - Errors fixed;
