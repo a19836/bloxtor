@@ -10,10 +10,10 @@
 	+ Addionally the developer can access directly the Laravel/Symphony framework, through the url, if this layer has the REST setting activate.
 - Integrate Bloxtor with Github so the developer can have code versioning, this is, code versioning for the developer code, the code inside of the 'app' folder. 
 - Integrate a chatbot into Bloxtor to help developers understand how the frameworks work and what steps they must follow to achieve their goals.
-- Integrate AI in the Page, Template and View editors to create beautiful HTML automatically and add that html to the correspondent region.
+- Integrate AI in the Page, Template and View editors to create beautiful HTML automatically and add that html to the correspondent region. Imagine a new menu option that opens a popup where developers can describe what they need in natural language, and the framework will generate the relevant code directly into the appropriate section.
 - Integrate AI in the Logic Editor to create php code automatically, according with a developer description.
 - Integrate AI in the SQL editor to create statements automatically, according with a developer description.
-- Integrate AI to create a final app from scratch, where developer writes in natural language what he wants to do, and Bloxtor creates the correspondent code automatically, creating all data-base structures, sql statements, logic and interface code, delivering an app ready to use by the end-user.
+- Integrate AI to create a final app from scratch, where developer writes in natural language what he wants to do, and Bloxtor creates the correspondent code automatically, creating all data-base structures, sql statements, logic and interface code, delivering an app ready to use by the end-user. In the "Create Project" popup, we could add a new tab where developers describe their project requirements in natural language, and Bloxtor takes care the rest.
 - Integrate Bloxtor with Zapier, where the user saves its credentials in Bloxtor and logs in to Zappier directly from Bloxtor (through an iframe).
 - Integrate Bloxtor with Lucidchart, where the user saves its credentials in Bloxtor and logs in to Lucidchart directly from Bloxtor (through an iframe), to create diagrams.
 - Integrate the Github account to be set automatically with the following apps:
