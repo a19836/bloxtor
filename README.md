@@ -11,7 +11,7 @@ Discover more about Bloxtor on our homepage: [https://www.bloxtor.com]
 - Please read our documentation [here](https://bloxtor.com/onlineitframeworktutorial/).
 - Please watch our video tutorials [here](https://bloxtor.com/onlineitframeworktutorial/?block_id=video/simple).
 - Please read the Bloxtor terms and conditions at [LICENSE.md](./LICENSE.md).
-- Please read our tasks list at [TODOS.md](./TODOS.md) to understand how can you help us improve Bloxtor.
+- Please review [TODOS.md](./TODOS.md) to see how you can contribute to improving Bloxtor, and refer to [CONTRIBUTING.md](./CONTRIBUTING.md) for instructions on submitting your contributions.
 - Stay updated with the latest Bloxtor news by subscribing to our LinkedIn channel [here](https://www.linkedin.com/company/bloxtor/).
 
 ### Key Features

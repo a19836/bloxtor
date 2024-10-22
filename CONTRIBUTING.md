@@ -1,13 +1,16 @@
 # Bloxtor Contribution Rules
 
-Before contributing, please read carefully our *Bloxtor Licence Agreement*.
+Before contributing, please read carefully our *[Bloxtor Licence Agreement](./LICENSE.md)*.
 
 When contributing to our projects, please first discuss the change you wish to make via issue or any other available method with the owners of the correspondent repository before making a change.
 
-Please note you must accept and should follow the *Bloxtor Code of Conduct* in all your interactions with the project.
+Please note you must accept and should follow the *[Bloxtor Code of Conduct](./CODE_OF_CONDUCT.md)* in all your interactions with the project.
+
+If you're not sure how you can help us improve Bloxtor, read [TODOS.md](./TODOS.md).
 
 ### Pull request process guide-lines:
 
+1. Do not add any code incompatible with [Bloxtor Licence](./LICENSE.md).
 1. Ensure any runnable temporary or dummy files are removed before doing a commit.
 2. Update the "Version" section at README.md with details of changes to the project, this includes new environment variables, exposed ports, useful file locations and container parameters.
 3. Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent.

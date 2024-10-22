@@ -1,5 +1,7 @@
 # Bloxtor To-Dos (Tasks)
 
+*For instructions on submitting your contributions please read [CONTRIBUTING.md](./CONTRIBUTING.md).*
+
 - Create the data-source layer, so developers can use this thrid-party framework. 
 	+ Basically create a new Layer called data-source that can have multiple types (eg: Laravel, Symphony, Wordpress, MongoDB, REST-API, SOAP-API, etc...);
 	+ This new layer can be related to the Presentation and Business Logic layers;
