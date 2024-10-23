@@ -16,6 +16,7 @@
 - Integrate AI in the Logic Editor to create php code automatically, according with a developer description.
 - Integrate AI in the SQL editor to create statements automatically, according with a developer description.
 - Integrate AI to create a final app from scratch, where developer writes in natural language what he wants to do, and Bloxtor creates the correspondent code automatically, creating all data-base structures, sql statements, logic and interface code, delivering an app ready to use by the end-user. In the "Create Project" popup, we could add a new tab where developers describe their project requirements in natural language, and Bloxtor takes care the rest.
+- Add new widget to the LayoutUIEditor on the Page editor, to allow to create a google maps but with specific icons/pins/axis-graphs based in dynamic data. Create a widget that could be used to show dynamic data in a map.
 - Integrate Bloxtor with Zapier, where the user saves its credentials in Bloxtor and logs in to Zappier directly from Bloxtor (through an iframe).
 - Integrate Bloxtor with Lucidchart, where the user saves its credentials in Bloxtor and logs in to Lucidchart directly from Bloxtor (through an iframe), to create diagrams.
 - Integrate the Github account to be set automatically with the following apps:

@@ -1836,6 +1836,39 @@ function LayoutUIEditor() {
 					var first_widget = $(opts.first_node).parent().closest(".template-widget");
 					var last_widget = $(opts.last_node).parent().closest(".template-widget");
 					
+					//disable erase widget node through backspace and delete keys
+					if (opts.is_same_node && opts.first_node.textContent == "" && me.TextSelection.getSelection().toString() == "") {
+						var is_erase_widget_node = !first_widget[0] && !last_widget[0];
+						
+						if (!is_erase_widget_node && first_widget.is(last_widget))
+							is_erase_widget_node = true;
+						
+						if (is_erase_widget_node) {
+							var node = first_widget[0] ? $(opts.first_node).closest(".template-widget") : null;
+							node = node && node[0] ? node : $(opts.common_parent);
+							
+							if (node[0] && node.text() != "")
+								is_erase_widget_node = false;
+							
+							if (is_erase_widget_node) {
+								//e.stopPropagation();
+								//e.preventDefault();
+								
+								if (node[0]) {
+									try {
+										me.TextSelection.placeCaretAtEndOfElement(node[0]);
+									}
+									catch(ex) {
+										//do nothing
+									}
+								}
+								
+								return false;
+							}
+						}
+					}
+					
+					//just in case, it deletes, reload menu settings and menu layer
 					if (first_widget[0]) {
 						setTimeout(function() {
 							me.reloadMenuSettingsIfOpened(first_widget);
@@ -3588,6 +3621,7 @@ function LayoutUIEditor() {
 							'<i class="zmdi zmdi zmdi-more" title="Other Options"></i>' +
 							'<ul class="sub-options">' +
 								'<li class="option props" title="Show Properties"><i class="zmdi zmdi-settings"></i>Show Properties</li>' + 
+								'<li class="option html-contents" title="Edit Contents"><i class="zmdi zmdi-edit"></i>Edit Contents</li>' + 
 								'<li class="option toggle" title="Toggle"><i class="zmdi zmdi-unfold-less"></i>Toggle</li>' +
 								'<li class="option select-parent" title="Select Parent"><i class="zmdi zmdi-forward zmdi-hc-rotate-270"></i>Select Parent</li>' +
 								'<li class="option delete" title="Delete"><i class="zmdi zmdi-delete"></i>Delete</li>' +
@@ -3596,6 +3630,7 @@ function LayoutUIEditor() {
 								'<li class="option cut" title="Cut Widget"><i class="zmdi zmdi-scissors"></i>Cut Widget</li>' +
 								'<li class="option paste" title="Paste Widget"><i class="zmdi zmdi-paste"></i>Paste Widget</li>' +
 								'<li class="option html-source" title="Widget Html Source"><i class="zmdi zmdi-code"></i>Widget Html Source</li>' +
+								'<li class="option link-contents" title="Convert Contents to Link"><i class="zmdi zmdi-link"></i>Convert Contents to Link</li>' +
 								'<li class="option recreate-widget" title="Recreate Widget in Layout"><i class="zmdi zmdi-refresh"></i>Recreate Widget</li>' +
 							'</ul>' +
 						'</span>' +
@@ -3729,12 +3764,28 @@ function LayoutUIEditor() {
 				me.options.on_template_widgets_layout_changed_func(me.selected_template_widget);
 		});
 		
+		//set html-contents option
+		options.find(".html-contents").on("click", function(event) {
+			event.preventDefault();
+	  		event.stopPropagation();
+	  		
+	  		showWidgetSource(me.selected_template_widget, true);
+		});
+		
 		//set html-source option
 		options.find(".html-source").on("click", function(event) {
 			event.preventDefault();
 	  		event.stopPropagation();
 	  		
-	  		showWidgetSource(me.selected_template_widget);
+	  		showWidgetSource(me.selected_template_widget, false);
+		});
+		
+		//set link-contents option
+		options.find(".link-contents").on("click", function(event) {
+			event.preventDefault();
+	  		event.stopPropagation();
+	  		
+	  		convertWidgetContentsToLink(me.selected_template_widget);
 		});
 		
 		//set recreate-widget option
@@ -4038,11 +4089,11 @@ function LayoutUIEditor() {
 			});
 	}
 	
-	function showWidgetSource(widget) {
+	function showWidgetSource(widget, is_inner_html) {
   		if (!widget) 
   			me.showError("No widget selected!");
   		else {
-	  		var source = me.getCleanedHtmlContents(widget);
+	  		var source = me.getCleanedHtmlContents(is_inner_html ? widget.contents() : widget);
 	  		
 	  		var popup = template_widgets.children("." + me.options.template_widget_source_popup_class);
 	  		
@@ -4081,23 +4132,47 @@ function LayoutUIEditor() {
   				
   				if (new_source != source) {
   					if (new_source) {
-		  				var new_widget = $(new_source);
-		  				widget.after(new_widget);
+  						//add '<div>' and then get contents() is very important, so we can get the text nodes also in the root source.
+  						var tmp_widget = $('<div>' + new_source + '</div>');
+		  				var new_contents = tmp_widget.contents();
+		  				var new_children = tmp_widget.children();
 		  				
-		  				//must remove widget before we convert it
-		  				me.deleteTemplateWidget(widget);
-		  				
-	  					//convert new html element to widget
-		  				me.convertHtmlElementToWidget(new_widget);
-		  				me.refreshElementMenuLayer(new_widget);
-		  				
-		  				try {
-		  					new_widget.trigger("click");
+		  				if (is_inner_html) {
+		  					widget.html("");
+		  					widget.append(new_contents);
+		  					
+		  					//convert new html element to widget
+			  				me.convertHtmlElementToWidget(new_contents);
+			  				me.refreshElementMenuLayer(new_children); //pass only children, without text nodes
+							
+							if (typeof me.options.on_template_widgets_layout_changed_func == "function")
+								me.options.on_template_widgets_layout_changed_func(widget);
 		  				}
-		  				catch(e) {
-		  					if (console && console.log) 
-								console.log(e);
+		  				else {
+			  				widget.after(new_contents);
+		  				
+			  				//must remove widget before we convert it
+			  				me.deleteTemplateWidget(widget);
+		  				
+		  					//convert new html element to widget
+			  				me.convertHtmlElementToWidget(new_contents);
+			  				me.refreshElementMenuLayer(new_children); //pass only children, without text nodes
+			  				
+			  				try {
+			  					new_children.first().trigger("click"); //click only in the first node, just in case.
+			  				}
+			  				catch(e) {
+			  					if (console && console.log) 
+									console.log(e);
+			  				}
 		  				}
+		  			}
+		  			else if (is_inner_html) {
+		  				widget.html("");
+		  				me.refreshElementMenuLayer(widget);
+						
+						if (typeof me.options.on_template_widgets_layout_changed_func == "function")
+							me.options.on_template_widgets_layout_changed_func(widget);
 		  			}
 		  			else
 		  				me.deleteTemplateWidget(widget);
@@ -4135,6 +4210,27 @@ function LayoutUIEditor() {
   			if (editor)
 	  			editor.resize();
   		}
+  	}
+  	
+  	function convertWidgetContentsToLink(widget) {
+  		if (!widget) 
+  			me.showError("No widget selected!");
+  		else if (confirm("You are about to convert this widget's contents into a link. Do you wish to proceed?")) {
+	  		var contents = widget.contents();
+	  		var link_widget = $('<a></a>');
+	  		widget.append(link_widget);
+	  		
+			//convert new html element to widget
+			me.convertHtmlElementToWidget(link_widget);
+	  		
+	  		//move contents to link widget
+	  		link_widget.append(contents);
+			
+			me.refreshElementMenuLayer(widget);
+			
+			if (typeof me.options.on_template_widgets_layout_changed_func == "function")
+				me.options.on_template_widgets_layout_changed_func(widget);
+	  	}
   	}
 	
 	function pasteCopiedWidget(droppable) {
@@ -4486,10 +4582,12 @@ function LayoutUIEditor() {
 					'<span class="option other-options" title="Other Options">' +
 						'<i class="zmdi zmdi zmdi-more" title="Other Options"></i>' +
 						'<ul class="sub-options">' +
+							'<li class="option html-contents" title="Edit Contents"><i class="zmdi zmdi-edit"></i>Edit Contents</li>' + 
 							'<li class="option toggle" title="Toggle"><i class="zmdi zmdi-unfold-less"></i>Toggle</li>' +
 							'<li class="option add" title="Add Widget"><i class="zmdi zmdi-plus-circle-o"></i>Add Widget</li>' +
 							'<li class="option paste" title="Paste Widget"><i class="zmdi zmdi-paste"></i>Paste Widget</li>' +
 							'<li class="option html-source" title="Widget Html Source"><i class="zmdi zmdi-code"></i>Widget Html Source</li>' +
+							'<li class="option link-contents" title="Convert Contents to Link"><i class="zmdi zmdi-link"></i>Convert Contents to Link</li>' +
 						'</ul>' +
 					'</span>' +
 					'<i class="zmdi zmdi-close-circle option close" title="Close"></i>' +
@@ -4595,12 +4693,28 @@ function LayoutUIEditor() {
 				me.options.on_template_widgets_layout_changed_func(me.selected_template_droppable);
 		});
 		
+		//set html-contents option
+		options.find(".html-contents").on("click", function(event) {
+			event.preventDefault();
+	  		event.stopPropagation();
+	  		
+	  		showWidgetSource(me.selected_template_droppable, true);
+		});
+		
 		//set html-source option
 		options.find(".html-source").on("click", function(event) {
 			event.preventDefault();
 	  		event.stopPropagation();
 	  		
-	  		showWidgetSource(me.selected_template_droppable);
+	  		showWidgetSource(me.selected_template_droppable, false);
+		});
+		
+		//set link-contents option
+		options.find(".link-contents").on("click", function(event) {
+			event.preventDefault();
+	  		event.stopPropagation();
+	  		
+	  		convertWidgetContentsToLink(me.selected_template_droppable);
 		});
 		
 		//set close option
@@ -7468,7 +7582,9 @@ function LayoutUIEditor() {
 				 + '			<button class="btn copy">Copy <i class="zmdi zmdi-copy"></i></button>'
 				 + '			<button class="btn cut">Cut <i class="zmdi zmdi-wrap-text"></i></button>'
 				 + '			<button class="btn paste">Paste <i class="zmdi zmdi-paste"></i></button>'
+				 + '			<button class="btn html-contents">Edit Contents <i class="zmdi zmdi-edit"></i></button>'
 				 + '			<button class="btn html-source">Source <i class="zmdi zmdi-code"></i></button>'
+				 + '			<button class="btn link-contents">Convert Contents to Link <i class="zmdi zmdi-link"></i></button>'
 				 + '			<button class="btn convert-to-tag select-shown" title="Convert the selected widget into a tag name of your choice.">Convert to tag: <input title="Write a tag name and then click in the button" /><select title="Choose a tag name and then click in the button"></select><i class="zmdi zmdi-swap swap-input-select"></i></button>'
 				 + '		</li>'
 				 + '	</ul>'
@@ -7773,8 +7889,16 @@ function LayoutUIEditor() {
 				me.options.on_template_widgets_layout_changed_func(me.selected_template_widget);
 		});
 		
+		menu_settings.find(".settings-actions button.html-contents").click(function(event) {
+			showWidgetSource(me.selected_template_widget, true);
+		});
+		
 		menu_settings.find(".settings-actions button.html-source").click(function(event) {
-			showWidgetSource(me.selected_template_widget);
+			showWidgetSource(me.selected_template_widget, false);
+		});
+		
+		menu_settings.find(".settings-actions button.link-contents").click(function(event) {
+			convertWidgetContentsToLink(me.selected_template_widget);
 		});
 		
 		menu_settings.find(".settings-actions button.convert-to-tag").click(function(event) {
