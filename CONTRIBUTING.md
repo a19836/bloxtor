@@ -70,4 +70,20 @@ You'll see a banner indicating that your branch had recent pushes. Click **Compa
 	GitHub will bring you to a page that shows the differences between your fork and the original repository. Enter a title and a description of your changes. It's important to provide as much useful information and a rationale for why you're making this pull request in the first place. We need to be able to determine whether your change is as useful to everyone as you think it is. Finally, click **Create pull request**.
 10. Wait until you get our answer... Pull requests are an area for discussion. Don't be offended if we reject your pull request, or asks for more information on why it's been made.
 11. After your request be accepted and closed, you can then delete your forked repo, i.e from your local server and from your GitHub account.
+```
+//switch first to main branch
+git checkout main
+
+// delete branch locally
+git branch -d BRANCH-NAME
+
+// delete branch remotely
+git push origin --delete BRANCH-NAME
+
+//remove your local folder
+sudo rm -rf FOLDER-PATH
+```
+Then go to your GitHub account, select the forked repo, click on "settings" tab and then on "Delete this repository" button.
+
+
 
