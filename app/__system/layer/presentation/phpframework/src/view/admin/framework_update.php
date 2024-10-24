@@ -29,7 +29,8 @@ if ($is_remote_update_allowed) {
 	if ($step == 2 || ($step == 1 && empty($changed_files))) {
 		$output = !empty($output) ? implode("\n", $output) : "No output detected.<br/>Please talk with your sysadmin to be sure everything runned as planned.";
 		$main_content .= '<div>Update finished!</div>
-		<pre class="code">' . $output . '</pre>';
+		<pre class="code">' . $output . '</pre>
+		<div>To refresh the framework please click <a href="javascript:void(0)" onClick="window.parent.document.location=window.parent.document.location;">here</a></div>';
 	}
 	else if ($step == 1 && !empty($changed_files)) {
 		$changed_authdb = false;

@@ -1,4 +1,6 @@
 <?php
+include_once $EVC->getUtilPath("FlushCacheHandler");
+
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
 $is_remote_update_allowed = function_exists("exec") && function_exists("posix_getpwuid") && file_exists(SYSTEM_PATH);
@@ -25,6 +27,9 @@ if ($is_remote_update_allowed) {
 			if (empty($changed_files)) {
 				//call git update
 				exec("/bin/git pull '" . CMS_PATH . "'", $output);
+				
+				//remove cache
+				FlushCacheHandler::flushCache($EVC, $webroot_cache_folder_path, $webroot_cache_folder_url, $workflow_paths_id, $user_global_variables_file_path, $user_beans_folder_path, $css_and_js_optimizer_webroot_cache_folder_path, $deployments_temp_folder_path);
 			}
 		}
 	}

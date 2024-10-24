@@ -45,7 +45,7 @@ then
 		/bin/chown -R $SUDO_USER:$SUDO_USER "$DEST"
 		
 		echo "  - Undo all previous changes"
-		/bin/git checkout $DEST/*
+		/bin/git checkout "$DEST/"*
 		
 		echo "  - Get all new changes"
 		/bin/git pull $DEST
@@ -56,6 +56,10 @@ then
 		
 		echo "  - Setting permissions"
 		/bin/bash "$DEST/other/script/set_perms.sh" "$DEST"
+		
+		echo "  - Removing cache and temp files"
+		/bin/rm -rf "$DEST/tmp/cache/"
+		/bin/rm -rf "$DEST/app/__system/layer/presentation/phpframework/webroot/__system/"*
 		
 		echo "* END UPDATING... *";
 	fi

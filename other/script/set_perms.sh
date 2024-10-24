@@ -74,6 +74,8 @@ then
 	
 	#delete cache of trunk path if exists
 	rm -rf $TRUNK_PATH/tmp/cache/ 2>/dev/null
+	rm -rf $TRUNK_PATH/app/__system/layer/presentation/phpframework/webroot/__system/* 2>/dev/null
+	rm -rf $TRUNK_PATH/app/__system/layer/presentation/test/webroot/__system/* 2>/dev/null
 
 	#delete cache in centos
 	rm -rf /var/www/html/phpframeworksrc/*/tmp/cache/ 2>/dev/null
