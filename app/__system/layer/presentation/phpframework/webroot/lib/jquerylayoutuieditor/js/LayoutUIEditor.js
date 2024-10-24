@@ -1837,34 +1837,66 @@ function LayoutUIEditor() {
 					var last_widget = $(opts.last_node).parent().closest(".template-widget");
 					
 					//disable erase widget node through backspace and delete keys
-					if (opts.is_same_node && opts.first_node.textContent == "" && me.TextSelection.getSelection().toString() == "") {
-						var is_erase_widget_node = !first_widget[0] && !last_widget[0];
+					if (opts.is_same_node) {
+						var is_erase_widget_node = false;
+						var is_caret_at_start = opts.first_node ? me.TextSelection.isCaretAtStartOfElement(opts.first_node) : false;
+						var is_caret_at_end = opts.first_node ? me.TextSelection.isCaretAtEndOfElement(opts.first_node) : false; //note that we can use first_node bc it is equal to last_node. Note that the opts.is_same_node is true.
+						var first_node_still_exists = opts.first_node.parentNode ? true : false;
+						var is_empty_node = opts.first_node && opts.first_node.textContent == "" && me.TextSelection.getSelection().toString() == "";
 						
-						if (!is_erase_widget_node && first_widget.is(last_widget))
+						/*console.log("** HERE **");
+						console.log(opts);
+						console.log(first_widget[0]);
+						console.log(last_widget[0]);
+						console.log("first_node_still_exists:"+first_node_still_exists);
+						console.log("first_node.textContent:"+opts.first_node.textContent);
+						console.log("getSelection:"+me.TextSelection.getSelection().toString());
+						console.log("is_caret_at_start:"+is_caret_at_start);
+						console.log("is_caret_at_end:"+is_caret_at_end);
+						console.log("first_node_still_exists:"+first_node_still_exists);*/
+						
+						if (is_empty_node) {
+							var is_erase_widget_node = !first_widget[0] && !last_widget[0];
+							
+							if (!is_erase_widget_node && first_widget.is(last_widget))
+								is_erase_widget_node = true;
+							
+							//if is_erase_widget_node is true but node has some content and caret is in the middle, set is_erase_widget_node to false
+							if (is_erase_widget_node) {
+								var node = first_widget[0] && first_node_still_exists ? $(opts.first_node).closest(".template-widget") : null;
+								node = node && node[0] ? node : $(opts.common_parent);
+								
+								if (node[0] && node.text() != "" && !is_caret_at_start && !is_caret_at_end)
+									is_erase_widget_node = false;
+							}
+						}
+						else if (e.keyCode === 8 && is_caret_at_start) //if backspace and cursor is at the beginning of widget
+							is_erase_widget_node = true;
+						else if (e.keyCode === 46 && is_caret_at_end) //if del and cursor is at the end of widget
 							is_erase_widget_node = true;
 						
 						if (is_erase_widget_node) {
-							var node = first_widget[0] ? $(opts.first_node).closest(".template-widget") : null;
+							var node = first_widget[0] && first_node_still_exists ? $(opts.first_node).closest(".template-widget") : null;
 							node = node && node[0] ? node : $(opts.common_parent);
 							
-							if (node[0] && node.text() != "")
-								is_erase_widget_node = false;
+							//console.log(node[0]);
 							
-							if (is_erase_widget_node) {
-								//e.stopPropagation();
-								//e.preventDefault();
-								
-								if (node[0]) {
+							if (node[0]) {
+								//if node does not exist anymore, then remove caret from node. This is very important, otherwise the next time we click in the backspace or delete keys, they won't work because the opts var will contain the old elements that were already removed.
+								if (!first_node_still_exists) {
 									try {
-										me.TextSelection.placeCaretAtEndOfElement(node[0]);
+										me.TextSelection.removeCaretFromElement(node[0]);
 									}
 									catch(ex) {
+										console.log(ex);
 										//do nothing
 									}
 								}
-								
-								return false;
 							}
+							
+							//e.stopPropagation();
+							//e.preventDefault();
+							return false;
 						}
 					}
 					

@@ -355,6 +355,37 @@ function TextSelection() {
 		return contains_char;
 	};
 	
+	me.isActiveElement = function(elm) {
+		var doc = elm.ownerDocument || elm.document;
+		
+		return doc.activeElement === elm;
+	};
+	
+	me.getLastCaretCharacterOffset = function(elm) {
+		var doc = elm.ownerDocument || elm.document;
+		var win = doc.defaultView || doc.parentWindow;
+		var selection = null;
+		var l = null;
+		
+		if (doc.selection && doc.selection.createRange) 
+			selection = typeof doc.selection == "function" ? doc.selection() : doc.selection;
+		else if (win.getSelection)
+			selection = win.getSelection();
+		
+		if (typeof selection && typeof doc.createRange != "undefined") {
+			var range = doc.createRange();
+			range.selectNodeContents(elm);
+			l = range.toString().length;
+		}
+		else if (typeof doc.body.createTextRange != "undefined") {
+			var textRange = doc.body.createTextRange();
+			textRange.moveToElementText(elm);
+			l = textRange.toString().length;
+		}
+		
+		return l;
+	};
+	
 	me.getCaretCharacterOffsetWithin = function(elm) {
 		var caret_offset = null; //must be null so we can detect if the cursor caret was place inside of element or not. However sometimes the caret is not placed but the caret_offset is 0. So this is not very realiable.
 		var doc = elm.ownerDocument || elm.document;
@@ -365,7 +396,7 @@ function TextSelection() {
 			sel = win.getSelection();
 			
 			if (sel.rangeCount > 0) {
-				var range = win.getSelection().getRangeAt(0);
+				var range = sel.getRangeAt(0);
 				var pre_caret_range = range.cloneRange();
 				pre_caret_range.selectNodeContents(elm);
 				pre_caret_range.setEnd(range.endContainer, range.endOffset);
@@ -383,6 +414,150 @@ function TextSelection() {
 		return caret_offset;
 	};
 	
+	me.isCaretAtStartOfElement = function(elm) {
+		var doc = elm.ownerDocument || elm.document;
+		var win = doc.defaultView || doc.parentWindow;
+		
+		//Bail if there is text selected
+		if (typeof win.getSelection != "undefined") {
+			var sel = win.getSelection();
+			
+			if (sel.rangeCount > 0 && sel.getRangeAt(0).toString().length > 0)
+				return false;
+		}
+		
+		return me.getCaretCharacterOffsetWithin(elm) === 0;
+	};
+	
+	me.isCaretAtEndOfElement = function(elm) {
+		var doc = elm.ownerDocument || elm.document;
+		var win = doc.defaultView || doc.parentWindow;
+		
+		//Bail if there is text selected
+		if (typeof win.getSelection != "undefined") {
+			var sel = win.getSelection();
+			
+			if (sel.rangeCount > 0 && sel.getRangeAt(0).toString().length > 0)
+				return false;
+		}
+		
+		var offset = me.getCaretCharacterOffsetWithin(elm);
+		return offset !== null && offset === me.getLastCaretCharacterOffset(elm);
+	};
+	
+	me.isCaretOnFirstLine = function(elm) {
+		var doc = elm.ownerDocument || elm.document;
+		var win = doc.defaultView || doc.parentWindow;
+		var selection = null;
+		
+		if (doc.selection && doc.selection.createRange) 
+			selection = typeof doc.selection == "function" ? doc.selection() : doc.selection;
+		else if (win.getSelection)
+			selection = win.getSelection();
+		
+		if (selection.rangeCount === 0) 
+			return false;
+		
+		//Get the client rect of the current selection
+		var start_range = selection.getRangeAt(0);
+		
+		//Bail if there is text selected
+		if (start_range.toString().length > 0) 
+			return false;
+
+		var start_rect = start_range.getBoundingClientRect();
+
+		//Create a range at the end of the last text node
+		var end_range = doc.createRange();
+		end_range.selectNodeContents(elm);
+
+		//The endContainer might not be an actual text node, try to find the last text node inside
+		var start_container = end_range.endContainer;
+		var start_offset = 0;
+		
+		while (start_container.hasChildNodes() && !(start_container instanceof Text))
+			start_container = start_container.firstChild;
+
+		end_range.setStart(start_container, start_offset);
+		end_range.setEnd(start_container, start_offset);
+		var end_rect = end_range.getBoundingClientRect();
+
+		return start_rect.top === end_rect.top;
+	};
+
+	me.isCaretOnLastLine = function(elm) {
+		var doc = elm.ownerDocument || elm.document;
+		var win = doc.defaultView || doc.parentWindow;
+		var selection = null;
+		
+		if (doc.selection && doc.selection.createRange) 
+			selection = typeof doc.selection == "function" ? doc.selection() : doc.selection;
+		else if (win.getSelection)
+			selection = win.getSelection();
+		
+		if (selection.rangeCount === 0) 
+			return false;
+		
+		//Get the client rect of the current selection
+		var start_range = selection.getRangeAt(0);
+		
+		//Bail if there is text selected
+		if (start_range.toString().length > 0)
+			return false;
+
+		var start_rect = start_range.getBoundingClientRect();
+
+		//Create a range at the end of the last text node
+		var end_range = document.createRange();
+		end_range.selectNodeContents(elm);
+
+		//The endContainer might not be an actual text node, try to find the last text node inside
+		var end_container = end_range.endContainer;
+		var end_offset = 0;
+		
+		while (end_container.hasChildNodes() && !(end_container instanceof Text)) {
+			end_container = end_container.lastChild;
+			end_offset = end_container.length ?? 0;
+		}
+
+		end_range.setEnd(end_container, end_offset);
+		end_range.setStart(end_container, end_offset);
+		var end_rect = end_range.getBoundingClientRect();
+
+		return start_rect.bottom === end_rect.bottom;
+	};
+	
+	me.placeCaretAtStartOfElement = function(elm) {
+		if (elm.nodeType == Node.ELEMENT_NODE)
+			elm.focus();
+		
+		var doc = elm.ownerDocument; //please do not use "document" here, bc the selection_elm can be inside of an iframe
+		var win = doc.defaultView || doc.parentWindow; //please do not use "window" here, bc the selection_elm can be inside of an iframe
+		var selection = null;
+		
+		if (doc.selection && doc.selection.createRange) 
+			selection = typeof doc.selection == "function" ? doc.selection() : doc.selection;
+		else if (win.getSelection)
+			selection = win.getSelection();
+		
+		if (typeof selection && typeof doc.createRange != "undefined") {
+			var range = doc.createRange();
+			range.setStart(elm, 0);
+			range.setEnd(elm, 0);
+			range.collapse(false);
+			var sel = selection;
+			sel.removeAllRanges();
+			sel.addRange(range);
+		} 
+		else if (typeof doc.body.createTextRange != "undefined") {
+			var textRange = doc.body.createTextRange();
+			textRange.moveStart(elm, 0);
+			textRange.moveEnd(elm, 0);
+			textRange.collapse(false);
+			textRange.select();
+		}
+	};
+	
 	me.placeCaretAtEndOfElement = function(elm) {
 		if (elm.nodeType == Node.ELEMENT_NODE)
 			elm.focus();
@@ -397,7 +572,7 @@ function TextSelection() {
 			selection = win.getSelection();
 		
 		if (typeof selection && typeof doc.createRange != "undefined") {
-			var range = elm.createRange();
+			var range = doc.createRange();
 			range.selectNodeContents(elm);
 			range.collapse(false);
 			var sel = selection;
@@ -410,6 +585,24 @@ function TextSelection() {
 			textRange.collapse(false);
 			textRange.select();
 		}
+	};
+	
+	me.removeCaretFromElement = function(elm) {
+		if (elm.nodeType == Node.ELEMENT_NODE)
+			elm.blur();
+		
+		var doc = elm.ownerDocument; //please do not use "document" here, bc the selection_elm can be inside of an iframe
+		var win = doc.defaultView || doc.parentWindow; //please do not use "window" here, bc the selection_elm can be inside of an iframe
+		var selection = null;
+		
+		if (doc.selection && doc.selection.createRange) 
+			selection = typeof doc.selection == "function" ? doc.selection() : doc.selection;
+		else if (win.getSelection)
+			selection = win.getSelection();
+		
+		if (typeof selection && typeof selection.removeAllRanges != "undefined") {
+			selection.removeAllRanges();
+		} 
 	};
 	
 	me.setEditorElm = function(editor_elm) {
