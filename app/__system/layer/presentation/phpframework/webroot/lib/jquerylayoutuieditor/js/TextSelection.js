@@ -204,7 +204,7 @@ function TextSelection() {
 			//Fix issue when the main-droppable have some elements inside with contenteditable=false, and then we want to write something below that items. By default the main-droppable doesn't get focus because the focus goes to the non-editable objects inside of the main-droppable. So we must place the caret inside of the main-droppable and after the non-editable elements.
 			//This issue only happends if there are any children, otherwise the problem will not happen.
 			if (this.childNodes.length > 0 && me.selection_opts) {
-				var contains_char = me.isPressedKeyCharPrintable(e); //checks if pressed key contains any char
+				var contains_char = me.isPressedKeyPrintable(e); //checks if pressed key contains any char
 				
 				//if contains a char (this already includes the enter key)
 				if (contains_char) {
@@ -340,7 +340,7 @@ function TextSelection() {
 		});
 	};
 	
-	me.isPressedKeyCharPrintable = function(e) {
+	me.isPressedKeyPrintable = function(e) {
 		//checks if pressed key contains any char
 		var contains_char = false;
 		
@@ -351,6 +351,15 @@ function TextSelection() {
 			//We need to filter out backspace and ctrl/alt/meta key combinations
 			contains_char = !e.ctrlKey && !e.metaKey && !e.altKey && e.which != 8;
 		}
+		
+		return contains_char;
+	};
+	
+	me.isPressedKeyCharPrintable = function(e) {
+		var contains_char = me.isPressedKeyPrintable(e);
+		
+		if (e.key.length !== 1) //means that only char keys are allowed: Arrows will not be allowed
+			contains_char = false;
 		
 		return contains_char;
 	};

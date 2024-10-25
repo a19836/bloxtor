@@ -51,6 +51,7 @@
 - Finish the cache settings in the "Advanced Settings Tab" of the Page Editor.
 - Change the word "Entity" to "Page" in the phpframework code. Currently an entity is a Page in Bloxtor. However, the people relate "entity" with a database model, which gets confused. So we need to change all files and replace "entity" with "page" word. Also change EVC (Entity-View-Controller) to PVC (Page-View-Controller).
 - In the Logic Editor, set the code auto-complete function, which shows multiple options to the developer of the possible code that he can do.
+- Create a better mobile version of the framework, so developers can create easily web-apps from their smartphone.
 
 Other tasks will be added as these tasks are completed.
 

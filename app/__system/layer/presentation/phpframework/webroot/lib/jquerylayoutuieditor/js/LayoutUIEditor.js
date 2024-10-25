@@ -1819,7 +1819,7 @@ function LayoutUIEditor() {
 		//adding del and backspace key handler, to update menu layer
 		template_widgets_droppable_elm.keydown(function(e) {
 			var droppable_elm = $(this); //we can have more than one droppable elm, so we must use "this".
-			var contains_char = me.TextSelection ? me.TextSelection.isPressedKeyCharPrintable(e) : false; //checks if pressed key contains any char
+			var contains_char = me.TextSelection ? me.TextSelection.isPressedKeyPrintable(e) : false; //checks if pressed key contains any char
 			
 			//set escape key press, to stop resizing or dragging. this is very important for the image, video and iframe elements.
 			if (e.which === 27 || e.keyCode === 27) { //escape key

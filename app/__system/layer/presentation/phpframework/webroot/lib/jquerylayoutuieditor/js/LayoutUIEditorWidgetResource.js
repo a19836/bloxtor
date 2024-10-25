@@ -1729,7 +1729,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 			var db_table_alias_input = widget_properties_ul.find(".widget-property-db-table-alias input");
 			var db_table_alias = db_table_alias_input.val();
 			
-			if (!db_table_alias) {
+			if (!db_table_alias && table_name.indexOf("_") != -1) { //only if exists _ in the table name
 				db_table_alias = prompt("Do you wish to write an alias for the table '" + table_name + "'? (leave it blank for default)", saved_table_alias.hasOwnProperty(table_name) ? saved_table_alias[table_name] : "");
 				saved_table_alias[table_name] = db_table_alias ? db_table_alias : "";
 				
@@ -8825,7 +8825,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 					
 					if (saved_table_alias.hasOwnProperty( aux["table"] ))
 						db_table_alias = saved_table_alias[ aux["table"] ];
-					else
+					else if (aux["table"].indexOf("_") != -1) //only if exists _ in the table name
 						db_table_alias = prompt("Do you wish to write an alias for the table '" + aux["table"] + "'? (leave it blank for default)");
 					
 					saved_table_alias[ aux["table"] ] = db_table_alias ? db_table_alias : "";
