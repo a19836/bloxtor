@@ -96,10 +96,12 @@
 
 /* SOME DEFAULT ICONS */
 
-.icon.logs_console {
+.icon.logs_console,
+  .icon.terminal_console {
 	width:18px;
 }
-.icon.logs_console::before {
+.icon.logs_console::before,
+  .icon.terminal_console::before {
 	content:"\f26c";
 }
 .icon.tutorials::before {

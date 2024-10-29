@@ -50,6 +50,9 @@ else if (!empty($_COOKIE["filter_by_layout"]))
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
 
 include $EVC->getUtilPath("admin_uis_layers_and_permissions");
+
+$is_terminal_console_allowed = $UserAuthenticationHandler->isPresentationFilePermissionAllowed($EVC->getEntityPath("admin/terminal_console"), "access");
+
 //echo "<pre>";print_r($layers);die();
 //echo "<pre>";print_r($presentation_projects_by_layer_label_and_folders);print_r($non_projects_layout_types);die();
 //echo "<pre>";print_r($presentation_projects_by_layer_label);die();

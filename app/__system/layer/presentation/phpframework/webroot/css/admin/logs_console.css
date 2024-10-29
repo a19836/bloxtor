@@ -1,9 +1,12 @@
 body,
   #main_column {
-	background:#fff !important;
+	/*background:#fff !important;*/
+	background:#2C2D34 !important;
+	color:#DFE1ED !important;
 }
 ::-webkit-scrollbar-track {
-	background-color:#fff;
+	/*background-color:#fff;*/
+	background-color:#2C2D34;
 }
 
 .top_bar.in_popup header .icon.refresh::before {
@@ -27,4 +30,9 @@ body,
 	border:0;
 	resize:none;
 	font-size:10px;
+	background:transparent;
+	color:inherit;
+}
+.logs_console > .logs textarea:hover {
+	box-shadow:none;
 }

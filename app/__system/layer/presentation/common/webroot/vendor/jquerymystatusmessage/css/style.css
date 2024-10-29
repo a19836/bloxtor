@@ -8,6 +8,9 @@
 	z-index:9999999;
 	/*opacity:0.6;*/
 }
+.status_message:empty {
+	padding-top:0;
+}
 .status_message .status_message_info, .status_message .status_message_error {
 	min-height:20px;
 	max-height:250px;

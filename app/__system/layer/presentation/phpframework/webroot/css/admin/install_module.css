@@ -177,8 +177,9 @@ body,
 	right:0;
 	padding:20px;
 	text-align:center;
-	background:#f7f7f7;
-	border-bottom:1px solid #ccc;
+	background:var(--main-iframe-bg);
+	color:var(--main-iframe-color);
+	border-bottom:1px solid var(--resize-bar-border);
 	z-index:1;
 }
 .install_module:not(.show_info) .info {

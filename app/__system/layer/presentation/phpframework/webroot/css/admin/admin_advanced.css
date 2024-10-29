@@ -499,6 +499,7 @@ body.main_navigator_reverse #top_panel li.toggle_main_navigator_side a::after {
 	opacity:.8;
 }
 #top_panel > ul > li.sub_menu.sub_menu_user > ul li .icon.logs_console:before,
+  #top_panel > ul > li.sub_menu.sub_menu_user > ul li .icon.terminal_console:before,
   #top_panel > ul > li.sub_menu.sub_menu_user > ul li .icon.tutorials:before,
   #top_panel > ul > li.sub_menu.sub_menu_user > ul li .icon.question:before,
   #top_panel > ul > li.sub_menu.sub_menu_user > ul li .icon.info:before {
