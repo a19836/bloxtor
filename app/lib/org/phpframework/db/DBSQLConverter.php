@@ -985,7 +985,7 @@ trait DBSQLConverter {
 	protected static function prepareValueOptions($options, $value_options) {
 		$options = is_array($options) ? $options : array();
 		
-		if (is_arrray($value_options) && isset($value_options["skip_reserved_words"]))
+		if (is_array($value_options) && isset($value_options["skip_reserved_words"]))
 			$options["skip_reserved_words"] = $value_options["skip_reserved_words"];
 		
 		return $options;
