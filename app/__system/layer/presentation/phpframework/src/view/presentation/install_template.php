@@ -24,7 +24,7 @@ $head = '
 <script>
 var get_store_templates_url = "' . $project_url_prefix . "phpframework/admin/get_store_type_content?type=templates" . '"; //This is a global var
 var is_popup = ' . ($popup ? 1 : 0) . ';
-var is_zip_file = ' . (!empty($_FILES["zip_file"]) ? 1 : 0) . ';
+var is_zip_file = ' . (!empty($_FILES["zip_file"]) && empty($_POST["zip_url"]) ? 1 : 0) . ';
 </script>';
 
 $main_content = '
