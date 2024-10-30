@@ -14,6 +14,7 @@
 		.setup ol li {list-style:number !important; margin-top:20px;}
 		.setup ul {margin-left:20px !important; margin-top:10px;}
 		.setup ul li {list-style:square !important; margin-top:0px; font-style:italic;}
+		.setup ul li.for_git_repo_creation {display:none;}
 		.writeable {color:#009900; font-weight:bold;}
 		.non_writeable {color:#CC0000; font-weight:bold;}
 		.looks_ok {color:#009900; font-weight:bold;}
@@ -347,6 +348,17 @@ else {
 	$inner_html = '<pre>' . str_replace("<br/>", "\n", str_replace("\n.\n", "\n\n", $md_contents)) . '</pre>';
 }
 
+//Important: do not remove these comments because it will be enabled by the other/scripts/create_git_repo.sh when creating the git repo
+
+$gitignore_contents = file_get_contents($installation_dir . ".gitignore");
+$is_gitignore_ok = preg_match("/(\n|\n\r)other\/authdb\/\s*$/", $gitignore_contents);
+
+if (!$is_gitignore_ok) 
+	$main_status = false;
+
+echo '<style>.setup ul li.for_git_repo_creation {display:block !important;}</style>';
+
+
 $html = "<ol>
 	<li>Follow instructions from the INSTALL.md, this is:
 		<div class=\"md_file\">
@@ -427,6 +439,7 @@ $html = "<ol>
 			<li>memory_limit = 1024M " . printOptionalStatus(ini_get("memory_limit") == "1024M") . "</li>
 		</ul>
 	</li>
+	<li class=\"for_git_repo_creation\">Add the line 'other/authdb/' at the end of the $installation_dir.gitignore file. " . printOptionalStatus(!empty($is_gitignore_ok)) . "</li>
 	<li>If mysql server is installed, confirm if /etc/mysql/my.cnf is well configured according with the recomendations in INSTALL.md</li>
 	<li>On CentOS, confirm if web-server can make external connections to mysql servers.</li>
 	<li>Please be sure that your web-server has write permissions to the following files:
