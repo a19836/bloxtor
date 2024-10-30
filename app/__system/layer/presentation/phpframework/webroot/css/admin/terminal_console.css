@@ -16,6 +16,11 @@ body,
 	display:block;
 }
 
+.terminal_console > .error {
+	color:#FF0000;
+	margin:20px;
+	text-align:center;
+}
 .terminal_console > .output {
 	width:auto;
 	height:auto;
@@ -28,9 +33,13 @@ body,
 	bottom:30px;
 	box-sizing:border-box;
 	overflow-y:scroll;
+	color:#fff;
 }
 .terminal_console > .output .user_id {
-	color:#ff0000;
+	color:#83889E;
+}
+.terminal_console > .output .user_dir {
+	color:#BFC4DB;
 }
 .terminal_console .input {
 	border-top:1px solid #DFE1ED;
@@ -43,22 +52,14 @@ body,
 .terminal_console .input form {
 	position:relative;
 	margin-bottom:0px;
-}  
-.terminal_console .username {
-	width:auto;
+}
+.terminal_console .hash {
+	width:15px;
 	height:30px;
-	max-width:calc(100% - 100px);
-	padding-left:5px;
 	line-height:30px;
 	float:left;
-	white-space:nowrap;
-	overflow-x:auto;
-	overflow-y:hidden;
 }
-.terminal_console .username .user_id {
-	color:#ff0000;
-}
-.terminal_console .input_text {
+.terminal_console .input .input_text {
 	width:auto;
 	height:30px;
 	bottom:0px;
@@ -67,14 +68,46 @@ body,
 	background:transparent;
 	color:#fff;
 	border:0;
+	border-bottom:1px solid #83889E;
 	float:left;
 	padding-left:8px;
+	box-sizing:border-box;
 }
-.terminal_console .input_text:focus,
-  .terminal_console .input_text:hover {
+.terminal_console .input .input_text:focus,
+  .terminal_console .input .input_text:hover {
 	outline:none;
 	box-shadow:none !important;
 }
+.terminal_console .input .loading {
+	width:20px;
+	height:20px;
+	position:absolute;
+	bottom:-27px;
+	right:5px;
+	display:none;
+}
+
+.terminal_console .username {
+	width:auto;
+	height:30px;
+	max-width:calc(100% - 115px);
+	padding-left:5px;
+	line-height:30px;
+	float:left;
+	white-space:nowrap;
+	overflow-x:auto;
+	overflow-y:hidden;
+}
+.terminal_console .username::-webkit-scrollbar {
+	height:1px;
+}
+.terminal_console .username .user_id {
+	color:#83889E;
+}
+.terminal_console .username .user_dir {
+	color:#BFC4DB;
+}
+
 .terminal_console .upload {
 	display:none;
 }

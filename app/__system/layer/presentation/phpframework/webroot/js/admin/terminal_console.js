@@ -7,17 +7,19 @@ var commands_history = [];
 var current_command = 0;
 
 $(function () {
-	initShell();
-	
-	$(document).on("keydown", checkForArrowKeys);
-	
-	$(".terminal_console > .input > form").on("submit", function(event){
-		event.preventDefault()
-	});
-	
-	$(window).resize(function() {
-		updateInputWidth();
-	});
+	if (is_allowed) {
+		initShell();
+		
+		$(document).on("keydown", checkForArrowKeys);
+		
+		$(".terminal_console > .input > form").on("submit", function(event){
+			event.preventDefault()
+		});
+		
+		$(window).resize(function() {
+			updateInputWidth();
+		});
+	}
 });
 
 function refresh() {
@@ -25,6 +27,11 @@ function refresh() {
 }
 
 function initShell() {
+	var terminal_console = $(".terminal_console");
+	var loading_elm = terminal_console.find(" > .input > form > .loading");	
+	
+	loading_elm.show();
+	
 	$.ajax({
 		type : "post",
 		url : "" + document.location,
@@ -34,6 +41,8 @@ function initShell() {
 		dataType : "text",
 		success : function(data, textStatus, jqXHR) {
 			//console.log(data);
+			loading_elm.hide();
+			
 			data = decodeURI(data);
 			var parts = data.split("<br>");
 			username = parts[0];
@@ -41,9 +50,12 @@ function initShell() {
 			current_dir =  parts[2].replace(new RegExp("&sol;", "g"), "/").replace(new RegExp("&lowbar;", "g"), "_");
 			default_dir = current_dir;
 			
-			$(".terminal_console > .input > form > .username").html("<div class='user_id' style='display: inline;'>" + username + "@" + hostname + "</div>:" + current_dir + "#");
+			$(".terminal_console > .input > form > .username").html("<div class='user_id' style='display: inline;'>" + username + "@" + hostname + ":</div><span class='user_dir'>" + current_dir + "</span>");
 			
 			updateInputWidth();
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			loading_elm.hide();
 		}
 	});
 }
@@ -52,12 +64,15 @@ function sendCommand() {
 	var terminal_console = $(".terminal_console");
 	var output_elm = terminal_console.children(".output");
 	var input_text_elm = terminal_console.find(" > .input > form > .input_text");	
+	var loading_elm = terminal_console.find(" > .input > form > .loading");	
 	var command = input_text_elm.val();
 	var original_command = command;
 	var original_dir = current_dir;
 	var cd = false;
 	
-	commands_history.push(original_command);
+	if (original_command != commands_history[commands_history.length - 1])
+		commands_history.push(original_command);
+	
 	switchCommand(commands_history.length);
 	input_text_elm.val("");
 
@@ -84,6 +99,8 @@ function sendCommand() {
 	else
 		command = "cd " + current_dir + "; " + command;
 	
+	loading_elm.show();
+	
 	$.ajax({
 		type : "post",
 		url : "" + document.location,
@@ -92,6 +109,8 @@ function sendCommand() {
 		},
 		dataType : "text",
 		success : function(data, textStatus, jqXHR) {
+			loading_elm.hide();
+			
 			var username_elm = terminal_console.find(" > .input > form > .username");
 			
 			if (cd) {
@@ -100,17 +119,20 @@ function sendCommand() {
 				previous_dir = current_dir;
 				current_dir = parts[0].replace(new RegExp("&sol;", "g"), "/").replace(new RegExp("&lowbar;", "g"), "_");
 				
-				output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + "</span>" + ":" + original_dir + "# " + original_command + "</div>");
+				output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + ":</span><span class='user_dir'>" + original_dir + "</span># " + original_command + "</div>");
 				
-				username_elm.html("<div class='user_id' style='display: inline;'>" + username + "@" + hostname + "</div>:" + current_dir + "#");
+				username_elm.html("<div class='user_id' style='display: inline;'>" + username + "@" + hostname + ":</div><span class='user_dir'>" + current_dir + "</span>");
 			}
 			else {
-				output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + "</span>" + ":" + current_dir + "# " + original_command + "</div><div>" + data.replace(new RegExp("<br><br>$"), "<br>") + "</div>");
+				output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + ":</span><span class='user_dir'>" + current_dir + "</span># " + original_command + "</div><div>" + data.replace(new RegExp("<br><br>$"), "<br>") + "</div>");
 				
 				output_elm.scrollTop(output_elm[0].scrollHeight);
 			}
 			
 			updateInputWidth();
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			loading_elm.hide();
 		}
 	});
 
@@ -120,35 +142,52 @@ function sendCommand() {
 function uploadFile() {
 	var terminal_console = $(".terminal_console");
 	var output_elm = terminal_console.children(".output");
+	var loading_elm = terminal_console.find(" > .input > form > .loading");	
 	var file_browser_elm = terminal_console.find(" > .upload > .file_browser");
 	var files = file_browser_elm[0].files;
+	var form_data = null;
 	
-	var form_data = new FormData();
-	form_data.append('file', files[0], files[0].name);
-	form_data.append('path', current_dir);
+	try {
+		form_data = new FormData();
+		form_data.append('file', files[0], files[0].name);
+		form_data.append('path', current_dir);
+	}
+	catch(e) {
+		if (console && console.log)
+			console.log(e);
+	}
 	
-	$.ajax({
-		type : "post",
-		url : "" + document.location,
-		data : form_data,
-		dataType : "text",
-		processData: false,
-		contentType: false,
-		cache: false,
-		success : function(data, textStatus, jqXHR) {
-			output_elm.append(data + "<br>");
-		}
-	});
-	
-	output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + "</span>" + ":" + current_dir + "# Uploading " + files[0].name + "...</div>");
+	if (form_data) {
+		loading_elm.show();
+		
+		$.ajax({
+			type : "post",
+			url : "" + document.location,
+			data : form_data,
+			dataType : "text",
+			processData: false,
+			contentType: false,
+			cache: false,
+			success : function(data, textStatus, jqXHR) {
+				loading_elm.hide();
+				output_elm.append(data + "<br>");
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				loading_elm.hide();
+			}
+		});
+		
+		output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + ":</span><span class='user_dir'>" + current_dir + "</span># Uploading " + files[0].name + "...</div>");
+	}
 }
 
 function updateInputWidth() {
 	var terminal_console = $(".terminal_console");
 	var input_elm = terminal_console.children(".input");
 	var username_elm = input_elm.find(" > form > .username");
+	var hash_elm = input_elm.find(" > form > .hash");
 	
-	var width = input_elm.width() - username_elm.width() - 15;
+	var width = input_elm.width() - username_elm.width() - hash_elm.width() - 15;
 	
 	$(".terminal_console > .input > form > .input_text").css("width", width + "px");
 }
@@ -163,7 +202,7 @@ function checkForArrowKeys(e) {
 }
 
 function previousCommand() {
-	if (current_command != 0)
+	if (current_command >= 0)
 		switchCommand(current_command - 1);
 }
 
@@ -178,7 +217,7 @@ function switchCommand(newCommand) {
 	
 	current_command = newCommand;
 
-	if (current_command == commands_history.length)
+	if (current_command == commands_history.length || current_command < 0)
 		input_text_elm.val("");
 	else {
 		input_text_elm.val(commands_history[current_command]);

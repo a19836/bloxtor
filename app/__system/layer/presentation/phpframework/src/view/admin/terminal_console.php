@@ -1,8 +1,4 @@
 <?php
-$file_created_time = isset($file_created_time) ? $file_created_time : null;
-$file_pointer = isset($file_pointer) ? $file_pointer : null;
-$output = isset($output) ? $output : null;
-
 $head = '
 <!-- Add Fontawsome Icons CSS -->
 <link rel="stylesheet" href="' . $project_common_url_prefix . 'vendor/fontawesome/css/all.min.css">
@@ -22,6 +18,7 @@ $head = '
 
 <script>
 var is_popup = ' . ($popup ? 1 : 0) . ';
+var is_allowed = ' . ($is_allowed ? 1 : 0) . ';
 </script>';
 
 $main_content = '
@@ -35,12 +32,17 @@ $main_content = '
 	</header>
 </div>
 
-<div class="terminal_console ' . ($popup ? " in_popup" : "") . '">
+<div class="terminal_console ' . ($popup ? " in_popup" : "") . '">';
+
+if ($is_allowed) {
+	$main_content .= '
 	<div class="output"></div>
 	<div class="input">
 		<form class="form" method="GET" onSubmit="sendCommand()">
 			<div class="username"></div>
+			<div class="hash">#</div>
 			<input class="input_text" type="text" name="cmd" autocomplete="off" autofocus>
+			<span class="loading"></span>
 		</form>
 	</div>
 	
@@ -49,11 +51,15 @@ $main_content = '
 	</form>
 	
 	<div class="info">
-		Type any command that you would type in your shell terminal.<br/>
+		Type any command you would like in the shell terminal at the bottom-right corner, then press Enter.<br/>
 		Some commands special:
 		<ul>
 			<li>"upload" to upload files to the current directory.</li>
 		</ul>
-	</div>
-</div>';
+	</div>';
+}
+else
+	$main_content .= '<div class="error">Error: shell_exec function is disabled. To allow terminal access through this page, please talk with your SysAdmin to enable this function.</div>';
+
+$main_content .= '</div>';
 ?>
