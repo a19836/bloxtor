@@ -85,7 +85,7 @@ sudo rm -rf FOLDER-PATH
 ```
 Then go to your GitHub account, select the forked repo, click on "settings" tab and then on "Delete this repository" button.
 
-### Specific changes on authdb files
+### Committing Changes to AuthDB Files
 
 Changes made in the user-management panels that update files in the `other/authdb/` folder won’t be committed, as this folder is set to be ignored by Git. To allow commits for files in `other/authdb/`, disable the *'other/authdb/'* line at the end of the `.gitignore` file.
 
