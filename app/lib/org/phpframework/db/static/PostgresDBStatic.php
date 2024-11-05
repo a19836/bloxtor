@@ -151,7 +151,15 @@ trait PostgresDBStatic {
 	}
 	
 	public static function allowTableAttributeSorting() {
-		return false;
+		return false; //can only be true if the PostgresDBStatement::getAddTableAttributeStatement method contains the code to add after/before another attribute
+	}
+	
+	public static function allowModifyTableEncoding() {
+		return false; //can only be true if the PostgresDBStatement::getModifyTableEncodingStatement method returns a sql statement
+	}
+	
+	public static function allowModifyTableStorageEngine() {
+		return false; //can only be true if the PostgresDBStatement::getModifyTableStorageEngineStatement method returns a sql statement
 	}
 }
 ?>

@@ -116,15 +116,18 @@ input,
 	clear:left;
 	float:none;
 }
-.select_options .choose_from_file_manager .overwrite {
+.select_options .choose_from_file_manager .resource_services,
+  .select_options .choose_from_file_manager .overwrite {
 	float:none;
 	clear:left;
 	width:100%;
 }
-.select_options .choose_from_file_manager .overwrite input {
+.select_options .choose_from_file_manager .resource_services input,
+  .select_options .choose_from_file_manager .overwrite input {
 	
 }
-.select_options .choose_from_file_manager .overwrite label {
+.select_options .choose_from_file_manager .resource_services label,
+  .select_options .choose_from_file_manager .overwrite label {
 	font-size:9px;
 	font-weight:normal;
 }

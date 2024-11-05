@@ -49,6 +49,13 @@ abstract class DB implements IDB {
 	abstract public function listTables($db_name = false, $options = false); 
 	abstract public function listTableFields($table, $options = false); 
 	abstract public function getInsertedId($options = false); 
+	abstract public function listDBCharsets();
+	abstract public function listTableCharsets();
+	abstract public function listColumnCharsets();
+	abstract public function listDBCollations();
+	abstract public function listTableCollations();
+	abstract public function listColumnCollations();
+	abstract public function listStorageEngines();
 	
 	/* Public Methods */
 	

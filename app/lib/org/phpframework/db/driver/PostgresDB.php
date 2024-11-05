@@ -744,6 +744,56 @@ class PostgresDB extends DB {
 		return null;
 	}
 	
+	public function listDBCharsets() {
+		return static::getDBCharsets();
+	}
+	
+	//postgres doesn't support charset for table
+	public function listTableCharsets() {
+		return null;
+	}
+	
+	//postgres doesn't support charset for column
+	public function listColumnCharsets() {
+		return null;
+	}
+	
+	public function listDBCollations() {
+		return static::getDBCollations();
+	}
+	
+	//postgres doesn't support collation for table
+	public function listTableCollations() {
+		return null;
+	}
+	
+	public function listColumnCollations() {
+		$rows = array();
+		
+		$sql = static::getShowColumnCollationsStatement($this->options);
+		
+		if ($sql) {
+			$options = array("return_type" => "result");
+			$result = $this->getData($sql, $options);
+			
+			if($result)
+				foreach ($result as $field)  {
+					$id = $field["collname"];
+					$rows[$id] = ucwords(str_replace("_", " ", $id));
+				}
+		}
+		
+		if (!$rows)
+			$rows = static::getColumnCollations();
+		
+		return $rows;
+	}
+	
+	//postgres doesn't support storage engines
+	public function listStorageEngines() {
+		return null;
+	}
+	
 	public function getInsertedId($options = false) {
     		if ($this->init())
     			switch ($this->default_php_extension_type) {

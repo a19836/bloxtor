@@ -154,7 +154,15 @@ trait MySqlDBStatic {
 	}
 	
 	public static function allowTableAttributeSorting() {
-		return true;
+		return true; //can only be true if the MySqlDBStatement::getAddTableAttributeStatement method contains the code to add after/before another attribute
+	}
+	
+	public static function allowModifyTableEncoding() {
+		return true; //can only be true if the MySqlDBStatement::getModifyTableEncodingStatement method returns a sql statement
+	}
+	
+	public static function allowModifyTableStorageEngine() {
+		return true; //can only be true if the MySqlDBStatement::getModifyTableStorageEngineStatement method returns a sql statement
 	}
 }
 ?>

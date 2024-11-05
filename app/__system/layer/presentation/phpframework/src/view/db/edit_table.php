@@ -20,17 +20,19 @@ foreach ($tasks_settings as $group_id => $group_tasks)
 			$task_contents = isset($task_settings["task_properties_html"]) ? $task_settings["task_properties_html"] : null;
 
 //prepare DBTableTaskPropertyObj properties 
-$charsets = $obj ? $obj->getTableCharsets() : array();
-$collations = $obj ? $obj->getTableCollations() : array();
-$storage_engines = $obj ? $obj->getStorageEngines() : array();
-$column_charsets = $obj ? $obj->getColumnCharsets() : array();
-$column_collations = $obj ? $obj->getColumnCollations() : array();
+$charsets = $obj ? $obj->listTableCharsets() : array();
+$collations = $obj ? $obj->listTableCollations() : array();
+$storage_engines = $obj ? $obj->listStorageEngines() : array();
+$column_charsets = $obj ? $obj->listColumnCharsets() : array();
+$column_collations = $obj ? $obj->listColumnCollations() : array();
 $column_column_types = $obj ? $obj->getDBColumnTypes() : DB::getAllColumnTypesByType();
 $column_column_simple_types = $obj ? $obj->getDBColumnSimpleTypes() : DB::getAllColumnSimpleTypesByType();
 $column_numeric_types = $obj ? $obj->getDBColumnNumericTypes() : DB::getAllSharedColumnNumericTypes();
 $column_mandatory_length_types = $obj ? $obj->getDBColumnMandatoryLengthTypes() : DB::getAllSharedColumnMandatoryLengthTypes();
 $column_types_ignored_props = $obj ? $obj->getDBColumnTypesIgnoredProps() : DB::getAllSharedColumnTypesIgnoredProps();
 $column_types_hidden_props = $obj ? $obj->getDBColumnTypesHiddenProps() : DB::getAllSharedColumnTypesHiddenProps();
+$allow_modify_table_encoding = $obj ? $obj->allowModifyTableEncoding() : false;
+$allow_modify_table_storage_engine = $obj ? $obj->allowModifyTableStorageEngine() : false;
 
 $charsets = is_array($charsets) ? $charsets : array();
 $collations = is_array($collations) ? $collations : array();
@@ -72,6 +74,8 @@ DBTableTaskPropertyObj.table_collations = ' . json_encode($collations) . ';
 DBTableTaskPropertyObj.table_storage_engines = ' . json_encode($storage_engines) . ';
 DBTableTaskPropertyObj.column_charsets = ' . json_encode($column_charsets) . ';
 DBTableTaskPropertyObj.column_collations = ' . json_encode($column_collations) . ';
+DBTableTaskPropertyObj.allow_modify_table_encoding = ' . ($allow_modify_table_encoding ? "true" : "false") . ';
+DBTableTaskPropertyObj.allow_modify_table_storage_engine = ' . ($allow_modify_table_storage_engine ? "true" : "false") . ';
 
 DBTableTaskPropertyObj.on_update_simple_attributes_html_with_table_attributes_callback = onUpdateSimpleAttributesHtmlWithTableAttributes;
 DBTableTaskPropertyObj.on_update_table_attributes_html_with_simple_attributes_callback = onUpdateTableAttributesHtmlWithSimpleAttributes;

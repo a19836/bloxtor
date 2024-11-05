@@ -4,6 +4,7 @@ include_once $EVC->getUtilPath("WorkFlowDataAccessHandler");
 include_once $EVC->getUtilPath("WorkFlowBusinessLogicHandler");
 include_once $EVC->getUtilPath("FlushCacheHandler");
 include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
+include_once $EVC->getUtilPath("SequentialLogicalActivityBLResourceCreator");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
@@ -48,6 +49,7 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 		$db_driver = isset($_POST["db_driver"]) ? $_POST["db_driver"] : null;
 		$include_db_driver = isset($_POST["include_db_driver"]) ? $_POST["include_db_driver"] : null;
 		$db_type = isset($_POST["type"]) ? $_POST["type"] : null;
+		$resource_services = isset($_POST["resource_services"]) ? $_POST["resource_services"] : null;
 		$overwrite = isset($_POST["overwrite"]) ? $_POST["overwrite"] : null;
 		$namespace = isset($_POST["namespace"]) ? trim($_POST["namespace"]) : "";
 		$json = isset($_POST["json"]) ? $_POST["json"] : null;
@@ -100,9 +102,12 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 							
 							$alias = isset($aliases[$file][$node_id]) ? trim($aliases[$file][$node_id]) : null;
 							$broker_code_prefix = '$this->getBusinessLogicLayer()->getBroker("' . $broker_name . '")';
+							$new_statuses_index = count($statuses);
+							$tables_props = array();
+							$db_broker = null;
 							
 							if (!$layer_obj)
-								$statuses[] = array($file, null, false);
+								$statuses[] = array($file, null, false, null);
 							else if (is_a($layer_obj, "DataAccessLayer")) {
 								$data_access_layer_path = $layer_obj->getLayerPathSetting();
 								$data_access_file_path = $data_access_layer_path . $file;
@@ -120,6 +125,7 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 									$LayoutTypeProjectHandler->createLayoutTypePermissionsForFilePathAndLayoutTypeName($filter_by_layout, dirname($dst_file_path));
 									
 									$db_broker = WorkFlowBeansFileHandler::getLayerLocalDBBrokerNameForChildBrokerDBDriver($user_global_variables_file_path, $user_beans_folder_path, $layer_obj, $db_driver);
+									
 									if ($layer_obj->getType() == "hibernate") {
 										if ($node_id != "all")
 											$xml_data = array(
@@ -131,14 +137,14 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 									
 										if (is_array($xml_data)) {
 											foreach ($xml_data as $obj_id => $obj_data) {
-												$d = createHibernateBusinessLogicFile($layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $dst_file_path, $obj_id, $module_id, $obj_data, $broker_code_prefix, $reserved_sql_keywords, $overwrite, $common_namespace, $namespace, $alias);
+												$d = createHibernateBusinessLogicFile($layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $dst_file_path, $obj_id, $module_id, $obj_data, $broker_code_prefix, $reserved_sql_keywords, $tables_props, $overwrite, $common_namespace, $namespace, $alias);
 												$d[0] = isset($d[0]) ? substr($d[0], strlen($layer_path)) : "";
 												$statuses[] = $d;
 											}
 										}
 									}
 									else {
-										$d = createIbatisBusinessLogicFile($layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $dst_file_path, $module_id, $xml_data, $broker_code_prefix, $reserved_sql_keywords, $overwrite, $common_namespace, $namespace, $alias);
+										$d = createIbatisBusinessLogicFile($layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $dst_file_path, $module_id, $xml_data, $broker_code_prefix, $reserved_sql_keywords, $tables_props, $overwrite, $common_namespace, $namespace, $alias);
 										$d[0] = isset($d[0]) ? substr($d[0], strlen($layer_path)) : "";
 										$statuses[] = $d;
 									}
@@ -157,8 +163,8 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 									$WorkFlowDataAccessHandler->setTasksFilePath($tasks_file_path);
 								}
 								else { //TRYING TO GET THE DB TABLES DIRECTLY FROM DB
-									$tables = $layer_obj->getFunction("listTables", null, array("db_driver" => $db_driver));
 									$tables_data = array();
+									$tables = $layer_obj->getFunction("listTables", null, array("db_driver" => $db_driver));
 									$t = count($tables);
 									for ($i = 0; $i < $t; $i++) {
 										$table = $tables[$i];
@@ -182,12 +188,126 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 								
 								$db_broker = WorkFlowBeansFileHandler::getLayerLocalDBBrokerNameForChildBrokerDBDriver($user_global_variables_file_path, $user_beans_folder_path, $layer_obj, $db_driver);
 								
-								$d = createTableBusinessLogicFile($layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $folder_path, $file, $xml_data, $broker_code_prefix, $reserved_sql_keywords, $overwrite, $common_namespace, $namespace, $alias);
+								$d = createTableBusinessLogicFile($layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $folder_path, $file, $xml_data, $broker_code_prefix, $reserved_sql_keywords, $tables_props, $overwrite, $common_namespace, $namespace, $alias);
 								$d[0] = isset($d[0]) ? substr($d[0], strlen($layer_path)) : null;
 								$statuses[] = $d;
 								
 								//check if $folder_path belongs to filter_by_layout and if not, add it.
 								$LayoutTypeProjectHandler->createLayoutTypePermissionsForFilePathAndLayoutTypeName($filter_by_layout, $folder_path);
+							}
+							
+							//create resource services
+							if ($new_statuses_index < count($statuses) && $statuses[$new_statuses_index]) { //it means the service was added
+								$status = $statuses[$new_statuses_index];
+								$service_file = $status[0];
+								$created_status = $status[2];
+								$table_name = $status[3];
+								
+								if ($created_status && $table_name) {
+									$tn = strtolower($table_name);
+									
+									if (empty($tables_props[$tn]))
+										$tables_props[$tn] = $data_access_obj->getFunction("listTableFields", $table_name, array("db_broker" => $db_broker, "db_driver" => $db_driver));
+									
+									if (!empty($tables_props[$tn])) {
+										$resource_service_file_path = $layer_path . preg_replace("/(Service)?\.php/", 'ResourceService.php', $service_file);
+										$resource_service_class_name = pathinfo($resource_service_file_path, PATHINFO_FILENAME);
+										$service_file_path = $layer_path . $service_file;
+										$service_class_name = pathinfo($service_file_path, PATHINFO_FILENAME);
+										$module_id = getModuleId($service_file);
+										
+										$class_props = PHPCodePrintingHandler::getClassFromFile($service_file_path, $service_class_name);
+										
+										if (!empty($class_props["methods"])) {
+											$resource_service_file_relative_path = substr($resource_service_file_path, strlen(LAYER_PATH));
+											$error_message = null;
+											
+											$SequentialLogicalActivityBLResourceCreator = new SequentialLogicalActivityBLResourceCreator($resource_service_file_path, $resource_service_class_name, $tables_props, $table_name);
+											$resource_file_exists = $SequentialLogicalActivityBLResourceCreator->createBLResourceServiceFile($service_file_path, $service_class_name, $error_message);
+											
+											if (!$resource_file_exists) 
+												$error_message = $error_message ? $error_message : "Error trying to create file '" . $resource_service_file_relative_path . "'!";
+											else if (!$error_message) {
+												//get methods names list
+												$methods_names = array();
+												foreach ($class_props["methods"] as $method)
+													$methods_names[] = $method["name"];
+												
+												//prepare resources methods
+												foreach ($class_props["methods"] as $method) {
+													$service_id = $class_props["name"] . "." . $method["name"];
+													$resource_status = true;
+													$resource_error_message = null;
+													
+													switch ($method["name"]) {
+														case "insert":
+															$resource_status = $SequentialLogicalActivityBLResourceCreator->createInsertMethod($module_id, $service_id, $resource_error_message);
+															break;
+														case "update":
+															$get_service_id = in_array("get", $methods_names) ? $class_props["name"] . ".get" : null;
+															$update_pks_service_id = in_array("updatePrimaryKeys", $methods_names) ? $class_props["name"] . ".updatePrimaryKeys" : null;
+															$resource_status = $SequentialLogicalActivityBLResourceCreator->createUpdateMethod($module_id, $get_service_id, $service_id, $update_pks_service_id, $resource_error_message);
+															
+															if ($resource_status && $get_service_id)
+																$SequentialLogicalActivityBLResourceCreator->createUpdateAttributeMethod($module_id, $get_service_id, $service_id, $resource_error_message);
+															
+															if ($resource_status && in_array("insert", $methods_names)) {
+																$insert_service_id = $class_props["name"] . ".insert";
+																$resource_status = $SequentialLogicalActivityBLResourceCreator->createMultipleSaveMethod($module_id, $insert_service_id, $service_id, $resource_error_message);
+																
+																if ($resource_status && $get_service_id)
+																	$resource_status = $SequentialLogicalActivityBLResourceCreator->createInsertUpdateAttributeMethod($module_id, $get_service_id, $insert_service_id, $service_id, $resource_error_message);
+															}
+															break;
+														case "delete":
+															$resource_status = $SequentialLogicalActivityBLResourceCreator->createDeleteMethod($module_id, $service_id, $resource_error_message) && $SequentialLogicalActivityBLResourceCreator->createMultipleDeleteMethod($module_id, $service_id, $resource_error_message);
+															
+															if ($resource_status && in_array("get", $methods_names) && in_array("insert", $methods_names)) {
+																$get_service_id = $class_props["name"] . ".get";
+																$insert_service_id = $class_props["name"] . ".insert";
+																$resource_status = $SequentialLogicalActivityBLResourceCreator->createInsertDeleteAttributeMethod($module_id, $get_service_id, $insert_service_id, $service_id, $resource_error_message);
+															}
+															break;
+														case "deleteAll":
+															if (in_array("insert", $methods_names)) {
+																$insert_service_id = $class_props["name"] . ".insert";
+																$resource_status = $SequentialLogicalActivityBLResourceCreator->createMultipleInsertDeleteAttributeMethod($module_id, $service_id, $insert_service_id, $resource_error_message);
+															}
+															break;
+														case "get":
+															$resource_status = $SequentialLogicalActivityBLResourceCreator->createGetMethod($module_id, $service_id, $resource_error_message);
+															break;
+														case "getAll":
+															$resource_status = $SequentialLogicalActivityBLResourceCreator->createGetAllMethod($module_id, $service_id, $resource_error_message);
+															
+															if ($resource_status) {
+																/*$attrs = $tables_props[$tn];
+																$pks_exists = false;
+																
+																if ($attrs)
+																	foreach ($attrs as $attr_name => $attr)
+																		if (!empty($attr["primary_key"])) {
+																			$pks_exists = true;
+																			break;
+																		}
+																
+																if ($pks_exists)*/
+																	$resource_status = $SequentialLogicalActivityBLResourceCreator->createGetAllOptionsMethod($module_id, $service_id, $resource_error_message);
+															}
+															break;
+														case "countAll":
+														case "count":
+															$resource_status = $SequentialLogicalActivityBLResourceCreator->createCountMethod($module_id, $service_id, $resource_error_message);
+															break;
+													}
+													
+													if (!$resource_status || $resource_error_message)
+														$error_message = ($error_message ? $error_message : "") . ($resource_error_message ? $resource_error_message : "Error trying to create service $resource_service_class_name." . $method["name"] . " at file: '" . $resource_service_file_relative_path . "'!");
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 					}
@@ -240,7 +360,7 @@ $PHPVariablesFileHandler->endUserGlobalVariables();
 
 /**** FUNCTIONS ****/
 
-function createHibernateBusinessLogicFile($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $file_path, $obj_id, $module_id, $obj_data, $broker_code_prefix, $reserved_sql_keywords, $overwrite, $common_namespace, $namespace = false, $alias = false) {
+function createHibernateBusinessLogicFile($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $file_path, $obj_id, $module_id, $obj_data, $broker_code_prefix, $reserved_sql_keywords, &$tables_props, $overwrite, $common_namespace, $namespace = false, $alias = false) {
 	$folder_name = dirname($file_path);
 	
 	if (file_exists($folder_name) || mkdir($folder_name, 0755, true)) {
@@ -531,19 +651,20 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 		
 		return $res;
 	}
-	' . prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $rels, $obj_id, $module_id, $broker_code_prefix, $reserved_sql_keywords, true, $obj_data, $hbn_obj_parameters) . '
-	' . prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $queries, $obj_id, $module_id, $broker_code_prefix, $reserved_sql_keywords, true) . '
+	' . prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $rels, $obj_id, $module_id, $broker_code_prefix, $reserved_sql_keywords, $tables_props, true, $obj_data, $hbn_obj_parameters) . '
+	' . prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $queries, $obj_id, $module_id, $broker_code_prefix, $reserved_sql_keywords, $tables_props, true) . '
 }
 ?>';
 	
 		//echo "creating $file_path\n<br>";
 		//echo "<pre>$code</pre>";die();
-		return array($file_path, $obj_id, file_put_contents($file_path, $code) > 0);
+		$obj_table_name = isset($obj_data["@"]["table"]) ? trim($obj_data["@"]["table"]) : null;
+		return array($file_path, $obj_id, file_put_contents($file_path, $code) > 0, $obj_table_name);
 	}
 	return false;
 }
 
-function createIbatisBusinessLogicFile($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $file_path, $module_id, $queries, $broker_code_prefix, $reserved_sql_keywords, $overwrite, $common_namespace, $namespace = false, $alias = false) {
+function createIbatisBusinessLogicFile($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $file_path, $module_id, $queries, $broker_code_prefix, $reserved_sql_keywords, &$tables_props, $overwrite, $common_namespace, $namespace = false, $alias = false) {
 	$folder_name = dirname($file_path);
 	
 	if (file_exists($folder_name) || mkdir($folder_name, 0755, true)) {
@@ -582,18 +703,19 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 		
 		return $broker;
 	}
-	' . prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $queries, $obj_id, $module_id, $broker_code_prefix, $reserved_sql_keywords) . '
+	' . prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $queries, $obj_id, $module_id, $broker_code_prefix, $reserved_sql_keywords, $tables_props) . '
 }
 ?>';
 		
 		//echo "creating $file_path\n<br>";
 		//echo "<pre>$code</pre>";die();
-		return array($file_path, $obj_id, file_put_contents($file_path, $code) > 0);
+		$main_table_name = getSQLStatementsMainTableName($queries, $data_access_obj, $db_broker, $db_driver);
+		return array($file_path, $obj_id, file_put_contents($file_path, $code) > 0, $main_table_name);
 	}
 	return false;
 }
 
-function createTableBusinessLogicFile($db_layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $folder_path, $table_name, $queries, $broker_code_prefix, $reserved_sql_keywords, $overwrite, $common_namespace, $namespace = false, $alias = false) {
+function createTableBusinessLogicFile($db_layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $folder_path, $table_name, $queries, $broker_code_prefix, $reserved_sql_keywords, &$tables_props, $overwrite, $common_namespace, $namespace = false, $alias = false) {
 	
 	if (file_exists($folder_path) || mkdir($folder_path, 0755, true)) {
 		if ($alias) {
@@ -708,23 +830,24 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 		
 		return $data;
 	}
-	' . prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $table_name, $queries, $broker_code_prefix, $reserved_sql_keywords, $with_ids) . '
+	' . prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $table_name, $queries, $broker_code_prefix, $reserved_sql_keywords, $tables_props, $with_ids) . '
 }
 ?>';
 		
 		//echo "creating $file_path\n<br>";
 		//echo "<pre>$code</pre>";die();
-		return array($file_path, $table_name, file_put_contents($file_path, $code) > 0);
+		return array($file_path, $table_name, file_put_contents($file_path, $code) > 0, $table_name);
 	}
 	return false;
 }
 
-function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $table_name, $rels, $broker_code_prefix, $reserved_sql_keywords, $with_ids) {
+function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $table_name, $rels, $broker_code_prefix, $reserved_sql_keywords, &$tables_props, $with_ids) {
 	$code = "";
 	
 	$class_name = WorkFlowDataAccessHandler::getClassName($table_name);
 	$tables_props = array();
 	$db_broker_prefix_code = "\$this->getDBBroker()";
+	$tn = strtolower($table_name);
 	//echo"table_name:$table_name<pre>";print_r($rels);die();
 	
 	if (is_array($rels)) {
@@ -761,8 +884,8 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//check if table has pks
 						$no_pks = true;
 						
-						if (!empty($tables_props[$table_name]))
-							foreach ($tables_props[$table_name] as $attr)
+						if (!empty($tables_props[$tn]))
+							foreach ($tables_props[$tn] as $attr)
 								if (!empty($attr["primary_key"])) {
 									$no_pks = false;
 									break;
@@ -849,8 +972,8 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//check if table has pks
 						$no_pks = true;
 						
-						if (!empty($tables_props[$table_name]))
-							foreach ($tables_props[$table_name] as $attr)
+						if (!empty($tables_props[$tn]))
+							foreach ($tables_props[$tn] as $attr)
 								if (!empty($attr["primary_key"])) {
 									$no_pks = false;
 									break;
@@ -966,8 +1089,8 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//check if table has pks
 						$no_pks = true;
 						
-						if (!empty($tables_props[$table_name]))
-							foreach ($tables_props[$table_name] as $attr)
+						if (!empty($tables_props[$tn]))
+							foreach ($tables_props[$tn] as $attr)
 								if (!empty($attr["primary_key"])) {
 									$no_pks = false;
 									break;
@@ -1025,8 +1148,8 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//check if table has pks
 						$no_pks = true;
 						
-						if (!empty($tables_props[$table_name]))
-							foreach ($tables_props[$table_name] as $attr)
+						if (!empty($tables_props[$tn]))
+							foreach ($tables_props[$tn] as $attr)
 								if (!empty($attr["primary_key"])) {
 									$no_pks = false;
 									break;
@@ -1116,7 +1239,7 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 	return $code;
 }
 
-function prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $rels, $obj_id, $module_id, $broker_code_prefix, $reserved_sql_keywords, $is_hibernate_obj = false, $hbn_obj_data = false, $hbn_obj_parameters = false) {
+function prepareDataAccessNodes($data_access_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $rels, $obj_id, $module_id, $broker_code_prefix, $reserved_sql_keywords, &$tables_props, $is_hibernate_obj = false, $hbn_obj_data = false, $hbn_obj_parameters = false) {
 	$code = "";
 	
 	$class_name = WorkFlowDataAccessHandler::getClassName($obj_id);
@@ -1510,6 +1633,23 @@ function getBusinessLogicServiceFunctionCode($name, $parameters, $addcslashes_co
 	return $code;
 }
 
+function getSQLStatementsMainTableName($rels, $data_access_obj, $db_broker, $db_driver) {
+	if (is_array($rels)) {
+		$rel_types = array("insert", "update", "delete", "select");
+		
+		foreach ($rel_types as $rel_type)
+			if (!empty($rels[$rel_type]) && is_array($rels[$rel_type]))
+				foreach ($rels[$rel_type] as $rel_id => $rel_data) {
+					$table_name = WorkFlowDataAccessHandler::getSQLStatementTable($rel_data, $data_access_obj, $db_broker, $db_driver);
+					
+					if ($table_name)
+						return $table_name;
+				}
+	}
+	
+	return null;
+}
+
 function prepareRelationshipCode(&$rel_data, $rels, $data_access_obj, $db_broker, $db_driver, $tasks_file_path, &$tables_props, $hbn_obj_data, &$parameters) {
 	//echo "<pre>";print_r($rel_data);echo "</pre>";
 	//echo "<pre>";print_r($rels);echo "</pre>";
@@ -1546,7 +1686,8 @@ function prepareSelectAllSQLParameters($obj_data, $rels, $data_access_obj, $db_b
 		}
 		//create dummy sql to get the parameters
 		else {
-			$attrs = isset($tables_props[$table_name]) ? $tables_props[$table_name] : null;
+			$tn = strtolower($table_name);
+			$attrs = isset($tables_props[$tn]) ? $tables_props[$tn] : null;
 			//echo "$table_name";print_r($attrs);die();
 			
 			if (!$attrs)

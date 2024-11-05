@@ -795,6 +795,55 @@ class MSSqlDB extends DB {
 		return $fields;
 	}
 	
+	public function listDBCharsets() {
+		return static::getDBCharsets();
+	}
+	
+	//mssql doesn't support charset for table
+	public function listTableCharsets() {
+		return null;
+	}
+	
+	//mssql doesn't support charset for column
+	public function listColumnCharsets() {
+		return null;
+	}
+	
+	public function listDBCollations() {
+		$rows = array();
+		
+		$sql = static::getShowDBCollationsStatement($this->options);
+		
+		if ($sql) {
+			$options = array("return_type" => "result");
+			$result = $this->getData($sql, $options);
+			
+			if($result)
+				foreach ($result as $field) {
+					$id = $field["name"];
+					$rows[$id] = !empty($field["description"]) ? $field["description"] : ucwords(str_replace("_", " ", $id));
+				}
+		}
+		
+		if (!$rows)
+			$rows = static::getDBCollations();
+		
+		return $rows;
+	}
+	
+	public function listTableCollations() {
+		return $this->listDBCollations();
+	}
+	
+	public function listColumnCollations() {
+		return $this->listDBCollations();
+	}
+	
+	//mssql doesn't support storage engines
+	public function listStorageEngines() {
+		return null;
+	}
+	
 	public function getInsertedId($options = false) {
     		if ($this->init())
     			switch ($this->default_php_extension_type) {

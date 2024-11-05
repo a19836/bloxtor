@@ -922,6 +922,89 @@ class MySqlDB extends DB {
 		return $fields;
 	}
 	
+	public function listDBCharsets() {
+		$rows = array();
+		
+		$sql = static::getShowDBCharsetsStatement($this->options);
+		
+		if ($sql) {
+			$options = array("return_type" => "result");
+			$result = $this->getData($sql, $options);
+			
+			if($result)
+				foreach ($result as $field) {
+					$id = $field["Charset"];
+					$rows[$id] = !empty($field["Description"]) ? $field["Description"] : ucwords(str_replace("_", " ", $id));
+				}
+		}
+		
+		if (!$rows)
+			$rows = static::getDBCharsets();
+		
+		return $rows;
+	}
+	
+	public function listTableCharsets() {
+		return $this->listDBCharsets();
+	}
+	
+	//mysql doesn't support charsets for columns
+	public function listColumnCharsets() {
+		return null;
+	}
+	
+	public function listDBCollations() {
+		$rows = array();
+		
+		$sql = static::getShowDBCollationsStatement($this->options);
+		
+		if ($sql) {
+			$options = array("return_type" => "result");
+			$result = $this->getData($sql, $options);
+			
+			if($result)
+				foreach ($result as $field) {
+					$id = $field["Collation"];
+					$rows[$id] = ucwords(str_replace("_", " ", $id));
+				}
+		}
+		
+		if (!$rows)
+			$rows = static::getDBCollations();
+		
+		return $rows;
+	}
+	
+	public function listTableCollations() {
+		return $this->listDBCollations();
+	}
+	
+	public function listColumnCollations() {
+		return $this->listDBCollations();
+	}
+	
+	public function listStorageEngines() {
+		$rows = array();
+		
+		$sql = static::getShowDBStorageEnginesStatement($this->options);
+		
+		if ($sql) {
+			$options = array("return_type" => "result");
+			$result = $this->getData($sql, $options);
+			
+			if($result)
+				foreach ($result as $field) {
+					$id = $field["Engine"];
+					$rows[$id] = ucwords(str_replace("_", " ", $id)) . " - " . (!empty($field["Comment"]) ? $field["Comment"] : "");
+				}
+		}
+		
+		if (!$rows)
+			$rows = static::getStorageEngines();
+		
+		return $rows;
+	}
+	
 	public function getInsertedId($options = false) {
     		if ($this->init())
     			switch ($this->default_php_extension_type) {

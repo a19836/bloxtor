@@ -43,6 +43,8 @@ trait DBStatic {
 	abstract public static function getIgnoreConnectionOptionsByExtension();
 	abstract public static function getAvailablePHPExtensionTypes();
 	abstract public static function allowTableAttributeSorting();
+	abstract public static function allowModifyTableEncoding();
+	abstract public static function allowModifyTableStorageEngine();
 	
 	/* Abstract Static Methods - In DB Driver Statement */
 	abstract public static function getCreateDBStatement($db_name, $options = false);
@@ -55,6 +57,8 @@ trait DBStatic {
 	abstract public static function getCreateTableStatement($table_data, $options = false);
 	abstract public static function getCreateTableAttributeStatement($attribute_data, $options = false, &$parsed_data = array());
 	abstract public static function getRenameTableStatement($old_table, $new_table, $options = false);
+	abstract public static function getModifyTableEncodingStatement($table, $charset, $collation, $options = false);
+	abstract public static function getModifyTableStorageEngineStatement($table, $engine, $options = false);
 	abstract public static function getDropTableStatement($table, $options = false);
 	abstract public static function getDropTableCascadeStatement($table, $options = false);
 	abstract public static function getAddTableAttributeStatement($table, $attribute_data, $options = false);
@@ -97,6 +101,13 @@ trait DBStatic {
 	abstract public static function getDropFunctionStatement($function, $options = false);
 	abstract public static function getDropEventStatement($event, $options = false);
 	abstract public static function getDropViewStatement($view, $options = false);
+	abstract public static function getShowDBCharsetsStatement($options = false);
+	abstract public static function getShowTableCharsetsStatement($options = false);
+	abstract public static function getShowColumnCharsetsStatement($options = false);
+	abstract public static function getShowDBCollationsStatement($options = false);
+	abstract public static function getShowTableCollationsStatement($options = false);
+	abstract public static function getShowColumnCollationsStatement($options = false);
+	abstract public static function getShowDBStorageEnginesStatement($options = false);
 	
 	/* Public Static Methods */
 	

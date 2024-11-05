@@ -218,6 +218,10 @@ else {
 					</li>
 				</ul>
 				<div class="options">
+					<div class="resource_services">
+						<input type="checkbox" name="resource_services" value="1" checked />
+						<label>Do you wish to create the correspondent Resource Services?</label>
+					</div>
 					<div class="overwrite">
 						<input type="checkbox" name="overwrite" value="1" />
 						<label>Do you wish to overwrite the selected items, if they already exists?</label>

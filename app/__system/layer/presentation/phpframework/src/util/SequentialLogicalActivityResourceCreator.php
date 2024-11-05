@@ -2,7 +2,7 @@
 include_once $EVC->getUtilPath("CMSPresentationUIAutomaticFilesHandler");
 include_once $EVC->getUtilPath("WorkFlowTasksFileHandler");
 include_once $EVC->getUtilPath("SequentialLogicalActivityCodeConverter");
-include_once $EVC->getUtilPath("CMSPresentationFormSettingsUIHandler");
+include_once $EVC->getUtilPath("SequentialLogicalActivityBLResourceCreator");
 
 class SequentialLogicalActivityResourceCreator {
 	
@@ -618,8 +618,12 @@ return 0;';
 		$get_task = $this->loadTask("get");
 		$common_options_code = null;
 		
-		if (!$update_task || !$update_pks_task || !$get_task) 
-			$error_message = "Error: Couldn't find any service for $action_type action.";
+		if (!$update_task) 
+			$error_message = "Error: Couldn't find any service for update action.";
+		else if (!$update_pks_task) 
+			$error_message = "Error: Couldn't find any service for update_pks action.";
+		else if (!$get_task) 
+			$error_message = "Error: Couldn't find any service for get action.";
 		else {
 			$update_task = $this->loadTaskParams($update_task);
 			$update_task = $this->loadTaskParamsWithDefaultValues($update_task, '$data');
@@ -788,6 +792,14 @@ return 0;';
 }';
 				}
 				else {
+					//prepare code for empty files
+					$code_for_empty_files = '';
+					
+					foreach ($attrs as $attr_name => $attr)
+						if (empty($attr["primary_key"]) && isset($attr["type"]) && ObjTypeHandler::isDBTypeBlob($attr["type"]))
+							$code_for_empty_files .= '
+				if (isset($filtered_attributes["' . $attr_name . '"]) && isset($data["' . $attr_name . '"]) && empty($_FILES["' . $attr_name . '"]["tmp_name"])) $filtered_attributes["' . $attr_name . '"] = $data["' . $attr_name . '"];';
+					
 					$code = 'if ($attributes && $pks) {
 	$status = true;
 	
@@ -836,14 +848,6 @@ return 0;';
 					if (isset($get_task["item_type"]) && ($get_task["item_type"] == "ibatis" || $get_task["item_type"] == "db"))
 						$code .= '
 				$data = $data ? $data[0] : null;';
-					
-					//prepare code for empty files
-					$code_for_empty_files = '';
-					
-					foreach ($attrs as $attr_name => $attr)
-						if (empty($attr["primary_key"]) && isset($attr["type"]) && ObjTypeHandler::isDBTypeBlob($attr["type"]))
-							$code_for_empty_files .= '
-				if (isset($filtered_attributes["' . $attr_name . '"]) && isset($data["' . $attr_name . '"]) && empty($_FILES["' . $attr_name . '"]["tmp_name"])) $filtered_attributes["' . $attr_name . '"] = $data["' . $attr_name . '"];';
 					
 					//prepare data code
 					$code .= '
@@ -925,13 +929,15 @@ return 0;';
 		$update_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "update", $class_name);
 		
 		if (!$insert_method_exists)
-			$insert_method_exists = $this->createInsertMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+			$insert_method_exists = $this->createInsertMethod("insert", $resource_data, $class_name, $file_path, $error_message);
 		
 		if (!$update_method_exists)
-			$update_method_exists = $this->createUpdateMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+			$update_method_exists = $this->createUpdateMethod("update", $resource_data, $class_name, $file_path, $error_message);
 		
-		if (!$insert_method_exists || !$update_method_exists)
-			$error_message = "Error: Couldn't find any service for $action_type action.";
+		if (!$insert_method_exists)
+			$error_message = "Error: Couldn't find any service for insert action.";
+		else if (!$update_method_exists)
+			$error_message = "Error: Couldn't find any service for update action.";
 		else {
 			//prepare code
 			$code = '$status = true;
@@ -955,6 +961,8 @@ return $status;';
 			
 			if ($task && isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createMultipleSaveMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
+				$bl_method_name = $this->getTaskBusinessLogicResourceServiceClassMethodName($task);
+				$bl_method_name = $bl_method_name ? $bl_method_name : "update";
 				$bl_method_comments = "Update multiple records at once parsed resource record into table: " . $this->db_table . ".";
 				$bl_code = '$status = true;
 
@@ -969,7 +977,7 @@ if ($attributes)
 		
 		if ($is_insert && !$this->insert($data))
 			$status = false;
-		else if (!$is_insert && !$this->update($data))
+		else if (!$is_insert && !$this->' . $bl_method_name . '($data))
 			$status = false;
 	}
 
@@ -1021,8 +1029,10 @@ return $result;';
 		$get_task = $this->loadTask("get");
 		$update_task = $this->loadTask("update");
 		
-		if (!$get_task || !$update_task) 
-			$error_message = "Error: Couldn't find any service for $action_type action.";
+		if (!$get_task) 
+			$error_message = "Error: Couldn't find any service for get action.";
+		else if (!$update_task) 
+			$error_message = "Error: Couldn't find any service for update action.";
 		else {
 			$get_task = $this->loadTaskParams($get_task);
 			$get_task = $this->loadTaskParamsWithDefaultValues($get_task, '$pks');
@@ -1129,13 +1139,6 @@ return $result;';
 					$code .= $get_options_code;
 				}
 				
-				//prepare get data code
-				$code .= '$data = ' . $get_task_code . ';';
-			
-				if (isset($get_task["item_type"]) && ($get_task["item_type"] == "ibatis" || $get_task["item_type"] == "db"))
-					$code .= '
-		$data = $data ? $data[0] : null;';
-				
 				//prepare code for empty files
 				$code_for_empty_files = '';
 				
@@ -1144,6 +1147,13 @@ return $result;';
 						$code_for_empty_files .= '
 		if (isset($attributes["' . $attr_name . '"]) && isset($data["' . $attr_name . '"]) && empty($_FILES["' . $attr_name . '"]["tmp_name"])) $attributes["' . $attr_name . '"] = $data["' . $attr_name . '"];';
 				
+				
+				//prepare get data code
+				$code .= '$data = ' . $get_task_code . ';';
+			
+				if (isset($get_task["item_type"]) && ($get_task["item_type"] == "ibatis" || $get_task["item_type"] == "db"))
+					$code .= '
+		$data = $data ? $data[0] : null;';
 				
 				//prepare data code
 				$code .= '
@@ -1235,19 +1245,23 @@ return $result;';
 	private function createInsertUpdateAttributeMethod($action_type, $resource_data, $class_name, $file_path, &$error_message) {
 		$get_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "get", $class_name);
 		$insert_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "insert", $class_name);
-		$update_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "updateAttribute", $class_name);
+		$update_attribute_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "updateAttribute", $class_name);
 		
 		if (!$get_method_exists)
-			$get_method_exists = $this->createGetMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+			$get_method_exists = $this->createGetMethod("get", $resource_data, $class_name, $file_path, $error_message);
 		
 		if (!$insert_method_exists)
-			$insert_method_exists = $this->createInsertMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+			$insert_method_exists = $this->createInsertMethod("insert", $resource_data, $class_name, $file_path, $error_message);
 		
-		if (!$update_method_exists)
-			$update_method_exists = $this->createUpdateAttributeMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+		if (!$update_attribute_method_exists)
+			$update_attribute_method_exists = $this->createUpdateAttributeMethod("update_attribute", $resource_data, $class_name, $file_path, $error_message);
 		
-		if (!$get_method_exists || !$insert_method_exists || !$update_method_exists)
-			$error_message = "Error: Couldn't find any service for $action_type action.";
+		if (!$get_method_exists)
+			$error_message = "Error: Couldn't find any service for get action.";
+		else if (!$insert_method_exists)
+			$error_message = "Error: Couldn't find any service for insert action.";
+		else if (!$update_attribute_method_exists)
+			$error_message = "Error: Couldn't find any service for update_attribute action.";
 		else {
 			$code = '$item_data = self::get($EVC, $pks, $no_cache);
 
@@ -1327,16 +1341,20 @@ return $result;';
 		$delete_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "delete", $class_name);
 		
 		if (!$get_method_exists)
-			$get_method_exists = $this->createGetMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+			$get_method_exists = $this->createGetMethod("get", $resource_data, $class_name, $file_path, $error_message);
 		
 		if (!$insert_method_exists)
-			$insert_method_exists = $this->createInsertMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+			$insert_method_exists = $this->createInsertMethod("insert", $resource_data, $class_name, $file_path, $error_message);
 		
 		if (!$delete_method_exists)
-			$delete_method_exists = $this->createDeleteMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+			$delete_method_exists = $this->createDeleteMethod("delete", $resource_data, $class_name, $file_path, $error_message);
 		
-		if (!$get_method_exists || !$insert_method_exists || !$delete_method_exists)
-			$error_message = "Error: Couldn't find any service for $action_type action.";
+		if (!$get_method_exists)
+			$error_message = "Error: Couldn't find any service for get action.";
+		else if (!$insert_method_exists)
+			$error_message = "Error: Couldn't find any service for insert action.";
+		else if (!$delete_method_exists)
+			$error_message = "Error: Couldn't find any service for delete action.";
 		else {
 			$code = '$exists = false;
 
@@ -1363,6 +1381,8 @@ return !$exists || self::insert($EVC, $attributes, $no_cache);';
 			
 			if ($task && isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createInsertDeleteAttributeMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
+				$bl_method_name = $this->getTaskBusinessLogicResourceServiceClassMethodName($task);
+				$bl_method_name = $bl_method_name ? $bl_method_name : "insert";
 				$bl_method_comments = "Insert or delete a record based if a value from an attribute, from table: " . $this->db_table . ", exists or not.";
 				$bl_code = '$exists = false;
 
@@ -1382,7 +1402,7 @@ if (!empty($item_data))
 if (isset($data["pks"]) && is_array($data["pks"]))
 	$data["attributes"] = isset($data["attributes"]) && is_array($data["attributes"]) ? array_merge($data["attributes"], $data["pks"]) : $data["pks"];
 
-return !$exists || $this->insert($data);';
+return !$exists || $this->' . $bl_method_name . '($data);';
 				
 				$bl_task = $task;
 				$bl_task["service"]["service_id"] = isset($bl_task["service"]["service_id"]) ? $bl_task["service"]["service_id"] : null;
@@ -1435,10 +1455,12 @@ return $result;';
 		$insert_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "insert", $class_name);
 		
 		if (!$insert_method_exists)
-			$insert_method_exists = $this->createInsertMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+			$insert_method_exists = $this->createInsertMethod("insert", $resource_data, $class_name, $file_path, $error_message);
 		
-		if (!$task || !$insert_method_exists)
-			$error_message = "Error: Couldn't find any service for $action_type action.";
+		if (!$task)
+			$error_message = "Error: Couldn't find any service for delete_all action.";
+		else if (!$insert_method_exists)
+			$error_message = "Error: Couldn't find any service for insert action.";
 		else {
 			$task = $this->loadTaskParams($task);
 			$task = $this->loadTaskParamsWithDefaultValues($task, '$delete_data');
@@ -1560,7 +1582,8 @@ return $status;';
 				$pks_previous_code = self::getUpdateActionPreviousCode($this->tables, $this->db_table, $pks_name, $task, $this->WorkFlowTaskHandler, $broker_code, '$pks', true);
 				$pks_previous_code = str_replace("\n", "\n\t", $pks_previous_code);
 				
-				$code = 'if ($pks) {
+				$code = '$status = false;
+if ($pks) {
 	$status = true;
 	
 	' . $pks_previous_code . '
@@ -1577,9 +1600,9 @@ return $status;';
 				
 				$code .= '$status = ' . $task_code . ';
 	}
-	
-	return $status;
-}';
+}
+
+return $status;';
 				
 				//prepare task in business logic layer
 				if (isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
@@ -1610,10 +1633,10 @@ return $status;';
 		$delete_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "delete", $class_name);
 		
 		if (!$delete_method_exists)
-			$delete_method_exists = $this->createDeleteMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+			$delete_method_exists = $this->createDeleteMethod("delete", $resource_data, $class_name, $file_path, $error_message);
 		
 		if (!$delete_method_exists)
-			$error_message = "Error: Couldn't find any service for $action_type action.";
+			$error_message = "Error: Couldn't find any service for delete action.";
 		else {
 			//prepare code
 			$code = '$status = true;
@@ -1630,6 +1653,8 @@ return $status;';
 			
 			if ($task && isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
 				//echo "<pre>createMultipleDeleteMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
+				$bl_method_name = $this->getTaskBusinessLogicResourceServiceClassMethodName($task);
+				$bl_method_name = $bl_method_name ? $bl_method_name : "delete";
 				$bl_method_comments = "Delete multiple records at once parsed resource record from table: " . $this->db_table . ".";
 				$bl_code = '$status = true;
 $pks = isset($data["pks"]) ? $data["pks"] : null;
@@ -1638,7 +1663,7 @@ if ($pks)
 for ($i = 0, $t = count($pks); $i < $t; $i++) {
 	$data["pks"] = $pks[$i];
 	
-	if (!$this->delete($data))
+	if (!$this->' . $bl_method_name . '($data))
 		$status = false;
 }
 
@@ -1894,6 +1919,101 @@ return $result;';
 	}
 
 	private function createGetAllOptionsMethod($action_type, $resource_data, $class_name, $file_path, &$error_message) {
+		$get_all_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "getAll", $class_name);
+		
+		if (!$get_all_method_exists)
+			$get_all_method_exists = $this->createGetAllMethod("get_all", $resource_data, $class_name, $file_path, $error_message);
+		
+		if (!$get_all_method_exists)
+			$error_message = "Error: Couldn't find any service for get_all action.";
+		else {
+			$options_settings = SequentialLogicalActivityBLResourceCreator::getTableOptionsSettings($this->db_table, $this->tables, $resource_data);
+			
+			if (!$options_settings)
+				$error_message = "Error: No primary attribute or no valid attributes when trying to create the getAllOptions method.";
+			else {
+				$keys = isset($options_settings["keys"]) ? $options_settings["keys"] : null;
+				$values = isset($options_settings["values"]) ? $options_settings["values"] : null;
+				
+				//prepare code
+				$code = '$result = self::getAll($EVC, $limit, $start, $conditions, $conditions_type, $conditions_case, $conditions_join, $sort, $no_cache);
+
+$options = array();
+
+if ($result) 
+	for ($i = 0, $t = count($result); $i < $t; $i++) {
+		$item = $result[$i];
+		$key = ';
+			
+				for ($i = 0, $t = count($keys); $i < $t; $i++)
+					$code .= ($i > 0 ? ' . "_" . ' : "") . '$item["' . $keys[$i] . '"]';
+				
+				$code .= ';
+		$value = ';
+				
+				for ($i = 0, $t = count($values); $i < $t; $i++)
+					$code .= ($i > 0 ? ' . "_" . ' : "") . '$item["' . $values[$i] . '"]';
+				
+				$code .= ';
+		$options[$key] = $value;
+	}
+
+return $options;';
+				
+				//prepare task in business logic layer
+				$task = $this->loadTask("get_all");
+				
+				if ($task && isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
+					//echo "<pre>createGetAllOptionsMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
+					$bl_method_name = $this->getTaskBusinessLogicResourceServiceClassMethodName($task);
+					$bl_method_name = $bl_method_name ? $bl_method_name : "getAll";
+					$bl_method_comments = "Get parsed resource key-value pair list from table: " . $this->db_table . ", where the key is the table primary key and the value is the table attribute label.";
+					$bl_code = str_replace('$result = self::getAll($EVC, $limit, $start, $conditions, $conditions_type, $conditions_case, $conditions_join, $sort, $no_cache);', '$result = $this->' . $bl_method_name . '($data);', $code);
+					$bl_task = $task;
+					$bl_task["service"]["service_id"] = isset($bl_task["service"]["service_id"]) ? $bl_task["service"]["service_id"] : null;
+					$bl_task["service"]["service_id"] = strstr($bl_task["service"]["service_id"], ".", true) . ".getAllOptions";
+					$bl_task["service"]["method"] = "getAllOptions";
+					
+					if ($this->createTaskBusinessLogicResourceService($bl_task, $bl_code, $bl_method_comments, $error_message)) {
+						$bl_task = $this->convertTaskToBusinessLogicResourceService($bl_task);
+						$bl_broker_code = $this->getBrokerCode($bl_task);
+						$bl_task_code = $this->getTaskCode($action_type, $bl_task, $bl_broker_code);
+						
+						$code = '$options = array(
+	"no_cache" => $no_cache,
+	"limit" => $limit,
+	"start" => $start,
+	"sort" => $sort
+);
+$data = array(
+	"conditions" => $conditions,
+	"conditions_type" => $conditions_type,
+	"conditions_case" => $conditions_case,
+	"conditions_join" => $conditions_join,
+);
+$result = ' . $bl_task_code . ';
+return $result;';
+					}
+				}
+				
+				//save resource util task
+				$method_args = array('EVC' => null, 'limit' => 'false', 'start' => 'false', 'conditions' => 'false', 'conditions_type' => 'false', 'conditions_case' => 'false', 'conditions_join' => 'false', 'sort' => 'false', 'no_cache' => 'false');
+				$method_comments = "Get key-value pair list from table: " . $this->db_table . ", where the key is the table primary key and the value is the table attribute label.";
+				
+				return $this->addFunctionToFile($file_path, array(
+					"name" => "getAllOptions",
+					"static" => true,
+					"arguments" => $method_args,
+					"code" => $code,
+					"comments" => $method_comments
+				), $class_name);
+			}
+		}
+		
+		return false;
+	}
+	/* Old method - DEPRECATED
+	private function createGetAllOptionsMethod($action_type, $resource_data, $class_name, $file_path, &$error_message) {
 		$task = $this->loadTask("get_all");
 		
 		if (!$task) 
@@ -1915,7 +2035,7 @@ return $result;';
 			}
 			$task_code = $this->getTaskCode($action_type, $task, $broker_code);
 			
-			$options_settings = self::getTableOptionsSettings($this->db_table, $this->tables, $resource_data);
+			$options_settings = SequentialLogicalActivityBLResourceCreator::getTableOptionsSettings($this->db_table, $this->tables, $resource_data);
 			
 			if (!$options_settings)
 				$error_message = "Error: No primary attribute name when trying to create the getAllOptions method.";
@@ -1951,7 +2071,7 @@ if ($result)
 				
 				$code .= ';';
 				
-				$next_code = self::getSelectItemActionNextCode($this->tables, $this->db_table, '$item', $keys);
+				$next_code = self::getSelectItemActionNextCode($this->tables, $this->db_table, '$item', $values);
 				$code .= $next_code ? '
 		
 		' . trim($next_code) . '
@@ -1992,7 +2112,7 @@ return $options;';
 		}
 		
 		return false;
-	}
+	}*/
 	
 	private function addFunctionToFile($file_path, $method_data, $class_name) {
 		//check if method doesn't exist already, bc meanwhile it may was created before. Note that it is possible to happen multiple concurrent calls of this function with the same method name. So just in case we check if exists again...
@@ -3286,54 +3406,7 @@ return $result;';
 
 	private function getTaskConditionsCode($task) {
 		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
-		
-		$code = '//prepare $conditions based in $conditions_type: starts_with or ends_with
-if ($conditions)
-	foreach ($conditions as $attribute_name => $attribute_value) {
-		$attribute_condition_type = is_array($conditions_type) ? (isset($conditions_type[$attribute_name]) ? $conditions_type[$attribute_name] : null) : $conditions_type;
-		$attribute_operator = $attribute_condition_type == "starts_with" || $attribute_condition_type == "ends_with" || $attribute_condition_type == "contains" ? "like" : $attribute_condition_type;
-		$attribute_case = is_array($conditions_case) ? (isset($conditions_case[$attribute_name]) ? $conditions_case[$attribute_name] : null) : $conditions_case;
-		$attribute_join = is_array($conditions_join) ? (isset($conditions_join[$attribute_name]) ? $conditions_join[$attribute_name] : null) : $conditions_join;
-		
-		if ($attribute_operator && $attribute_operator != "=" && $attribute_operator != "equal") {
-			if (is_array($attribute_value) && $attribute_operator != "in" && $attribute_operator != "not in") {
-				$conditions[$attribute_name] = array();
-				
-				foreach ($attribute_value as $v)
-					$conditions[$attribute_name][] = array(
-						"operator" => $attribute_operator,
-						"value" => ($attribute_condition_type == "starts_with" || $attribute_condition_type == "contains" ? "%" : "") . ($attribute_case == "insensitive" ? strtolower($v) : $v) . ($attribute_condition_type == "ends_with" || $attribute_condition_type == "contains" ? "%" : ""),
-					);
-			}
-			else {
-				if (($attribute_operator == "in" || $attribute_operator == "not in") && $attribute_case == "insensitive" && is_array($attribute_value))
-					foreach ($attribute_value as $k => $v)
-						if (is_string($v))
-							$attribute_value[$k] = strtolower($v);
-				
-	    			$conditions[$attribute_name] = array(
-					"operator" => $attribute_operator,
-					"value" => $attribute_operator == "in" || $attribute_operator == "not in" ? $attribute_value : (
-						($attribute_condition_type == "starts_with" || $attribute_condition_type == "contains" ? "%" : "") . ($attribute_case == "insensitive" ? strtolower($attribute_value) : $attribute_value) . ($attribute_condition_type == "ends_with" || $attribute_condition_type == "contains" ? "%" : "")
-					),
-				);
-			}
-			
-			if ($attribute_case == "insensitive") {
-				$conditions["lower($attribute_name)"] = $conditions[$attribute_name];
-				unset($conditions[$attribute_name]);
-				$attribute_name = "lower($attribute_name)";
-			}
-		}
-		
-		if (strtolower($attribute_join) == "or") {
-			$conditions[$attribute_join][$attribute_name] = $conditions[$attribute_name];
-			unset($conditions[$attribute_name]);
-	    	}
-	}
-	
-$conditions_join = "and";
-';
+		$code = SequentialLogicalActivityBLResourceCreator::getDefaultConditionsCode();
 		
 		if ($item_type == "businesslogic" || $item_type == "hibernate")
 			$code .= '
@@ -3663,86 +3736,57 @@ $conds = $conds ? $conds : "1=1";
 		return isset($task["item_type"]) && $task["item_type"] == "ibatis";
 	}
 
-	private static function getTableOptionsSettings($db_table, $tables, $resource_data) {
-		if (!is_array($resource_data))
-			$resource_data = array(array("table" => $db_table));
-		else if (array_key_exists("table", $resource_data))
-			$resource_data = array($resource_data);
-		
-		$attr_fk = WorkFlowDataAccessHandler::getTableAttributeFKTable($resource_data, $tables);
-		$fk_table = isset($attr_fk["table"]) ? $attr_fk["table"] : null;
-		$fk_attr = isset($attr_fk["attribute"]) ? $attr_fk["attribute"] : null;
-		$fk_attrs = $fk_table ? WorkFlowDBHandler::getTableFromTables($tables, $fk_table) : null;
-		
-		//get the pks name $attribute_name
-		if (!$fk_attr && $fk_attrs) {
-			$fk_attr = array();
-			
-			foreach ($fk_attrs as $attr_name => $attr)
-				if (!empty($attr["primary_key"]))
-					$fk_attr[] = $attr_name;
-		}
-		
-		if ($fk_attr) {
-			$title_attr = $fk_attrs ? WorkFlowDataAccessHandler::getTableAttrTitle($fk_attrs, $fk_table) : null;
-			$title_attr = $title_attr ? $title_attr : $fk_attr; //set $title_attr to $fk_attr if not exist. In this case the getAllOptions will simply return the a list with key/value pair like: 'primary key/primary key'.
-			
-			$keys = is_array($fk_attr) ? $fk_attr : array($fk_attr);
-			$values = is_array($title_attr) ? $title_attr : array($title_attr);
-			
-			return array(
-				"keys" => $keys,
-				"values" => $values,
-			);
-		}
-		
-		return null;
-	}
-
 	//This method is called inside of the getUpdateActionPreviousCode too
-	//copied from CMSPresentationFormSettingsUIHandler::getInsertActionPreviousCode, so if you change this method, please mae the correspodnent changes in this other method too.
+	//copied from CMSPresentationFormSettingsUIHandler::getInsertActionPreviousCode and SequentialLogicalActivityBLResourceCreator::getInsertActionPreviousCode, so if you change this method, please make the correspodnent changes in this other method too.
 	private static function getInsertActionPreviousCode($tables, $table_name, $attributes, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix, $is_insert_task = true, $is_update_task = false, $is_update_attribute_task = false) {
 		$code = "";
-		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
-		
-		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
 		$is_db_primitive_action = self::isDBPrimitiveTask($task); //used when insert and update action
-		$is_ibatis = self::isIbatisTask($task);
-		$logged_user_id_code = null;
 		
-		foreach ($attributes as $attr_name) {
-			$attr = isset($attrs[$attr_name]) ? $attrs[$attr_name] : null;
-			$is_created_attribute = ObjTypeHandler::isDBAttributeNameACreatedDate($attr_name) || ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name);
+		if (!$is_db_primitive_action) {
+			$code = SequentialLogicalActivityBLResourceCreator::getInsertActionPreviousCode($tables, $table_name, $attributes, $var_prefix, $is_insert_task, $is_update_task);
+			$code = preg_replace('/(\$[a-z]+\["logged_user_id"\]\s*=\s*)\$data\["logged_user_id"\];/', '$1self::getLoggedUserId($EVC);', $code);
+			$code = preg_replace('/(\$[a-z]+\["logged_user_id"\]\s*=\s*)isset\(\$data\[\"logged_user_id\"\]\)\s*\?\s*\$data\[\"logged_user_id\"\]\s*:\s*null\s*;/', '$1self::getLoggedUserId($EVC);', $code);
+		}
+		else {
+			//prepare code if primitive task
+			$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
+			$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
+			$is_ibatis = self::isIbatisTask($task);
+			$logged_user_id_code = null;
 			
-			//if is an update action and is a create_date or create_by attribute, ignore attribute
-			if ($is_update_task && empty($attr["primary_key"]) && $is_created_attribute) 
-				continue;
-			
-			$type = isset($attr["type"]) ? $attr["type"] : null;
-			$allow_null = !isset($attr["null"]) || $attr["null"];
-			$is_numeric_type = ObjTypeHandler::isDBTypeNumeric($type) || ObjTypeHandler::isPHPTypeNumeric($type);
-			$is_blob_type = ObjTypeHandler::isDBTypeBlob($type);
-			
-			$is_logged_user_id_attribute = (ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name) || ObjTypeHandler::isDBAttributeNameAModifiedUserId($attr_name)) && $is_numeric_type;
-			
-			//Note that the array_key_exists is very important bc of the update_attribute action, otherwisse we are adding attributes when the user only ask us to save another attribute. Is important too for the business logic services where we only want to check the values if they exists, bc the default value is already set inside of the business logic service.
-			$array_key_exists = !empty($attr["primary_key"]) || (isset($task["item_type"]) && $task["item_type"] == "businesslogic") || $is_update_attribute_task || ($is_update_task && $is_created_attribute) ? 'array_key_exists("' . $attr_name . '", ' . $var_prefix . ') && ' : '';
-			
-			//check if field is checkbox/boolean and if yes the default should be replaced by 0, bc it means the user set the checkbox to unchcekd which makes the browser to not include this attribute in the requests...
-			//Note that this must happens if strlen($attr["default"]) > 0 or if there is no $attr["default"]. In both cases this must happen! Unless it allows NULL, which in this case we don't need to set the default to 0, bc we can set it to null, as shown in the code in this function.
-			CMSPresentationFormSettingsUIHandler::prepareFormInputParameters($attr, $input_type);
-			$attr_default = isset($attr["default"]) ? $attr["default"] : null;
-			$is_checkbox = (strlen($attr_default) || !$allow_null) && ($input_type == "checkbox" || $input_type == "radio") && $is_numeric_type;
-			
-			if ($is_checkbox) 
-				$attr["default"] = 0; //discart on purpose the $attr["default"], bc the default value may be 1, and we want to set it to 0 instead, since if the user doesn't check the checkbox, it means the browser will return an empty string and we want to save his choice in the DB. If we leave the original $attr["default"] (that could be 1) than is the same that the user check the checkbox, which doesn't make sense.  
-			
-			//prepare code
-			if ($is_insert_task && !empty($attr["primary_key"]) && WorkFlowDataAccessHandler::isAutoIncrementedAttribute($attr)) {
-				$code .= self::getInsertActionPreviousCodeIfBrokerSettingsContainsAutoIncrementPrimaryKeys($table_name, $attr_name, $attr, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix);
-			}
-			else if ($allow_null && ($is_numeric_type || ObjTypeHandler::isDBTypeDate($type))) {
-				if ($is_db_primitive_action) {
+			foreach ($attributes as $attr_name) {
+				$attr = isset($attrs[$attr_name]) ? $attrs[$attr_name] : null;
+				$is_created_attribute = ObjTypeHandler::isDBAttributeNameACreatedDate($attr_name) || ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name);
+				
+				//if is an update action and is a create_date or create_by attribute, ignore attribute
+				if ($is_update_task && empty($attr["primary_key"]) && $is_created_attribute) 
+					continue;
+				
+				$type = isset($attr["type"]) ? $attr["type"] : null;
+				$allow_null = !isset($attr["null"]) || $attr["null"];
+				$is_numeric_type = ObjTypeHandler::isDBTypeNumeric($type) || ObjTypeHandler::isPHPTypeNumeric($type);
+				$is_blob_type = ObjTypeHandler::isDBTypeBlob($type);
+				
+				$is_logged_user_id_attribute = (ObjTypeHandler::isDBAttributeNameACreatedUserId($attr_name) || ObjTypeHandler::isDBAttributeNameAModifiedUserId($attr_name)) && $is_numeric_type;
+				
+				//Note that the array_key_exists is very important bc of the update_attribute action, otherwisse we are adding attributes when the user only ask us to save another attribute. Is important too for the business logic services where we only want to check the values if they exists, bc the default value is already set inside of the business logic service.
+				$array_key_exists = !empty($attr["primary_key"]) || $is_update_attribute_task || ($is_update_task && $is_created_attribute) ? 'array_key_exists("' . $attr_name . '", ' . $var_prefix . ') && ' : '';
+				
+				//check if field is checkbox/boolean and if yes the default should be replaced by 0, bc it means the user set the checkbox to unchcekd which makes the browser to not include this attribute in the requests...
+				//Note that this must happens if strlen($attr["default"]) > 0 or if there is no $attr["default"]. In both cases this must happen! Unless it allows NULL, which in this case we don't need to set the default to 0, bc we can set it to null, as shown in the code in this function.
+				$input_type = null;
+				CMSPresentationFormSettingsUIHandler::prepareFormInputParameters($attr, $input_type);
+				$attr_default = isset($attr["default"]) ? $attr["default"] : null;
+				$is_checkbox = (strlen($attr_default) || !$allow_null) && ($input_type == "checkbox" || $input_type == "radio") && $is_numeric_type;
+				
+				if ($is_checkbox) 
+					$attr["default"] = 0; //discart on purpose the $attr["default"], bc the default value may be 1, and we want to set it to 0 instead, since if the user doesn't check the checkbox, it means the browser will return an empty string and we want to save his choice in the DB. If we leave the original $attr["default"] (that could be 1) than is the same that the user check the checkbox, which doesn't make sense.  
+				
+				//prepare code
+				if ($is_insert_task && !empty($attr["primary_key"]) && WorkFlowDataAccessHandler::isAutoIncrementedAttribute($attr)) {
+					$code .= self::getInsertActionPreviousCodeIfBrokerSettingsContainsAutoIncrementPrimaryKeys($table_name, $attr_name, $attr, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix);
+				}
+				else if ($allow_null && ($is_numeric_type || ObjTypeHandler::isDBTypeDate($type))) {
 					$code .= 'if (isset(' . $var_prefix . '["' . $attr_name . '"]) && is_numeric(' . $var_prefix . '["' . $attr_name . '"]) && is_string(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] += 0;' . "\n"; //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
 					
 					$default = isset($attr["default"]) && strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : '"DEFAULT"';
@@ -3761,67 +3805,35 @@ $conds = $conds ? $conds : "1=1";
 					//only add the array_key_exists if is update_attribute action, bc this is a primitive action which needs to have the default values set in the $var_prefix even if there is no $attr_name yet...
 					$code .= 'else if (' . $array_key_exists . '!strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
 				}
-				else {
-					//reset the values to default, bc if they are a boolean or a tinyint (with length 1) and have an empty string, they need to be set to null, otherwise they will give an error in the business logic services, bc will not be set correctly with the default values. Note that the default values will be set by the business logic services.
-					$default = 'null';
+				else if ($is_numeric_type) { //for the cases with a checkbox where the value doesn't exist and is numeric
+					$code .= 'if (isset(' . $var_prefix . '["' . $attr_name . '"]) && is_numeric(' . $var_prefix . '["' . $attr_name . '"]) && is_string(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] += 0;' . "\n"; //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
 					
-					//init the data["logged_user_id"] var with getLoggedUserId() to be passed to the business logic service
-					if ($is_logged_user_id_attribute)
-						$logged_user_id_code = $var_prefix . '["logged_user_id"] = self::getLoggedUserId($EVC);' . "\n";
-					else if ($is_checkbox) //set checkbox value to 0, bc by default the browser will return an empty string. if we don't set this value to 0, then the business logic will set the default value that could be 1, and we don't want this.
-						$default = isset($attr["default"]) ? $attr["default"] : null; //Note that the $attr["default"] was already changed to 0 above.
-					
-					//note that here will be always with array_key_exists 
-					$code .= 'if (' . $array_key_exists . '!strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
-				}
-			}
-			else if ($is_db_primitive_action && $is_numeric_type) { //for the cases with a checkbox where the value doesn't exist and is numeric
-				$code .= 'if (isset(' . $var_prefix . '["' . $attr_name . '"]) && is_numeric(' . $var_prefix . '["' . $attr_name . '"]) && is_string(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] += 0;' . "\n"; //convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
-				
-				if (!empty($attr["primary_key"]))
-					$code .= 'if (' . $array_key_exists . '!is_numeric(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] = "null";' . "\n"; //This is on purpose so it can return empty records or don't do nothing in the DB, bc if the user wrote a pk with a non numeric value, it means is trying to do some hack.
-				else {
-					$default = isset($attr["default"]) && strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : '"DEFAULT"';
-					
-					if ($is_logged_user_id_attribute) {
-						$logged_user_id_code = '$logged_user_id = self::getLoggedUserId($EVC);' . "\n";
-						$default = '$logged_user_id > 0 ? $logged_user_id : ' . $default;
+					if (!empty($attr["primary_key"]))
+						$code .= 'if (' . $array_key_exists . '!is_numeric(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] = "null";' . "\n"; //This is on purpose so it can return empty records or don't do nothing in the DB, bc if the user wrote a pk with a non numeric value, it means is trying to do some hack.
+					else {
+						$default = isset($attr["default"]) && strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : '"DEFAULT"';
+						
+						if ($is_logged_user_id_attribute) {
+							$logged_user_id_code = '$logged_user_id = self::getLoggedUserId($EVC);' . "\n";
+							$default = '$logged_user_id > 0 ? $logged_user_id : ' . $default;
+						}
+						
+						$code .= 'if (' . $array_key_exists . '!strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
 					}
-					
-					$code .= 'if (' . $array_key_exists . '!strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
 				}
-			}
-			else if (isset($task["item_type"]) && $task["item_type"] == "businesslogic" && ($is_numeric_type || ObjTypeHandler::isDBTypeBoolean($type))) {
-				//reset the values to default, bc if they are a boolean or a tinyint (with length 1) and have an empty string, they need to be set to null, otherwise they will give an error in the business logic services, bc will not be set correctly with the default values. Note that the default values will be set by the business logic services.
-				//$default = strlen($attr["default"]) ? (is_numeric($attr["default"]) ? $attr["default"] : '"' . $attr["default"] . '"') : 'null';
-				$default = 'null';
 				
-				//init the data["logged_user_id"] var with getLoggedUserId() to be passed to the business logic service
-				if ($is_logged_user_id_attribute) {
-					$logged_user_id_code = $var_prefix . '["logged_user_id"] = self::getLoggedUserId($EVC);' . "\n";
-					
-					//If this attribute has an empty value and has no default and cannot be null, them it will give an error in the business logic service, bc this attribute cannot be null. So we set the logged_user_id as default value.
-					if (empty($attr["default"]) && !strlen($attr["default"]) && !$allow_null)
-						$default = $var_prefix . '["logged_user_id"] > 0 ? ' . $var_prefix . '["logged_user_id"] : ' . $default;
-				}
-				else if ($is_checkbox) //set checkbox value to 0, bc by default the browser will return an empty string. if we don't set this value to 0, then the business logic will set the default value that could be 1, and we don't want this.
-					$default = isset($attr["default"]) ? $attr["default"] : null; //Note that the $attr["default"] was already changed to 0 above.
-				
-				//note that here will be always with array_key_exists 
-				$code .= 'if (' . $array_key_exists . '!is_numeric(' . $var_prefix . '["' . $attr_name . '"])) ' . $var_prefix . '["' . $attr_name . '"] = ' . $default . ';' . "\n";
+				if ($is_blob_type)
+					$code .= 'if (!empty($_FILES["' . $attr_name . '"]["tmp_name"]) && file_exists($_FILES["' . $attr_name . '"]["tmp_name"])) ' . $var_prefix . '["' . $attr_name . '"] = file_get_contents($_FILES["' . $attr_name . '"]["tmp_name"]);' . "\n";
 			}
 			
-			if ($is_blob_type)
-				$code .= 'if (!empty($_FILES["' . $attr_name . '"]["tmp_name"]) && file_exists($_FILES["' . $attr_name . '"]["tmp_name"])) ' . $var_prefix . '["' . $attr_name . '"] = file_get_contents($_FILES["' . $attr_name . '"]["tmp_name"]);' . "\n";
+			if ($logged_user_id_code)
+				$code = $logged_user_id_code . "\n" . $code;
 		}
-		
-		if ($logged_user_id_code)
-			$code = $logged_user_id_code . "\n" . $code;
 		
 		return $code;
 	}
 
-	//copied from CMSPresentationFormSettingsUIHandler::getInsertActionPreviousCodeIfBrokerSettingsContainsAutoIncrementPrimaryKeys, so if you change this method, please mae the correspodnent changes in this other method too.
+	//copied from CMSPresentationFormSettingsUIHandler::getInsertActionPreviousCodeIfBrokerSettingsContainsAutoIncrementPrimaryKeys, so if you change this method, please make the correspodnent changes in this other method too.
 	private static function getInsertActionPreviousCodeIfBrokerSettingsContainsAutoIncrementPrimaryKeys($table_name, $attr_name, $attr, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix) {
 		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;
 		$service = isset($task["service"]) ? $task["service"] : null;
@@ -3888,7 +3900,7 @@ $conds = $conds ? $conds : "1=1";
 		return "";
 	}
 
-	//copied from CMSPresentationFormSettingsUIHandler::getInsertActionNextCode, so if you change this method, please mae the correspodnent changes in this other method too.
+	//copied from CMSPresentationFormSettingsUIHandler::getInsertActionNextCode, so if you change this method, please make the correspodnent changes in this other method too.
 	private static function getInsertActionNextCode($pks_auto_increment, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix) {
 		$code = "";
 		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
@@ -3920,30 +3932,39 @@ if (' . $var_prefix . ') {
 		return $code;
 	}
 
-	//copied from CMSPresentationFormSettingsUIHandler::getUpdateActionPreviousCode, so if you change this method, please mae the correspodnent changes in this other method too.
+	//copied from CMSPresentationFormSettingsUIHandler::getUpdateActionPreviousCode and SequentialLogicalActivityBLResourceCreator::getUpdateActionPreviousCode, so if you change this method, please make the correspodnent changes in this other method too.
 	private static function getUpdateActionPreviousCode($tables, $table_name, $attributes, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix, $is_update_attribute_action = false) {
-		$code = self::getInsertActionPreviousCode($tables, $table_name, $attributes, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix, false, !$is_update_attribute_action, $is_update_attribute_action);
-		//Note that we have more code in CMSPresentationFormSettingsUIHandler::getUpdateActionPreviousCode, but that do the same than the code in the createUpdateMethod method, this is, the code in the CMSPresentationFormSettingsUIHandler::getUpdateActionPreviousCode prepare the pks to be replaced by new pks, which is what we already do in the createUpdateMethod method.
+		$is_db_primitive_action = self::isDBPrimitiveTask($task); //used when insert and update action
 		
-		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
-		
-		foreach ($attributes as $attr_name) {
-			$attr = isset($attrs[$attr_name]) ? $attrs[$attr_name] : null;
+		if (!$is_db_primitive_action) {
+			$code = SequentialLogicalActivityBLResourceCreator::getUpdateActionPreviousCode($tables, $table_name, $attributes, $var_prefix, !$is_update_attribute_action);
+			$code = preg_replace('/(\$[a-z]+\["logged_user_id"\]\s*=\s*)\$data\["logged_user_id"\];/', '$1self::getLoggedUserId($EVC);', $code);
+			$code = preg_replace('/(\$[a-z]+\["logged_user_id"\]\s*=\s*)isset\(\$data\[\"logged_user_id\"\]\)\s*\?\s*\$data\[\"logged_user_id\"\]\s*:\s*null\s*;/', '$1self::getLoggedUserId($EVC);', $code);
+		}
+		else {
+			$code = self::getInsertActionPreviousCode($tables, $table_name, $attributes, $task, $WorkFlowTaskHandler, $broker_code, $var_prefix, false, !$is_update_attribute_action, $is_update_attribute_action);
+			//Note that we have more code in CMSPresentationFormSettingsUIHandler::getUpdateActionPreviousCode, but that do the same than the code in the createUpdateMethod method, this is, the code in the CMSPresentationFormSettingsUIHandler::getUpdateActionPreviousCode prepare the pks to be replaced by new pks, which is what we already do in the createUpdateMethod method.
 			
-			if (!empty($attr["primary_key"])) {
-				$attr_type = isset($attr["type"]) ? $attr["type"] : null;
+			$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
+			
+			foreach ($attributes as $attr_name) {
+				$attr = isset($attrs[$attr_name]) ? $attrs[$attr_name] : null;
 				
-				if (ObjTypeHandler::isDBTypeNumeric($attr_type) || ObjTypeHandler::isPHPTypeNumeric($attr_type))
-					$code .= 'if (array_key_exists("' . $attr_name . '", ' . $var_prefix . ') && !is_numeric(' . $var_prefix . '["' . $attr_name . '"])) $status = false;' . "\n";
-				else
-					$code .= 'if (array_key_exists("' . $attr_name . '", ' . $var_prefix . ') && !strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) $status = false;' . "\n";
+				if (!empty($attr["primary_key"])) {
+					$attr_type = isset($attr["type"]) ? $attr["type"] : null;
+					
+					if (ObjTypeHandler::isDBTypeNumeric($attr_type) || ObjTypeHandler::isPHPTypeNumeric($attr_type))
+						$code .= 'if (array_key_exists("' . $attr_name . '", ' . $var_prefix . ') && !is_numeric(' . $var_prefix . '["' . $attr_name . '"])) $status = false;' . "\n";
+					else
+						$code .= 'if (array_key_exists("' . $attr_name . '", ' . $var_prefix . ') && !strlen(trim(' . $var_prefix . '["' . $attr_name . '"]))) $status = false;' . "\n";
+				}
 			}
 		}
 		
 		return $code;
 	}
 
-	//copied from CMSPresentationFormSettingsUIHandler::getHibernateGetActionNextCode, so if you change this method, please mae the correspodnent changes in this other method too.
+	//copied from CMSPresentationFormSettingsUIHandler::getHibernateGetActionNextCode, so if you change this method, please make the correspodnent changes in this other method too.
 	private static function getHibernateGetActionNextCode($var_prefix) {
 		return ""; //this function is deprecated bc the hibernate returns the same result array than ibatis
 		
@@ -3958,22 +3979,7 @@ if (' . $var_prefix . ') {
 ';
 	}
 
-	//copied from CMSPresentationFormSettingsUIHandler::getSelectItemActionNextCode, so if you change this method, please mae the correspodnent changes in this other method too.
-	private static function getSelectItemActionNextCode($tables, $table_name, $var_prefix, $attrs_name_to_filter = null) {
-		$code = "";
-		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
-		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
-		
-		if ($attrs)
-			foreach ($attrs as $attr_name => $attr)
-				if (!is_array($attrs_name_to_filter) || in_array($attr_name, $attrs_name_to_filter))
-					if (isset($attr["type"]) && ObjTypeHandler::isDBTypeDate($attr["type"]))
-						$code .= 'if (' . $var_prefix . '["' . $attr_name . '"] == "0000-00-00 00:00:00" || ' . $var_prefix . '["' . $attr_name . '"] == "0000-00-00") ' . $var_prefix . '["' . $attr_name . '"] = "";' . "\n";
-		
-		return $code;
-	}
-
-	//copied from CMSPresentationFormSettingsUIHandler::getHibernateGetAllActionNextCode, so if you change this method, please mae the correspodnent changes in this other method too.
+	//copied from CMSPresentationFormSettingsUIHandler::getHibernateGetAllActionNextCode, so if you change this method, please make the correspodnent changes in this other method too.
 	private static function getHibernateGetAllActionNextCode($var_prefix) {
 		return ""; //this function is deprecated bc the hibernate returns the same result array than ibatis
 		
@@ -3995,33 +4001,17 @@ if (' . $var_prefix . ') {
 ';
 	}
 
-	//copied from CMSPresentationFormSettingsUIHandler::getSelectItemsActionNextCode, so if you change this method, please mae the correspodnent changes in this other method too.
+	private static function getSelectItemActionNextCode($tables, $table_name, $var_prefix, $attrs_name_to_filter = null) {
+		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
+		return SequentialLogicalActivityBLResourceCreator::getSelectItemActionNextCode($attrs, $var_prefix, $attrs_name_to_filter);
+	}
+
 	private static function getSelectItemsActionNextCode($tables, $table_name, $var_prefix) {
 		$attrs = WorkFlowDBHandler::getTableFromTables($tables, $table_name);
-		$db_date_attrs = array();
-		$var_prefix = substr($var_prefix, 0, 1) == '$' || substr($var_prefix, 0, 2) == '@$' ? $var_prefix : '$' . $var_prefix;
-		
-		if ($attrs)
-			foreach ($attrs as $attr_name => $attr) 
-				if (isset($attr["type"]) && ObjTypeHandler::isDBTypeDate($attr["type"]))
-					$db_date_attrs[] = $attr_name;
-		
-		if ($db_date_attrs) {
-			$code = 'if (is_array(' . $var_prefix . '))
-	foreach (' . $var_prefix . ' as $k => &$v) {' . "\n";
-			
-			foreach ($db_date_attrs as $attr_name)
-				$code .= "\t\t" . 'if (isset($v["' . $attr_name . '"]) && ($v["' . $attr_name . '"] == "0000-00-00 00:00:00" || $v["' . $attr_name . '"] == "0000-00-00")) $v["' . $attr_name . '"] = "";' . "\n";
-			
-			$code .= "\t}\n";
-			
-			return $code;
-		}
-		
-		return null;
+		return SequentialLogicalActivityBLResourceCreator::getSelectItemsActionNextCode($attrs, $var_prefix);
 	}
 	
-	//copied from CMSPresentationFormSettingsUIHandler::convertQueryDataTaskToSimpleTask, so if you change this method, please mae the correspodnent changes in this other method too.
+	//copied from CMSPresentationFormSettingsUIHandler::convertQueryDataTaskToSimpleTask, so if you change this method, please make the correspodnent changes in this other method too.
 	//convert getquerydata and setquerydata to insert/update/delete/select task groups
 	private static function convertQueryDataTaskToSimpleTask(&$task, $tables) {
 		$item_type = isset($task["item_type"]) ? $task["item_type"] : null;

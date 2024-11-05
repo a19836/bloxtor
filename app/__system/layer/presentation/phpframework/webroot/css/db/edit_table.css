@@ -55,10 +55,10 @@
 .edit_table:not(.with_advanced_options) > .table_settings .selected_task_properties .db_table_task_html.simple_ui_shown > #simple_ui {
 	margin-top:10px;
 }
-.edit_table > .table_settings:not(.allow_sort) .selected_task_properties > .db_table_task_html .table_charset,
+/*.edit_table > .table_settings:not(.allow_sort) .selected_task_properties > .db_table_task_html .table_charset,
   .edit_table > .table_settings:not(.allow_sort) .selected_task_properties > .db_table_task_html .table_collation,
   .edit_table > .table_settings:not(.allow_sort) .selected_task_properties > .db_table_task_html .table_storage_engine,
-  .edit_table > .table_settings:not(.allow_sort) .selected_task_properties > .db_table_task_html .move_up,
+  */.edit_table > .table_settings:not(.allow_sort) .selected_task_properties > .db_table_task_html .move_up,
   .edit_table > .table_settings:not(.allow_sort) .selected_task_properties > .db_table_task_html .move_down {
 	display:none !important;
 }

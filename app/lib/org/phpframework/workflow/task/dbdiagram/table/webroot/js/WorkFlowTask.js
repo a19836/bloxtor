@@ -12,6 +12,8 @@ var DBTableTaskPropertyObj = {
 	column_types_hidden_props : null,
 	show_properties_on_connection_drop : false,
 	allow_column_sorting : false,
+	allow_modify_table_encoding : false,
+	allow_modify_table_storage_engine : false,
 	
 	//These will be used by the __system/layer/presentation/phpframework/.../db/diagram.php , __system/layer/presentation/phpframework/.../db/edit_table.php and other/availablemodules/common/.../CommonModuleAdminTableExtraAttributesUtil.php.
 	on_load_task_properties_callback : null,
@@ -89,6 +91,11 @@ var DBTableTaskPropertyObj = {
 		
 		table_charset_elm.find('select').html(charset_options);
 		
+		if (DBTableTaskPropertyObj.allow_modify_table_encoding)
+			table_charset_elm.show();
+		else
+			table_charset_elm.hide();
+		
 		//PREPARING COLLATIONS
 		var collation_options = '<option value="">-- Default --</option>';
 		var collation_exists = false;
@@ -114,6 +121,11 @@ var DBTableTaskPropertyObj = {
 		
 		table_collation_elm.find('select').html(collation_options);
 		
+		if (DBTableTaskPropertyObj.allow_modify_table_encoding)
+			table_collation_elm.show();
+		else
+			table_collation_elm.hide();
+		
 		//PREPARING STORAGE ENGINES
 		var storage_engine_options = '<option value="">-- Default --</option>';
 		var storage_engine_exists = false;
@@ -138,6 +150,11 @@ var DBTableTaskPropertyObj = {
 			storage_engine_options += '<option value="' + task_property_values.table_storage_engine + '" selected>' + task_property_values.table_storage_engine + ' - NON DEFAULT</option>';
 		
 		table_storage_engine_elm.find('select').html(storage_engine_options);
+		
+		if (DBTableTaskPropertyObj.allow_modify_table_storage_engine)
+			table_storage_engine_elm.show();
+		else
+			table_storage_engine_elm.hide();
 		
 		//PREPARING ATTRIBUTES
 		task_html_elm.find('.table_attrs').html("");

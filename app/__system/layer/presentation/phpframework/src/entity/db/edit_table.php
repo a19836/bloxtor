@@ -29,6 +29,18 @@ if ($obj && is_a($obj, "DB") && $layer_bean_folder_name) {
 	
 	$available_tables = $obj->listTables();
 	$table_exists = $obj->isTableInNamesList($available_tables, $table);
+	$table_name = $obj->getTableInNamesList($available_tables, $table);
+	$table_data = null;
+	
+	$t = count($available_tables);
+	for ($i = 0; $i < $t; $i++)
+		if (isset($available_tables[$i]["name"]) && $available_tables[$i]["name"] == $table_name) {
+			$table_data = $available_tables[$i];
+			break;
+		}
+	
+	if (!$table_data)
+		$table_exists = false;
 	
 	if (!$table || $table_exists) {
 		$table_attrs = $table_exists ? $obj->listTableFields($table) : array(); //could be a new table
@@ -155,11 +167,20 @@ if ($obj && is_a($obj, "DB") && $layer_bean_folder_name) {
 					$sql_statements_labels[] = "Create table " . $data["table_name"];
 				}
 				else if (!empty($_POST["update"])) {
+					$old_table_data = array(
+						"table_charset" => isset($table_data["charset"]) ? $table_data["charset"] : null,
+						"table_collation" => isset($table_data["collation"]) ? $table_data["collation"] : null,
+						"table_storage_engine" => isset($table_data["engine"]) ? $table_data["engine"] : null
+					);
+					
 					$table_name = isset($data["table_name"]) ? $data["table_name"] : null;
 					$attributes = isset($data["attributes"]) ? $data["attributes"] : null;
-					$statements = WorkFlowDBHandler::getTableUpdateSQLStatements($obj, $table, $table_attrs, $attributes, $table_name);
+					$statements = WorkFlowDBHandler::getTableUpdateSQLStatements($obj, $table, $table_attrs, $attributes, $table_name, $old_table_data, $data);
 					$sql_statements = isset($statements["sql_statements"]) ? $statements["sql_statements"] : null;
 					$sql_statements_labels = isset($statements["sql_statements_labels"]) ? $statements["sql_statements_labels"] : null;
+					
+					if ($sql_statements && !$data["table_charset"] && $data["table_collation"])
+						$error_message = "Possible Error: charset definition missing!";
 				}
 				
 				if (empty($sql_statements))
@@ -167,24 +188,11 @@ if ($obj && is_a($obj, "DB") && $layer_bean_folder_name) {
 			}
 		}
 		else {
-			$table_name = $obj->getTableInNamesList($available_tables, $table);
-			$table_data = null;
-			
-			$t = count($available_tables);
-			for ($i = 0; $i < $t; $i++)
-				if (isset($available_tables[$i]["name"]) && $available_tables[$i]["name"] == $table_name) {
-					$table_data = $available_tables[$i];
-					break;
-				}
-			
-			if (!$table_data)
-				$table_exists = false;
-			
 			$data = array(
 				"table_name" => $table,
-				"table_storage_engine" => isset($table_data["engine"]) ? $table_data["engine"] : null,
 				"table_charset" => isset($table_data["charset"]) ? $table_data["charset"] : null,
 				"table_collation" => isset($table_data["collation"]) ? $table_data["collation"] : null,
+				"table_storage_engine" => isset($table_data["engine"]) ? $table_data["engine"] : null,
 				"attributes" => $table_attrs
 			);
 		}

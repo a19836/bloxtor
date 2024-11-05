@@ -35,6 +35,8 @@ interface IDB {
 	public static function getIgnoreConnectionOptionsByExtension();
 	public static function getAvailablePHPExtensionTypes();
 	public static function allowTableAttributeSorting();
+	public static function allowModifyTableEncoding();
+	public static function allowModifyTableStorageEngine();
 	
 	/* Abstract Methods */
 	public function parseDSN($dsn);
@@ -67,6 +69,13 @@ interface IDB {
 	public function listTables($db_name = false, $options = false); 
 	public function listTableFields($table, $options = false); 
 	public function listForeignKeys($table, $options = false);
+	public function listDBCharsets();
+	public function listTableCharsets();
+	public function listColumnCharsets();
+	public function listDBCollations();
+	public function listTableCollations();
+	public function listColumnCollations();
+	public function listStorageEngines();
 	public function getInsertedId($options = false); 
 	
 	public function convertObjectToSQL($data, $options = false);
@@ -91,6 +100,8 @@ interface IDB {
 	public static function getCreateTableStatement($table_data, $options = false);
 	public static function getCreateTableAttributeStatement($attribute_data, $options = false, &$parsed_data = array());
 	public static function getRenameTableStatement($old_table, $new_table, $options = false);
+	public static function getModifyTableEncodingStatement($table, $charset, $collation, $options = false);
+	public static function getModifyTableStorageEngineStatement($table, $engine, $options = false);
 	public static function getDropTableStatement($table, $options = false);
 	public static function getDropTableCascadeStatement($table, $options = false);
 	public static function getAddTableAttributeStatement($table, $attribute_data, $options = false);
@@ -133,6 +144,13 @@ interface IDB {
 	public static function getDropFunctionStatement($function, $options = false);
 	public static function getDropEventStatement($event, $options = false);
 	public static function getDropViewStatement($view, $options = false);
+	public static function getShowDBCharsetsStatement($options = false);
+	public static function getShowTableCharsetsStatement($options = false);
+	public static function getShowColumnCharsetsStatement($options = false);
+	public static function getShowDBCollationsStatement($options = false);
+	public static function getShowTableCollationsStatement($options = false);
+	public static function getShowColumnCollationsStatement($options = false);
+	public static function getShowDBStorageEnginesStatement($options = false);
 	
 	/* Public Static Methods - DBSQLConverter */
 	public static function convertObjectToDefaultSQL($data, $options = false);

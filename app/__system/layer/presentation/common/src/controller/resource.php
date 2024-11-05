@@ -1,5 +1,6 @@
 <?php
 include_once get_lib("org.phpframework.workflow.WorkFlowTask");
+include_once get_lib("org.phpframework.util.text.TextValidator");
 
 //VALIDATE REQUESTED RESOURCE
 $resource_name = isset($_GET["resource"]) ? $_GET["resource"] : null;
@@ -229,18 +230,13 @@ if ($sla_results && array_key_exists($resource_name, $sla_results)) {
 function convertResultToBase64($result) {
 	if (is_array($result) || is_object($result))
 		foreach ($result as $k => $v) {
-			if (is_string($v) && isBinary($v))
+			if (is_string($v) && TextValidator::isBinary($v))
 				$result[$k] = base64_encode($v);
 			else if (is_array($v) || is_object($v))
 				$result[$k] = convertResultToBase64($v);
 		}
 	
 	return $result;
-}
-
-//detect if a value is a binary type
-function isBinary($value) {
-	return preg_match('~[^\x20-\x7E\t\r\n]~', $value) > 0;
 }
 
 //note that we sould leave the includes bc the sla might be inside of another files. However we should remove the includes for blocks, bc we don't want to execute the blocks.

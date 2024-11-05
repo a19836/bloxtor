@@ -10,6 +10,8 @@ $table_collations = null;
 $column_collations = null;
 $table_storage_engines = null;
 $column_simple_types = DB::getAllSharedColumnSimpleTypes();
+$allow_modify_table_encoding = false;
+$allow_modify_table_storage_engine = false;
 
 echo '<script>
 //These types will be re-defined again in the diagram.php according with the correspondent DB DRIVER. Only define here, if not yet defined. Note that this will be called everytime that the Task Table Properties gets loaded!
@@ -22,6 +24,8 @@ DBTableTaskPropertyObj.charsets = DBTableTaskPropertyObj.charsets ? DBTableTaskP
 DBTableTaskPropertyObj.table_collations = DBTableTaskPropertyObj.table_collations ? DBTableTaskPropertyObj.table_collations : ' . json_encode($table_collations) . ';
 DBTableTaskPropertyObj.column_collations = DBTableTaskPropertyObj.column_collations ? DBTableTaskPropertyObj.column_collations : ' . json_encode($column_collations) . ';
 DBTableTaskPropertyObj.table_storage_engines = DBTableTaskPropertyObj.table_storage_engines ? DBTableTaskPropertyObj.table_storage_engines : ' . json_encode($table_storage_engines) . ';
+DBTableTaskPropertyObj.allow_modify_table_encoding = DBTableTaskPropertyObj.allow_modify_table_encoding ? DBTableTaskPropertyObj.allow_modify_table_encoding : ' . ($allow_modify_table_encoding ? "true" : "false") . ';
+DBTableTaskPropertyObj.allow_modify_table_storage_engine = DBTableTaskPropertyObj.allow_modify_table_storage_engine ? DBTableTaskPropertyObj.allow_modify_table_storage_engine : ' . ($allow_modify_table_storage_engine ? "true" : "false") . ';
 </script>';
 ?>
 <div class="db_table_task_html simple_ui_shown attributes_table_shown">

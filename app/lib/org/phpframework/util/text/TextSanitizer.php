@@ -1,6 +1,7 @@
 <?php
 class TextSanitizer {
 	
+	//in case you have normal text mixed with binary code, then this function converts only the binary chras to base64.
 	public static function convertBinaryCodeInTextToBase64($text) {
 		$is_binary = preg_match_all('~[^\x20-\x7E\t\r\n]~', $text, $all_matches, PREG_OFFSET_CAPTURE);
 		//echo "is_binary:$is_binary";die();
@@ -46,6 +47,7 @@ class TextSanitizer {
 	}
 	
 	//copied from https://www.php.net/manual/pt_BR/normalizer.normalize.php
+	//remove accents and replace them by the correspondent character without accents.
 	public static function normalizeAccents($s) {
 		$original_string = $s;
 		

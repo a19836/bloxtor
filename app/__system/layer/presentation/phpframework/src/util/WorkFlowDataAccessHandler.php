@@ -22,11 +22,37 @@ class WorkFlowDataAccessHandler {
 		);
 		
 		if (!empty($tasks["tasks"]))
-			foreach ($tasks["tasks"] as $task_id => $task)
+			foreach ($tasks["tasks"] as $task_id => $task) {
+				//convert the table_attr_ properties to array if are string
+				$properties = isset($task["properties"]) ? $task["properties"] : null;
+				
+				if ($properties) {
+					$table_attr_names = isset($properties["table_attr_names"]) ? $properties["table_attr_names"] : null;
+					
+					if ($table_attr_names && !is_array($table_attr_names)) {
+						$task["properties"]["table_attr_names"] = array($task["properties"]["table_attr_names"]);
+						$task["properties"]["table_attr_primary_keys"] = array($task["properties"]["table_attr_primary_keys"]);
+						$task["properties"]["table_attr_types"] = array($task["properties"]["table_attr_types"]);
+						$task["properties"]["table_attr_lengths"] = array($task["properties"]["table_attr_lengths"]);
+						$task["properties"]["table_attr_nulls"] = array($task["properties"]["table_attr_nulls"]);
+						$task["properties"]["table_attr_unsigneds"] = array($task["properties"]["table_attr_unsigneds"]);
+						$task["properties"]["table_attr_uniques"] = array($task["properties"]["table_attr_uniques"]);
+						$task["properties"]["table_attr_auto_increments"] = array($task["properties"]["table_attr_auto_increments"]);
+						$task["properties"]["table_attr_has_defaults"] = array($task["properties"]["table_attr_has_defaults"]);
+						$task["properties"]["table_attr_defaults"] = array($task["properties"]["table_attr_defaults"]);
+						$task["properties"]["table_attr_extras"] = array($task["properties"]["table_attr_extras"]);
+						$task["properties"]["table_attr_charsets"] = array($task["properties"]["table_attr_charsets"]);
+						$task["properties"]["table_attr_collations"] = array($task["properties"]["table_attr_collations"]);
+						$task["properties"]["table_attr_comments"] = array($task["properties"]["table_attr_comments"]);
+					}
+				}
+				
 				$this->tasks["tasks"][ $task["label"] ] = $task;
+			}
 		
 		$this->foreign_keys = WorkFlowDBHandler::getTablesForeignKeys($this->tasks["tasks"]);
 		//print_r($this->foreign_keys);
+		//echo "<pre>";print_r($this->tasks["tasks"]["a"]);die();
 	}
 	
 	public function setTasks($tasks) {
@@ -602,6 +628,7 @@ class WorkFlowDataAccessHandler {
 			$table_attr_defaults = isset($properties["table_attr_defaults"]) ? $properties["table_attr_defaults"] : null;
 			$table_attr_extras = isset($properties["table_attr_extras"]) ? $properties["table_attr_extras"] : null;
 			$table_attr_charsets = isset($properties["table_attr_charsets"]) ? $properties["table_attr_charsets"] : null;
+			$table_attr_collations = isset($properties["table_attr_collations"]) ? $properties["table_attr_collations"] : null;
 			$table_attr_comments = isset($properties["table_attr_comments"]) ? $properties["table_attr_comments"] : null;
 			
 			$foreign_keys = WorkFlowDBHandler::getTableFromTables($this->foreign_keys, $table_name);
@@ -1702,6 +1729,7 @@ $prefix_tab";
 		if (is_array($attr_fks)) {
 			$selected_fk_table = null;
 			$minimum_pks_count = -1;
+			$first_attr = null;
 			
 			foreach ($attr_fks as $i => $attr_fk) {
 				$fk_table = isset($attr_fk["table"]) ? $attr_fk["table"] : null;
@@ -1718,9 +1746,12 @@ $prefix_tab";
 						$minimum_pks_count = $pks_count;
 					}
 				}
+				
+				if (!$first_attr)
+					$first_attr = $attr_fk;
 			}
 			
-			return $selected_fk_table ? $selected_fk_table : (isset($attr_fks[0]) ? $attr_fks[0] : null);
+			return $selected_fk_table ? $selected_fk_table : $first_attr;
 		}
 	}
 }

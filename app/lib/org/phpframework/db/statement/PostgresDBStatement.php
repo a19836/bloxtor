@@ -418,6 +418,14 @@ trait PostgresDBStatement { //must be "trait" and not "class" bc this code will 
 		return "RENAME TABLE $sql_old_table RENAME TO $sql_new_table $suffix";
 	}
 	
+	public static function getModifyTableEncodingStatement($table, $charset, $collation, $options = false) {
+		return null; //not possible in postgres
+	}
+	
+	public static function getModifyTableStorageEngineStatement($table, $engine, $options = false) {
+		return null; //not possible in postgres
+	}
+	
 	public static function getDropTableStatement($table, $options = false) {
 		$sql_table = self::getParsedTableEscapedSQL($table, $options);
 		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
@@ -1156,6 +1164,40 @@ END $$;";
 	public static function getDropViewStatement($view, $options = false) {
 		$sql_view = self::getParsedTableEscapedSQL($view, $options);
 		return "DROP VIEW IF EXISTS $sql_view;";
+	}
+	
+	//postgres doesn't have a sql to get all available charsets
+	public static function getShowDBCharsetsStatement($options = false) {
+		return null;
+	}
+	
+	//postgres doesn't support charset for table
+	public static function getShowTableCharsetsStatement($options = false) {
+		return null;
+	}
+	
+	//postgres doesn't support charset for column
+	public static function getShowColumnCharsetsStatement($options = false) {
+		return null;
+	}
+	
+	//postgres doesn't set the collation for table
+	public static function getShowDBCollationsStatement($options = false) {
+		return null;
+	}
+	
+	//postgres doesn't support collation for table
+	public static function getShowTableCollationsStatement($options = false) {
+		return null;
+	}
+	
+	public static function getShowColumnCollationsStatement($options = false) {
+		return "SELECT collname FROM pg_collation";
+	}
+	
+	//postgres doesn't support storage engines
+	public static function getShowDBStorageEnginesStatement($options = false) {
+		return null;
 	}
 }
 ?>

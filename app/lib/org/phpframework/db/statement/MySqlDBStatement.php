@@ -293,6 +293,30 @@ trait MySqlDBStatement { //must be "trait" and not "class" bc this code will ser
 		return "RENAME TABLE $sql_old_table TO $sql_new_table $suffix";
 	}
 	
+	public static function getModifyTableEncodingStatement($table, $charset, $collation, $options = false) {
+		$sql_table = self::getParsedTableEscapedSQL($table, $options);
+		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
+		
+		if ($collation && !$charset) {
+			$lc = strtolower($collation);
+			$charset = isset(self::$collations_to_charsets[$lc]) ? self::$collations_to_charsets[$lc] : null;
+		}
+		
+		$sql = "ALTER TABLE $sql_table CONVERT TO " . ($charset ? "CHARACTER SET $charset " : "") . ($collation ? "COLLATE $collation " : "") . $suffix;
+		
+		if (!$charset)
+			$sql = "-- ERROR: MISSING CHARSET DEFINITION!\n-- " . $sql;
+		
+		return $sql;
+	}
+	
+	public static function getModifyTableStorageEngineStatement($table, $engine, $options = false) {
+		$sql_table = self::getParsedTableEscapedSQL($table, $options);
+		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
+		
+		return "ALTER TABLE $sql_table ENGINE = $engine $suffix";
+	}
+	
 	public static function getDropTableStatement($table, $options = false) {
 		$sql_table = self::getParsedTableEscapedSQL($table, $options);
 		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
@@ -649,6 +673,35 @@ DROP PROCEDURE IF EXISTS dropTableForeignKey;";
 	public static function getDropViewStatement($view, $options = false) {
 		$sql_view = self::getParsedTableEscapedSQL($view, $options);
 		return "DROP VIEW IF EXISTS $sql_view;";
+	}
+	
+	public static function getShowDBCharsetsStatement($options = false) {
+		return "SHOW CHARACTER SET;";
+	}
+	
+	public static function getShowTableCharsetsStatement($options = false) {
+		return "SHOW CHARACTER SET;";
+	}
+	
+	//mysql doesn't support charsets for columns
+	public static function getShowColumnCharsetsStatement($options = false) {
+		return null;
+	}
+	
+	public static function getShowDBCollationsStatement($options = false) {
+		return "SHOW COLLATION;";
+	}
+	
+	public static function getShowTableCollationsStatement($options = false) {
+		return "SHOW COLLATION;";
+	}
+	
+	public static function getShowColumnCollationsStatement($options = false) {
+		return "SHOW COLLATION;";
+	}
+	
+	public static function getShowDBStorageEnginesStatement($options = false) {
+		return "SHOW ENGINES;";
 	}
 }
 ?>

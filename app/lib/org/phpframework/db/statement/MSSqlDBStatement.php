@@ -5,7 +5,8 @@ trait MSSqlDBStatement { //must be "trait" and not "class" bc this code will ser
 		$collation = null;
 		
 		if (!empty($options["encoding"])) {
-			$collation = self::$db_charsets_to_collations[ $options["encoding"] ];
+			$lc = strtolower($options["encoding"]);
+			$collation = isset(self::$db_charsets_to_collations[$lc]) ? self::$db_charsets_to_collations[$lc] : null;
 			$collation = $collation ? " COLLATE " . $collation : "";
 		}
 		
@@ -331,6 +332,14 @@ trait MSSqlDBStatement { //must be "trait" and not "class" bc this code will ser
 		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
 		
 		return "EXEC sp_rename $sql_old_table, $sql_new_table $suffix";
+	}
+	
+	public static function getModifyTableEncodingStatement($table, $charset, $collation, $options = false) {
+		return null; //not possible in mssql
+	}
+	
+	public static function getModifyTableStorageEngineStatement($table, $engine, $options = false) {
+		return null; //not possible in mssql
 	}
 	
 	public static function getDropTableStatement($table, $options = false) {
@@ -976,6 +985,38 @@ SELECT '$table' as 'Table', REPLACE(@SQL, '\n    , ', ',\n    ') as 'Create Tabl
 	public static function getDropViewStatement($view, $options = false) {
 		$sql_view = self::getParsedTableEscapedSQL($view, $options);
 		return "DROP VIEW IF EXISTS $sql_view;";
+	}
+	
+	//mssql doesn't have a sql to get the DB charsets. We can only set the connection encodings, but not the DB charsets.
+	public static function getShowDBCharsetsStatement($options = false) {
+		return null;
+	}
+	
+	//mssql doesn't support charset for table
+	public static function getShowTableCharsetsStatement($options = false) {
+		return null;
+	}
+	
+	//mssql doesn't support charset for column
+	public static function getShowColumnCharsetsStatement($options = false) {
+		return null;
+	}
+	
+	public static function getShowDBCollationsStatement($options = false) {
+		return "SELECT name, description FROM sys.fn_helpcollations();";
+	}
+	
+	public static function getShowTableCollationsStatement($options = false) {
+		return "SELECT name, description FROM sys.fn_helpcollations();";
+	}
+	
+	public static function getShowColumnCollationsStatement($options = false) {
+		return "SELECT name, description FROM sys.fn_helpcollations();";
+	}
+	
+	//mssql doesn't support storage engines
+	public static function getShowDBStorageEnginesStatement($options = false) {
+		return null;
 	}
 }
 ?>

@@ -1,8 +1,17 @@
 <?php
+include_once get_lib("org.phpframework.util.text.TextSanitizer");
+
 class TextValidator {
 	
 	public static function isBinary($value) {
-		return preg_match('~[^\x20-\x7E\t\r\n]~', $value);
+		//note that if the $value contains accents, then it may be in this regex, so we need to remove accents and then check again
+		if (preg_match('~[^\x20-\x7E\t\r\n]~', $value)) {
+			$value_without_accents = TextSanitizer::normalizeAccents($value);
+			
+			return preg_match('~[^\x20-\x7E\t\r\n]~', $value_without_accents);
+		}
+		
+		return false;
 	}
 	
 	public static function isEmail($value) {

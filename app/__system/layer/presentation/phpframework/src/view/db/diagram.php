@@ -144,12 +144,14 @@ if ($bean_name) {
 			DBTableTaskPropertyObj.column_mandatory_length_types = ' . json_encode($DBDriver->getDBColumnMandatoryLengthTypes()) . ';
 			DBTableTaskPropertyObj.column_types_ignored_props = ' . json_encode($DBDriver->getDBColumnTypesIgnoredProps()) . ';
 			DBTableTaskPropertyObj.column_types_hidden_props = ' . json_encode($DBDriver->getDBColumnTypesHiddenProps()) . ';
-			DBTableTaskPropertyObj.table_charsets = ' . json_encode($DBDriver->getTableCharsets()) . ';
-			DBTableTaskPropertyObj.table_collations = ' . json_encode($DBDriver->getTableCollations()) . ';
-			DBTableTaskPropertyObj.table_storage_engines = ' . json_encode($DBDriver->getStorageEngines()) . ';
-			DBTableTaskPropertyObj.column_charsets = ' . json_encode($DBDriver->getColumnCharsets()) . ';
-			DBTableTaskPropertyObj.column_collations = ' . json_encode($DBDriver->getColumnCollations()) . ';
+			DBTableTaskPropertyObj.table_charsets = ' . json_encode($DBDriver->listTableCharsets()) . ';
+			DBTableTaskPropertyObj.table_collations = ' . json_encode($DBDriver->listTableCollations()) . ';
+			DBTableTaskPropertyObj.table_storage_engines = ' . json_encode($DBDriver->listStorageEngines()) . ';
+			DBTableTaskPropertyObj.column_charsets = ' . json_encode($DBDriver->listColumnCharsets()) . ';
+			DBTableTaskPropertyObj.column_collations = ' . json_encode($DBDriver->listColumnCollations()) . ';
 			DBTableTaskPropertyObj.allow_column_sorting = ' . ($DBDriver->allowTableAttributeSorting() ? "true" : "false") . ';
+			DBTableTaskPropertyObj.allow_modify_table_encoding = ' . ($DBDriver->allowModifyTableEncoding() ? "true" : "false") . ';
+			DBTableTaskPropertyObj.allow_modify_table_storage_engine = ' . ($DBDriver->allowModifyTableStorageEngine() ? "true" : "false") . ';
 			
 			DBTableTaskPropertyObj.on_load_task_properties_callback = onLoadDBTableTaskProperties;
 			DBTableTaskPropertyObj.on_submit_task_properties_callback = onSubmitDBTableTaskProperties;

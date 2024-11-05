@@ -150,7 +150,15 @@ trait MSSqlDBStatic {
 	}
 	
 	public static function allowTableAttributeSorting() {
-		return false;
+		return false; //can only be true if the MSSqlDBStatement::getAddTableAttributeStatement method contains the code to add after/before another attribute
+	}
+	
+	public static function allowModifyTableEncoding() {
+		return false; //can only be true if the MSSqlDBStatement::getModifyTableEncodingStatement method returns a sql statement
+	}
+	
+	public static function allowModifyTableStorageEngine() {
+		return false; //can only be true if the MSSqlDBStatement::getModifyTableStorageEngineStatement method returns a sql statement
 	}
 }
 ?>

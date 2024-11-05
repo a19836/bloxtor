@@ -647,6 +647,7 @@ class WorkFlowDBHandler {
 			//prepare tasks tables
 			$tasks_by_table_name = array();
 			$new_tables_names = array();
+			$new_tables_datas = array();
 			
 			if ($tasks && !empty($tasks["tasks"]))
 				foreach ($tasks["tasks"] as $task_id => $task) {
@@ -658,6 +659,13 @@ class WorkFlowDBHandler {
 					//prepare new tables name
 					if ($table_name != $task_label)
 						$new_tables_names[$table_name] = $task_label;
+					
+					//prepare tables charsets and collations
+					$new_tables_datas = array(
+						"table_charset" => isset($task["properties"]["table_charset"]) ? $task["properties"]["table_charset"] : null,
+						"table_collation" => isset($task["properties"]["table_collation"]) ? $task["properties"]["table_collation"] : null,
+						"table_storage_engine" => isset($task["properties"]["table_storage_engine"]) ? $task["properties"]["table_storage_engine"] : null
+					);
 				}
 			
 			$tasks_tables = self::getTasksAsTables($tasks_by_table_name);
@@ -684,6 +692,7 @@ class WorkFlowDBHandler {
 			$tables = $DBDriver->listTables();
 			$total = count($tables);
 			$server_tables = array();
+			$server_tables_datas = array();
 			
 			for ($i = 0; $i < $total; $i++) {
 				$table = $tables[$i];
@@ -714,18 +723,23 @@ class WorkFlowDBHandler {
 								}
 						
 						$server_tables[$table_name] = $attrs;
+						$server_tables_datas[$table_name] = array(
+							"table_charset" => isset($table["charset"]) ? $table["charset"] : null,
+							"table_collation" => isset($table["collation"]) ? $table["collation"] : null,
+							"table_storage_engine" => isset($table["engine"]) ? $table["engine"] : null
+						);
 					}
 				}
 			}
 			
 			//prepare sql
-			return self::getTablesUpdateSQLStatements($DBDriver, $server_tables, $tasks_tables, $new_tables_names, $parsed_data);
+			return self::getTablesUpdateSQLStatements($DBDriver, $server_tables, $tasks_tables, $new_tables_names, $server_tables_datas, $new_tables_datas, $parsed_data);
 		}
 		
 		return false;
 	}
 	
-	public static function getTablesUpdateSQLStatements($DBDriver, $old_tables, $new_tables, $new_tables_names = null, &$parsed_data = array()) {
+	public static function getTablesUpdateSQLStatements($DBDriver, $old_tables, $new_tables, $new_tables_names = null, $old_tables_datas = null, $new_tables_datas = null, &$parsed_data = array()) {
 		$statements = array();
 		
 		if (!is_array($parsed_data))
@@ -737,14 +751,18 @@ class WorkFlowDBHandler {
 		foreach ($old_tables as $table_name => $old_attrs) {
 			$real_table_name = self::getTableTaskRealNameFromTasks($new_tables, $table_name);
 			
-			//get new table name
+			//get old table encodings
+			$old_table_data = isset($old_tables_datas[$table_name]) ? $old_tables_datas[$table_name] : null;
+			
+			//get new table name and encodings
 			$new_table_name = isset($new_tables_names[$real_table_name]) ? $new_tables_names[$real_table_name] : null;
+			$new_table_data = isset($new_tables_datas[$real_table_name]) ? $new_tables_datas[$real_table_name] : null;
 			
 			//get task attributes
 			$new_attrs = isset($new_tables[$real_table_name]) ? $new_tables[$real_table_name] : null;
 			
 			//get statements
-			$statements[$table_name] = self::getTableUpdateSQLStatements($DBDriver, $table_name, $old_attrs, $new_attrs, $new_table_name, $table_parsed_data);
+			$statements[$table_name] = self::getTableUpdateSQLStatements($DBDriver, $table_name, $old_attrs, $new_attrs, $new_table_name, $old_table_data, $new_table_data, $table_parsed_data);
 			$parsed_data[$table_name] = $table_parsed_data;
 		}
 		
@@ -754,6 +772,7 @@ class WorkFlowDBHandler {
 			
 			//get new table name
 			$new_table_name = isset($new_tables_names[$table_name]) ? $new_tables_names[$table_name] : null;
+			$new_table_data = isset($new_tables_datas[$table_name]) ? $new_tables_datas[$table_name] : null;
 			
 			//check if table already exists in server
 			$table_already_exists = array_key_exists($real_table_name, $old_tables);
@@ -767,11 +786,14 @@ class WorkFlowDBHandler {
 					$new_table_already_exists = array_key_exists($real_new_table_name, $old_tables);
 					
 					if ($new_table_already_exists) {
+						//get old table encodings
+						$old_table_data = isset($old_tables_datas[$real_new_table_name]) ? $old_tables_datas[$real_new_table_name] : null;
+						
 						//get task attributes
 						$old_attrs = isset($old_tables[$real_new_table_name]) ? $old_tables[$real_new_table_name] : null;
 						
 						//get statements
-						$statements[$real_new_table_name] = self::getTableUpdateSQLStatements($DBDriver, $real_new_table_name, $old_attrs, $new_attrs, null, $table_parsed_data);
+						$statements[$real_new_table_name] = self::getTableUpdateSQLStatements($DBDriver, $real_new_table_name, $old_attrs, $new_attrs, null, $old_table_data, $new_table_data, $table_parsed_data);
 						$parsed_data[$real_new_table_name] = $table_parsed_data;
 						
 						continue;
@@ -782,7 +804,7 @@ class WorkFlowDBHandler {
 				
 				if (!$new_table_already_exists) {
 					//get statements
-					$statements[$table_name] = self::getTableAddSQLStatements($DBDriver, $table_name, $new_attrs, $table_parsed_data);
+					$statements[$table_name] = self::getTableAddSQLStatements($DBDriver, $table_name, $new_attrs, $new_table_data, $table_parsed_data);
 					$parsed_data[$table_name] = $table_parsed_data;
 				}
 			}
@@ -792,7 +814,7 @@ class WorkFlowDBHandler {
 	}
 	
 	//used in edit_table.php and CommonModuleAdminTableExtraAttributesUtil.php
-	public static function getTableAddSQLStatements($DBDriver, $table_name, $new_attrs, &$parsed_data = array()) {
+	public static function getTableAddSQLStatements($DBDriver, $table_name, $new_attrs, $new_table_data = null, &$parsed_data = array()) {
 		$sql_statements = array();
 		$sql_statements_labels = array();
 		
@@ -816,6 +838,9 @@ class WorkFlowDBHandler {
 		
 		$data = array(
 			"table_name" => $table_name,
+			"table_charset" => isset($new_table_data["table_charset"]) ? $new_table_data["table_charset"] : null,
+			"table_collation" => isset($new_table_data["table_collation"]) ? $new_table_data["table_collation"] : null,
+			"table_storage_engine" => isset($new_table_data["table_storage_engine"]) ? $new_table_data["table_storage_engine"] : null,
 			"attributes" => $new_attrs
 		);
 		
@@ -825,7 +850,8 @@ class WorkFlowDBHandler {
 		$parsed_data = array(
 			"sql_options" => $sql_options,
 			"table_name" => $table_name,
-			"new_attrs" => $new_attrs,
+			"table_attrs" => $new_attrs,
+			"table_data" => $new_table_data,
 		);
 		
 		return array(
@@ -835,13 +861,15 @@ class WorkFlowDBHandler {
 	}
 	
 	//used in edit_table.php and CommonModuleAdminTableExtraAttributesUtil.php
-	public static function getTableUpdateSQLStatements($DBDriver, $table_name, $old_attrs, $new_attrs, $new_table_name = null, &$parsed_data = array()) {
+	public static function getTableUpdateSQLStatements($DBDriver, $table_name, $old_attrs, $new_attrs, $new_table_name = null, $old_table_data = null, $new_table_data = null, &$parsed_data = array()) {
 		$sql_statements = array();
 		$sql_statements_labels = array();
 		
 		//get some db driver settings
 		$sql_options = $DBDriver->getOptions();
 		$allow_sort = $DBDriver->allowTableAttributeSorting();
+		$allow_modify_table_encoding = $DBDriver->allowModifyTableEncoding();
+		$allow_modify_table_storage_engine = $DBDriver->allowModifyTableStorageEngine();
 		$column_types_ignored_props = $DBDriver->getDBColumnTypesIgnoredProps();
 		
 		//prepare attributes with array_values. Convert associative array into numeric index array
@@ -955,8 +983,8 @@ class WorkFlowDBHandler {
 						@$new_attr["default"] != @$old_attr["default"] || 
 						@$new_attr["has_default"] != @$old_attr["has_default"] || 
 						@$new_attr["extra"] != @$old_attr["extra"] || 
-						(!empty($new_attr["charset"]) && $new_attr["charset"] != @$old_attr["charset"]) || 
-						(!empty($new_attr["collation"]) && $new_attr["collation"] != @$old_attr["collation"]) || 
+						(isset($new_attr["charset"]) && $new_attr["charset"] != @$old_attr["charset"]) || 
+						(isset($new_attr["collation"]) && $new_attr["collation"] != @$old_attr["collation"]) || 
 						@$new_attr["comment"] != @$old_attr["comment"]
 					)
 						$is_different = true;
@@ -1146,12 +1174,37 @@ class WorkFlowDBHandler {
 			}
 		}
 		
+		//update table encoding
+		if ($allow_modify_table_encoding && (!empty($new_table_data["table_charset"]) || !empty($new_table_data["table_collation"]))) {
+			$old_table_charset = isset($old_table_data["table_charset"]) ? strtolower($old_table_data["table_charset"]) : null;
+			$old_table_collation = isset($old_table_data["table_collation"]) ? strtolower($old_table_data["table_collation"]) : null;
+			$new_table_charset = isset($new_table_data["table_charset"]) ? strtolower($new_table_data["table_charset"]) : null;
+			$new_table_collation = isset($new_table_data["table_collation"]) ? strtolower($new_table_data["table_collation"]) : null;
+			
+			if ($old_table_charset != $new_table_charset || $old_table_collation != $new_table_collation) {
+				$sql_statements[] = $DBDriver->getModifyTableEncodingStatement($table_name, $new_table_charset, $new_table_collation, $sql_options);
+				$sql_statements_labels[] = "Changing charset and collation for table " . $table_name;
+			}
+		}
+		
+		//update table storage engine
+		if ($allow_modify_table_storage_engine && !empty($new_table_data["table_storage_engine"])) {
+			$old_table_storage_engine = isset($old_table_data["table_storage_engine"]) ? strtolower($old_table_data["table_storage_engine"]) : null;
+			$new_table_storage_engine = isset($new_table_data["table_storage_engine"]) ? strtolower($new_table_data["table_storage_engine"]) : null;
+			
+			if ($old_table_storage_engine != $new_table_storage_engine) {
+				$sql_statements[] = $DBDriver->getModifyTableStorageEngineStatement($table_name, $new_table_storage_engine, $sql_options);
+				$sql_statements_labels[] = "Changing storage engine for table " . $table_name;
+			}
+		}
+		
 		//update table name
 		if ($new_table_name && $table_name != $new_table_name) {
 			$sql_statements[] = $DBDriver->getRenameTableStatement($table_name, $new_table_name, $sql_options);
 			$sql_statements_labels[] = "Rename table " . $table_name . " to " . $new_table_name;
 		}
 		
+		//prepare parsed data
 		$parsed_data = array(
 			"sql_options" => $sql_options,
 			"allow_sort" => $allow_sort,
@@ -1159,6 +1212,8 @@ class WorkFlowDBHandler {
 			"new_table_name" => $new_table_name,
 			"old_attrs" => $old_attrs,
 			"new_attrs" => $new_attrs,
+			"old_table_data" => $old_table_data,
+			"new_table_data" => $new_table_data,
 			"attributes_to_add" => $attributes_to_add,
 			"attributes_to_modify" => $attributes_to_modify,
 			"attributes_to_rename" => $attributes_to_rename,
