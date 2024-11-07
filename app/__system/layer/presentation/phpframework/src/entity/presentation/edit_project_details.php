@@ -235,7 +235,7 @@ else {
 			$available_extensions_options[] = array("value" => $db_extension, "label" => $db_extension . " - DEPRECATED");
 
 		//preparing db encodings
-		$drivers_encodings = DB::getAllDBCharsetsByType();
+		$drivers_encodings = DB::getAllDBConnectionEncodingsByType();
 		$available_encodings_options = array(array("value" => "", "label" => "-- Default --"));
 
 		if ($db_type && isset($drivers_encodings[$db_type]) && is_array($drivers_encodings[$db_type]))

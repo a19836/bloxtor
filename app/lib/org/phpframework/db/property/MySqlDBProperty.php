@@ -14,8 +14,52 @@ trait MySqlDBProperty {
 		"odbc" => array("extra_settings")
 	); //will be used in the layers diagram, set DB settings and others
 	
+	private static $db_connection_encodings = array( //used to connect to a DB or to create a DB
+		"utf8" => "UTF-8 Unicode", 
+		"latin1" => "cp1252 West European", 
+		"latin2" => "ISO 8859-2 Central European", 
+		"big5" => "Big5 Traditional Chinese", 
+		"dec8" => "DEC West European", 
+		"cp850" => "DOS West European", 
+		"hp8" => "HP West European", 
+		"koi8r" => "KOI8-R Relcom Russian", 
+		"swe7" => "7bit Swedish", 
+		"ascii" => "US ASCII", 
+		"ujis" => "EUC-JP Japanese", 
+		"sjis" => "Shift-JIS Japanese", 
+		"hebrew" => "ISO 8859-8 Hebrew", 
+		"tis620" => "TIS620 Thai", 
+		"euckr" => "EUC-KR Korean", 
+		"koi8u" => "KOI8-U Ukrainian", 
+		"gb2312" => "GB2312 Simplified Chinese", 
+		"greek" => "ISO 8859-7 Greek", 
+		"cp1250" => "Windows Central European", 
+		"gbk" => "GBK Simplified Chinese", 
+		"latin5" => "ISO 8859-9 Turkish", 
+		"armscii8" => "ARMSCII-8 Armenian", 
+		"ucs2" => "UCS-2 Unicode", 
+		"cp866" => "DOS Russian", 
+		"keybcs2" => "DOS Kamenicky Czech-Slovak", 
+		"macce" => "Mac Central European", 
+		"macroman" => "Mac West European", 
+		"cp852" => "DOS Central European", 
+		"latin7" => "ISO 8859-13 Baltic", 
+		"utf8mb4" => "UTF-8 Unicode", 
+		"cp1251" => "Windows Cyrillic", 
+		"utf16" => "UTF-16 Unicode", 
+		"utf16le" => "UTF-16LE Unicode", 
+		"cp1256" => "Windows Arabic", 
+		"cp1257" => "Windows Baltic", 
+		"utf32" => "UTF-32 Unicode", 
+		"binary" => "Binary pseudo charset", 
+		"geostd8" => "GEOSTD8 Georgian", 
+		"cp932" => "SJIS for Windows Japanese", 
+		"eucjpms" => "UJIS for Windows Japanese", 
+		"gb18030" => "China National Standard GB18030",
+	);
+	
 	//To get more charsets please query the sql: SHOW CHARACTER SET
-	private static $db_table_charsets = array( //used to connect to a DB or to create a DB, table and column
+	private static $db_table_charsets = array( //used to create a table
 		"utf8" => "UTF-8 Unicode", 
 		"latin1" => "cp1252 West European", 
 		"latin2" => "ISO 8859-2 Central European", 
@@ -285,7 +329,7 @@ trait MySqlDBProperty {
 		"gb18030_unicode_520_ci" => "Gb18030 Unicode 520 Ci", 
 	);
 	
-	private static $charsets_to_collations = array(
+	/*private static $charsets_to_collations = array(
 		"big5" => "big5_chinese_ci", 
 		"dec8" => "dec8_swedish_ci", 
 		"cp850" => "cp850_general_ci", 
@@ -328,7 +372,7 @@ trait MySqlDBProperty {
 		"cp932" => "cp932_japanese_ci", 
 		"eucjpms" => "eucjpms_japanese_ci", 
 		"gb18030" => "gb18030_chinese_ci", 
-	);
+	);*/
 	
 	private static $collations_to_charsets = array(
 		"armscii8_bin" => "armscii8",

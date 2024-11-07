@@ -4,12 +4,14 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="icon" href="data:;base64,=" />
 	<style>
-		body {width:100%; font-family:verdana,courier,arial; font-size:14px; overflow:overlay;}
+		body {width:100%; margin:0; font-family:verdana,courier,arial; font-size:14px; overflow:overlay;}
 		
-		.setup {width:1000px; margin:0 auto;}
-		.setup .title {text-align:center; width:100%; height:30px; font-size:20px; color:#333; margin-top:20px;}
+		.setup {width:100%; margin:0 auto;}
+		.setup .title {text-align:center; width:100%; font-size:20px; color:#333; margin-top:20px;}
+		.setup .title svg {margin-bottom:5px; width:200px; height:36; }
+		.setup > ol {margin:0 20px; padding:0 0 0 5px; box-sizing:border-box;}
 		.setup ul {padding-left:0px !important;}
-		.setup li {margin-top:10px; margin-left:20px !important;}
+		.setup li {margin-top:10px; margin-left:20px !important; word-wrap:break-word;}
 		.setup ol {margin-left:20px !important;}
 		.setup ol li {list-style:number !important; margin-top:20px;}
 		.setup ul {margin-left:20px !important; margin-top:10px;}
@@ -20,8 +22,51 @@
 		.looks_ok {color:#009900; font-weight:bold;}
 		.looks_non_ok {color:#ffaa00; font-weight:bold;}
 		.continue , .continue a {font-weight:bold; font-style:italic;}
+		.button { margin-top:50px; text-align:center;}
 		.enjoy {width:100%; text-align:center; margin-top:50px; margin-bottom:20px;}
 		.disable, .disable .writeable, .disable .continue {color:#999;}
+		
+		/* setup_already_executed */
+		.setup_already_executed {
+			padding: .75rem 1.25rem;
+			margin: 2rem;
+			position: relative;
+			border: 1px solid transparent;
+			border-radius: .25rem;
+			text-align:center;
+			color: #856404;
+			background-color: #fff3cd;
+			border-color: #ffeeba;
+		}
+		
+		/* button */
+		button {
+			font-weight: 400;
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: middle;
+			border: 1px solid transparent;
+			padding: 10px 15px;
+			letter-spacing: 0.2px;
+			border-radius: 0.2rem;
+			transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+			background-color: #4070FF;
+			color: #fff;
+			cursor:pointer;
+		}
+		button:hover {
+			background-color: #4070ffdd;
+			border-color: #4070ff;
+		}
+		button[disabled] {
+			background-color:#999;
+			border-color:#aaa;
+			cursor:not-allowed;
+		}
+		button[disabled]:hover {
+			background-color: #aaa;
+			border-color:#bbb;
+		}
 		
 		/* md file */
 		.md_file {
@@ -86,7 +131,23 @@
 </head>
 <body>
 	<div class="setup">
-		<h1 class="title">SETUP</h1>
+		<h1 class="title">
+			<svg viewBox="0 0 475 86" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M222.6 30.7H192C185.9 30.7 181 36 181 42.5V73.7C181 80.2 185.9 85.5 192 85.5H222.6C229.1 85.5 234.4 80.2 234.4 73.7V42.5C234.4 36 229.1 30.7 222.6 30.7ZM224.9 68C224.9 72.1 221.5 75.5 217.4 75.5H197.9C194 75.5 190.9 72.1 190.9 68V48.2C190.9 44.1 194 40.7 197.9 40.7H217.4C221.5 40.7 224.9 44.1 224.9 48.2V68Z" fill="#FC3C44"/>
+				<path d="M404.3 30.7H373.7C367.6 30.7 362.7 36 362.7 42.5V73.7C362.7 80.2 367.6 85.5 373.7 85.5H404.3C410.8 85.5 416.1 80.2 416.1 73.7V42.5C416 36 410.8 30.7 404.3 30.7ZM406.5 68C406.5 72.1 403.1 75.5 399 75.5H379.5C375.6 75.5 372.5 72.1 372.5 68V48.2C372.5 44.1 375.6 40.7 379.5 40.7H399C403.1 40.7 406.5 44.1 406.5 48.2V68Z" fill="#2C2D34"/>
+				<path d="M158.1 85.4C155.3 85.4 153.1 83.2 153.1 80.4V5C153.1 2.2 155.3 0 158.1 0C160.9 0 163.1 2.2 163.1 5V80.4C163.1 83.1 160.9 85.4 158.1 85.4Z" fill="#2C2D34"/>
+				<path d="M284.5 58L303.4 39.1C305.4 37.1 305.4 34 303.4 32C301.4 30 298.3 30 296.3 32L277.5 51L258.6 32C256.6 30 253.5 30 251.5 32C249.5 34 249.5 37.1 251.5 39.1L270.4 58L251.5 76.9C249.5 78.9 249.5 82 251.5 84C252.5 85 253.8 85.5 255 85.5C256.2 85.5 257.6 85 258.5 84L277.4 65.1L296.4 84C297.4 85 298.7 85.5 299.9 85.5C301.1 85.5 302.5 85 303.4 84C305.4 82 305.4 78.9 303.4 76.9L284.5 58Z" fill="#2C2D34"/>
+				<path d="M347.5 31.1H330.1V5.10001C330.1 2.30001 327.9 0.100006 325.1 0.100006C322.3 0.100006 320.1 2.30001 320.1 5.10001V80.5C320.1 83.3 322.3 85.5 325.1 85.5C327.9 85.5 330.1 83.3 330.1 80.5V41.1H347.5C350.3 41.1 352.5 38.9 352.5 36.1C352.5 33.3 350.3 31.1 347.5 31.1Z" fill="#2C2D34"/>
+				<path d="M436.7 85.5C433.9 85.5 431.7 83.3 431.7 80.5V46.5C431.7 38.2 438.4 31.5 446.7 31.5H469.3C472.1 31.5 474.3 33.7 474.3 36.5C474.3 39.3 472.1 41.5 469.3 41.5H446.7C443.9 41.5 441.7 43.7 441.7 46.5V80.5C441.7 83.2 439.5 85.5 436.7 85.5Z" fill="#2C2D34"/>
+				<path d="M35.1002 61.2C32.4002 61.2 30.2002 63.5 30.2002 66.4V80.2C30.2002 83.1 32.4002 85.4 35.1002 85.4H48.6002C51.5002 85.4 53.8002 83.1 53.8002 80.2V66.4C53.8002 63.5 51.5002 61.2 48.6002 61.2H35.1002Z" fill="#FC3C44"/>
+				<path d="M35.1002 30.6C32.4002 30.6 30.2002 32.9 30.2002 35.8V49.6C30.2002 52.5 32.4002 54.8 35.1002 54.8H48.6002C51.5002 54.8 53.8002 52.5 53.8002 49.6V35.8C53.8002 32.9 51.5002 30.6 48.6002 30.6H35.1002V30.6Z" fill="#FC3C44"/>
+				<path d="M5.10019 61.2C2.40019 61.2 0.200195 63.5 0.200195 66.4V80.2C0.200195 83.1 2.40019 85.4 5.10019 85.4H18.6002C21.5002 85.4 23.8002 83.1 23.8002 80.2V66.4C23.8002 63.5 21.5002 61.2 18.6002 61.2H5.10019Z" fill="#FC3C44"/>
+				<path d="M5.10019 30.6C2.40019 30.6 0.200195 32.9 0.200195 35.8V49.6C0.200195 52.5 2.40019 54.8 5.10019 54.8H18.6002C21.5002 54.8 23.8002 52.5 23.8002 49.6V35.8C23.8002 32.9 21.5002 30.6 18.6002 30.6H5.10019V30.6Z" fill="#FC3C44"/>
+				<path d="M5.10019 0C2.40019 0 0.200195 2.3 0.200195 5.2V19C0.200195 21.9 2.40019 24.2 5.10019 24.2H18.6002C21.5002 24.2 23.8002 21.9 23.8002 19V5.2C23.8002 2.3 21.5002 0 18.6002 0H5.10019Z" fill="#FC3C44"/>
+				<path d="M125.4 30.6H114.7H108.3H93.8003V5C93.8003 2.2 91.6003 0 88.8003 0C86.0003 0 83.8003 2.2 83.8003 5V80.4C83.8003 83.2 86.0003 85.4 88.8003 85.4H108.3H114.7H125.4C131.9 85.4 137.2 80.1 137.2 73.6V42.4C137.1 35.9 131.9 30.6 125.4 30.6ZM127.6 67.9C127.6 72 124.2 75.4 120.1 75.4H114.6H108.2H93.7003V40.6H108.2H114.6H120.1C124.2 40.6 127.6 44 127.6 48.1V67.9Z" fill="#2C2D34"/>
+			</svg>
+			<div>SETUP</div>
+		</h1>
 <?php
 function checkFilesPermission($files, $optional_files, $check_folder_sub_files, &$main_status) {
 	$file_statuses = array();
@@ -328,6 +389,7 @@ if ($tmp_path != $installation_dir . "app/tmp/") {
 	$check_folder_sub_files[] = $installation_dir . "app/tmp/";
 }
 
+$setup_already_executed = is_dir($installation_dir . "app/layer/") && count(array_diff(scandir($installation_dir . "app/layer/"), array("..", ".", ".gitkeep", ".htaccess", ".htpasswd", ".git"))) > 0;
 $document_root_status = $installation_dir == $document_root;
 $php_version_status = version_compare(PHP_VERSION, '5.6', '>=');
 $loaded_extensions = array_map("strtolower", get_loaded_extensions());
@@ -359,7 +421,12 @@ if (!$is_gitignore_ok)
 echo '<style>.setup ul li.for_git_repo_creation {display:block !important;}</style>';
 
 
-$html = "<ol>
+$html = "";
+
+if ($setup_already_executed)
+	$html .= '<div class="setup_already_executed">It seems this setup was already executed.<br/>If you continue, it may overwrite some of your changes...</div>';
+
+$html .= "<ol>
 	<li>Follow instructions from the INSTALL.md, this is:
 		<div class=\"md_file\">
 			$inner_html
@@ -445,10 +512,12 @@ $html = "<ol>
 	<li>Please be sure that your web-server has write permissions to the following files:
 		" . checkFilesPermission($files, $optional_files, $check_folder_sub_files, $main_status) . "
 	<br/>If some of the above files are <span class=\"non_writeable\">NON WRITEABLE</span>, please change their permissions or owner and refresh this page.</li>
-	<li class=\"" . ($main_status ? "" : "disable") . "\">If all the files above are <span class=\"writeable\">OK</span>, please click <span class=\"continue\">" . ($main_status ? "<a href=\"__system/setup/\">HERE</a>" : "HERE") . "</span> to login and continue with the setup...<br/>(To login please use the username: \"admin\" and the password: \"admin\".)</li>
+	<li class=\"" . ($main_status ? "" : "disable") . "\">If all the files above are <span class=\"writeable\">OK</span>, please click in the button below \"<strong>Proceed with Setup</strong>\" to login and continue with setup...<br/>(<i style=\"opacity:.7\">To login please use the username: \"admin\" and the password: \"admin\".</i>)</li>
 	<li>Then after you finish the setup, please go to \"User Management\" panel and change your login password...</li>
 	<li>(optional) Delete the setup.php and INSTALL.md files.</li>
-	</ol>";
+	</ol>
+	
+	<div class=\"button\"><button onClick=\"document.location='__system/setup/'\"" . ($main_status ? "" : 'disabled title="Something above is not OK"') . ">Proceed with Setup</button></div>";
 
 echo $html;
 ?>

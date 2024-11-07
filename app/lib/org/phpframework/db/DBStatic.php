@@ -13,10 +13,9 @@ trait DBStatic {
 	abstract public static function getLabel();
 	abstract public static function getEnclosingDelimiters();
 	abstract public static function getAliasEnclosingDelimiters();
-	abstract public static function getDBCharsets();
+	abstract public static function getDBConnectionEncodings();
 	abstract public static function getTableCharsets();
 	abstract public static function getColumnCharsets();
-	abstract public static function getDBCollations();
 	abstract public static function getTableCollations();
 	abstract public static function getColumnCollations();
 	abstract public static function getStorageEngines();
@@ -101,10 +100,8 @@ trait DBStatic {
 	abstract public static function getDropFunctionStatement($function, $options = false);
 	abstract public static function getDropEventStatement($event, $options = false);
 	abstract public static function getDropViewStatement($view, $options = false);
-	abstract public static function getShowDBCharsetsStatement($options = false);
 	abstract public static function getShowTableCharsetsStatement($options = false);
 	abstract public static function getShowColumnCharsetsStatement($options = false);
-	abstract public static function getShowDBCollationsStatement($options = false);
 	abstract public static function getShowTableCollationsStatement($options = false);
 	abstract public static function getShowColumnCollationsStatement($options = false);
 	abstract public static function getShowDBStorageEnginesStatement($options = false);
@@ -228,9 +225,9 @@ trait DBStatic {
 		return $items;
 	}
 	
-	public static function getAllDBCharsetsByType() {  //change this to AllDBCharsets
-		if (!empty(self::$saved_data_by_func["getAllDBCharsetsByType"]))
-			return self::$saved_data_by_func["getAllDBCharsetsByType"];
+	public static function getAllDBConnectionEncodingsByType() {  //change this to AllDBCharsets
+		if (!empty(self::$saved_data_by_func["getAllDBConnectionEncodingsByType"]))
+			return self::$saved_data_by_func["getAllDBConnectionEncodingsByType"];
 		
 		$drivers = self::getAvailableDriverClassNames();
 		$items = array();
@@ -240,10 +237,10 @@ trait DBStatic {
 				include_once get_lib("org.phpframework.db.driver.$driver_class");
 			
 			$type = $driver_class::getType();
-			$items[$type] = $driver_class::getDBCharsets();
+			$items[$type] = $driver_class::getDBConnectionEncodings();
 		}
 		
-		self::$saved_data_by_func["getAllDBCharsetsByType"] = $items;
+		self::$saved_data_by_func["getAllDBConnectionEncodingsByType"] = $items;
 		
 		return $items;
 	}

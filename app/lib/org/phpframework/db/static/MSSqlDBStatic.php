@@ -16,8 +16,8 @@ trait MSSqlDBStatic {
 		return array("'", "'");
 	}
 	
-	public static function getDBCharsets() {
-		return static::$db_charsets;
+	public static function getDBConnectionEncodings() {
+		return static::$db_connection_encodings;
 	}
 	
 	//mssql doesn't support charset for table
@@ -28,10 +28,6 @@ trait MSSqlDBStatic {
 	//mssql doesn't support charset for column
 	public static function getColumnCharsets() {
 		return null;
-	}
-	
-	public static function getDBCollations() {
-		return static::$db_table_column_collations;
 	}
 	
 	public static function getTableCollations() {

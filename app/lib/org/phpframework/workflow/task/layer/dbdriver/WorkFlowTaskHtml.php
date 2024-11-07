@@ -2,7 +2,7 @@
 include_once get_lib("org.phpframework.db.DB");
 
 $extensions = DB::getAllExtensionsByType();
-$encodings = DB::getAllDBCharsetsByType();
+$encodings = DB::getAllDBConnectionEncodingsByType();
 $driver_labels = DB::getAllDriverLabelsByType();
 $ignore_connection_options = DB::getAllIgnoreConnectionOptionsByType();
 $ignore_connection_options_by_extension = DB::getAllIgnoreConnectionOptionsByExtensionAndType();

@@ -311,13 +311,13 @@ class MSSqlDB extends DB {
 		}
 	} 
 	
-	public function setCharset($charset = "utf8") {
+	public function setConnectionEncoding($encoding = "utf8") {
 		$this->init();
 		
 		try {
-			return ini_set('mssql.charset', $charset) !== false;
+			return ini_set('mssql.charset', $encoding) !== false;
 		}catch(Exception $e) {
-			return launch_exception(new SQLException(20, $e, $charset));
+			return launch_exception(new SQLException(20, $e, $encoding));
 		}
 	}
 	
@@ -795,10 +795,6 @@ class MSSqlDB extends DB {
 		return $fields;
 	}
 	
-	public function listDBCharsets() {
-		return static::getDBCharsets();
-	}
-	
 	//mssql doesn't support charset for table
 	public function listTableCharsets() {
 		return null;
@@ -809,10 +805,10 @@ class MSSqlDB extends DB {
 		return null;
 	}
 	
-	public function listDBCollations() {
+	public function listTableCollations() {
 		$rows = array();
 		
-		$sql = static::getShowDBCollationsStatement($this->options);
+		$sql = static::getShowTableCollationsStatement($this->options);
 		
 		if ($sql) {
 			$options = array("return_type" => "result");
@@ -826,17 +822,31 @@ class MSSqlDB extends DB {
 		}
 		
 		if (!$rows)
-			$rows = static::getDBCollations();
+			$rows = static::getTableCollations();
 		
 		return $rows;
 	}
 	
-	public function listTableCollations() {
-		return $this->listDBCollations();
-	}
-	
 	public function listColumnCollations() {
-		return $this->listDBCollations();
+		$rows = array();
+		
+		$sql = static::getShowColumnCollationsStatement($this->options);
+		
+		if ($sql) {
+			$options = array("return_type" => "result");
+			$result = $this->getData($sql, $options);
+			
+			if($result)
+				foreach ($result as $field) {
+					$id = $field["name"];
+					$rows[$id] = !empty($field["description"]) ? $field["description"] : ucwords(str_replace("_", " ", $id));
+				}
+		}
+		
+		if (!$rows)
+			$rows = static::getColumnCollations();
+		
+		return $rows;
 	}
 	
 	//mssql doesn't support storage engines

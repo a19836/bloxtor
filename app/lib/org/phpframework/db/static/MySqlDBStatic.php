@@ -16,8 +16,8 @@ trait MySqlDBStatic {
 		return array("'", "'");
 	}
 	
-	public static function getDBCharsets() {
-		return static::$db_table_charsets;
+	public static function getDBConnectionEncodings() {
+		return static::$db_connection_encodings;
 	}
 	
 	public static function getTableCharsets() {
@@ -27,10 +27,6 @@ trait MySqlDBStatic {
 	//mysql doesn't support charsets for columns
 	public static function getColumnCharsets() {
 		return null;
-	}
-	
-	public static function getDBCollations() {
-		return static::$db_table_column_collations;
 	}
 	
 	public static function getTableCollations() {

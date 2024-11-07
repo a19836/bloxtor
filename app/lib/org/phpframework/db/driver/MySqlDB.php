@@ -179,7 +179,7 @@ class MySqlDB extends DB {
 			}
 			
 			if ($this->link) {
-				if (!empty($this->options["encoding"]) && !$this->setCharset($this->options["encoding"]))
+				if (!empty($this->options["encoding"]) && !$this->setConnectionEncoding($this->options["encoding"]))
 					$this->close();
 				else if (!empty($this->options["db_name"]))
 					$this->db_selected = true;
@@ -287,7 +287,7 @@ class MySqlDB extends DB {
 			}
 			
 			if ($this->link) {
-				if (!empty($this->options["encoding"]) && !$this->setCharset($this->options["encoding"]))
+				if (!empty($this->options["encoding"]) && !$this->setConnectionEncoding($this->options["encoding"]))
 					$this->close();
 			}
 			
@@ -350,19 +350,19 @@ class MySqlDB extends DB {
 		}
 	} 
 	
-	public function setCharset($charset = "utf8") {
+	public function setConnectionEncoding($encoding = "utf8") {
 		$this->init();
 		
 		try {
 			switch ($this->default_php_extension_type) {
-				case "mysqli": return mysqli_set_charset($this->link, $charset);
-				case "mysql": return mysql_set_charset($charset, $this->link);
-				case "pdo": return $this->link->query("SET NAMES $charset");
-				case "odbc": return odbc_exec($this->link, "SET NAMES $charset");
+				case "mysqli": return mysqli_set_charset($this->link, $encoding);
+				case "mysql": return mysql_set_charset($encoding, $this->link);
+				case "pdo": return $this->link->query("SET NAMES $encoding");
+				case "odbc": return odbc_exec($this->link, "SET NAMES $encoding");
 			}
 			return false;
 		}catch(Exception $e) {
-			return launch_exception(new SQLException(20, $e, $charset));
+			return launch_exception(new SQLException(20, $e, $encoding));
 		}
 	}
 	
@@ -922,16 +922,16 @@ class MySqlDB extends DB {
 		return $fields;
 	}
 	
-	public function listDBCharsets() {
+	public function listTableCharsets() {
 		$rows = array();
 		
-		$sql = static::getShowDBCharsetsStatement($this->options);
+		$sql = static::getShowTableCharsetsStatement($this->options);
 		
 		if ($sql) {
 			$options = array("return_type" => "result");
 			$result = $this->getData($sql, $options);
 			
-			if($result)
+			if ($result)
 				foreach ($result as $field) {
 					$id = $field["Charset"];
 					$rows[$id] = !empty($field["Description"]) ? $field["Description"] : ucwords(str_replace("_", " ", $id));
@@ -939,13 +939,9 @@ class MySqlDB extends DB {
 		}
 		
 		if (!$rows)
-			$rows = static::getDBCharsets();
+			$rows = static::getTableCharsets();
 		
 		return $rows;
-	}
-	
-	public function listTableCharsets() {
-		return $this->listDBCharsets();
 	}
 	
 	//mysql doesn't support charsets for columns
@@ -953,16 +949,16 @@ class MySqlDB extends DB {
 		return null;
 	}
 	
-	public function listDBCollations() {
+	public function listTableCollations() {
 		$rows = array();
 		
-		$sql = static::getShowDBCollationsStatement($this->options);
+		$sql = static::getShowTableCollationsStatement($this->options);
 		
 		if ($sql) {
 			$options = array("return_type" => "result");
 			$result = $this->getData($sql, $options);
 			
-			if($result)
+			if ($result)
 				foreach ($result as $field) {
 					$id = $field["Collation"];
 					$rows[$id] = ucwords(str_replace("_", " ", $id));
@@ -970,17 +966,31 @@ class MySqlDB extends DB {
 		}
 		
 		if (!$rows)
-			$rows = static::getDBCollations();
+			$rows = static::getTableCollations();
 		
 		return $rows;
 	}
 	
-	public function listTableCollations() {
-		return $this->listDBCollations();
-	}
-	
 	public function listColumnCollations() {
-		return $this->listDBCollations();
+		$rows = array();
+		
+		$sql = static::getShowColumnCollationsStatement($this->options);
+		
+		if ($sql) {
+			$options = array("return_type" => "result");
+			$result = $this->getData($sql, $options);
+			
+			if ($result)
+				foreach ($result as $field) {
+					$id = $field["Collation"];
+					$rows[$id] = ucwords(str_replace("_", " ", $id));
+				}
+		}
+		
+		if (!$rows)
+			$rows = static::getColumnCollations();
+		
+		return $rows;
 	}
 	
 	public function listStorageEngines() {
@@ -992,7 +1002,7 @@ class MySqlDB extends DB {
 			$options = array("return_type" => "result");
 			$result = $this->getData($sql, $options);
 			
-			if($result)
+			if ($result)
 				foreach ($result as $field) {
 					$id = $field["Engine"];
 					$rows[$id] = ucwords(str_replace("_", " ", $id)) . " - " . (!empty($field["Comment"]) ? $field["Comment"] : "");

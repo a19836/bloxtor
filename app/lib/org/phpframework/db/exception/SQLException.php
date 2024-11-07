@@ -44,7 +44,7 @@ class SQLException extends Exception {
 			case 17: $this->problem = "ERROR: Query result null. SQL:" . $value_0; break;
 			case 18: $this->problem = "ERROR: DB Driver incorrect options. Host, username and db_name are mandatory! Your options were:[" . implode("', '", $value) . "]"; break;
 			case 19: $this->problem = "ERROR: DB name is undefined in query: " . $value; break;
-			case 20: $this->problem = "ERROR in DB->setCharset(" . $value . ")"; break;
+			case 20: $this->problem = "ERROR in DB->setConnectionEncoding(" . $value . ")"; break;
 			case 21: $this->problem = "ERROR checking getData resourcing for SQL:" . $value_0; break;
 		}
 		

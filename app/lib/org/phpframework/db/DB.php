@@ -33,7 +33,7 @@ abstract class DB implements IDB {
 	abstract public function connectWithoutDB();
 	abstract public function close(); 
 	abstract public function ping(); 
-	abstract public function setCharset($charset = 'utf8'); 
+	abstract public function setConnectionEncoding($encoding = 'utf8'); 
 	abstract public function selectDB($db_name);
 	abstract public function error(); 
 	abstract public function errno(); 
@@ -49,10 +49,8 @@ abstract class DB implements IDB {
 	abstract public function listTables($db_name = false, $options = false); 
 	abstract public function listTableFields($table, $options = false); 
 	abstract public function getInsertedId($options = false); 
-	abstract public function listDBCharsets();
 	abstract public function listTableCharsets();
 	abstract public function listColumnCharsets();
-	abstract public function listDBCollations();
 	abstract public function listTableCollations();
 	abstract public function listColumnCollations();
 	abstract public function listStorageEngines();

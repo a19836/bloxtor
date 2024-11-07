@@ -15,7 +15,7 @@ trait MSSqlDBProperty {
 	
 	//https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/programming-guidelines?view=sql-server-ver15
 	//https://docs.microsoft.com/en-us/sql/relational-databases/collations/collation-and-unicode-support?view=sql-server-ver15
-	private static $db_charsets = array( //used to connect to a DB
+	private static $db_connection_encodings = array( //used to connect to a DB
 		"UTF-8" => "Unicode", 
 		"CP437" => "MS-DOS Latin US", 
 		"CP850" => "MS-DOS Latin 1", 
@@ -5557,7 +5557,7 @@ trait MSSqlDBProperty {
 		"SQL_Ukrainian_CP1251_CI_AS" => "Ukrainian, case-insensitive, accent-sensitive, kanatype-insensitive, width-insensitive for Unicode Data, SQL Server Sort Order 108 on Code Page 1251 for non-Unicode Data", 
 		"SQL_Ukrainian_CP1251_CS_AS" => "Ukrainian, case-sensitive, accent-sensitive, kanatype-insensitive, width-insensitive for Unicode Data, SQL Server Sort Order 107 on Code Page 1251 for non-Unicode Data"); 
 	
-	private static $db_charsets_to_collations = array(
+	private static $db_connection_encodings_to_collations = array(
 		"UTF-8" => "Latin1_General_CI_AS_UTF8", 
 		"CP437" => "SQL_Latin1_General_CP437_CI_AI", 
 		"CP850" => "SQL_Latin1_General_CP850_CI_AS", 

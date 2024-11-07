@@ -1166,11 +1166,6 @@ END $$;";
 		return "DROP VIEW IF EXISTS $sql_view;";
 	}
 	
-	//postgres doesn't have a sql to get all available charsets
-	public static function getShowDBCharsetsStatement($options = false) {
-		return null;
-	}
-	
 	//postgres doesn't support charset for table
 	public static function getShowTableCharsetsStatement($options = false) {
 		return null;
@@ -1178,11 +1173,6 @@ END $$;";
 	
 	//postgres doesn't support charset for column
 	public static function getShowColumnCharsetsStatement($options = false) {
-		return null;
-	}
-	
-	//postgres doesn't set the collation for table
-	public static function getShowDBCollationsStatement($options = false) {
 		return null;
 	}
 	

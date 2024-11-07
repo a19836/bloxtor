@@ -75,7 +75,7 @@ if (!empty($bean_file_name) && file_exists($bean_path)) {
 		$available_extensions_options[] = array("value" => $db_driver_extension, "label" => $db_driver_extension . " - DEPRECATED");
 	
 	//preparing db encodings
-	$drivers_encodings = DB::getAllDBCharsetsByType();
+	$drivers_encodings = DB::getAllDBConnectionEncodingsByType();
 	$available_encodings_options = array(array("value" => "", "label" => "-- Default --"));
 	
 	$db_driver_encoding = isset($db_settings["encoding"]) ? $db_settings["encoding"] : null;

@@ -154,7 +154,7 @@ class PostgresDB extends DB {
 			}
 					
 			if ($this->link) {
-				if (!empty($this->options["encoding"]) && empty($this->setCharset($this->options["encoding"])))
+				if (!empty($this->options["encoding"]) && empty($this->setConnectionEncoding($this->options["encoding"])))
 					$this->close();
 				else if (!empty($this->options["db_name"]))
 					$this->db_selected = true;
@@ -237,7 +237,7 @@ class PostgresDB extends DB {
 			}
 			
 			if ($this->link) {
-				if (!empty($this->options["encoding"]) && !$this->setCharset($this->options["encoding"]))
+				if (!empty($this->options["encoding"]) && !$this->setConnectionEncoding($this->options["encoding"]))
 					$this->close();
 			}
 			
@@ -298,18 +298,18 @@ class PostgresDB extends DB {
 		}
 	} 
 	
-	public function setCharset($charset = "unicode") {
+	public function setConnectionEncoding($encoding = "unicode") {
 		$this->init();
 		
 		try {
 			switch ($this->default_php_extension_type) {
-				case "pg": return pg_set_client_encoding($this->link, strtoupper($charset)) != -1;
-				case "pdo": return $this->link->query("SET NAMES '$charset'"); //or: SET CLIENT_ENCODING TO 'value';
-				case "odbc": return odbc_exec($this->link, "SET NAMES '$charset'"); //or: SET CLIENT_ENCODING TO 'value';
+				case "pg": return pg_set_client_encoding($this->link, strtoupper($encoding)) != -1;
+				case "pdo": return $this->link->query("SET NAMES '$encoding'"); //or: SET CLIENT_ENCODING TO 'value';
+				case "odbc": return odbc_exec($this->link, "SET NAMES '$encoding'"); //or: SET CLIENT_ENCODING TO 'value';
 			}
 			return false;
 		}catch(Exception $e) {
-			return launch_exception(new SQLException(20, $e, $charset));
+			return launch_exception(new SQLException(20, $e, $encoding));
 		}
 	}
 	
@@ -744,10 +744,6 @@ class PostgresDB extends DB {
 		return null;
 	}
 	
-	public function listDBCharsets() {
-		return static::getDBCharsets();
-	}
-	
 	//postgres doesn't support charset for table
 	public function listTableCharsets() {
 		return null;
@@ -756,10 +752,6 @@ class PostgresDB extends DB {
 	//postgres doesn't support charset for column
 	public function listColumnCharsets() {
 		return null;
-	}
-	
-	public function listDBCollations() {
-		return static::getDBCollations();
 	}
 	
 	//postgres doesn't support collation for table

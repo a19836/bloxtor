@@ -151,7 +151,7 @@ if (!empty($data["db_extension"]) && (!$drivers_extensions[ $data["db_type"] ] |
 	$available_extensions_options[] = array("value" => $data["db_extension"], "label" => $data["db_extension"] . " - DEPRECATED");
 
 //preparing db encodings
-$drivers_encodings = DB::getAllDBCharsetsByType();
+$drivers_encodings = DB::getAllDBConnectionEncodingsByType();
 $available_encodings_options = array(array("value" => "", "label" => "-- Default --"));
 
 if ($data["db_type"] && is_array($drivers_encodings[ $data["db_type"] ]))

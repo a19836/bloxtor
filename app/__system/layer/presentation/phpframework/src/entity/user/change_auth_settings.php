@@ -205,7 +205,7 @@ if ($authentication_db_extension && (empty($drivers_extensions[$authentication_d
 	$available_extensions_options[] = array("value" => $authentication_db_extension, "label" => $authentication_db_extension . " - DEPRECATED");
 
 //preparing db encodings
-$drivers_encodings = DB::getAllDBCharsetsByType();
+$drivers_encodings = DB::getAllDBConnectionEncodingsByType();
 $available_encodings_options = array(array("value" => "", "label" => "-- Default --"));
 
 if ($authentication_db_driver && isset($drivers_encodings[$authentication_db_driver]) && is_array($drivers_encodings[$authentication_db_driver]))

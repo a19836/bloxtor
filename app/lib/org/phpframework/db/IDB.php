@@ -5,10 +5,9 @@ interface IDB {
 	public static function getLabel();
 	public static function getEnclosingDelimiters();
 	public static function getAliasEnclosingDelimiters();
-	public static function getDBCharsets();
+	public static function getDBConnectionEncodings();
 	public static function getTableCharsets();
 	public static function getColumnCharsets();
-	public static function getDBCollations();
 	public static function getTableCollations();
 	public static function getColumnCollations();
 	public static function getStorageEngines();
@@ -47,7 +46,7 @@ interface IDB {
 	public function disconnect(); 
 	public function close(); 
 	public function ping(); 
-	public function setCharset($charset = 'utf8'); 
+	public function setConnectionEncoding($encoding = 'utf8'); 
 	public function selectDB($db_name);
 	public function error(); 
 	public function errno(); 
@@ -69,10 +68,8 @@ interface IDB {
 	public function listTables($db_name = false, $options = false); 
 	public function listTableFields($table, $options = false); 
 	public function listForeignKeys($table, $options = false);
-	public function listDBCharsets();
 	public function listTableCharsets();
 	public function listColumnCharsets();
-	public function listDBCollations();
 	public function listTableCollations();
 	public function listColumnCollations();
 	public function listStorageEngines();
@@ -144,10 +141,8 @@ interface IDB {
 	public static function getDropFunctionStatement($function, $options = false);
 	public static function getDropEventStatement($event, $options = false);
 	public static function getDropViewStatement($view, $options = false);
-	public static function getShowDBCharsetsStatement($options = false);
 	public static function getShowTableCharsetsStatement($options = false);
 	public static function getShowColumnCharsetsStatement($options = false);
-	public static function getShowDBCollationsStatement($options = false);
 	public static function getShowTableCollationsStatement($options = false);
 	public static function getShowColumnCollationsStatement($options = false);
 	public static function getShowDBStorageEnginesStatement($options = false);
@@ -175,7 +170,7 @@ interface IDB {
 	public static function convertDSNToOptions($dsn);
 	public static function getDSNByType($type, $options);
 	public static function getAllDriverLabelsByType();
-	public static function getAllDBCharsetsByType();
+	public static function getAllDBConnectionEncodingsByType();
 	public static function getAllStorageEnginesByType();
 	public static function getAllExtensionsByType();
 	public static function getAllIgnoreConnectionOptionsByType();

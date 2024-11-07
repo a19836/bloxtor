@@ -6,7 +6,7 @@ trait MSSqlDBStatement { //must be "trait" and not "class" bc this code will ser
 		
 		if (!empty($options["encoding"])) {
 			$lc = strtolower($options["encoding"]);
-			$collation = isset(self::$db_charsets_to_collations[$lc]) ? self::$db_charsets_to_collations[$lc] : null;
+			$collation = isset(self::$db_connection_encodings_to_collations[$lc]) ? self::$db_connection_encodings_to_collations[$lc] : null;
 			$collation = $collation ? " COLLATE " . $collation : "";
 		}
 		
@@ -987,11 +987,6 @@ SELECT '$table' as 'Table', REPLACE(@SQL, '\n    , ', ',\n    ') as 'Create Tabl
 		return "DROP VIEW IF EXISTS $sql_view;";
 	}
 	
-	//mssql doesn't have a sql to get the DB charsets. We can only set the connection encodings, but not the DB charsets.
-	public static function getShowDBCharsetsStatement($options = false) {
-		return null;
-	}
-	
 	//mssql doesn't support charset for table
 	public static function getShowTableCharsetsStatement($options = false) {
 		return null;
@@ -1002,16 +997,12 @@ SELECT '$table' as 'Table', REPLACE(@SQL, '\n    , ', ',\n    ') as 'Create Tabl
 		return null;
 	}
 	
-	public static function getShowDBCollationsStatement($options = false) {
-		return "SELECT name, description FROM sys.fn_helpcollations();";
-	}
-	
 	public static function getShowTableCollationsStatement($options = false) {
 		return "SELECT name, description FROM sys.fn_helpcollations();";
 	}
 	
 	public static function getShowColumnCollationsStatement($options = false) {
-		return "SELECT name, description FROM sys.fn_helpcollations();";
+		return self::getShowTableCollationsStatement($options);
 	}
 	
 	//mssql doesn't support storage engines

@@ -675,10 +675,6 @@ DROP PROCEDURE IF EXISTS dropTableForeignKey;";
 		return "DROP VIEW IF EXISTS $sql_view;";
 	}
 	
-	public static function getShowDBCharsetsStatement($options = false) {
-		return "SHOW CHARACTER SET;";
-	}
-	
 	public static function getShowTableCharsetsStatement($options = false) {
 		return "SHOW CHARACTER SET;";
 	}
@@ -688,16 +684,12 @@ DROP PROCEDURE IF EXISTS dropTableForeignKey;";
 		return null;
 	}
 	
-	public static function getShowDBCollationsStatement($options = false) {
-		return "SHOW COLLATION;";
-	}
-	
 	public static function getShowTableCollationsStatement($options = false) {
 		return "SHOW COLLATION;";
 	}
 	
 	public static function getShowColumnCollationsStatement($options = false) {
-		return "SHOW COLLATION;";
+		return self::getShowTableCollationsStatement($options);
 	}
 	
 	public static function getShowDBStorageEnginesStatement($options = false) {

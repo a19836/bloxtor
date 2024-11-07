@@ -16,8 +16,8 @@ trait PostgresDBStatic {
 		return array('"', '"');
 	}
 	
-	public static function getDBCharsets() {
-		return static::$db_charsets;
+	public static function getDBConnectionEncodings() {
+		return static::$db_connection_encodings;
 	}
 	
 	//postgres doesn't support charset for table
@@ -28,10 +28,6 @@ trait PostgresDBStatic {
 	//postgres doesn't support charset for column
 	public static function getColumnCharsets() {
 		return null;
-	}
-	
-	public static function getDBCollations() {
-		return static::$db_collations;
 	}
 	
 	//postgres doesn't support collation for table
