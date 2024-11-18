@@ -655,18 +655,28 @@
 	content:"\f1c0";
 	color:var(--icon-file-color);
 }
-.mytree i.db_management::before {
-	content:"\f00a";
-	color:var(--icon-file-color);
-}
 .mytree i.db_diagram::before {
 	content:"\f0e8";
+	color:var(--icon-file-color);
+}
+.mytree i.db_tables::before,
+  .mytree i.db_views::before,
+  .mytree i.db_procedures::before,
+  .mytree i.db_functions::before,
+  .mytree i.db_events::before,
+  .mytree i.db_triggers::before {
+	content:"\f00a";
 	color:var(--icon-file-color);
 }
 .mytree i.table {
 	cursor:crosshair;
 }
-.mytree i.table::before {
+.mytree i.table::before,
+  .mytree i.db_view::before,
+  .mytree i.db_procedure::before,
+  .mytree i.db_function::before,
+  .mytree i.db_event::before,
+  .mytree i.db_trigger::before {
 	content:"\f0db";
 	color:var(--icon-file-color);
 }

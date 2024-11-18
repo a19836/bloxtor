@@ -296,6 +296,9 @@ body.no_scroll {
 	display:block;
 	color:inherit !important;
 }
+#file_tree li > a .icons .icon.edit::before {
+	font-size:12px;
+}
 #file_tree li > a .icons .icon::after {
 	font-size:10px;
 	display:block;

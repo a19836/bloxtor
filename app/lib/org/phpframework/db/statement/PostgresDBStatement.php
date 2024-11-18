@@ -915,15 +915,28 @@ END $$;";
 	}
 
 	public static function getShowViewsStatement($db_name, $options = false) {
-		return "SELECT TABLE_NAME AS \"view_name\" ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		
+		return "SELECT 
+				v.table_name AS \"view_name\",
+				v.table_schema AS \"view_schema\",
+				v.view_definition AS \"view_definition\"
+			FROM information_schema.views v
+			WHERE v.table_catalog=" . ($db_name ? "'$db_name'" : "current_database()") . " AND " . ($schema ? "v.table_schema='$schema'" : "v.table_schema!='pg_catalog' AND v.table_schema!='information_schema'") . " ".
+			"ORDER BY v.table_name ASC"; //table_schemas: pg_catalog and information_schema are postgres default schemas
+		
+		/*return "SELECT TABLE_NAME AS \"view_name\" ".
 		  "FROM INFORMATION_SCHEMA.views ".
-		  "WHERE TABLE_CATALOG = '$db_name' AND TABLE_SCHEMA NOT LIKE 'pg%' AND TABLE_SCHEMA <> 'information_schema'";
+		  "WHERE TABLE_CATALOG = '$db_name' AND TABLE_SCHEMA NOT LIKE 'pg%' AND TABLE_SCHEMA <> 'information_schema'";*/
 	}
 
 	public static function getShowTriggersStatement($db_name, $options = false) {
-		return "SELECT TRIGGER_NAME AS \"Trigger\", event_object_table AS \"table_name\" ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		
+		return "SELECT TRIGGER_NAME AS \"trigger_name\", event_object_table AS \"table_name\", TRIGGER_SCHEMA AS \"table_schema\", ACTION_STATEMENT AS 'trigger_definition' ".
 		  "FROM INFORMATION_SCHEMA.TRIGGERS ".
-		  "WHERE TRIGGER_CATALOG='$db_name' AND TRIGGER_SCHEMA NOT LIKE 'pg%' AND TRIGGER_SCHEMA <> 'information_schema'";
+		  "WHERE TRIGGER_CATALOG='$db_name' AND " . ($schema ? "TRIGGER_SCHEMA='$schema'" : "TRIGGER_SCHEMA!='pg_catalog' AND TRIGGER_SCHEMA!='information_schema'") . " ".
+			"ORDER BY TRIGGER_NAME ASC";
 	}
 
 	public static function getShowTableColumnsStatement($table, $db_name = false, $options = false) {
@@ -1076,27 +1089,33 @@ END $$;";
 	}
 
 	public static function getShowProceduresStatement($db_name, $options = false) {
-		return "SELECT p.oid, n.nspname as \"schema\", p.proname as \"procedure_name\" ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		
+		return "SELECT p.oid, n.nspname as \"procedure_schema\", p.proname as \"procedure_name\", p.prosrc as \"procedure_definition\", p.proargnames as \"procedure_arg_names\", p.proargmodes as \"procedure_arg_modes\" ".
 		  "FROM pg_proc p ".
 		  "INNER JOIN pg_namespace n ON n.oid = p.pronamespace ".
-		  "INNER JOIN information_schema.routines rt ON rt.routine_catalog='$db_name' AND rt.routine_type='PROCEDURE' AND routine_schema=n.nspname AND rt.routine_name=p.proname ".
-		  "WHERE n.nspname NOT LIKE 'pg%' AND n.nspname <> 'information_schema' ".
+		  "INNER JOIN information_schema.routines rt ON rt.routine_catalog=" . ($db_name ? "'$db_name'" : "current_database()") . " AND rt.routine_type='PROCEDURE' AND rt.routine_schema=n.nspname AND rt.routine_name=p.proname " .
+		  "WHERE n.nspname NOT LIKE 'pg%' AND n.nspname <> 'information_schema' " . ($schema ? "AND rt.routine_schema='$schema' " : "") .
 		  "GROUP BY p.oid, n.nspname, p.proname";
 	}
 
 	public static function getShowFunctionsStatement($db_name, $options = false) {
-		return "SELECT p.oid, n.nspname as \"schema\", p.proname as \"function_name\" ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		
+		return "SELECT p.oid, n.nspname as \"function_schema\", p.proname as \"function_name\", p.prosrc as \"function_definition\", p.proargnames as \"function_arg_names\", p.proargmodes as \"function_arg_modes\" ".
 		  "FROM pg_proc p ".
 		  "INNER JOIN pg_namespace n ON n.oid = p.pronamespace ".
-		  "INNER JOIN information_schema.routines rt ON rt.routine_catalog='$db_name' AND rt.routine_type='FUNCTION' AND routine_schema=n.nspname AND rt.routine_name=p.proname ".
-		  "WHERE n.nspname NOT LIKE 'pg%' AND n.nspname <> 'information_schema' ".
+		  "INNER JOIN information_schema.routines rt ON rt.routine_catalog=" . ($db_name ? "'$db_name'" : "current_database()") . " AND rt.routine_type='FUNCTION' AND rt.routine_schema=n.nspname AND rt.routine_name=p.proname " .
+		  "WHERE n.nspname NOT LIKE 'pg%' AND n.nspname <> 'information_schema' " . ($schema ? "AND rt.routine_schema='$schema' " : "") .
 		  "GROUP BY p.oid, n.nspname, p.proname";
 	}
 
 	public static function getShowEventsStatement($db_name, $options = false) {
-		return "SELECT TRIGGER_NAME AS \"event_name\" ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		
+		return "SELECT TRIGGER_NAME AS \"event_name\", TRIGGER_SCHEMA AS \"event_schema\" ".
 		  "FROM INFORMATION_SCHEMA.TRIGGERS ".
-		  "WHERE TRIGGER_CATALOG='$db_name' AND TRIGGER_SCHEMA NOT LIKE 'pg%' AND TRIGGER_SCHEMA <> 'information_schema'";
+		  "WHERE TRIGGER_CATALOG=" . ($db_name ? "'$db_name'" : "current_database()") . " AND TRIGGER_SCHEMA NOT LIKE 'pg%' AND TRIGGER_SCHEMA <> 'information_schema' " . ($schema ? "AND TRIGGER_SCHEMA='$schema' " : "");
 	}
 
 	public static function getSetupTransactionStatement($options = false) {

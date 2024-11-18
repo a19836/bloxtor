@@ -798,7 +798,7 @@ class MySqlDB extends DB {
 		
 		if($result)
 			foreach ($result as $table)
-			    	$tables[] = array(
+		    	$tables[] = array(
 					"name" => /*(!empty($table["table_schema"]) && empty($this->options["schema"]) ? $table["table_schema"] . "." : "") . */(isset($table["table_name"]) ? $table["table_name"] : null), //The table schema is the database name in mysql, so basically this concept doesn't apply like it applies in other DBs like mssql and pgsql. //Only add schema if is not defined in options
 					"table_name" => isset($table["table_name"]) ? $table["table_name"] : null,
 					"schema" => isset($table["table_schema"]) ? $table["table_schema"] : null,
@@ -807,7 +807,7 @@ class MySqlDB extends DB {
 					"charset" => isset($table["table_charset"]) ? $table["table_charset"] : null,
 					"collation" => isset($table["table_collation"]) ? $table["table_collation"] : null,//utf8_general_ci
 					"comment" => isset($table["table_comment"]) ? $table["table_comment"] : null
-			    	);
+		    	);
 		
 		return $tables;
 	}
@@ -1013,6 +1013,124 @@ class MySqlDB extends DB {
 			$rows = static::getStorageEngines();
 		
 		return $rows;
+	}
+	
+	public function listViews($db_name = false, $options = false) {
+		$views = array();
+		
+		$db_name = $db_name ? $db_name : (!$this->isDBSelected() && !empty($this->options["db_name"]) ? $this->options["db_name"] : null);
+		
+		$options = $options ? $options : array();
+		$options["return_type"] = "result";
+		$sql = self::getShowViewsStatement($db_name, $this->options);
+		$result = $this->getData($sql, $options);
+		
+		if($result)
+			foreach ($result as $table)
+		    	$views[] = array(
+					"name" => /*(!empty($table["view_schema"]) && empty($this->options["schema"]) ? $table["view_schema"] . "." : "") . */(isset($table["view_name"]) ? $table["view_name"] : null), //The table schema is the database name in mysql, so basically this concept doesn't apply like it applies in other DBs like mssql and pgsql. //Only add schema if is not defined in options
+					"view_name" => isset($table["view_name"]) ? $table["view_name"] : null,
+					"schema" => isset($table["view_schema"]) ? $table["view_schema"] : null,
+					"type" => isset($table["view_type"]) ? strtolower($table["view_type"]) : null,
+					"engine" => isset($table["view_storage_engine"]) ? $table["view_storage_engine"] : null,
+					"charset" => isset($table["view_charset"]) ? $table["view_charset"] : null,
+					"collation" => isset($table["view_collation"]) ? $table["view_collation"] : null,//utf8_general_ci
+					"comment" => isset($table["view_comment"]) ? $table["view_comment"] : null
+		    	);
+		
+		return $views;
+	}
+	
+	public function listTriggers($db_name = false, $options = false) {
+		$triggers = array();
+		
+		$db_name = $db_name ? $db_name : (!$this->isDBSelected() && !empty($this->options["db_name"]) ? $this->options["db_name"] : null);
+		
+		$options = $options ? $options : array();
+		$options["return_type"] = "result";
+		$sql = self::getShowTriggersStatement($db_name, $this->options);
+		$result = $this->getData($sql, $options);
+		
+		if($result)
+			foreach ($result as $table)
+		    	$triggers[] = array(
+					"name" => /*(!empty($table["table_schema"]) && empty($this->options["schema"]) ? $table["table_schema"] . "." : "") . */(isset($table["trigger_name"]) ? $table["trigger_name"] : null), //The table schema is the database name in mysql, so basically this concept doesn't apply like it applies in other DBs like mssql and pgsql. //Only add schema if is not defined in options
+					"trigger_name" => isset($table["trigger_name"]) ? $table["trigger_name"] : null,
+					"table_name" => isset($table["table_name"]) ? $table["table_name"] : null,
+					"schema" => isset($table["table_schema"]) ? $table["table_schema"] : null,
+					"definition" => isset($table["trigger_definition"]) ? $table["trigger_definition"] : null
+		    	);
+		
+		return $triggers;
+	}
+	
+	public function listProcedures($db_name = false, $options = false) {
+		$procedures = array();
+		
+		$db_name = $db_name ? $db_name : (!$this->isDBSelected() && !empty($this->options["db_name"]) ? $this->options["db_name"] : null);
+		
+		$options = $options ? $options : array();
+		$options["return_type"] = "result";
+		$sql = self::getShowProceduresStatement($db_name, $this->options);
+		$result = $this->getData($sql, $options);
+		
+		if($result)
+			foreach ($result as $table)
+		    	$procedures[] = array(
+					"name" => /*(!empty($table["procedure_schema"]) && empty($this->options["schema"]) ? $table["procedure_schema"] . "." : "") . */(isset($table["procedure_name"]) ? $table["procedure_name"] : null), //The routine schema is the database name in mysql, so basically this concept doesn't apply like it applies in other DBs like mssql and pgsql. //Only add schema if is not defined in options
+					"procedure_name" => isset($table["procedure_name"]) ? $table["procedure_name"] : null, //we can also use $table["routine_name"]
+					"schema" => isset($table["procedure_schema"]) ? $table["procedure_schema"] : null,
+					"type" => isset($table["procedure_type"]) ? strtolower($table["procedure_type"]) : null,
+					"comment" => isset($table["procedure_comment"]) ? $table["procedure_comment"] : null,
+					"definition" => isset($table["procedure_definition"]) ? $table["procedure_definition"] : null
+		    	);
+		
+		return $procedures;
+	}
+	
+	public function listFunctions($db_name = false, $options = false) {
+		$functions = array();
+		
+		$db_name = $db_name ? $db_name : (!$this->isDBSelected() && !empty($this->options["db_name"]) ? $this->options["db_name"] : null);
+		
+		$options = $options ? $options : array();
+		$options["return_type"] = "result";
+		$sql = self::getShowFunctionsStatement($db_name, $this->options);
+		$result = $this->getData($sql, $options);
+		
+		if($result)
+			foreach ($result as $table)
+		    	$functions[] = array(
+					"name" => /*(!empty($table["function_schema"]) && empty($this->options["schema"]) ? $table["function_schema"] . "." : "") . */(isset($table["function_name"]) ? $table["function_name"] : null), //The routine schema is the database name in mysql, so basically this concept doesn't apply like it applies in other DBs like mssql and pgsql. //Only add schema if is not defined in options
+					"function_name" => isset($table["function_name"]) ? $table["function_name"] : null, //we can also use $table["routine_name"]
+					"schema" => isset($table["function_schema"]) ? $table["function_schema"] : null,
+					"type" => isset($table["function_type"]) ? strtolower($table["function_type"]) : null,
+					"comment" => isset($table["function_comment"]) ? $table["function_comment"] : null,
+					"definition" => isset($table["function_definition"]) ? $table["function_definition"] : null
+		    	);
+		
+		return $functions;
+	}
+	
+	public function listEvents($db_name = false, $options = false) {
+		$events = array();
+		
+		$db_name = $db_name ? $db_name : (!$this->isDBSelected() && !empty($this->options["db_name"]) ? $this->options["db_name"] : null);
+		
+		$options = $options ? $options : array();
+		$options["return_type"] = "result";
+		$sql = self::getShowEventsStatement($db_name, $this->options);
+		$result = $this->getData($sql, $options);
+		
+		if($result)
+			foreach ($result as $table)
+		    	$events[] = array(
+					"name" => /*(!empty($table["event_schema"]) && empty($this->options["schema"]) ? $table["event_schema"] . "." : "") . */(isset($table["event_name"]) ? $table["event_name"] : null), //The routine schema is the database name in mysql, so basically this concept doesn't apply like it applies in other DBs like mssql and pgsql. //Only add schema if is not defined in options
+					"event_name" => isset($table["event_name"]) ? $table["event_name"] : null, //we can also use $table["routine_name"]
+					"schema" => isset($table["event_schema"]) ? $table["event_schema"] : null
+		    	);
+		
+		return $events;
 	}
 	
 	public function getInsertedId($options = false) {

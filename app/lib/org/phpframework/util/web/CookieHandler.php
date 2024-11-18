@@ -58,6 +58,7 @@ class CookieHandler {
 		$flags["expires"] = isset($flags["expires"]) ? $flags["expires"] : $expires;
 		$flags["path"] = isset($flags["path"]) ? $flags["path"] : $path;
 		
+		//print_r($flags);die();
 		return setcookie($name, $value, $flags);
 	}
 }

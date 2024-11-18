@@ -73,6 +73,11 @@ interface IDB {
 	public function listTableCollations();
 	public function listColumnCollations();
 	public function listStorageEngines();
+	public function listViews($db_name = false, $options = false);
+	public function listTriggers($db_name = false, $options = false);
+	public function listProcedures($db_name = false, $options = false);
+	public function listFunctions($db_name = false, $options = false);
+	public function listEvents($db_name = false, $options = false);
 	public function getInsertedId($options = false); 
 	
 	public function convertObjectToSQL($data, $options = false);

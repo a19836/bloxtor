@@ -87,24 +87,54 @@ function initContextMenus() {
 
 function initDBContextMenu(elm, request_data) {
 	var dbs_driver = elm.find("li i.db_driver");
-	var dbs_management = elm.find("li i.db_management");
 	var dbs_diagram = elm.find("li i.db_diagram");
+	var dbs_tables = elm.find("li i.db_tables");
+	var dbs_views = elm.find("li i.db_views");
+	var dbs_procedures = elm.find("li i.db_procedures");
+	var dbs_functions = elm.find("li i.db_functions");
+	var dbs_events = elm.find("li i.db_events");
+	var dbs_triggers = elm.find("li i.db_triggers");
 	var tables = elm.find("li i.table");
 	var attributes = elm.find("li i.attribute");
+	var views = elm.find("li i.db_view");
+	var procedures = elm.find("li i.db_procedure");
+	var functions = elm.find("li i.db_function");
+	var events = elm.find("li i.db_event");
+	var triggers = elm.find("li i.db_trigger");
 	
 	var db_data = $.isPlainObject(request_data) && $.isPlainObject(request_data["properties"]) && request_data["properties"].hasOwnProperty("db_data") ? request_data["properties"]["db_data"] : null;
 	
 	dbs_driver.parent().addClass("link");
-	dbs_management.parent().addClass("link");
 	dbs_diagram.parent().addClass("link");
+	dbs_tables.parent().addClass("link");
+	dbs_views.parent().addClass("link");
+	dbs_procedures.parent().addClass("link");
+	dbs_functions.parent().addClass("link");
+	dbs_events.parent().addClass("link");
+	dbs_triggers.parent().addClass("link");
 	tables.parent().addClass("link");
 	attributes.parent().addClass("link");
+	views.parent().addClass("link");
+	procedures.parent().addClass("link");
+	functions.parent().addClass("link");
+	events.parent().addClass("link");
+	triggers.parent().addClass("link");
 	
 	addLiContextMenu(dbs_driver.parent(), "db_driver_context_menu", {callback: onDBContextMenu});
-	addLiContextMenu(dbs_management.parent(), "db_driver_tables_context_menu", {callback: onDBContextMenu});
 	addLiContextMenu(dbs_diagram.parent(), "db_diagram_context_menu", {callback: onDBContextMenu});
+	addLiContextMenu(dbs_tables.parent(), "db_driver_tables_context_menu", {callback: onDBContextMenu});
+	addLiContextMenu(dbs_views.parent(), "db_driver_objects_context_menu", {callback: onDBContextMenu});
+	addLiContextMenu(dbs_procedures.parent(), "db_driver_objects_context_menu", {callback: onDBContextMenu});
+	addLiContextMenu(dbs_functions.parent(), "db_driver_objects_context_menu", {callback: onDBContextMenu});
+	addLiContextMenu(dbs_events.parent(), "db_driver_objects_context_menu", {callback: onDBContextMenu});
+	addLiContextMenu(dbs_triggers.parent(), "db_driver_objects_context_menu", {callback: onDBContextMenu});
 	addLiContextMenu(tables.parent(), "db_driver_table_context_menu", {callback: onDBContextMenu});
 	addLiContextMenu(attributes.parent(), "db_driver_table_attribute_context_menu", {callback: onDBContextMenu, db_data: db_data});
+	addLiContextMenu(views.parent(), "db_driver_object_context_menu", {callback: onDBContextMenu});
+	addLiContextMenu(procedures.parent(), "db_driver_object_context_menu", {callback: onDBContextMenu});
+	addLiContextMenu(functions.parent(), "db_driver_object_context_menu", {callback: onDBContextMenu});
+	addLiContextMenu(events.parent(), "db_driver_object_context_menu", {callback: onDBContextMenu});
+	addLiContextMenu(triggers.parent(), "db_driver_object_context_menu", {callback: onDBContextMenu});
 }
 
 function initIbatisContextMenu(elm, request_data) {
@@ -483,6 +513,7 @@ function onDBContextMenu(target, contextmenu, originalEvent) {
 	contextmenu.find(".rename a").attr("rename_url", a.attr("rename_url"));
 	contextmenu.find(".remove a").attr("remove_url", a.attr("remove_url"));
 	contextmenu.find(".db_dump a").attr("db_dump_url", a.attr("db_dump_url"));
+	contextmenu.find(".phpmyadmin a").attr("phpmyadmin_url", a.attr("phpmyadmin_url"));
 	contextmenu.find(".manage_records a").attr("manage_records_url", a.attr("manage_records_url"));
 	contextmenu.find(".edit_diagram a").attr("edit_diagram_url", a.attr("edit_diagram_url"));
 	contextmenu.find(".create_diagram_sql a").attr("create_diagram_sql_url", a.attr("create_diagram_sql_url"));
@@ -492,6 +523,14 @@ function onDBContextMenu(target, contextmenu, originalEvent) {
 	contextmenu.find(".primary_key a, .null a, .type a").attr("set_property_url", a.attr("set_property_url"));
 	
 	contextmenu.find("a").attr("execute_sql_url", a.attr("execute_sql_url")); //very important bc the manageDBTableAction method uses this attribute, so we must have this attribute set in all the menu items.
+	
+	//toggle phpmyadmin
+	var show_phpmyadmin = a.parent().hasClass("db_driver_mysql");
+	
+	if (show_phpmyadmin)
+		contextmenu.find(".phpmyadmin").show();
+	else
+		contextmenu.find(".phpmyadmin").hide();
 	
 	//If is DB table attribute, prepare correspondent menus
 	if (a.children("i.attribute")) {

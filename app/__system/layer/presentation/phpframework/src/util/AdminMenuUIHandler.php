@@ -158,6 +158,7 @@ class AdminMenuUIHandler {
 	<li class="line_break"></li>
 	<li class="execute_sql"><a onClick="return goTo(this, \'execute_sql_url\', event)">Execute SQL</a></li>
 	<li class="db_dump"><a onClick="return goTo(this, \'db_dump_url\', event)">DB Dump</a></li>
+	<li class="phpmyadmin"><a onClick="return goTo(this, \'phpmyadmin_url\', event)">PHP My Admin</a></li>
 	<li class="line_break"></li>
 	<li class="properties"><a onClick="return showProperties(this)">Properties</a></li>
 </ul>
@@ -171,8 +172,20 @@ class AdminMenuUIHandler {
 	<li class="create_diagram_sql"><a onClick="return goTo(this, \'create_diagram_sql_url\', event)">Create Diagram\'s SQL</a></li>
 	<li class="execute_sql"><a onClick="return goTo(this, \'execute_sql_url\', event)">Execute SQL</a></li>
 	<li class="db_dump"><a onClick="return goTo(this, \'db_dump_url\', event)">DB Dump</a></li>
+	<li class="phpmyadmin"><a onClick="return goTo(this, \'phpmyadmin_url\', event)">PHP My Admin</a></li>
 	<li class="line_break"></li>
 	<li class="refresh"><a onClick="return refresh(this)">Refresh</a></li>
+</ul>
+
+<ul id="db_driver_objects_context_menu" class="mycontextmenu">
+	<li class="execute_sql"><a onClick="return goTo(this, \'execute_sql_url\', event)">Execute SQL</a></li>
+	<li class="phpmyadmin"><a onClick="return goTo(this, \'phpmyadmin_url\', event)">PHP My Admin</a></li>
+	<li class="line_break"></li>
+	<li class="refresh"><a onClick="return refresh(this)">Refresh</a></li>
+</ul>
+
+<ul id="db_driver_object_context_menu" class="mycontextmenu">
+	<li class="edit"><a onClick="return goTo(this, \'edit_url\', event)">Edit</a></li>
 </ul>
 
 <ul id="db_driver_table_context_menu" class="mycontextmenu">
@@ -1187,6 +1200,38 @@ class AdminMenuUIHandler {
 			if ($item_type == "db" || $item_type == "db_driver") {
 				$layer_bean_folder_name = isset($layer["properties"]["layer_bean_folder_name"]) ? $layer["properties"]["layer_bean_folder_name"] : null;
 				
+				$li_props["db_tables"]["get_sub_files_url"] = $project_url_prefix . "db/get_db_data?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#"; //to be called inside of each DB
+				$li_props["db_tables"]["attributes"] = array(
+					"edit_url" => $project_url_prefix . "db/set_db_settings?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
+					"add_auto_table_url" => $project_url_prefix . "db/manage_table_action?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&action=#action#&extra=#extra#",
+					"add_manual_table_url" => $project_url_prefix . "db/edit_table?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&on_success_js_func=refreshAndShowLastNodeChilds",
+					"db_dump_url" => $project_url_prefix . "db/db_dump?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
+					"execute_sql_url" => $project_url_prefix . "db/execute_sql?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
+					"edit_diagram_url" => $project_url_prefix . "db/diagram?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
+					"create_diagram_sql_url" => $project_url_prefix . "db/create_diagram_sql?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
+					"phpmyadmin_url" => $project_url_prefix . "db/phpmyadmin?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
+					"onClick" => 'return goTo(this, \'edit_diagram_url\', event)'
+				);
+				
+				$li_props["db_views"]["get_sub_files_url"] = $li_props["db_tables"]["get_sub_files_url"] . "&item_type=#item_type#";
+				$li_props["db_views"]["attributes"] = array(
+					"execute_sql_url" => $project_url_prefix . "db/execute_sql?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
+					"phpmyadmin_url" => $project_url_prefix . "db/phpmyadmin?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
+				);
+				$li_props["db_procedures"] = $li_props["db_views"];
+				$li_props["db_functions"] = $li_props["db_views"];
+				$li_props["db_events"] = $li_props["db_views"];
+				$li_props["db_triggers"] = $li_props["db_views"];
+				
+				$li_props["db_driver"] = $li_props["db_tables"];
+				$li_props["db_driver"]["attributes"]["onClick"] = 'return goTo(this, \'edit_url\', event)';
+				
+				/*$li_props["db_diagram"]["attributes"] = array(
+					"onClick" => 'return goTo(this, \'edit_url\', event)',
+					"edit_url" => $project_url_prefix . "db/diagram?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
+					"create_sql_url" => $project_url_prefix . "db/create_diagram_sql?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
+				);*/
+				
 				$li_props["table"]["get_sub_files_url"] = $project_url_prefix . "db/get_db_data?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&table=#table#";
 				$li_props["table"]["attributes"]["onClick"] = 'return goTo(this, \'edit_url\', event)';
 				$li_props["table"]["attributes"]["edit_url"] = $project_url_prefix . "db/edit_table?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&table=#table#";
@@ -1212,27 +1257,13 @@ class AdminMenuUIHandler {
 				$li_props["attribute"]["attributes"]["table_name"] = "#table#";
 				$li_props["attribute"]["attributes"]["attribute_name"] = "#attribute#";
 				
-				$li_props["db_management"]["get_sub_files_url"] = $project_url_prefix . "db/get_db_data?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#"; //to be called inside of each DB
-	;
-				$li_props["db_management"]["attributes"] = array(
-					"edit_url" => $project_url_prefix . "db/set_db_settings?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
-					"add_auto_table_url" => $project_url_prefix . "db/manage_table_action?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&action=#action#&extra=#extra#",
-					"add_manual_table_url" => $project_url_prefix . "db/edit_table?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&on_success_js_func=refreshAndShowLastNodeChilds",
-					"db_dump_url" => $project_url_prefix . "db/db_dump?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
-					"execute_sql_url" => $project_url_prefix . "db/execute_sql?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
-					"edit_diagram_url" => $project_url_prefix . "db/diagram?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
-					"create_diagram_sql_url" => $project_url_prefix . "db/create_diagram_sql?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
-				);
-				$li_props["db_management"]["attributes"]["onClick"] = 'return goTo(this, \'edit_diagram_url\', event)';
+				$li_props["db_view"]["attributes"]["onClick"] = 'return goTo(this, \'edit_url\', event)';
+				$li_props["db_view"]["attributes"]["edit_url"] = $project_url_prefix . "db/execute_sql?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&item_type=#item_type#&object=#object#";
 				
-				$li_props["db_driver"] = $li_props["db_management"];
-				$li_props["db_driver"]["attributes"]["onClick"] = 'return goTo(this, \'edit_url\', event)';
-				
-				/*$li_props["db_diagram"]["attributes"] = array(
-					"onClick" => 'return goTo(this, \'edit_url\', event)',
-					"edit_url" => $project_url_prefix . "db/diagram?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
-					"create_sql_url" => $project_url_prefix . "db/create_diagram_sql?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
-				);*/
+				$li_props["db_procedure"] = $li_props["db_view"];
+				$li_props["db_function"] = $li_props["db_view"];
+				$li_props["db_event"] = $li_props["db_view"];
+				$li_props["db_trigger"] = $li_props["db_view"];
 			}
 			else if ($item_type == "lib") {
 				$li_props[$item_type]["attributes"]["manage_docbook_url"] = $project_url_prefix . "docbook/";
@@ -1608,9 +1639,10 @@ class AdminMenuUIHandler {
 		
 		$item_type = isset($properties["item_type"]) ? $properties["item_type"] : null;
 		$item_id = isset($properties["item_id"]) ? $properties["item_id"] : null;
+		$item_class = isset($properties["item_class"]) ? $properties["item_class"] : null;
 		$item_menu = isset($properties["item_menu"]) ? $properties["item_menu"] : null;
 		
-		//if ($item_type=="db_management"){echo"<pre>";print_r($properties);print_r($main_layer_properties["ui"][$item_type]);die();}
+		//if ($item_type=="db_tables"){echo"<pre>";print_r($properties);print_r($main_layer_properties["ui"][$item_type]);die();}
 		
 		//PREPARE FILE PATH
 		$file_path = isset($properties["path"]) ? $properties["path"] : null;
@@ -1618,7 +1650,10 @@ class AdminMenuUIHandler {
 			$file_path .= $parent_path . $node_id . ($item_type == "folder" ? "/" : "");
 		
 		//START LI HTML
-		$html .= '<li ' . (!empty($class) ? 'class="' . $class . '"' : '') . ' data-jstree=\'{"icon":"' . (!empty($class) ? $class : self::getIcon($properties)) . '"}\'><a';
+		$li_class = trim($class . " " . $item_class);
+		$li_icon = $class ? $class : self::getIcon($properties);
+		
+		$html .= '<li ' . ($li_class ? 'class="' . $li_class . '"' : '') . ' data-jstree=\'{"icon":"' . $li_icon . '"}\'><a';
 		
 		//PREPARE ATTRIBUTES
 		if (!empty($item_id) && !empty($item_menu)) 
@@ -1628,7 +1663,7 @@ class AdminMenuUIHandler {
 			foreach ($main_layer_properties["ui"][$item_type]["attributes"] as $attr_name => $attr_value) {
 				$attr_value = str_replace("#path#", $file_path, $attr_value);
 				
-				if ($item_type == "db_driver" || $item_type == "db_management" || $item_type == "db_diagram") {
+				if ($item_type == "db_driver" || $item_type == "db_diagram" || $item_type == "db_tables" || $item_type == "db_views" || $item_type == "db_procedures" || $item_type == "db_functions" || $item_type == "db_events" || $item_type == "db_triggers") {
 					$bean_name = !empty($properties["bean_name"]) ? $properties["bean_name"] : "";
 					$bean_file_name = !empty($properties["bean_file_name"]) ? $properties["bean_file_name"] : "";
 					
@@ -1667,6 +1702,16 @@ class AdminMenuUIHandler {
 					$attr_value = str_replace("#name#", $name, $attr_value);
 					$attr_value = str_replace("#table#", $name, $attr_value);
 				}
+				else if ($item_type == "db_view" || $item_type == "db_procedure" || $item_type == "db_function" || $item_type == "db_event" || $item_type == "db_trigger") {
+					$bean_name = !empty($properties["bean_name"]) ? $properties["bean_name"] : "";
+					$bean_file_name = !empty($properties["bean_file_name"]) ? $properties["bean_file_name"] : "";
+					$name = !empty($properties["name"]) ? $properties["name"] : "";
+					
+					$attr_value = str_replace("#bean_name#", $bean_name, $attr_value);
+					$attr_value = str_replace("#bean_file_name#", $bean_file_name, $attr_value);
+					$attr_value = str_replace("#item_type#", $item_type, $attr_value);
+					$attr_value = str_replace("#object#", $name, $attr_value);
+				}
 				else if ($item_type == "entities_folder" && $attr_name == "project_with_auto_view")
 					$attr_value = !empty($properties["project_with_auto_view"]) ? $properties["project_with_auto_view"] : "0";
 				
@@ -1682,12 +1727,13 @@ class AdminMenuUIHandler {
 			$url = str_replace("#path#", $file_path, $url);
 			$url = str_replace("#folder_type#", $folder_type, $url);
 		
-			if ($item_type == "db_driver" || $item_type == "db_management" || $item_type == "db_diagram" || $item_type == "table") {
+			if ($item_type == "db_driver" || $item_type == "db_diagram" || $item_type == "db_tables" || $item_type == "db_views" || $item_type == "db_procedures" || $item_type == "db_functions" || $item_type == "db_events" || $item_type == "db_triggers" || $item_type == "table") {
 				$bean_name = !empty($properties["bean_name"]) ? $properties["bean_name"] : "";
 				$bean_file_name = !empty($properties["bean_file_name"]) ? $properties["bean_file_name"] : "";
 				
 				$url = str_replace("#bean_name#", $bean_name, $url);
 				$url = str_replace("#bean_file_name#", $bean_file_name, $url);
+				$url = str_replace("#item_type#", $item_type, $url);
 				$url = str_replace("#table#", $node_id, $url);
 			}
 		}

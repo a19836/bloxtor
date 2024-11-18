@@ -48,6 +48,11 @@ abstract class DB implements IDB {
 	
 	abstract public function listTables($db_name = false, $options = false); 
 	abstract public function listTableFields($table, $options = false); 
+	abstract public function listViews($db_name = false, $options = false);
+	abstract public function listTriggers($db_name = false, $options = false);
+	abstract public function listProcedures($db_name = false, $options = false);
+	abstract public function listFunctions($db_name = false, $options = false);
+	abstract public function listEvents($db_name = false, $options = false);
 	abstract public function getInsertedId($options = false); 
 	abstract public function listTableCharsets();
 	abstract public function listColumnCharsets();

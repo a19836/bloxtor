@@ -641,8 +641,8 @@ class DBDumperHandler {
 			$rows = $this->DBDriver->getSQL($sql);
 			
 			foreach ($rows as $row)
-				if (!empty($row['Trigger']))
-					$this->triggers[] = $row['Trigger'];
+				if (!empty($row['trigger_name']))
+					$this->triggers[] = $row['trigger_name'];
 		}
 		
 		return;

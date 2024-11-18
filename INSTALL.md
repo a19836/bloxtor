@@ -364,6 +364,7 @@ The external libraries, with LGPL and GPL licences, are:
 
 The external libraries, with GPL licences, are:
 - *wordpress* (wordpress.zip): that should be copied to the app/__system/layer/presentation/phpframework/webroot/vendor/ folder;
+- *phpmyadmin* (phpmyadmin.zip): that should be copied to the app/__system/layer/presentation/common/webroot/cms/ folder;
 
 ---
 

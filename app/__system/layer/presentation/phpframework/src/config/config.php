@@ -79,6 +79,7 @@ $get_store_programs_url = "https://bloxtor.com/get_store_type_content?type=progr
 $get_store_pages_url = "https://bloxtor.com/get_store_type_content?type=pages&data_type=json";
 $dependencies_repo_url = "https://bloxtor.com/framework_store/dependencies/";
 $dependency_wordpress_zip_file_url = $dependencies_repo_url . "wordpress.zip";
+$dependency_phpmyadmin_zip_file_url = $dependencies_repo_url . "phpmyadmin.zip";
 $send_email_action_url = "https://bloxtor.com/send_email";
 
 $include_js_plumb = false;

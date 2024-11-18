@@ -90,6 +90,7 @@ function validateLayerNodesRequest(ul, url, jqXHR, textStatus, errorThrown) {
 }
 
 function prepareDataNodesForDBDrivers(data) {
+	
 	if (!main_layers_properties)
 		main_layers_properties = {};
 	
@@ -108,20 +109,33 @@ function prepareDataNodesForDBDrivers(data) {
 				
 				var properties = item.properties;
 				var item_type = properties && properties.item_type ? properties.item_type : "";
-				//var db_name = "DB: " + (properties["item_menu"] ? properties["item_menu"]["db_name"] : "");
-				var db_name = "Tables";
 				
 				var new_driver = {
+					"Tables": {},
+					"Views": {},
+					"Procedures": {},
+					"Functions": {},
+					"Events": {},
+					"Triggers": {},
 					//"DB Diagram": {"properties": {}}, 
 					"properties": {}
 				};
-				new_driver[db_name] = {};
 				
-				Object.assign(new_driver[db_name], item);
-				//Object.assign(new_driver["DB Diagram"]["properties"], properties);
-				Object.assign(new_driver["properties"], properties);
+				assignObjectRecursively(new_driver["Tables"], item);
+				assignObjectRecursively(new_driver["Views"], item);
+				assignObjectRecursively(new_driver["Procedures"], item);
+				assignObjectRecursively(new_driver["Functions"], item);
+				assignObjectRecursively(new_driver["Events"], item);
+				assignObjectRecursively(new_driver["Triggers"], item);
+				//assignObjectRecursively(new_driver["DB Diagram"]["properties"], properties);
+				assignObjectRecursively(new_driver["properties"], properties);
 				
-				new_driver[db_name]["properties"]["item_type"] = "db_management";
+				new_driver["Tables"]["properties"]["item_type"] = "db_tables";
+				new_driver["Views"]["properties"]["item_type"] = "db_views";
+				new_driver["Procedures"]["properties"]["item_type"] = "db_procedures";
+				new_driver["Functions"]["properties"]["item_type"] = "db_functions";
+				new_driver["Events"]["properties"]["item_type"] = "db_events";
+				new_driver["Triggers"]["properties"]["item_type"] = "db_triggers";
 				//new_driver["DB Diagram"]["properties"]["item_type"] = "db_diagram";
 				
 				data[key] = new_driver;
@@ -180,7 +194,7 @@ function prepareFolderNodes(ul, data, main_layer_properties, parent_path) {
 						attr_value = attr_value.replace("#path#", file_path);
 						attr_value = attr_value.replace("#folder_type#", folder_type);
 						
-						if (item_type == "db_driver" || item_type == "db_management" || item_type == "db_diagram") {
+						if (item_type == "db_driver" || item_type == "db_diagram" || item_type == "db_tables" || item_type == "db_views" || item_type == "db_procedures" || item_type == "db_functions" || item_type == "db_events" || item_type == "db_triggers") {
 							var bean_name = properties && properties.bean_name ? properties.bean_name : "";
 							var bean_file_name = properties && properties.bean_file_name ? properties.bean_file_name : "";
 							
@@ -197,6 +211,16 @@ function prepareFolderNodes(ul, data, main_layer_properties, parent_path) {
 							attr_value = attr_value.replace("#name#", name);
 							attr_value = attr_value.replace("#table#", item_type == "attribute" ? properties.table : name);
 							attr_value = attr_value.replace("#attribute#", name);
+						}
+						else if (item_type == "db_view" || item_type == "db_procedure" || item_type == "db_function" || item_type == "db_event" || item_type == "db_trigger") {
+							var bean_name = properties && properties.bean_name ? properties.bean_name : "";
+							var bean_file_name = properties && properties.bean_file_name ? properties.bean_file_name : "";
+							var name = properties && properties.name ? properties.name : "";
+							
+							attr_value = attr_value.replace("#bean_name#", bean_name);
+							attr_value = attr_value.replace("#bean_file_name#", bean_file_name);
+							attr_value = attr_value.replace("#item_type#", item_type);
+							attr_value = attr_value.replace("#object#", name);
 						}
 						else if (item_type == "obj" || item_type == "query" || item_type == "relationship" || item_type == "hbn_native" || item_type == "map" || item_type == "import") {
 							var hbn_obj_id = properties && properties.hbn_obj_id ? properties.hbn_obj_id : "";
@@ -233,12 +257,13 @@ function prepareFolderNodes(ul, data, main_layer_properties, parent_path) {
 					url = url.replace("#path#", file_path);
 					url = url.replace("#folder_type#", folder_type);
 					
-					if (item_type == "db_driver" || item_type == "db_management" || item_type == "db_diagram" || item_type == "table") {
+					if (item_type == "db_driver" || item_type == "db_diagram" || item_type == "db_tables" || item_type == "db_views" || item_type == "db_procedures" || item_type == "db_functions" || item_type == "db_events" || item_type == "db_triggers" || item_type == "table") {
 						var bean_name = properties && properties.bean_name ? properties.bean_name : "";
 						var bean_file_name = properties && properties.bean_file_name ? properties.bean_file_name : "";
 						
 						url = url.replace("#bean_name#", bean_name);
 						url = url.replace("#bean_file_name#", bean_file_name);
+						url = url.replace("#item_type#", item_type);
 						url = url.replace("#table#", key);
 					}
 					

@@ -805,17 +805,26 @@ SELECT '$table' as 'Table', REPLACE(@SQL, '\n    , ', ',\n    ') as 'Create Tabl
 	}
 
 	public static function getShowViewsStatement($db_name, $options = false) {
-		return "SELECT v.TABLE_NAME AS 'view_name' ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		
+		return "SELECT ".
+				"v.TABLE_NAME AS 'view_name', ".
+				"v.TABLE_SCHEMA AS 'view_schema', ".
+				"v.VIEW_DEFINITION AS 'view_definition' ".
 			"FROM INFORMATION_SCHEMA.VIEWS v ".
 			"INNER JOIN sys.objects o ON SCHEMA_NAME(o.schema_id)=v.TABLE_SCHEMA AND o.name=v.TABLE_NAME AND o.type='V' AND o.is_ms_shipped=0 ".
-			"WHERE v.TABLE_CATALOG='$db_name'";
+			"WHERE v.TABLE_CATALOG=" . ($db_name ? "'$db_name'" : "DB_NAME()") . ($schema ? " AND v.TABLE_SCHEMA='$schema'" : "") . " ".
+			"ORDER BY v.TABLE_NAME ASC";
 	}
 
 	public static function getShowTriggersStatement($db_name, $options = false) {
-		return "SELECT trg.name AS 'Trigger', tab.TABLE_NAME AS 'table_name' ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		
+		return "SELECT trg.name AS 'trigger_name', tab.TABLE_NAME AS 'table_name', tab.TABLE_SCHEMA AS 'table_schema' ".
 			"FROM sys.triggers trg ".
 			"INNER JOIN INFORMATION_SCHEMA.TABLES tab ON tab.TABLE_NAME=OBJECT_NAME(trg.parent_id) AND tab.TABLE_SCHEMA=OBJECT_SCHEMA_NAME(trg.parent_id) ".
-			"WHERE tab.TABLE_CATALOG='$db_name' and trg.is_ms_shipped=0";
+			"WHERE tab.TABLE_CATALOG=" . ($db_name ? "'$db_name'" : "DB_NAME()") . ($schema ? " AND tab.TABLE_SCHEMA='$schema'" : "") . " and trg.is_ms_shipped=0 ".
+			"ORDER BY v.TABLE_NAME ASC";
 	}
 
 	public static function getShowTableColumnsStatement($table, $db_name = false, $options = false) {
@@ -895,25 +904,31 @@ SELECT '$table' as 'Table', REPLACE(@SQL, '\n    , ', ',\n    ') as 'Create Tabl
 	}
 
 	public static function getShowProceduresStatement($db_name, $options = false) {
-		return "SELECT r.ROUTINE_NAME as 'procedure_name' ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		
+		return "SELECT r.SPECIFIC_NAME AS 'procedure_name', r.ROUTINE_SCHEMA AS 'procedure_schema', r.ROUTINE_NAME AS 'routine_name', r.ROUTINE_TYPE AS 'procedure_type', r.ROUTINE_DEFINITION AS 'procedure_definition' ".
 		  "FROM INFORMATION_SCHEMA.ROUTINES r ".
-		  "INNER JOIN sys.objects o ON  SCHEMA_NAME(o.schema_id)=r.ROUTINE_SCHEMA AND o.name=r.ROUTINE_NAME AND o.type='P' AND o.is_ms_shipped=0 ".
-		  "WHERE r.ROUTINE_TYPE='PROCEDURE' and r.ROUTINE_CATALOG='$db_name'";
+		  "INNER JOIN sys.objects o ON SCHEMA_NAME(o.schema_id)=r.ROUTINE_SCHEMA AND o.name=r.ROUTINE_NAME AND o.type='P' AND o.is_ms_shipped=0 ".
+		  "WHERE r.ROUTINE_TYPE='PROCEDURE' and r.ROUTINE_CATALOG=" . ($db_name ? "'$db_name'" : "DB_NAME()") . ($schema ? " AND r.ROUTINE_SCHEMA='$schema'" : "");
 	}
 
 	public static function getShowFunctionsStatement($db_name, $options = false) {
-		return "SELECT r.ROUTINE_NAME as 'function_name' ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		
+		return "SELECT r.ROUTINE_NAME as 'function_name', r.ROUTINE_SCHEMA AS 'function_schema', r.ROUTINE_NAME AS 'routine_name', r.ROUTINE_TYPE AS 'function_type', r.ROUTINE_DEFINITION AS 'function_definition' ".
 		  "FROM INFORMATION_SCHEMA.ROUTINES r ".
-		  "INNER JOIN sys.objects o ON  SCHEMA_NAME(o.schema_id)=r.ROUTINE_SCHEMA AND o.name=r.ROUTINE_NAME AND o.type in ('AF', 'FN', 'FS', 'FT', 'IF', 'TF') AND o.is_ms_shipped=0 ".
-		  "WHERE r.ROUTINE_TYPE='FUNCTION' and r.ROUTINE_CATALOG='$db_name'";
+		  "INNER JOIN sys.objects o ON SCHEMA_NAME(o.schema_id)=r.ROUTINE_SCHEMA AND o.name=r.ROUTINE_NAME AND o.type in ('AF', 'FN', 'FS', 'FT', 'IF', 'TF') AND o.is_ms_shipped=0 ".
+		  "WHERE r.ROUTINE_TYPE='FUNCTION' and r.ROUTINE_CATALOG=" . ($db_name ? "'$db_name'" : "DB_NAME()") . ($schema ? " AND r.ROUTINE_SCHEMA='$schema'" : "");
 	}
 
 	public static function getShowEventsStatement($db_name, $options = false) {
-		return "SELECT o.name AS 'event_name' ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		
+		return "SELECT o.name AS 'event_name', SCHEMA_NAME(o.schema_id) AS 'event_schema' ".
 		  "FROM sys.events e ".
 		  "INNER JOIN sys.objects o ON o.object_id=e.object_id AND o.is_ms_shipped=0 ".
 		  "INNER JOIN INFORMATION_SCHEMA.TABLES tab ON tab.TABLE_NAME=OBJECT_NAME(o.parent_object_id) AND tab.TABLE_SCHEMA=OBJECT_SCHEMA_NAME(o.parent_object_id)".
-		  "WHERE tab.TABLE_CATALOG='$db_name'";
+		  "WHERE tab.TABLE_CATALOG=" . ($db_name ? "'$db_name'" : "DB_NAME()") . ($schema ? " AND SCHEMA_NAME(o.schema_id)='$schema'" : "");
 	}
 
 	//https://www.red-gate.com/simple-talk/sql/t-sql-programming/questions-about-t-sql-transaction-isolation-levels-you-were-too-shy-to-ask/

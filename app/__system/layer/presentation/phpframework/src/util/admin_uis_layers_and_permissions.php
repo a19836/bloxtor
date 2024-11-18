@@ -49,18 +49,26 @@ if (!empty($layers["db_layers"])) {
 		if ($layer_name != "properties") {
 			foreach ($layer as $driver_name => $driver) {
 				if ($driver_name != "properties") {
+					//echo "<pre>";print_r($driver);die();
 					//$db_driver_item_type = $driver["properties"]["item_type"];
 					
-					//$db_name = "DB: " . $driver["properties"]["item_menu"]["db_name"];
-					$db_name = "Tables";
-					
 					$new_driver = array(
-						$db_name => $driver,
+						"Tables" => $driver,
+						"Views" => $driver,
+						"Procedures" => $driver,
+						"Functions" => $driver,
+						"Events" => $driver,
+						"Triggers" => $driver,
 						//"DB Diagram" => array("properties" => $driver["properties"]),
 						"properties" => isset($driver["properties"]) ? $driver["properties"] : null
 					);
 					
-					$new_driver[$db_name]["properties"]["item_type"] = "db_management";
+					$new_driver["Tables"]["properties"]["item_type"] = "db_tables";
+					$new_driver["Views"]["properties"]["item_type"] = "db_views";
+					$new_driver["Procedures"]["properties"]["item_type"] = "db_procedures";
+					$new_driver["Functions"]["properties"]["item_type"] = "db_functions";
+					$new_driver["Events"]["properties"]["item_type"] = "db_events";
+					$new_driver["Triggers"]["properties"]["item_type"] = "db_triggers";
 					//$new_driver["DB Diagram"]["properties"]["item_type"] = "db_diagram";
 					
 					$layers["db_layers"][$layer_name][$driver_name] = $new_driver;

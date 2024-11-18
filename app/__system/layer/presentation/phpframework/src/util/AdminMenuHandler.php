@@ -845,6 +845,7 @@ class AdminMenuHandler {
 					$objs[ $db_bean->name ]["properties"] = array(
 						"item_type" => "db_driver",
 						"item_id" => self::getItemId($db_bean->path . "/" . $db_bean->name),
+						"item_class" => "db_driver_" . $db_properties["type"],
 						"item_menu" => $db_properties,
 						"bean_name" => $db_bean->name,
 						"bean_file_name" => self::getBeanFilePathByBeanName($db_bean->name),

@@ -313,6 +313,7 @@ $files = array(
 	
 	$installation_dir . "app/__system/layer/presentation/test/webroot/__system/", 
 	
+	$installation_dir . "app/__system/layer/presentation/common/webroot/cms/",
 	$installation_dir . "app/__system/layer/presentation/common/webroot/__system/",
 	$installation_dir . "app/__system/layer/presentation/common/src/module/",
 	$installation_dir . "app/__system/layer/presentation/common/webroot/module/",
@@ -365,6 +366,7 @@ $check_folder_sub_files = array(
 	$installation_dir . "app/__system/layer/presentation/phpframework/webroot/__system/", 
 	$installation_dir . "app/__system/layer/presentation/test/webroot/__system/", 
 	
+	$installation_dir . "app/__system/layer/presentation/common/webroot/cms/",
 	$installation_dir . "app/__system/layer/presentation/common/webroot/__system/",
 	$installation_dir . "app/__system/layer/presentation/common/src/module/",
 	$installation_dir . "app/__system/layer/presentation/common/webroot/module/",

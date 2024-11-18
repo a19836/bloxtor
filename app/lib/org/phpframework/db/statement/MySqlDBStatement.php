@@ -30,7 +30,7 @@ trait MySqlDBStatement { //must be "trait" and not "class" bc this code will ser
 				'' AS 'table_charset',
 				TABLE_COLLATION AS 'table_collation', 
 				TABLE_COMMENT AS 'table_comment'
-			FROM information_schema.TABLES 
+			FROM INFORMATION_SCHEMA.TABLES 
 			WHERE TABLE_TYPE='BASE TABLE' AND TABLE_SCHEMA=" . ($db_name ? "'$db_name'" : "DATABASE()") . "
 			ORDER BY TABLE_NAME ASC";
 		
@@ -542,13 +542,31 @@ DROP PROCEDURE IF EXISTS dropTableForeignKey;";
 	}
 
 	public static function getShowViewsStatement($db_name, $options = false) {
-		return "SELECT TABLE_NAME AS table_name ".
-			"FROM INFORMATION_SCHEMA.TABLES ".
-			"WHERE TABLE_TYPE='VIEW' AND TABLE_SCHEMA='$db_name'";
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		$db_name = $db_name ? $db_name : $schema; //schema is the database in mysql
+		
+		return "SELECT 
+				TABLE_NAME AS 'view_name', 
+				TABLE_TYPE AS 'view_type',
+				TABLE_SCHEMA AS 'view_schema', 
+				ENGINE AS 'view_storage_engine', 
+				'' AS 'view_charset',
+				TABLE_COLLATION AS 'view_collation', 
+				TABLE_COMMENT AS 'view_comment'
+			FROM INFORMATION_SCHEMA.TABLES 
+			WHERE TABLE_TYPE='VIEW' AND TABLE_SCHEMA=" . ($db_name ? "'$db_name'" : "DATABASE()") . "
+			ORDER BY TABLE_NAME ASC";
 	}
 
 	public static function getShowTriggersStatement($db_name, $options = false) {
-		return "SHOW TRIGGERS FROM `$db_name`;";
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		$db_name = $db_name ? $db_name : $schema; //schema is the database in mysql
+		
+		//return "SHOW TRIGGERS FROM `$db_name`;";
+		return "SELECT TRIGGER_NAME AS 'trigger_name', EVENT_OBJECT_TABLE AS 'table_name', TRIGGER_SCHEMA AS 'table_schema', ACTION_STATEMENT AS 'trigger_definition' ".
+			"FROM INFORMATION_SCHEMA.TRIGGERS ".
+			"WHERE TRIGGER_SCHEMA=" . ($db_name ? "'$db_name'" : "DATABASE()") . " ".
+			"ORDER BY TRIGGER_NAME ASC";
 	}
 
 	public static function getShowTableColumnsStatement($table, $db_name = false, $options = false) {
@@ -588,21 +606,30 @@ DROP PROCEDURE IF EXISTS dropTableForeignKey;";
 	}
 
 	public static function getShowProceduresStatement($db_name, $options = false) {
-		return "SELECT SPECIFIC_NAME AS procedure_name ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		$db_name = $db_name ? $db_name : $schema; //schema is the database in mysql
+		
+		return "SELECT SPECIFIC_NAME AS procedure_name, ROUTINE_SCHEMA AS procedure_schema, ROUTINE_NAME AS routine_name, ROUTINE_TYPE AS procedure_type, ROUTINE_COMMENT AS procedure_comment, ROUTINE_DEFINITION AS procedure_definition ".
 			"FROM INFORMATION_SCHEMA.ROUTINES ".
-			"WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA='$db_name'";
+			"WHERE ROUTINE_TYPE='PROCEDURE' AND ROUTINE_SCHEMA=" . ($db_name ? "'$db_name'" : "DATABASE()");
 	}
 
 	public static function getShowFunctionsStatement($db_name, $options = false) {
-		return "SELECT SPECIFIC_NAME AS function_name ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		$db_name = $db_name ? $db_name : $schema; //schema is the database in mysql
+		
+		return "SELECT SPECIFIC_NAME AS function_name, ROUTINE_SCHEMA AS function_schema, ROUTINE_NAME AS routine_name, ROUTINE_TYPE AS function_type, ROUTINE_COMMENT AS function_comment, ROUTINE_DEFINITION AS function_definition ".
 			"FROM INFORMATION_SCHEMA.ROUTINES ".
-			"WHERE ROUTINE_TYPE='FUNCTION' AND ROUTINE_SCHEMA='$db_name'";
+			"WHERE ROUTINE_TYPE='FUNCTION' AND ROUTINE_SCHEMA=" . ($db_name ? "'$db_name'" : "DATABASE()");
 	}
 
 	public static function getShowEventsStatement($db_name, $options = false) {
-		return "SELECT EVENT_NAME AS event_name ".
+		$schema = $options && !empty($options["schema"]) ? $options["schema"] : null;
+		$db_name = $db_name ? $db_name : $schema; //schema is the database in mysql
+		
+		return "SELECT EVENT_NAME AS event_name, EVENT_SCHEMA AS event_schema, EVENT_TYPE AS event_type, EVENT_COMMENT AS event_comment, EVENT_DEFINITION AS event_definition ".
 			"FROM INFORMATION_SCHEMA.EVENTS ".
-			"WHERE EVENT_SCHEMA='$db_name'";
+			"WHERE EVENT_SCHEMA=" . ($db_name ? "'$db_name'" : "DATABASE()");
 	}
 
 	public static function getSetupTransactionStatement($options = false) {

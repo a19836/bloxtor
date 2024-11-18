@@ -15,6 +15,7 @@ vendor/codeworkfloweditor/*
 vendor/codeworkfloweditor/task/*
 
 app/__system/layer/presentation/common/src/module/*
+app/__system/layer/presentation/common/webroot/cms/*
 app/__system/layer/presentation/common/webroot/__system/*
 app/__system/layer/presentation/common/webroot/module/*
 app/__system/layer/presentation/phpframework/webroot/__system/*
@@ -40,6 +41,7 @@ app/__system/layer/presentation/common/webroot/vendor/ckeditor
 
 #except the subfodlers:
 !app/__system/layer/presentation/common/src/module/.gitkeep
+!app/__system/layer/presentation/common/webroot/cms/.gitkeep
 !app/__system/layer/presentation/common/webroot/__system/.gitkeep
 !app/__system/layer/presentation/common/webroot/module/.gitkeep
 !app/__system/layer/presentation/phpframework/webroot/__system/.gitkeep

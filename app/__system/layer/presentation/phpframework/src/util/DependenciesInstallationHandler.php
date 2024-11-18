@@ -2,6 +2,7 @@
 include_once get_lib("org.phpframework.util.web.MyCurl");
 include_once get_lib("org.phpframework.compression.ZipHandler");
 include_once get_lib("org.phpframework.util.web.CSRFValidator");
+include_once get_lib("org.phpframework.cms.phpmyadmin.PhpMyAdminInstallationHandler");
 
 class DependenciesInstallationHandler {
 	
@@ -44,12 +45,22 @@ class DependenciesInstallationHandler {
 							$files_to_close[] = $fp;
 						
 						if ($downloaded_file && !empty($downloaded_file["tmp_name"]) && !empty($downloaded_file["type"]) && stripos($downloaded_file["type"], "zip") !== false) {
-							foreach ($folders_to_install as $folder_to_install)
+							foreach ($folders_to_install as $folder_to_install) {
 								if (!ZipHandler::unzip($downloaded_file["tmp_name"], $folder_to_install))
 									$errors[] = "Could not install $zip_name in $folder_to_install.<br/>";
+								else if ($zip_name == "phpmyadmin.zip") { //hack phpmyadmin
+									if (!PhpMyAdminInstallationHandler::hackPhpMyAdminInstallation($folder_to_install))
+										$errors[] = "phpmyadmin.zip was installed but not hacked!<br/>";
+								}
+							}
 						}
 						else
 							$errors[] = "Could not download $url or invalid zip file.<br/>";
+					}
+					else if ($zip_name == "phpmyadmin.zip") {
+						foreach ($folders_to_copy as $folder_to_copy)
+							if ($folder_to_copy && file_exists($folder_to_copy) && !PhpMyAdminInstallationHandler::hackPhpMyAdminInstallation($folder_to_copy))
+								$errors[] = "phpmyadmin.zip is already installed but not hacked!<br/>";
 					}
 				}
 			
@@ -78,6 +89,8 @@ class DependenciesInstallationHandler {
 			
 			"ckeditor.zip" => array(SYSTEM_LAYER_PATH . "presentation/common/webroot/vendor/ckeditor", LAYER_PATH . "presentation/common/webroot/vendor/ckeditor", LAYER_PATH . "pres/common/webroot/vendor/ckeditor"),
 			"tinymce.zip" => array(SYSTEM_LAYER_PATH . "presentation/common/webroot/vendor/tinymce", LAYER_PATH . "presentation/common/webroot/vendor/tinymce", LAYER_PATH . "pres/common/webroot/vendor/tinymce"),
+			
+			"phpmyadmin.zip" => SYSTEM_LAYER_PATH . "presentation/common/webroot/cms/phpmyadmin",
 		);
 	}
 	

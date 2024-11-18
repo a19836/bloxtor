@@ -1211,7 +1211,7 @@ trait DBStatic {
 			$field = (object) $field; //cast to object
 		
 		//prepare attributes
-		$field->length = $field->len; //optional
+		$field->length = isset($field->len) ? $field->len : null; //optional
 		unset($field->len);
 		
 		if ($field)
@@ -1269,7 +1269,7 @@ trait DBStatic {
 				    }
 			}
 		
-		if ($field->flags) {
+		if (!empty($field->flags)) {
 			if (is_numeric($field->flags)) {
 				foreach ($available_flags as $n => $t) 
 				    	if ($field->flags & $n)

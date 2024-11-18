@@ -150,7 +150,10 @@ function sortFiles(elm) {
 	elm = $(elm);
 	var sort_type = elm.val();
 	var mytree = elm.parent().closest(".top_bar").parent().children("#file_tree");
-	var main_ul = mytree.find(" > ul > li > ul");
+	var main_uls = mytree.find(" > ul > li > ul");
+	
+	if (item_type == "db")
+		main_uls = main_uls.find(" > li > ul > li > ul");
 	
 	var sortFilesInUl = function(ul, sort_type) {
 		var lis = ul.children("li");
@@ -185,7 +188,9 @@ function sortFiles(elm) {
 		});
 	};
 	
-	sortFilesInUl(main_ul, sort_type);
+	$.each(main_uls, function(idx, main_ul) {
+		sortFilesInUl($(main_ul), sort_type);
+	});
 }
 
 function prepareLayerFileNodes1(ul, data) {
@@ -287,7 +292,7 @@ function prepareLayerFileNodes2(ul, data) {
 				var li = $(i).parent().parent();
 				var li_ul = li.children("ul");
 				var li_a = li.children("a");
-				var sub_a = li_ul.find(" > li > a .db_management").parent();
+				var sub_a = li_ul.find(" > li > a .db_tables").parent();
 				
 				//add new icons for db_driver type
 				addTreeNodeIcons({add_table: "add_table_url"}, li_a, sub_a);

@@ -1912,6 +1912,7 @@ class UserAuthenticationHandler {
 			"/db/export_table_data",
 			"/db/import_table_data",
 			"/db/manage_records",
+			"/db/phpmyadmin",
 			"/db/set_db_settings",
 			"/deployment/",
 			"/diff/",

@@ -8,6 +8,7 @@ $layer_bean_folder_name = isset($_GET["layer_bean_folder_name"]) ? $_GET["layer_
 $bean_name = isset($_GET["bean_name"]) ? $_GET["bean_name"] : null;
 $bean_file_name = isset($_GET["bean_file_name"]) ? $_GET["bean_file_name"] : null;
 $type = isset($_GET["type"]) ? $_GET["type"] : null;
+$item_type = isset($_GET["item_type"]) ? $_GET["item_type"] : null;
 $table = isset($_GET["table"]) ? str_replace("/", "", $_GET["table"]) : null;
 
 $layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$bean_name";
@@ -33,53 +34,34 @@ if (empty($layers)) {*/
 		)
 	);
 	
-	if (empty($table)) {
-		$db_data["properties"]["item_type"] = "dbdriver";
+	//get views, procedures, functions, events or triggers
+	if (in_array($item_type, array("db_views", "db_procedures", "db_functions", "db_events", "db_triggers"))) { 
+		$DBDriver = $WorkFlowDBHandler->getBeanObject($bean_file_name, $bean_name);
 		
-		//get reserved_db_table_names
-		$reserved_db_table_names_res = $UserAuthenticationHandler->getAllReservedDBTableNames();
-		$reserved_db_table_names = array();
-		
-		if ($reserved_db_table_names_res)
-			foreach ($reserved_db_table_names_res as $item)
-				if (!empty($item["name"]))
-					$reserved_db_table_names[] = $item["name"];
-		
-		//TRYING TO GET THE DB TABLES FROM THE TASK FLOW
-		if ($type == "diagram") {
-			$WorkFlowDataAccessHandler = new WorkFlowDataAccessHandler();
-			$WorkFlowDataAccessHandler->setTasksFilePath($tasks_file_path);
-			
-			$tasks = $WorkFlowDataAccessHandler->getTasks();
-			
-			if (!empty($tasks["tasks"]))
-				foreach ($tasks["tasks"] as $table_name => $task) 
-					$db_data[ $table_name ] = array("properties" => array(
-						"bean_file_name" => $bean_file_name,
-				    		"bean_name" => $bean_name,
-						"item_type" => "table",
-						"item_class" => in_array($table_name, $reserved_db_table_names) ? "module_table" : "", //add module_table class if this table belongs to a module, so in the DB layer tree, these tables only show if the advanced settings is active.
-						"name" => $table_name,
-					));
+		switch($item_type) {
+			case "db_views": $db_objects = $DBDriver->listViews(); break;
+			case "db_procedures": $db_objects = $DBDriver->listProcedures(); break;
+			case "db_functions": $db_objects = $DBDriver->listFunctions(); break;
+			case "db_events": $db_objects = $DBDriver->listEvents(); break;
+			case "db_triggers": $db_objects = $DBDriver->listTriggers(); break;
 		}
-		else { //get db tables from db server
-			$tables = $WorkFlowDBHandler->getDBTables($bean_file_name, $bean_name);
-			
-			$t = count($tables);
+		
+		if (!empty($db_objects)) {
+			$t = count($db_objects);
 			for ($i = 0; $i < $t; $i++) {
-				$table_name = isset($tables[$i]["name"]) ? $tables[$i]["name"] : null;
+				$db_object_name = isset($db_objects[$i]["name"]) ? $db_objects[$i]["name"] : null;
 				
-				$db_data[ $table_name ] = array("properties" => array(
+				$db_data[ $db_object_name ] = array("properties" => array(
 					"bean_file_name" => $bean_file_name,
-			    		"bean_name" => $bean_name,
-					"item_type" => "table",
-					"item_class" => in_array($table_name, $reserved_db_table_names) ? "module_table" : "", //add module_table class if this table belongs to a module, so in the DB layer tree, these tables only show if the advanced settings is active.
-					"name" => $table_name,
+			 		"bean_name" => $bean_name,
+					"item_type" => substr($item_type, 0, -1), //singular type: remove 's' at the end
+					"item_class" => "",
+					"name" => $db_object_name,
 				));
 			}
 		}
 	}
-	else {
+	else if ($table) { //get table attribtues
 		$db_data["properties"]["item_type"] = "table";
 		
 		if ($type == "diagram") {//TRYING TO GET THE DB TABLES FROM THE TASK FLOW
@@ -122,6 +104,52 @@ AdminMenuHandler::getItemId("$bean_file_name/$bean_name/$table/$name");
 				
 				$db_data[$name] = array("properties" => $attr);
 			}
+	}
+	else { //get tables
+		$db_data["properties"]["item_type"] = "dbdriver";
+		
+		//get reserved_db_table_names
+		$reserved_db_table_names_res = $UserAuthenticationHandler->getAllReservedDBTableNames();
+		$reserved_db_table_names = array();
+		
+		if ($reserved_db_table_names_res)
+			foreach ($reserved_db_table_names_res as $item)
+				if (!empty($item["name"]))
+					$reserved_db_table_names[] = $item["name"];
+		
+		//TRYING TO GET THE DB TABLES FROM THE TASK FLOW
+		if ($type == "diagram") {
+			$WorkFlowDataAccessHandler = new WorkFlowDataAccessHandler();
+			$WorkFlowDataAccessHandler->setTasksFilePath($tasks_file_path);
+			
+			$tasks = $WorkFlowDataAccessHandler->getTasks();
+			
+			if (!empty($tasks["tasks"]))
+				foreach ($tasks["tasks"] as $table_name => $task) 
+					$db_data[ $table_name ] = array("properties" => array(
+						"bean_file_name" => $bean_file_name,
+			    		"bean_name" => $bean_name,
+						"item_type" => "table",
+						"item_class" => in_array($table_name, $reserved_db_table_names) ? "module_table" : "", //add module_table class if this table belongs to a module, so in the DB layer tree, these tables only show if the advanced settings is active.
+						"name" => $table_name,
+					));
+		}
+		else { //get db tables from db server
+			$tables = $WorkFlowDBHandler->getDBTables($bean_file_name, $bean_name);
+			
+			$t = count($tables);
+			for ($i = 0; $i < $t; $i++) {
+				$table_name = isset($tables[$i]["name"]) ? $tables[$i]["name"] : null;
+				
+				$db_data[ $table_name ] = array("properties" => array(
+					"bean_file_name" => $bean_file_name,
+		    		"bean_name" => $bean_name,
+					"item_type" => "table",
+					"item_class" => in_array($table_name, $reserved_db_table_names) ? "module_table" : "", //add module_table class if this table belongs to a module, so in the DB layer tree, these tables only show if the advanced settings is active.
+					"name" => $table_name,
+				));
+			}
+		}
 	}
 		
 	$error = $WorkFlowDBHandler->getError();
