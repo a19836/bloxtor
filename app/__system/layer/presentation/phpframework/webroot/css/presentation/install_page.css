@@ -19,6 +19,7 @@ body,
 }
 .top_bar header > ul > li.button > a.loading .icon {
 	cursor:inherit;
+	vertical-align:middle;
 }
 
 /* install_page */
@@ -147,6 +148,32 @@ body,
 	box-sizing:border-box;
 }
 
+/* install_page_ai */
+
+.install_page > .install_page_with_ai {
+	text-align:center;
+}
+.install_page > .install_page_with_ai > .title {
+	margin:20px 0 0;
+	color:#999;
+}
+.install_page > .install_page_with_ai .instructions {
+	margin:20px 0 0;
+	color:#999;
+	text-align:left;
+}
+.install_page > .install_page_with_ai .instructions textarea {
+	width:100%;
+	height:calc(100vh - 390px);
+	min-height:200px;
+	box-sizing:border-box;
+}
+.install_page > .install_page_with_ai .image {
+	margin:20px 0 0;
+	color:#999;
+	text-align:left;
+}
+
 /* install_store_page */
 
 .install_page > .install_store_page {
@@ -211,7 +238,7 @@ body,
 	background: #fff;
 	border: 1px solid var(--main-iframe-bg, #ccc);
 	border-radius: 5px;
-	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 5%);
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 50%);
 	position:relative;
 	font-size:10px;
 	cursor:pointer;
@@ -220,7 +247,7 @@ body,
 	display:none !important;
 }
 .install_page > .install_store_page ul li:not(.loading):not(.empty):hover {
-	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 20%);
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 70%);
 }
 .install_page > .install_store_page ul li:not(.loading):not(.empty):hover::before {
 	content:"Click to preview pre-built page";
@@ -233,9 +260,11 @@ body,
 .install_page > .install_store_page ul li .photo {
 	width:auto;
 	height:180px;
-	margin:-10px;
+	margin:-10px -20px -20px -10px;
 	display:inline-block;
 	overflow:overlay;
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
 }
 .install_page > .install_store_page ul li .photo::-webkit-scrollbar-track,
   .install_page > .install_store_page ul li .photo::-webkit-scrollbar-thumb {
@@ -269,6 +298,7 @@ body,
 	margin:10px -10px 10px;
 	padding:15px 10px 0;
 	border-top:1px solid var(--main-iframe-bg, #ddd);
+	background:inherit;
 }
 .install_page > .install_store_page ul li .photo + label {
 	margin-top:0;

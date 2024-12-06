@@ -706,7 +706,7 @@ class SQLQueryHandler {
 			}
 			
 			//PREPARING JOINS
-			$connections = self::getKeysConnections($keys, $main_table);
+			$connections = self::getKeysConnections($keys, $table_name);
 			$joins = array();
 			//print_r($connections);
 			
@@ -718,7 +718,16 @@ class SQLQueryHandler {
 				$source_name = self::getTableName($source_table);
 				$target_name = self::getTableName($target_table);
 				
-				$join_table = !empty($tables[$source_table]) && $target_table != $main_table ? $target_table : $source_table;
+				$is_source_table_parsed = false;
+				
+				foreach ($tables as $t => $status)
+					if ($source_name == self::getTableName($t)) {
+						$is_source_table_parsed = true;
+						break;
+					}
+				
+				$join_table = $is_source_table_parsed && $target_name != $table_name ? $target_table : $source_table;
+				//echo "source_table:$source_table\nsource_name:$source_name\ntarget_table:$target_table\nmain_table:$main_table\ntable_name:$table_name\njoin_table:$join_table\n";
 				
 				$total = !empty($connection["source_columns"]) ? count($connection["source_columns"]) : 0;
 				if ($total) {
@@ -843,6 +852,7 @@ class SQLQueryHandler {
 					}
 				
 					$joins[$join_table][$join_type] = $join_conditions;
+					//echo "join_table:$join_table\n";print_r($joins);
 				}
 			
 				$tables[$join_table] = true;
@@ -1078,7 +1088,7 @@ class SQLQueryHandler {
 			$tables[$main_table] = true;
 			
 			//PREPARING JOINS
-			$connections = self::getKeysConnections($keys, $main_table);
+			$connections = self::getKeysConnections($keys, $table_name);
 			$joins = array();
 			
 			foreach ($connections as $connection) {
@@ -1089,7 +1099,15 @@ class SQLQueryHandler {
 				$source_name = self::getTableName($source_table);
 				$target_name = self::getTableName($target_table);
 				
-				$join_table = !empty($tables[$source_table]) ? $target_table : $source_table;
+				$is_source_table_parsed = false;
+				
+				foreach ($tables as $t => $status)
+					if ($source_name == self::getTableName($t)) {
+						$is_source_table_parsed = true;
+						break;
+					}
+				
+				$join_table = $is_source_table_parsed ? $target_table : $source_table;
 				
 				$total = !empty($connection["source_columns"]) ? count($connection["source_columns"]) : 0;
 				if ($total) {

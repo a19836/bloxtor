@@ -23,7 +23,11 @@ class PHPParserPrettyPrinter extends PHPParserPrettyPrinterStandard {
      *
      * @return string Pretty printed statements
      */
-	protected function printStmts(array $nodes, $indent = true) {
+	protected function printStmts(array $nodes, $indent = true, $with_comments = false) {
+		if ($with_comments)
+			$stmts = $this->getStmtsWithComments($nodes);
+		//print_r($stmts);die();
+		
 		$result = parent::pStmts($nodes, false);
 		
 		if ($indent) {
@@ -34,6 +38,10 @@ class PHPParserPrettyPrinter extends PHPParserPrettyPrinterStandard {
 			
 			$result = preg_replace('~\n(?!$|' . $token_to_replace . ')~', "\n\t", $result);
 		}
+		
+		//revert comments attributes to empty array - note that objects are passed by referenced
+		if ($with_comments)
+			$this->getStmtsWithoutComments($stmts);
 		
 		return $result;
 	}
@@ -60,6 +68,24 @@ class PHPParserPrettyPrinter extends PHPParserPrettyPrinterStandard {
 		return method_exists($this, 'pIdentifier') ? parent::pIdentifier($node) : null;
 	}
 	
+	// Comments
+
+	public function printComments(array $comments) {
+		if (empty($this->nl))
+			parent::resetState(); //init nl var, otherwise we get a php error
+		
+		return parent::pComments($comments);
+	}
+	
+	// nl
+	
+	public function getNL() {
+		if (empty($this->nl))
+			parent::resetState(); //init nl var, otherwise we get a php error
+		
+		return $this->nl;
+	}
+	
 	// Stmts
 	
 	/**
@@ -74,7 +100,12 @@ class PHPParserPrettyPrinter extends PHPParserPrettyPrinterStandard {
 			$stmts = $this->getStmtsWithComments($stmts);
 		//print_r($stmts);die();
 		
-		return parent::prettyPrint($stmts);
+		$str = parent::prettyPrint($stmts);
+		
+		//revert comments attributes to empty array - note that objects are passed by referenced
+		$this->getStmtsWithoutComments($stmts);
+		
+		return $str;
 	}
 	
 	/**
@@ -84,8 +115,17 @@ class PHPParserPrettyPrinter extends PHPParserPrettyPrinterStandard {
      *
      * @return string Pretty printed node
      */
-	public function nodeExprPrettyPrint(PhpParser\Node\Expr $node) {
-		return parent::prettyPrintExpr($node);
+	public function nodeExprPrettyPrint(PhpParser\Node\Expr $node, $with_comments = false) {
+		if ($with_comments)
+			$node = $this->getStmtWithComments($node);
+		//print_r($node);die();
+		
+		$str = parent::prettyPrintExpr($node);
+		
+		//revert comments attributes to empty array - note that objects are passed by referenced
+		$this->getStmtWithoutComments($node);
+		
+		return $str;
 	}
 	
 	protected function getStmtsWithComments(array $nodes) {
@@ -110,11 +150,47 @@ class PHPParserPrettyPrinter extends PHPParserPrettyPrinterStandard {
 		}
 		
 		//add comments again that were removed from the PHPParserTraverserNodeVisitor::leaveNode method
-		$comments = $node->getAttribute("my_comments");
+		if ($node->hasAttribute("my_comments")) {
+			$comments = $node->getAttribute("my_comments");
+			
+			if ($comments) {
+				$node->setAttribute("comments", $comments);
+				$node->setAttribute("my_comments", null);
+			}
+		}
 		
-		if ($comments) {
-			$node->setAttribute("comments", $comments);
-			$node->setAttribute("my_comments", null);
+		return $node;
+	}
+	
+	protected function getStmtsWithoutComments(array $nodes) {
+		foreach ($nodes as $i => &$node) {
+			if (is_array($node))
+				$node = $this->getStmtsWithoutComments($node);
+			else if ($node instanceof PhpParser\Node)
+				$node = $this->getStmtWithoutComments($node);
+		}
+		
+		return $nodes;
+	}
+	
+	protected function getStmtWithoutComments(PhpParser\Node $node) {
+		foreach ($node->getSubNodeNames() as $name) {
+			$subNode =& $node->$name;
+
+			if (is_array($subNode))
+				$subNode = $this->getStmtsWithoutComments($subNode);
+			else if ($subNode instanceof PhpParser\Node)
+				$subNode = $this->getStmtWithoutComments($subNode);
+		}
+		
+		//add comments again that were removed from the PHPParserTraverserNodeVisitor::leaveNode method
+		if ($node->hasAttribute("comments")) {
+			$comments = $node->getAttribute("comments");
+			
+			if ($comments) {
+				$node->setAttribute("my_comments", $comments);
+				$node->setAttribute("comments", array());
+			}
 		}
 		
 		return $node;

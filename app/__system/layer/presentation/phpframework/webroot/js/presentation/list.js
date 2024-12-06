@@ -274,6 +274,7 @@ function prepareLayerFileNodes2(ul, data) {
 						icon_classes = {
 							install_template: "install_template_url",
 							convert_template: "convert_template_url",
+							generate_template_with_ai: "generate_template_with_ai_url",
 							paste: "paste_url"
 						};
 					}
@@ -352,6 +353,7 @@ function prepareLayerFileNodes2(ul, data) {
 							menu_items_classes = {
 								install_template: "install_template_url",
 								convert_template: "convert_template_url",
+								generate_template_with_ai: "generate_template_with_ai_url",
 								"-": null,
 								paste: "paste_url"
 							};

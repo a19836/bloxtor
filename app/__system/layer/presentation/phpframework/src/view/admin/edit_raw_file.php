@@ -5,6 +5,8 @@ $file_path = isset($file_path) ? $file_path : null;
 $obj = isset($obj) ? $obj : null;
 $editor_code_type = isset($editor_code_type) ? $editor_code_type : null;
 
+$manage_ai_action_url = $openai_encryption_key ? $project_url_prefix . "phpframework/ai/manage_ai_action" : null;
+
 $head = '
 <!-- Add CodeHighLight CSS and JS -->
 <link rel="stylesheet" href="' . $project_common_url_prefix . 'vendor/codehighlight/styles/default.css" type="text/css" charset="utf-8" />
@@ -33,7 +35,7 @@ $head = '
 
 <!-- Add Layout CSS and JS file -->
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/layout.css" type="text/css" charset="utf-8" />
-<script src="' . $project_url_prefix . 'js/layout.js"></script>
+<script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/layout.js"></script>
 
 <!-- Add local CSS and JS -->
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/admin/edit_raw_file.css" type="text/css" charset="utf-8" />
@@ -44,6 +46,7 @@ var scroll_top = ' . (isset($scroll_top) && is_numeric($scroll_top) ? $scroll_to
 var editor_code_type = "' . (isset($editor_code_type) ? $editor_code_type : "") . '";
 var code_id = "' . md5(isset($code) ? $code : null) . '";
 var readonly = ' . (!empty($readonly) ? "true" : "false") . ';
+var manage_ai_action_url = "' . $manage_ai_action_url . '";
 </script>';
 
 $main_content = '
@@ -65,7 +68,12 @@ if ($editor_code_type) {
 	if ($editor_code_type == "php")
 		$main_content .= '		<li class="pretty_print" title="Pretty Print Code"><a onClick="prettyPrintCode()"><i class="icon pretty_print"></i> Pretty Print Code</a></li>';
 	
-	$main_content .= '			<li class="set_word_wrap" title="Toggle Word Wrap"><a onClick="setWordWrap(this)" wrap="0"><i class="icon word_wrap"></i> Word Wrap</a></li>
+	$main_content .= '<li class="set_word_wrap" title="Toggle Word Wrap"><a onClick="setWordWrap(this)" wrap="0"><i class="icon word_wrap"></i> Word Wrap</a></li>
+							<li class="separator"></li>
+							<li class="ai" title="Comment code automatically"><a onClick="commentCodeAutomatically(this)"><i class="icon ai"></i> Comment Code Automatically</a></li>
+							<li class="ai" title="Open Code Chat Bot"><a onClick="openCodeChatBot(this)"><i class="icon ai"></i> Open Code Chat Bot</a></li>';
+	
+	$main_content .= '
 							<li class="separator"></li>
 							<li class="full_screen" title="Maximize/Minimize Editor Screen"><a onClick="toggleFullScreen(this)"><i class="icon full_screen"></i> Maximize Editor Screen</a></li>
 							<li class="separator"></li>

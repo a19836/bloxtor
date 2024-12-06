@@ -121,6 +121,9 @@ class CMSDeploymentSecurityHandler {
 		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "mssql_db_username", '"your db user"', $error_messages);
 		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "mssql_db_password", '""', $error_messages);
 		self::replaceVarInFile("$deployment_folder_path/app/__system/config/global_variables.php", "rest_user_pwd", '""', $error_messages);
+		
+		//remove our openai key
+		self::replaceVarInFile("$deployment_folder_path/app/__system/layer/presentation/phpframework/src/config/authentication.php", "openai_encryption_key", '""', $error_messages);
 	}
 	
 	//Do not use this method with obfuscated files with no spaces and no end-lines, bc it won't work and it will mess the php code.

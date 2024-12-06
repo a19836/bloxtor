@@ -9,10 +9,11 @@
 	background-color:transparent !important;
 }
 
-.code_task_html textarea, .code_task_html .ace_editor {
+.code_task_html .code textarea, 
+  .code_task_html .code .ace_editor {
 	width:100%;
 	height:200px;
-	border:2px inset #CCC;
+	border:1px inset #CCC;
 	box-sizing:border-box;
 }
 

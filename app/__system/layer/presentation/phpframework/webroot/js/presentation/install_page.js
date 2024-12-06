@@ -6,7 +6,11 @@ $(function () {
 	var install_page = $(".install_page");
 	install_page.tabs();
 	
-	if (is_remote_url) {
+	if (is_ai) {
+		var tab_index = install_page.find(" > ul > li > a[href=#ai]").parent().index();
+		install_page.tabs("option", "active", tab_index);
+	}
+	else if (is_remote_url) {
 		var tab_index = install_page.find(" > ul > li > a[href=#remote]").parent().index();
 		install_page.tabs("option", "active", tab_index);
 		
@@ -190,14 +194,18 @@ function installPage(elm) {
 	var install_page = $(".install_page");
 	var active_tab = install_page.tabs("option", "active");
 	
-	var oForm = active_tab == 2 ? install_page.find(" > .install_page_url form") : install_page.find(" > .file_upload form");
+	var oForm = active_tab == 2 ? install_page.find(" > .install_page_url form") : (active_tab == 3 ? install_page.find(" > .install_page_with_ai form") : install_page.find(" > .file_upload form"));
 	
 	if (oForm[0]) {
 		var zip_url = oForm.find(".upload_url input");
 		var zip_file = oForm.find("input.upload_file");
 		var remote_url = oForm.find("input.remote_url");
+		var instructions = oForm.find(".instructions textarea");
+		var image = oForm.find(".image input");
 		var status = active_tab == 2 ? remote_url.val() : (
-			(zip_url[0] && zip_url.val().replace(/\s+/g, "").length != "") || (zip_file[0] && zip_file[0].files.length > 0)
+			active_tab == 3 ? instructions.val() || image.val() : (
+				(zip_url[0] && zip_url.val().replace(/\s+/g, "").length != "") || (zip_file[0] && zip_file[0].files.length > 0)
+			)
 		);
 		
 		if (status) {
@@ -214,7 +222,9 @@ function installPage(elm) {
 			}, 2000);*/
 		}
 		else {
-			if (active_tab == 2)
+			if (active_tab == 3)
+				StatusMessageHandler.showError("Please write a page description so AI could generate it automatically!");
+			else if (active_tab == 2)
 				StatusMessageHandler.showError("Please write an url for the page you wish to install!");
 			else if (active_tab == 0)
 				StatusMessageHandler.showError("Please click in one of the available pre-built pages to install!");

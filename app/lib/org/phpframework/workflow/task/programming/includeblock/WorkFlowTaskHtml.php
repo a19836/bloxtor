@@ -15,7 +15,7 @@
 			<option>variable</option>
 			<option value="">code</option>
 			<option>options</option>
-		<select>
+		</select>
 	</div>
 	<div class="block">
 		<label>Block: </label>
@@ -24,13 +24,15 @@
 			<option>string</option>
 			<option>variable</option>
 			<option value="">code</option>
-		<select>
+		</select>
 		<span class="icon search" onClick="IncludeBlockTaskPropertyObj.onChooseFile(this)">Search</span>
 	</div>
 	<div class="once">
 		<label>Include Once: </label>
 		<input type="checkbox" class="task_property_field" name="once" value="1" />
 	</div>
+	
+	<?php include dirname(dirname($file_path)) . "/common/CommentsHtml.php"; ?>
 	
 	<div class="task_property_exit" exit_id="default_exit" exit_color="#426efa"></div>
 </div>

@@ -990,19 +990,22 @@
 
 /* POPUPS */
 /* POPUP - choose_table_or_attribute */
-.choose_table_or_attribute {
+.choose_table_or_attribute,
+  .generate_sql {
 	width:340px;
 	height:auto !important; /* This is very important bc we toggle from javascript the field .attribute and, when we call this popup the first time, if this field is hidden, the MyFancyPopup will set the a height and then when we show it from javascript that height will not be changedm which means the popup will appear weird and short. So we need to set the height as automatically. */
 	font-size:10pt;
 	border:1px solid #999;
 }
-.choose_table_or_attribute .contents div {
+.choose_table_or_attribute .contents div,
+  .generate_sql .contents div {
 	width:100%;
 	height:100%;
 	float:none;
 	clear:left;
 }
-.choose_table_or_attribute .contents div label {
+.choose_table_or_attribute .contents div label,
+  .generate_sql .contents div label {
 	display:inline-block;
 	width:100px;
 }
@@ -1011,14 +1014,19 @@
    .choose_table_or_attribute .contents div.type, 
    .choose_table_or_attribute .contents div.db_table, 
    .choose_table_or_attribute .contents div.db_attribute, 
-   .choose_table_or_attribute .contents div.map_option {
+   .choose_table_or_attribute .contents div.map_option,
+   .generate_sql .contents div.db_broker, 
+   .generate_sql .contents div.db_driver, 
+   .generate_sql .contents div.type, 
+   .generate_sql .contents div.db_table {
 	width:340px;
 	text-align:left;
 	margin:3px auto;
 	float:none;
 	clear:left;
 }
-.choose_table_or_attribute .contents div.db_broker.single_broker {
+.choose_table_or_attribute .contents div.db_broker.single_broker,
+  .generate_sql .contents div.db_broker.single_broker {
 	display:none;
 }
 .choose_table_or_attribute .db_broker label, 
@@ -1026,7 +1034,11 @@
    .choose_table_or_attribute .type label, 
    .choose_table_or_attribute .db_table label, 
    .choose_table_or_attribute .db_attribute label, 
-   .choose_table_or_attribute .map_option label {
+   .choose_table_or_attribute .map_option label,
+   .generate_sql .db_broker label, 
+   .generate_sql .db_driver label, 
+   .generate_sql .type label, 
+   .generate_sql .db_table label {
 	width:100px;
 	margin-right:10px;
 	display:inline-block;
@@ -1036,12 +1048,17 @@
    .choose_table_or_attribute .contents .db_driver select,
    .choose_table_or_attribute .contents .type select,
    .choose_table_or_attribute .contents .db_table select,
-   .choose_table_or_attribute .contents .db_attribute select {
+   .choose_table_or_attribute .contents .db_attribute select,
+   .generate_sql .contents .db_broker select,
+   .generate_sql .contents .db_driver select,
+   .generate_sql .contents .type select,
+   .generate_sql .contents .db_table select {
 	width:200px;
 	font-size:inherit;
 }
 .choose_table_or_attribute .contents .db_table .icon,
-   .choose_table_or_attribute .contents .db_attribute .icon {
+   .choose_table_or_attribute .contents .db_attribute .icon,
+   .generate_sql .contents .db_table .icon {
 	margin-left:5px;
 }
 
@@ -1053,20 +1070,46 @@
 	font-size:inherit;
 }
 
+/* POPUPS - generate_sql */
+.generate_sql {
+	width:calc(100vw - 40vw);
+}
+.generate_sql .contents div {
+	width:340px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.generate_sql .instructions {
+	margin:20px 0 10px;
+}
+.generate_sql .instructions label {
+	width:100%;
+	display:block;
+}
+.generate_sql .instructions textarea {
+	width:100%;
+	height:100px;
+	display:block;
+	font-size:inherit;
+}
+
 /* POPUPS - with_title */
 .myfancypopup.choose_table_or_attribute.with_title,
+  .myfancypopup.generate_sql.with_title,
   .myfancypopup.choose_include_file.with_title,
   .myfancypopup.choose_dao_object.with_title,
   .myfancypopup.choose_map_id.with_title {
 	padding:15px;
 }
 .myfancypopup.choose_table_or_attribute.with_title > .title,
+  .myfancypopup.generate_sql.with_title > .title,
   .myfancypopup.choose_include_file.with_title > .title,
   .myfancypopup.choose_dao_object.with_title > .title,
   .myfancypopup.choose_map_id.with_title > .title {
 	margin:-15px -15px 15px;
 }
 .myfancypopup.choose_table_or_attribute.with_title > .button,
+  .myfancypopup.generate_sql.with_title > .button,
   .myfancypopup.choose_include_file.with_title > .button,
   .myfancypopup.choose_dao_object.with_title > .button,
   .myfancypopup.choose_map_id.with_title > .button {

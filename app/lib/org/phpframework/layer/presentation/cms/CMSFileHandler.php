@@ -1316,7 +1316,7 @@ class CMSFileHandler {
 			//prepare variables_stmts - Do not set the $variables_stmts outside this loop because we only want the variables inited before this current $stmts[$i], otherwise when we call the self::getVariableFromStmts method, we can get variables that were inited after the $class_obj->$method_names gets called, And that is not what we want. This is very important bc in case we have multiple variables set, one for each call "$class_obj->$method_names", then we only get the latest variable set. And that is not what we want, this is: if we have the code: '$x=0;foo($x);$x=1;foo($x);' we want the $variables_stmts to reference first the $x=0 and then the $x=1; If we move this outside of this loop, we will always get $x=1; for both foo methods, which is incorrect.
 			if ($stmt_type == "expr_assign") {
 				$stmt_var = isset($stmt->var) ? $stmt->var : null;
-				$var_code = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_var);
+				$var_code = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_var, false);
 				$var_code_type = self::getArgumentType($var_code);
 				
 				if ($var_code_type == "variable")
@@ -1344,7 +1344,7 @@ class CMSFileHandler {
 				$stmt_var_type = strtolower($stmt_var->getType());
 				
 				if ($stmt_var_type == "expr_methodcall" || $stmt_var_type == "expr_staticcall" || $stmt_var_type == "expr_funccall") {
-					//echo "getMethodParamsFromStmts:".$PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_var)."\n";
+					//echo "getMethodParamsFromStmts:".$PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_var, false)."\n";
 					
 					$items = self::getMethodParamsFromStmts($PHPParserPrettyPrinter, array($stmt_var), $method_names, $class_obj, $search_limit, $depth, $variables_stmts);
 					$methods = array_merge($methods, $items);
@@ -1363,7 +1363,7 @@ class CMSFileHandler {
 					//Getting obj_name
 					$obj = null;
 					if (!empty($stmt->var))
-						$obj = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var);
+						$obj = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var, false);
 					else
 						$obj = self::printCodeNodeName($PHPParserPrettyPrinter, isset($stmt->class) ? $stmt->class : null);
 					
@@ -1427,7 +1427,7 @@ class CMSFileHandler {
 					}
 					
 					$method = array(
-						"match" => $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt),
+						"match" => $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt, false),
 						"method" => $func_name,
 						"params" => isset($params) ? $params : null,
 						"line" => $stmt->getAttribute("startLine"),
@@ -1568,8 +1568,21 @@ class CMSFileHandler {
 	}
 	
 	private static function convertStmtExpressionToSimpleStmt($stmt) {
-		if ($stmt && is_object($stmt) && method_exists($stmt, "getType") && strtolower($stmt->getType()) == "stmt_expression" && isset($stmt->expr))
+		if ($stmt && is_object($stmt) && method_exists($stmt, "getType") && strtolower($stmt->getType()) == "stmt_expression" && isset($stmt->expr)) {
+			if ($stmt->hasAttribute("comments")) {
+				$comments = $stmt->expr->getAttribute("comments");
+				
+				if (!$comments)
+					$comments = array();
+				
+				if ($stmt->getAttribute("comments"))
+					$comments = array_merge($stmt->getAttribute("comments"), $comments);
+				
+				$stmt->expr->setAttribute("comments", $comments);
+			}
+			
 			$stmt = $stmt->expr;
+		}
 		
 		return $stmt;
 	}
@@ -1601,7 +1614,7 @@ class CMSFileHandler {
 			
 			if ($stmt_type == "expr_assign") {
 				$stmt_var = isset($stmt->var) ? $stmt->var : null;
-				$var_code = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_var);
+				$var_code = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_var, false);
 				$var_code_type = self::getArgumentType($var_code);
 				
 				if ($var_code_type == "variable")
@@ -1633,7 +1646,7 @@ class CMSFileHandler {
 					//Getting obj_name
 					$obj = null;
 					if (!empty($stmt->var))
-						$obj = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var);
+						$obj = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var, false);
 					else
 						$obj = self::printCodeNodeName($PHPParserPrettyPrinter, isset($stmt->class) ? $stmt->class : null);
 					
@@ -1746,7 +1759,7 @@ class CMSFileHandler {
 		$stmt_expr = self::convertStmtExpressionToSimpleStmt($stmt_expr);
 		
 		//$expr_type = strtolower($stmt_expr->getType());
-		$value = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_expr);
+		$value = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt_expr, false);
 		$value_type = self::getArgumentType($value);
 		//echo "!<pre>value $value_type:";print_r($value);echo "</pre>!";
 		$value = self::prepareArgument($value, $value_type);
@@ -1801,7 +1814,7 @@ class CMSFileHandler {
 				$stmt = $stmts[$i];
 				
 				if (strtolower($stmt->getType()) == "expr_assign" && !empty($stmt->var)) {
-					$v = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var);
+					$v = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var, false);
 					
 					if ($v == '$' . $var || $v == '@$' . $var) {
 						if (!empty($stmt->expr->items)) {
@@ -1810,7 +1823,7 @@ class CMSFileHandler {
 						}
 						else {
 							$expr = isset($stmt->expr) ? $stmt->expr : null;
-							$var = $PHPParserPrettyPrinter->nodeExprPrettyPrint($expr);
+							$var = $PHPParserPrettyPrinter->nodeExprPrettyPrint($expr, false);
 							$var_type = self::getArgumentType($var);
 							$var = self::prepareArgument($var, $var_type);
 						}
@@ -1833,7 +1846,7 @@ class CMSFileHandler {
 				$stmt = $stmts[$i];
 				
 				if (strtolower($stmt->getType()) == "expr_assign" && !empty($stmt->var)) {
-					$v = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var);
+					$v = $PHPParserPrettyPrinter->nodeExprPrettyPrint($stmt->var, false);
 				
 					if ($v == '$' . $var || $v == '@$' . $var) {
 						$value = isset($stmt->expr) ? $stmt->expr : null;
@@ -1922,7 +1935,7 @@ class CMSFileHandler {
 			$value_type = is_object($value) ? strtolower($value->getType()) : null;
 			
 			if ($key_type) {
-				$key = $PHPParserPrettyPrinter->nodeExprPrettyPrint($key);
+				$key = $PHPParserPrettyPrinter->nodeExprPrettyPrint($key, false);
 				$key = self::getStmtValueAccordingWithType($key, $key_type);
 				
 				$key_type = strtolower($item->key->getType());
@@ -1940,7 +1953,7 @@ class CMSFileHandler {
 				if ($value_type == "expr_array")
 					$value = self::getMethodParamsArrayItems($PHPParserPrettyPrinter, isset($value->items) ? $value->items : null);
 				else {
-					$value = $PHPParserPrettyPrinter->nodeExprPrettyPrint($value);
+					$value = $PHPParserPrettyPrinter->nodeExprPrettyPrint($value, false);
 					//echo "<pre>value($value_type):$value<pre><br>";
 					$value = self::getStmtValueAccordingWithType($value, $value_type);
 					//echo "<pre>value($value_type):$value<pre><br>";
@@ -1994,7 +2007,7 @@ class CMSFileHandler {
 			$value_type = is_object($value) ? strtolower($value->getType()) : null;
 			
 			if ($key_type) {
-				$key = $PHPParserPrettyPrinter->nodeExprPrettyPrint($key);
+				$key = $PHPParserPrettyPrinter->nodeExprPrettyPrint($key, false);
 				$key = self::getStmtValueAccordingWithType($key, $key_type);
 				
 				$key_type = strtolower($item->key->getType());

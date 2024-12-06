@@ -57,9 +57,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				$if = isset($expr->if) ? $expr->if : null;
 				$else = isset($expr->else) ? $expr->else : null;
 				
-				$cond_code = $WorkFlowTaskCodeParser->printCodeExpr($cond);
-				$if_code = $WorkFlowTaskCodeParser->printCodeExpr($if);
-				$else_code = $WorkFlowTaskCodeParser->printCodeExpr($else);
+				$cond_code = $WorkFlowTaskCodeParser->printCodeExpr($cond, false);
+				$if_code = $WorkFlowTaskCodeParser->printCodeExpr($if, false);
+				$else_code = $WorkFlowTaskCodeParser->printCodeExpr($else, false);
 				
 				$var_name = self::getPropertiesResultVariableCode($props);
 				
@@ -80,7 +80,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				return null;
 			}
 			else {
-				$code = $WorkFlowTaskCodeParser->printCodeExpr($expr);
+				$code = $WorkFlowTaskCodeParser->printCodeExpr($expr, false);
 				$code = $WorkFlowTaskCodeParser->getStmtValueAccordingWithType($code, $expr_type);
 				
 				$props["value"] = $code;

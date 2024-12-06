@@ -12,7 +12,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$expr = isset($stmt->expr) ? $stmt->expr : null;
 			$expr_type = $expr ? strtolower($expr->getType()) : "";
 			
-			$file_path = $WorkFlowTaskCodeParser->printCodeExpr($expr);
+			$file_path = $WorkFlowTaskCodeParser->printCodeExpr($expr, false);
 			$file_path = $WorkFlowTaskCodeParser->getStmtValueAccordingWithType($file_path, $expr_type);
 			
 			if ($file_path) {

@@ -9,6 +9,8 @@
 		<input type="text" class="task_property_field" name="var_name" />
 	</div>
 	
+	<?php include dirname(dirname($file_path)) . "/common/CommentsHtml.php"; ?>
+	
 	<div class="task_property_exit" exit_id="try" exit_color="#51D87A" exit_label="No exception"></div>
 	<div class="task_property_exit" exit_id="catch" exit_color="#FF4D4D" exit_label="Exception to catch"></div>
 </div>

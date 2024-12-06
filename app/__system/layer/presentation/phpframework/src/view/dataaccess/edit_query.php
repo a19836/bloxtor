@@ -35,6 +35,7 @@ $main_content = "";
 
 if ($is_obj_valid) {
 	$get_layer_sub_files_url = $project_url_prefix . "admin/get_sub_files?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";
+	$manage_ai_action_url = $openai_encryption_key ? $project_url_prefix . "phpframework/ai/manage_ai_action?bean_name=$bean_name&bean_file_name=$bean_file_name" : null;
 
 	$WorkFlowUIHandler = new WorkFlowUIHandler($WorkFlowTaskHandler, $project_url_prefix, $project_common_url_prefix, $external_libs_url_prefix, $user_global_variables_file_path, $webroot_cache_folder_path, $webroot_cache_folder_url);
 	$WorkFlowQueryHandler = new WorkFlowQueryHandler($WorkFlowUIHandler, $project_url_prefix, $project_common_url_prefix, $db_drivers, $selected_db_broker, $selected_db_driver, $selected_type, $selected_table, $selected_tables_name, $selected_table_attrs, $map_php_types, $map_db_types);
@@ -75,6 +76,7 @@ if ($is_obj_valid) {
 	$head .= $WorkFlowQueryHandler->getHeader();
 	$head .= $WorkFlowQueryHandler->getDataAccessJavascript($bean_name, $bean_file_name, $path, $item_type, $hbn_obj_id, $get_layer_sub_files_url);
 	$head .= '<script>
+	var manage_ai_action_url = \'' . $manage_ai_action_url . '\';
 	var save_data_access_object_url = \'' . $project_url_prefix . 'phpframework/dataaccess/save_query?bean_name=' . $bean_name . '&bean_file_name=' . $bean_file_name . '&path=' . $path . '&item_type=' . $item_type . '&obj=' . $hbn_obj_id . '&relationship_type=' . $relationship_type . '\';
 	var remove_data_access_object_url = \'' . $project_url_prefix . 'phpframework/dataaccess/remove_query?bean_name=' . $bean_name . '&bean_file_name=' . $bean_file_name . '&path=' . $path . '&item_type=' . $item_type . '&obj=' . $hbn_obj_id . '&relationship_type=' . $relationship_type . '&query_id=#obj_id#&query_type=' . $query_type . '\';
 	var old_obj_id = \'' . $query_id . '\';
@@ -110,6 +112,10 @@ if ($is_obj_valid) {
 							<li class="separator select_query"></li>
 							<li class="create_sql_from_ui select_query" title="Generate SQL From Diagram"><a onClick="autoUpdateSqlFromUI(' . $rand . ')"><i class="icon create_sql_from_ui"></i> Generate SQL From Diagram</a></li>
 							<li class="create_ui_from_sql select_query" title="Generate Diagram From Settings"><a onClick="autoUpdateUIFromSql(' . $rand . ')"><i class="icon create_ui_from_sql"></i> Generate Diagram From Settings</a></li>
+							<li class="separator"></li>
+							<li class="ai" title="Generate SQL through AI"><a onClick="openGenerateSQLPopup(this)"><i class="icon ai"></i> Generate SQL through AI</a></li>
+							<li class="ai" title="Explain SQL through AI"><a onClick="explainSQL(this)"><i class="icon ai"></i> Explain SQL through AI</a></li>
+							<li class="ai" title="Open Code Chat Bot"><a onClick="openCodeChatBot(this)"><i class="icon ai"></i> Open Code Chat Bot</a></li>
 							<li class="separator"></li>
 							<li class="full_screen" title="Maximize/Minimize Editor Screen"><a onClick="toggleFullScreen(this)"><i class="icon full_screen"></i> Maximize Editor Screen</a></li>
 							<li class="separator"></li>

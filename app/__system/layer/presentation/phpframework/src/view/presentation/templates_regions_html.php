@@ -14,6 +14,7 @@ $head = '
 
 <!-- Add Layout CSS -->
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/layout.css" type="text/css" charset="utf-8" />
+<script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/layout.js"></script>
 
 <!-- Add local Responsive Iframe CSS and JS -->
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/presentation/responsive_iframe.css" type="text/css" charset="utf-8" />

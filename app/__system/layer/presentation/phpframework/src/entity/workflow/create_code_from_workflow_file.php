@@ -19,7 +19,7 @@ $task_file_path = WorkFlowTasksFileHandler::getTaskFilePathByPath($workflow_path
 
 if ($task_file_path && file_exists($task_file_path)) {
 	$loops = $WorkFlowTaskHandler->getLoopsTasksFromFile($task_file_path);
-	$code = $WorkFlowTaskHandler->parseFile($task_file_path, $loops, array("with_comments" => false));
+	$code = $WorkFlowTaskHandler->parseFile($task_file_path, $loops);
 	
 	if (isset($code)) {
 		$obj = array("code" => $code);

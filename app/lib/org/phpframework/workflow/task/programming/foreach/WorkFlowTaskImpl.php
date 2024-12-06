@@ -16,9 +16,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$valueVar = isset($stmt->valueVar) ? $stmt->valueVar : null;
 			$sub_stmts = isset($stmt->stmts) ? $stmt->stmts : null;
 			
-			$obj = $WorkFlowTaskCodeParser->printCodeExpr($expr);
-			$key = $keyVar ? $WorkFlowTaskCodeParser->printCodeExpr($keyVar) : "";
-			$value = $WorkFlowTaskCodeParser->printCodeExpr($valueVar);
+			$obj = $WorkFlowTaskCodeParser->printCodeExpr($expr, false);
+			$key = $keyVar ? $WorkFlowTaskCodeParser->printCodeExpr($keyVar, false) : "";
+			$value = $WorkFlowTaskCodeParser->printCodeExpr($valueVar, false);
 			
 			$sub_inner_tasks = self::createTasksPropertiesFromCodeStmts($sub_stmts, $WorkFlowTaskCodeParser);
 			

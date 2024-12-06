@@ -326,7 +326,7 @@ body.in_popup .view_store_module_popup {
 	border-radius: 5px;
 	font-size: 10px;
 	text-align:center;
-	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 5%);
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 50%);
 }
 .install_store_module ul li:not(.loading):not(.empty) {
 	min-width:180px;
@@ -335,14 +335,14 @@ body.in_popup .view_store_module_popup {
 	position:relative;
 }
 .install_store_module ul li:not(.loading):not(.empty):hover {
-	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 20%);
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 70%) !important;
 }
 .install_store_module ul li.hidden {
 	display:none !important;
 }
 .install_store_module ul li.selected:not(.loading):not(.empty) {
 	border-color:var(--link-color);
-	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 70%);
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 90%);
 }
 .install_store_module ul li.module.with_view_module {
 	cursor:pointer;

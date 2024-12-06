@@ -22,6 +22,8 @@ if
 switch
 */
 $code = '<?php
+//start code
+
 /*class C {
 	private $x;
 	
@@ -39,26 +41,39 @@ $y = $C->getX();
 //if (($x !== 1)) {
 //if ($y == "1" || $y == true && foo()) {
 //if (($y == "1" || $x == true) && $x = 12) {
+//check conditions
 if ($y == "1" && $y == "12" || $y == "0") {
-	$str = 1 * 100;
+	$str = 1 * 100; //set str var
 }
+//check other conditions
 elseif (strtolower($y) == "foo") {
-	$str = "foo";
+	$str = "foo"; //set str var with foo
 }
 else {
-	$str = "HELLO";
+	$str = "HELLO";//set str hello
 }
 
-echo "str", \':\' . "$str\n";
+echo "str", \':\' . "$str\n"; //print str var
 
+//switch str var
 switch ($x) {
-	case "1": $y = 1; break;
+	//set case 1
+	case "1": 
+		$y = 1; //set $y to 1
+		break; //break
+	
+	//set case 2 and 3
 	case "2":
-	case "3": $y = 3; break;
-	default: $y = 0;
+	case "3": $y = 3; break; //set $y to 3
+	
+	//set default
+	default: $y = 0; //set $y to 0
 }
 
+//set $x to 0
 $x = 0;
+
+//end
 ?>';
 
 /*$code = '<?php

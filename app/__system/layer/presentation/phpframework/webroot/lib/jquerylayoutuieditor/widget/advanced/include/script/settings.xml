@@ -471,9 +471,12 @@
 						editor.setOptions({
 							enableBasicAutocompletion: true,
 							enableSnippets: true,
-							enableLiveAutocompletion: false,
+							enableLiveAutocompletion: true,
 						});
 						editor.setOption("wrap", true);
+						
+						if (typeof ui_creator.options.on_template_source_editor_ready_func == "function")
+							ui_creator.options.on_template_source_editor_ready_func(editor);
 						
 						var save = function() {
 							me.saveSettingsField(parent.parent().find(".settings-property.content").children()[0], widget, true);

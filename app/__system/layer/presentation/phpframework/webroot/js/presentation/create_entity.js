@@ -186,9 +186,13 @@ function initInstallPages() {
 			var active_tab = install_page.tabs("option", "active");
 			var exists_selection = false;
 			
-			if (active_tab == 0)
+			if (active_tab == 3)
+				exists_selection = install_page.find(".install_page_with_ai > ul > li.selected").length > 0;
+			else if (active_tab == 2)
+				exists_selection = install_page.find(".install_page_url > ul > li.selected").length > 0;
+			else if (active_tab == 0)
 				exists_selection = install_page.find(".install_store_page > ul > li.selected").length > 0;
-			else 
+			else
 				exists_selection = install_page.find(".file_upload form input.upload_file")[0].files.length > 0;
 			
 			if (exists_selection)
@@ -198,10 +202,10 @@ function initInstallPages() {
 		}, 300);
 	});
 	
-	//init install_page_url
+	//init install_page_url and install_page_with_ai
 	var input = install_page.find(".install_page_url form input.remote_url");
 	var check_value_func = function() {
-		var value = input.val();
+		var value = $(this).val();
 		value = ("" + value).replace(/(^\s+|\s+$)/g, ""); //trim
 		
 		if (value.length > 0)
@@ -210,6 +214,8 @@ function initInstallPages() {
 			a.removeClass("active");
 	};
 	input.on("keyup", check_value_func).on("blur", check_value_func);
+	install_page.find(".install_page_with_ai form .instructions textarea").on("keyup", check_value_func).on("blur", check_value_func);
+	install_page.find(".install_page_with_ai form .image input").on("change", check_value_func).on("blur", check_value_func);
 }
 
 function initStorePages() {
@@ -316,7 +322,23 @@ function choosePage(elm, choose_url) {
 		var on_click = elm.attr("onClick");
 		elm.removeAttr("onClick").addClass("loading").prepend('<span class="icon loading"></span>');
 		
-		if (active_tab == 2) { //if remote url
+		if (active_tab == 3) { //if remote url
+			var oForm = install_page.find(".install_page_with_ai form");
+			var instructions = oForm.find(".instructions textarea").val();
+			var image = oForm.find(".image input").val();
+			
+			if (instructions.replace(/\s+/g, "").length > 0 || image.replace(/\s+/g, "").length > 0) {
+				StatusMessageHandler.showMessage("Generating page through AI. Please wait a while...");
+				
+				oForm.attr("action", choose_url);
+				oForm.submit();
+			}
+			else {
+				StatusMessageHandler.showError("Please write the instructions or upload an image with the layout for the page you wish to generate!");
+				status = false;
+			}
+		}
+		else if (active_tab == 2) { //if remote url
 			var oForm = install_page.find(".install_page_url form");
 			var remote_url = oForm.find("input.remote_url").val();
 			

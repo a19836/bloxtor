@@ -4,6 +4,8 @@ var query_auto_update_sql_from_ui_func = null;
 var query_auto_update_ui_from_sql_func = null;
 var saved_user_relationships_obj_id = null;
 var on_new_html_callback = null
+var sql_editor_completer_keywords = [];
+var sql_editor_completer_keywords_strings = [];
 
 $(function () {
 	$(window).unbind('beforeunload').bind('beforeunload', function () {
@@ -626,8 +628,21 @@ function updateDBTables(elm, rand_number, do_not_sync) {
 		
 		select.html(html);
 		select.val(chosen_table);
-	
+		
 		db_table_elm.show();
+		
+		//update editor completer db_tables
+		$.each(db_tables, function(db_table, db_attributes) {
+			if ($.inArray(db_table, sql_editor_completer_keywords_strings) == -1) {
+				sql_editor_completer_keywords_strings.push(db_table);
+				sql_editor_completer_keywords.push({
+					caption: db_table, 
+					value: db_table, 
+					meta: "table",
+					score: 11
+				});
+			}
+		});
 		
 		MyFP.hideLoading();
 	}
@@ -691,6 +706,19 @@ function updateDBAttributes(elm, rand_number, do_not_sync) {
 		
 		if (!MyFP.settings.hideChooseAttributesField) //this field was hidden before the system have called this function.
 			db_attribute_elm.show();
+		
+		//update editor completer db_attributes
+		$.each(db_attributes, function(idx, attr_name) {
+			if ($.inArray(attr_name, sql_editor_completer_keywords_strings) == -1) {
+				sql_editor_completer_keywords_strings.push(attr_name);
+				sql_editor_completer_keywords.push({
+					caption: attr_name, 
+					value: attr_name, 
+					meta: "attribute",
+					score: 10
+				});
+			}
+		});
 		
 		MyFP.hideLoading();
 	}
@@ -2410,7 +2438,8 @@ function createUIFromSql(ul, rand_number, do_not_confirm) {
 	else if (old_sql_id != new_sql_id || (old_rel_type && new_rel_type != old_rel_type)) {
 		if (do_not_confirm || auto_convert || confirm("The system will now create a UI based in the sql query that you wrote.\nDo you wish to proceed?")) {
 			//CHECKS IF EXISTS ANY INNER SELECT STATEMENT
-			var aux = new_sql.toLowerCase().replace("select", "");//only removes 1st select
+			var new_sql_without_comments = new_sql.replace(/^--.*$/gm, '').replace(/(^\s+|\s+$)/g, ""); //regex to remove all comments that starts with "--" in each line. "m" regex flag is the multi line flag.
+			var aux = new_sql_without_comments.toLowerCase().replace("select", "");//only removes 1st select
 			var inner_select = aux.indexOf("select") != -1;
 			
 			if (!inner_select || !do_not_confirm || confirm("ATTENTION: Apparently this sql query contains inner select statements, but the UI doesn't have this feature.\nDo you still wish to continue?")) {
@@ -2925,17 +2954,99 @@ function setQuerySqlEditor(selector) {
 		var textarea = elm.children("textarea")[0];
 		
 		if (textarea) {
+			//prepare editor
 			ace.require("ace/ext/language_tools");
 			var editor = ace.edit(textarea);
 			editor.setTheme("ace/theme/chrome");
 			editor.session.setMode("ace/mode/sql");
-	    		editor.setAutoScrollEditorIntoView(true);
+    		editor.setAutoScrollEditorIntoView(true);
 			editor.setOptions({
 				enableBasicAutocompletion: true,
 				enableSnippets: true,
-				enableLiveAutocompletion: false,
+				enableLiveAutocompletion: true,
 			});
+			editor.setOption("wrap", true);
 			editor.getSession().setUseWrapMode(true);
+			
+			if (typeof setCodeEditorAutoCompleter == "function")
+				setCodeEditorAutoCompleter(editor);
+			
+			//prepare special autocomplete
+			var completer = {
+				getCompletions: function(editor, session, pos, prefix, callback) {
+					//console.log(sql_editor_completer_keywords);
+					callback(null, sql_editor_completer_keywords);
+				},
+			};
+			editor.completers.push(completer); //append to default completers
+			
+			// Default completers
+			var default_completers = editor.completers;
+			
+			// Set up autocompletion switching logic
+			editor.commands.on("afterExec", function (e) {
+				if (e.command.name === "insertstring") {
+					var char_typed = e.args;
+					var table_attrs = [];
+					
+					if (char_typed === ".") {
+						var cursor = editor.getCursorPosition(); // Current cursor position
+						var line = editor.session.getLine(cursor.row); // Get the full line at the cursor's row
+						var text_before_cursor = line.substring(0, cursor.column); // Extract characters up to the cursor position
+						var match = text_before_cursor.match(/\b`?(\w+)`?\.$/);
+						var last_word = match ? match[1] : null;
+						
+						if (last_word) {
+							$.each(db_brokers_drivers_tables_attributes, function(db_broker, broker_drivers) {
+								$.each(broker_drivers, function(db_driver, driver_types) {
+									$.each(driver_types, function(db_type, db_tables) {
+										$.each(db_tables, function(db_table, db_attributes) {
+											if (db_table == last_word || db_table.toLowerCase() == last_word.toLowerCase())
+												$.each(db_attributes, function(idx, attr_name) {
+													if ($.inArray(attr_name, table_attrs) == -1)
+														table_attrs.push(attr_name);
+												});
+										});
+									});
+								});
+							});
+						}
+					}
+					
+					// Switch completers based on the character typed. Note that the language_tools.setCompleters doesn't work.
+					if (table_attrs.length > 0) { //if filter_by_table_attrs exists, only show table_attrs_completer
+						var table_completions = [];
+						
+						$.each(table_attrs, function(idx, attr_name) {
+							table_completions.push({
+								caption: attr_name,
+								value: attr_name,
+								meta: "attribute",
+								score: 10
+							});
+						});
+						
+						var table_attrs_completer = {
+							getCompletions: function(editor, session, pos, prefix, callback) {
+								callback(null, table_completions);
+							},
+						};
+						editor.completers = [table_attrs_completer];
+					}
+					else
+						editor.completers = default_completers;
+						
+					// Trigger autocomplete but if not white space
+					var is_white_space = typeof char_typed == "string" && char_typed.match(/\s/);
+					
+					if (!is_white_space)
+						editor.execCommand("startAutocomplete");
+				}
+			});
+			
+			//prepare chatbot
+			editor.system_message = getCodeChatBotSystemMessage;
+			editor.showCodeEditorChatBot = openCodeChatBot;
 			
 			//set blur function for sql editor
 			editor.on("blur", function() {
@@ -3844,6 +3955,233 @@ function updateRelationshipsSqlStatementsAutomatically(relationships, rel_type, 
 	}
 }
 /* END: UPDATE AUTOMATICALLY */
+
+/* START: AI */
+function openGenerateSQLPopup() {
+	if (typeof manage_ai_action_url != "undefined") {
+		var popup = $(".generate_sql");
+		
+		if (!popup[0]) {
+			popup = $('<div class="myfancypopup generate_sql with_title">'
+							+ '<div class="title">Generate SQL</div>'
+							+ '<div class="instructions">'
+								+ '<label>Please write in natural language which type of sql statement do you wish to generate:</label>'
+								+ '<textarea placeHolder="eg: get all records"></textarea>'
+							+ '</div>'
+							+ '<div class="button">'
+								+ '<button onClick="generateSQL(this)">Generate SQL</button>'
+							+ '</div>'
+						+ '</div>');
+			$(document.body).append(popup);
+			
+			var choose_db_table_or_attribute = $("#choose_db_table_or_attribute");
+			var cloned = choose_db_table_or_attribute.find(".contents").clone(true); //true: clone data events also
+			cloned.children(".db_attribute").remove();
+			
+			popup.find(".title").after(cloned);
+		}
+		
+		MyFancyPopup.init({
+			elementToShow: popup,
+			parentElement: document,
+		});
+		
+		MyFancyPopup.showPopup();
+	}
+}
+function generateSQL(elm) {
+	var zindex = parseInt(MyFancyPopup.settings.elementToShow.css("z-index")) + 1;
+	
+	if (typeof manage_ai_action_url == "undefined") {
+		StatusMessageHandler.showError("Manage AI Action url is not defined. Please talk with sysadmin");
+		StatusMessageHandler.getMessageHtmlObj()[0].style.setProperty("z-index", zindex, "important"); //move error to front of filemanager popup
+	}
+	else if (!manage_ai_action_url) {
+		StatusMessageHandler.showError("Artificial Intelligence is disabled. To enable it, please add your OpenAI Key in the 'Manage Permissions/Users' panel.");
+		StatusMessageHandler.getMessageHtmlObj()[0].style.setProperty("z-index", zindex, "important"); //move error to front of filemanager popup
+	}
+	else {
+		var p = $(elm).parent().parent();
+		var button = p.find(".button");
+		var db_broker = p.find(".db_broker select").val();
+		var db_driver = p.find(".db_driver select").val();
+		var type = p.find(".type select").val();
+		var db_table = p.find(".db_table select").val();
+		var instructions = p.find("textarea").val();
+		
+		if (!instructions) {
+			StatusMessageHandler.showError("Please write what sql statement do you wish to create.");
+			StatusMessageHandler.getMessageHtmlObj()[0].style.setProperty("z-index", zindex, "important"); //move error to front of filemanager popup
+		}
+		else {
+			var msg = StatusMessageHandler.showMessage("AI loading. Wait a while...", "", "bottom_messages", 60000);
+			StatusMessageHandler.getMessageHtmlObj()[0].style.setProperty("z-index", zindex, "important"); //move error to front of filemanager popup
+			
+			var ul = $(".data_access_obj .relationships .query > ul.tabs");
+			var query_sql_elm_selector = ul.children(".query_sql_tab").children("a").attr("href");
+			var query_sql_elm = $(query_sql_elm_selector);
+			var editor = getQuerySqlEditor(query_sql_elm_selector);
+			var system_instructions = getCodeChatBotSystemMessage(editor);
+			var url = manage_ai_action_url + (manage_ai_action_url.indexOf("?") != -1 ? "" : "?") + "&action=generate_sql";
+			
+			MyFancyPopup.showLoading();
+			button.hide();
+			
+			$.ajax({
+				type : "post",
+				url : url,
+				data: {
+					db_broker: db_broker,
+					db_driver: db_driver,
+					type: type,
+					db_table: db_table,
+					instructions: instructions,
+					system_instructions: system_instructions
+				},
+				dataType : "json",
+				success : function(data, textStatus, jqXHR) {
+					//console.log(sql);
+					MyFancyPopup.hideLoading();
+					button.show();
+					msg.remove();
+					
+					var sql = $.isPlainObject(data) && data.hasOwnProperty("sql") ? data["sql"] : null;
+					
+					if (sql) {
+						var query = $(".data_access_obj .relationships .query");
+						var ul = query.children("ul.tabs");
+						var query_sql_elm_selector = ul.children(".query_sql_tab").children("a").attr("href");
+						setQuerySqlEditorValue(query_sql_elm_selector, sql);
+						
+						var rand_number = query.attr("rand_number");
+						onBlurQuerySqlEditor(rand_number);
+						
+						MyFancyPopup.hidePopup();
+						p.find("textarea").val("");
+					}
+					else {
+						StatusMessageHandler.showError("Error: Couldn't process this request with AI. Please try again...");
+						StatusMessageHandler.getMessageHtmlObj()[0].style.setProperty("z-index", zindex, "important"); //move error to front of filemanager popup
+					}
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					MyFancyPopup.hideLoading();
+					button.show();
+					msg.remove();
+					
+					if (jqXHR.responseText) {
+						StatusMessageHandler.showError(jqXHR.responseText);
+						StatusMessageHandler.getMessageHtmlObj()[0].style.setProperty("z-index", zindex, "important"); //move error to front of filemanager popup
+					}
+				},
+			});
+		}
+	}
+}
+
+function explainSQL() {
+	if (typeof manage_ai_action_url == "undefined")
+		StatusMessageHandler.showError("Manage AI Action url is not defined. Please talk with sysadmin");
+	else if (!manage_ai_action_url)
+		StatusMessageHandler.showError("Artificial Intelligence is disabled. To enable it, please add your OpenAI Key in the 'Manage Permissions/Users' panel.");
+	else {
+		var ul = $(".data_access_obj .relationships .query > ul.tabs");
+		var query_sql_elm_selector = ul.children(".query_sql_tab").children("a").attr("href");
+		var query_sql_elm = $(query_sql_elm_selector);
+		var sql = getQuerySqlEditorValue(query_sql_elm_selector);
+		var url = manage_ai_action_url + (manage_ai_action_url.indexOf("?") != -1 ? "" : "?") + "&action=explain_sql";
+		
+		if (!sql)
+			StatusMessageHandler.showMessage("There is no sql to comment...", "", "bottom_messages", 1500);
+		else {
+			var msg = StatusMessageHandler.showMessage("AI loading. Wait a while...", "", "bottom_messages", 60000);
+			
+			$.ajax({
+				type : "post",
+				url : url,
+				processData: false,
+				contentType: 'text/plain',
+				data: sql,
+				dataType : "html",
+				success : function(message, textStatus, jqXHR) {
+					//console.log(message);
+					
+					msg.remove();
+					
+					if (message) {
+						var new_sql = "-- " + message.replace(/\n/g, "\n-- ") + "\n" + sql;
+						setQuerySqlEditorValue(query_sql_elm_selector, new_sql);
+						
+						StatusMessageHandler.showMessage("SQL explanation:\n" + message + "\n\nSQL:\n" + sql, "", "", 600000); //1 hour
+					}
+					else
+						StatusMessageHandler.showError("Error: Couldn't process this request with AI. Please try again...");
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					msg.remove();
+					
+					if (jqXHR.responseText)
+						StatusMessageHandler.showError(jqXHR.responseText);
+				},
+			});
+		}
+	}
+}
+
+function openCodeChatBot() {
+	if (typeof manage_ai_action_url == "undefined")
+		StatusMessageHandler.showError("Manage AI Action url is not defined. Please talk with sysadmin");
+	else if (!manage_ai_action_url)
+		StatusMessageHandler.showError("Artificial Intelligence is disabled. To enable it, please add your OpenAI Key in the 'Manage Permissions/Users' panel.");
+	else {
+		var ul = $(".data_access_obj .relationships .query > ul.tabs");
+		var query_sql_elm_selector = ul.children(".query_sql_tab").children("a").attr("href");
+		var query_sql_elm = $(query_sql_elm_selector);
+		var editor = getQuerySqlEditor(query_sql_elm_selector);
+		
+		if (editor)
+			showCodeEditorChatBot(editor);
+	}
+}
+
+function getCodeChatBotSystemMessage(editor) {
+	var system_message = getCodeEditorChatBotDefaultSystemMessage(editor) + "\n\n";
+	var tables = {};
+		
+	$.each(db_brokers_drivers_tables_attributes, function(db_broker, broker_drivers) {
+		$.each(broker_drivers, function(db_driver, driver_types) {
+			$.each(driver_types, function(db_type, db_tables) {
+				$.each(db_tables, function(db_table, db_attributes) {
+					if (db_table) {
+						if (!tables.hasOwnProperty(db_table))
+							tables[db_table] = $.isArray(db_attributes) ? db_attributes : [];
+						else
+							$.each(db_attributes, function(idx, attr_name) {
+								if ($.inArray(attr_name, tables[db_table]) == -1)
+									tables[db_table].push(attr_name);
+							});
+					}
+				});
+			});
+		});
+	});
+	
+	var query_type = $(".data_access_obj .relationships .rel_type select").val();
+	
+	if (query_type)
+		system_message += "Query type to be generated: `" + query_type + "`";
+	
+	if (!$.isEmptyObject(tables)) {
+		system_message += "\nTables:";
+		
+		$.each(tables, function(table_name, table_attributes) {
+			system_message += "\n- `" + table_name + (table_attributes.length > 0 ? "` with attributes: `" + table_attributes.join("`, `") + "`" : "");
+		});
+	}
+	
+	return system_message;
+}
+/* END: AI */
 
 /* START: SAVE ALL */
 function onSuccessSingleQuerySave(obj, new_obj_id, data, options) {

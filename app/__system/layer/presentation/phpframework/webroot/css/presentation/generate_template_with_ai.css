@@ -1,0 +1,62 @@
+body,
+  #main_column {
+	background:#fff !important;
+}
+::-webkit-scrollbar-track {
+	background-color:#fff;
+}
+
+/* TOP BAR */
+.top_bar .title input[name=template_name] {
+	width:150px;
+	margin-left:5px;
+}
+.top_bar .title input[name=layout_name] {
+	width:120px;
+	margin-left:5px;
+}
+
+/* CONVERT URL TO TEMPLATE */
+.generate_template_with_ai {
+	
+}
+.generate_template_with_ai .instructions {
+	margin:20px;
+}
+.generate_template_with_ai .instructions textarea {
+	width:100%;
+	height:100px;
+	box-sizing:border-box;
+}
+.generate_template_with_ai .instructions .info {
+	display:block;
+	text-align:right;
+	font-size:80%;
+	opacity:.7;
+}
+.generate_template_with_ai .regions {
+	margin:20px;
+}
+.generate_template_with_ai .regions .icon.add {
+	margin-left:5px;
+}
+.generate_template_with_ai .regions .region {
+	margin-top:10px;
+}
+.generate_template_with_ai .regions .region .region_name {
+	width:200px;
+}
+.generate_template_with_ai .regions .region .region_description {
+	width:calc(100% - 260px);
+	margin-left:10px;
+	margin-right:10px;
+}
+.generate_template_with_ai .regions .region:first-child .remove {
+	visibility:hidden;
+}
+.generate_template_with_ai .regions .info {
+	margin-top:20px;
+	display:block;
+	font-size:80%;
+	opacity:.7;
+}

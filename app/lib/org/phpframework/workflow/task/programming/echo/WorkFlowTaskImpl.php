@@ -23,7 +23,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 						return null;
 					}
 					
-					$code = $WorkFlowTaskCodeParser->printCodeExpr($expr);
+					$code = $WorkFlowTaskCodeParser->printCodeExpr($expr, false);
 					$code = $WorkFlowTaskCodeParser->getStmtValueAccordingWithType($code, $expr_type);
 				
 					$type = $WorkFlowTaskCodeParser->getStmtType($expr);
@@ -31,7 +31,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				else {
 					$t = count($exprs);
 					for ($i = 0; $i < $t; $i++) {
-						$code .= ($i > 0 ? ", " : "") . $WorkFlowTaskCodeParser->printCodeExpr($exprs[$i]);
+						$code .= ($i > 0 ? ", " : "") . $WorkFlowTaskCodeParser->printCodeExpr($exprs[$i], false);
 					}
 				}
 			}

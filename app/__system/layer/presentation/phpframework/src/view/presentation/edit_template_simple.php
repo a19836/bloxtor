@@ -61,6 +61,7 @@ $filter_by_layout_url_query = LayoutTypeProjectUIHandler::getFilterByLayoutURLQu
 $sla_settings_obj = CMSPresentationLayerJoinPointsUIHandler::convertBlockSettingsArrayToObj($sla_settings);
 //echo "<pre>";print_r($sla_settings_obj);echo "</pre>";die();
 
+$manage_ai_action_url = $openai_encryption_key ? $project_url_prefix . "phpframework/ai/manage_ai_action" : null;
 $save_url = $project_url_prefix . "phpframework/presentation/save_template?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";
 $get_block_handler_source_code_url = $project_url_prefix . "phpframework/presentation/get_module_handler_source_code?bean_name=$bean_name&bean_file_name=$bean_file_name&project=$path&block=#block#";
 $get_page_block_join_points_html_url = $project_url_prefix . "phpframework/presentation/get_page_block_join_points_html?bean_name=$bean_name&bean_file_name=$bean_file_name&project=$path&block=#block#";
@@ -130,6 +131,7 @@ $head .= '
 var layer_type = "pres";
 var file_modified_time = ' . $file_modified_time . '; //for version control
 
+var manage_ai_action_url = \'' . $manage_ai_action_url . '\';
 var save_object_url = \'' . $save_url . '\';
 var get_block_handler_source_code_url = \'' . $get_block_handler_source_code_url . '\';
 var get_page_block_join_points_html_url = \'' . $get_page_block_join_points_html_url . '\';

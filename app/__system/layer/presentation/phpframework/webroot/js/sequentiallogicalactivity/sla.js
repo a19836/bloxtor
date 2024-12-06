@@ -4036,22 +4036,25 @@ function convertSLASettingsToPHPCode() {
 	return {code: code, status: status};
 }
 
-function createSLAItemCodeEditor(textarea, type, save_func) {
+function createSLAItemCodeEditor(textarea, mode, save_func) {
 	if (textarea) {
 		var parent = $(textarea).parent();
 	
 		ace.require("ace/ext/language_tools");
 		var editor = ace.edit(textarea);
 		editor.setTheme("ace/theme/chrome");
-		editor.session.setMode("ace/mode/" + type);
+		editor.session.setMode("ace/mode/" + mode);
 		//editor.setAutoScrollEditorIntoView(false);
 		editor.setOption("minLines", 10);
 		editor.setOptions({
 			enableBasicAutocompletion: true,
 			enableSnippets: true,
-			enableLiveAutocompletion: false,
+			enableLiveAutocompletion: true,
 		});
 		editor.setOption("wrap", true);
+		
+		if (typeof setCodeEditorAutoCompleter == "function")
+			setCodeEditorAutoCompleter(editor);
 		
 		if (typeof save_func == "function" || save_func) {
 			editor.commands.addCommand({

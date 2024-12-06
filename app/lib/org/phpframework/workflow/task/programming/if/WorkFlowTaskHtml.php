@@ -7,4 +7,6 @@
 	<?php
 	//echo("task_webroot_domain:" . $task_webroot_domain);
 	?>
+	
+	<?php include dirname(dirname($file_path)) . "/common/CommentsHtml.php"; ?>
 </div>

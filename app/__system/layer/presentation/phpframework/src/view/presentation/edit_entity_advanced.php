@@ -41,6 +41,7 @@ $WorkFlowUIHandler->setTasksGroupsByTag(array(
 $WorkFlowUIHandler->addFoldersTasksToTasksGroups($code_workflow_editor_user_tasks_folders_path);
 
 $view_project_url = $project_url_prefix . "phpframework/presentation/view_project?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";
+$manage_ai_action_url = $openai_encryption_key ? $project_url_prefix . "phpframework/ai/manage_ai_action" : null;
 $save_url = $project_url_prefix . "phpframework/presentation/save_entity_advanced?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";
 
 $path_extra = hash('crc32b', "$bean_file_name/$bean_name/$path");
@@ -115,6 +116,7 @@ var file_modified_time = ' . (isset($file_modified_time) ? $file_modified_time :
 var design_editor = ' . ($design_editor ? "true" : "false") . ';
 
 var get_workflow_file_url = \'' . $get_workflow_file_url . '\';
+var manage_ai_action_url = \'' . $manage_ai_action_url . '\';
 var save_object_url = \'' . $save_url . '\';
 var create_workflow_file_from_code_url = \'' . $create_workflow_file_from_code_url . '\';
 var get_tmp_workflow_file_url = \'' . $get_tmp_workflow_file_url . '\';

@@ -550,9 +550,12 @@ function createRegionBlockHtmlWyswygEditor(block_html, opts) {
 			editor.setOptions({
 				enableBasicAutocompletion: true,
 				enableSnippets: true,
-				enableLiveAutocompletion: false,
+				enableLiveAutocompletion: true,
 			});
 			editor.setOption("wrap", true);
+			
+			if (typeof setCodeEditorAutoCompleter == "function")
+				setCodeEditorAutoCompleter(editor);
 			
 			var save_func = opts && typeof opts.save_func == "function" ? opts.save_func : regions_blocks_html_editor_save_func;
 			
@@ -1632,6 +1635,12 @@ function editRegionBlock(elm, opts) {
 			
 			PtlLayoutUIEditor = new LayoutUIEditor();
 			PtlLayoutUIEditor.options.ui_element = layout_ui_editor_elm;
+			
+			if (typeof onContextMenuLayoutUIEditorWidgetSetting == "function")
+				PtlLayoutUIEditor.options.on_context_menu_widget_setting = onContextMenuLayoutUIEditorWidgetSetting;
+			
+			if (typeof setCodeEditorAutoCompleter == "function")
+				PtlLayoutUIEditor.options.template_source_editor_ready_func = setCodeEditorAutoCompleter;
 			
 			if (typeof onPresentationIncludePageUrlTaskChooseFile == "function")
 				PtlLayoutUIEditor.options.on_choose_page_url_func = function(elm) {
@@ -5875,7 +5884,9 @@ function createCodeLayoutUIEditorEditor(textarea, opts) {
 			var ptl_ui_creator_var_name = "PTLLayoutUIEditor_" + Math.floor(Math.random() * 1000);
 			var PtlLayoutUIEditor = new LayoutUIEditor();
 			PtlLayoutUIEditor.options.ui_element = ui;
-			PtlLayoutUIEditor.options.template_source_editor_save_func = opts && opts.save_func ? opts.save_func : null;
+			PtlLayoutUIEditor.options.on_context_menu_widget_setting = typeof onContextMenuLayoutUIEditorWidgetSetting == "function" ? onContextMenuLayoutUIEditorWidgetSetting : null;
+			PtlLayoutUIEditor.options.on_template_source_editor_ready_func = typeof setCodeEditorAutoCompleter == "function" ? setCodeEditorAutoCompleter : null;
+			PtlLayoutUIEditor.options.on_template_source_editor_save_func = opts && opts.save_func ? opts.save_func : null;
 			PtlLayoutUIEditor.options.beautify = opts && opts.beautify ? opts.beautify : true;
 			
 			PtlLayoutUIEditor.options.auto_convert = typeof auto_convert != "undefined" && auto_convert;

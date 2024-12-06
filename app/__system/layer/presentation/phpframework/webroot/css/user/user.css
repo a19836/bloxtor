@@ -105,7 +105,11 @@ body.main_navigator_reverse #menu li.current_user {
 	margin-top:20px;
 	border-bottom:1px dashed #FFF;
 }
-#menu li.change_db_keys {
+#menu li.change_other_settings {
+	border-bottom:1px dashed #FFF;
+}
+#menu li.change_db_keys,
+  #menu li.change_other_settings {
 	background-color:rgba(255, 255, 255, .4);
 }
 
@@ -138,6 +142,7 @@ body.main_navigator_reverse #content {
 #content .edit_permission {padding:0 10px 10px;}
 #content .change_db_keys {padding:0 10px 10px;}
 #content .change_auth_settings {padding:0 10px 10px;}
+#content .change_other_settings {padding:0 10px 10px;}
 
 #content table { margin:0 auto; }
 #content th { border-right:1px solid #eee; text-transform:capitalize; font-size:10px; color:#666; }
@@ -212,6 +217,16 @@ body.main_navigator_reverse #content {
 }
 #content .change_auth_settings .label { width:100%; margin:0 auto 20px auto; font-weight:bold; text-align:center; }
 #content .change_auth_settings .buttons { display:none; }
+
+#content .change_other_settings { width:560px; margin:0 auto; }
+#content .change_other_settings .form_fields { width:100%; }
+#content .change_other_settings .form_fields .form_field_login { width:300px; margin-left:auto; margin-right:auto; }
+#content .change_other_settings .form_fields .form_field_login.password { margin-bottom:20px; }
+#content .change_other_settings .form_fields .form_field_key label { width:235px; }
+#content .change_other_settings .form_fields .form_field_key input { width:300px; }
+#content .change_other_settings .label { width:100%; margin:0 auto 10px auto; font-weight:bold; text-align:center; }
+#content .change_other_settings .buttons { display:none; }
+#content .change_other_settings .info { margin-top:5px; opacity:.7; font-size:90%; }
 
 #content .edit_user .error { width:100%; text-align:center; font-weight:bold; color:#B51E3F; }
 #content .edit_login_control .error { width:100%; text-align:center; font-weight:bold; color:#B51E3F; }

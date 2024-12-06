@@ -42,7 +42,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					if ($var_name) {	
 						$expr = isset($item->expr) ? $item->expr : null;
 						$expr_type = $expr ? strtolower($expr->getType()) : "";
-						$value = $WorkFlowTaskCodeParser->printCodeExpr($expr);
+						$value = $WorkFlowTaskCodeParser->printCodeExpr($expr, false);
 						$value = $WorkFlowTaskCodeParser->getStmtValueAccordingWithType($value, $expr_type);
 						
 						$props = array(
@@ -53,7 +53,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					}
 					else {
 						$props = array(
-							"code" => $WorkFlowTaskCodeParser->printCodeExpr($item),
+							"code" => $WorkFlowTaskCodeParser->printCodeExpr($item, false),
 						);
 					}
 				
@@ -97,7 +97,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					}
 					else {
 						$props = array(
-							"code" => $WorkFlowTaskCodeParser->printCodeExpr($item),
+							"code" => $WorkFlowTaskCodeParser->printCodeExpr($item, false),
 						);
 					}
 				

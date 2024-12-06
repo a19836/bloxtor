@@ -20,6 +20,8 @@ $layout_type_table_encryption_key = CryptoKeyHandler::hexToBin("c9cad729150afaf8
 $layout_type_permission_table_encryption_key = CryptoKeyHandler::hexToBin("697ce095f4fcfe2100a0250ac032128c");
 $reserved_db_table_name_table_encryption_key = CryptoKeyHandler::hexToBin("a11f5697056ad77017a0bae9054d2f3b");
 
+$openai_encryption_key = "";
+
 $maximum_failed_attempts = 3;
 $user_blocked_expired_time = 3600;//60 * 60 = 3600 secs = 1 hour
 $login_expired_time = 86400;//60 * 60 * 24 = 86400 secs = 1 day

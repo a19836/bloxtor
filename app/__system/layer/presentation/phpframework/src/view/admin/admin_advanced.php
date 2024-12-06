@@ -23,6 +23,7 @@ $logged_name_initials = strtoupper(substr($logged_name_initials[0], 0, 1)) . (is
 $filter_by_layout_url_query = $filter_by_layout ? "&filter_by_layout=$filter_by_layout&filter_by_layout_permission=$filter_by_layout_permission" : "";
 $admin_home_project_page_url = $project_url_prefix . "admin/admin_home_project?filter_by_layout=#filter_by_layout#";
 $admin_home_projects_page_url = $project_url_prefix . "admin/admin_home?selected_layout_project=$filter_by_layout";
+$notifications_url = $project_url_prefix . "admin/get_notifications";
 
 $head = AdminMenuUIHandler::getHeader($project_url_prefix, $project_common_url_prefix);
 $head .= '
@@ -34,6 +35,7 @@ $head .= '
 var path_to_filter = "' . $filter_by_layout . '";
 var admin_home_project_page_url = "' . $admin_home_project_page_url . '";
 var admin_home_projects_page_url = "' . $admin_home_projects_page_url . '";
+var notifications_url = "' . $notifications_url . '";
 </script>';
 $head .= HeatMapHandler::getHtml($project_url_prefix);
 
@@ -107,6 +109,19 @@ $main_content .= '
 			' . (!empty($is_flush_cache_allowed) ? '<li class="icon flush_cache" data-title="Flush Cache" onClick="flushCacheFromAdmin(\'' . $project_url_prefix . 'admin/flush_cache\')"></li>' : '') . '
 			<li class="icon refresh" onClick="refreshIframe()" data-title="Refresh"></li>
 			<li class="icon full_screen" data-title="Toggle Full Screen" onClick="toggleFullScreen(this)"></li>
+			<li class="separator">|</li>
+			
+			<li class="sub_menu sub_menu_notifications" data-title="Notifications" onClick="openSubmenu(this)">
+				<span class="icon notification"></span>
+				<i class="icon dropdown_arrow"></i>
+				
+				<ul>
+					<div class="triangle_up"></div>
+					
+					<li class="empty_notification"><div>There are no notifications</div></li>
+					<!--li class="notification"><div>test</div></li-->
+				</ul>
+			</li>
 			<li class="separator">|</li>
 			
 			<li class="icon tools" onClick="chooseAvailableTool(\'' . "{$project_url_prefix}admin/choose_available_tool?filter_by_layout=$filter_by_layout&popup=1" . '\')" data-title="Tools"></li>

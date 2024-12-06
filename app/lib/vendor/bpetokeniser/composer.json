@@ -1,0 +1,29 @@
+{
+    "name": "danny50610/bpe-tokeniser",
+    "description": "PHP port for openai/tiktoken (most)",
+    "keywords": ["tokenizer", "tiktoken", "gpt-4", "gpt-3.5", "cl100k_base"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chen, Danny",
+            "email": "danny50610@yahoo.com.tw"
+        }
+    ],
+    "require": {
+        "php": "^8.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Danny50610\\BpeTokeniser\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Danny50610\\BpeTokeniser\\Tests\\": "tests/"
+        }
+    }
+}

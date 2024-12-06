@@ -1,0 +1,58 @@
+name: PHP Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        phpVersion: ['8.1', '8.2', '8.3']
+
+    steps:
+    - name: Setup PHP with specific version of PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.phpVersion }}
+
+    - uses: actions/checkout@v4
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: PHPUnit Tests
+      uses: php-actions/phpunit@v4
+      env:
+        XDEBUG_MODE: coverage
+      with:
+        configuration: phpunit.xml
+        php_extensions: xdebug
+        args: --coverage-clover ./coverage.xml
+
+    - name: Upload to Codecov
+      uses: codecov/codecov-action@v4
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        files: ./coverage.xml
+        verbose: true

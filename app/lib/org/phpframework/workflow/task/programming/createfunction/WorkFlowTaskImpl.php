@@ -9,7 +9,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$stmt_type = strtolower($stmt->getType());
 		
 		if ($stmt_type == "stmt_function") {
-			$code = $WorkFlowTaskCodeParser->printCodeStatement($stmt, true);
+			$code = $WorkFlowTaskCodeParser->printCodeStatement($stmt);
 			$contents = '<?php ' . $code . ' ?>';
 			$methods = \PHPCodePrintingHandler::getPHPClassesFromString($contents);
 			$props = isset($methods[0]["methods"][0]) ? $methods[0]["methods"][0] : null;
@@ -69,7 +69,6 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		
 		$properties = array(
 			"name" => isset($raw_data["childs"]["properties"][0]["childs"]["name"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["name"][0]["value"] : null,
-			"comments" => isset($raw_data["childs"]["properties"][0]["childs"]["comments"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["comments"][0]["value"] : null,
 			"code" => isset($raw_data["childs"]["properties"][0]["childs"]["code"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["code"][0]["value"] : null,
 		);
 		
@@ -106,7 +105,12 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$properties["arguments"] = $args;
 		}
 		
-		$code = "\n";
+		$comments_exists = !empty($properties["comments"]);
+		
+		//unset comments bc they will be added in the parent::printTask method
+		unset($properties["comments"]);
+		
+		$code = $comments_exists ? "" : "\n";;
 		$code .= $prefix_tab . str_replace("\n", "\n$prefix_tab", \PHPCodePrintingHandler::getFunctionString($properties)) . " {\n"; //str_replace bc of the comments
 		$code .= $prefix_tab . "\t" . (isset($properties["code"]) ? str_replace("\n", "\n$prefix_tab\t", $properties["code"]) : "") . "\n";
 		//$code .=  !$prefix_tab && !preg_match("/\s/", substr($code, -1)) ? " " : ""; //add space here, bc the $prefix_tab could be empty and the $code could end in <?php. If we do not add the space here, then we will get <?php} which will give a php error. NO NEED THIS BC WE ADD BEFORE "\n".

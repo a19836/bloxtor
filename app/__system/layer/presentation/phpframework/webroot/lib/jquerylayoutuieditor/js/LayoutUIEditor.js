@@ -83,8 +83,9 @@ function LayoutUIEditor() {
 		moving_tolerance_grid: [10, 10],
 		
 		//generic global handlers
-		template_source_editor_save_func: null,
+		on_template_source_editor_save_func: null,
 		on_ready_func: null, //on ready function
+		on_template_source_editor_ready_func: null,
 		on_template_widgets_iframe_reload_func: null, //on reload template_widgets_iframe
 		on_panels_resize_func: null, //when resize_panels gets draggable and panels' positioning gets updated
 		on_flip_panels_side_func: null,
@@ -112,6 +113,7 @@ function LayoutUIEditor() {
 		on_after_parse_widget_settings_func: null,
 		on_before_save_settings_field_func: null,
 		on_after_save_settings_field_func: null,
+		on_context_menu_widget_setting: null,
 		on_parse_template_widget_html_func: null,
 		on_clean_template_widget_html_func: null,
 		
@@ -2463,14 +2465,14 @@ function LayoutUIEditor() {
 		clone[0].innerHTML = '';
 		
 		//parse attributes to convert url to vars: $project_url_prefix or $project_common_url_prefix
-		if ($.isArray(me.default_attributes_name_to_convert_to_or_from_php_vars)) {
+		if ($.isArray(me.default_attributes_name_to_convert_to_or_from_php_vars) && typeof me.options.on_convert_project_url_real_values_to_php_vars_func == "function") {
 			var attributes_to_search = me.default_attributes_name_to_convert_to_or_from_php_vars;
 			
 			for (var i = 0, t = attributes_to_search.length; i < t; i++) {
 				var attr_name = attributes_to_search[i];
 				var attr_value = clone.attr(attr_name);
 				
-				if (typeof attr_value == "string" && attr_value && typeof me.options.on_convert_project_url_real_values_to_php_vars_func == "function") {
+				if (typeof attr_value == "string" && attr_value) {
 					attr_value = me.options.on_convert_project_url_real_values_to_php_vars_func(attr_value, html_element);
 					clone.attr(attr_name, attr_value);
 				}
@@ -2489,7 +2491,7 @@ function LayoutUIEditor() {
 	me.onCreateTemplateHtmlTagWidget = function(widget, html_element, options) {
 		if (!html_element)
 			widget.append("&nbsp;");
-		else if ($.isArray(me.default_attributes_name_to_convert_to_or_from_php_vars)) {
+		else if ($.isArray(me.default_attributes_name_to_convert_to_or_from_php_vars) && typeof me.options.on_convert_project_url_php_vars_to_real_values_func == "function") {
 			//parse attributes in case it contains the $project_url_prefix or $project_common_url_prefix
 			var attributes_to_search = me.default_attributes_name_to_convert_to_or_from_php_vars;
 		
@@ -2497,7 +2499,7 @@ function LayoutUIEditor() {
 				var attr_name = attributes_to_search[i];
 				var attr_value = widget.attr(attr_name);
 				
-				if (typeof attr_value == "string" && attr_value && typeof me.options.on_convert_project_url_php_vars_to_real_values_func == "function") {
+				if (typeof attr_value == "string" && attr_value) {
 					attr_value = me.options.on_convert_project_url_php_vars_to_real_values_func(attr_value, widget);
 					widget.attr(attr_name, attr_value);
 				}
@@ -2526,7 +2528,7 @@ function LayoutUIEditor() {
 					status = false;
 				}
 			}
-			else if (typeof me.options.on_convert_project_url_php_vars_to_real_values_func == "function" && $.isArray(me.default_attributes_name_to_convert_to_or_from_php_vars)) {
+			else if ($.isArray(me.default_attributes_name_to_convert_to_or_from_php_vars) && typeof me.options.on_convert_project_url_php_vars_to_real_values_func == "function") {
 				//parse attributes in case it contains the $project_url_prefix or $project_common_url_prefix
 				var attributes_to_search = me.default_attributes_name_to_convert_to_or_from_php_vars;
 				
@@ -2551,7 +2553,7 @@ function LayoutUIEditor() {
 	
 	me.filterHtmlTagWidgetSettings = function(widget, widget_settings) {
 		//parse attributes to convert url to vars: $project_url_prefix or $project_common_url_prefix
-		if (widget_settings["attributes"] && $.isArray(me.default_attributes_name_to_convert_to_or_from_php_vars)) {
+		if (widget_settings["attributes"] && $.isArray(me.default_attributes_name_to_convert_to_or_from_php_vars) && typeof me.options.on_convert_project_url_real_values_to_php_vars_func == "function") {
 			var attributes_to_search = me.default_attributes_name_to_convert_to_or_from_php_vars;
 			var regex = new RegExp("(^|\\s|\"|')(" + attributes_to_search.join("|") + ")\\s*=", "i");
 			
@@ -2567,7 +2569,7 @@ function LayoutUIEditor() {
 					if ($.inArray(attr_name.toLowerCase(), attributes_to_search) != 1) {
 						var attr_value = attribute.value;
 						
-						if (typeof attr_value == "string" && attr_value && typeof me.options.on_convert_project_url_real_values_to_php_vars_func == "function") {
+						if (typeof attr_value == "string" && attr_value) {
 							attr_value = me.options.on_convert_project_url_real_values_to_php_vars_func(attr_value, widget);
 							
 							if (attr_value != attribute.value) {
@@ -2645,8 +2647,16 @@ function LayoutUIEditor() {
 		
 		me.popup_widget = widget;
 		
-		if (popup_content[0] && me.popup_elm.is(popup_content))
+		if (popup_content[0] && me.popup_elm.is(popup_content)) {
+			var editor = popup_content.children(".content").data("editor");
+			
+			if (editor)
+				editor.setValue("");
+			else
+				c.children("textarea").val("");
+			
 			me.showPopup();
+		}
 		else {
 			var html = '<div>'
 				+ '<div class="title">Write your html code below:</div>'
@@ -2663,7 +2673,13 @@ function LayoutUIEditor() {
 			ui.append(popup_content);
 			
 			var c = popup_content.children(".content");
-			createCodeEditor( c.children("textarea")[0] );
+			var editor = createCodeEditor(c.children("textarea")[0], {mode: "html"});
+			
+			editor.commands.on("afterExec", function(e) {
+				if ((e.command.name === "insertstring" || e.command.name === "startAutocomplete") && editor.completer && editor.completer.popup && editor.completer.popup.isOpen) {
+					$(editor.completer.popup.container).css("z-index", parseInt(popup_content.css("z-index")) + 1);
+				}
+			});
 			
 			popup_content.find(" > .buttons > button").on("click", function(e) {
 				//console.log("button click");
@@ -2671,18 +2687,24 @@ function LayoutUIEditor() {
 				var html = editor ? editor.getValue() : c.children("textarea").val();
 				
 				if (html.replace(/\s/g, "") && me.popup_widget) {
-					me.parseHtmlSource(html, me.popup_widget);
-					
-					var first_child = me.popup_widget.children().first();
-					var children = me.popup_widget[0].childNodes; //including text nodes
-					
-					for (var i = children.length - 1; i >= 0; i--)
-						me.popup_widget.after(children[i]);
-					
-					if (first_child[0])
-						first_child.trigger("click");
-					
-					prepareMenuLayers();
+					try {
+						me.parseHtmlSource(html, me.popup_widget);
+						
+						var first_child = me.popup_widget.children().first();
+						var children = me.popup_widget[0].childNodes; //including text nodes
+						
+						for (var i = 0; i < children.length; i++)
+							me.popup_widget[0].parentNode.insertBefore(children[i], me.popup_widget[0]); //must use insertBefore instead of .after(..), beacuse if the node is alink, style or script, it will give an exception when we click on it.
+						
+						if (first_child[0])
+							first_child.trigger("click");
+						
+						prepareMenuLayers();
+					}
+					catch(e) {
+						if (console && console.log)
+							console.log(e);
+					}
 				}
 				
 				//cleans text
@@ -2710,6 +2732,12 @@ function LayoutUIEditor() {
 						c.children("textarea").val("").focus();
 				},
 				onClose: function() {
+					var editor = c.data("editor");
+					
+					// Closes the autocomplete popup
+					if (editor && editor.completer && editor.completer.popup && editor.completer.popup.isOpen)
+						editor.completer.detach(); 
+					
 					//console.log("on close");
 					if (me.popup_widget && me.popup_widget[0] && me.popup_widget[0].parentNode) //check if widget really exists, bc this function is called on hide and if the user selects a bootstrap widget, then the handler will replace this widget, whcih means its parentNode will not exists, bc the widget was removed before.
 						me.deleteTemplateWidget(me.popup_widget);
@@ -2718,6 +2746,9 @@ function LayoutUIEditor() {
 				},
 			});
 			me.showPopup();
+			
+			//disable draggable for editor
+			popup_content.draggable("option", "cancel", ".ace_editor");
 		}
 	};
 	
@@ -4139,7 +4170,7 @@ function LayoutUIEditor() {
 	  			popup = $(html);
 	  			template_widgets.append(popup);
 	  			
-	  			createCodeEditor(popup.children("textarea")[0]);
+	  			createCodeEditor(popup.children("textarea")[0], {mode: "html"});
 	  		}
 	  		
 	  		popup.children(".pretty_print").unbind("click").bind("click", function() {
@@ -8244,7 +8275,7 @@ function LayoutUIEditor() {
 			}
 			
 			fields = $(fields);
-			fields.addcontextmenu(context_menu); //note that the addcontextmenu method will append the context_menu element to the body
+			fields.addcontextmenu(context_menu, {callback: me.options.on_context_menu_widget_setting}); //note that the addcontextmenu method will append the context_menu element to the body
 			
 			//close contextmenu when we click on the select fields, otherwise the user-experience is weird..
 			fields.filter("select").on({
@@ -8256,13 +8287,14 @@ function LayoutUIEditor() {
 					}
 				},
 				"mousedown": function(event) {
-    					var is_right_click = event.button == 2;
-    					this.interval_id && clearInterval(this.interval_id);
-    					
-    					if (!is_right_click) {
-    						var select = this;
-    						this.interval_id = setInterval(function() {
-    							if (context_menu.is(":visible")) {
+ 					var is_right_click = event.button == 2;
+ 					this.interval_id && clearInterval(this.interval_id);
+ 					
+ 					if (!is_right_click) {
+ 						var select = this;
+ 						
+ 						this.interval_id = setInterval(function() {
+ 							if (context_menu.is(":visible")) {
 								MyContextMenu.hideContextMenu(context_menu);
 								select.interval_id && clearInterval(select.interval_id);
 								select.interval_id = null;
@@ -8270,8 +8302,8 @@ function LayoutUIEditor() {
 						}, 300);
 					}
 					else
-    						this.interval_id = null;
-    				}
+	 						this.interval_id = null;
+ 				}
 			});
 		}
 	};
@@ -9039,6 +9071,9 @@ function LayoutUIEditor() {
 		var widget_id = widget.data("data-template-id");
 		var ul = menu_settings.find(" > .settings-properties > ul");
 		
+		//JP 2024-12-04: If an attribute contains php code with single line comments, then, whe we open the settings panel of a html element, the LayoutUIEditor will put that php code in the setting input field, which puts the php code into a single line, mix the comments with real code, transforming all php code into a comment. This method avoids this case.
+		me.prepareAttributesWithPTLAndPHPSingleLineOfCode(widget);
+		
 		var widget_settings = me.parseWidgetAttributesToSettings(widget);
 		//console.log(assignObjectRecursively({}, widget_settings));
 		
@@ -9310,6 +9345,32 @@ function LayoutUIEditor() {
 		return value;
 	};
 	
+	//JP 2024-12-04: If an attribute contains php code with single line comments, then, whe we open the settings panel of a html element, the LayoutUIEditor will put that php code in the setting input field, which puts the php code into a single line, mix the comments with real code, transforming all php code into a comment. This method avoids this case.
+	me.prepareAttributesWithPTLAndPHPSingleLineOfCode = function(widget) {
+		var elm = widget[0];
+		
+		$.each(elm.attributes, function(idx, attr) {
+			var name = attr.name;
+			var value = attr.value;
+			
+			try {
+				name = convertInnerPTLAndPHPCodeToASingleLine(name);
+				value = convertInnerPTLAndPHPCodeToASingleLine(value);
+				
+				if (name != attr.name) {
+					elm.removeAttribute(attr.name);
+					elm.setAttribute(name, value);
+				}
+				else if (value != attr.value)
+					elm.setAttribute(name, value);
+			}
+			catch(e) {
+				if (console && console.log)
+					console.log(e);
+			}
+		});
+	};
+	
 	//to be used by the widgets
 	me.parseWidgetAttributesToSettings = function(widget) {
 		var elm = widget[0];
@@ -9518,6 +9579,84 @@ function LayoutUIEditor() {
 			attr_value = encode_handler(attr_value);
 		
 		return attr_value;
+	}
+	
+	//function done by openai
+	function replaceSingleLineComments(code) {
+		//Regular expressions to identify comments
+		var single_line_comment_regex = /(^|[^\\])(?<!\*\/)(\/\/.*)/g;
+		var multi_line_comment_regex = /\/\*.*?\*\//gs;
+
+		//Mark all ranges covered by multi-line comments
+		var multi_line_ranges = [];
+		var match;
+		while ((match = multi_line_comment_regex.exec(code)) !== null)
+			multi_line_ranges.push([match.index, match.index + match[0].length]);
+
+		//Check if a position is inside any multi-line comment range
+		var isInsideMultiLineComment = function(pos) {
+			return multi_line_ranges.some(function(arg) {
+				return pos >= arg[0] && pos < arg[1]; //arg[0] is start; arg[1] is end
+			});
+		};
+
+		//Replace single-line comments if not inside multi-line comments
+		return code.replace(single_line_comment_regex, function(match, pre_char, comment, offset) {
+			if (!isInsideMultiLineComment(offset))
+				return pre_char + "/* " + comment.slice(2).trim() + " */";
+			
+			return match; //Leave as is if inside a multi-line comment
+		});
+	}
+	
+	//JP 2024-12-04: If an attribute contains php code with single line comments, then, whe we open the settings panel of a html element, the LayoutUIEditor will put that php code in the setting input field, which puts the php code into a single line, mix the comments with real code, transforming all php code into a comment. This method avoids this case.
+	function convertInnerPTLAndPHPCodeToASingleLine(html) {
+		var contains_php_code = html && typeof html == "string" && html.indexOf("<?") != -1 && html.indexOf("//") != -1;
+		
+		if (contains_php_code) {
+			var new_html = "";
+			var char, tag_html, code, diff;
+			
+			//parse attribute value (the value already inside of quotes but without quotes), and get the ptl and php tag and for each code decode it
+			for (var i = 0, t = html.length; i < t; i++) {
+				char = html[i];
+				
+				if (char == "<") {
+					if (MyHtmlBeautify.isPHP(html, i)) { //parse php code if exists
+						tag_html = MyHtmlBeautify.getPHP(html, i);
+						code = tag_html[0];
+						
+						//replace single line comments with multi-line comments
+						if (code.indexOf("//") != -1)
+							code = replaceSingleLineComments(code);
+						
+						code = code.replace(/([^\s])\n/g, "$1 \n"); //add a space to all end lines, bc this code will be converted into a single line to code.
+						code = code.replace(/\n/g, ""); //convert to a single line of code
+						
+						diff = code.length - tag_html[0].length;
+						char = code;
+						i = tag_html[1] + diff;
+					}
+					else if (MyHtmlBeautify.isPTL(html, i)) { //parse ptl if exists
+						tag_html = MyHtmlBeautify.getPTL(html, i);
+						code = tag_html[0];
+						
+						code = code.replace(/([^\s])\n/g, "$1 \n"); //add a space to all end lines, bc this code will be converted into a single line to code.
+						code = code.replace(/\n/g, ""); //convert to a single line of code
+						
+						diff = code.length - tag_html[0].length;
+						char = code;
+						i = tag_html[1] + diff;
+					}
+				}
+				
+				new_html += char;
+			}
+			
+			html = new_html;
+		}
+		
+		return html;
 	}
 	
 	me.parseWidgetSettingsToProperties = function(widget, widget_settings) {
@@ -9903,7 +10042,7 @@ function LayoutUIEditor() {
 						var attr_value = inputs.last().val();
 						
 						//change user attributes ignoring some reserved attributes
-						if ($.inArray(attr_name, default_attributes) != -1) 
+						if ($.inArray(attr_name.toLowerCase(), default_attributes) != -1) 
 							attr_name = (attr_name.substr(0, 5) == "data-" ? "" : "data-") + attr_name + "-2";
 						
 						setting_value.push({
@@ -12602,71 +12741,77 @@ function LayoutUIEditor() {
 	
 	me.prepareMessage = function(text, class_name, timeout) {
 		if (text) {
-			class_name = class_name.replace(/\s+/g, " ").replace(/^\s+/g, "").replace(/\s+$/g, "");
-			timeout = timeout > 0 ? timeout : 5000;
-			
-			var class_id = class_name.replace(/ /g, "_");
-			var class_selector = class_name.replace(/ /g, ".");
-			var msg_id = class_id + "_" + (typeof $.md5 == "function" ? $.md5(text) : text.replace("/\s*/g", ""));
-			
-			//only show if message is not repeated
-			if (messages.children("#" + msg_id + ".message").length == 0) {
-				var created_time = (new Date()).getTime();
-				var last_msg_elm = messages.children().last();
+			try {
+				class_name = class_name.replace(/\s+/g, " ").replace(/^\s+/g, "").replace(/\s+$/g, "");
+				timeout = timeout > 0 ? timeout : 5000;
 				
-				//prepare message element
-				if (last_msg_elm.is(".message.message-" + class_selector) && last_msg_elm.data("created_time") + 1500 > created_time) { //if there is already a message created in the previous 1.5seconds, combine this text with that message element.
-					var clone = last_msg_elm.clone();
+				var class_id = class_name.replace(/ /g, "_");
+				var class_selector = class_name.replace(/ /g, ".");
+				var msg_id = class_id + "_" + (typeof $.md5 == "function" ? $.md5(text) : text.replace("/\s*/g", ""));
+				
+				//only show if message is not repeated
+				if (messages.children("#" + msg_id + ".message").length == 0) {
+					var created_time = (new Date()).getTime();
+					var last_msg_elm = messages.children().last();
 					
-					clone.children(".close").remove();
-					var previous_text = clone.html();
-					var is_different = previous_text.substr(- text.length) != text;
-					
-					if (is_different) {
-						var new_text = previous_text + "<br/>" + text;
-						msg_id = class_id + "_" + (typeof $.md5 == "function" ? $.md5(new_text) : new_text.replace("/\s*/g", ""));
+					//prepare message element
+					if (last_msg_elm.is(".message.message-" + class_selector) && last_msg_elm.data("created_time") + 1500 > created_time) { //if there is already a message created in the previous 1.5seconds, combine this text with that message element.
+						var clone = last_msg_elm.clone();
 						
-						last_msg_elm.attr("id", msg_id).children(".close").last().before( "<br/>" + text );
+						clone.children(".close").remove();
+						var previous_text = clone.html();
+						var is_different = previous_text.substr(- text.length) != text;
 						
-						//renew timeout
-						var close_icon = last_msg_elm.children(".close");
-						var timeout_id = last_msg_elm.data("timeout_id");
-						timeout_id && clearTimeout(timeout_id);
+						if (is_different) {
+							var new_text = previous_text + "<br/>" + text;
+							msg_id = class_id + "_" + (typeof $.md5 == "function" ? $.md5(new_text) : new_text.replace("/\s*/g", ""));
+							
+							last_msg_elm.attr("id", msg_id).children(".close").last().before( "<br/>" + text );
+							
+							//renew timeout
+							var close_icon = last_msg_elm.children(".close");
+							var timeout_id = last_msg_elm.data("timeout_id");
+							timeout_id && clearTimeout(timeout_id);
+							
+							timeout_id = setTimeout(function() { 
+								close_icon.trigger("click");
+							}, timeout);
+							last_msg_elm.data("timeout_id", timeout_id);
+						}
 						
-						timeout_id = setTimeout(function() { 
+						clone.remove();
+					}
+					else { //if new message element
+						var html = $('<div id="' + msg_id + '" class="message message-' + class_name + '">' + text + '<i class="zmdi zmdi-close close"></i></div>');
+						var close_icon = html.children(".close");
+						
+						var timeout_id = setTimeout(function() {
 							close_icon.trigger("click");
 						}, timeout);
-						last_msg_elm.data("timeout_id", timeout_id);
+						html.data("timeout_id", timeout_id);
+						
+						html.click(function(event) {
+							event && typeof event.stopPropagation == "function" && event.stopPropagation(); //avoids to call the onClick event from .messages
+						});
+						
+						close_icon.click(function(event) {
+							event && typeof event.stopPropagation == "function" && event.stopPropagation(); //avoids to call the onClick event from .messages
+							
+							me.removeMessage(this);
+							
+							if (timeout_id)
+								clearTimeout(timeout_id);
+						});
+						
+						html.data("created_time", created_time);
+						
+						messages.append(html);
 					}
-					
-					clone.remove();
 				}
-				else { //if new message element
-					var html = $('<div id="' + msg_id + '" class="message message-' + class_name + '">' + text + '<i class="zmdi zmdi-close close"></i></div>');
-					var close_icon = html.children(".close");
-					
-					var timeout_id = setTimeout(function() {
-						close_icon.trigger("click");
-					}, timeout);
-					html.data("timeout_id", timeout_id);
-					
-					html.click(function(event) {
-						event && typeof event.stopPropagation == "function" && event.stopPropagation(); //avoids to call the onClick event from .messages
-					});
-					
-					close_icon.click(function(event) {
-						event && typeof event.stopPropagation == "function" && event.stopPropagation(); //avoids to call the onClick event from .messages
-						
-						me.removeMessage(this);
-						
-						if (timeout_id)
-							clearTimeout(timeout_id);
-					});
-					
-					html.data("created_time", created_time);
-					
-					messages.append(html);
-				}
+			}
+			catch(e) {
+				if (console && console.log)
+					console.log(e);
 			}
 		}
 	};
@@ -12772,20 +12917,25 @@ function LayoutUIEditor() {
 			var editor = parent.data("editor");
 			
 			if (!editor) {
+				var mode = options && options.mode ? options.mode : "php";
+				
 				ace.require("ace/ext/language_tools");
 				var editor = ace.edit(textarea);
 				editor.setTheme("ace/theme/chrome");
-				editor.session.setMode("ace/mode/php");
+				editor.session.setMode("ace/mode/" + mode);
 				editor.setAutoScrollEditorIntoView(true);
 				editor.setOption("minLines", 5);
 				editor.setOptions({
 					enableBasicAutocompletion: true,
 					enableSnippets: true,
-					enableLiveAutocompletion: false,
+					enableLiveAutocompletion: true,
 				});
 				editor.setOption("wrap", true);
 				
-				if (options && typeof options.template_source_editor_save_func == "function") {
+				if (typeof me.options.on_template_source_editor_ready_func == "function")
+					me.options.on_template_source_editor_ready_func(editor);
+				
+				if (options && typeof options.on_template_source_editor_save_func == "function") {
 					editor.commands.addCommand({
 						name: "saveFile",
 						bindKey: {
@@ -12794,7 +12944,7 @@ function LayoutUIEditor() {
 							sender: "editor|cli"
 						},
 						exec: function(env, args, request) {
-							options.template_source_editor_save_func(me);
+							options.on_template_source_editor_save_func(me);
 						},
 					});
 				}

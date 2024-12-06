@@ -287,8 +287,17 @@
 	content:"\f015";
 	line-height:16px;
 }
+.icon.notification::before {
+	content:"\f0f3";
+}
 .icon.docbook::before {
 	content:"\f02d";
+}
+.icon.ai::before {
+	content:"\f5dc";
+}
+.icon.send::before {
+	content:"\f1d8";
 }
 .icon.expand_left_panel::before {
 	content:"\f090";

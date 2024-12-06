@@ -17,6 +17,7 @@ $WorkFlowUIHandler->setTasksGroupsByTag(array(
 ));
 //$WorkFlowUIHandler->addFoldersTasksToTasksGroups($code_workflow_editor_user_tasks_folders_path);
 
+$manage_ai_action_url = $openai_encryption_key ? $project_url_prefix . "phpframework/ai/manage_ai_action" : null;
 $save_advanced_url = $project_url_prefix . 'phpframework/presentation/save_project_global_variables_advanced?bean_name=' . $bean_name . '&bean_file_name=' . $bean_file_name . '&path=' . $path;
 $save_simple_url = $project_url_prefix . 'phpframework/presentation/save_project_global_variables_simple?bean_name=' . $bean_name . '&bean_file_name=' . $bean_file_name . '&path=' . $path;
 
@@ -68,6 +69,7 @@ var global_var_html = \'' . addcslashes(str_replace("\n", "", getGlobalVarHtml("
 var is_code_valid= ' . (!empty($is_code_valid) ? 1 : 0) . ';
 
 var get_workflow_file_url = \'' . $get_workflow_file_url . '\';
+var manage_ai_action_url = \'' . $manage_ai_action_url . '\';
 var save_object_advanced_url = \'' . $save_advanced_url . '\';
 var save_object_simple_url = \'' . $save_simple_url . '\';
 var create_workflow_file_from_code_url = \'' . $create_workflow_file_from_code_url . '\';

@@ -47,3 +47,10 @@
 .add_presentation_view_task_html .broker_method_obj input {
 	margin-left:85px;
 }
+.taskflowchart.fixed_side_properties .selected_task_properties .add_presentation_view_task_html .broker_method_obj input {
+	width:calc(100% - 85px);
+	margin-left:58px;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .add_presentation_view_task_html .broker_method_obj select {
+	width:calc(100% - 60px);
+}

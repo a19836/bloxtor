@@ -1,4 +1,6 @@
 <?php
+$manage_ai_action_url = $openai_encryption_key ? $project_url_prefix . "phpframework/ai/manage_ai_action?bean_name=$bean_name&bean_file_name=$bean_file_name" : null;
+
 $head = '
 <!-- Add ACE editor -->
 <script src="' . $project_common_url_prefix . 'vendor/acecodeeditor/src-min-noconflict/ace.js"></script>
@@ -16,10 +18,17 @@ $head = '
 
 <!-- Add Layout CSS file -->
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/layout.css" type="text/css" charset="utf-8" />
+<script language="javascript" type="text/javascript" src="' . $project_url_prefix . 'js/layout.js"></script>
 
 <!-- Add Local JS and CSS files -->
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/db/execute_sql.css" charset="utf-8" />
-<script src="' . $project_url_prefix . 'js/db/execute_sql.js"></script>';
+<script src="' . $project_url_prefix . 'js/db/execute_sql.js"></script>
+
+<script>
+	var manage_ai_action_url = \'' . $manage_ai_action_url . '\';
+	var table = \'' . $table . '\';
+	var table_attrs = ' . json_encode(isset($table_attrs) ? $table_attrs : null) . ';
+</script>';
 
 $main_content = '
 	<div class="top_bar' . ($popup ? ' in_popup' : '') . '">
@@ -27,6 +36,14 @@ $main_content = '
 			<div class="title">Execute SQL in DB: \'' . $bean_name . '\'</div>
 			<ul>
 				<li class="execute" data-title="Execute"><a onClick="execute()"><i class="icon continue"></i> Execute</a></li>
+				<li class="sub_menu" onClick="openSubmenu(this)">
+					<i class="icon sub_menu"></i>
+					<ul>
+						<li class="ai" title="Generate SQL through AI"><a onClick="openGenerateSQLPopup(this)"><i class="icon ai"></i> Generate SQL through AI</a></li>
+						<li class="ai" title="Explain SQL through AI"><a onClick="explainSQL(this)"><i class="icon ai"></i> Explain SQL through AI</a></li>
+						<li class="ai" title="Open Code Chat Bot"><a onClick="openCodeChatBot(this)"><i class="icon ai"></i> Open Code Chat Bot</a></li>
+					</ul>
+				</li>
 			</ul>
 		</header>
 	</div>

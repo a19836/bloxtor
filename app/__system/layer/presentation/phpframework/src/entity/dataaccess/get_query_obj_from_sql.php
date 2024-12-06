@@ -15,12 +15,17 @@ $sql = isset($_POST["sql"]) ? $_POST["sql"] : null;
 
 if ($sql) {
 	$path = str_replace("../", "", $path);//for security reasons
-
+	
+	//remove comments from sql
+	$sql = preg_replace('/^--.*$/m', '', $sql); //regex to remove all comments that starts with "--" in each line. "m" regex flag is the multi line flag.
+	//echo $sql;die();
+	
+	//convert sql to obj
 	$PHPVariablesFileHandler = new PHPVariablesFileHandler($user_global_variables_file_path);
 	$PHPVariablesFileHandler->startUserGlobalVariables();
 
 	$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
-
+	
 	if ($item_type != "presentation")
 		$obj = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
 	else

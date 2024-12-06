@@ -43,6 +43,7 @@ class MyCurl {
 		$MyCurl->initSingle($single_data);
 		$MyCurl->get_contents();
 		$data = $MyCurl->getData();
+		//echo "<pre>";print_r($data);die();
 		$data = isset($data[0]) ? $data[0] : null;
 		
 		$data_header = isset($data["header"]) ? $data["header"] : null;
@@ -80,10 +81,10 @@ class MyCurl {
 		if (!isset($data["files"])) $data["files"] = false;
 		if (!isset($data["settings"])) $data["settings"] = array();
 		
-		$data["post"] = $this->preparePostData($data["post"]);
-		$data["get"] = $this->prepareGetData($data["get"]);
-		$data["cookie"] = $this->prepareCookiesData($data["cookie"]);
 		$data["settings"] = $this->prepareSettingsData($data["settings"]);
+		$data["post"] = $this->preparePostData($data["post"], $data["settings"]);
+		$data["get"] = $this->prepareGetData($data["get"], $data["settings"]);
+		$data["cookie"] = $this->prepareCookiesData($data["cookie"], $data["settings"]);
 		
 		if ($data["get"]) {
 			$index = strpos($data["url"], "?");
@@ -115,11 +116,11 @@ class MyCurl {
 			if (!isset($data[$i]["files"])) $data[$i]["files"] = false;
 			if (!isset($data[$i]["settings"])) $data[$i]["settings"] = array();
 		
-			$data[$i]["post"] = $this->preparePostData($data[$i]["post"]);
-			$data[$i]["get"] = $this->prepareGetData($data[$i]["get"]);
-			$data[$i]["cookie"] = $this->prepareCookiesData($data[$i]["cookie"]);
 			$data[$i]["settings"] = $this->prepareSettingsData($data[$i]["settings"]);
-
+			$data[$i]["post"] = $this->preparePostData($data[$i]["post"], $data[$i]["settings"]);
+			$data[$i]["get"] = $this->prepareGetData($data[$i]["get"], $data[$i]["settings"]);
+			$data[$i]["cookie"] = $this->prepareCookiesData($data[$i]["cookie"], $data[$i]["settings"]);
+			
 			if ($data[$i]["get"]) {
 				$index = strpos($data[$i]["url"], "?");
 				$data[$i]["url"] .= is_numeric($index) ? $data[$i]["get"] : "?" . $data[$i]["get"];
@@ -139,10 +140,10 @@ class MyCurl {
 		if (!isset($data["files"])) $data["files"] = false;
 		if (!isset($data["settings"])) $data["settings"] = array();
 		
-		$data["post"] = $this->preparePostData($data["post"]);
-		$data["get"] = $this->prepareGetData($data["get"]);
-		$data["cookie"] = $this->prepareCookiesData($data["cookie"]);
 		$data["settings"] = $this->prepareSettingsData($data["settings"]);
+		$data["post"] = $this->preparePostData($data["post"], $data["settings"]);
+		$data["get"] = $this->prepareGetData($data["get"], $data["settings"]);
+		$data["cookie"] = $this->prepareCookiesData($data["cookie"], $data["settings"]);
 		
 		$this->data = array();
 		
@@ -190,13 +191,21 @@ class MyCurl {
 	private function get_contents_syn() {
 		$status = true;
 		$t = $this->data ? count($this->data) : 0;
+		$verbose = false;
 		
 		for ($i = 0; $i < $t; $i++) {
 			$conn = curl_init();
 			$this->setCurlOpts($conn, $this->data[$i]);
-			//error_log(print_r($this->data[$i], 1), 3, "/tmp/tmp.log");
-			//curl_setopt($conn, CURLOPT_VERBOSE, true);
 			
+			// Habilita o modo verbose para capturar todos os detalhes da requisição
+			if ($verbose) {
+				$verbose_temp = fopen('php://temp', 'w+'); // Cria um ficheiro temporário para capturar os detalhes da requisição
+				curl_setopt($conn, CURLOPT_VERBOSE, true);
+				curl_setopt($conn, CURLOPT_STDERR, $verbose_temp);
+				//error_log(print_r($this->data[$i], 1), 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
+			}
+			
+			//exec curl
 			$content = curl_exec($conn);
 			
 			if (!empty($this->data[$i]["settings"]["header"])) {
@@ -215,8 +224,14 @@ class MyCurl {
 			}
 			else
 				$this->data[$i]["info"] = curl_getinfo($conn);
+			//error_log(print_r(curl_getinfo($conn), 1), 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 			
-			//error_log(print_r(curl_getinfo($conn), 1), 3, "/tmp/tmp.log");
+			// Lê e exibe a mensagem de requisição cURL (cabeçalhos e corpo)
+			if ($verbose) {
+				rewind($verbose_temp); // Retorna para o início do ficheiro temporário para ler o conteúdo
+				$verbose_info = stream_get_contents($verbose_temp);
+				error_log($verbose_info, 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
+			}
 			
 			if (function_exists("curl_close"))	
 				curl_close($conn);
@@ -451,14 +466,12 @@ class MyCurl {
 			}
 			$body .= "--";
 			
-			$headers = array('Content-type: multipart/form-data; boundary="'.$boundary.'"',
-					 'Content-length: '.strlen($body)
-					);
+			$headers = array('Content-type: multipart/form-data; boundary="'.$boundary.'"', 'Content-length: '.strlen($body));
 			
 			$data["settings"]["http_header"] = isset($data["settings"]["http_header"]) ? $data["settings"]["http_header"] : array();
 			$data["settings"]["http_header"] = array_merge($headers, $data["settings"]["http_header"]);//the $headers variable needs to be the first one!
 		}
-		else if (isset($data["post"]) && is_array($data["post"]))
+		else if (isset($data["post"]) && is_array($data["post"]) && empty($settings["do_not_prepare_post_data"]))
 			$body = http_build_query($data["post"]);
 		else
 			$body = isset($data["post"]) ? $data["post"] : null;
@@ -479,8 +492,10 @@ class MyCurl {
 		return $buffer;
 	}
 	
-	private function preparePostData($post_str) {
-		if (is_array($post_str)) 
+	private function preparePostData($post_str, $settings = null) {
+		if ($settings && !empty($settings["do_not_prepare_post_data"]))
+			return $post_str;
+		else if (is_array($post_str)) 
 			return $post_str;
 		else if ($post_str) {
 			$post = array();
@@ -499,8 +514,10 @@ class MyCurl {
 		}
 	}
 	
-	private function prepareGetData($get) {
-		if (is_array($get)) {
+	private function prepareGetData($get, $settings = null) {
+		if ($settings && !empty($settings["do_not_prepare_get_data"]))
+			return $post_str;
+		else if (is_array($get)) {
 			$get_str = "";
 			foreach ($get as $key => $value)
 				$get_str .= "&{$key}={$value}";
@@ -515,8 +532,10 @@ class MyCurl {
 		}
 	}
 	
-	private function prepareCookiesData($cookies) {
-		if (is_array($cookies)) {
+	private function prepareCookiesData($cookies, $settings = null) {
+		if ($settings && !empty($settings["do_not_prepare_cookies_data"]))
+			return $post_str;
+		else if (is_array($cookies)) {
 			$cookie_str = "";
 			foreach ($cookies as $key => $value) 
 				$cookie_str .= "{$key}={$value}; ";

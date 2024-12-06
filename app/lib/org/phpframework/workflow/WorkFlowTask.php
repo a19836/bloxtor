@@ -48,9 +48,11 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 			$task["exits"] = $exits;
 		
 		$properties = $this->parseProperties($task);
-		if (!empty($properties)) {
-			$task["properties"] = $properties;
-		}
+		$properties = $properties ? $properties : array();
+		
+		$properties["comments"] = isset($task_data["childs"]["properties"][0]["childs"]["comments"][0]["value"]) ? $task_data["childs"]["properties"][0]["childs"]["comments"][0]["value"] : null;
+		
+		$task["properties"] = $properties;
 		
 		unset($task["raw_data"]);
 		
@@ -138,7 +140,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 	
 	public static function printTask($tasks, $task_ids, $stop_tasks_id, $prefix_tab = "", $options = null) {
 		$return_obj = $options && isset($options["return_obj"]) ? $options["return_obj"] : false;
-		$with_comments = $options && isset($options["with_comments"]) ? $options["with_comments"] : false;
+		$code_with_comments = $options && isset($options["code_with_comments"]) ? $options["code_with_comments"] : true;
 		$res = $return_obj ? array() : "";
 		
 		//print_r($tasks);
@@ -159,20 +161,22 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 						$task = $tasks[ $task_id ];
 						$task_code = $task->printCode($tasks, $stop_tasks_id, $prefix_tab, $options);
 						
-						if ($with_comments) {
-							$task_tag = isset($task->data["tag"]) ? $task->data["tag"] : "";
-							$task_label = isset($task->data["label"]) ? $task->data["label"] : "";
+						$task_comments = "";
+						
+						if (!empty($task->data["properties"]["comments"])) {
+							$task_comments = $task->data["properties"]["comments"];
 							
-							$task_comment = "task[" . $task_tag . "][" . html_entity_decode($task_label) . "]";
-							$task_comment = "\n$prefix_tab/* START: $task_comment */\n"; //JP 2022-03-07: Do not add single line comments, bc in the LayoutUIEditor, whe we open an html element with an attribute with php code, the LayoutUIEditor will put that php code in 1 single line, and then the php code will be commented. So please leave these comments with /* and */.
+							//prepare comments
+							if (strpos($task_comments, "\n") === false)
+								$task_comments = $prefix_tab . "//" . $task_comments; //adding single line of comments its fine now (2024-12-04), bc in the LayoutUIEditor, whe we open a html element with an attribute with php code, the LayoutUIEditor will put that php code in a 1 single line, but before this, it will convert the single line comments into multi-line comments, in order to avoid commenting all the php code forward. This means its ok to use single-line comments.
+							else
+								$task_comments = $prefix_tab . "/**\n$prefix_tab * " . str_replace("\n", "\n$prefix_tab * ", $task_comments) . "\n$prefix_tab */"; //set tab prefixes
 						}
-						else
-							$task_comment = "\n";
 						
 						if ($return_obj)
-							$res[] = array("comment" => $task_comment, "code" => $task_code);
+							$res[] = array("comments" => $task_comments, "code" => $task_code);
 						else if (isset($task_code))
-							$res .= $task_comment . $task_code;
+							$res .= "\n" . ($code_with_comments && $task_comments ? $task_comments . "\n" : "") . $task_code;
 					}
 					else
 						launch_exception(new WorkFlowTaskException(2, $task_id));
@@ -504,8 +508,22 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 						$props = $task["obj"]->createTaskPropertiesFromCodeStmt($stmt, $WorkFlowTaskCodeParser, $exits, $inner_tasks, $tasks_properties);
 						
 						$xml_task = null;
-						if (is_array($props) && !empty($props))
+						if (is_array($props) && !empty($props)) {
+							if ($WorkFlowTaskCodeParser->withComments()) {
+								$comments = $WorkFlowTaskCodeParser->printComments($stmt);
+								
+								if ($comments) {
+									if (!empty($props["comments"])) {
+										if (strpos($props["comments"], $comments) === false) //avoid repeated comments
+											$props["comments"] = $comments . "\n" . $props["comments"];
+									}
+									else
+										$props["comments"] = $comments;
+								}
+							}
+							
 							$xml_task = $WorkFlowTaskCodeParser->createXMLTask($task, $props, $exits);
+						}
 						else if ($inner_tasks)
 							$xml_task = $WorkFlowTaskCodeParser->createConnectorXMLTask($exits);
 						

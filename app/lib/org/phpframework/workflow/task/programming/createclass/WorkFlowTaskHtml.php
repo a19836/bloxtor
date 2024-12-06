@@ -21,9 +21,9 @@
 		<label>Is Interface:</label>
 		<input class="task_property_field" name="interface" type="checkbox" value="1" />
 	</div>
-	<div class="comments">
-		<label>Comments:</label>
-		<textarea class="task_property_field" name="comments"></textarea>
+	<div class="trait">
+		<label>Is Trait:</label>
+		<input class="task_property_field" name="trait" type="checkbox" value="1" />
 	</div>
 	<div class="properties">
 		<label>Properties:</label>
@@ -48,6 +48,8 @@
 		<label>Methods: <span class="icon add" onClick="CreateClassTaskPropertyObj.addMethod(this)">Add Method</span></label>
 		<ul index_prefix="methods"></ul>
 	</div>
+	
+	<?php include dirname(dirname($file_path)) . "/common/CommentsHtml.php"; ?>
 	
 	<div class="task_property_exit" exit_id="default_exit" exit_color="#426efa"></div>
 </div>

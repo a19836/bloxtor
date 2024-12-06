@@ -85,10 +85,10 @@ if (!empty($_POST)) {
 					
 					if (is_array($fks))
 						foreach ($fks as $fk)
-							if (!empty($fk)) {
-								$child_column = isset($fk["child_column"]) ? $fk["child_column"] : null;
+							if ($fk && $fk["child_column"]) {
+								$child_column = $fk["child_column"];
 								
-								if ($child_column && $items[$child_column]) {
+								if ($items[$child_column]) {
 									if (empty($items[$child_column]["fk"]))
 										$items[$child_column]["fk"] = array();
 									
@@ -117,7 +117,8 @@ if (!empty($_POST)) {
 				$items = array();
 				if ($tables)
 					foreach ($tables as $table) 
-						$items[] = isset($table["name"]) ? $table["name"] : null;
+						if (isset($table["name"]))
+							$items[] = $table["name"];
 			}
 		}
 	}

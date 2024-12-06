@@ -805,16 +805,19 @@ function createSqlEditor(textarea) {
 		var editor = ace.edit(textarea);
 		editor.setTheme("ace/theme/chrome");
 		editor.session.setMode("ace/mode/sql");
-	    	editor.setAutoScrollEditorIntoView(true);
+    	editor.setAutoScrollEditorIntoView(true);
 		editor.setOption("maxLines", "Infinity");
 		editor.setOption("minLines", 2);
 		editor.setOptions({
 			enableBasicAutocompletion: true,
 			enableSnippets: true,
-			enableLiveAutocompletion: false,
+			enableLiveAutocompletion: true,
 		});
 		editor.setOption("wrap", true);
 		editor.$blockScrolling = "Infinity";
+		
+		if (typeof setCodeEditorAutoCompleter == "function")
+			setCodeEditorAutoCompleter(editor);
 		
 		editor.getSession().on("change", function () {
 			var t = p.children("textarea:not(.editor)");

@@ -20,6 +20,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					"value" => isset($args[1]["value"]) ? $args[1]["value"] : null,
 					"type" => isset($args[1]["type"]) ? self::getConfiguredParsedType($args[1]["type"]) : null,
 					"label" => "Init " . self::prepareTaskPropertyValueLabelFromCodeStmt($arg_value_0),
+					"comments" => isset($props["comments"]) ? $props["comments"] : "",
 					"exits" => array(
 						self::DEFAULT_EXIT_ID => array(
 							"color" => "#426efa",

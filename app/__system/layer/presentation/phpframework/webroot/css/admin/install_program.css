@@ -406,10 +406,10 @@ body:not(.in_popup),
 	font-size: 10px;
 	text-align:center;
 	position:relative;
-	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 5%);
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 50%);
 }
 .install_store_program ul li:not(.loading):not(.empty):hover {
-	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 20%);
+	box-shadow:0px 0px 5px 5px rgb(200 200 200 / 70%);
 }
 .install_store_program ul li.hidden {
 	display:none !important;

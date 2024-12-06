@@ -86,7 +86,7 @@ var CreateClassTaskPropertyObj = {
 	},
 	
 	getDefaultExitLabel : function(task_property_values) {
-		return (task_property_values["abstract"] ? "abstract " : "") + (task_property_values["interface"] ? "interface" : "class") + " " + task_property_values["name"] + (task_property_values["extends"] ? " extends " + task_property_values["extends"] : "") + (task_property_values["implements"] ? " implements " + task_property_values["implements"] : "");
+		return (task_property_values["abstract"] ? "abstract " : "") + (task_property_values["interface"] ? "interface" : (task_property_values["trait"] ? "trait" : "class")) + " " + task_property_values["name"] + (task_property_values["extends"] ? " extends " + task_property_values["extends"] : "") + (task_property_values["implements"] ? " implements " + task_property_values["implements"] : "");
 	},
 	
 	addProperty : function(elm) {

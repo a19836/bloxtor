@@ -60,10 +60,12 @@ if ($is_remote_update_allowed) {
 
 	$main_content .= '</form>';
 }
-else
+else {
+	$cms_path_str = preg_match("/\s/", CMS_PATH) ? '"' . CMS_PATH . '"' : CMS_PATH;
 	$main_content .= '<div><strong>Update NOT possible, due to permission issues.</strong><br/>Please contact your system administrator to run the following command on your server as root user:</div>
-	<pre class="command">sudo /bin/bash "' . CMS_PATH . '"other/script/update_git_repo.sh "' . CMS_PATH . '"</pre>
+	<pre class="command">sudo /bin/bash ' . $cms_path_str . 'other/script/update_git_repo.sh ' . $cms_path_str . '</pre>
 	<div>If you want to keep your changes and merge them with the new ones, contact your system administrator to perform the update manually.</div>';
+}
 
 $main_content .= '</div>';
 ?>

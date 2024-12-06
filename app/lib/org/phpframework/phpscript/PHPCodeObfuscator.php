@@ -1295,7 +1295,7 @@ class PHPCodeObfuscator {
 		if (isset($this->files_settings[$file_path][1]["all_functions"]["obfuscate_name"]))
 			return $this->files_settings[$file_path][1]["all_functions"]["obfuscate_name"];
 			
-		return $this->current_options["obfuscate_name"];
+		return isset($this->current_options["obfuscate_name"]) ? $this->current_options["obfuscate_name"] : null;
 	}
 	
 	private function obfuscateFunctionCode($file_path, $func_name) {

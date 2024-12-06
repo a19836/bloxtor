@@ -126,6 +126,19 @@ $main_content = '
 		<li class="icon full_screen" data-title="Toggle Full Screen" onClick="toggleFullScreen(this)"></li>
 		<li class="separator">|</li>
 		
+		<li class="sub_menu sub_menu_notifications" data-title="Notifications" onClick="openSubmenu(this)">
+			<span class="icon notification"></span>
+			<i class="icon dropdown_arrow"></i>
+			
+			<ul>
+				<div class="triangle_up"></div>
+				
+				<li class="empty_notification"><div>There are no notifications</div></li>
+				<!--li class="notification"><div>test</div></li-->
+			</ul>
+		</li>
+		<li class="separator">|</li>
+		
 		<li class="icon tools" onClick="chooseAvailableTool(\'' . "{$project_url_prefix}admin/choose_available_tool?element_type=util&bean_name=$bean_name&bean_file_name=$bean_file_name&filter_by_layout=$filter_by_layout&path=$project&popup=1" . '\')" data-title="Tools"></li>
 		<li class="icon home" data-title="Home" onClick="goTo(this, \'url\', event)" url="' . "{$project_url_prefix}admin/admin_home?selected_layout_project=$filter_by_layout" . '"></li>
 		<li class="separator">|</li>

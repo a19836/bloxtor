@@ -10,12 +10,14 @@
 		<select class="task_property_field" name="type">
 			<option>string</option>
 			<option value="">code</option>
-		<select>
+		</select>
 	</div>
 	<div class="once">
 		<label>Once:</label>
 		<input type="checkbox" class="task_property_field" name="once" value="1" title="Include Once" />
 	</div>
+	
+	<?php include dirname(dirname($file_path)) . "/common/CommentsHtml.php"; ?>
 	
 	<div class="task_property_exit" exit_id="default_exit" exit_color="#426efa"></div>
 </div>

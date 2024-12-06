@@ -36,6 +36,7 @@ class UserAuthenticationUIHandler {
 			' . ($UserAuthenticationHandler->isLocalDB() ? '<li class="manage_menu_item change_db_keys' . ($page_code == "user/change_db_keys" ? ' active' : '') . '"><a href="' . $project_url_prefix . 'user/change_db_keys">Change DB Keys</a></li>' : '') . '
 			
 			<li class="manage_menu_item change_auth_settings' . ($page_code == "user/change_auth_settings" ? ' active' : '') . '"><a href="' . $project_url_prefix . 'user/change_auth_settings">Change Auth Settings</a></li>
+			<li class="manage_menu_item change_other_settings' . ($page_code == "user/change_other_settings" ? ' active' : '') . '"><a href="' . $project_url_prefix . 'user/change_other_settings">Change Other Settings</a></li>
 		</ul>';
 	}
 }

@@ -43,6 +43,7 @@
 }
 .taskflowchart.fixed_side_properties .selected_task_properties .call_business_logic_task_html .get_automatically label {
 	width:170px;
+	vertical-align:top;
 }
 .call_business_logic_task_html .get_automatically .icon {
 	width:23px;

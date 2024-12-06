@@ -1274,6 +1274,9 @@ class WorkFlowPresentationHandler {
 			' . ($show_pretty_print ? '<li class="pretty_print" title="Pretty Print Code"><a onClick="prettyPrintCode()"><i class="icon pretty_print"></i> Pretty Print Code</a></li>' : '') . '
 			<li class="set_word_wrap" title="Set Word Wrap"><a onClick="setWordWrap(this)" wrap="0"><i class="icon word_wrap"></i> Word Wrap</i></a></li>
 			<li class="separator"></li>
+			<li class="ai" title="Comment code automatically"><a onClick="commentCodeAutomatically(this)"><i class="icon ai"></i> Comment Code Automatically</a></li>
+			<li class="ai" title="Open Code Chat Bot"><a onClick="openCodeChatBot(this)"><i class="icon ai"></i> Open Code Chat Bot</a></li>
+			<li class="separator"></li>
 			<li class="generate_tasks_flow_from_code" title="' . $generate_tasks_flow_from_code_label . '"><a onClick="' . $generate_tasks_flow_from_code_func . '(true, {force: true});return false;"><i class="icon generate_tasks_flow_from_code"></i> ' . $generate_tasks_flow_from_code_label . '</a></li>
 			<li class="generate_code_from_tasks_flow" title="' . $generate_code_from_tasks_flow_label . '"><a onClick="' . $generate_code_from_tasks_flow_func . '(true, {force: true});return false;"><i class="icon generate_code_from_tasks_flow"></i> ' . $generate_code_from_tasks_flow_label . '</a></li>
 			<li class="separator"></li>

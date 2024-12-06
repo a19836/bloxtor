@@ -33,17 +33,15 @@ $(function () {
 	var textarea = code_area.children("textarea")[0];
 	
 	if (textarea) {
-		ace.require("ace/ext/language_tools");
-		
 		var options = {
 			enableBasicAutocompletion: true,
 			enableSnippets: true,
-			enableLiveAutocompletion: false,
+			enableLiveAutocompletion: true,
 		};
 		
 		if (readonly) {
 			options["readOnly"] = true;
-		    	options["highlightActiveLine"] = false;
+	    	options["highlightActiveLine"] = false;
 			options["highlightGutterLine"] = false;
 		}
 		
@@ -56,6 +54,9 @@ $(function () {
 		editor.setOption("wrap", true);
 		editor.setOptions(options);
 		//editor.$blockScrolling = "Infinity";
+		
+		if (typeof setCodeEditorAutoCompleter == "function")
+			setCodeEditorAutoCompleter(editor);
 		
 		if (readonly)
 			editor.renderer.$cursorLayer.element.style.opacity = 0
@@ -287,5 +288,70 @@ function openEditorSettings() {
 	else {
 		//alert("Error trying to open the editor settings...");
 		StatusMessageHandler.showError("Error trying to open the editor settings...");
+	}
+}
+
+function commentCodeAutomatically() {
+	if (typeof manage_ai_action_url == "undefined")
+		StatusMessageHandler.showError("Manage AI Action url is not defined. Please talk with sysadmin");
+	else if (!manage_ai_action_url)
+		StatusMessageHandler.showError("Artificial Intelligence is disabled. To enable it, please add your OpenAI Key in the 'Manage Permissions/Users' panel.");
+	else {
+		var editor = $(".code_area").data("editor");
+		var code = editor ? editor.getValue() : $(".code_area textarea").first().val();
+		
+		var url = manage_ai_action_url + (manage_ai_action_url.indexOf("?") != -1 ? "" : "?") + "&action=comment_php_code";
+		
+		if (!code)
+			StatusMessageHandler.showMessage("There is no code to comment...", "", "bottom_messages", 1500);
+		else {
+			var msg = StatusMessageHandler.showMessage("AI loading. Wait a while...", "", "bottom_messages", 60000);
+			
+			$.ajax({
+				type : "post",
+				url : url,
+				processData: false,
+				contentType: 'text/plain',
+				data: code,
+				dataType : "html",
+				success : function(message, textStatus, jqXHR) {
+					//console.log(message);
+					
+					msg.remove();
+					
+					if (message) {
+						if (editor)
+							editor.setValue(message);
+						else
+							$(".code_area textarea").first().val(message);
+					}
+					else
+						StatusMessageHandler.showError("Error: Couldn't process this request with AI. Please try again...");
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					msg.remove();
+					
+					if (jqXHR.responseText)
+						StatusMessageHandler.showError(jqXHR.responseText);
+				},
+			});
+		}
+	}
+}
+
+function openCodeChatBot() {
+	if (typeof manage_ai_action_url == "undefined")
+		StatusMessageHandler.showError("Manage AI Action url is not defined. Please talk with sysadmin");
+	else if (!manage_ai_action_url)
+		StatusMessageHandler.showError("Artificial Intelligence is disabled. To enable it, please add your OpenAI Key in the 'Manage Permissions/Users' panel.");
+	else {
+		var editor = $(".code_area").data("editor");
+		
+		if (editor) {
+			if (typeof editor.showCodeEditorChatBot == "function")
+				editor.showCodeEditorChatBot(editor);
+			else
+				showCodeEditorChatBot(editor);
+		}
 	}
 }

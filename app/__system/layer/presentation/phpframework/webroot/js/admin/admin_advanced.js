@@ -1,5 +1,6 @@
 var iframe_overlay = null; //To be used by sub-pages
 var empty_layers_uls = [];
+var loaded_notifications_ids = [];
 
 $(function() {
 	var hide_panel = $("#hide_panel");
@@ -279,7 +280,85 @@ $(function() {
 			});
 		}
 	}
+	
+	//prepare notifications
+	var notifications = $("#top_panel > ul > li.sub_menu.sub_menu_notifications");
+	
+	notifications.on("click", function(ev) {
+		notifications.removeClass("active");
+	});
+	
+	getNotifications();
 });
+
+function getNotifications() {
+	var ajax_options = {
+		type : "get",
+		url : notifications_url,
+		dataType : "json",
+		success : function(items, textStatus, jqXHR) {
+			var notifications = $("#top_panel > ul > li.sub_menu.sub_menu_notifications");
+			var ul = notifications.children("ul");
+			var html = '';
+			
+			notifications.find(".empty_notification").remove();
+			
+			if (items && items.length) {
+				var total = 0;
+				
+				$.each(items, function(idx, item) {
+					if ($.isPlainObject(item)) {
+						var notification_id = item["id"] ? item["id"] : (item["title"] + "|" + item["description"]).hashCode();
+						
+						if ($.inArray(notification_id, loaded_notifications_ids) == -1) {
+							html += '<li class="notification' + (item["class"] ? ' ' + item["class"] : '') + '">'
+											+ '<div>' 
+												+ (item["icon"] ? '<span class="icon ' + item["icon"] + '"></span>' : '') 
+												+ '<div class="title">' + item["title"] + '</div>' 
+												+ (item["description"] ? '<div class="description">' + item["description"] + '</div>' : '') 
+											+ '</div>'
+										+ '</li>';
+							
+							loaded_notifications_ids.push(notification_id);
+							total++;
+						}
+					}
+				});
+				
+				if (total > 0) {
+					notifications.addClass("active");
+					notifications.children(".icon.notification").attr("total", total);
+				}
+			}
+			else if (ul.children("li").length == 0) {
+				html += '<li class="empty_notification"><div>There are no notifications</div></li>';
+			}
+			
+			if (html)
+				ul.append(html);
+			
+			setTimeout(function() {
+				getNotifications();
+			}, 300000); //every 5 minutes
+		},
+		error : function(jqXHR, textStatus, errorThrown) { 
+			//shows login popup
+			if (jquery_native_xhr_object && isAjaxReturnedResponseLogin(jquery_native_xhr_object.responseURL))
+				showAjaxLoginPopup(jquery_native_xhr_object.responseURL, notifications_url, function() {
+					$.ajax(ajax_options);
+				});
+			else if (console && console.log) {
+				console.log("Error trying to get notifications." + (jqXHR.responseText ? "\n" + jqXHR.responseText : ""));
+				
+				setTimeout(function() {
+					getNotifications();
+				}, 300000); //every 5 minutes
+			}
+		},
+	};
+	
+	$.ajax(ajax_options);
+}
 
 function prepareLayerActiveTab(li) {
 	var ul = li.parent();

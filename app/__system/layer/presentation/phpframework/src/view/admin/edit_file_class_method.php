@@ -60,12 +60,14 @@ if ($is_obj_valid) {
 	$js_save_func_name = !empty($js_save_func_name) ? $js_save_func_name : "saveFileClassMethod";
 
 	$class_id_for_js = addcslashes(preg_replace("/\\+/", "\\", $class_id), '\\'); //must duplicate the back-slashes, otherwise in javascript it will remove it the back-slashes and merge the multiple namespaces of the object class (in case the namespace exists)
-
+	
 	if ($ft == "class_method") 
 		$save_url = $project_url_prefix . 'phpframework/admin/save_file_class_method?bean_name=' . $bean_name . '&bean_file_name=' . $bean_file_name . '&path=' . $path . '&item_type=' . $item_type . '&class=' . $class_id_for_js . '&method=#method_id#';
 	else
 		$save_url = $project_url_prefix . 'phpframework/admin/save_file_function?bean_name=' . $bean_name . '&bean_file_name=' . $bean_file_name . '&path=' . $path . '&item_type=' . $item_type . '&function=#method_id#';
 
+	$manage_ai_action_url = $openai_encryption_key ? $project_url_prefix . "phpframework/ai/manage_ai_action" : null;
+	
 	//Note: $get_workflow_tasks_id and $get_tmp_workflow_tasks_id can be set previously, like it happens in the businesslogic/edit_method that calls this file
 	$path_extra = hash('crc32b', "$bean_file_name/$bean_name/$item_type/$path/$class_id/" . ($ft == "class_method" ? $method_id : $function_id) );
 	$get_workflow_tasks_id = !empty($get_workflow_tasks_id) ? $get_workflow_tasks_id : "php_file_workflow&path_extra=_$path_extra";
@@ -145,6 +147,7 @@ if ($is_obj_valid) {
 	var class_id = \'' . $class_id . '\';
 
 	var get_workflow_file_url = \'' . $get_workflow_file_url . '\';
+	var manage_ai_action_url = \'' . $manage_ai_action_url . '\';
 	var save_object_url = \'' . $save_url . '\';
 	var create_workflow_file_from_code_url = \'' . $create_workflow_file_from_code_url . '\';
 	var get_tmp_workflow_file_url = \'' . $get_tmp_workflow_file_url . '\';

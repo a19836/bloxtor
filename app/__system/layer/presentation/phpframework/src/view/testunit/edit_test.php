@@ -36,6 +36,7 @@ $WorkFlowUIHandler->setTasksGroupsByTag(array(
 ));
 $WorkFlowUIHandler->addFoldersTasksToTasksGroups($code_workflow_editor_user_tasks_folders_path);
 
+$manage_ai_action_url = $openai_encryption_key ? $project_url_prefix . "phpframework/ai/manage_ai_action" : null;
 $save_url = $project_url_prefix . 'phpframework/testunit/save_test?path=' . $path;
 
 $path_extra = hash('crc32b', "$path");
@@ -93,6 +94,7 @@ var layer_brokers_settings = ' . (isset($layer_brokers_settings) ? json_encode($
 var layers_projects_urls = ' . (isset($layers_projects_urls) ? json_encode($layers_projects_urls) : "null") . ';
 
 var get_workflow_file_url = \'' . $get_workflow_file_url . '\';
+var manage_ai_action_url = \'' . $manage_ai_action_url . '\';
 var save_object_url = \'' . $save_url . '\';
 var create_workflow_file_from_code_url = \'' . $create_workflow_file_from_code_url . '\';
 var get_tmp_workflow_file_url = \'' . $get_tmp_workflow_file_url . '\';

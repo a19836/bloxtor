@@ -400,6 +400,8 @@ var FunctionUtilObj = {
 							success : function(data, textStatus, jqXHR) {
 								if (data && data.hasOwnProperty("code")) {
 									var code = "<?php\n" + data.code.replace(/^\s+/g, "").replace(/\s+$/g, "") + "\n?>"; 
+									code = code.replace(/^<\?php\s+\?>\s*/, "").replace(/<\?php\s+\?>$/, ""); //remove empty php tags
+									
 									FunctionUtilObj.setEditFunctionCodeEditorValue(ui_elm, code);
 									
 									ui_elm.attr("workflow_id", new_workflow_id);

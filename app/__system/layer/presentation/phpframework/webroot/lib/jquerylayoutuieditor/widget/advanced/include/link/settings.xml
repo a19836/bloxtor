@@ -134,8 +134,10 @@
 				var node_name = html_element.nodeName.toLowerCase();
 				
 				//if html_element is a link node.
-				if (node_name == "link")
+				if (node_name == "link") {
+					//console.log(html_element);
 					return true;
+				}
 				
 				//Otherwise if html_element was previously a template-widget-link node.
 				//Note that if we call the recreateWidgetChildren or convertHtmlElementToWidget methods for this widget.parent(), when the html_element is already a widget (created previously), we need to be prepared to parse it and re-convert this html_element (which is already a widget) into a new widget. So we need to detect this cases with the following code:
@@ -179,6 +181,7 @@
 			me.onCreateTemplateWidget = function(widget, html_element) {
 				var link_file = widget.children(".link-file");
 				
+				//console.log(html_element);
 				if (html_element) {
 					var is_recreate = me.isRecreateWidget(html_element);
 					var node_name = html_element.nodeName.toLowerCase();

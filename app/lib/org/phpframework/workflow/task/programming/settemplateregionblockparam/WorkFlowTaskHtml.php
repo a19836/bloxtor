@@ -42,6 +42,8 @@
 		</select>
 		<span class="icon search" onclick="ProgrammingTaskUtil.onProgrammingTaskChoosePageUrl(this)" title="Search Page">Search page</span>
 	</div>
+	
+	<?php include dirname(dirname($file_path)) . "/common/CommentsHtml.php"; ?>
 		
 	<div class="task_property_exit" exit_id="default_exit" exit_color="#426efa"></div>
 </div>

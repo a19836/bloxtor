@@ -15,6 +15,9 @@ AddLayoutUIEditorWidgetResourceSLAResourceAsyncFancyPopup.init({
 });
 
 function initLayoutUIEditorWidgetResourceOptions(PtlLayoutUIEditor) {
+	PtlLayoutUIEditor.options.on_context_menu_widget_setting = typeof onContextMenuLayoutUIEditorWidgetSetting == "function" ? onContextMenuLayoutUIEditorWidgetSetting : null;
+	PtlLayoutUIEditor.options.on_template_source_editor_ready_func = typeof setCodeEditorAutoCompleter == "function" ? setCodeEditorAutoCompleter : null;
+	
 	PtlLayoutUIEditor.options.on_choose_event_func = toggleChooseEventPopup;
 	var exists_choose_db_table_or_attribute_popup = $("#choose_db_table_or_attribute").length > 0;
 	

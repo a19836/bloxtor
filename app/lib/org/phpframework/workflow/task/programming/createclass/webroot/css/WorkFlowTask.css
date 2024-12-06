@@ -21,29 +21,31 @@
   .create_class_task_html > .implements,
   .create_class_task_html > .abstract,
   .create_class_task_html > .interface,
+  .create_class_task_html > .trait,
   .create_class_task_html > .properties,
-  .create_class_task_html > .methods,
-  .create_class_task_html > .comments {
+  .create_class_task_html > .methods {
 	width:100%;
 	min-height:20px;
 	margin-top:10px;
 	margin-bottom:5px;
 }
-.create_class_task_html > .name {
-	margin-top:0;
-}
 .create_class_task_html > .name label,
   .create_class_task_html > .extends label,
   .create_class_task_html > .implements label,
   .create_class_task_html > .abstract label,
-  .create_class_task_html > .interface label {
+  .create_class_task_html > .interface label,
+  .create_class_task_html > .trait label {
 	width:100px;
+}
+.create_class_task_html > .comments label:before {
+	content:"Class ";
 }
 .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .name label,
   .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .extends label,
   .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .implements label,
   .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .abstract label,
-  .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .interface label {
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .interface label,
+  .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .trait label {
 	width:60px;
 }
 .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .name input {
@@ -54,19 +56,11 @@
 	width:calc(100% - 100px);
 }
 
-.create_class_task_html > .properties > label,
-  .create_class_task_html > .comments label {
+.create_class_task_html > .properties > label {
 	width:100%;
 	margin-bottom:5px;
 	display:block;
 	float:none;
-}
-.create_class_task_html > .comments textarea {
-	width:100%;
-	max-width:100%;
-	height:100px;
-	float:none;
-	box-sizing: border-box;
 }
 
 .create_class_task_html > .properties {
@@ -92,6 +86,13 @@
   .create_class_task_html > .properties table .value,
   .create_class_task_html > .properties table .comments {
 	width:100px;
+}
+.create_class_task_html > .properties table .comments {
+	width:100px;
+	min-height:auto;
+	margin:0;
+	padding:0;
+	border:0;
 }
 .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .properties table .name,
   .taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .properties table .value,
@@ -155,6 +156,18 @@
 	border:1px solid #ddd;
 	margin-bottom:10px;
 }
+.create_class_task_html > .methods li > .comments {
+	margin:20px 0 0;
+	padding:0;
+	border:0;
+}
+.create_class_task_html > .methods li > .comments label:before {
+	content:"Method ";
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .create_class_task_html > .methods li > .name {
+	width:100%;
+	box-sizing:border-box;
+}
 .create_class_task_html > .methods li > .icon.update,
   .create_class_task_html > .methods li > .icon.remove {
 	margin-bottom:10px;
@@ -165,24 +178,4 @@
 }
 .create_class_task_html > .methods li table {
 	margin-top:10px;
-}
-
-.create_class_task_html > .methods li > .comments {
-	min-height:20px;
-	margin-top:10px;
-	margin-bottom:5px;
-}
-.create_class_task_html > .methods li > .comments label {
-	width:100%;
-	margin-bottom:5px;
-	display:block;
-	float:none;
-}
-.create_class_task_html > .methods li > .comments textarea {
-	width:100%;
-	max-width:100%;
-	height:50px;
-	box-sizing:border-box;
-	border-color:#eee;
-	float:none;
 }

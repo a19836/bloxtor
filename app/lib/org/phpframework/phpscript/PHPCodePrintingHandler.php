@@ -134,12 +134,13 @@ class PHPCodePrintingHandler {
 				
 				--$open_brackets_count;
 			}
-			else if (!$class_open_brackets_count && !$function_open_brackets_count && ($tokens[$i][0] == T_CLASS || $tokens[$i][0] == T_INTERFACE)) { //in case there is a class inside of a function gets ignored	$class_path = "";
+			else if (!$class_open_brackets_count && !$function_open_brackets_count && ($tokens[$i][0] == T_CLASS || $tokens[$i][0] == T_INTERFACE || $tokens[$i][0] == T_TRAIT)) { //in case there is a class inside of a function gets ignored	$class_path = "";
 				$class_data = array();
 				$class_name = "";
 				$class_path = "";
 				$line_index = isset($tokens[$i][2]) ? $tokens[$i][2] : null;
 				$interface = $tokens[$i][0] == T_INTERFACE;
+				$trait = $tokens[$i][0] == T_TRAIT;
 				$abstract = false;
 				$start_function = $start_extends = $start_implements = false;
 				$extends_index = $implements_index = 0;
@@ -192,6 +193,7 @@ class PHPCodePrintingHandler {
 						"start_line_index" => $line_index,
 						"start_token_index" => $class_idx,
 						"interface" => $interface,
+						"trait" => $trait,
 						"abstract" => $abstract,
 						"namespace" => $namespace,
 					);
@@ -2689,6 +2691,7 @@ class PHPCodePrintingHandler {
 		$name = isset($class_settings["name"]) ? trim($class_settings["name"]) : "";
 		$hidden = isset($class_settings["hidden"]) ? $class_settings["hidden"] : null;
 		$interface = isset($class_settings["interface"]) ? $class_settings["interface"] : null;
+		$trait = isset($class_settings["trait"]) ? $class_settings["trait"] : null;
 		$abstract = isset($class_settings["abstract"]) ? $class_settings["abstract"] : null;
 		$extends = isset($class_settings["extends"]) ? $class_settings["extends"] : null;
 		$implements = isset($class_settings["implements"]) ? $class_settings["implements"] : null;
@@ -2748,7 +2751,7 @@ class PHPCodePrintingHandler {
 		if ($comments) 
 			$str .= (substr($comments, 0, 2) != "/*" ? "/**\n * " . str_replace("\n", "\n * ", $comments) . "\n */" : $comments) . "\n";
 		
-		$str .= ($abstract ? "abstract " : "") . ($interface ? "interface" : "class") . " $name";
+		$str .= ($abstract ? "abstract " : "") . ($interface ? "interface" : ($trait ? "trait" : "class")) . " $name";
 	
 		//prepare extends
 		if ($extends) 

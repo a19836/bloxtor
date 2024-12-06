@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+	<label>AI Html</label>
+	<tag>ai-html</tag>
+	<settings>
+		<create_widget_class>AIHtmlWidget</create_widget_class>
+	</settings>
+	<menu_widget></menu_widget>
+	<template_widget><![CDATA[]]></template_widget>
+	<properties></properties>
+	<menu_css><![CDATA[
+		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-ai-html:before,
+		  body > .menu-widget.menu-widget-ai-html.ui-draggable-dragging:before {
+			background-image:url('#widget_webroot_url#ai_html.svg');
+		}
+		
+		.layout-ui-editor > .template-widgets > .widget-header.widget-header-ai-html .options .props,
+		   .layout-ui-editor > .template-widgets > .widget-header.widget-header-ai-html .options .toggle {
+			display:none !important;
+		}
+		
+		.layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-id,
+		   .layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-classes,
+		   .layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-properties,
+		   .layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-widget,
+		   .layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-general,
+		   .layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-dimension,
+		   .layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-typography,
+		   .layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-decorations,
+		   .layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-events,
+		   .layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-others,
+		   .layout-ui-editor > .menu-settings.menu-settings-ai-html .settings-extra,
+			.layout-ui-editor > .menu-settings.menu-settings-ai-html li.settings-tabs > ul > li.settings-tab-properties,
+			.layout-ui-editor > .menu-settings.menu-settings-ai-html li.settings-tabs > ul > li.settings-tab-widget,
+			.layout-ui-editor > .menu-settings.menu-settings-ai-html li.settings-tabs > ul > li.settings-tab-style,
+			.layout-ui-editor > .menu-settings.menu-settings-ai-html li.settings-tabs > ul > li.settings-tab-events,
+			.layout-ui-editor > .menu-settings.menu-settings-ai-html li.settings-tabs > ul > li.settings-tab-extra {
+			display:none;
+		}
+		.layout-ui-editor > .menu-settings.menu-settings-ai-html li.settings-tabs {
+			margin-top:35px;
+		}
+		
+		.layout-ui-editor > .menu-layers .group.group-ai-html > ul {
+			display:none !important;
+		}
+		
+		/* POPUP - create_ai_html_popup */
+		.myfancypopup.create_ai_html_popup {
+			width:90vw;
+			width:calc(100vw - 40px);
+			max-height:90vh;
+			max-height:calc(100vh - 40px);
+			box-sizing:border-box;
+			text-align:center;
+		}
+		.myfancypopup.create_ai_html_popup.with_title {
+			padding:15px;
+		}
+		.myfancypopup.create_ai_html_popup.with_title > .title {
+			margin:-15px -15px 15px;
+			padding-right:150px;
+		}
+		.myfancypopup.create_ai_html_popup.with_title > .sub_title {
+			margin:20px 0;
+		}
+		.myfancypopup.create_ai_html_popup.with_title > textarea {
+			width:100%;
+			height:200px;
+			display:block;
+			font-size:inherit;
+		}
+		.myfancypopup.create_ai_html_popup.with_title > .image {
+			margin:20px auto 0;
+		}
+		.myfancypopup.create_ai_html_popup.with_title > button {
+			margin:20px auto 0;
+		}
+		.myfancypopup.create_ai_html_popup.with_title > .instructions {
+			margin:20px 0;
+			font-size:80%;
+			text-align:justify;
+			display:none;
+		}
+	]]></menu_css>
+	<menu_js><![CDATA[
+		function AIHtmlWidget(ui_creator, menu_widget) {
+			var me = this;
+			var popup = null;
+			
+			me.AIHtmlFancyPopup = new MyFancyPopupClass();
+			
+			me.init = function() {
+				menu_widget.attr({
+					"data-on-drag-stop-func": ui_creator.obj_var_name + ".menu_widgets_objs['ai-html'].onDropMenuWidget",
+				});
+				
+				if (typeof manage_ai_action_url == "undefined") {
+					alert("The 'manage_ai_action_url' variable does not exist or is empty! 'ai-html' widget will be removed from the layout ui editor!");
+				    
+			    	menu_widget.remove();
+				}
+			};
+			
+			me.onDropMenuWidget = function(menu_widget, widget, event, ui) {
+				if (!manage_ai_action_url) {
+					me.showMessage("Artificial Intelligence is disabled. To enable it, please add your OpenAI Key in the 'Manage Permissions/Users' panel.", "error");
+					
+					setTimeout(function() {
+						ui_creator.deleteTemplateWidget(widget);
+					}, 1000);
+				}
+				else {
+					popup = popup ? popup : $(".create_ai_html_popup");
+					
+					if (!popup[0]) {
+						popup = $('<div class="myfancypopup create_ai_html_popup with_title">'
+									+ '<div class="title">AI HTML</div>'
+									+ '<div class="sub_title">Create automatic <strong>HTML</strong> through Artificial Intelligence.<br/>Please write below in natural language which type of interface you are looking for:</div>'
+									+ '<textarea></textarea>'
+									+ '<div class="image">Or upload a mockup/wireframe image and AI will try to translate it into HTML: <input type="file"/></div>'
+									+ '<button onClick="' + ui_creator.obj_var_name + '.menu_widgets_objs[\'ai-html\'].AIHtmlFancyPopup.settings.sendFunction(this)">Generate</button>'
+									+ '<div class="instructions">Additional instructions:<br/>' + me.getFirstInstructions(widget) + "<br/>" + me.getLastInstructions(widget) + '</div>'
+								+ '</div>');
+						
+						$("body").append(popup);
+					}
+					
+					var textarea = popup.find("textarea");
+					textarea.attr('placeHolder', 'Eg: ' + me.getUserMessageSample());
+					
+					//open popup
+					me.AIHtmlFancyPopup.init({
+						elementToShow: popup,
+						parentElement: document,
+						
+						onClose: function() {
+							ui_creator.deleteTemplateWidget(widget);
+						},
+						sendFunction: function() {
+							var user_message = textarea.val();
+							user_message = user_message.replace(/(^\s+|\s+$)/g, "");
+							
+							var file_input = popup.find("input[type=file]")[0];
+							var user_image = file_input.files.length ? file_input.files[0] : null;
+							
+							if (!user_message && !user_image)
+								me.showMessage("Please type what you wish to create");
+							else {
+								me.createCodeAutomatically(widget, user_message, user_image);
+								
+								me.AIHtmlFancyPopup.setOption("onClose", null);
+								me.AIHtmlFancyPopup.hidePopup();
+								
+								textarea.val("");
+								popup.find("input[type=file]").val("");
+							}
+						},
+					});
+					
+					me.AIHtmlFancyPopup.showPopup();
+				}
+			};
+			
+			me.createCodeAutomatically = function(widget, user_message, user_image) {
+				if (typeof manage_ai_action_url != "undefined" && manage_ai_action_url) {
+					var url = manage_ai_action_url + (manage_ai_action_url.indexOf("?") != -1 ? "" : "?") + "&action=generate_html_code";
+					
+					if (!user_message && !user_image)
+						me.showMessage("Please type what you wish to create");
+					else {
+						var msg = me.showMessage("AI is loading. Wait a while...", "info", "", "", 60000);
+						var instructions = me.getFirstInstructions(widget) + user_message + me.getLastInstructions(widget).replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+						
+						var formData = new FormData();
+						formData.append("instructions", instructions);
+    					
+    					if (user_image)
+	    					formData.append("image", user_image);
+						
+						$.ajax({
+							type : "post",
+							url : url,
+							processData: false,
+							contentType: false, // Let the browser set the Content-Type. Do not use 'text/plain', otherwise I cannot get the POST variables from the server side.
+							data: formData,
+							dataType : "json",
+							success : function(data, textStatus, jqXHR) {
+								//console.log(data);
+								
+								msg.remove();
+								
+								var html = $.isPlainObject(data) && data.hasOwnProperty("html") ? data["html"] : "";
+								html = html.replace(/\\n/g, "\n");
+								
+								if (html.replace(/(^\s+|\s+$)/g, "")) {
+									try {
+										//console.log(html);
+										ui_creator.parseHtmlSource(html, widget);
+										
+										var first_child = widget.children().first();
+										var children = widget[0].childNodes; //including text nodes
+										var images = widget.find("img");
+										//console.log(children);
+										//console.log(widget[0].parentNode);
+										
+										var widget_parent = widget[0].parentNode;
+										
+										for (var i = 0; i < children.length; i++) {
+											try {
+												widget_parent.insertBefore(children[i], widget[0]); //must use insertBefore instead of .after(..), beacuse if the node is alink, style or script, it will give an exception when we click on it.
+											}
+											catch(e2) {
+												if (console && console.log)
+													console.log(e2);
+											}
+										}
+										
+										//console.log(first_child[0]);
+										if (first_child[0])
+											first_child.trigger("click");
+										
+										//generates images
+										if (images.length > 0) {
+											$.each(images, function(idx, image) {
+												image = $(image);
+												
+												var on_error_func = function(ev) {
+													//disable error function
+													image.unbind("error", on_error_func);
+													
+													//prepare html to only have the current image
+													var img_html = image[0].outerHTML;
+													
+													try {
+														var html_aux = $('<div>' + html + '</div>');
+														
+														$.each(html_aux.find("img"), function(idj, img) {
+															if (idx != idj)
+																$(img).remove();
+														});
+														
+														img_html = html_aux.html();
+													}
+													catch(e2) {}
+													
+													me.createImagesAutomatically(image, img_html);
+												};
+												
+												image.bind("error", on_error_func);
+											});
+										}
+										
+										ui_creator.deleteTemplateWidget(widget);
+									}
+									catch(e) {
+										if (console && console.log)
+											console.log(e);
+									}
+								}
+								else {
+									me.showMessage("Error: Couldn't process this request with AI. Please try again...", "error");
+									
+									ui_creator.deleteTemplateWidget(widget);
+								}
+							},
+							error : function(jqXHR, textStatus, errorThrown) {
+								msg.remove();
+								ui_creator.deleteTemplateWidget(widget);
+								
+								if (jqXHR.responseText)
+									me.showMessage(jqXHR.responseText, "error");
+							},
+						});
+					}
+				}
+			};
+			
+			me.createImagesAutomatically = function(images, html) {
+				if (typeof manage_ai_action_url != "undefined" && manage_ai_action_url && images && images.length > 0) {
+					var url = manage_ai_action_url + (manage_ai_action_url.indexOf("?") != -1 ? "" : "?") + "&action=generate_html_image";
+					
+					var msg = me.showMessage("AI is generating image" + (images.length == 1 ? "" : "s") + ". Wait a while...", "info", "", "", 60000);
+					var post_data = "Generates " + images.length + " sample or placeholder images" + (html ? " for the following html. Send the images by order of the html. HTML:\n" + html : "");
+					
+					$.ajax({
+						type : "post",
+						url : url,
+						data: {
+							instructions: post_data,
+							images_total: images.length
+						},
+						dataType : "json",
+						success : function(data, textStatus, jqXHR) {
+							//console.log(data);
+							
+							msg.remove();
+							
+							var items = data.hasOwnProperty("items") ? data["items"] : "";
+							//console.log(items);
+							
+							if (items.length > 0) {
+								images.each(function(idx, image) {
+									if (items.length > idx) {
+										var item = items[idx];
+										var url = $.isPlainObject(item) && item.hasOwnProperty("url") ? item["url"] : null;
+										
+										if (url) {
+											image.setAttribute("src", url);
+											$(image).css("max-width", "100%");
+										}
+									}
+								});
+							}
+							else
+								me.showMessage("Error: Couldn't generate images through AI. Please try again...", "error");
+						},
+						error : function(jqXHR, textStatus, errorThrown) {
+							msg.remove();
+							
+							if (jqXHR.responseText)
+								me.showMessage(jqXHR.responseText, "error");
+						},
+					});
+				}
+			};
+			
+			me.showMessage = function(message, type, message_class, message_html_obj_class, timeout) {
+				var msg = null;
+				
+				if (type == "error")
+					msg = StatusMessageHandler.showError(message, message_class, message_html_obj_class, timeout);
+				else
+					msg = StatusMessageHandler.showMessage(message, message_class, message_html_obj_class, timeout);
+				
+				if (me.AIHtmlFancyPopup.isPopupOpened())
+					StatusMessageHandler.getMessageHtmlObj()[0].style.setProperty("z-index", parseInt(me.AIHtmlFancyPopup.settings.elementToShow.css("z-index")) + 1, "important"); //move error to front of popup
+				
+				return msg;
+			};
+			
+			me.getUserMessageSample = function() {
+				return "Add 2 Card blocks, where cards should be spaced of each other.\n"
+						+ "Each card contains a title header at the top, then an image below, followed by a description. The title has a blue background with white text.\n"
+						+ "The card also contains a footer section, with a 5 stars rating. The the first 3 stars in the first card are in yellow. The the first 2 stars in the second card are in green. All the other ones are in light gray.\n"
+						+ "Is possible to click in each star to change the rate. In this case a request should be sent to the server with the correspondent rate of each star. Please add the correspondent javascript to do this, including the code to send the request to the url: 'https://xxx.com/update_article_rate?rate=', where the star rate is appended to this url. You can use jquery library or native javascript.\n"
+						+ "\n"
+						+ "Below the cards, should show another section to list multiple user comments, similar with the comments listed at Facebook.\n"
+						+ "This comments section should appear spaced from the cards section, where each comment contains a user photo with a round shape, on the left side of the user name and user post.\n"
+						+ "The user post is in gray.\n"
+						+ "There is also the date of the post that should appear in light gray and smaller size, on the right side of the user name.\n"
+						+ "Create new sample images as examples.\n"
+						+ "\n"
+						+ "Please use also bootstrap classes to style the html elements, if possible, and in this case include the bootstrap library html also.\n"
+						+ "Do not add any extra html, other than the request one in this message.";
+			};
+			
+			me.getFirstInstructions = function(widget) {
+				return "The HTML will be included inside of the body tag, meaning that the doctype, html, head or foot tags are not allowed.\n";
+			};
+			
+			me.getLastInstructions = function(widget) {
+				var is_blank_template = widget.parent().closest(".template_region.full_body");
+				var instructions = "";
+				
+				if (is_blank_template)
+					instructions += "\nIf any class or script references an external library like Bootstrap, you MUST include the necessary `&lt;link&gt;` and `&lt;scr" + "ipt&gt;` tags for that library directly in the response.\n";
+					//instructions += "\nIf there are html elements with classes attributes referencing styles from an external library (eg. bootstrap library) or there is any javascript code referencing code from an external javascript library, then the reply MUST include the correspondent link and script tags, pointing to the correspondent libraries urls (eg: the bootstrap library url should be inside of the link tag together with the rest of the html, in case the html references any bootstrap styling class).\n";
+				
+				return instructions;
+			};
+		}
+	]]></menu_js>
+</widget>

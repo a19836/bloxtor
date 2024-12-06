@@ -17,10 +17,14 @@ function createSQLEditor() {
 	editor.setOptions({
 		enableBasicAutocompletion: true,
 		enableSnippets: true,
-		enableLiveAutocompletion: false,
+		enableLiveAutocompletion: true,
 	});
+	editor.setOption("wrap", true);
 	editor.$blockScrolling = "Infinity";
 
+	if (typeof setCodeEditorAutoCompleter == "function")
+		setCodeEditorAutoCompleter(editor);
+	
 	sql_text_area.find("textarea.ace_text-input").removeClass("ace_text-input"); //fixing problem with scroll up, where when focused or pressed key inside editor the page scrolls to top
 
 	sql_text_area.data("editor", editor);

@@ -1398,6 +1398,7 @@ body .connection_add_new_task_panel .generic_buttons {
 }
 .taskflowchart:not(.fixed_properties):not(.fixed_side_properties) > .selected_task_properties > .toggle_properties_side_icon, 
   .taskflowchart:not(.fixed_properties):not(.fixed_side_properties) > .selected_connection_properties > .toggle_properties_side_icon {
+	margin-top:-2px;
 	
 }
 .selected_task_properties > .toggle_properties_side_icon, 
@@ -1422,6 +1423,7 @@ body .connection_add_new_task_panel .generic_buttons {
   .taskflowchart.fixed_side_properties > .selected_connection_properties > .toggle_properties_side_icon::before {
 	content:"\f2d0";/*dock_bottom*/
 	transform:rotate(180deg);
+	margin-top:-1px;
 }
 .taskflowchart.fixed_properties > .selected_task_properties > .toggle_properties_side_icon::before,
   .taskflowchart.fixed_properties > .selected_connection_properties > .toggle_properties_side_icon::before {
@@ -1623,6 +1625,215 @@ body .workflow_message .status span.close_message::before,
 	width:150px;
 	font-size:inherit;
 	box-sizing:border-box;
+}
+
+/* CODE EDITOR - GHOST TEXT */
+.ace-editor-marker-ghost-text {
+	position:absolute;
+	background-color:rgba(255, 255, 255, .7);
+}
+.ace-editor-marker-ghost-text-ai {
+	background-color:rgba(255, 255, 255, .5);
+}
+
+/* CHAT BOT */
+.chat_bot {
+	
+}
+.chat_bot > .title {
+	font-size: 24px;
+	color: #333;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.chat_bot > .session {
+	margin:20px 20px 0;
+	display:none;
+}
+.chat_bot > .session label {
+	margin-bottom: 8px;
+	display: block;
+}
+.chat_bot > .session > .session_selector {
+	width: 100%;
+	padding: 10px;
+	font-size:inherit;
+}
+
+.chat_bot > .chat_box {
+	width:300px;
+	min-width:200px;
+	height: 300px;
+	max-height:calc(90vh - 170px);
+	padding:15px 15px 100px;
+	/*margin:20px 20px 0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background-color: #f9f9f9;*/
+	box-sizing: border-box;
+	overflow-y: auto;
+
+	user-select: text !important; /* Enable text selection */
+	-webkit-user-select: text !important; /* For WebKit browsers (e.g., Safari, Chrome) */
+	-moz-user-select: text !important; /* For Firefox */
+	-ms-user-select: text !important; /* For older Internet Explorer versions */
+	cursor: text !important; /* Indicate selectable text with the text cursor */
+}
+.myfancypopup.chat_bot_popup > .chat_bot > .chat_box {
+	resize:auto;
+}
+.chat_bot > .chat_box > .user {
+	margin-bottom: 10px;
+	text-align: right;
+	color: var(--main-iframe-color);
+	background: var(--main-iframe-bg);
+	padding: 10px;
+	border-radius: 5px;
+	display: inline-block;
+	float: right;
+}
+.chat_bot > .chat_box > .bot {
+	margin-bottom: 10px;
+	text-align: left;
+	/*color: #28a745;
+	font-weight: bold;*/
+}
+.chat_bot > .chat_box > .bot pre.code_block {
+	position:relative;
+}
+.chat_bot > .chat_box > .bot pre.code_block > .copy_button {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	padding: 5px 8px;
+	/*background-color: #444;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;*/
+	z-index:1;
+	display: none; /* Hidden by default, shown on hover */
+}
+.chat_bot > .chat_box > .bot pre.code_block:hover > .copy_button {
+  display: block; /* Show button when hovering over the code block */
+}
+/*.chat_bot > .chat_box > .bot pre.code_block > .copy_button:hover {
+  background-color: #555;
+}*/
+.chat_bot > .chat_box > .bot pre.code_block > code:not(.hljs) {
+	margin:10px 0;
+	padding: 15px; /* Space around the text */
+	font-family: 'Consolas', 'Monaco', monospace;
+	background-color: #2d2d2d; /* Dark background */
+	color: #dcdcdc; /* Light text color */
+	border-radius: 4px; /* Rounded corners */
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for a "floating" look */
+	overflow-x: auto; /* Allow horizontal scrolling if content overflows */
+	white-space: pre-wrap; /* Make long lines wrap */
+	word-wrap: break-word; /* Prevent long words from overflowing */
+	display:block;
+}
+.chat_bot > .chat_box > .bot pre.code_block > code.hljs {
+	margin:10px 0;
+	border-radius: 4px; /* Rounded corners */
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for a "floating" look */
+}
+.chat_bot > .chat_box > .bot ol,
+  .chat_bot > .chat_box > .bot ul {
+	margin-left:20px;
+}
+.chat_bot > .chat_box > .clearfix {
+	display:block;
+	height:1px;
+	float:none;
+	clear:both;
+}
+
+.chat_bot > .user_box {
+	height:40px;
+	padding:20px;
+	box-sizing: content-box;
+	background:var(--main-iframe-bg);
+	border-radius:5px;
+	position:absolute;
+	left:20px;
+	right:20px;
+	bottom:20px;
+}
+.chat_bot > .user_box > .user_input {
+	width:auto;
+	padding: 10px;
+	box-sizing: border-box;
+	font-size:inherit;
+	position:absolute;
+	left:20px;
+	right:60px;
+	bottom:20px;
+}
+
+.chat_bot > .user_box > .send_button {
+	padding:5px;
+	position:absolute;
+	right:20px;
+	bottom:calc(50% - 15px);
+	border-radius:100%;
+	background-color:var(--main-popup-header-bg);
+	color:var(--main-popup-header-color);
+}
+.chat_bot > .user_box > .send_button.loading {
+	background-position:50%;
+	cursor:not-allowed;
+}
+
+/* CODE EDITOR - CHAT BOT POPUP */
+.myfancypopup.chat_bot_popup {
+	width:auto !important;
+	max-width:90vw;
+	height:auto !important;
+	max-height:90vh;
+	border: 1px solid #ddd !important;
+}
+.myfancypopup.chat_bot_popup > .chat_bot > .title {
+	display:none;
+}
+
+.chat_bot_popup.popup_overlay {
+	display:none !important;
+}
+
+/* POPUP - image_url_creation_with_ai_popup */
+.myfancypopup.image_url_creation_with_ai_popup {
+	width:90vw;
+	width:calc(100vw - 40px);
+	max-height:90vh;
+	max-height:calc(100vh - 40px);
+	box-sizing:border-box;
+	text-align:center;
+}
+.myfancypopup.image_url_creation_with_ai_popup.with_title {
+	padding:15px;
+}
+.myfancypopup.image_url_creation_with_ai_popup.with_title > .title {
+	margin:-15px -15px 15px;
+	padding-right:150px;
+}
+.myfancypopup.image_url_creation_with_ai_popup.with_title > .sub_title {
+	margin:20px 0;
+}
+.myfancypopup.image_url_creation_with_ai_popup.with_title > textarea {
+	width:100%;
+	height:200px;
+	display:block;
+	font-size:inherit;
+}
+.myfancypopup.image_url_creation_with_ai_popup.with_title > button {
+	margin:20px auto 0;
+}
+.myfancypopup.image_url_creation_with_ai_popup.with_title > button.loading {
+	padding-left:35px;
+	background-position:10px 50%;
 }
 
 /* LAYOUT CODE EDITOR */

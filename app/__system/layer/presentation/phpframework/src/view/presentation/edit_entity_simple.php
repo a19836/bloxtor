@@ -69,6 +69,7 @@ $confirm_save = !empty($obj_data["code"]) && $cached_modified_date != $file_modi
 $page_preview_url = $project_url_prefix . "phpframework/presentation/test_project?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";
 $view_project_url = $project_url_prefix . "phpframework/presentation/view_project?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";
 
+$manage_ai_action_url = $openai_encryption_key ? $project_url_prefix . "phpframework/ai/manage_ai_action" : null;
 $save_url = $project_url_prefix . "phpframework/presentation/save_entity_simple?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$path";
 $get_block_handler_source_code_url = $project_url_prefix . "phpframework/presentation/get_module_handler_source_code?bean_name=$bean_name&bean_file_name=$bean_file_name&project=$path&block=#block#";
 $get_page_block_join_points_html_url = $project_url_prefix . "phpframework/presentation/get_page_block_join_points_html?bean_name=$bean_name&bean_file_name=$bean_file_name&project=$path&block=#block#";
@@ -151,6 +152,7 @@ var file_modified_time = ' . (isset($file_modified_time) ? $file_modified_time :
 
 var page_preview_url = \'' . $page_preview_url . '\';
 var view_project_url = \'' . $view_project_url . '\';
+var manage_ai_action_url = \'' . $manage_ai_action_url . '\';
 var save_object_url = \'' . $save_url . '\';
 var get_block_handler_source_code_url = \'' . $get_block_handler_source_code_url . '\';
 var get_page_block_join_points_html_url = \'' . $get_page_block_join_points_html_url . '\';

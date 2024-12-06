@@ -166,6 +166,7 @@ class AdminMenuUIHandler {
 <ul id="db_driver_tables_context_menu" class="mycontextmenu">
 	<li class="add_auto_table"><a onClick="return manageDBTableAction(this, \'add_auto_table_url\', \'add_table\')">Add Table Automatically</a></li>
 	<li class="add_manual_table"><a onClick="return goTo(this, \'add_manual_table_url\', event)">Add Table Manually</a></li>
+	<li class="add_table_with_ai"><a onClick="return goTo(this, \'add_table_with_ai_url\', event)">Add Table with AI</a></li>
 	<li class="line_break"></li>
 	<li class="edit_diagram"><a onClick="return goTo(this, \'edit_diagram_url\', event)">Edit Tables Diagram</a></li>
 	<li class="line_break"></li>
@@ -649,6 +650,7 @@ class AdminMenuUIHandler {
 	<li class="line_break"></li>
 	<li class="install_template"><a onClick="return goTo(this, \'install_template_url\', event)">Install New Template</a></li>
 	<li class="convert_template"><a onClick="return goTo(this, \'convert_template_url\', event)">Convert Url to Template</a></li>
+	<li class="generate_template_with_ai"><a onClick="return goTo(this, \'generate_template_with_ai_url\', event)">Generate Template with AI</a></li>
 	<li class="line_break"></li>
 	<li class="paste"><a onClick="return manageFile(this, \'paste_url\', \'paste\')">Paste</a></li>
 	<li class="line_break"></li>
@@ -760,7 +762,7 @@ class AdminMenuUIHandler {
 </ul>
 
 <ul id="presentation_webroot_file_context_menu" class="mycontextmenu">
-	<li class="edit"><a onClick="return goTo(this, \'edit_url\', event)">Edit</a></li>
+	<li class="edit_raw_file"><a onClick="return goTo(this, \'edit_raw_file_url\', event)">Edit File</a></li>
 	<li class="line_break"></li>
 	<li class="cut"><a onClick="return cutFile(this)">Cut</a></li>
 	<li class="copy"><a onClick="return copyFile(this)">Copy</a></li>
@@ -1064,7 +1066,7 @@ class AdminMenuUIHandler {
 			"presentation_project_context_menu" => array("remove"),
 			"presentation_group_context_menu" => array("create_folder", "create_file", "remove"),
 			"presentation_evc_group_context_menu" => array("create_folder", "create_file", "paste"),
-			"presentation_main_templates_group_context_menu" => array("create_folder", "create_file", "install_template", "convert_template", "paste"),
+			"presentation_main_templates_group_context_menu" => array("create_folder", "create_file", "install_template", "convert_template", "generate_template_with_ai", "paste"),
 			"presentation_main_pages_group_context_menu" => array("create_folder", "create_file", "create_automatically", "create_uis_diagram", "view_project", "paste"),
 			"presentation_pages_group_context_menu" => array("view_project", "create_folder", "create_file", "remove"),
 			"presentation_file_context_menu" => array("edit", "remove"),
@@ -1205,6 +1207,7 @@ class AdminMenuUIHandler {
 					"edit_url" => $project_url_prefix . "db/set_db_settings?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
 					"add_auto_table_url" => $project_url_prefix . "db/manage_table_action?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&action=#action#&extra=#extra#",
 					"add_manual_table_url" => $project_url_prefix . "db/edit_table?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&on_success_js_func=refreshAndShowLastNodeChilds",
+					"add_table_with_ai_url" => $project_url_prefix . "db/generate_table_with_ai?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&on_success_js_func=refreshAndShowLastNodeChilds",
 					"db_dump_url" => $project_url_prefix . "db/db_dump?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
 					"execute_sql_url" => $project_url_prefix . "db/execute_sql?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
 					"edit_diagram_url" => $project_url_prefix . "db/diagram?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#",
@@ -1513,6 +1516,7 @@ class AdminMenuUIHandler {
 				
 				$li_props["templates_folder"]["attributes"]["install_template_url"] = $project_url_prefix . "phpframework/presentation/install_template?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";
 				$li_props["templates_folder"]["attributes"]["convert_template_url"] = $project_url_prefix . "phpframework/presentation/convert_url_to_template?bean_name=$bean_name&bean_file_name=$bean_file_name&path=#path#";
+				$li_props["templates_folder"]["attributes"]["generate_template_with_ai_url"] = $project_url_prefix . "phpframework/presentation/generate_template_with_ai?bean_name=$bean_name&bean_file_name=$bean_file_name&path=#path#";
 				
 				$li_props["template_folder"] = $li_props["folder"];
 				$li_props["template_folder"]["attributes"]["download_url"] .= "&folder_type=template_folder";

@@ -509,6 +509,7 @@ function onDBContextMenu(target, contextmenu, originalEvent) {
 	
 	contextmenu.find(".add_auto_table a").attr("add_auto_table_url", a.attr("add_auto_table_url"));
 	contextmenu.find(".add_manual_table a").attr("add_manual_table_url", a.attr("add_manual_table_url"));
+	contextmenu.find(".add_table_with_ai a").attr("add_table_with_ai_url", a.attr("add_table_with_ai_url"));
 	contextmenu.find(".add_attribute a").attr("add_attribute_url", a.attr("add_attribute_url"));
 	contextmenu.find(".rename a").attr("rename_url", a.attr("rename_url"));
 	contextmenu.find(".remove a").attr("remove_url", a.attr("remove_url"));
@@ -897,6 +898,7 @@ function onPresentationContextMenu(target, contextmenu, originalEvent) {
 	contextmenu.find(".create_uis_diagram a").attr("create_uis_diagram_url", create_uis_diagram_url);
 	contextmenu.find(".install_template a").attr("install_template_url", a.attr("install_template_url"));
 	contextmenu.find(".convert_template a").attr("convert_template_url", a.attr("convert_template_url"));
+	contextmenu.find(".generate_template_with_ai a").attr("generate_template_with_ai_url", a.attr("generate_template_with_ai_url"));
 	contextmenu.find(".add_project a").attr("create_project_url", a.attr("create_project_url"));
 	contextmenu.find(".edit_project_global_variables a").attr("edit_project_global_variables_url", a.attr("edit_project_global_variables_url"));
 	contextmenu.find(".edit_config a").attr("edit_config_url", a.attr("edit_config_url"));

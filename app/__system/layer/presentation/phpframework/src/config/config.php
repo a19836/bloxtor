@@ -77,6 +77,7 @@ $get_store_modules_url = "https://bloxtor.com/get_store_type_content?type=module
 $get_store_templates_url = "https://bloxtor.com/get_store_type_content?type=templates&data_type=json";
 $get_store_programs_url = "https://bloxtor.com/get_store_type_content?type=programs&data_type=json";
 $get_store_pages_url = "https://bloxtor.com/get_store_type_content?type=pages&data_type=json";
+$get_store_notifications_url = "https://bloxtor.com/get_store_type_content?type=notifications&data_type=json";
 $dependencies_repo_url = "https://bloxtor.com/framework_store/dependencies/";
 $dependency_wordpress_zip_file_url = $dependencies_repo_url . "wordpress.zip";
 $dependency_phpmyadmin_zip_file_url = $dependencies_repo_url . "phpmyadmin.zip";

@@ -7,6 +7,7 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 include_once $EVC->getUtilPath("LayoutTypeProjectHandler");
 include_once $EVC->getUtilPath("WorkFlowPresentationHandler");
 include_once $EVC->getUtilPath("ConvertRemoteUrlHandler");
+include_once $EVC->getUtilPath("OpenAIActionHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
@@ -38,7 +39,9 @@ if ($bean_name && $bean_file_name && $path) {
 			if (!empty($_POST) && (
 				!empty($_FILES["zip_file"]) || 
 				(isset($_POST["zip_url"]) && trim($_POST["zip_url"])) || 
-				(isset($_POST["remote_url"]) && trim($_POST["remote_url"]))
+				(isset($_POST["remote_url"]) && trim($_POST["remote_url"])) || 
+				(isset($_POST["instructions"]) && trim($_POST["instructions"])) || 
+				!empty($_FILES["image"])
 			)) {
 				$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 				$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($file_path, "layer", "access");
@@ -46,9 +49,58 @@ if ($bean_name && $bean_file_name && $path) {
 				$webroot_folder_path = $PEVC->getWebrootPath();
 				$blocks_folder_path = $PEVC->getBlocksPath();
 				
-				$is_remote_url = isset($_POST["remote_url"]) && !empty(trim($_POST["remote_url"]));
+				$is_ai = (isset($_POST["instructions"]) && !empty(trim($_POST["instructions"]))) || !empty($_FILES["image"]);
+				$is_remote_url = !$is_ai && isset($_POST["remote_url"]) && !empty(trim($_POST["remote_url"]));
 				
-				if (!$is_remote_url) {
+				if ($is_ai) {
+					if (!$openai_encryption_key)
+						$error_message = "Artificial Intelligence is disabled. To enable it, please add your OpenAI Key in the 'Manage Permissions/Users' panel.";
+					else {
+						$instructions = isset($_POST["instructions"]) ? $_POST["instructions"] : null;
+						$image = isset($_FILES["image"]) ? $_FILES["image"] : null;
+						
+						if ($image && file_exists($image["tmp_name"])) {
+							$reply = OpenAIActionHandler::describeImage($openai_encryption_key, array($image), $instructions);
+							
+							if ($reply)
+								$instructions .= "\n\n" . $reply;
+						}
+						
+						$res = OpenAIActionHandler::generateHTMLPage($openai_encryption_key, $instructions);
+						$html = isset($res["html"]) ? $res["html"] : null;
+						$status = false;
+						
+						if ($html) {
+							//get head and body tag and then add the html to the correspondent regions of the blank template. Set Blank template also in the file, with correspondent body attributes and disable bootstrap lib also.
+							$head_props = WorkFlowPresentationHandler::getHtmlTagProps($html, "head", array("get_inline_code" => true));
+							$body_props = WorkFlowPresentationHandler::getHtmlTagProps($html, "body", array("get_inline_code" => true));
+							$head_html = isset($head_props["inline_code"]) ? $head_props["inline_code"] : null;
+							$body_html = isset($body_props["inline_code"]) ? $body_props["inline_code"] : null;
+							$body_attributes = isset($body_props["html_attributes"]) ? $body_props["html_attributes"] : null;
+							
+							$code = '<?php
+//Templates:
+$EVC->setTemplate("blank");
+
+//Template params:
+$EVC->getCMSLayer()->getCMSTemplateLayer()->setParam("is_bootstrap_lib_included_in_page_level", true);
+$EVC->getCMSLayer()->getCMSTemplateLayer()->setParam("Body Attributes", "' . addcslashes($body_attributes, '\\"') . '");
+
+//Regions-Blocks:
+$EVC->getCMSLayer()->getCMSTemplateLayer()->addRegionHtml("Head", "' . addcslashes($head_html, '\\"') . '");
+
+$EVC->getCMSLayer()->getCMSTemplateLayer()->addRegionHtml("Content", "' . addcslashes($body_html, '\\"') . '");
+?>';
+							
+							//save file with new code
+							$status = file_put_contents($file_path, $code) !== false;
+						}
+						
+						if (!$status)
+							$error_message = "Error: Could not generate page. Please try again...";
+					}
+				}
+				else if (!$is_remote_url) {
 					$is_zip_url = empty($_FILES["zip_file"]) && isset($_POST["zip_url"]) && trim($_POST["zip_url"]);
 					
 					//download zip_url
@@ -153,18 +205,18 @@ if ($bean_name && $bean_file_name && $path) {
 								$body_attributes = isset($body_props["html_attributes"]) ? $body_props["html_attributes"] : null;
 								
 								$code = '<?php
-	//Templates:
-	$EVC->setTemplate("blank");
+//Templates:
+$EVC->setTemplate("blank");
 
-	//Template params:
-	$EVC->getCMSLayer()->getCMSTemplateLayer()->setParam("is_bootstrap_lib_included_in_page_level", true);
-	$EVC->getCMSLayer()->getCMSTemplateLayer()->setParam("Body Attributes", "' . addcslashes($body_attributes, '\\"') . '");
+//Template params:
+$EVC->getCMSLayer()->getCMSTemplateLayer()->setParam("is_bootstrap_lib_included_in_page_level", true);
+$EVC->getCMSLayer()->getCMSTemplateLayer()->setParam("Body Attributes", "' . addcslashes($body_attributes, '\\"') . '");
 
-	//Regions-Blocks:
-	$EVC->getCMSLayer()->getCMSTemplateLayer()->addRegionHtml("Head", "' . addcslashes($head_html, '\\"') . '");
+//Regions-Blocks:
+$EVC->getCMSLayer()->getCMSTemplateLayer()->addRegionHtml("Head", "' . addcslashes($head_html, '\\"') . '");
 
-	$EVC->getCMSLayer()->getCMSTemplateLayer()->addRegionHtml("Content", "' . addcslashes($body_html, '\\"') . '");
-	?>';
+$EVC->getCMSLayer()->getCMSTemplateLayer()->addRegionHtml("Content", "' . addcslashes($body_html, '\\"') . '");
+?>';
 								
 								//save file with new code
 								if (file_put_contents($file_path, $code) === false)

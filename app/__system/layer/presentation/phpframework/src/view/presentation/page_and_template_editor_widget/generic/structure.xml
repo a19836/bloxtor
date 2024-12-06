@@ -11,7 +11,7 @@
 	<menu_css><![CDATA[
 		.layout-ui-editor > .menu-widgets .menu-widget.menu-widget-data-structure:before,
 		  body > .menu-widget.menu-widget-data-structure.ui-draggable-dragging:before {
-			background-image:url('#widget_webroot_url#logo.svg');
+			background-image:url('#widget_webroot_url#structure.svg');
 		}
 		
 		.layout-ui-editor > .template-widgets > .widget-header.widget-header-data-structure .options .props,

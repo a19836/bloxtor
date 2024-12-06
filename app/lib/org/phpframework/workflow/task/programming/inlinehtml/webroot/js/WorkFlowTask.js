@@ -37,7 +37,7 @@ var InlineHTMLTaskPropertyObj = {
 			var ptl_ui_creator_var_name = "PTLLayoutUIEditor_" + Math.floor(Math.random() * 1000);
 			var PtlLayoutUIEditor = new LayoutUIEditor();
 			PtlLayoutUIEditor.options.ui_element = layout_ui_editor_elm;
-			PtlLayoutUIEditor.options.template_source_editor_save_func = InlineHTMLTaskPropertyObj.editor_save_func;
+			PtlLayoutUIEditor.options.on_template_source_editor_save_func = InlineHTMLTaskPropertyObj.editor_save_func;
 			PtlLayoutUIEditor.options.on_choose_variable_func = ProgrammingTaskUtil.onProgrammingTaskChooseCreatedVariable;
 			
 			if (typeof ProgrammingTaskUtil.on_programming_task_choose_page_url_callback == "function")

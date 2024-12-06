@@ -110,6 +110,7 @@
 	min-height:20px;
 	margin-bottom:5px;
 	white-space:nowrap;
+	box-sizing: border-box;
 }
 .selected_task_properties .include_file label {
 	width:75px;
@@ -133,15 +134,48 @@
 	margin-bottom:0;
 }
 
+/* TASK PROPERTIES - COMMENTS */
+.selected_task_properties .comments {
+	width:100%;
+	min-width:390px;
+	min-height:40px;
+	margin:15px auto 0;
+	padding:10px 5px 5px 5px;
+	border-top:1px solid #000;
+	box-sizing: border-box;
+}
+.taskflowchart.fixed_side_properties .selected_task_properties .comments {
+	width:100%;
+	min-width:auto;
+	box-sizing:border-box;
+}
+.selected_task_properties .comments label {
+	width:100%;
+	margin-bottom:5px;
+	display:block;
+	float:none;
+}
+.selected_task_properties .comments textarea {
+	width:100%;
+	max-width:100%;
+	height:60px;
+	float:none;
+	box-sizing:border-box;
+	/*border-color:#eee;*/
+}
+
 /* TASK PROPERTIES - RESULT */
 .selected_task_properties .result {
-	width:390px;
+	width:100%;
+	min-width:390px;
 	margin:15px auto 0;
-	border-top:1px solid #000;
 	padding:10px 5px 5px 5px;
+	border-top:1px solid #000;
+	box-sizing: border-box;
 }
 .taskflowchart.fixed_side_properties .selected_task_properties .result {
 	width:100%;
+	min-width:auto;
 	box-sizing:border-box;
 }
 .selected_task_properties .result .result_var_type {
@@ -163,14 +197,17 @@
 }
 
 .selected_task_properties .result .type_variable {
-	width:365px;
+	width:100%;
+	min-width:365px;
 	border:1px solid #CCC;
 	padding:5px 5px;
 	display:none;
 	margin-top:10px;
+	box-sizing:border-box;
 }
 .taskflowchart.fixed_side_properties .selected_task_properties .result .type_variable {
 	width:100%;
+	min-width:auto;
 	box-sizing:border-box;
 }
 .selected_task_properties .result .type_variable .result_var_name,
@@ -198,14 +235,17 @@
 }
 
 .selected_task_properties .result .type_obj_prop {
-	width:365px;
+	width:100%;
+	min-width:365px;
 	border:1px solid #CCC;
 	margin-top:10px;
 	padding:5px 5px;
+	box-sizing:border-box;
 	display:none;
 }
 .taskflowchart.fixed_side_properties .selected_task_properties .result .type_obj_prop {
 	width:100%;
+	min-width:auto;
 	box-sizing:border-box;
 }
 .selected_task_properties .result .type_obj_prop .result_obj_name,

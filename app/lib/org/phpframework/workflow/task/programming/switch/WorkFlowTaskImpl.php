@@ -19,7 +19,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			}
 			
 			$object_type =  $WorkFlowTaskCodeParser->getStmtType($cond);
-			$object_var = $WorkFlowTaskCodeParser->printCodeExpr($cond);
+			$object_var = $WorkFlowTaskCodeParser->printCodeExpr($cond, false);
 			$object_var = $object_type == "variable" && substr($object_var, 0, 1) == '$' ? substr($object_var, 1, strlen($object_var)) : ($object_type == "variable" && substr($object_var, 0, 2) == '@$' ? substr($object_var, 2, strlen($object_var)) : $object_var);
 			
 			$props = array(
@@ -43,7 +43,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				
 				if ($case_cond) { //case xxx:
 					$case_type = strtolower($case_cond->getType());
-					$case_cond = $WorkFlowTaskCodeParser->printCodeExpr($case_cond);
+					$case_cond = $WorkFlowTaskCodeParser->printCodeExpr($case_cond, false);
 					$case_cond = $WorkFlowTaskCodeParser->getStmtValueAccordingWithType($case_cond, $case_type);
 					
 					$case_props = array(

@@ -8,8 +8,8 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	public function createTaskPropertiesFromCodeStmt($stmt, $WorkFlowTaskCodeParser, &$exits = null, &$inner_tasks = null) {
 		$stmt_type = strtolower($stmt->getType());
 		
-		if ($stmt_type == "stmt_class" || $stmt_type == "stmt_interface") {
-			$code = $WorkFlowTaskCodeParser->printCodeStatement($stmt, true);
+		if ($stmt_type == "stmt_class" || $stmt_type == "stmt_interface" || $stmt_type == "stmt_trait") {
+			$code = $WorkFlowTaskCodeParser->printCodeStatement($stmt);
 			$contents = '<?php ' . $code . ' ?>';
 			$classes = \PHPCodePrintingHandler::getPHPClassesFromString($contents);
 			$class_name = key($classes);
@@ -102,7 +102,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			"implements" => isset($raw_data["childs"]["properties"][0]["childs"]["implements"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["implements"][0]["value"] : null,
 			"abstract" => isset($raw_data["childs"]["properties"][0]["childs"]["abstract"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["abstract"][0]["value"] : null,
 			"interface" => isset($raw_data["childs"]["properties"][0]["childs"]["interface"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["interface"][0]["value"] : null,
-			"comments" => isset($raw_data["childs"]["properties"][0]["childs"]["comments"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["comments"][0]["value"] : null,
+			"trait" => isset($raw_data["childs"]["properties"][0]["childs"]["trait"][0]["value"]) ? $raw_data["childs"]["properties"][0]["childs"]["trait"][0]["value"] : null,
 		);
 		
 		$aux = isset($raw_data["childs"]["properties"][0]["childs"]) ? $raw_data["childs"]["properties"][0]["childs"] : null;
@@ -143,7 +143,12 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$class_name = isset($properties["name"]) ? trim($properties["name"]) : "";
 		
 		if ($class_name) {
-			$code .= "\n";
+			$comments_exists = !empty($properties["comments"]);
+			
+			//unset comments bc they will be added in the parent::printTask method
+			unset($properties["comments"]);
+			
+			$code .= $comments_exists ? "" : "\n";
 			$code .= $prefix_tab . str_replace("\n", "\n$prefix_tab", \PHPCodePrintingHandler::getClassString($properties)) . " {\n"; //str_replace bc of the comments
 			
 			if (!empty($properties["properties"]))

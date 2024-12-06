@@ -39,7 +39,15 @@ function toggleSampleContent(elm) {
 			var editor = ace.edit(textarea);
 			editor.setTheme("ace/theme/chrome");
 			editor.session.setMode("ace/mode/html");
+			editor.setOptions({
+				enableBasicAutocompletion: true,
+				enableSnippets: true,
+				enableLiveAutocompletion: true,
+			});
 			editor.setOption("wrap", true);
+			
+			if (typeof setCodeEditorAutoCompleter == "function")
+				setCodeEditorAutoCompleter(editor);
 			
 			view_source.find("textarea.ace_text-input").removeClass("ace_text-input"); //fixing problem with scroll up, where when focused or pressed key inside editor the page scrolls to top.
 			

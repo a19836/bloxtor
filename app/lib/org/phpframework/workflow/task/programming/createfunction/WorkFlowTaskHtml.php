@@ -17,15 +17,13 @@
 			<tbody index_prefix="arguments"></tbody>
 		</table>
 	</div>
-	<div class="comments">
-		<label>Comments:</label>
-		<textarea class="task_property_field" name="comments"></textarea>
-	</div>
 	<div class="code">
 		<label>Edit code:</label>
 		<span class="icon update" onClick="FunctionUtilObj.editMethodCode(this)">Edit Code</span>
 		<textarea class="task_property_field function_code" name="code" /></textarea>
 	</div>
+	
+	<?php include dirname(dirname($file_path)) . "/common/CommentsHtml.php"; ?>
 	
 	<div class="task_property_exit" exit_id="default_exit" exit_color="#426efa"></div>
 </div>

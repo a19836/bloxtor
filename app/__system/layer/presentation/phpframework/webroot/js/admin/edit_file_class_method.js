@@ -174,8 +174,12 @@ $(function () {
 			
 			var editor = createCodeEditor(textarea, {save_func: save_func});
 			
-			if (editor)
+			if (editor) {
 				editor.focus();
+				
+				//prepare chatbot
+				editor.system_message = getCodeChatBotSystemMessage;
+			}
 		}
 		
 		//load workflow
@@ -325,6 +329,24 @@ function toggleSettingsPanel(elm) {
 	}
 }
 
+function swapTypeTextField(elm) {
+	var p = $(elm).parent();
+	var select = p.children("select");
+	var input = p.children("input");
+	
+	if (select.css("display") == "none") {
+		input.css("display", "none");
+		select.css("display", "inline");
+		select.val( input.val() );
+	}
+	else {
+		select.css("display", "none");
+		input.css("display", "inline");
+		input.val( select.val() );
+	}
+}
+
+/* START: Arguments */
 function addNewArgument(elm) {
 	var html_obj = $(new_argument_html);
 	$(elm).closest(".arguments").find("table .fields").append(html_obj);
@@ -354,7 +376,9 @@ function onBlurArgumentName(elm) {
 		ProgrammingTaskUtil.variables_in_workflow[name] = {};
 	}
 }
+/* END: Arguments */
 
+/* START: Annotations */
 function addNewAnnotation(elm) {
 	var html_obj = $(new_annotation_html);
 	$(elm).closest(".annotations").find("table .fields").append(html_obj);
@@ -414,23 +438,6 @@ function onBlurAnnotationName(elm) {
 	}
 }
 
-function swapTypeTextField(elm) {
-	var p = $(elm).parent();
-	var select = p.children("select");
-	var input = p.children("input");
-	
-	if (select.css("display") == "none") {
-		input.css("display", "none");
-		select.css("display", "inline");
-		select.val( input.val() );
-	}
-	else {
-		select.css("display", "none");
-		input.css("display", "inline");
-		input.val( select.val() );
-	}
-}
-
 function geAnnotationTypeFromFileManager(elm) {
 	MyFancyPopup.init({
 		elementToShow: $("#choose_dao_object_from_file_manager"),
@@ -484,7 +491,88 @@ function updateAnnotationTypeFromFileManager(elm) {
 	else
 		alert("Invalid File selection.\nPlease choose an object type file and then click in the button.");
 }
+/* END: Annotations */
 
+/* START: AI */
+function getCodeChatBotSystemMessage(editor) {
+	var is_business_logic_service = $(".top_bar .is_business_logic_service").val();
+	var obj_settings = getFileClassMethodSettingsObj();
+	var function_or_method = class_id ? "method" : "function";
+	
+	var system_message = getCodeEditorChatBotDefaultSystemMessage(editor) + "\n\n";
+	system_message += "The code is inside of a " 
+								+ (obj_settings["type"] ? obj_settings["type"] + " " : "") 
+								+ (obj_settings["static"] ? "static " : "") 
+								+ function_or_method 
+								+ " named `" + obj_settings["name"] + "`" 
+								+ (class_id ? " inside of the class `" + class_id + "`" : "") 
+								+ (obj_settings["comments"] ? " with the following comments: " + obj_settings["comments"] : "") 
+								+ ".";
+	
+	var annotations_message = "";
+	
+	if (obj_settings["annotations"]) {
+		for (var annotation_type in obj_settings["annotations"]) {
+			var items = obj_settings["annotations"][annotation_type];
+			
+			for (var i = 0, t = items.length; i < t; i++) {
+				var item = items[i];
+				
+				if (item["name"]) //@param (name=data[animal_id], type=org.phpframework.object.db.DBPrimitive(bigint), max_length=20) 
+					annotations_message += "\n- @" + annotation_type + " ("
+												+ "name=data[" + item["name"] + "]"
+												+ (item["type"] ? ", type=" + item["type"] : "")
+												+ (item["not_null"] ? ", not_null" : "") 
+												+ (item["default"] ? ", with default value `" + item["default"] + "`" : "") 
+												+ (item["others"] ? ", " + item["others"] : "") 
+											+ ")" 
+											+ (item["desc"] ? " " + item["desc"] : "");
+			}
+		}
+		
+		if (annotations_message) {
+			annotations_message = "\n\nThis " + function_or_method 
+									+ " contains the following annotations:" 
+									+ annotations_message 
+									+ "\n\nNote that these annotations were already validated, meanning that you don't need to do it again!";
+		}
+	}
+	
+	if (is_business_logic_service == 1) {
+		system_message += "\nThis " + function_or_method + " contains the following argument: `$data`"
+								+ (annotations_message ? ", which may be an array containing other variables specified in the following annotations, with the `data` as prefix of the annotations name." : "");
+	}
+	else if (obj_settings["arguments"]) {
+		var arguments_message = "";
+		
+		for (var i = 0, t = obj_settings["arguments"].length; i < t; i++) {
+			var item = obj_settings["arguments"][i];
+			
+			if (item["name"]) {
+				var default_value = !item["var_type"] || item["var_type"] == "default" ? item["value"] : '"' + item["value"] + '"';
+				var name = item["name"].replace(/(^\s+|\s+$)/g, "");
+				
+				if (name.substr(0, 1) != '$')
+					name = '$' + name;
+				
+				arguments_message += "\n- `" + name + "`" + (default_value.length > 0 ? ": with the default " + item["var_type"] + " value: `" + default_value + "`" : "");
+			}
+		}
+		
+		if (arguments_message) {
+			system_message += "\nThis " + function_or_method + " contains the following arguments:" 
+									+ arguments_message 
+									+ (annotations_message ? "\nThese arguments may be arrays that specify other variables defined in the following annotations, with the argument variable name as prefix of the annotations name." : "");
+		}
+	}
+	
+	system_message += annotations_message;
+	
+	return system_message;
+}
+/* END: AI */
+
+/* START: Save */
 function getFileClassMethodSettingsId() {
 	var obj_settings = getFileClassMethodSettingsObj();
 	
@@ -690,3 +778,4 @@ function saveFileClassMethodObj(obj, props) {
 	
 	saveObjCode(save_url, obj, props);
 }
+/* END: Save */

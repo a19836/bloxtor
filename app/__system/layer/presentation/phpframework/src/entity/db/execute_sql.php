@@ -26,14 +26,17 @@ if ($bean_name) {
 		if ($sql) {
 			$DBDriver = $WorkFlowDBHandler->getBeanObject($bean_file_name, $bean_name);
 			
-			$data = $DBDriver->convertSQLToObject($sql);
-			$is_select_sql = $data && isset($data["type"]) && $data["type"] == "select";
+			$sql_aux = DB::removeSQLComments($sql);
+			$data = $DBDriver->convertSQLToObject($sql_aux);
+			$query_type = $data && isset($data["type"]) ? $data["type"] : null;
+			$is_select_sql = $query_type == "select";
+			$options = $is_select_sql || $query_type == "insert" || $query_type == "update" || $query_type == "delete" ? array("remove_comments" => true) : null;
 			
 			try {
 				if ($is_select_sql)
-					$results = $DBDriver->getData($sql);
+					$results = $DBDriver->getData($sql, $options);
 				else
-					$results = $DBDriver->setData($sql);
+					$results = $DBDriver->setData($sql, $options);
 			}
 			catch(Exception $e) {
 				$exception_message = isset($e->problem) ? $e->problem : null;
@@ -94,8 +97,11 @@ if ($bean_name) {
 			}
 		}
 	}
-	else if ($table)
+	else if ($table) {
 		$sql = "select * from $table;";
+		$table_attrs = $WorkFlowDBHandler->getDBTableAttributes($bean_file_name, $bean_name, $table);
+		//echo "<pre>";print_r($table_attrs);die();
+	}
 }
 else
 	$sql = "";
