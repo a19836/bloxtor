@@ -141,10 +141,15 @@ class OpenAIActionHandler {
 	public static function generateTableCreationSQL($openai_encryption_key, $instructions, $table_name = null, $db_driver_type = null) {
 		if ($instructions) {
 			$system_content = "1. Instructions: You are a SQL expert that creates SQL" . ($db_driver_type ? " for $db_driver_type" : "") . ". Do not add any extra sentences, explanations, or code formatting such as backticks, '```', `sql`, or other symbols. Your response should consist solely of sql statements, with no additional formatting or text.
-2. What to do: Return a sql statement to create a table that complies with the user message.";
+2. What to do: Return a sql statement to create a table that complies with the user message.
+3. Append the following attributes to the end of the table, unless the user explicitly states otherwise:
+- `created_date` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+- `created_user_id` bigint(20) unsigned NULL,
+- `modified_date` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+- `modified_user_id` bigint(20) unsigned NULL,";
 			
 			if ($table_name)
-				$system_content .= "\n3. The table MUST be named '$table_name'!";
+				$system_content .= "\n4. The table MUST be named '$table_name'!";
 			
 			$OpenAIHandler = new OpenAIHandler($openai_encryption_key);
 			$reply = $OpenAIHandler->generateRawMessage($system_content, $instructions);
