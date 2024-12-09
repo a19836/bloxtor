@@ -491,6 +491,7 @@ $html .= "<ol>
 	<li>Confirm if your web-server user is www-data or you updated the correct user in the set_perms.sh script " . printOptionalStatus($is_apache_user) . "</li>
 	<li>Confirm if your web-server has the mod_rewrite enable " . printOptionalStatus($document_root == dirname(__DIR__) . "/") . "</li>
 	<li>If web-server modsecurity is enabled, confirm if /etc/modsecurity/modsecurity.conf is well configured according with our recomendations in INSTALL.md, but only if you get request body limit exceed errors.</li>
+	<li>If web-server modsecurity is enabled, confirm if /usr/share/modsecurity-crs/modsecurity_crs_10_setup.conf and /usr/share/modsecurity-crs/base_rules/modsecurity_crs_30_http_policy.conf are well configured according with our recomendations in INSTALL.md, but only if you get denied requests.</li>
 	<li>Confirm if php.ini files are well configured according with the recomendations in INSTALL.md:
 		<ul>
 			<li>short_open_tag = On " . printOptionalStatus(ini_get("short_open_tag") == "1") . "</li>

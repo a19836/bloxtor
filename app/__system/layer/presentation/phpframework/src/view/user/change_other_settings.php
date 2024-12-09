@@ -124,7 +124,7 @@ $main_content = '
 			<header>
 				<div class="title">Change Other Settings</div>
 				<ul>
-					<li class="save" data-title="Save"><a onClick="$(this).addClass(\'loading\'); submitForm(this);"><i class="icon save"></i> Save</a></li>
+					<li class="save" data-title="Save"><a onClick="submitForm(this);"><i class="icon save"></i> Save</a></li>
 				</ul>
 			</header>
 		</div>

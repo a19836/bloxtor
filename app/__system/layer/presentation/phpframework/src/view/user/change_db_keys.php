@@ -374,7 +374,7 @@ $main_content = '
 			<header>
 				<div class="title">Change DB Keys Automatically</div>
 				<ul>
-					<li class="save" data-title="Change DB Keys"><a onClick="$(this).addClass(\'loading\'); submitForm(this)"><i class="icon save"></i> Save</a></li>
+					<li class="save" data-title="Change DB Keys"><a onClick="submitForm(this)"><i class="icon save"></i> Save</a></li>
 				</ul>
 			</header>
 		</div>';

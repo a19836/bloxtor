@@ -162,7 +162,7 @@ class UserAuthenticationHandler {
 		if (!$update_db && !$is_local_db) { //if was remote db and now continues to be remote, but is another db
 			$prefix = isset($GLOBALS["default_db_driver"]) ? $GLOBALS["default_db_driver"] : null;
 			
-			$old_db_credentials = $prefix . (isset($GLOBALS[$prefix . "_db_host"]) ? $GLOBALS[$prefix . "_db_host"] : null) . (isset($GLOBALS[$prefix . "_db_name"]) ? $GLOBALS[$prefix . "_db_name"] : null)(isset($GLOBALS[$prefix . "_db_encoding"]) ? $GLOBALS[$prefix . "_db_encoding"] : null) . (isset($GLOBALS[$prefix . "_db_odbc_data_source"]) ? $GLOBALS[$prefix . "_db_odbc_data_source"] : null);
+			$old_db_credentials = $prefix . (isset($GLOBALS[$prefix . "_db_host"]) ? $GLOBALS[$prefix . "_db_host"] : null) . (isset($GLOBALS[$prefix . "_db_name"]) ? $GLOBALS[$prefix . "_db_name"] : null) . (isset($GLOBALS[$prefix . "_db_encoding"]) ? $GLOBALS[$prefix . "_db_encoding"] : null) . (isset($GLOBALS[$prefix . "_db_odbc_data_source"]) ? $GLOBALS[$prefix . "_db_odbc_data_source"] : null);
 			
 			$prefix = isset($global_variables["default_db_driver"]) ? $global_variables["default_db_driver"] : null;
 			$new_db_credentials = $prefix . (isset($global_variables[$prefix . "_db_host"]) ? $global_variables[$prefix . "_db_host"] : null) . (isset($global_variables[$prefix . "_db_name"]) ? $global_variables[$prefix . "_db_name"] : null) . (isset($global_variables[$prefix . "_db_encoding"]) ? $global_variables[$prefix . "_db_encoding"] : null) . (isset($global_variables[$prefix . "_db_odbc_data_source"]) ? $global_variables[$prefix . "_db_odbc_data_source"] : null);

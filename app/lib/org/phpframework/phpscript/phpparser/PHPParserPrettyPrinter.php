@@ -71,7 +71,7 @@ class PHPParserPrettyPrinter extends PHPParserPrettyPrinterStandard {
 	// Comments
 
 	public function printComments(array $comments) {
-		if (empty($this->nl))
+		if (method_exists($this, "resetState") && empty($this->nl)) //phpparser_52_56 and phpparser_52_71 does NOT have this method
 			parent::resetState(); //init nl var, otherwise we get a php error
 		
 		return parent::pComments($comments);
@@ -80,7 +80,7 @@ class PHPParserPrettyPrinter extends PHPParserPrettyPrinterStandard {
 	// nl
 	
 	public function getNL() {
-		if (empty($this->nl))
+		if (method_exists($this, "resetState") && empty($this->nl)) //phpparser_52_56 and phpparser_52_71 does NOT have this method
 			parent::resetState(); //init nl var, otherwise we get a php error
 		
 		return $this->nl;

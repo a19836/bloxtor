@@ -141,7 +141,17 @@ SecRequestBodyInMemoryLimit 16384000
 SecResponseBodyLimit 32768000
 ```
 
-Additionally, in edit your vhost conf file and add the following lines:
+In case you get some denied requests when access the framework, you will also need to add the 'text/html' and 'text/plain' content-types in the '/usr/share/modsecurity-crs/modsecurity_crs_10_setup.conf' or '/usr/share/modsecurity-crs/base_rules/modsecurity_crs_30_http_policy.conf', this is, 
+search for the following line:
+```
+setvar:tx.allowed_request_content_type=application/json|application/x-www-form-urlencoded|multipart/form-data"
+```
+and then add '|text/html' at the end, as shown below:
+```
+setvar:tx.allowed_request_content_type=application/json|application/x-www-form-urlencoded|multipart/form-data|text/html|text/plain"
+```
+
+Additionally, edit your vhost conf file and add the following lines:
 ```
 LimitInternalRecursion 100
 LimitRequestBody 0
@@ -151,6 +161,11 @@ LimitRequestLine 10000000
 LimitXMLRequestBody 10000000
 ```
 
+if still the framework seems unstable with blocked or denied requests, you can always disable the mod security for the framework domain, by adding the following line to your vhost conf file:
+```
+#Disable ModSecurity
+SecRuleEngine Off
+```
 .
 ### Exemplary vhost conf file
 Here is an exemplary conf file from an web-server vhost, in /etc/apache2/sites-enable/bloxtor.conf:
@@ -173,6 +188,9 @@ Here is an exemplary conf file from an web-server vhost, in /etc/apache2/sites-e
   #LimitRequestFieldSize 10000000
   #LimitRequestLine 10000000
   #LimitXMLRequestBody 10000000
+  
+  #Disable ModSecurity
+  #SecRuleEngine Off
 </VirtualHost>
 
 ```

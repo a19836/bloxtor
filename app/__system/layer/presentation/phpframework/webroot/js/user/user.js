@@ -37,7 +37,26 @@ function isFormChanged() {
 function submitForm(elm, input_class) {
 	$(window).unbind('beforeunload');
 	
-	$(elm).parent().closest(".top_bar").parent().find("form").find(".buttons .submit_button input" + (input_class ? "." + input_class : "") + "").trigger("click");
+	//add loading to save button
+	var top_bar = $(elm).parent().closest(".top_bar");
+	var save_btn = top_bar.find(".save");
+	
+	save_btn.addClass("loading");
+	
+	//submit form
+	var f = top_bar.parent().find("form");
+	var submit_btn = f.find(".buttons .submit_button input" + (input_class ? "." + input_class : "") + "");
+	submit_btn.trigger("click");
+	
+	//check if there were any form validation errors
+	var on_submit = f.attr("onSubmit");
+	if (on_submit && on_submit.indexOf("MyJSLib.FormHandler.formCheck") && typeof MyJSLib != 'undefined') {
+		var elements = MyJSLib.FormHandler.getFormElements(f[0]);
+		var attrs = MyJSLib.FormHandler.getFormElementsChecks(elements);
+		
+		if (attrs.errors > 0)
+			save_btn.removeClass("loading");
+	}
 }
 
 function toggleAllPermissions(elm, class_name) {

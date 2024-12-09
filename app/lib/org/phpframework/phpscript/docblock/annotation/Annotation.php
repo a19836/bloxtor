@@ -352,6 +352,12 @@ abstract class Annotation {
 					
 					//Don't do anything else because it will launch another exception later.
 				}
+				catch (\Exception $e) { //for php 5.6 because Throwable is only for PHP 7+
+					global $GlobalErrorHandler;
+					$GlobalErrorHandler && $GlobalErrorHandler->start();
+					
+					//Don't do anything else because it will launch another exception later.
+				}
 			}
 		
 			$this->errors[] = self::encodeValueForPrinting($value) . " is not a " . implode(" or ", $types);
