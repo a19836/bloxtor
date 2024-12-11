@@ -49,10 +49,12 @@ then
 	chmod -f 777 $TRUNK_PATH/files/ 2>&1
 	
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/app/config/* 2>&1
+	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/app/config/.gitkeep 2>&1
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/app/layer/* 2>&1
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/app/layer/.htaccess 2>&1
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/other/authdb/* 2>&1
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/other/workflow/* 2>&1
+	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/other/workflow/.gitkeep 2>&1
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/app/__system/layer/presentation/common/webroot/cms/* 2>&1
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/app/__system/layer/presentation/common/src/module/* 2>&1
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/app/__system/layer/presentation/common/webroot/module/* 2>&1
@@ -62,6 +64,7 @@ then
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/vendor/codeworkfloweditor/* 2>&1
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/vendor/layoutuieditor/* 2>&1
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/vendor/testunit/* 2>&1
+	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/vendor/testunit/.gitkeep 2>&1
 	chown -fR $APACHE_USER:$APACHE_USER $TRUNK_PATH/tmp/* 2>&1
 	
 	#dependecies

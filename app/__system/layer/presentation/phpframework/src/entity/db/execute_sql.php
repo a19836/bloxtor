@@ -27,19 +27,22 @@ if ($bean_name) {
 			$DBDriver = $WorkFlowDBHandler->getBeanObject($bean_file_name, $bean_name);
 			
 			$sql_aux = DB::removeSQLComments($sql);
-			$data = $DBDriver->convertSQLToObject($sql_aux);
-			$query_type = $data && isset($data["type"]) ? $data["type"] : null;
-			$is_select_sql = $query_type == "select";
-			$options = $is_select_sql || $query_type == "insert" || $query_type == "update" || $query_type == "delete" ? array("remove_comments" => true) : null;
 			
-			try {
-				if ($is_select_sql)
-					$results = $DBDriver->getData($sql, $options);
-				else
-					$results = $DBDriver->setData($sql, $options);
-			}
-			catch(Exception $e) {
-				$exception_message = isset($e->problem) ? $e->problem : null;
+			if (trim($sql_aux)) {
+				$data = $DBDriver->convertSQLToObject($sql_aux);
+				$query_type = $data && isset($data["type"]) ? $data["type"] : null;
+				$is_select_sql = $query_type == "select";
+				$options = $is_select_sql || $query_type == "insert" || $query_type == "update" || $query_type == "delete" ? array("remove_comments" => true) : null;
+				
+				try {
+					if ($is_select_sql)
+						$results = $DBDriver->getData($sql, $options);
+					else
+						$results = $DBDriver->setData($sql, $options);
+				}
+				catch(Exception $e) {
+					$exception_message = isset($e->problem) ? $e->problem : null;
+				}
 			}
 		}
 	}
