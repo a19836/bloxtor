@@ -1,5 +1,16 @@
 # Bloxtor installation steps
 
+## Hardware Requirements
+
+To ensure minimum performance, the following hardware specifications are recommended:
+
+- **Processor**: One-core 1.0 GHz
+- **Memory (RAM)**: 516 MB
+- **Storage**: 300 MB of free space
+
+Bloxtor is lightweight and runs seamlessly on a Raspberry Pi. Any hardware capable of running a web server (e.g., Apache, Nginx) and PHP can also run Bloxtor.
+
+
 ## 1. Install Web-server with PHP
 Install web-server (eg: Apache) and PHP 5.6 or higher (Bloxtor was tested until PHP 8.4).
 If you wish you can install also the Mysql and Postgres servers.
