@@ -198,27 +198,20 @@
 										//console.log(html);
 										ui_creator.parseHtmlSource(html, widget);
 										
-										var first_child = widget.children().first();
-										var children = widget[0].childNodes; //including text nodes
 										var images = widget.find("img");
-										//console.log(children);
 										//console.log(widget[0].parentNode);
 										
 										var widget_parent = widget[0].parentNode;
 										
-										for (var i = 0; i < children.length; i++) {
+										while (widget[0].childNodes.length > 0) {
 											try {
-												widget_parent.insertBefore(children[i], widget[0]); //must use insertBefore instead of .after(..), beacuse if the node is alink, style or script, it will give an exception when we click on it.
+												widget_parent.insertBefore(widget[0].childNodes[0], widget[0]); //must use insertBefore instead of .after(..), beacuse if the node is alink, style or script, it will give an exception when we click on it.
 											}
 											catch(e2) {
 												if (console && console.log)
 													console.log(e2);
 											}
 										}
-										
-										//console.log(first_child[0]);
-										if (first_child[0])
-											first_child.trigger("click");
 										
 										//generates images
 										if (images.length > 0) {
