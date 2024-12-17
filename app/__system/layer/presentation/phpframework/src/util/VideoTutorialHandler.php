@@ -90,6 +90,20 @@ class VideoTutorialHandler {
 						"image" => "",
 						"video" => "https://www.youtube.com/embed/XMwbpe9HtMw", //page_editor_manipulate_widgets.webm
 					),
+					"2_3_page_editor_ai_widget" => array(
+						"title" => "How to generate a layout component through AI",
+						"description" => "Learn how to generate a layout component in a specific position with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+						"image" => "",
+						"video" => "https://www.youtube.com/embed/tnQqNnRcqz4", //layout_component_generation.webm
+					),
+					"2_4_page_generation_with_ai" => array(
+						"title" => "How to create a page through AI",
+						"description" => "Learn how to create a new page with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+						"image" => "",
+						"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
+					),
 				)
 			),
 			"3_simple_workspace" => array(
@@ -118,6 +132,20 @@ class VideoTutorialHandler {
 								"video" => "https://www.youtube.com/embed/CrEznnR2lkY", //create_project_with_static_page_from_template.webm
 								"pages" => array("admin/index", "admin/admin_home", "admin/admin_home_project", "admin/choose_available_project"), //this is used in the TourGuideUIHandler
 								"workspaces" => array("simple"), //this is used in the TourGuideUIHandler
+							),
+							"3_1_3_page_editor_ai_widget" => array(
+								"title" => "How to generate a layout component through AI",
+								"description" => "Learn how to generate a layout component in a specific position with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/tnQqNnRcqz4", //layout_component_generation.webm
+							),
+							"3_1_4_page_generation_with_ai" => array(
+								"title" => "How to create a page through AI",
+								"description" => "Learn how to create a new page with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
 							),
 						)
 					),
@@ -198,6 +226,20 @@ class VideoTutorialHandler {
 								"video" => "https://www.youtube.com/embed/gwDZMLa4kZk", //create_project_with_static_page_from_template.webm
 								"pages" => array("admin/index", "admin/admin_home", "admin/admin_home_project", "admin/choose_available_project"), //this is used in the TourGuideUIHandler
 								"workspaces" => array("advanced"), //this is used in the TourGuideUIHandler
+							),
+							"4_1_3_page_editor_ai_widget" => array(
+								"title" => "How to generate a layout component through AI",
+								"description" => "Learn how to generate a layout component in a specific position with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/tnQqNnRcqz4", //layout_component_generation.webm
+							),
+							"4_1_4_page_generation_with_ai" => array(
+								"title" => "How to create a page through AI",
+								"description" => "Learn how to create a new page with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
 							),
 						)
 					),
@@ -564,6 +606,20 @@ class VideoTutorialHandler {
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/__FeuikKvUI",
 							),
+							"35_1_3_table_generation_through_ai" => array(
+								"title" => "How to generate a table through AI",
+								"description" => "Learn how to generate a new table with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/iHuYUFCcaJ0", //db_table.webm
+							),
+							"35_1_4_sql_generation_through_ai" => array(
+								"title" => "How to generate SQL statements through AI",
+								"description" => "Learn how to generate SQL statements with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/Ro-AWKAjMr4", //db_sql_statements.webm
+							),
 						),
 					),
 					"35_2_business_logic_layer" => array(
@@ -592,6 +648,13 @@ class VideoTutorialHandler {
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/Iq8hOqzQCw0",
 							),
+							"35_2_4_code_generation_through_ai" => array(
+								"title" => "How to generate code through AI",
+								"description" => "Learn how to generate code with artificial intelligence by writing what you wish in natural language. You can ask AI to explain a specific piece of code, or create test units for it, or generate a new function and logic code according with your requirements, or something else...<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/5OZk4noPa_M", //php_generation.webm
+							),
 						),
 					),
 					"35_3_advanced_workspace_pl_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
@@ -601,6 +664,14 @@ class VideoTutorialHandler {
 						"video" => "https://www.youtube.com/embed/cqR2SXYJ_EM",
 					),
 				)
+			),
+			"36_ai_summary" => array(
+				"title" => "How to use AI to help you achieve your goals faster",
+				"description" => "Discover how to leverage artificial intelligence to achieve your goals: simply describe what you need in natural language, and AI will generate it for you.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+				"image" => "",
+				"video" => "https://www.youtube.com/embed/ImZg10DEWWg", //ai_summary.webm
+				"pages" => array("admin/index", "admin/admin_home", "admin/admin_home_project", "admin/choose_available_project"), //this is used in the TourGuideUIHandler
 			),
 		);
 	}
@@ -782,6 +853,13 @@ class VideoTutorialHandler {
 						"image" => "",
 						"video" => "https://www.youtube.com/embed/jaAtapfIFO0",
 					),
+					"2_12_ai_summary" => array(
+						"title" => "How to use AI to help you achieve your goals faster",
+						"description" => "Discover how to leverage artificial intelligence to achieve your goals: simply describe what you need in natural language, and AI will generate it for you.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+						"image" => "",
+						"video" => "https://www.youtube.com/embed/ImZg10DEWWg", //ai_summary.webm
+					),
 				),
 			),
 			"3_db_layer" => array(
@@ -789,18 +867,32 @@ class VideoTutorialHandler {
 				"description" => "Learn how to manage your DBs, create tables diagrams...<br/>
 	To know more about this please read the <a href=\"{$online_tutorials_url_prefix}documentation/layers/database\" target=\"documentation\">Data Base Layer</a> section.",
 				"items" => array(
-					"2_1_3_advanced_workspace_db_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
+					"3_1_advanced_workspace_db_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
 						"title" => "Understand the DB Layer Tab",
 						"description" => "This video explains how to work with the DB Layer Tab in the Advanced Workspace and what are its funcionalities.",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/X4y7CZwQ700",
+						"video" => "https://www.youtube.com/embed/X4y7CZwQ700", //3_1_3_advanced_workspace_db_tab
 					),
-					"3_1_creation_of_db_diagram" => array(
+					"3_2_creation_of_db_diagram" => array(
 						"title" => "Create DB Tables Diagram and Reverse Engineering",
 						"description" => "This video explains how to create a DataBase diagram, generate the correspondent SQL and insert it to a DB.<br/>
 	Additionally shows how to reverse engineering a schema from a DataBase into a tables diagram.",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/__FeuikKvUI",
+						"video" => "https://www.youtube.com/embed/__FeuikKvUI", //3_1_creation_of_db_diagram
+					),
+					"3_3_table_generation_through_ai" => array(
+						"title" => "How to generate a table through AI",
+						"description" => "Learn how to generate a new table with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+						"image" => "",
+						"video" => "https://www.youtube.com/embed/iHuYUFCcaJ0", //db_table.webm
+					),
+					"3_4_sql_generation_through_ai" => array(
+						"title" => "How to generate SQL statements through AI",
+						"description" => "Learn how to generate SQL statements with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+						"image" => "",
+						"video" => "https://www.youtube.com/embed/Ro-AWKAjMr4", //db_sql_statements.webm
 					),
 				),
 			),
@@ -809,47 +901,54 @@ class VideoTutorialHandler {
 				"description" => "Learn how to create iBatis Queries, Hibernate Objects, Parameter and Result Maps and Classes, Object Types and Hibernate extensions...<br/>
 	To read more about this please visit the <a href=\"{$online_tutorials_url_prefix}documentation/layers/data_access\" target=\"documentation\">Data Access Layer</a> section.",
 				"items" => array(
-					"2_1_4_advanced_workspace_dal_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
+					"4_1_advanced_workspace_dal_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
 						"title" => "Understand the Data-Access Layer Tab",
 						"description" => "This video explains how to work with the Data-Access Layer Tab in the Advanced Workspace and what are its funcionalities.",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/b7cCvzxwyL0",
+						"video" => "https://www.youtube.com/embed/b7cCvzxwyL0", //2_1_4_advanced_workspace_dal_tab
 						"pages" => array("dataaccess/edit_query"), //this is used in the TourGuideUIHandler
 					),
-					"4_1_creation_of_ibatis" => array(
+					"4_2_creation_of_ibatis" => array(
 						"title" => "Create Queries through Ibatis",
 						"description" => "This video explains how to create SQL queries to a Data-base Table through the iBatis system.<br/>
 	Additionally it shows how to create these rules automatically from a DataBase diagram.<br/>
 	Basically the framework will generate automatically the rules from a DataBase diagram, saving time to the programmer and maximizing his work...",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/xib4OKTdjY0",
+						"video" => "https://www.youtube.com/embed/xib4OKTdjY0", //4_1_creation_of_ibatis
 						"pages" => array("dataaccess/edit_query"), //this is used in the TourGuideUIHandler
 					),
-					"4_2_creation_of_hbn" => array(
+					"4_3_query_generation_through_ai" => array(
+						"title" => "How to generate queries through AI",
+						"description" => "Learn how to generate SQL queries with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+						"image" => "",
+						"video" => "https://www.youtube.com/embed/YunfqbI5cG0", //dal_sql.webm
+					),
+					"4_4_creation_of_hbn" => array(
 						"title" => "Create Objects through Hibernate",
 						"description" => "This video explains how to create Data-access objects to a Data-base Table through the Hibernate system.
 	Additionally it shows how to create these objects automatically from a DataBase diagram.<br/>
 	Basically the framework will generate automatically the objects from a DataBase diagram, saving time to the programmer and maximizing his work...",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/PhJMowYIuF8",
+						"video" => "https://www.youtube.com/embed/PhJMowYIuF8", //4_2_creation_of_hbn
 					),
-					"4_3_ibatis_and_hbn_xml_files" => array(
+					"4_5_ibatis_and_hbn_xml_files" => array(
 						"title" => "Ibatis and Hibernate XML Files",
 						"description" => "This video shows that you can edit directly the XML files of Ibatis and Hibernate in case you don't like to do it via the simple UI of the framework... Explains how to create SQL queries and Hibernate Objects directly in the xml file.",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/8057YRW73ss",
+						"video" => "https://www.youtube.com/embed/8057YRW73ss", //4_3_ibatis_and_hbn_xml_files
 					),
-					"4_4_create_obj_types" => array(
+					"4_6_create_obj_types" => array(
 						"title" => "Create Object Types",
 						"description" => "This video shows how to create your own object type and then use it on Parameter or Result Maps or Classes or Annotations in a Business Logic Service.",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/IkoQpKgW4dg",
+						"video" => "https://www.youtube.com/embed/IkoQpKgW4dg", //4_4_create_obj_types
 					),
-					"4_5_create_hibernate_model_extensions" => array(
+					"4_7_create_hibernate_model_extensions" => array(
 						"title" => "Create Hibernate Model Extensions",
 						"description" => "This video shows how to extend a Hibernate object with new user-defined methods and properties, that is, it explains how to programmatically create a class that contains its own methods and properties and then use that class to extend a Hibernate object.",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/XVY7LaQNx8o",
+						"video" => "https://www.youtube.com/embed/XVY7LaQNx8o", //4_5_create_hibernate_model_extensions
 					),
 				),
 			),
@@ -858,26 +957,33 @@ class VideoTutorialHandler {
 				"description" => "Learn how to create Services in the Business Logic Layer.",
 				"pages" => array("businesslogic/edit_method", "businesslogic/edit_function", "admin/edit_file_class_method", "admin/edit_file_function"), //this is used in the TourGuideUIHandler
 				"items" => array(
-					"2_1_5_advanced_workspace_bll_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
+					"5_1_advanced_workspace_bll_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
 						"title" => "Understand the Business-Logic Layer Tab",
 						"description" => "This video explains how to work with the Business-Logic Layer Tab in the Advanced Workspace and what are its funcionalities.",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/Si_aJW46bU8",
+						"video" => "https://www.youtube.com/embed/Si_aJW46bU8", //2_1_5_advanced_workspace_bll_tab
 					),
-					"5_1_creation_of_soa" => array(
+					"5_2_creation_of_soa" => array(
 						"title" => "Create a Business Logic Service",
 						"description" => "This video explains how to create a Service in the Business Logic Layer and relate it to the data-access layer.<br/>
 	Additionally it shows how to create these services automatically from SQL queries and objects in the Data-Access Layer. Basically the framework will generate automatically the services from the rules of a Data-Access Layer, saving time to the programmer and maximizing his work...<br/>
 	Note that if the Business-Logic Layer is connected directly to the Data-Base Layer, it can execute sql directly too, but this explanation is not in this video.",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/pEPOW0HfueE",
+						"video" => "https://www.youtube.com/embed/pEPOW0HfueE", //5_1_creation_of_soa
 					),
-					"5_2_creation_of_manual_soa" => array(
+					"5_3_creation_of_manual_soa" => array(
 						"title" => "Create a Business Logic Service Manually",
 						"description" => "This video explains how to create manually, step by step, a Service in the Business Logic Layer that gets a record from a DB table.<br/>
 	Note that if the Business-Logic Layer is connected directly to the DB Layer, which means it can execute sql directly.",
 						"image" => "",
-						"video" => "https://www.youtube.com/embed/Iq8hOqzQCw0",
+						"video" => "https://www.youtube.com/embed/Iq8hOqzQCw0", //5_2_creation_of_manual_soa
+					),
+					"5_4_code_generation_through_ai" => array(
+						"title" => "How to generate code through AI",
+						"description" => "Learn how to generate code with artificial intelligence by writing what you wish in natural language. You can ask AI to explain a specific piece of code, or create test units for it, or generate a new function and logic code according with your requirements, or something else...<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+						"image" => "",
+						"video" => "https://www.youtube.com/embed/5OZk4noPa_M", //php_generation.webm
 					),
 				),
 			),
@@ -903,23 +1009,30 @@ class VideoTutorialHandler {
 										"title" => "Simple Page creation",
 										"description" => "This video explains how to create a simple Page with a simple text. Basically we will create a Page with some dummy text.",
 										"image" => "",
-										"video" => "https://www.youtube.com/embed/uhkSijyV_5Y",
+										"video" => "https://www.youtube.com/embed/uhkSijyV_5Y", //6_1_1_1_creation_of_simple_page_on_simple_admin
 									),
-									"6_1_1_2_creation_of_simple_page_with_template_on_simple_admin" => array(
+									"6_1_1_2_page_generation_with_ai" => array(
+										"title" => "How to create a page through AI",
+										"description" => "Learn how to create a new page with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+										"image" => "",
+										"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
+									),
+									"6_1_1_3_creation_of_simple_page_with_template_on_simple_admin" => array(
 										"title" => "Simple Page creation with Template",
 										"description" => "This video explains how to create a Page which will be integrated into a pre-installed Template. Basically we will create a Page and set a variable inside of that Page and then print that variable through the Template.<br/>
 	The purpose of this video is to show how Pages and Templates can work together...<br/>
 	In these examples you must be familiar with creating and print variables in php.",
 										"image" => "",
-										"video" => "https://www.youtube.com/embed/f3JHcptQ3h4",
+										"video" => "https://www.youtube.com/embed/f3JHcptQ3h4", //6_1_1_2_creation_of_simple_page_with_template_on_simple_admin
 									),
-									"6_1_1_3_creation_of_simple_page_with_modules_on_simple_admin" => array(
+									"6_1_1_4_creation_of_simple_page_with_modules_on_simple_admin" => array(
 										"title" => "Simple Page creation with Modules",
 										"description" => "This video explains how to create a Page using the Page Simple UI which uses pre-installed Templates and Modules.<br/>
 	The purpose of this video is to teach how pages can be used with templates and modules.<br/>
 	In this example we will use the 'Menu' Module to create a menu and the 'EchoStr' Module to show some text in the Main Area of the template.",
 										"image" => "",
-										"video" => "https://www.youtube.com/embed/uCG2_JeAP6k",
+										"video" => "https://www.youtube.com/embed/uCG2_JeAP6k", //6_1_1_3_creation_of_simple_page_with_modules_on_simple_admin
 									),
 								),
 							),
@@ -931,50 +1044,57 @@ class VideoTutorialHandler {
 										"title" => "Simple Page creation",
 										"description" => "This video explains how to create a simple Page with a simple html text. Basically we will create a Page with some dummy html.",
 										"image" => "",
-										"video" => "https://www.youtube.com/embed/aH2ZXe9gIGI",
+										"video" => "https://www.youtube.com/embed/aH2ZXe9gIGI", //6_1_2_1_creation_of_simple_page_on_advanced_admin
 									),
-									"6_1_2_2_1_creation_of_simple_page_with_view_on_advanced_admin_1" => array(
+									"6_1_2_2_page_generation_with_ai" => array(
+										"title" => "How to create a page through AI",
+										"description" => "Learn how to create a new page with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+										"image" => "",
+										"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
+									),
+									"6_1_2_3_1_creation_of_simple_page_with_view_on_advanced_admin_1" => array(
 										"title" => "Simple Page creation with View - step 1",
 										"description" => "This video explains how to create a Page with a View with a simple text.<br/>
 	Explains how can you use a View in multiple Pages, this is, you can use Views to display data coming from Pages, reusing code instead of repeating it...<br/>
 	The purpose of these videos is to show how Pages and Views can work together...<br/>
 	In these examples you must be familiar with creating and print variables in php.",
 										"image" => "",
-										"video" => "https://www.youtube.com/embed/a83yXdijUL0",
+										"video" => "https://www.youtube.com/embed/a83yXdijUL0", //6_1_2_2_1_creation_of_simple_page_with_view_on_advanced_admin_1
 									),
-									"6_1_2_2_2_creation_of_simple_page_with_view_on_advanced_admin_2" => array(
+									"6_1_2_3_2_creation_of_simple_page_with_view_on_advanced_admin_2" => array(
 										"title" => "Simple Page creation with View - step 2",
 										"description" => "This video explains how to create a Page with a View with a simple text.<br/>
 	Explains how can you have Pages with php variables and php logic code, and Views with html code.<br/>
 	The purpose of these videos is to show how Pages and Views can work together...<br/>
 	In these examples you must be familiar with creating and print variables in php.",
 										"image" => "",
-										"video" => "https://www.youtube.com/embed/URZZuNQ7HS0",
+										"video" => "https://www.youtube.com/embed/URZZuNQ7HS0", //6_1_2_2_2_creation_of_simple_page_with_view_on_advanced_admin_2
 									),
-									"6_1_2_3_creation_of_simple_page_with_template_on_advanced_admin" => array(
+									"6_1_2_4_creation_of_simple_page_with_template_on_advanced_admin" => array(
 										"title" => "Simple Page creation with Template",
 										"description" => "This video explains how to create a Page which will be integrated into a pre-installed Template. Basically we will create a page and set a variable inside of that page and then print that variable through the template.<br/>
 	The purpose of this video is to show how Pages and Templates can work together...<br/>
 	In these examples you must be familiar with creating and print variables in php.",
 										"image" => "",
-										"video" => "https://www.youtube.com/embed/ueHwYCIrPlM",
+										"video" => "https://www.youtube.com/embed/ueHwYCIrPlM", //6_1_2_3_creation_of_simple_page_with_template_on_advanced_admin
 									),
-									"6_1_2_4_creation_of_simple_page_with_view_and_template_on_advanced_admin" => array(
+									"6_1_2_5_creation_of_simple_page_with_view_and_template_on_advanced_admin" => array(
 										"title" => "Simple Page creation with View and Template",
 										"description" => "This video explains how to create a Page with a View but that will be integrated into a pre-installed Template.<br/>
 	Basically we will create a Page which will call a View and then print the view throught a Template. The View will create the html according with the variables defined in the Page.<br/> 
 	The purpose of this video is to show how Pages, Views and Templates can work together...<br/>
 	In these examples you must be familiar with creating and print variables in php.",
 										"image" => "",
-										"video" => "https://www.youtube.com/embed/GLb9lPYJE1g",
+										"video" => "https://www.youtube.com/embed/GLb9lPYJE1g", //6_1_2_4_creation_of_simple_page_with_view_and_template_on_advanced_admin
 									),
-									"6_1_2_5_creation_of_simple_page_with_modules_on_advanced_admin" => array(
+									"6_1_2_6_creation_of_simple_page_with_modules_on_advanced_admin" => array(
 										"title" => "Simple Page creation with Modules",
 										"description" => "This video explains how to create a Page using the Page Simple UI which uses pre-installed Templates and Modules.<br/>
 	The purpose of this video is to teach how pages can be used with templates and modules.<br/>
 	In this example we will use the 'Menu' Module to create a menu and the 'EchoStr' Module to show some text in the Main Area of the template.",
 										"image" => "",
-										"video" => "https://www.youtube.com/embed/j1s2Qcl1po0",
+										"video" => "https://www.youtube.com/embed/j1s2Qcl1po0", //6_1_2_5_creation_of_simple_page_with_modules_on_advanced_admin
 									),
 								),
 							),
@@ -1012,6 +1132,13 @@ class VideoTutorialHandler {
 												"description" => "Learn how to create a static page using a theme template, by drag&drop html widgets.",
 												"image" => "",
 												"video" => "https://www.youtube.com/embed/CrEznnR2lkY", //create_project_with_static_page_from_template.webm
+											),
+											"3_1_3_page_editor_ai_widget" => array(
+												"title" => "How to generate a layout component through AI",
+												"description" => "Learn how to generate a layout component in a specific position with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+												"image" => "",
+												"video" => "https://www.youtube.com/embed/tnQqNnRcqz4", //layout_component_generation.webm
 											),
 										)
 									),
@@ -1086,6 +1213,13 @@ class VideoTutorialHandler {
 												"description" => "Learn how to create a static page using a theme template, by drag&drop html widgets.",
 												"image" => "",
 												"video" => "https://www.youtube.com/embed/gwDZMLa4kZk", //create_project_with_static_page_from_template.webm
+											),
+											"4_1_3_page_editor_ai_widget" => array(
+												"title" => "How to generate a layout component through AI",
+												"description" => "Learn how to generate a layout component in a specific position with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+												"image" => "",
+												"video" => "https://www.youtube.com/embed/tnQqNnRcqz4", //layout_component_generation.webm
 											),
 										)
 									),
@@ -1568,6 +1702,13 @@ class VideoTutorialHandler {
 	For more information about how to create templates please check the \"<a href=\"{$online_tutorials_url_prefix}documentation/templates/creation\" target=\"documentation\">Create New Templates</a>\" tutorial.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/WWkvs_h4dSA",
+							),
+							"6_8_4_template_generation_with_ai" => array(
+								"title" => "How to create a template through AI",
+								"description" => "Learn how to create a new template with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/UvXCz1SMmUI", //template_generation.webm
 							),
 						),
 					),

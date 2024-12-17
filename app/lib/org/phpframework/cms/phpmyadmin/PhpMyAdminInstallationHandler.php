@@ -31,6 +31,12 @@ include_once $relative_path;
 			$status = file_put_contents($config_path, $contents) !== false;
 		}
 		
+		//optional
+		$tmp_path = $phpmyadmin_path . "/tmp/";
+		
+		if (is_dir($tmp_path))
+			chmod($tmp_path, 0755); //give permission to tmp folder
+		
 		return $status;
 	}
 	
