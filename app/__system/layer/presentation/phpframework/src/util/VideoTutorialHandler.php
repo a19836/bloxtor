@@ -104,6 +104,13 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 						"image" => "",
 						"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
 					),
+					"2_5_image_to_page_conversion_with_ai" => array(
+						"title" => "How to convert an image with a layout to an editable page through AI",
+						"description" => "Discover how to use artificial intelligence to transform an image of a layout from your web designer into an editable page. Customize and refine the converted components as needed, creating a fully ready-to-use page for your end users.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+						"image" => "",
+						"video" => "https://www.youtube.com/embed/ylfVfuD6Qvo", //image_page_conversion.webm
+					),
 				)
 			),
 			"3_simple_workspace" => array(
@@ -146,6 +153,13 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
+							),
+							"3_1_5_image_to_page_conversion_with_ai" => array(
+								"title" => "How to convert an image with a layout to an editable page through AI",
+								"description" => "Discover how to use artificial intelligence to transform an image of a layout from your web designer into an editable page. Customize and refine the converted components as needed, creating a fully ready-to-use page for your end users.<br/>
+		Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/ylfVfuD6Qvo", //image_page_conversion.webm
 							),
 						)
 					),
@@ -240,6 +254,13 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
+							),
+							"4_1_5_image_to_page_conversion_with_ai" => array(
+								"title" => "How to convert an image with a layout to an editable page through AI",
+								"description" => "Discover how to use artificial intelligence to transform an image of a layout from your web designer into an editable page. Customize and refine the converted components as needed, creating a fully ready-to-use page for your end users.<br/>
+		Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/ylfVfuD6Qvo", //image_page_conversion.webm
 							),
 						)
 					),
@@ -815,6 +836,27 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/XMwbpe9HtMw", //page_editor_manipulate_widgets.webm
 							),
+							"2_5_4_page_editor_ai_widget" => array(
+								"title" => "How to generate a layout component through AI",
+								"description" => "Learn how to generate a layout component in a specific position with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/tnQqNnRcqz4", //layout_component_generation.webm
+							),
+							"2_5_5_page_generation_with_ai" => array(
+								"title" => "How to create a page through AI",
+								"description" => "Learn how to create a new page with artificial intelligence by writing what you wish in natural language.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
+							),
+							"2_5_6_image_to_page_conversion_with_ai" => array(
+								"title" => "How to convert an image with a layout to an editable page through AI",
+								"description" => "Discover how to use artificial intelligence to transform an image of a layout from your web designer into an editable page. Customize and refine the converted components as needed, creating a fully ready-to-use page for your end users.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/ylfVfuD6Qvo", //image_page_conversion.webm
+							),
 						)
 					),
 					"2_6_template_visual_editor" => array(
@@ -1018,7 +1060,14 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 										"image" => "",
 										"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
 									),
-									"6_1_1_3_creation_of_simple_page_with_template_on_simple_admin" => array(
+									"6_1_1_3_image_to_page_conversion_with_ai" => array(
+										"title" => "How to convert an image with a layout to an editable page through AI",
+										"description" => "Discover how to use artificial intelligence to transform an image of a layout from your web designer into an editable page. Customize and refine the converted components as needed, creating a fully ready-to-use page for your end users.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+										"image" => "",
+										"video" => "https://www.youtube.com/embed/ylfVfuD6Qvo", //image_page_conversion.webm
+									),
+									"6_1_1_4_creation_of_simple_page_with_template_on_simple_admin" => array(
 										"title" => "Simple Page creation with Template",
 										"description" => "This video explains how to create a Page which will be integrated into a pre-installed Template. Basically we will create a Page and set a variable inside of that Page and then print that variable through the Template.<br/>
 	The purpose of this video is to show how Pages and Templates can work together...<br/>
@@ -1026,7 +1075,7 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 										"image" => "",
 										"video" => "https://www.youtube.com/embed/f3JHcptQ3h4", //6_1_1_2_creation_of_simple_page_with_template_on_simple_admin
 									),
-									"6_1_1_4_creation_of_simple_page_with_modules_on_simple_admin" => array(
+									"6_1_1_5_creation_of_simple_page_with_modules_on_simple_admin" => array(
 										"title" => "Simple Page creation with Modules",
 										"description" => "This video explains how to create a Page using the Page Simple UI which uses pre-installed Templates and Modules.<br/>
 	The purpose of this video is to teach how pages can be used with templates and modules.<br/>
@@ -1053,7 +1102,14 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 										"image" => "",
 										"video" => "https://www.youtube.com/embed/dybAfnkItRM", //page_generation.webm
 									),
-									"6_1_2_3_1_creation_of_simple_page_with_view_on_advanced_admin_1" => array(
+									"6_1_2_3_image_to_page_conversion_with_ai" => array(
+										"title" => "How to convert an image with a layout to an editable page through AI",
+										"description" => "Discover how to use artificial intelligence to transform an image of a layout from your web designer into an editable page. Customize and refine the converted components as needed, creating a fully ready-to-use page for your end users.<br/>
+Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
+										"image" => "",
+										"video" => "https://www.youtube.com/embed/ylfVfuD6Qvo", //image_page_conversion.webm
+									),
+									"6_1_2_4_1_creation_of_simple_page_with_view_on_advanced_admin_1" => array(
 										"title" => "Simple Page creation with View - step 1",
 										"description" => "This video explains how to create a Page with a View with a simple text.<br/>
 	Explains how can you use a View in multiple Pages, this is, you can use Views to display data coming from Pages, reusing code instead of repeating it...<br/>
@@ -1062,7 +1118,7 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 										"image" => "",
 										"video" => "https://www.youtube.com/embed/a83yXdijUL0", //6_1_2_2_1_creation_of_simple_page_with_view_on_advanced_admin_1
 									),
-									"6_1_2_3_2_creation_of_simple_page_with_view_on_advanced_admin_2" => array(
+									"6_1_2_4_2_creation_of_simple_page_with_view_on_advanced_admin_2" => array(
 										"title" => "Simple Page creation with View - step 2",
 										"description" => "This video explains how to create a Page with a View with a simple text.<br/>
 	Explains how can you have Pages with php variables and php logic code, and Views with html code.<br/>
@@ -1071,7 +1127,7 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 										"image" => "",
 										"video" => "https://www.youtube.com/embed/URZZuNQ7HS0", //6_1_2_2_2_creation_of_simple_page_with_view_on_advanced_admin_2
 									),
-									"6_1_2_4_creation_of_simple_page_with_template_on_advanced_admin" => array(
+									"6_1_2_5_creation_of_simple_page_with_template_on_advanced_admin" => array(
 										"title" => "Simple Page creation with Template",
 										"description" => "This video explains how to create a Page which will be integrated into a pre-installed Template. Basically we will create a page and set a variable inside of that page and then print that variable through the template.<br/>
 	The purpose of this video is to show how Pages and Templates can work together...<br/>
@@ -1079,7 +1135,7 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 										"image" => "",
 										"video" => "https://www.youtube.com/embed/ueHwYCIrPlM", //6_1_2_3_creation_of_simple_page_with_template_on_advanced_admin
 									),
-									"6_1_2_5_creation_of_simple_page_with_view_and_template_on_advanced_admin" => array(
+									"6_1_2_6_creation_of_simple_page_with_view_and_template_on_advanced_admin" => array(
 										"title" => "Simple Page creation with View and Template",
 										"description" => "This video explains how to create a Page with a View but that will be integrated into a pre-installed Template.<br/>
 	Basically we will create a Page which will call a View and then print the view throught a Template. The View will create the html according with the variables defined in the Page.<br/> 
@@ -1088,7 +1144,7 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 										"image" => "",
 										"video" => "https://www.youtube.com/embed/GLb9lPYJE1g", //6_1_2_4_creation_of_simple_page_with_view_and_template_on_advanced_admin
 									),
-									"6_1_2_6_creation_of_simple_page_with_modules_on_advanced_admin" => array(
+									"6_1_2_7_creation_of_simple_page_with_modules_on_advanced_admin" => array(
 										"title" => "Simple Page creation with Modules",
 										"description" => "This video explains how to create a Page using the Page Simple UI which uses pre-installed Templates and Modules.<br/>
 	The purpose of this video is to teach how pages can be used with templates and modules.<br/>
