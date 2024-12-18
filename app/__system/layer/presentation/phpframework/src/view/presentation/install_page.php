@@ -115,7 +115,7 @@ if (!empty($show_install_page)) {
 		<form method="post" enctype="multipart/form-data">
 			<div class="instructions">Please write in natural language what page do you wish to create:<textarea name="instructions" value="' . (isset($instructions) ? $instructions : "") . '" placeHolder="' . $place_holder . '"></textarea></div>
 			
-			<div class="image">Or upload a mockup/wireframe image and AI will try to translate it into HTML: <input type="file" name="image"/></div>
+			<div class="image">Or upload an image with a layout, and AI will attempt to convert it into HTML: <input type="file" name="image"/></div>
 		</form>
 	</div>
 </div>';
