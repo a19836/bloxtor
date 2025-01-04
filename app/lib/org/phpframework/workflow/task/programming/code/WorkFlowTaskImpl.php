@@ -6,7 +6,10 @@ include_once get_lib("org.phpframework.workflow.WorkFlowTask");
 class WorkFlowTaskImpl extends \WorkFlowTask {
 	
 	public function createTaskPropertiesFromCodeStmt($stmt, $WorkFlowTaskCodeParser, &$exits = null, &$inner_tasks = null) {
-		$code = $WorkFlowTaskCodeParser->printCodeStatement($stmt);
+		$code = $WorkFlowTaskCodeParser->printCodeStatement($stmt); //does not contain ';'
+		
+		if ($code && !preg_match("/;\s*$/", $code))
+			$code .= ";";
 		
 		return array(
 			"code" => $code,

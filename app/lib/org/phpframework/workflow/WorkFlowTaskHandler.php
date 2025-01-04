@@ -427,10 +427,39 @@ class WorkFlowTaskHandler {
 	
 	public function getLoopsTasksFromFile($file_path) {
 		$arr = XMLFileParser::parseXMLFileToArray($file_path, false, false, false);
-	
+		//print_r($arr);die();
+		
 		return $this->getLoopsTasksFromFileTasksData($arr);
 	}
 	
+	//Note that this must be done through recursive functions, otherwise we get memory dump.
+	private function getLoopsTasksFromFileTasksData($arr) {
+		$visited = array(); // To track nodes that have been completely processed
+		$rec_stack = array(); // To track nodes in the current recursion stack
+		$loop_tasks = array(); // To track nodes unique ids
+		$tasks = isset($arr["tasks"][0]["childs"]["task"]) ? $arr["tasks"][0]["childs"]["task"] : null;
+		
+		if (is_array($tasks)) {
+			//prepare tasks_by_ids
+			$tasks_by_ids = array();
+			foreach ($tasks as $task_idx => $task_data) {
+				$task_id = WorkFlowTask::getTaskId($task_data);
+				$tasks_by_ids[$task_id] = $task_data;
+			}
+			
+			//prepare loop_tasks
+			foreach ($tasks as $task_idx => $task_data) {
+				$task_id = WorkFlowTask::getTaskId($task_data);
+				
+				if (!isset($visited[$task_id]))
+					$this->dfs($task_id, $tasks_by_ids, $visited, $rec_stack, $loop_tasks);
+			}
+		}
+		
+		//return loop_tasks values only
+		return array_values($loop_tasks);
+	}
+	/* DEPRECATED bc it consumes a lot of memory and gives a memory dump if we have a more than 16 lines of code similar with '$x = $y ? $y : null;', which gives almost 100.000 items in the paths array, blocking apache server and consuming 100% CPU.
 	private function getLoopsTasksFromFileTasksData($arr) {
 		$loops_tasks = array();
 			
@@ -439,7 +468,6 @@ class WorkFlowTaskHandler {
 			
 			foreach ($arr["tasks"][0]["childs"]["task"] as $task_idx => $task_data) {
 				$task_id = WorkFlowTask::getTaskId($task_data);
-				
 				$exits = WorkFlowTask::getTaskExists($task_data);
 				
 				$indexes = array();
@@ -447,9 +475,8 @@ class WorkFlowTaskHandler {
 				for ($i = 0; $i < $t; $i++) {
 					$path = $paths[$i];
 					
-					if (in_array($task_id, $path)) {
+					if (in_array($task_id, $path))
 						$indexes[] = $i;
-					}
 				}
 				
 				if (empty($indexes)) {
@@ -464,8 +491,10 @@ class WorkFlowTaskHandler {
 					
 					if (in_array($i, $indexes)) {
 						$is_new_array = false;
+						
 						foreach ($exits as $exit_key => $exit_items) {
 							$t2 = $exit_items ? count($exit_items) : 0;
+							
 							for ($j = 0; $j < $t2; $j++) {
 								$exit_task_id = $exit_items[$j];
 								
@@ -474,32 +503,80 @@ class WorkFlowTaskHandler {
 									$task = $this->getTaskByType($type);
 									
 									$is_loop_task = false;
-									if ($task && isset($task["obj"]) && is_object($task["obj"])) {
+									if ($task && isset($task["obj"]) && is_object($task["obj"]))
 										$is_loop_task = $task["obj"]->isLoopTask();
-									}
 									
 									$loops_tasks[ hash("crc32b", "$task_id/$exit_task_id") ] = array($task_id, $exit_task_id, $is_loop_task);
 								}
-								else {
-									$new_paths[] = array_merge($path, array($exit_task_id));
+								else { //add exit_task_id to path
+									$path_aux = $path;
+									$path_aux[] = $exit_task_id;
+									$new_paths[] = $path_aux;
+									
 									$is_new_array = true;
 								}
 							}
 						}
 						
-						if (!$is_new_array) {
+						if (!$is_new_array)
 							$new_paths[] = $path;
-						}
 					}
-					else {
+					else
 						$new_paths[] = $path;
-					}
 				}
+				
 				$paths = $new_paths;
 			}
 		}
 		
 		return array_values($loops_tasks);
+	}*/
+	
+	// Helper function for DFS - Depth-First Search
+	private function dfs($task_id, &$tasks_by_ids, &$visited, &$rec_stack, &$loop_tasks) {
+		// If the node is in the current recursion stack, a cycle is detected
+		if (isset($rec_stack[$task_id]) && $rec_stack[$task_id])
+			return true;
+		
+		// If the node is already visited and not in the recursion stack, skip it
+		if (isset($visited[$task_id]) && $visited[$task_id])
+			return false;
+
+		// Mark the node as visited and add it to the recursion stack
+		$visited[$task_id] = true;
+		$rec_stack[$task_id] = true;
+
+		// Traverse all neighbors
+		$task_data = isset($tasks_by_ids[$task_id]) ? $tasks_by_ids[$task_id] : null;
+		
+		if (isset($task_data)) {
+			$exits = WorkFlowTask::getTaskExists($task_data);
+			
+			foreach ($exits as $exit_key => $exit_items) {
+				$t = $exit_items ? count($exit_items) : 0;
+				
+				for ($i = 0; $i < $t; $i++) {
+					$exit_task_id = $exit_items[$i];
+					$is_cycle = $this->dfs($exit_task_id, $tasks_by_ids, $visited, $rec_stack, $loop_tasks);
+					
+					if ($is_cycle) { // Cycle detected
+						$type = WorkFlowTask::getTaskType($task_data);
+						$task = $this->getTaskByType($type);
+						
+						$is_loop_task = false;
+						if ($task && isset($task["obj"]) && is_object($task["obj"]))
+							$is_loop_task = $task["obj"]->isLoopTask();
+						
+						$loop_tasks[ hash("crc32b", "$task_id/$exit_task_id") ] = array($task_id, $exit_task_id, $is_loop_task);
+					}
+				}
+			}
+		}
+		
+		// Remove the node from the recursion stack before returning
+		$rec_stack[$task_id] = false;
+		
+		return false;
 	}
 	
 	private function parseTask($task_data) {
