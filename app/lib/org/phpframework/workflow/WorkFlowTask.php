@@ -263,6 +263,20 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 		$paths = array();
 		
 		if ($task_id) {
+			$visited = array();
+			
+			// Start DFS from the start task
+			self::dfsForTaskPaths($task_id, array(), $paths, $tasks, $visited, $strip_loops_start_path);
+		}
+		
+		//error_log("task_id:$task_id:\n".print_r(array_slice($paths, 0, 100), 1)."\n\n", 3, $GLOBALS["log_file_path"]);
+		return $paths;
+	}
+	/* DEPRECATED bc it consumes a lot of memory and gives a memory dump if we have a more than 16 lines of code similar with '$x = $y ? $y : null;', which gives almost 100.000 items in the paths array, blocking apache server and consuming 100% CPU.
+	public static function getTaskPaths($tasks, $task_id, $strip_loops_start_path = false) {
+		$paths = array();
+		
+		if ($task_id) {
 			if (isset($tasks[ $task_id ])) {
 				$task = $tasks[ $task_id ];
 				$paths[] = array($task_id);
@@ -287,8 +301,12 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 							$sub_paths = self::getTaskPaths($tasks, $exit_task_id, $strip_loops_start_path);
 							
 							$t2 = count($sub_paths);
-							for ($j = 0; $j < $t2; $j++)
-								$new_paths[] = array_merge($paths[0], $sub_paths[$j]);
+							for ($j = 0; $j < $t2; $j++) {
+								$sub_path = $sub_paths[$j];
+								array_unshift($sub_path, $task_id);
+								
+								$new_paths[] = $sub_path;
+							}
 						}
 					}
 					
@@ -301,6 +319,56 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 		}
 		
 		return $paths;
+	}*/
+	
+	// Helper function for DFS - Depth-First Search - with cycle detection
+	private static function dfsForTaskPaths($task_id, $current_path, &$paths, $tasks, &$visited, $strip_loops_start_path) {
+		$current_path[] = $task_id; // Add the current task to the path
+		//error_log("task_id:$task_id:\n".print_r($current_path, 1)."\n\n", 3, $GLOBALS["log_file_path"]);
+		
+		if (in_array($task_id, $visited)) {
+			// Stop if the node is already visited in the current path (cycle detected)
+			return;
+		}
+
+		$visited[] = $task_id; // Mark the node as visited
+		$task = isset($tasks[$task_id]) ? $tasks[$task_id] : null;
+		
+		// If the node has no children, it's a leaf, so save the path
+		if (empty($task))
+			launch_exception(new WorkFlowTaskException(2, $task_id));
+		else { // Recursively explore each child
+			$exits = isset($task->data["exits"]) ? $task->data["exits"] : null;
+			$exists_exits = false;
+			
+			if (is_array($exits)) { //Get all the paths even with the tasks after the break tasks. Otherwise it messes the code, bc we will loose 1 common path, and the correspondent next tasks will only be associated with 1 path that could be only inside of an else statement.
+				if ($strip_loops_start_path && $task->isLoopTask()) //strips the exit which contains the inner code of the loop.
+					$exits = array(
+						self::DEFAULT_EXIT_ID => isset($exits[self::DEFAULT_EXIT_ID]) ? $exits[self::DEFAULT_EXIT_ID] : null
+					);
+				
+				foreach ($exits as $exit_id => $exit) {
+					if (!is_array($exit))
+						$exit = array($exit);
+					
+					$t = count($exit);
+					for ($i = 0; $i < $t; $i++) {
+						$exit_task_id = $exit[$i];
+						
+						if ($exit_task_id) {
+							$exists_exits = true;
+							self::dfsForTaskPaths($exit_task_id, $current_path, $paths, $tasks, $visited, $strip_loops_start_path);
+						}
+					}
+				}
+			}
+			
+			if (!$exists_exits)
+				$paths[] = $current_path;
+		}
+
+		// Remove the node from the visited list (backtrack)
+		array_pop($visited);
 	}
 	
 	//This function supposes that each task can have multiple exits but only 1 connection per exit.

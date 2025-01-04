@@ -452,7 +452,7 @@ class WorkFlowTaskHandler {
 				$task_id = WorkFlowTask::getTaskId($task_data);
 				
 				if (!isset($visited[$task_id]))
-					$this->dfs($task_id, $tasks_by_ids, $visited, $rec_stack, $loop_tasks);
+					$this->dfsForInfinitLoops($task_id, $tasks_by_ids, $visited, $rec_stack, $loop_tasks);
 			}
 		}
 		
@@ -532,8 +532,8 @@ class WorkFlowTaskHandler {
 		return array_values($loops_tasks);
 	}*/
 	
-	// Helper function for DFS - Depth-First Search
-	private function dfs($task_id, &$tasks_by_ids, &$visited, &$rec_stack, &$loop_tasks) {
+	// Helper function for DFS - Depth-First Search - with cycle detection
+	private function dfsForInfinitLoops($task_id, &$tasks_by_ids, &$visited, &$rec_stack, &$loop_tasks) {
 		// If the node is in the current recursion stack, a cycle is detected
 		if (isset($rec_stack[$task_id]) && $rec_stack[$task_id])
 			return true;
@@ -557,7 +557,7 @@ class WorkFlowTaskHandler {
 				
 				for ($i = 0; $i < $t; $i++) {
 					$exit_task_id = $exit_items[$i];
-					$is_cycle = $this->dfs($exit_task_id, $tasks_by_ids, $visited, $rec_stack, $loop_tasks);
+					$is_cycle = $this->dfsForInfinitLoops($exit_task_id, $tasks_by_ids, $visited, $rec_stack, $loop_tasks);
 					
 					if ($is_cycle) { // Cycle detected
 						$type = WorkFlowTask::getTaskType($task_data);
