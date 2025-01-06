@@ -8,12 +8,14 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 	const DEFAULT_EXIT_ID = "default_exit";
 	const CONNECTOR_TASK_TYPE = "__connector__";
 	
-	private $task_class_info;
-	
 	protected $is_loop_task = false;
 	protected $is_return_task = false;
 	protected $is_break_task = false;
 	protected $priority = false;
+	
+	private $task_class_info;
+	
+	private static $all_tasks_paths = array();
 	
 	//This methods are now defined in the interface: IWorkFlowTask.
 	//public abstract function parseProperties(&$task);
@@ -263,9 +265,8 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 		$paths = array();
 		
 		if ($task_id) {
-			$visited = array();
-			
 			// Start DFS from the start task
+			$visited = array();
 			self::dfsForTaskPaths($task_id, array(), $paths, $tasks, $visited, $strip_loops_start_path);
 		}
 		
@@ -379,23 +380,27 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 		
 		$paths_total = $paths ? count($paths) : 0;
 		
+		//Check if the task only has 1 exit, which means that all paths will contain the second task_id. If afirmative, it means it is the same group. (Note that the first task_id is the started task)
 		$paths_belong_to_the_same_group = self::pathsBelongToTheSameGroup($paths);
 		//error_log("paths_belong_to_the_same_group:$paths_belong_to_the_same_group\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 		
 		//Find common task in all paths, but only if there are more than one path. 
-		//Yes, there is a case where we can hv just one path, this is something like this: "if ($x) foreach ($arr as $item) if ($item[0]) $x = 1;", there will be only 1 path, or multiple paths but from the same branch.
+		//Yes, there is a case where we can have just one path, this is something like this: "if ($x) foreach ($arr as $item) if ($item[0]) $x = 1;", there will be only 1 path, or multiple paths but from the same branch.
 		//If paths belong to the same branch return null;
 		if (!$paths_belong_to_the_same_group) {
+			//loop all task ids in the first path ($paths[0]) and for each check each one is common to all the other paths $paths[$i]. If any, return that common task id.
 			$path = isset($paths[0]) ? $paths[0] : null;
 			$t = $path ? count($path) : 0;
 			for ($i = 1; $i < $t; $i++) {//first item is always common because is a if or a switch
 				$exit_task_id = $path[$i];
 				
+				//check if this exit_task_id is present in all the other paths
 				$status = true;
 				for ($j = 1; $j < $paths_total; $j++)
 					if (!in_array($exit_task_id, $paths[$j]))
 						$status = false;
-			
+				
+				//If common task exists ($status == true), return its id
 				if ($status)
 					return $exit_task_id;
 			}
@@ -419,24 +424,27 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 		//error_log("$pwrt_count!=$paths_total\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 		
 		//$pwrt_count != count($paths) => otherwise already return the common task id from the code above
-		if ($pwrt_count >= 2 && $pwrt_count != $paths_total) {//Find common task for paths without return
+		//if $pwrt_count == 1 && $pwrt_count != $paths_total, then we should still return null, because there is no common task, since the $paths_without_return_task[0] will belong to its own scope.
+		if ($pwrt_count >= 2 && $pwrt_count != $paths_total) { //Find common task for paths without return
 			$pwrt = array();
 			for ($i = 0; $i < $pwrt_count; $i++)
 				$pwrt[] = $paths[ $paths_without_return_task[$i] ];
 			
+			//Check if the task only has 1 exit, which means that all paths will contain the second task_id. If afirmative, it means it is the same group. (Note that the first task_id is the started task)
 			$paths_belong_to_the_same_group = self::pathsBelongToTheSameGroup($pwrt);
 			
 			//Find common task in all paths, but only if there are more than one path. 
-			//Yes, there is a case where we can hv just one path, this is something like this: "if ($x) foreach ($arr as $item) if ($item[0]) $x = 1;", there will be only 1 path, or multiple paths but from the same branch.
+			//Yes, there is a case where we can have just one path, this is something like this: "if ($x) foreach ($arr as $item) if ($item[0]) $x = 1;", there will be only 1 path, or multiple paths but from the same branch.
 			//If paths belong to the same branch return null;
 			if (!$paths_belong_to_the_same_group) {
 				$idx = $paths_without_return_task[0];
 				$path = $paths[$idx];
 		
 				$t = $path ? count($path) : 0;
-				for ($i = 1; $i < $t; $i++) {//first item s always common because is a if or a switch
+				for ($i = 1; $i < $t; $i++) {//first item is always common because is a if or a switch
 					$exit_task_id = $path[$i];
-				
+					
+					//check if this exit_task_id is present in all the other paths
 					$status = true;
 					for ($j = 1; $j < $pwrt_count; $j++) {
 						$idx = $paths_without_return_task[$j];
@@ -444,7 +452,8 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 						if (!in_array($exit_task_id, $paths[$idx]))
 							$status = false;
 					}
-				
+					
+					//If common task exists ($status == true), return its id
 					if ($status)
 						return $exit_task_id;
 				}
@@ -478,6 +487,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 					if ($count > 0)
 						$paths_count[$count][] = $path_str;
 					
+					//remove first task_id from $path, so we can loop it again
 					array_shift($path);
 				} 
 				while(!empty($path));
@@ -486,6 +496,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 	
 			//2nd: gets the task which belongs to the bigger tasks path.
 			if ($paths_count) {
+				//sort paths_count by descendant order and then get the common paths
 				krsort($paths_count);
 				$keys = array_keys($paths_count);
 				$common_paths = $paths_count[ $keys[0] ];
@@ -493,6 +504,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 				$count = 0;
 				$common_task_id = null;
 				
+				//then loop all the common_paths and check what is the bigger path, returning its first task_id
 				$t = $common_paths ? count($common_paths) : 0;
 				for ($i = 0; $i < $t; $i++) {
 					$common_path = explode(",", $common_paths[$i]);
@@ -509,7 +521,8 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 					$all_paths_are_the_same = true;
 					$prev_path_str = null;
 					
-					for ($i = 0; $i < $paths_total; $i++) 
+					//recheck if really all paths are the same
+					for ($i = 0; $i < $paths_total; $i++) {
 						if (is_array($paths[$i]) && count($paths[$i]) > 0) {
 							$path_str = implode(",", $paths[$i]);
 							
@@ -524,6 +537,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 							$all_paths_are_the_same = false;
 							break;
 						}
+					}
 					
 					if ($all_paths_are_the_same)
 						$common_task_id = $paths[0][1];
@@ -536,6 +550,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 		return null;
 	}
 	
+	//returns true if the task only has 1 exit, which means that all paths will contain the second task_id. (Note that the first task_id is the started task)
 	private static function pathsBelongToTheSameGroup($paths) {
 		if ($paths) {
 			$t = count($paths);

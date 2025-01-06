@@ -148,39 +148,114 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	
 	public function printCode($tasks, $stop_task_id, $prefix_tab = "", $options = null) {
 		$data = isset($this->data) ? $this->data : null;
+		//error_log("task id:".$data["id"]."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 		
 		$properties = isset($data["properties"]) ? $data["properties"] : null;
+		$true_task_ids = isset($data["exits"]["true"]) ? $data["exits"]["true"] : null;
+		$false_task_ids = isset($data["exits"]["false"]) ? $data["exits"]["false"] : null;
 		
-		//error_log("task id:".$data["id"]."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
-		$common_exit_task_id = self::getCommonTaskExitIdFromTaskPaths($tasks, isset($data["id"]) ? $data["id"] : null);
-		//error_log("common_exit_task_id:".$common_exit_task_id."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
-		
+		//prepare stop tasks
 		$stops_id = array();
 		if ($stop_task_id)
 			$stops_id = is_array($stop_task_id) ? $stop_task_id : array($stop_task_id);
-		if ($common_exit_task_id) 
+		
+		//check if short if with variable assignment, by checking if the true and false exits have 2 assignment tasks for the same variable.
+		$true_task = !empty($true_task_ids[0]) && isset($tasks[ $true_task_ids[0] ]) ? $tasks[ $true_task_ids[0] ] : null;
+		$false_task = !empty($false_task_ids[0]) && isset($tasks[ $false_task_ids[0] ]) ? $tasks[ $false_task_ids[0] ] : null;
+		
+		if ( //check if this task is the an 'if' task with an assignment task inside of the TRUE and FALSE exits.
+			$true_task && $false_task && //check if exit tasks exists
+			$true_task->data["tag"] == "setvar" && $true_task->data["tag"] == $false_task->data["tag"] && //check exit tasks are setvar
+			(
+				(empty($true_task->data["exits"][self::DEFAULT_EXIT_ID]) && empty($false_task->data["exits"][self::DEFAULT_EXIT_ID])) //check if this task is the last task
+				|| 
+				($true_task->data["exits"][self::DEFAULT_EXIT_ID][0] == $false_task->data["exits"][self::DEFAULT_EXIT_ID][0]) //check if both exit tasks, have the same exit task
+			) && 
+			self::getPropertiesResultVariableCode($true_task->data["properties"]) == self::getPropertiesResultVariableCode($false_task->data["properties"]) //check if variable name and operator are the same for both exit tasks
+		) {
+			$common_exit_task_id = $true_task->data["exits"][self::DEFAULT_EXIT_ID][0];
 			$stops_id[] = $common_exit_task_id;
-		
-		$true_task_id = isset($data["exits"]["true"]) ? $data["exits"]["true"] : null;
-		$false_task_id = isset($data["exits"]["false"]) ? $data["exits"]["false"] : null;
-		
-		$if_code = self::printTask($tasks, $true_task_id, $stops_id, $prefix_tab . "\t", $options);
-		$else_code = self::printTask($tasks, $false_task_id, $stops_id, $prefix_tab . "\t", $options);
-		
-		$if_code = $if_code ? $if_code : "\n\n";
-		$else_code = $else_code ? $else_code : "\n\n";
-		
-		$code =  $prefix_tab . "if (" . self::printGroup($properties) . ") {";
-		$code .= $if_code;
-		$code .=  !$prefix_tab && !preg_match("/\s/", substr($code, -1)) ? " " : ""; //add space here, bc the $prefix_tab could be empty and the $code could end in <?php. If we do not add the space here, then we will get <?php} which will give a php error.
-		$code .= $prefix_tab . " }\n"; 
-		
-		$else_code = trim($else_code);
-		
-		if (!empty($else_code)) {
-			$code .= $prefix_tab . "else {";
-			$code .= $else_code;
-			$code .= "\n$prefix_tab}\n";
+			
+			$var_name = self::getPropertiesResultVariableCode($true_task->data["properties"]);
+			$conditions = self::printGroup($properties);
+			$conditions = strpos($conditions, "&&") !== false || strpos($conditions, "||") !== false ? "($conditions)" : $conditions;
+			
+			$if_code = self::printTask($tasks, $true_task_ids, $stops_id, "", $options);
+			$if_code = str_replace($var_name, "", $if_code);
+			$if_code = preg_replace("/;+$/", "", $if_code);
+			
+			$else_code = self::printTask($tasks, $false_task_ids, $stops_id, "", $options);
+			$else_code = str_replace($var_name, "", $else_code);
+			$else_code = preg_replace("/;+$/", "", $else_code);
+			
+			$code = $var_name . $conditions . " ? " . trim($if_code) . " : " . trim($else_code) . ";\n";
+		}
+		/*else if ( //check if this task is the an 'if' task with an assignment task inside of the TRUE exit and no FALSE exit.
+			$true_task && //check if exit tasks exists
+			$true_task->data["tag"] == "setvar" && //check exit true task is setvar
+			(
+				(empty($true_task->data["exits"][self::DEFAULT_EXIT_ID]) && !$false_task) //check if this task is the last task
+				||
+				($false_task && $true_task->data["exits"][self::DEFAULT_EXIT_ID][0] == $false_task->data["id"]) //check if true exit task, points to false task, meaning that false exit doesn't exists and is pointing to common task
+			)
+		) {
+			$common_exit_task_id = $true_task->data["exits"][self::DEFAULT_EXIT_ID][0];
+			$stops_id[] = $common_exit_task_id;
+			
+			$var_name = self::getPropertiesResultVariableCode($true_task->data["properties"]);
+			$conditions = self::printGroup($properties);
+			$conditions = strpos($conditions, "&&") !== false || strpos($conditions, "||") !== false ? "($conditions)" : $conditions;
+			
+			$if_code = self::printTask($tasks, $true_task_ids, $stops_id, "", $options);
+			$if_code = str_replace($var_name, "", $if_code);
+			$if_code = preg_replace("/;+$/", "", $if_code);
+			
+			$code = $var_name . $conditions . " ? " . trim($if_code) . " : null;\n";
+		}*/
+		else { //prepare all other 'if' cases
+			$if_without_parenthesis = false;
+			
+			//check if is a simple 'if' task because the getCommonTaskExitIdFromTaskPaths method is too heavy and consumes a lot of memory
+			if ($true_task && $false_task &&
+				!empty($true_task->data["exits"][self::DEFAULT_EXIT_ID]) && 
+				(
+					(!empty($false_task->data["exits"][self::DEFAULT_EXIT_ID]) && $true_task->data["exits"][self::DEFAULT_EXIT_ID][0] == $false_task->data["exits"][self::DEFAULT_EXIT_ID][0]) //check if both exit tasks, have the same exit task
+					||
+					($true_task->data["exits"][self::DEFAULT_EXIT_ID][0] == $false_task->data["id"]) //check if true exit task, points to false task, meaning that false exit doesn't exists and is pointing to common task
+				)
+			) {
+				$common_exit_task_id = $true_task->data["exits"][self::DEFAULT_EXIT_ID][0];
+				$if_without_parenthesis = true;
+			}
+			
+			//get common_exit_task_id
+			if (!$common_exit_task_id)
+				$common_exit_task_id = self::getCommonTaskExitIdFromTaskPaths($tasks, isset($data["id"]) ? $data["id"] : null);
+			//error_log("common_exit_task_id:".$common_exit_task_id."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
+			
+			if ($common_exit_task_id) 
+				$stops_id[] = $common_exit_task_id;
+			
+			$if_code = self::printTask($tasks, $true_task_ids, $stops_id, $prefix_tab . "\t", $options);
+			$else_code = self::printTask($tasks, $false_task_ids, $stops_id, $prefix_tab . "\t", $options);
+			
+			$if_code = $if_code ? $if_code : "\n\n";
+			$else_code = $else_code ? $else_code : "\n\n";
+			
+			$code =  $prefix_tab . "if (" . self::printGroup($properties) . ")";
+			$code .= $if_without_parenthesis ? "" : " {";
+			$code .= $if_code;
+			$code .=  !$prefix_tab && !preg_match("/\s/", substr($code, -1)) ? " " : ""; //add space here, bc the $prefix_tab could be empty and the $code could end in <?php. If we do not add the space here, then we will get <?php} which will give a php error.
+			$code .= $if_without_parenthesis ? "" : $prefix_tab . "}\n"; 
+			
+			$else_code = trim($else_code);
+			
+			if (!empty($else_code)) {
+				$code .= $prefix_tab . "else";
+				$code .= $if_without_parenthesis ? "\n" : " {\n";
+				$code .= $prefix_tab . "\t" . $else_code;
+				$code .= $if_without_parenthesis ? "\n" : "\n$prefix_tab}\n";
+			}
 		}
 		
 		//echo "\n$common_exit_task_id";print_r($stop_task_id);
