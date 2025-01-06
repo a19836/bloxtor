@@ -73,6 +73,10 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 					$exits = array(
 						self::DEFAULT_EXIT_ID => array("task_id" => $var_inner_tasks[0]["id"]),
 					);
+					$comments = $WorkFlowTaskCodeParser->withComments() ? $WorkFlowTaskCodeParser->printComments($stmt) : "";
+					
+					if ($comments)
+						$var_inner_tasks[0]["properties"]["comments"] = $comments;
 					
 					$inner_tasks = array( $var_inner_tasks );
 				}

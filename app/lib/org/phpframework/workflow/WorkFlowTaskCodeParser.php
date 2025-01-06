@@ -403,8 +403,8 @@ class WorkFlowTaskCodeParser {
 			if ($comments) {
 				$str = $this->PHPParserPrettyPrinter->printComments($comments);
 				$str = preg_replace("/(^|\n)\s*\/\/\s*/", "\n", $str); //clean '//'
-				$str = preg_replace("/((^|\n)\s*\/\*|\n\s*\*\s*|\n\s*\*\/|\*\/\s*$)/", "\n", $str); //clean '/*', ' *' and '*/'
-				$str = preg_replace("/\s*\n\s*/", "\n", $str); //clean extra spaces
+				$str = preg_replace("/((^|\n)\s*\/\*+|\n\s*\*+\/|\*+\/\s*$|\n\s*\*+\s*)/", "\n", $str); //clean '/*', ' *' and '*/'
+				$str = preg_replace("/\s*\n\s*+/", "\n", $str); //clean extra spaces
 				$str = trim($str);//trim all lines
 				
 				return $str;

@@ -33,6 +33,10 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$try_task_id = null;
 			if ($try_inner_tasks) {
 				$try_task_id = isset($try_inner_tasks[0]["id"]) ? $try_inner_tasks[0]["id"] : null;
+				$comments = $WorkFlowTaskCodeParser->withComments() ? $WorkFlowTaskCodeParser->printComments($stmt) : "";
+				
+				if ($comments && $try_task_id)
+					$try_inner_tasks[0]["properties"]["comments"] = $comments;
 				
 				$WorkFlowTaskCodeParser->addNextTaskToUndefinedTaskExits($try_inner_tasks[count($try_inner_tasks) - 1]);
 				

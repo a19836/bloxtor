@@ -487,6 +487,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 	}
 	
 	//This function supposes that each task can have multiple exits but only 1 connection per exit.
+	//Note that limit should be 2, because of performance issues. This function will increment the task paths every 2 levels of depth and then find the common task. If no common task, then it increments more 2 levels of depth in all task paths and then check again for the common task, and etc...
 	public static function getCommonTaskExitIdFromTaskId($tasks, $task_id, &$paths = array(), $limit = 2) { //$path is passed by reference so it doesn't occupy more memory
 		if (empty($paths))
 			$paths = self::getTaskPaths($tasks, $task_id, true, $limit); //get paths with a depth of 2 levels
@@ -722,26 +723,25 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 					if ($task) {
 						$exits = $inner_tasks = array();
 						$props = $task["obj"]->createTaskPropertiesFromCodeStmt($stmt, $WorkFlowTaskCodeParser, $exits, $inner_tasks, $tasks_properties);
-						
+						$comments = $WorkFlowTaskCodeParser->withComments() ? $WorkFlowTaskCodeParser->printComments($stmt) : "";
 						$xml_task = null;
+						
 						if (is_array($props) && !empty($props)) {
-							if ($WorkFlowTaskCodeParser->withComments()) {
-								$comments = $WorkFlowTaskCodeParser->printComments($stmt);
+							if ($comments) {
+								if (!empty($props["comments"]) && strpos($props["comments"], $comments) === false && strpos($comments, $props["comments"]) === false) //avoid repeated comments
+									$comments = $comments . "\n" . $props["comments"];
 								
-								if ($comments) {
-									if (!empty($props["comments"])) {
-										if (strpos($props["comments"], $comments) === false) //avoid repeated comments
-											$props["comments"] = $comments . "\n" . $props["comments"];
-									}
-									else
-										$props["comments"] = $comments;
-								}
+								$props["comments"] = $comments;
 							}
 							
 							$xml_task = $WorkFlowTaskCodeParser->createXMLTask($task, $props, $exits);
 						}
-						else if ($inner_tasks)
+						else if ($inner_tasks) {
 							$xml_task = $WorkFlowTaskCodeParser->createConnectorXMLTask($exits);
+							
+							if ($xml_task && $comments)
+								$xml_task["properties"]["comments"] = $comments;
+						}
 						
 						if ($xml_task) {
 							if (!empty($undefined_stmts)) {
