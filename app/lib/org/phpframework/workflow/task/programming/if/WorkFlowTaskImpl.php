@@ -188,9 +188,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$else_code = str_replace($var_name, "", $else_code);
 			$else_code = preg_replace("/;+$/", "", $else_code);
 			
-			$code = $var_name . $conditions . " ? " . trim($if_code) . " : " . trim($else_code) . ";\n";
+			$code = $prefix_tab . $var_name . $conditions . " ? " . trim($if_code) . " : " . trim($else_code) . ";\n";
 		}
-		/*else if ( //check if this task is the an 'if' task with an assignment task inside of the TRUE exit and no FALSE exit.
+		/*else if ( //check if this task is the an 'if' task with an assignment task inside of the TRUE exit and no FALSE exit. => DEPRECATED, bc if there is no FALSE exit or FALSE exit is equal to TRUE DEFAULT-EXIT, it means that the variable should only be set if the 'if' conditions are true. Which means this case is covered below, by the last code. - DO NOT UNCOMMENT THIS CODE
 			$true_task && //check if exit tasks exists
 			$true_task->data["tag"] == "setvar" && //check exit true task is setvar
 			(
@@ -210,12 +210,12 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			$if_code = str_replace($var_name, "", $if_code);
 			$if_code = preg_replace("/;+$/", "", $if_code);
 			
-			$code = $var_name . $conditions . " ? " . trim($if_code) . " : null;\n";
+			$code = $prefix_tab . $var_name . $conditions . " ? " . trim($if_code) . " : null;\n";
 		}*/
 		else { //prepare all other 'if' cases
 			$if_without_parenthesis = false;
 			
-			//check if is a simple 'if' task because the getCommonTaskExitIdFromTaskPaths method is too heavy and consumes a lot of memory
+			//check if is a simple 'if' task because the getCommonTaskExitIdFromTaskId method is too heavy and consumes a lot of memory
 			if ($true_task && $false_task &&
 				!empty($true_task->data["exits"][self::DEFAULT_EXIT_ID]) && 
 				(
@@ -230,7 +230,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			
 			//get common_exit_task_id
 			if (!$common_exit_task_id)
-				$common_exit_task_id = self::getCommonTaskExitIdFromTaskPaths($tasks, isset($data["id"]) ? $data["id"] : null);
+				$common_exit_task_id = self::getCommonTaskExitIdFromTaskId($tasks, isset($data["id"]) ? $data["id"] : null);
 			//error_log("common_exit_task_id:".$common_exit_task_id."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 			
 			if ($common_exit_task_id) 

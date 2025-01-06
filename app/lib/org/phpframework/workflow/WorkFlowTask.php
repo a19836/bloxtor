@@ -261,13 +261,51 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 		return $code;
 	}
 	
-	public static function getTaskPaths($tasks, $task_id, $strip_loops_start_path = false) {
+	// Helper function for DFS - Depth-First Search - to find if a task is inside of another task
+	protected static function existsTaskInnerTask($tasks, $task_id, $inner_task_id, &$visited = array()) {
+		if ($task_id == $inner_task_id)
+			return true;
+		else if (in_array($task_id, $visited)) // Stop if the node is already visited in the current path (cycle detected)
+			return false;
+		
+		$visited[] = $task_id; // Mark the node as visited
+		$task = isset($tasks[$task_id]) ? $tasks[$task_id] : null;
+		
+		// If the node has no children, it's a leaf, so save the path
+		if (empty($task))
+			launch_exception(new WorkFlowTaskException(2, $task_id));
+		else { // Recursively explore each child
+			$exits = isset($task->data["exits"]) ? $task->data["exits"] : null;
+			
+			if (is_array($exits)) { //Get all the paths even with the tasks after the break tasks. Otherwise it messes the code, bc we will loose 1 common path, and the correspondent next tasks will only be associated with 1 path that could be only inside of an else statement.
+				foreach ($exits as $exit_id => $exit) {
+					if (!is_array($exit))
+						$exit = array($exit);
+					
+					$t = count($exit);
+					for ($i = 0; $i < $t; $i++) {
+						$exit_task_id = $exit[$i];
+						
+						if ($exit_task_id && self::existsTaskInnerTask($tasks, $exit_task_id, $inner_task_id, $visited))
+							return true;
+					}
+				}
+			}
+		}
+
+		// Remove the node from the visited list (backtrack)
+		array_pop($visited);
+		
+		return false;
+	}
+	
+	public static function getTaskPaths($tasks, $task_id, $strip_loops_start_path = false, $limit = -1) {
 		$paths = array();
 		
 		if ($task_id) {
 			// Start DFS from the start task
 			$visited = array();
-			self::dfsForTaskPaths($task_id, array(), $paths, $tasks, $visited, $strip_loops_start_path);
+			self::dfsForTaskPaths($tasks, $task_id, array(), $paths, $visited, $strip_loops_start_path, $limit);
 		}
 		
 		//error_log("task_id:$task_id:\n".print_r(array_slice($paths, 0, 100), 1)."\n\n", 3, $GLOBALS["log_file_path"]);
@@ -323,15 +361,15 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 	}*/
 	
 	// Helper function for DFS - Depth-First Search - with cycle detection
-	private static function dfsForTaskPaths($task_id, $current_path, &$paths, $tasks, &$visited, $strip_loops_start_path) {
+	private static function dfsForTaskPaths($tasks, $task_id, $current_path, &$paths, &$visited, $strip_loops_start_path, $limit = -1) {
 		$current_path[] = $task_id; // Add the current task to the path
 		//error_log("task_id:$task_id:\n".print_r($current_path, 1)."\n\n", 3, $GLOBALS["log_file_path"]);
 		
-		if (in_array($task_id, $visited)) {
-			// Stop if the node is already visited in the current path (cycle detected)
+		if (in_array($task_id, $visited)) // Stop if the node is already visited in the current path (cycle detected)
 			return;
-		}
-
+		else if ($limit == 0) // limit reached
+			return;
+		
 		$visited[] = $task_id; // Mark the node as visited
 		$task = isset($tasks[$task_id]) ? $tasks[$task_id] : null;
 		
@@ -341,8 +379,9 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 		else { // Recursively explore each child
 			$exits = isset($task->data["exits"]) ? $task->data["exits"] : null;
 			$exists_exits = false;
+			$new_limit = $limit == -1 ? $limit : $limit - 1;
 			
-			if (is_array($exits)) { //Get all the paths even with the tasks after the break tasks. Otherwise it messes the code, bc we will loose 1 common path, and the correspondent next tasks will only be associated with 1 path that could be only inside of an else statement.
+			if (is_array($exits) && $new_limit > 0) { //Get all the paths even with the tasks after the break tasks. Otherwise it messes the code, bc we will loose 1 common path, and the correspondent next tasks will only be associated with 1 path that could be only inside of an else statement.
 				if ($strip_loops_start_path && $task->isLoopTask()) //strips the exit which contains the inner code of the loop.
 					$exits = array(
 						self::DEFAULT_EXIT_ID => isset($exits[self::DEFAULT_EXIT_ID]) ? $exits[self::DEFAULT_EXIT_ID] : null
@@ -358,7 +397,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 						
 						if ($exit_task_id) {
 							$exists_exits = true;
-							self::dfsForTaskPaths($exit_task_id, $current_path, $paths, $tasks, $visited, $strip_loops_start_path);
+							self::dfsForTaskPaths($tasks, $exit_task_id, $current_path, $paths, $visited, $strip_loops_start_path, $new_limit);
 						}
 					}
 				}
@@ -372,13 +411,107 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 		array_pop($visited);
 	}
 	
-	//This function supposes that each task can have multiple exits but only 1 connection per exit.
-	public static function getCommonTaskExitIdFromTaskPaths($tasks, $task_id) {
-		$paths = self::getTaskPaths($tasks, $task_id, true);
-		//print_r($paths);
-		//error_log("paths:".print_r($paths, 1)."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
+	private static function completeTaskPathsChunks($tasks, &$paths, $strip_loops_start_path = false, $limit = 2) {
+		$paths_changed = false;
 		
+		if ($paths) {
+			$paths_total = count($paths);
+			$repeated_indexes = array();
+			
+			for ($i = 0; $i < $paths_total; $i++) {
+				$path = $paths[$i];
+				
+				if ($path) {
+					$last_task_id = $path[ count($path) - 1 ];
+					
+					if ($last_task_id && isset($tasks[$last_task_id]) && !in_array($i, $repeated_indexes)) {
+						$repeated_indexes[] = $i;
+						
+						$last_task = $tasks[$last_task_id];
+						$exists_exits = !empty($last_task->data["exits"]);
+						
+						if ($exists_exits) { //only call dfsForTaskPaths if there is any exit connected
+							// Start DFS from the start task
+							$task_paths = array();
+							$visited = $path;
+							array_pop($visited); //remove last_task_id from $visited so we can get the rest of the path
+							self::dfsForTaskPaths($tasks, $last_task_id, array(), $task_paths, $visited, $strip_loops_start_path, $limit);
+							
+							//parse task_paths
+							if ($task_paths) {
+								//get paths indexes that share the last_task_id as the last task id.
+								$paths_indexes_to_append = array($i);
+								
+								for ($j = 0, $tj = count($paths); $j < $tj; $j++)
+									if ($j != $i && $paths[$j] && $paths[$j][ count($paths[$j]) - 1 ] == $last_task_id) { //check if there are other paths with the same last_task_id
+										$paths_indexes_to_append[] = $j;
+										
+										if (!in_array($j, $repeated_indexes))
+											$repeated_indexes[] = $j; //set repeated indexes, so it doesn't need to parse this one again
+									}
+								
+								//echo "paths_indexes_to_append:";print_r($paths_indexes_to_append);
+								//update the new task_paths into all the paths in paths_indexes_to_append
+								for ($j = 0, $tj = count($paths_indexes_to_append); $j < $tj; $j++) {
+									$index = $paths_indexes_to_append[$j];
+									$path_bkp = $paths[$index];
+									$task_path_exists = false;
+									
+									for ($w = 0, $tw = count($task_paths); $w < $tw; $w++) {
+										$task_path = $task_paths[$w];
+										
+										if (count($task_path) > 1) { //if is equal to 1, means that there are no exits, because the first item is the last_task_id
+											if ($task_path_exists) { //if there is more than one task_path, append a new cloned path in $paths
+												$paths[] = $path_bkp;
+												$index = count($paths) - 1;
+												$repeated_indexes[] = $index;
+											}
+												
+											$task_path_exists = true;
+											$paths_changed = true;
+											
+											//add new task ids
+											for ($q = 1, $tq = count($task_path); $q < $tq; $q++) //avoid first item, bc already exists as the last task id
+												$paths[$index][] = $task_path[$q];
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return $paths_changed;
+	}
+	
+	//This function supposes that each task can have multiple exits but only 1 connection per exit.
+	public static function getCommonTaskExitIdFromTaskId($tasks, $task_id, &$paths = array(), $limit = 2) { //$path is passed by reference so it doesn't occupy more memory
+		if (empty($paths))
+			$paths = self::getTaskPaths($tasks, $task_id, true, $limit); //get paths with a depth of 2 levels
+		
+		$common_task_id = self::getCommonTaskExitIdFromTaskPaths($tasks, $task_id, $paths);
+		
+		//if no common_task_id, complete each path with another 2 levels of depth, and check again for the common_task_id
+		if (!$common_task_id) {
+			$paths_changed = self::completeTaskPathsChunks($tasks, $paths, true, $limit);
+			
+			if ($paths_changed) {
+				$common_task_id = self::getCommonTaskExitIdFromTaskId($tasks, $task_id, $paths, $limit);
+			}
+		}
+		//error_log("paths:".print_r($paths, 1)."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
+		//error_log("common_task_id:$common_task_id\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
+		
+		return $common_task_id;
+	}
+	
+	private static function getCommonTaskExitIdFromTaskPaths($tasks, $task_id, $paths) {
 		$paths_total = $paths ? count($paths) : 0;
+		
+		if ($paths_total == 0)
+			return null;
 		
 		//Check if the task only has 1 exit, which means that all paths will contain the second task_id. If afirmative, it means it is the same group. (Note that the first task_id is the started task)
 		$paths_belong_to_the_same_group = self::pathsBelongToTheSameGroup($paths);
@@ -468,7 +601,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 				
 				do {
 					$path_str = implode(",", $path); //get path in a string
-				
+					
 					$count = 0;
 					for ($w = 0; $w < $paths_total; $w++) 
 						if ($w != $i) {

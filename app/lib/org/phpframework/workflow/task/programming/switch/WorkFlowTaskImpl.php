@@ -210,7 +210,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
 		$common_exit_task_id = isset($data["id"]) ? $data["id"] : null;
-		$common_exit_task_id = self::getCommonTaskExitIdFromTaskPaths($tasks, $common_exit_task_id);
+		$common_exit_task_id = self::getCommonTaskExitIdFromTaskId($tasks, $common_exit_task_id);
 		
 		$stops_id = array();
 		if ($stop_task_id)
@@ -263,6 +263,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 	//This detects if a case doesn't have break at the end and is connected with the code from the next case.
 	private static function checkIfCaseIsRelatedWithNextCase($tasks, $case_exit_id, $next_case_exit_id) {
 		if ($next_case_exit_id) {
+			return !$case_exit_id || self::existsTaskInnerTask($tasks, $case_exit_id, $next_case_exit_id);
+			
+			/* DEPRECATED: Calling getTaskPaths may cause a memory usage too high, depending if the code contains a lot of 'if' tasks with multiple lines inside. Please avoid calling the getTaskPaths. 
 			$case_paths = self::getTaskPaths($tasks, $case_exit_id, true);
 			
 			$t = $case_paths ? count($case_paths) : 0;
@@ -270,7 +273,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				if (!in_array($next_case_exit_id, $case_paths[$i])) 
 					return false;
 			
-			return $t > 0; //returns true but only if exist paths, which means it entered in the loop above.
+			return $t > 0; //returns true but only if exist paths, which means it entered in the loop above.*/
 		}
 	}
 }

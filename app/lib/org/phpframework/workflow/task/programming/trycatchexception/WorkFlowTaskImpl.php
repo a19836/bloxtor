@@ -128,7 +128,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 		
 		$properties = isset($data["properties"]) ? $data["properties"] : null;
 		
-		$common_exit_task_id = self::getCommonTaskExitIdFromTaskPaths($tasks, isset($data["id"]) ? $data["id"] : null);
+		$common_exit_task_id = self::getCommonTaskExitIdFromTaskId($tasks, isset($data["id"]) ? $data["id"] : null);
 		
 		$stops_id = array();
 		if ($stop_task_id)
