@@ -728,7 +728,7 @@ abstract class WorkFlowTask implements IWorkFlowTask {
 						
 						if (is_array($props) && !empty($props)) {
 							if ($comments) {
-								if (!empty($props["comments"]) && strpos(trim($props["comments"]), $comments) === false && strpos(trim($comments), $props["comments"]) === false) //avoid repeated comments
+								if (!empty($props["comments"]) && strpos($props["comments"], $comments) === false && strpos($comments, $props["comments"]) === false) //avoid repeated comments
 									$comments = $comments . "\n" . $props["comments"];
 								
 								$props["comments"] = $comments;
