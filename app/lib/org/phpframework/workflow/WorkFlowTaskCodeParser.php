@@ -364,8 +364,23 @@ class WorkFlowTaskCodeParser {
 				if (!$comments)
 					$comments = array();
 				
-				if ($stmt->getAttribute("comments"))
-					$comments = array_merge($stmt->getAttribute("comments"), $comments);
+				$items = $stmt->getAttribute("comments");
+				
+				if ($items) { //if items, add only the comments that were not yet added
+					foreach ($items as $item_obj) {
+						$exists = false;
+						$item_obj_vars = get_object_vars($item_obj);
+						
+						foreach ($comments as $comment_obj)
+							if (get_object_vars($comment_obj) == $item_obj_vars) {
+								$exists = true;
+								break;
+							}
+						
+						if (!$exists)
+							$comments[] = $item_obj;
+					}
+				}
 				
 				$stmt->expr->setAttribute("comments", $comments);
 			}
@@ -376,8 +391,23 @@ class WorkFlowTaskCodeParser {
 				if (!$comments)
 					$comments = array();
 				
-				if ($stmt->getAttribute("my_comments"))
-					$comments = array_merge($stmt->getAttribute("my_comments"), $comments);
+				$items = $stmt->getAttribute("my_comments");
+				
+				if ($items) { //if items, add only the comments that were not yet added
+					foreach ($items as $item_obj) {
+						$exists = false;
+						$item_obj_vars = get_object_vars($item_obj);
+						
+						foreach ($comments as $comment_obj)
+							if (get_object_vars($comment_obj) == $item_obj_vars) {
+								$exists = true;
+								break;
+							}
+						
+						if (!$exists)
+							$comments[] = $item_obj;
+					}
+				}
 				
 				$stmt->expr->setAttribute("my_comments", $comments);
 			}

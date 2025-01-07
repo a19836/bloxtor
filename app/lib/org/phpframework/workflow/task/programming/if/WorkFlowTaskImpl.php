@@ -42,10 +42,6 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			
 			if ($if_inner_tasks && !empty($if_inner_tasks[0]["id"])) {
 				$exits["true"][] = array("task_id" => $if_inner_tasks[0]["id"]);
-				$comments = $WorkFlowTaskCodeParser->withComments() ? $WorkFlowTaskCodeParser->printComments($stmt) : "";
-				
-				if ($comments)
-					$if_inner_tasks[0]["properties"]["comments"] = $comments;
 				
 				$WorkFlowTaskCodeParser->addNextTaskToUndefinedTaskExits($if_inner_tasks[count($if_inner_tasks) - 1]);
 				
