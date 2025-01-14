@@ -911,10 +911,10 @@ body > .dragging_menu_item {
 }
 
 /* CODE - ELS UI - LAYOUT UI EDITOR - TOP BAR MENU - OPTIONS */
-.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option:not(.sub_menu):hover {
+.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option:not(.sub_menu):not(input):hover {
 	color:var(--main-popup-header-color) !important;
 }
-.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option:not(.sub_menu):not(.sub-options):hover,
+.in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option:not(.sub_menu):not(.sub-options):not(input):hover,
   .in_popup .code_layout_ui_editor .layout-ui-editor.with_top_bar_menu > .options .option:not(.sub_menu):hover > i {
 	opacity:.9;
 }
