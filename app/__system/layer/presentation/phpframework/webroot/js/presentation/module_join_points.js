@@ -693,8 +693,14 @@ function prepareBlockSettingsItemValue(item) {
 			return new_item;
 		}
 		else if ((item.hasOwnProperty("value") && !$.isArray(item["value"]) && !$.isPlainObject(item["value"])) || item.hasOwnProperty("value_type") && !$.isArray(item["value_type"]) && !$.isPlainObject(item["value_type"])) {//only enters here if exists value_type or value attributes, but only if there value is a string/numeric/bool, otherwise it means the item is an associative array with keys "value" or "value_type" and in this case we want to treat the item as a plain object and use the function: convertBlockSettingsValuesIntoBasicArray. (As it happens bellow) - DO NOT CHANGE THIS PLEASE
-			if (item["value_type"] == "variable" && item["value"].substr(0, 1) != '$')
-				return '$' + item["value"];
+			if (item["value_type"] == "variable" && item["value"].substr(0, 1) != '$') {
+				if (item["value"].substr(0, 2) == '@$')
+					return item["value"];
+				else if (item["value"].substr(0, 1) == '@')
+					return "@$" + item["value"].substr(1);
+				else
+					return "$" + item["value"];
+			}
 			else {
 				var value = item["value"];
 				
@@ -857,7 +863,9 @@ function convertObjectIntoArray(obj) {
 }
 
 function getArgumentType(arg) {
-	return arg.indexOf("\n") > -1 ? "text" : (arg.substr(0, 1) == '"' ? "string" : (arg.substr(0, 1) == '$' && arg.indexOf("->") == -1 ? "variable" : ""));
+	return arg.indexOf("\n") > -1 ? "text" : (arg.substr(0, 1) == '"' ? "string" : (
+		(arg.substr(0, 1) == '$' || arg.substr(0, 2) == '@$') && arg.indexOf("->") == -1 ? "variable" : "")
+	);
 }
 
 function getArgumentCode(arg, arg_type) {
@@ -865,7 +873,14 @@ function getArgumentCode(arg, arg_type) {
 		return arg_type == "string" ? '""' : (!arg_type ? "null" : "");
 	}
 	else if (arg_type == "variable") {
-		return (("" + arg).substr(0, 1) != '$' ? "$" : "") + arg;
+		var arg_str = "" + arg;
+		
+		if (arg_str.substr(0, 1) == '$' || arg_str.substr(0, 2) == '@$')
+			return arg;
+		else if (arg_str.substr(0, 1) == '@')
+			return "@$" + arg_str.substr(1);
+		else
+			return "$" + arg;
 	}
 	else if (arg_type == "string") {
 		return '"' + addcslashes(arg, '"') + '"';//Do not add the addcslashes($arg, '\\"') otherwise this will add an extra \\ to all the other \\. By default the $arg already contains the right number of slashes. The only missing slash is the ", because yo are editing php code directly.
