@@ -7,7 +7,7 @@ abstract class XmlSettingsCacheHandler implements IXmlSettingsCacheHandler {
 	
 	public function setCacheTTL($cache_ttl) {$this->cache_ttl = $cache_ttl;}
 	public function getCacheTTL() {return $this->cache_ttl;}
-	
+
 	protected function prepareFilePath(&$file_path) {
 		$file_path = CacheHandlerUtil::getCacheFilePath($file_path);
 	}

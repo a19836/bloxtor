@@ -1,5 +1,6 @@
 <?php
 include_once get_lib("org.phpframework.util.text.TextSanitizer");
+include_once get_lib("org.phpframework.util.web.html.HtmlDomHandler");
 
 class HtmlStringHandler {
 	
@@ -385,11 +386,11 @@ class HtmlStringHandler {
 		//parse html with a default div tag
 		$html = "<div $html></div>";
 		
-		$dom = new DOMDocument();
-		@$dom->loadHTML($html);
+		$DOMDocument = new DOMDocument();
+		@$DOMDocument->loadHTML($html);
 		
 		//get attributes
-		$divs = $dom->getElementsByTagName('div');
+		$divs = $DOMDocument->getElementsByTagName('div');
 		$div = isset($divs[0]) ? $divs[0] : null;
 		
 		if ($div && $div->attributes)
@@ -489,6 +490,309 @@ class HtmlStringHandler {
 		while (true);
 		
 		return $tags;
+	}
+	
+	public static function getInnerHtmlPosition($html, $inner_html, $offset = 0, $compare_text = false, &$parsed_html = null) {
+		//error_log("\ninner_html: $inner_html\n", 3, $GLOBALS["log_file_path"]);
+		$html = self::minimizeHtml($html);
+		$inner_html = self::minimizeHtml($inner_html);
+		
+		//find position
+		$position = strpos($html, $inner_html, $offset);
+		
+		if ($position !== false) {
+			$parsed_html = $html;
+			return $position;
+		}
+		
+		$inner_html_decoded = trim(html_entity_decode($inner_html));
+		$position = strpos($html, $inner_html_decoded, $offset);
+
+		if ($position !== false) {
+			$parsed_html = $html;
+			return $position;
+		}
+		
+		//html_entity_decode - decode accents
+		$html_decoded = trim(html_entity_decode($html));
+		$position = strpos($html_decoded, $inner_html_decoded, $offset);
+		
+		if ($position !== false) {
+			$parsed_html = $html_decoded;
+			return $position;
+		}
+		
+		//replace accents and other non common chars
+		$html_decoded_without_weird_chars = trim(TextSanitizer::normalizeAccents($html_decoded));
+		$inner_html_decoded_without_weird_chars = trim(TextSanitizer::normalizeAccents($inner_html_decoded));
+		$position = strpos($html_decoded_without_weird_chars, $inner_html_decoded_without_weird_chars, $offset);
+		
+		if ($position !== false) {
+			$parsed_html = $html_decoded_without_weird_chars;
+			return $position;
+		}
+		
+		//replace accents and other non common chars and make it lower case
+		$html_decoded_without_weird_chars_lower = strtolower($html_decoded_without_weird_chars);
+		$inner_html_decoded_without_weird_chars_lower = strtolower($inner_html_decoded_without_weird_chars);
+		$position = strpos($html_decoded_without_weird_chars_lower, $inner_html_decoded_without_weird_chars_lower, $offset);
+		
+		if ($position !== false) {
+			$parsed_html = $html_decoded_without_weird_chars;
+			return $position;
+		}
+			
+		//remove accents and other non common chars
+		$html_decoded_without_accents_chars = preg_replace('/&[^;\s]+;/', '', $html); //Use a regular expression to match and remove all entities
+    	$html_decoded_without_accents_chars = htmlentities(html_entity_decode($html_decoded_without_accents_chars));
+    	$html_decoded_without_accents_chars = str_replace("&lt;", "<", str_replace("&gt;", ">", $html_decoded_without_accents_chars));
+    	$html_decoded_without_accents_chars = preg_replace('/&[^;\s]+;/', '', $html_decoded_without_accents_chars); //Use a regular expression to match and remove all entities
+    	$html_decoded_without_accents_chars = html_entity_decode($html_decoded_without_accents_chars);
+    	$html_decoded_without_accents_chars = preg_replace('/[^a-zA-Z0-9\s<>="\']/', '', $html_decoded_without_accents_chars); //Remove any remaining non-ASCII characters
+    	
+    	$inner_html_decoded_without_accents_chars = preg_replace('/&[^;\s]+;/', '', $inner_html); //Use a regular expression to match and remove all entities
+    	$inner_html_decoded_without_accents_chars = htmlentities(html_entity_decode($inner_html_decoded_without_accents_chars));
+    	$inner_html_decoded_without_accents_chars = str_replace("&lt;", "<", str_replace("&gt;", ">", $inner_html_decoded_without_accents_chars));
+    	$inner_html_decoded_without_accents_chars = preg_replace('/&[^;\s]+;/', '', $inner_html_decoded_without_accents_chars); //Use a regular expression to match and remove all entities
+		$inner_html_decoded_without_accents_chars = html_entity_decode($inner_html_decoded_without_accents_chars);
+    	$inner_html_decoded_without_accents_chars = preg_replace('/[^a-zA-Z0-9\s<>="\']/', '', $inner_html_decoded_without_accents_chars); //Remove any remaining non-ASCII characters
+    	
+		$position = strpos($html_decoded_without_accents_chars, $inner_html_decoded_without_accents_chars, $offset);
+		
+		if ($position !== false) {
+			$parsed_html = $html_decoded_without_accents_chars;
+			return $position;
+		}
+		
+		//remove accents and make it lower case
+		$html_decoded_without_accents_chars_lower = strtolower($html_decoded_without_accents_chars);
+		$inner_html_decoded_without_accents_chars_lower = strtolower($inner_html_decoded_without_accents_chars);
+		$position = strpos($html_decoded_without_accents_chars_lower, $inner_html_decoded_without_accents_chars_lower, $offset);
+		
+		if ($position !== false) {
+			$parsed_html = $html_decoded_without_accents_chars;
+			return $position;
+		}
+		
+		//check only the text without html tags
+		if ($compare_text) {
+			$html_text = trim(strip_tags($html_decoded_without_accents_chars));
+			$inner_text = trim(strip_tags($inner_html_decoded_without_accents_chars));
+
+			$position = strpos($html_text, $inner_text, $offset);
+			
+			if ($position !== false) {
+				$parsed_html = $html_text;
+				return $position;
+			}
+			
+			$html_text_lower = strtolower($html_text);
+			$inner_text_lower = strtolower($inner_text);
+
+			$position = strpos($html_text_lower, $inner_text_lower, $offset);
+			
+			if ($position !== false) {
+				$parsed_html = $html_text;
+				return $position;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static function getInnerHtmlNodeSelector($html, $inner_html, $index = 0) {
+		$parsed_html = $html;
+		$position = self::getInnerHtmlPosition($html, $inner_html, 0, false, $parsed_html);
+		//error_log("\nposition: $position", 3, $GLOBALS["log_file_path"]);
+		//error_log("\ninner_html: $inner_html\n", 3, $GLOBALS["log_file_path"]);
+		
+		if ($position === false)
+			return null; // Inner HTML not found in the document
+		
+		// Loop backward from the position to find the opening tag
+		$tag_start = null;
+		for ($i = $position - 1; $i >= 0; $i--) {
+			if ($parsed_html[$i] === '<') {
+				$tag_start = $i;
+				break;
+			}
+		}
+
+		//error_log("\ntag_start: $tag_start", 3, $GLOBALS["log_file_path"]);
+		if ($tag_start === null)
+			return null; // No opening tag found
+		
+		// Extract the tag name
+		$tag_html = substr($parsed_html, $tag_start, strpos($parsed_html, '>', $tag_start) - $tag_start + 1);
+		preg_match('/<([a-zA-Z0-9\-]+)/', $tag_html, $matches);
+
+		//error_log("\nmatches: ".print_r($matches, 1)."\n", 3, $GLOBALS["log_file_path"]);
+		if (empty($matches[1]))
+			return null; // Invalid tag
+		
+		//get parent node selector
+		$tag_name = $matches[1];
+		$tag_attributes = HtmlStringHandler::getHtmlTagAttributes("$tag_html</$tag_name>");
+
+		$tag_selector = $tag_name;
+
+		if ($tag_attributes) {
+			//add id
+			if (!empty($tag_attributes["id"])) {
+				$id = preg_split("/\s+/", $tag_attributes["id"]);
+				$id = preg_replace("/[^\w\-]+/u", "", $id[0]); //remove all non allowed chars, just in case
+
+				$tag_selector .= "#" . $id;
+			}
+			
+			//add classes
+			if (!empty($tag_attributes["class"])) {
+				$classes = preg_split("/\s+/", $tag_attributes["class"]);
+				$classes = array_filter($classes); //remove all empty values
+				$classes = array_map(function($c) { return preg_replace("/[^\w\-]+/u", "", $c); }, $classes); //remove all non allowed chars, just in case
+
+				$tag_selector .= "." . implode(".", $classes);
+			}
+			
+			//add attributes
+			foreach ($tag_attributes as $attr_name => $attr_value)
+				if ($attr_name != "class" && $attr_name != "id")
+				$tag_selector .= "[" . $attr_name . "]";
+		}
+		
+		//error_log("\ntag_selector: $tag_selector", 3, $GLOBALS["log_file_path"]);
+		$DomHandler = new HtmlDomHandler($html);
+		$nodes = $DomHandler->querySelectorAll($tag_selector);
+		$repeated_index = 0;
+
+		foreach ($nodes as $node) {
+			$node_inner_html = $DomHandler->innerHTML($node);
+			$position = self::getInnerHtmlPosition($node_inner_html, $inner_html, 0, true);
+			
+			if ($position === 0) {
+				//error_log("\nFinding tag selector: $tag_selector\n", 3, $GLOBALS["log_file_path"]);
+				
+				if ($index == $repeated_index) {
+					$selector = $DomHandler->getNodeCssSelector($node);
+					//error_log("\nFound node with selector: $selector\n", 3, $GLOBALS["log_file_path"]);
+					
+					return $selector;
+				}
+				
+				$repeated_index++;
+			}
+		}
+		
+		error_log("\nINVALID - Could NOT find inner html: " . $inner_html . "\n", 3, $GLOBALS["log_file_path"]);
+		return null;
+	}
+	
+	public static function minimizeHtml($html) {
+		//minimize html
+		$html = str_replace(array("\n", "\r", "\t"), "", $html);
+		$html = preg_replace('/<!--.*?-->|\t|(?:\r?\n[ \t]*)+/s', '', $html); // Remove comments
+		$html = preg_replace('/>\s+</', '><', $html); // Remove whitespace between tags
+
+		return trim($html);
+	}
+	
+	public static function removeScriptAndStyleTagsFromHtml($html) {
+		try {
+			$has_doctype_tag = preg_match("/\s*(<!doctype([^>]*)?>)/i", $html, $doc_match, PREG_OFFSET_CAPTURE);
+			$has_html_tag = preg_match("/\s*(<html([^>]*)?>)/i", $html);
+			$has_head_tag = preg_match("/\s*(<head([^>]*)?>)/i", $html);
+			$has_body_tag = preg_match("/\s*(<body([^>]*)?>)/i", $html);
+			$is_pure_text = !$has_html_tag && !$has_head_tag && !$has_body_tag && !preg_match("/^\s*(<[a-z]+\s([^>]*)?>)/i", $html);
+			
+			$id = uniqid("htmlnode_") . "_" . rand(0, 1000);
+			$parsed_html = $html;
+			
+			//if $html doesn't start with a html tag, which means is a pure text node, then add it to a default tag
+			if ($is_pure_text)
+				$parsed_html = "<div id='$id'>$html</div>";
+			
+			$DomHandler = new HtmlDomHandler($parsed_html);
+			$DOMDocument = $DomHandler->getDOMDocument();
+
+			// Remove <script> tags
+			while ($script = $DOMDocument->getElementsByTagName('script')->item(0))
+				$script->parentNode->removeChild($script);
+
+			// Remove <style> tags
+			while ($style = $DOMDocument->getElementsByTagName('style')->item(0))
+				$style->parentNode->removeChild($style);
+
+			if ($has_doctype_tag) {
+				$new_html = $DomHandler->getHtml();
+				
+				$new_html = preg_replace("/^(\s*)(<!doctype(.*)?>)/i", '$1' . $doc_match[1][0], $new_html);
+			}
+			else if ($has_html_tag) {
+				$nodes = $DOMDocument->getElementsByTagName("html");
+
+				$new_html = $nodes ? $DomHandler->outerHTML($nodes->item(0)) : $html;
+			}
+			else if ($has_head_tag || $has_body_tag) {
+				$nodes = $DOMDocument->getElementsByTagName($has_head_tag ? "head" : "body");
+
+				if ($nodes) {
+					$new_html = "";
+
+					foreach ($nodes as $node) 
+						$new_html .= $DomHandler->outerHTML($node);
+
+					//add also head/body
+					$nodes = $DOMDocument->getElementsByTagName($has_head_tag ? "body" : "head");
+
+					if ($nodes) {
+						$aux = "";
+						
+						foreach ($nodes as $node) 
+							$aux .= $DomHandler->outerHTML($node);
+
+						if ($has_head_tag)
+							$new_html .= $aux;
+						else
+							$new_html = $aux . $new_html;
+					}
+				}
+				else
+					$new_html = $html;
+			}
+			else if ($is_pure_text) {
+				$node = $DOMDocument->getElementById($id);
+				
+				if (!$node)
+					return $html;
+				
+				$new_html = $DomHandler->innerHTML($node);
+				$new_html = trim($new_html);
+				
+				//just in case, check if is really inner html, otherwise remove encapsulate div, that was added before.
+				$find = "<div id='$id'>";
+
+				if (substr($new_html, 0, strlen($find)) == $find)
+					$new_html = substr($new_html, strlen($find), - strlen("</div>"));
+			}
+			else {
+				$nodes = $DOMDocument->getElementsByTagName("body");
+
+				if (!$nodes)
+					return $html;
+
+				$new_html = $DomHandler->innerHTML($nodes->item(0));
+			}
+
+			return trim($new_html);
+		}
+		catch (Throwable $e) { //includes Error and Exception
+			// Remove <script> tags and their content
+			$html = preg_replace('#<script.*?>.*?</script>#is', '', $html);
+			// Remove <style> tags and their content
+			$html = preg_replace('#<style.*?>.*?</style>#is', '', $html);
+
+			return $html;
+		}
 	}
 	
 	//get the correct end position for a tag, based on a $start position. Note that a tag can have other inner tags, so we need to detect this cases and return the right end position.

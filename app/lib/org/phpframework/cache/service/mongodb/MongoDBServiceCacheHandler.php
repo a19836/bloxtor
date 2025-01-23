@@ -17,7 +17,7 @@ class MongoDBServiceCacheHandler extends ServiceCacheHandler {
 			
 			$cont = $this->prepareContentToInsert($result, $type);
 			
-			$data = serialize(array(
+			$data = CacheHandlerUtil::serializeContent(array(
 				"content" => $cont,
 				"created_date" => time(),
 			));
@@ -86,7 +86,7 @@ class MongoDBServiceCacheHandler extends ServiceCacheHandler {
 			$collection_name = $this->getCollectionName($prefix, $type);
 			
 			$data = $this->MongoDBHandler->get($collection_name, $file_path);
-			$data = !empty($data) ? unserialize($data) : false;
+			$data = CacheHandlerUtil::unserializeContent($data);
 			
 			$content = isset($data["content"]) ? $data["content"] : false;
 		
@@ -108,7 +108,7 @@ class MongoDBServiceCacheHandler extends ServiceCacheHandler {
 				$collection_name = $this->getCollectionName($prefix, $type);
 				
 				$data = $this->MongoDBHandler->get($collection_name, $file_path);
-				$data = !empty($data) ? unserialize($data) : false;
+				$data = CacheHandlerUtil::unserializeContent($data);
 				
 				if (isset($data["created_date"])) {
 					return empty($data["created_date"]) || $data["created_date"] + $ttl >= time();

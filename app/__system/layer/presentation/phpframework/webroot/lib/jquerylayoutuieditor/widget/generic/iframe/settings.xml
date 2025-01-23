@@ -192,13 +192,15 @@
 			function getIframeParsedSrc(src) {
 				var parsed_src = src;
 				
-				if (parsed_src.indexOf("#") != -1)
-					parsed_src = parsed_src.substr(0, parsed_src.indexOf("#"));
-				
-				if (parsed_src.indexOf("?") != -1)
-					parsed_src = parsed_src.substr(0, parsed_src.indexOf("?"));
-				
-				parsed_src = parsed_src.replace(/\s/g, "");
+				if (typeof parsed_src == "string") { //parsed_src can be null or undefined
+					if (parsed_src.indexOf("#") != -1)
+						parsed_src = parsed_src.substr(0, parsed_src.indexOf("#"));
+					
+					if (parsed_src.indexOf("?") != -1)
+						parsed_src = parsed_src.substr(0, parsed_src.indexOf("?"));
+					
+					parsed_src = parsed_src.replace(/\s/g, "");
+				}
 				
 				if (!parsed_src)
 					return "about:blank";

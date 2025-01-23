@@ -86,7 +86,7 @@ abstract class ServiceCacheHandler implements IServiceCacheHandler {
 				$cont = $result;
 				break;
 			case "php": 
-				$cont = serialize($result);
+				$cont = CacheHandlerUtil::serializeContent($result);
 				break;
 			
 			default: $cont = $result;
@@ -105,7 +105,7 @@ abstract class ServiceCacheHandler implements IServiceCacheHandler {
 				$cont = $result;
 				break;
 			case "php": 
-				$cont = unserialize($result);
+				$cont = CacheHandlerUtil::unserializeContent($result);
 				break;
 			
 			default: $cont = $result;

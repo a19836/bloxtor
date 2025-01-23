@@ -859,6 +859,7 @@
 			var timeout = options.hasOwnProperty("timeout") ? options.timeout : 0; //in milliseconds
 			var username = options.hasOwnProperty("username") ? options.username : null;
 			var password = options.hasOwnProperty("password") ? options.password : null;
+    		var referer_policy = options.hasOwnProperty("referrerPolicy") ? options["referrerPolicy"] : null;
 			
 			var data_filter_func = options.dataFilter ? MyWidgetResourceLib.fn.convertIntoFunctions(options.dataFilter) : null; //( String data, String type ) 
 			var before_send_func = options.beforeSend ? MyWidgetResourceLib.fn.convertIntoFunctions(options.beforeSend) : null; //( jqXHR jqXHR, PlainObject settings )
@@ -933,7 +934,11 @@
 				//XMLRequestObject.setRequestHeader("Connection", "close"); //browser error saying: Refused to set unsafe header "Connection"
 			}
 			
-			XMLRequestObject.onreadystatechange = function() {
+			// Set the referrer policy
+			if (referer_policy)
+				XMLRequestObject.referrerPolicy = referer_policy;
+			
+    		XMLRequestObject.onreadystatechange = function() {
 				if (XMLRequestObject.readyState == 4) { //readyState == 4: when request is done
 					var status = XMLRequestObject.status; //http response code
 					var text_status = "";

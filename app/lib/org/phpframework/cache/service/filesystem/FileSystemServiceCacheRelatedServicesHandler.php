@@ -102,7 +102,7 @@ class FileSystemServiceCacheRelatedServicesHandler extends ServiceCacheRelatedSe
 					}
 					else {
 						$cont = @file_get_contents($file_path);//maybe the file was delete by another thread, so we need to add the @ so it doesn't give error.
-						$arr = unserialize($cont);
+						$arr = CacheHandlerUtil::unserializeContent($cont);
 						
 						if (is_array($arr)) {
 							$arr_keys = array_keys($arr);
@@ -152,7 +152,7 @@ class FileSystemServiceCacheRelatedServicesHandler extends ServiceCacheRelatedSe
 					}
 					else {
 						$cont = @file_get_contents($file_path);//maybe the file was delete by another thread, so we need to add the @ so it doesn't give error.
-						$arr = unserialize($cont);
+						$arr = CacheHandlerUtil::unserializeContent($cont);
 						
 						if (is_array($arr) && isset($arr[$key]))
 							$key_file_path = $file_path;
@@ -186,7 +186,7 @@ class FileSystemServiceCacheRelatedServicesHandler extends ServiceCacheRelatedSe
 			
 			if (file_exists($free_file_path)) {
 				$cont = @file_get_contents($free_file_path);//maybe the file was delete by another thread, so we need to add the @ so it doesn't give error.
-				$arr = unserialize($cont);
+				$arr = CacheHandlerUtil::unserializeContent($cont);
 				
 				if (!is_array($arr))
 					$arr = array();
@@ -209,11 +209,11 @@ class FileSystemServiceCacheRelatedServicesHandler extends ServiceCacheRelatedSe
 						//file was locked so now we can store information
 						if ($can_write) {
 							$cont = @file_get_contents($free_file_path);//maybe the file was delete by another thread, so we need to add the @ so it doesn't give error.
-							$arr = unserialize($cont);
+							$arr = CacheHandlerUtil::unserializeContent($cont);
 							
 							if (is_array($arr) && count($arr) < self::MAXIMUM_ITEMS_PER_FILE) {
 								$arr[$key] = true;
-								$cont = serialize($arr);
+								$cont = CacheHandlerUtil::serializeContent($arr);
 								
 								$fp2 = fopen($free_file_path, "w");
 								if ($fp2) {
@@ -247,7 +247,7 @@ class FileSystemServiceCacheRelatedServicesHandler extends ServiceCacheRelatedSe
 			
 			if ($fp = fopen($new_file_name, "w")) {
 				$arr = array($key => true);
-				$cont = serialize($arr);
+				$cont = CacheHandlerUtil::serializeContent($arr);
 			
 				$status = fwrite($fp, $cont);
 				$status = $status === false ? false : true;

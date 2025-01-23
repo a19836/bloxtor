@@ -624,7 +624,17 @@ function setCodeEditorAutoCompleter(editor) {
 					// Trigger autocomplete but if not white space
 					var is_white_space = typeof char_typed == "string" && char_typed.match(/\s/);
 					
-					if (!is_white_space)
+					//close auto completion when some chars are present
+					disallowed_chars = [";", "{", "}", ")"];
+					
+					if (disallowed_chars.indexOf(char_typed) != -1) {
+						//console.log(php_completions);
+						//console.log(filtered_completions);
+						
+						if (editor.completer && editor.completer.popup && editor.completer.popup.isOpen)
+							editor.completer.detach(); // Closes the autocomplete popup
+					}
+					else if (!is_white_space)
 						editor.execCommand("startAutocomplete");
 				}
 			});
@@ -806,15 +816,17 @@ function setCodeEditorGhostText(editor) {
 	editor.commands.on("afterExec", function (e) {
 		//console.log("afterExec:" + e.command.name);
 		
-		if (editor.ghost_range && e.command.name == "startAutocomplete") {
-			//console.log("afterExec startAutocomplete");
-			if (editor.completer && editor.completer.popup && editor.completer.popup.isOpen)
-				editor.completer.detach(); // Closes the autocomplete popup
-		}
-		// Handle typing to dismiss ghost text
-		else if (editor.ghost_range && e.command.name !== "enterKeyEvent") {
-			//console.log("afterExec enterKeyEvent");
-			editor.removeGhostText(); // Dismiss ghost text on typing
+		if (editor.ghost_range) {
+			if (e.command.name == "startAutocomplete") {
+				//console.log("afterExec startAutocomplete");
+				if (editor.completer && editor.completer.popup && editor.completer.popup.isOpen)
+					editor.completer.detach(); // Closes the autocomplete popup
+			}
+			// Handle typing to dismiss ghost text
+			else if (e.command.name !== "enterKeyEvent") {
+				//console.log("afterExec enterKeyEvent");
+				editor.removeGhostText(); // Dismiss ghost text on typing
+			}
 		}
 	});
 }

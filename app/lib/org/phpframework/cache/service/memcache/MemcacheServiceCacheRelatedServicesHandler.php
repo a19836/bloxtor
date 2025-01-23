@@ -91,12 +91,12 @@ class MemcacheServiceCacheRelatedServicesHandler extends ServiceCacheRelatedServ
 		$ns = $this->getFileNS($dir_path);
 		
 		$data = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, self::MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME);
-		$data = !empty($data) ? unserialize($data) : false;
+		$data = CacheHandlerUtil::unserializeContent($data);
 		
 		if (is_array($data)) {
 			foreach ($data as $memcache_key_with_items) {
 				$arr = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, $memcache_key_with_items);
-				$arr = !empty($arr) ? unserialize($arr) : false;
+				$arr = CacheHandlerUtil::unserializeContent($arr);
 				
 				if(is_array($arr)) {
 				//print_r($arr);
@@ -138,12 +138,12 @@ class MemcacheServiceCacheRelatedServicesHandler extends ServiceCacheRelatedServ
 		$ns = $this->getFileNS($dir_path);
 		
 		$data = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, self::MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME);
-		$data = !empty($data) ? unserialize($data) : false;
+		$data = CacheHandlerUtil::unserializeContent($data);
 		
 		if (is_array($data)) {
 			foreach ($data as $memcache_key_with_items) {
 				$arr = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, $memcache_key_with_items);
-				$arr = !empty($arr) ? unserialize($arr) : false;
+				$arr = CacheHandlerUtil::unserializeContent($arr);
 				
 				if(is_array($arr) && isset($arr[$key]))
 					$key_file_path = $memcache_key_with_items;
@@ -171,14 +171,14 @@ class MemcacheServiceCacheRelatedServicesHandler extends ServiceCacheRelatedServ
 			$free_file_path = $free_file_paths[$i];
 			
 			$arr = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, $free_file_path);
-			$arr = !empty($arr) ? unserialize($arr) : false;
+			$arr = CacheHandlerUtil::unserializeContent($arr);
 			
 			if (!is_array($arr)) 
 				$arr = array();
 			
 			if(count($arr) < self::MAXIMUM_ITEMS_PER_FILE) {
 				$arr[$key] = true;
-				$cont = serialize($arr);
+				$cont = CacheHandlerUtil::serializeContent($arr);
 				
 				//echo "<br>$ns, $free_file_path";
 				if ($this->CacheHandler->getMemcacheHandler()->nsSet($ns, $free_file_path, $cont)) {
@@ -195,18 +195,18 @@ class MemcacheServiceCacheRelatedServicesHandler extends ServiceCacheRelatedServ
 			$new_file_name = uniqid();
 			
 			$data = $this->CacheHandler->getMemcacheHandler()->nsGet($ns, self::MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME);
-			$data = !empty($data) ? unserialize($data) : false;
+			$data = CacheHandlerUtil::unserializeContent($data);
 			
 			if (!is_array($data)) {
 				$data = array();
 			}
 			
 			$data[] = $new_file_name;
-			$cont = serialize($data);
+			$cont = CacheHandlerUtil::serializeContent($data);
 			
 			if ($this->CacheHandler->getMemcacheHandler()->nsSet($ns, self::MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME, $cont)) {
 				$arr = array($key => true);
-				$cont = serialize($arr);
+				$cont = CacheHandlerUtil:serializeContent($arr);
 				
 				//echo "<br>$ns, $new_file_name";
 				if ($this->CacheHandler->getMemcacheHandler()->nsSet($ns, $new_file_name, $cont)) {

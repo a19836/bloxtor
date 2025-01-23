@@ -8,9 +8,12 @@ class FileSystemXmlSettingsCacheHandler extends XmlSettingsCacheHandler {
 		
 		if($file_path && file_exists($file_path)) {
 			$cont = @file_get_contents($file_path);//maybe the file was delete by another thread, so we need to add the @ so it doesn't give error.
-			$arr = unserialize($cont);
 			
-			return is_array($arr) ? $arr : false;
+			if (!empty($cont)) {
+				$arr = CacheHandlerUtil::unserializeContent($cont);
+			
+				return is_array($arr) ? $arr : false;
+			}
 		}
 		return false;
 	}
@@ -29,7 +32,7 @@ class FileSystemXmlSettingsCacheHandler extends XmlSettingsCacheHandler {
 					$new_data = $data;
 				
 				if(($file = fopen($file_path, "w"))) {
-					$cont = serialize($new_data);
+					$cont = CacheHandlerUtil::serializeContent($new_data);
 					$status = fputs($file, $cont);
 					fclose($file);
 			

@@ -225,7 +225,7 @@ class FileSystemServiceCacheFolderHandler {
 		
 		if ($this->CacheFileHandler->exists($folder_controller_file_path)) {
 			$cont = $this->CacheFileHandler->get($folder_controller_file_path);
-			$folder_settings = $cont ? unserialize($cont) : array();
+			$folder_settings = CacheHandlerUtil::unserializeContent($cont);
 		}
 		return is_array($folder_settings) ? $folder_settings : array();
 	}
@@ -233,7 +233,7 @@ class FileSystemServiceCacheFolderHandler {
 	public function setFolderSettings($dir_path, $folder_settings = array()) {
 		CacheHandlerUtil::configureFolderPath($dir_path);
 		
-		$cont = serialize($folder_settings);
+		$cont = CacheHandlerUtil::serializeContent($folder_settings);
 		return $this->CacheFileHandler->write($dir_path . self::FOLDER_CONTROLLER_FILE_NAME, $cont);
 	}
 	

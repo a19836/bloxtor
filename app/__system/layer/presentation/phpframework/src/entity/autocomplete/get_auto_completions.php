@@ -69,6 +69,24 @@ if ($file_path) {
 			}
 		}
 		
+		$global_dynamic_vars = array(
+			"_GET" => isset($_GET) ? $_GET : null,
+			"_POST" => isset($_POST) ? $_POST : null,
+			"_REQUEST" => isset($_REQUEST) ? $_REQUEST : null,
+			"_FILES" => isset($_FILES) ? $_FILES : null,
+			"_COOKIE" => isset($_COOKIE) ? $_COOKIE : null,
+			"_ENV" => isset($_ENV) ? $_ENV : null,
+			"_SERVER" => isset($_SERVER) ? $_SERVER : null,
+			"_SESSION" => isset($_SESSION) ? $_SESSION : null,
+		);
+		foreach ($global_dynamic_vars as $global_var_name => $global_var)
+			if ($global_var && is_array($global_var)) {
+				$meta = strtolower(substr($global_var_name, 1));
+				$arr = getGlobalDynamicVarValues($meta, $global_var, '$' . $global_var_name);
+				
+				$completions = array_merge($completions, $arr);
+			}
+		
 		//add current file completions
 		$file_abs_path = APP_PATH . $file_path;
 		
@@ -432,6 +450,28 @@ if ($file_path) {
 
 echo json_encode($completions);
 die();
+	
+function getGlobalDynamicVarValues($meta, $vars, $prefix) {
+	$arr = array();
+	
+	foreach ($vars as $k => $v) {
+			$var_caption = $prefix . '["' . $k . '"]';
+			
+			$arr[] = array(
+				"caption" => $var_caption,
+				"value" => $var_caption,
+				"meta" => $meta,
+				"score" => 5
+			);
+			
+			if (is_array($v)) {
+				$sub_arr = getGlobalDynamicVarValues($meta, $vars, $var_caption);
+				$arr = array_merge($arr, $sub_arr);
+			}
+		}
+	
+	return $arr;
+}
 
 function getClassesMethodCompletions($classes, $current_class, $current_method) {
 	$completions = array();

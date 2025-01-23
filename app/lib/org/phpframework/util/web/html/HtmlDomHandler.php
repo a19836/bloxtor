@@ -60,6 +60,66 @@ class HtmlDomHandler {
 		return $html;
 	}
 	
+	public function getNodeCssSelector($node) {
+		// Generate CSS selector for the matching node
+		$selector = [];
+
+		while ($node && $node->nodeType === XML_ELEMENT_NODE) {
+			$tag = strtolower($node->nodeName);
+
+			if (!$tag || $tag == "html")
+				break;
+			else if ($tag == "body" || $tag == "head") {
+				$selector[] = $tag;
+				break;
+			}
+			
+			//get node index
+			$parent = $node->parentNode;
+
+			if ($parent && $parent->hasChildNodes()) {
+				$index = 0;
+				$children = $parent->childNodes;
+				
+				for ($i = 0, $t = $children->length; $i < $t; $i++) {
+					$pn = $children->item($i);
+					$index++;
+
+					if ($node->isSameNode($pn)) {
+						$tag .= ":nth-child($index)";
+						break;
+					}
+				}
+			}
+
+			// Add ID or class if available for specificity
+			if ($node->hasAttributes()) {
+				if ($node->hasAttribute('id')) {
+					$id = preg_split("/\s+/", $node->getAttribute('id'));
+					$id = preg_replace("/[^\w\-]+/u", "", $id[0]); //remove all non allowed chars, just in case
+
+					$selector[] = $tag . '#' . $id;
+					break; // IDs are unique, so we can stop here
+				} 
+				elseif ($node->hasAttribute('class')) {
+					$classes = preg_split("/\s+/", $node->getAttribute('class'));
+					$classes = array_filter($classes); //remove all empty values
+					$classes = array_map(function($c) { return preg_replace("/[^\w\-]+/u", "", $c); }, $classes); //remove all non allowed chars, just in case
+
+					$selector[] = $tag . '.' . implode('.', $classes);
+				} 
+				else
+					$selector[] = $tag;
+			} 
+			else
+				$selector[] = $tag;
+
+			$node = $parent;
+		}
+
+		return implode(' > ', array_reverse($selector));
+	}
+	
 	//The $this->DOMDocument->saveHTML() will encode some part of the urls in src and href attributes, like '[' and ']' characters, so we need to put them back again with the decoded value
 	public function rollbackNonDesiredUrlsEnconding(&$html) {
 		//source: https://stackoverflow.com/questions/2725156/complete-list-of-html-tag-attributes-which-have-a-url-value
@@ -370,6 +430,208 @@ class HtmlDomHandler {
 		}
 		
 		return $status;
+	}
+	
+	// Função auxiliar para dividir o seletor CSS em partes
+	public function splitSelector($selector) {
+		$selector = trim($selector);
+		
+		if (!$selector)
+			return null;
+		
+		// Regular expression to match CSS parts separated by combinators
+		$pattern = '/' .
+			'(' .  
+			  '[a-zA-Z0-9\-_#\.]+' . //Match tags, classes, IDs, or simple selectors
+			  '(' .
+					'(:nth-child\([^\)]+\))' . //Optionally match pseudo-classes like :nth-child(3)
+					'|((\.|#)[a-zA-Z0-9\-_]+)' . 
+					'|(\[[^\]]+\])' . //Optionally match attributes like [name="value"]
+			  ')*' . 
+		  '|>)' . 
+		'/u';
+		preg_match_all($pattern, $selector, $matches, PREG_PATTERN_ORDER);
+
+		// Filter out empty matches and trim whitespace
+		$parts = array_filter(array_map('trim', $matches[0]));
+		//print_r($parts);die();
+
+		return $parts;
+	}
+
+	// Função para verificar se um elemento corresponde a um seletor
+	public function matchesSelector($node, $selector) {
+		if (!$node || !$selector)
+			return false;
+		
+		// Verifica por node name
+		preg_match("/^(\w[\w\-]+)/u", $selector, $match, PREG_OFFSET_CAPTURE);
+		
+		if ($match && $match[1][0] && strtolower($node->nodeName) !== strtolower($match[1][0]))
+			return false;
+		
+		// Verifica por atributos
+		if (preg_match_all('/\[(.*?)\]/', $selector, $matches, PREG_OFFSET_CAPTURE)) {
+			$selector = preg_replace('/\[(.*?)\]/', "", $selector); //clean attributes selector bc of class selector check
+			$matches = $matches[1];
+			
+			foreach ($matches as $match) {
+				$attribute_selector = $match[0];
+				$parts = explode('=', $attribute_selector, 2);
+				$attr_name = trim($parts[0], '"\' ');
+				$attr_value = null;
+				
+				if (isset($parts[1])) {
+					$attr_value = trim($parts[1]);
+					$attr_value = preg_replace("/^'(.*)'$/", '$1', $attr_value);
+					$attr_value = preg_replace('/^"(.*)"$/', '$1', $attr_value);
+				}
+				//echo "attr_name:$attr_name|attr_value:$attr_value\n";
+				
+				if (!$node->hasAttribute($attr_name) || (isset($attr_value) && $node->getAttribute($attr_name) != $attr_value))
+					return false;
+			}
+		}
+
+		// Verifica a pseudo-classe :nth-child
+		if (preg_match('/:nth-child\((\d+)\)/', $selector, $matches, PREG_OFFSET_CAPTURE)) {
+			$selector = preg_replace('/:nth-child\((\d+)\)/', "", $selector); //clean attributes selector bc of class selector check
+			
+			$nth_child_index = (int)$matches[1][0];
+			$siblings = $node->parentNode->childNodes;
+			$sibling = $siblings->item($nth_child_index - 1);
+			
+			if (!$sibling)
+				return false; // Não encontrou o elemento na posição correta
+			
+			$node_outer_html = $this->outerHTML($node);
+			$sibling_outer_html = $this->outerHTML($sibling);
+			
+			if ($sibling_outer_html != $node_outer_html)
+				return false; // Não encontrou o elemento na posição correta
+		}
+
+		// Verifica por node id
+		if (strpos($selector, '#') !== false) {
+			preg_match("/#([\w\-]+)/u", $selector, $match, PREG_OFFSET_CAPTURE);
+			$id = $match ? $match[1][0] : null;
+			
+			if (!$id || $node->getAttribute('id') !== $id)
+				return false;
+		}
+		
+		// Verifica por node class
+		if (strpos($selector, '.') !== false) {
+			preg_match_all("/.([\w\-]+)/u", $selector, $matches, PREG_PATTERN_ORDER);
+			
+			if ($matches) {
+				$node_classes = preg_split("/\s+/", $node->getAttribute('class'));
+				$classes = array_map('trim', $matches[1]);
+				
+				foreach ($classes as $class)
+					if (!in_array($class, $node_classes))
+						return false;
+			}
+		}
+
+		return true;
+	}
+
+	// Função recursiva para verificar todos os descendentes ou filhos diretos
+	public function checkDescendants($parent, $selectors, &$result, $current_index = 0) {
+		if (!$parent || !$selectors)
+			return false;
+		
+		$current_selector = isset($selectors[$current_index]) ? $selectors[$current_index] : null;
+		$is_direct_children = false;
+		
+		if ($current_selector == ">") {
+			$is_direct_children = true;
+			$current_index++;
+			$current_selector = isset($selectors[$current_index]) ? $selectors[$current_index] : null;
+		}
+
+		if ($current_index >= count($selectors)) {
+			// Se chegamos ao final, adicionamos o nó ao resultado, se o ultimo selector for diferente de '>'
+			if (!$is_direct_children)
+				$result[] = $parent;
+			
+			return false;
+		}
+		
+		foreach ($parent->childNodes as $child)
+			if ($child instanceof DOMElement) {
+				if (self::matchesSelector($child, $current_selector)) {
+					//echo "checked:".$child->textContent."\n";
+					// Se o filho corresponde ao seletor atual, verificamos o resto do seletor nos seus descendentes
+					self::checkDescendants($child, $selectors, $result, $current_index + 1);
+				}
+				
+				// Se o seletor é de filhos diretos, não percorremos os descendentes
+				if ($is_direct_children)
+					continue; // Não verifica descendentes, apenas filhos diretos
+				
+				//echo "verifica descendentes:".$child->textContent."\n";
+				// Verifica os descendentes, se não for um seletor de filhos diretos
+				self::checkDescendants($child, $selectors, $result, $current_index);
+			}
+		
+		return true;
+	}
+
+	public function querySelectorAll($css_selector, $element = null) {
+		$css_selector = preg_replace("/^\s*:scope\s*(\s|>)/", '$1', $css_selector); //allow ':scope > '
+		$result = array();
+		
+		if (!$element)
+			$element = $this->DOMDocument->documentElement;
+		
+		if (method_exists($element, "querySelectorAll")) {
+			$nodes_list = $element->querySelectorAll($css_selector);
+			
+			if ($nodes_list)
+				foreach ($nodes_list as $node)
+					$result[] = $node;
+		}
+		
+		// Divida o seletor CSS em partes
+		$selectors = self::splitSelector($css_selector);
+		//print_r($selectors);
+
+		// Iniciar a verificação a partir do nó pai
+		self::checkDescendants($element, $selectors, $result);
+
+		return $result;
+	}
+
+	public function querySelector($css_selector, $element = null) {
+		if (!$element)
+			$element = $this->DOMDocument->documentElement;
+		
+		if (method_exists($element, "querySelector")) {
+			$css_selector = preg_replace("/^\s*:scope\s*(\s|>)/", '$1', $css_selector); //allow ':scope > '
+			return $element->querySelector($css_selector);
+		}
+		
+		$result = self::querySelectorAll($css_selector, $element);
+		
+		return $result ? $result[0] : null;
+	}
+	
+	public function innerHTML($element) {
+		if (property_exists($element, "innerHTML"))
+			return $element->innerHTML;
+		
+		$dom = new DOMDocument();
+		
+		foreach ($element->childNodes as $child)
+        $dom->appendChild($dom->importNode($child, true));
+		
+		return $dom->saveHTML();
+	}
+	
+	public function outerHTML($element) {
+		return $element->ownerDocument->saveHTML($element);
 	}
 }
 ?>

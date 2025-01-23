@@ -162,5 +162,13 @@ class CacheHandlerUtil {
 		}
 		return true;
 	}
+	
+	public static function serializeContent($content) {
+		return serialize($content);
+	}
+	
+	public static function unserializeContent($content) {
+		return !empty($content) ? unserialize($content) : false;
+	}
 }
 ?>

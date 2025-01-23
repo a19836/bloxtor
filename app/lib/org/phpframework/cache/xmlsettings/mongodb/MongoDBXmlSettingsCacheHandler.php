@@ -19,7 +19,7 @@ class MongoDBXmlSettingsCacheHandler extends XmlSettingsCacheHandler {
 				$cont = $data["content"];
 			
 				if (!empty($cont)) {
-					$arr = unserialize($cont);
+					$arr = CacheHandlerUtil::unserializeContent($cont);
 			
 					return is_array($arr) ? $arr : false;
 				}
@@ -36,7 +36,7 @@ class MongoDBXmlSettingsCacheHandler extends XmlSettingsCacheHandler {
 			$old_data = $this->getCache($file_path);
 			$new_data = is_array($old_data) ? array_merge($old_data, $data) : $data;
 			
-			$cont = serialize($new_data);
+			$cont = CacheHandlerUtil::serializeContent($new_data);
 			
 			return $this->MongoDBHandler->set($colletion_name, $key, array(
 				"content" => $cont,

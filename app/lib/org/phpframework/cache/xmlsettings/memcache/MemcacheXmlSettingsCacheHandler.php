@@ -15,7 +15,7 @@ class MemcacheXmlSettingsCacheHandler extends XmlSettingsCacheHandler {
 			$cont = $this->MemcacheHandler->get($key);
 			
 			if (!empty($cont)) {
-				$arr = unserialize($cont);
+				$arr = CacheHandlerUtil::unserializeContent($cont);
 			
 				return is_array($arr) ? $arr : false;
 			}
@@ -30,7 +30,7 @@ class MemcacheXmlSettingsCacheHandler extends XmlSettingsCacheHandler {
 			$old_data = $this->getCache($file_path);
 			$new_data = is_array($old_data) ? array_merge($old_data, $data) : $data;
 			
-			$cont = serialize($new_data);
+			$cont = CacheHandlerUtil::serializeContent($new_data);
 			$ttl = $this->cache_ttl ? $this->cache_ttl + time() : 0;
 			
 			return $this->MemcacheHandler->set($key, $cont, $ttl);

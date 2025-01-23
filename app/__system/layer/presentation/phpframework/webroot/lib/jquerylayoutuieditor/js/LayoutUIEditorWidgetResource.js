@@ -14704,6 +14704,12 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 						},
 						
 						{
+							value: "MyWidgetResourceLib.FieldHandler.executeSingleElementFieldsResource(this, 'resource type/action name'); return false;",
+							title: "executeSingleElementFieldsResource",
+							description: "Execute a specific action/resource type, based in its name, from the same widget.<br/>This method receives a third argument with an 'opts' object correspondent to some options that will be passed on execution of the correspondent resource."
+						},
+						
+						{
 							value: "MyWidgetResourceLib.FieldHandler.setWidgetResourceValueDefaultValue(this, resources_name); return false;",
 							title: "setWidgetResourceValueDefaultValue",
 							description: "Handler to be called on complete of a load action. In summary this handler checks if there is a default value set for the current field and, if it exists, sets that default value on the field. This method is used on comboboxes with default values from the URL that are not being set propertly..."

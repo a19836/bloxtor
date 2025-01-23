@@ -22,11 +22,11 @@ abstract class UserCacheHandler implements IUserCacheHandler {
 	public function getRootPath() {return $this->root_path;}
 	
 	public function serializeContent($content) {
-		return $this->serialize ? serialize($content) : $content;
+		return $this->serialize ? CacheHandlerUtil::serializeContent($content) : $content;
 	}
 	
 	public function unserializeContent($content) {
-		return $this->serialize ? unserialize($content) : $content;
+		return $this->serialize ? CacheHandlerUtil::unserializeContent($content) : $content;
 	}
 	
 	protected function prepareFilePath(&$file_path) {
