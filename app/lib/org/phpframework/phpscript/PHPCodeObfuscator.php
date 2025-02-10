@@ -233,20 +233,21 @@ class PHPCodeObfuscator {
 			
 			$this->initClassesMethodsAndVariables($file_path, $tokens);
 			
+			//If some constants are not yet defined, due to the PHP version, set them with some default values. Note that we cannot use the numeric values for these constants, bc in previous php versions these values may be already used. Additionally we cannot use NULL as default value, bc each of these constants MUST BE UNIQUE, otherwise we will get a PHP error on app/lib/vendor/phpparser/phpparser_52_82/vendor/nikic/php-parser/lib/PhpParser/Lexer.php:458, saying that the T_NAME_FULLY_QUALIFIED and T_NAME_QUALIFIED have the same default values, which is NULL. So we decided to use a default value started with JPLPINTO_, that we are sure that doesn't exist and will never exists in the future.
 			if (version_compare(PHP_VERSION, '8', '<=')) {
 				if (!defined("T_NAME_FULLY_QUALIFIED"))
-					define("T_NAME_FULLY_QUALIFIED", null);
+					define("T_NAME_FULLY_QUALIFIED", "JPLPINTO_T_NAME_FULLY_QUALIFIED");
 				
 				if (!defined("T_NAME_QUALIFIED"))
-					define("T_NAME_QUALIFIED", null);
+					define("T_NAME_QUALIFIED", "JPLPINTO_T_NAME_QUALIFIED");
 				
 				if (!defined("T_NAME_RELATIVE"))
-					define("T_NAME_RELATIVE", null);
+					define("T_NAME_RELATIVE", "JPLPINTO_T_NAME_RELATIVE");
 			}
 			
 			if (version_compare(PHP_VERSION, '8.1', '<=')) {
 				if (!defined("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG"))
-					define("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG", null);
+					define("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG", "JPLPINTO_T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG");
 			}
 			
 			$i = 0;

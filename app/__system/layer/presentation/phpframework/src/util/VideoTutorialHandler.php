@@ -1,6 +1,38 @@
 <?php
 class VideoTutorialHandler {
 	
+	public static function getFeaturedTutorialsSectionHtml($tutorials, $online_tutorials_url_prefix) {
+		$videos_main_content = self::getFeaturedTutorialsHtml($tutorials);
+		
+		if ($videos_main_content) {
+			$html = '<div class="featured_header">
+							<div class="featured_header_tip">Start here</div>
+							<div class="featured_header_title">Build your app with confidence</div>
+							<div class="featured_header_sub_title">Unlock your potential with these essential tools and guides for beginners.</div>
+						</div>
+						' . $videos_main_content . '
+						<div class="featured_buttons">
+							<button onClick="openWindow(this, \'url\', \'videos\')" url="' . $online_tutorials_url_prefix . 'video/simple"><span class="icon video"></span> Click here to watch more videos</button>
+							<button onClick="openWindow(this, \'url\', \'documentation\')" url="' . $online_tutorials_url_prefix . '"><span class="icon tutorials"></span> Click here to read our documentation</button>
+						</div>';
+			
+			$script = '<script>
+			var videos_html = \'' . addcslashes(str_replace(array("\n", "\r"), "", $html), "\\'") . '\';
+			
+			$(function() {
+				setTimeout(function() { //very important, so the pages that call this function, load faster and do NOT need to wait until all videos be loaded.
+					$(".featured_tutorials").html(videos_html);
+				}, 1000);
+			});
+			</script>';
+			
+			return '<div class="featured_tutorials"></div>' . $script;
+			//return '<div class="featured_tutorials">' . $html . '</div>'; //Deprecated bc it makes framework slow by loading videos
+		}
+		
+		return "";
+	}
+	
 	public static function getFeaturedTutorialsHtml($tutorials) {
 		$html = "";
 		

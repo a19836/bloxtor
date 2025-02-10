@@ -39,6 +39,8 @@ $(function() {
 	//prepare step 1
 	if (step == 1) {
 		if (!with_advanced_options) {
+			$("#error_message").hide();
+			
 			edit_table.accordion("option", "active", 0);
 			edit_table.accordion("refresh"); //refreshes the height of the table_settings
 			edit_table.find(".table_sql_statements .save_button .execute").attr("do_not_confirm", 1).trigger("click");

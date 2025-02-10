@@ -50,20 +50,21 @@ class PHPCodePrintingHandler {
 	public static function getPHPClassesFromTokens($tokens) {
 		$methods = array();
 		
+		//If some constants are not yet defined, due to the PHP version, set them with some default values. Note that we cannot use the numeric values for these constants, bc in previous php versions these values may be already used. Additionally we cannot use NULL as default value, bc each of these constants MUST BE UNIQUE, otherwise we will get a PHP error on app/lib/vendor/phpparser/phpparser_52_82/vendor/nikic/php-parser/lib/PhpParser/Lexer.php:458, saying that the T_NAME_FULLY_QUALIFIED and T_NAME_QUALIFIED have the same default values, which is NULL. So we decided to use a default value started with JPLPINTO_, that we are sure that doesn't exist and will never exists in the future.
 		if (version_compare(PHP_VERSION, '8', '<=')) {
 			if (!defined("T_NAME_FULLY_QUALIFIED"))
-				define("T_NAME_FULLY_QUALIFIED", null);
+				define("T_NAME_FULLY_QUALIFIED", "JPLPINTO_T_NAME_FULLY_QUALIFIED");
 			
 			if (!defined("T_NAME_QUALIFIED"))
-				define("T_NAME_QUALIFIED", null);
+				define("T_NAME_QUALIFIED", "JPLPINTO_T_NAME_QUALIFIED");
 			
 			if (!defined("T_NAME_RELATIVE"))
-				define("T_NAME_RELATIVE", null);
+				define("T_NAME_RELATIVE", "JPLPINTO_T_NAME_RELATIVE");
 		}
 		
 		if (version_compare(PHP_VERSION, '8.1', '<=')) {
 			if (!defined("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG"))
-				define("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG", null);
+				define("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG", "JPLPINTO_T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG");
 		}
 		
 		//print_r($tokens);die();
@@ -75,8 +76,22 @@ class PHPCodePrintingHandler {
 		$class_path = $namespace = "";
 		$include_token_types = array(T_INCLUDE, T_INCLUDE_ONCE, T_REQUIRE, T_REQUIRE_ONCE);
 		$include_token_types_once = array(T_INCLUDE_ONCE, T_REQUIRE_ONCE);
-		$extends_implements_token_types = T_NAME_FULLY_QUALIFIED ? array(T_NAME_FULLY_QUALIFIED, T_NAME_QUALIFIED, T_NAME_RELATIVE) : array(); //only for php > 8.0
-		$ampersand_followed_by_var_token_types = T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG ? array(T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG) : array(); //only for php > 8.1
+		$extends_implements_token_types = array();
+		$ampersand_followed_by_var_token_types = array();
+		
+		//only for php > 8.0
+		if (defined("T_NAME_FULLY_QUALIFIED") && is_numeric(T_NAME_FULLY_QUALIFIED))
+			$extends_implements_token_types[] = T_NAME_FULLY_QUALIFIED;
+		
+		if (defined("T_NAME_QUALIFIED") && is_numeric(T_NAME_QUALIFIED))
+			$extends_implements_token_types[] = T_NAME_QUALIFIED;
+		
+		if (defined("T_NAME_RELATIVE") && is_numeric(T_NAME_RELATIVE))
+			$extends_implements_token_types[] = T_NAME_RELATIVE;
+		
+		//only for php > 8.1
+		if (defined("T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG") && is_numeric(T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG))
+			$ampersand_followed_by_var_token_types[] = T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG;
 		
 		for ($i = 1; $i < $count; $i++) {
 			if ($tokens[$i] == "{" || $tokens[$i][0] == T_CURLY_OPEN || $tokens[$i][0] == T_DOLLAR_OPEN_CURLY_BRACES)

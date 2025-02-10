@@ -717,11 +717,41 @@ class TourGuideUIHandler {
 					}
 				}';
 				
+				$right_panel_func = 'function(current_step) {
+					setTimeout(function() {
+						var div = MyTourGuide.tourguide._shadowRoot.querySelector(".guided-tour-step.active .guided-tour-step-tooltip");
+						
+						if (div)
+							div.classList.add("guided-tour-arrow-none");
+						
+						var iframe = document.querySelector("#right_panel iframe");
+						var iframe_doc = iframe.contentDocument ? iframe.contentDocument : iframe.contentWindow.document;
+						var iframe_tour_guide = iframe_doc ? iframe_doc.querySelector(".__guided-tour-container") : null;
+						
+						if (iframe_tour_guide)
+							iframe_tour_guide.classList.add("hidden");
+					}, 500);
+				}';
+				
+				$show_right_panel_tourguide_func = 'function() {
+					var iframe = document.querySelector("#right_panel iframe");
+					var iframe_doc = iframe.contentDocument ? iframe.contentDocument : iframe.contentWindow.document;
+					var iframe_tour_guide = iframe_doc ? iframe_doc.querySelector(".__guided-tour-container") : null;
+					
+					if (iframe_tour_guide)
+						iframe_tour_guide.classList.remove("hidden");
+				}';
+				
 				if ($admin_type == "advanced") {
 					$options["steps"][] = array(
-						"selector" => "#top_panel",
-						"content" => "The <strong>Advanced Workspace</strong> comprises a '<strong>Top bar</strong>', a '<strong>Navigator</strong>', and a '<strong>Content Panel</strong>' displaying content corresponding to selections made in the Top bar or Navigator.",
+						"selector" => "body",
+						"content" => "The <strong>Advanced Workspace</strong> comprises a '<strong>Top bar</strong>', a '<strong>Navigator</strong>', and a '<strong>Content Panel</strong>' displaying content corresponding to selections made in the Top bar or Navigator.<br/><br/>In the future if you wish to launch this guide again, please click in the red icon at Top-Right Corner and select 'Tour Guide'.",
 						"onStepEnd" => $prepare_inner_tourguides_func
+					);
+					$options["steps"][] = array(
+						"selector" => "#top_panel",
+						"content" => "The '<strong>Top bar</strong>' is the dark bar appearing at the top, displaying the projects and other buttons that will interact with the panels below.",
+						"placement" => "top-left",
 					);
 					$options["steps"][] = array(
 						"selector" => "#top_panel > .center",
@@ -768,14 +798,19 @@ class TourGuideUIHandler {
 					$options["steps"][] = array(
 						"selector" => "#right_panel",
 						"content" => "The '<strong>Content Panel</strong>' displays content corresponding to your selections in the Top Bar or Navigator.<br/><p style=\"text-align:center; font-weight:bold;\">Enjoy...</p>",
+						"onStepEnd" => $right_panel_func,
 					);
-					
 				}
 				else if ($admin_type == "simple") {
 					$options["steps"][] = array(
-						"selector" => "#top_panel",
-						"content" => "The <strong>Simple Workspace</strong> comprises a '<strong>Top bar</strong>' and a '<strong>Content Panel</strong>' displaying content corresponding to selections made in the Top bar.",
+						"selector" => "body",
+						"content" => "The <strong>Simple Workspace</strong> comprises a '<strong>Top bar</strong>' and a '<strong>Content Panel</strong>' displaying content corresponding to selections made in the Top bar.<br/><br/>In the future if you wish to launch this guide again, please click in the red icon at Top-Right Corner and select 'Tour Guide'.",
 						"onStepEnd" => $prepare_inner_tourguides_func
+					);
+					$options["steps"][] = array(
+						"selector" => "#top_panel",
+						"content" => "The '<strong>Top bar</strong>' is the dark bar appearing at the top, displaying the projects and other buttons that will interact with the panels below.",
+						"placement" => "top-left",
 					);
 					$options["steps"][] = array(
 						"selector" => "#top_panel > .center",
@@ -800,9 +835,11 @@ class TourGuideUIHandler {
 					$options["steps"][] = array(
 						"selector" => "#right_panel",
 						"content" => "The '<strong>Content Panel</strong>' displays content corresponding to your selections in the Top Bar.<br/><p style=\"text-align:center; font-weight:bold;\">Enjoy...</p>",
+						"onStepEnd" => $right_panel_func,
 					);
 				}
 				
+				$options["onStop"] = $show_right_panel_tourguide_func;
 				break;
 			
 			case "admin/admin_home":

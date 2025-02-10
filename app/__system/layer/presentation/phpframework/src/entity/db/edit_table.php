@@ -179,7 +179,7 @@ if ($obj && is_a($obj, "DB") && $layer_bean_folder_name) {
 					$sql_statements = isset($statements["sql_statements"]) ? $statements["sql_statements"] : null;
 					$sql_statements_labels = isset($statements["sql_statements_labels"]) ? $statements["sql_statements_labels"] : null;
 					
-					if ($sql_statements && !$data["table_charset"] && $data["table_collation"])
+					if ($statements["table_collation_changed"] && !$data["table_charset"] && $data["table_collation"])
 						$error_message = "Possible Error: charset definition missing!";
 				}
 				

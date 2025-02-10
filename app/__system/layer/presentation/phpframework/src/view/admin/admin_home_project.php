@@ -64,21 +64,7 @@ $head .= WorkFlowPresentationHandler::getPresentationBrokersHtml($presentation_b
 $head .= '</script>';
 $head .= HeatMapHandler::getHtml($project_url_prefix);
 
-$videos_main_content = VideoTutorialHandler::getFeaturedTutorialsHtml($filtered_tutorials);
-
-if ($videos_main_content)
-	$videos_main_content = '<div class="featured_tutorials">
-										<div class="featured_header">
-											<div class="featured_header_tip">Start here</div>
-											<div class="featured_header_title">Build your app with confidence</div>
-											<div class="featured_header_sub_title">Unlock your potential with these essential tools and guides for beginners.</div>
-										</div>
-										' . $videos_main_content . '
-										<div class="featured_buttons">
-											<button onClick="openWindow(this, \'url\', \'videos\')" url="' . $online_tutorials_url_prefix . 'video/simple"><span class="icon video"></span> Click here to watch more videos</button>
-											<button onClick="openWindow(this, \'url\', \'documentation\')" url="' . $online_tutorials_url_prefix . '"><span class="icon tutorials"></span> Click here to read our documentation</button>
-										</div>
-									</div>';
+$videos_main_content = VideoTutorialHandler::getFeaturedTutorialsSectionHtml($filtered_tutorials, $online_tutorials_url_prefix);
 
 $main_content = '
 <div class="admin_panel">

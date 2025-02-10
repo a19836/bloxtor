@@ -1175,6 +1175,8 @@ class WorkFlowDBHandler {
 		}
 		
 		//update table encoding
+		$table_collation_changed = false;
+		
 		if ($allow_modify_table_encoding && (!empty($new_table_data["table_charset"]) || !empty($new_table_data["table_collation"]))) {
 			$old_table_charset = isset($old_table_data["table_charset"]) ? strtolower($old_table_data["table_charset"]) : null;
 			$old_table_collation = isset($old_table_data["table_collation"]) ? strtolower($old_table_data["table_collation"]) : null;
@@ -1184,6 +1186,8 @@ class WorkFlowDBHandler {
 			if ($old_table_charset != $new_table_charset || $old_table_collation != $new_table_collation) {
 				$sql_statements[] = $DBDriver->getModifyTableEncodingStatement($table_name, $new_table_charset, $new_table_collation, $sql_options);
 				$sql_statements_labels[] = "Changing charset and collation for table " . $table_name;
+				
+				$table_collation_changed = true;
 			}
 		}
 		
@@ -1221,7 +1225,8 @@ class WorkFlowDBHandler {
 			"attributes_to_delete" => $attributes_to_delete,
 			"new_pks" => $new_pks,
 			"new_pks_attrs" => $new_pks_attrs,
-			"old_pks" => $old_pks
+			"old_pks" => $old_pks,
+			"table_collation_changed" => $table_collation_changed,
 		);
 		
 		return array(
