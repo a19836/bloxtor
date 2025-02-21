@@ -1,5 +1,6 @@
 <?php
 include_once get_lib("org.phpframework.util.text.TextSanitizer");
+include_once get_lib("org.phpframework.util.ShellCmdHandler");
 
 class PHPScriptHandler {
 	
@@ -506,7 +507,7 @@ class PHPScriptHandler {
 		//$is_windows = stripos(php_uname(), "windows") !== false;
 		$is_windows = false; 
 		
-		if (!$is_windows && function_exists("shell_exec")) { //maybe shell_exec function was disabled in the php.ini for security reasons
+		if (!$is_windows && ShellCmdHandler::isAllowed()) { //maybe shell_exec function was disabled in the php.ini for security reasons
 			$result = null;
 			
 			/*
@@ -524,7 +525,7 @@ class PHPScriptHandler {
 			//echo "is_shell_arg_invalid:$is_shell_arg_invalid";die();
 			
 			if (!$is_shell_arg_invalid)
-				$result = trim(shell_exec("echo " . escapeshellarg($contents) . " | php -l 2>&1"));
+				$result = trim(ShellCmdHandler::exec("echo " . ShellCmdHandler::escapeArg($contents) . " | php -l 2>&1"));
 			
 			if (!$result) { //it may means that the cmd exceeded the memory limited, so we need to use a different approach
 				$temp = tmpfile();
@@ -536,7 +537,7 @@ class PHPScriptHandler {
 				$meta_data = stream_get_meta_data($temp);
 				$path = isset($meta_data['uri']) ? $meta_data['uri'] : null;
 				
-				$result = trim(shell_exec("php -l $path 2>&1"));
+				$result = trim(ShellCmdHandler::exec("php -l " . ShellCmdHandler::escapeArg($path) . " 2>&1"));
 				fclose($temp); // this removes the file
 			}
 			

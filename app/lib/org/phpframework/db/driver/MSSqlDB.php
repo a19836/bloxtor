@@ -58,7 +58,7 @@ class MSSqlDB extends DB {
 		//	$with_host = $with_dbname = true;
 		
 		if (!empty($options["host"]))
-			$dsn .= ($with_host ? 'host' : 'Server') . "=" . $options["host"] . (!empty($options["port"]) ? ':' . $options["port"] : '') . ';';
+			$dsn .= ($with_host ? 'host' : 'Server') . "=" . $options["host"] . (!empty($options["port"]) ? ',' . $options["port"] : '') . ';'; //Port must be appended with comma, bc with ":" does NOT work correctly.
 		
 		if (!empty($options["db_name"]))
 			$dsn .= ($with_dbname ? 'dbname' : 'Database') . '=' . $options["db_name"] . ';';

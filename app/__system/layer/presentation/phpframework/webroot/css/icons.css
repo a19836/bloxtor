@@ -203,6 +203,8 @@
 .icon.info::before {
 	content:"\f05a";
 	margin-left:1px;
+	margin-top:1px;
+	display:inline-block;
 }
 .icon.database::before,
   .icon.db::before,

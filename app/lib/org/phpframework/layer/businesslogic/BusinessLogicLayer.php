@@ -4,6 +4,7 @@ include_once get_lib("org.phpframework.bean.BeanFactory");
 include_once get_lib("org.phpframework.layer.Layer");
 include_once get_lib("org.phpframework.phpscript.PHPCodePrintingHandler");
 include_once get_lib("org.phpframework.phpscript.docblock.DocBlockParser");
+include_once get_lib("org.phpframework.cms.VendorFrameworkHandler");
 
 class BusinessLogicLayer extends Layer {
 	private $modules = array();
@@ -298,9 +299,48 @@ class BusinessLogicLayer extends Layer {
 		return false;
 	}
 	
+	private function getPHPClassesFromFolderRecursively($module_path) {
+		//return PHPCodePrintingHandler::getPHPClassesFromFolderRecursively($module_path); //DEPREACTED BC OF LARAVEL and other vendor frameworks
+		
+		$files = PHPCodePrintingHandler::getPHPClassesFromFolder($module_path);
+		
+		if ($files) {
+			//if $module_path is a vendor framework
+			$vendor_framework = VendorFrameworkHandler::getVendorFrameworkFolder($module_path);
+			
+			if ($vendor_framework) {
+				$new_files = array();
+				
+				foreach ($files as $file_path => $file_props) 
+					if (preg_match("/Service\.php$/", $file_path))
+						$new_files[$file_path] = $file_props;
+				
+				$files = $new_files;
+			}
+			else {
+				$classes = array();
+				$sub_files = array_diff(scandir($module_path), array('.', '..'));
+				
+				foreach ($sub_files as $sub_file) {
+					$sub_file_path = $module_path . "/" . $sub_file;
+					
+					if (is_dir($sub_file_path)) {
+						$sub_classes = self::getPHPClassesFromFolderRecursively($sub_file_path);
+						$classes = array_merge($classes, $sub_classes);
+					}
+				}
+				
+				$files = array_merge($files, $classes);
+			}
+		}
+		//echo "<pre>module_path:$module_path";print_r($files);
+		
+		return $files;
+	}
+	
 	private function updateModuleServicesFromFileSystem($module_id, $module_path, $is_folder = true) {
-		$files = $is_folder ? PHPCodePrintingHandler::getPHPClassesFromFolderRecursively($module_path) : array($module_path => PHPCodePrintingHandler::getPHPClassesFromFile($module_path));
-		//echo "<pre>";print_r($files);
+		$files = $is_folder ? self::getPHPClassesFromFolderRecursively($module_path) : array($module_path => PHPCodePrintingHandler::getPHPClassesFromFile($module_path));
+		//echo "<pre>";print_r($files);die();
 		
 		$alias_path_by_file_path = array();
 		$alias_name_by_file_path = array();

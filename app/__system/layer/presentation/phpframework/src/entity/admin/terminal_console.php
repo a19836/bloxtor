@@ -1,8 +1,10 @@
 <?php
+include_once get_lib("org.phpframework.util.ShellCmdHandler");
+
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
 $popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
-$is_allowed = function_exists("shell_exec");
+$is_allowed = ShellCmdHandler::isAllowed();
 
 if ($is_allowed) {
 	if (isset($_POST['cmd'])) {
@@ -11,18 +13,14 @@ if ($is_allowed) {
 		$command .= " 2>&1";
 		//echo "command:$command!\n".urldecode($command);die();
 		
-		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') //Windows
-			$output = shell_exec("cmd /c " . $command);
-		else //Unix/Linux/MacOS
-			$output = shell_exec($command);
-		
+		$output = ShellCmdHandler::exec($command);
 		$output = preg_split('/[\n]/', $output);
 		
 		foreach ($output as $line)
 			echo htmlentities($line, ENT_QUOTES | ENT_HTML5, 'UTF-8') . "<br>";
 		
 		die();
-	} 
+	}
 	else if (!empty($_FILES['file']['tmp_name']) && !empty($_POST['path'])) {
 		$file_name = $_FILES["file"]["name"];
 		$path = $_POST['path'];

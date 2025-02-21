@@ -111,10 +111,18 @@ function foo() {
 
 function get_lib($path) {
 	$lib_path = dirname(dirname(dirname(dirname(__DIR__)))) . "/";
+	
+	if (preg_match("/^(vendor|lib)\./i", $path))
+		$lib_path = dirname($lib_path) . "/";
+	
 	return $lib_path . str_replace(".", "/", $path) . ".php";	
 }
 
 function launch_exception($e) {
 	throw $e;
+}
+
+function normalize_windows_path_to_linux($path) { //This function will be used everytime that we use the php code: __FILE__ and __DIR__
+	return DIRECTORY_SEPARATOR != "/" ? str_replace(DIRECTORY_SEPARATOR, "/", $path) : $path;
 }
 ?>

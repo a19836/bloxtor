@@ -35,6 +35,11 @@ class AdminMenuUIHandler {
 	}
 	
 	public static function getContextMenus($exists_db_drivers, $get_store_programs_url, $is_user_module_installed = false) {
+		$vendor_frameworks_menus = 
+	'<li class="line_break" vendor_framework="laravel"></li>
+	<li class="laravel_preview" vendor_framework="laravel"><a onClick="return goToNew(this, \'laravel_preview_url\', event)">Preview Laravel Project</a></li>
+	<li class="laravel_terminal" vendor_framework="laravel"><a onClick="return goTo(this, \'laravel_terminal_url\', event)"> Laravel Terminal</a></li>';
+		
 		return '
 <div id="selected_menu_properties" class="myfancypopup with_title">
 	<div class="title">Properties</div>
@@ -422,6 +427,8 @@ class AdminMenuUIHandler {
 	<li class="line_break"></li>
 	<li class="create_automatically"><a onClick="return goTo(this, \'create_automatically_url\', event)">Add Services Automatically</a></li>
 	<li class="line_break"></li>
+	<li class="create_laravel"><a onClick="return goTo(this, \'create_laravel_url\', event)">Add Laravel Project</a></li>
+	<li class="line_break"></li>
 	<li class="paste"><a onClick="return manageFile(this, \'paste_url\', \'paste\')">Paste</a></li>
 	<li class="line_break"></li>
 	<li class="download"><a onClick="return goToNew(this, \'download_url\', event)">Download Folder</a></li>
@@ -452,6 +459,7 @@ class AdminMenuUIHandler {
 	<li class="line_break"></li>
 	<li class="refresh"><a onClick="return refresh(this)">Refresh</a></li>
 	<li class="properties"><a onClick="return showProperties(this)">Properties</a></li>
+	' . $vendor_frameworks_menus . '
 </ul>
 
 <ul id="business_logic_group_common_context_menu" class="mycontextmenu">
@@ -630,6 +638,7 @@ class AdminMenuUIHandler {
 	<li class="line_break"></li>
 	<li class="refresh"><a onClick="return refresh(this)">Refresh</a></li>
 	<li class="properties"><a onClick="return showProperties(this)">Properties</a></li>
+	' . $vendor_frameworks_menus . '
 </ul>
 
 <ul id="presentation_evc_group_context_menu" class="mycontextmenu">
@@ -759,6 +768,20 @@ class AdminMenuUIHandler {
 	<li class="diff_file"><a onClick="return goTo(this, \'diff_file_url\', event)">Diff File</a></li>
 	<li class="line_break"></li>
 	<li class="properties"><a onClick="return showProperties(this)">Properties</a></li>
+</ul>
+
+<ul id="presentation_webroot_folder_context_menu" class="mycontextmenu">
+	<li class="create_folder"><a onClick="return manageFile(this, \'create_url\', \'create_folder\', managePresentationFile)">Add Folder</a></li>
+	<li class="create_file"><a onClick="return manageFile(this, \'create_url\', \'create_file\', [managePresentationFile, triggerFileNodeAfterCreateFile])">Add File</a></li>
+	<li class="line_break"></li>
+	<li class="create_laravel"><a onClick="return goTo(this, \'create_laravel_url\', event)">Add Laravel Project</a></li>
+	<li class="line_break"></li>
+	<li class="paste"><a onClick="return manageFile(this, \'paste_url\', \'paste\')">Paste</a></li>
+	<li class="line_break"></li>
+	<li class="upload"><a onClick="return goTo(this, \'upload_url\', event)">Upload Files</a></li>
+	<li class="download"><a onClick="return goToNew(this, \'download_url\', event)">Download Folder</a></li>
+	<li class="line_break"></li>
+	<li class="refresh"><a onClick="return refresh(this)">Refresh</a></li>
 </ul>
 
 <ul id="presentation_webroot_file_context_menu" class="mycontextmenu">
@@ -1146,7 +1169,7 @@ class AdminMenuUIHandler {
 			
 			$li_props = array();
 			
-			$li_props["folder"]["get_sub_files_url"] = $project_url_prefix . "admin/get_sub_files?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query_with_permission&path=#path#&item_type=$item_type";
+			$li_props["folder"]["get_sub_files_url"] = $project_url_prefix . "admin/get_sub_files?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query_with_permission&path=#path#&item_type=$item_type&vendor_framework=#vendor_framework#";
 			$li_props["folder"]["attributes"]["rename_url"] = $project_url_prefix . "admin/manage_file?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query_with_permission&path=#path#&action=#action#&item_type=$item_type&extra=#extra#";
 			$li_props["folder"]["attributes"]["remove_url"] = $project_url_prefix . "admin/manage_file?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query_with_permission&path=#path#&action=#action#&item_type=$item_type";
 			$li_props["folder"]["attributes"]["create_url"] = $li_props["folder"]["attributes"]["rename_url"];
@@ -1371,6 +1394,7 @@ class AdminMenuUIHandler {
 				$li_props["map"]["attributes"]["remove_url"] = $project_url_prefix . "phpframework/dataaccess/remove_map?bean_name=$bean_name&bean_file_name=$bean_file_name&item_type=$item_type&path=#path#&obj=#hbn_obj_id#&map=#node_id#&query_type=#query_type#&relationship_type=#relationship_type#";
 			}
 			else if ($item_type == "businesslogic") {
+				$li_props[$item_type]["attributes"]["create_laravel_url"] = $project_url_prefix . "phpframework/businesslogic/create_business_logic_laravel?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";
 				$li_props[$item_type]["attributes"]["create_automatically_url"] = $has_automatic_ui ? $project_url_prefix . "phpframework/businesslogic/create_business_logic_objs_automatically?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#" : "";
 				
 				$li_props["folder"]["attributes"]["add_service_obj_url"] = $project_url_prefix . "phpframework/businesslogic/edit_service?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";
@@ -1380,6 +1404,8 @@ class AdminMenuUIHandler {
 				$li_props["folder"]["attributes"]["save_service_func_url"] = $project_url_prefix . "phpframework/businesslogic/save_function?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";
 				$li_props["folder"]["attributes"]["edit_service_func_url"] = $project_url_prefix . "phpframework/businesslogic/edit_function?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#functions.php&function=#extra#";
 				$li_props["folder"]["attributes"]["create_automatically_url"] = $li_props[$item_type]["attributes"]["create_automatically_url"];
+				$li_props["folder"]["attributes"]["laravel_preview_url"] = $project_url_prefix . "phpframework/cms/laravel/preview_laravel_project?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";
+				$li_props["folder"]["attributes"]["laravel_terminal_url"] = $project_url_prefix . "phpframework/cms/laravel/terminal_laravel_project?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";
 				
 				$li_props["file"]["attributes"]["edit_raw_file_url"] = $project_url_prefix . "phpframework/businesslogic/edit_file?bean_name=$bean_name&bean_file_name=$bean_file_name&item_type=$item_type&path=#path#";
 				$li_props["file"]["attributes"]["add_service_obj_url"] = $li_props["folder"]["attributes"]["add_service_obj_url"];
@@ -1527,11 +1553,15 @@ class AdminMenuUIHandler {
 				$li_props["entities_folder"]["attributes"]["test_project_url"] = $li_props["project"]["attributes"]["test_project_url"];
 				$li_props["entities_folder"]["attributes"]["project_with_auto_view"] = "0"; //This will be set in the file_manager.js with the real value
 				
-				//bc of the folders and sub_folder inside of the entities
+				$li_props["webroot_folder"]["attributes"]["create_laravel_url"] = $project_url_prefix . "phpframework/cms/laravel/create_laravel_project?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";
+				
+				//bc of the folders and sub_folder inside of the entities or webroot
 				$li_props["folder"]["attributes"]["create_automatically_url"] = $li_props["entities_folder"]["attributes"]["create_automatically_url"];
 				$li_props["folder"]["attributes"]["create_uis_diagram_url"] = $li_props["entities_folder"]["attributes"]["create_uis_diagram_url"];
 				$li_props["folder"]["attributes"]["view_project_url"] = $li_props["project"]["attributes"]["view_project_url"];
 				$li_props["folder"]["attributes"]["test_project_url"] = $li_props["project"]["attributes"]["test_project_url"];
+				$li_props["folder"]["attributes"]["laravel_preview_url"] = $project_url_prefix . "phpframework/cms/laravel/preview_laravel_project?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";
+				$li_props["folder"]["attributes"]["laravel_terminal_url"] = $project_url_prefix . "phpframework/cms/laravel/terminal_laravel_project?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#";
 				
 				$li_props["utils_folder"]["attributes"]["add_class_obj_url"] = $project_url_prefix . "phpframework/admin/edit_file_class?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#&item_type=presentation";
 				$li_props["utils_folder"]["attributes"]["save_class_obj_url"] = $project_url_prefix . "phpframework/admin/save_file_class?bean_name=$bean_name&bean_file_name=$bean_file_name$filter_by_layout_url_query&path=#path#&item_type=presentation";
@@ -1663,9 +1693,14 @@ class AdminMenuUIHandler {
 		if (!empty($item_id) && !empty($item_menu)) 
 			$html .= ' properties_id="' . $item_id . '"';
 		
+		$folder_type = isset($properties["folder_type"]) ? $properties["folder_type"] : null;
+		$vendor_framework = isset($properties["vendor_framework"]) ? $properties["vendor_framework"] : null;
+		
 		if (!empty($main_layer_properties["ui"][$item_type]["attributes"])) {
 			foreach ($main_layer_properties["ui"][$item_type]["attributes"] as $attr_name => $attr_value) {
 				$attr_value = str_replace("#path#", $file_path, $attr_value);
+				$attr_value = str_replace("#folder_type#", $folder_type, $attr_value);
+				$attr_value = str_replace("#vendor_framework#", $vendor_framework, $attr_value);
 				
 				if ($item_type == "db_driver" || $item_type == "db_diagram" || $item_type == "db_tables" || $item_type == "db_views" || $item_type == "db_procedures" || $item_type == "db_functions" || $item_type == "db_events" || $item_type == "db_triggers") {
 					$bean_name = !empty($properties["bean_name"]) ? $properties["bean_name"] : "";
@@ -1725,11 +1760,10 @@ class AdminMenuUIHandler {
 		
 		$url = false;
 		if (isset($main_layer_properties["ui"][$item_type]["get_sub_files_url"])) {
-			$folder_type = isset($properties["folder_type"]) ? $properties["folder_type"] : null;
-
 			$url = $main_layer_properties["ui"][$item_type]["get_sub_files_url"];
 			$url = str_replace("#path#", $file_path, $url);
 			$url = str_replace("#folder_type#", $folder_type, $url);
+			$url = str_replace("#vendor_framework#", $vendor_framework, $url);
 		
 			if ($item_type == "db_driver" || $item_type == "db_diagram" || $item_type == "db_tables" || $item_type == "db_views" || $item_type == "db_procedures" || $item_type == "db_functions" || $item_type == "db_events" || $item_type == "db_triggers" || $item_type == "table") {
 				$bean_name = !empty($properties["bean_name"]) ? $properties["bean_name"] : "";

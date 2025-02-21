@@ -2930,8 +2930,10 @@ class PHPCodePrintingHandler {
 					$file_path = $path . "/" . $file;
 					
 					if (is_dir($file_path)) {
-						$sub_files = self::getAllFolderFiles($file_path, $recursively);
-						$files = array_merge($files, $sub_files);
+						if ($recursively) {
+							$sub_files = self::getAllFolderFiles($file_path, $recursively);
+							$files = array_merge($files, $sub_files);
+						}
 					}
 					else {
 						$extension = pathinfo($file_path, PATHINFO_EXTENSION);

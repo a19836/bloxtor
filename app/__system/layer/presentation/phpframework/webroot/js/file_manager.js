@@ -187,12 +187,14 @@ function prepareFolderNodes(ul, data, main_layer_properties, parent_path) {
 				var ui_props = main_layer_properties && main_layer_properties.ui && main_layer_properties.ui[item_type] ? main_layer_properties.ui[item_type] : {};
 				
 				var folder_type = properties && properties.folder_type ? properties.folder_type : "";
+				var vendor_framework = properties && properties.vendor_framework ? properties.vendor_framework : "";
 				
 				if (ui_props.attributes) {
 					for (var attr_name in ui_props.attributes) {
 						var attr_value = ui_props.attributes[attr_name];
 						attr_value = attr_value.replace("#path#", file_path);
 						attr_value = attr_value.replace("#folder_type#", folder_type);
+						attr_value = attr_value.replace("#vendor_framework#", vendor_framework);
 						
 						if (item_type == "db_driver" || item_type == "db_diagram" || item_type == "db_tables" || item_type == "db_views" || item_type == "db_procedures" || item_type == "db_functions" || item_type == "db_events" || item_type == "db_triggers") {
 							var bean_name = properties && properties.bean_name ? properties.bean_name : "";
@@ -256,6 +258,7 @@ function prepareFolderNodes(ul, data, main_layer_properties, parent_path) {
 					url = ui_props.get_sub_files_url;
 					url = url.replace("#path#", file_path);
 					url = url.replace("#folder_type#", folder_type);
+					url = url.replace("#vendor_framework#", vendor_framework);
 					
 					if (item_type == "db_driver" || item_type == "db_diagram" || item_type == "db_tables" || item_type == "db_views" || item_type == "db_procedures" || item_type == "db_functions" || item_type == "db_events" || item_type == "db_triggers" || item_type == "table") {
 						var bean_name = properties && properties.bean_name ? properties.bean_name : "";

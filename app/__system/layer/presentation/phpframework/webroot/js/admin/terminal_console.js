@@ -3,8 +3,10 @@ var hostname = "";
 var current_dir = "";
 var previous_dir = "";
 var default_dir = "";
+var hide_dir_prefix = "";
 var commands_history = [];
 var current_command = 0;
+var on_load_shell_func = null;
 
 $(function () {
 	if (is_allowed) {
@@ -41,7 +43,6 @@ function initShell() {
 		dataType : "text",
 		success : function(data, textStatus, jqXHR) {
 			//console.log(data);
-			loading_elm.hide();
 			
 			data = decodeURI(data);
 			var parts = data.split("<br>");
@@ -50,12 +51,22 @@ function initShell() {
 			current_dir =  parts[2].replace(new RegExp("&sol;", "g"), "/").replace(new RegExp("&lowbar;", "g"), "_");
 			default_dir = current_dir;
 			
-			$(".terminal_console > .input > form > .username").html("<div class='user_id' style='display: inline;'>" + username + "@" + hostname + ":</div><span class='user_dir'>" + current_dir + "</span>");
+			var current_dir_str = hide_dir_prefix && current_dir.substr(0, hide_dir_prefix.length) == hide_dir_prefix ? "..../" + current_dir.substr(hide_dir_prefix.length) : current_dir;
+			
+			$(".terminal_console > .input > form > .username").html("<div class='user_id' style='display: inline;'>" + username + "@" + hostname + ":</div><span class='user_dir'>" + current_dir_str + "</span>");
 			
 			updateInputWidth();
+			
+			if (typeof on_load_shell_func == "function")
+				on_load_shell_func();
+			
+			loading_elm.hide();
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			loading_elm.hide();
+			
+			if (typeof on_load_shell_func == "function")
+				on_load_shell_func();
 		}
 	});
 }
@@ -119,12 +130,17 @@ function sendCommand() {
 				previous_dir = current_dir;
 				current_dir = parts[0].replace(new RegExp("&sol;", "g"), "/").replace(new RegExp("&lowbar;", "g"), "_");
 				
-				output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + ":</span><span class='user_dir'>" + original_dir + "</span># " + original_command + "</div>");
+				var original_dir_str = hide_dir_prefix && original_dir.substr(0, hide_dir_prefix.length) == hide_dir_prefix ? "..../" + original_dir.substr(hide_dir_prefix.length) : original_dir;
+				var current_dir_str = hide_dir_prefix && current_dir.substr(0, hide_dir_prefix.length) == hide_dir_prefix ? "..../" + current_dir.substr(hide_dir_prefix.length) : current_dir;
 				
-				username_elm.html("<div class='user_id' style='display: inline;'>" + username + "@" + hostname + ":</div><span class='user_dir'>" + current_dir + "</span>");
+				output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + ":</span><span class='user_dir'>" + original_dir_str + "</span># " + original_command + "</div>");
+				
+				username_elm.html("<div class='user_id' style='display: inline;'>" + username + "@" + hostname + ":</div><span class='user_dir'>" + current_dir_str + "</span>");
 			}
 			else {
-				output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + ":</span><span class='user_dir'>" + current_dir + "</span># " + original_command + "</div><div>" + data.replace(new RegExp("<br><br>$"), "<br>") + "</div>");
+				var current_dir_str = hide_dir_prefix && current_dir.substr(0, hide_dir_prefix.length) == hide_dir_prefix ? "..../" + current_dir.substr(hide_dir_prefix.length) : current_dir;
+				
+				output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + ":</span><span class='user_dir'>" + current_dir_str + "</span># " + original_command + "</div><div>" + data.replace(new RegExp("<br><br>$"), "<br>") + "</div>");
 				
 				output_elm.scrollTop(output_elm[0].scrollHeight);
 			}
@@ -177,7 +193,9 @@ function uploadFile() {
 			}
 		});
 		
-		output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + ":</span><span class='user_dir'>" + current_dir + "</span># Uploading " + files[0].name + "...</div>");
+		var current_dir_str = hide_dir_prefix && current_dir.substr(0, hide_dir_prefix.length) == hide_dir_prefix ? "..../" + current_dir.substr(hide_dir_prefix.length) : current_dir;
+		
+		output_elm.append("<div><span class='user_id'>" + username + "@" + hostname + ":</span><span class='user_dir'>" + current_dir_str + "</span># Uploading " + files[0].name + "...</div>");
 	}
 }
 

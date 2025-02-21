@@ -284,6 +284,9 @@
 .mycontextmenu .create_sql::after {content:"\f0e8";}
 .mycontextmenu .obj::before {content:"\f1c0"; color:#999;}
 .mycontextmenu .obj::after {content:"\f1b2"; color:#555;}
+.mycontextmenu .create_laravel::before {content:"\f3bd"; font:var(--fa-font-brands) !important; font-size:12pt !important;}
+.mycontextmenu .laravel_preview::before {content:"\f3bd"; font:var(--fa-font-brands) !important; font-size:12pt !important;}
+.mycontextmenu .laravel_terminal::before {content:"\f3bd"; font:var(--fa-font-brands) !important; font-size:12pt !important;}
 .mycontextmenu .create_automatically::before {content:"\f079";}
 .mycontextmenu .create_uis_diagram::before {content:"\f079";}
 .mycontextmenu .manage_includes::before {content:"\f5ee";}
@@ -342,6 +345,9 @@
 .mycontextmenu .type a input { width:35px; font:inherit; color:inherit; background:inherit; text-align:center; }
 .mycontextmenu .type a input::placeholder { color:inherit; }
 .mycontextmenu .type a input[disabled] { opacity:.3; cursor:not-allowed; }
+
+.mycontextmenu li[vendor_framework] {display:none;}
+.mycontextmenu[vendor_framework=laravel] li[vendor_framework=laravel] {display:block;}
 
 /* Popups */
 .choose_available_tool_popup,

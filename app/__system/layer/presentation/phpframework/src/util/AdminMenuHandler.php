@@ -9,6 +9,7 @@ include_once get_lib("org.phpframework.layer.dataaccess.HibernateDataAccessLayer
 include_once get_lib("org.phpframework.layer.businesslogic.BusinessLogicLayer");
 include_once get_lib("org.phpframework.layer.presentation.PresentationLayer");
 include_once get_lib("org.phpframework.util.FilePermissionHandler");
+include_once get_lib("org.phpframework.cms.VendorFrameworkHandler");
 include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
 include_once $EVC->getUtilPath("LayoutTypeProjectUIHandler");
 
@@ -1151,6 +1152,16 @@ class AdminMenuHandler {
 		
 		$reserved_business_logic_file_names = array("modules.xml", "services.xml", "cache.xml", "cache_handler.xml", "CommonService.php"); //all these files can be editable!
 		
+		//PREPARING IF LARAVEL
+		$vendor_framework = VendorFrameworkHandler::getVendorFrameworkFolder($absolute_path);
+		
+		if ($vendor_framework) {
+			$modules["properties"]["item_class"] = $vendor_framework;
+			$modules["properties"]["vendor_framework"] = $vendor_framework;
+		}
+		else if (!empty($options["vendor_framework"]))
+			$vendor_framework = $options["vendor_framework"];
+		
 		//PREPARING SERVICES ALIAS
 		$services_file_name = $BusinessLogicLayer->getServicesFileNameSetting();
 		if (!empty($services_file_name)) 
@@ -1172,12 +1183,22 @@ class AdminMenuHandler {
 						
 						if ($recursive_level > 0 || $recursive_level == -1) 
 							$sub_modules = self::getBeanBusinessLogicModules($BusinessLogicLayer, $path . $file . "/", $rl, $aliases);
-						else 
+						else {
 							$sub_modules = array("properties" => array("path" => $path . $file . "/"));
+							$sub_vendor_framework = VendorFrameworkHandler::getVendorFrameworkFolder($file_path);
+							
+							if ($sub_vendor_framework) {
+								$sub_modules["properties"]["item_class"] = $sub_vendor_framework;
+								$sub_modules["properties"]["vendor_framework"] = $sub_vendor_framework;
+							}
+						}
 						
 						$sub_modules["properties"]["item_type"] = $is_common_folder ? "cms_common" : ($is_cms_modules_folder ? "cms_module" : ($is_cms_programs_folder ? "cms_program" : ($is_cms_resources_folder ? "cms_resource" : "folder")));
 						$sub_modules["properties"]["item_id"] = self::getItemId($file_path);
 						$sub_modules["properties"]["item_menu"] = $item_menu;
+						
+						if (!empty($options["vendor_framework"]))
+							$sub_modules["properties"]["vendor_framework"] = $options["vendor_framework"];
 						
 						if (isset($aliases[ $file_path ])) 
 							$sub_modules["properties"]["alias"] = $aliases[ $file_path ];
@@ -1380,6 +1401,25 @@ class AdminMenuHandler {
 				}
 			}
 			closedir($dir);
+			
+			if ($vendor_framework) {
+				$options = $options ? $options : array();
+				$options["hidden"] = true;
+				$sub_modules = self::getSubFiles($BusinessLogicLayer, $path, $recursive_level, "", $options);
+				
+				if ($sub_modules) {
+					$discard_types = array("css_file", "js_file", "img_file", "undefined_file");
+					
+					foreach ($sub_modules as $file_key => $file_props) {
+						if (!empty($modules[$file_key]) && $file_props["properties"]["item_type"] == "file" && !preg_match("/Service\.php$/", $file_props["properties"]["path"]))
+							$modules[$file_key] = $file_props;
+						else if (empty($modules[$file_key]) || in_array($modules[$file_key]["properties"]["item_type"], $discard_types)) {
+							$file_props["properties"]["item_type"] = "undefined_file";
+							$modules[$file_key] = $file_props;
+						}
+					}
+				}
+			}
 		}
 		
 		ksort($modules);
@@ -1993,15 +2033,23 @@ class AdminMenuHandler {
 		
 		$absolute_path = $path_prefix . $path;
 		$rl = $recursive_level > 0 ? $recursive_level - 1 : $recursive_level;
+		$show_hidden_files = $options && !empty($options["hidden"]);
 		
+		//prepare laravel
+		$vendor_framework = VendorFrameworkHandler::getVendorFrameworkFolder($absolute_path);
+		
+		if ($vendor_framework || !empty($options["vendor_framework"]))
+			$show_hidden_files = true;
+		
+		//prepare sub files
 		$sub_files = array();
 		
 		if ( ($recursive_level > 0 || $recursive_level == -1) && is_dir($absolute_path) && ($dir = opendir($absolute_path)) ) {
 			while( ($file = readdir($dir)) !== false) {
-				if (substr($file, 0, 1) != ".") {
+				if ($file != "." && $file != ".." && (substr($file, 0, 1) != "." || $show_hidden_files)) {
 					$file_path = $absolute_path . $file;
 					
-					if (is_dir($file_path)) 
+					if (is_dir($file_path))
 						$item_type = "folder";
 					else {
 						$extension = strtolower( pathinfo($file_path, PATHINFO_EXTENSION) );
@@ -2034,12 +2082,25 @@ class AdminMenuHandler {
 						"item_type" => $item_type,
 						"item_id" => self::getItemId($file_path),
 						"folder_type" => $folder_type,
-						"item_menu" => self::getFileItemMenu($file_path)
+						"item_menu" => self::getFileItemMenu($file_path),
 					);
 					
 					if (is_dir($file_path)) {
 						$properties["path"] = $path . $file . "/";
 						$file_key = $file;
+						
+						//prepare laravel sub folder
+						$sub_vendor_framework = VendorFrameworkHandler::getVendorFrameworkFolder($file_path);
+						
+						if ($sub_vendor_framework) {
+							$properties["item_class"] = $sub_vendor_framework;
+							$properties["vendor_framework"] = $sub_vendor_framework;
+						}
+						
+						if ($show_hidden_files || $sub_vendor_framework) {
+							$options = $options ? $options : array();
+							$options["hidden"] = true;
+						}
 						
 						//fix issue when exists multiple files with the same name
 						self::prepareListKeyIfAlreadyExists($file_key, $sub_files);

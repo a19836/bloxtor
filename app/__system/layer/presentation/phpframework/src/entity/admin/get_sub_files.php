@@ -10,6 +10,7 @@ $item_type = isset($_GET["item_type"]) ? $_GET["item_type"] : null;
 $folder_type = isset($_GET["folder_type"]) ? $_GET["folder_type"] : null;
 $filter_by_layout = isset($_GET["filter_by_layout"]) ? $_GET["filter_by_layout"] : null;
 $filter_by_layout_permission = isset($_GET["filter_by_layout_permission"]) ? $_GET["filter_by_layout_permission"] : null;
+$vendor_framework = isset($_GET["vendor_framework"]) ? $_GET["vendor_framework"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
@@ -69,6 +70,7 @@ if (empty($layers)) {*/
 		$layer_path_object_id = $layer_object_id . $path . "/";
 		$options = array(
 			"all" => true, //in case of business logic or presentation util files, load hidden methods too
+			"vendor_framework" => $vendor_framework
 		);
 		
 		$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($layer_path_object_id, "layer", "access");

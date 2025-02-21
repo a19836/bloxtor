@@ -355,7 +355,9 @@ function initContextContextMenu(elm, request_data) { //business logic
 	cms_resources_folder.parent().addClass("link");
 	zip_files.parent().addClass("link");
 	
-	addLiContextMenu(folders.parent(), "business_logic_group_context_menu", {callback: onContextContextMenu});
+	var vendor_frameworks_by_item_id = getVendorFrameworksByItemId(request_data);
+	
+	addLiContextMenu(folders.parent(), "business_logic_group_context_menu", {callback: onContextContextMenu, vendor_frameworks_by_item_id: vendor_frameworks_by_item_id});
 	addLiContextMenu(files.parent(), "business_logic_file_context_menu", {callback: onContextContextMenu});
 	addLiContextMenu(objs.parent(), "business_logic_object_context_menu", {callback: onContextContextMenu});
 	addLiContextMenu(methods.parent(), "item_context_menu", {callback: onContextContextMenu});
@@ -371,11 +373,12 @@ function initContextContextMenu(elm, request_data) { //business logic
 function initPresentationContextMenu(elm, request_data) {
 	var is_entity_sub_folders = elm.parents("li").children("a").children("i.entities_folder").length > 0; //elm.parent().closest('[data-jstree=\'{"icon":"entities_folder"}\']').length > 0;
 	var is_util_sub_folders = elm.parents("li").children("a").children("i.utils_folder").length > 0; //elm.parent().closest('[data-jstree=\'{"icon":"utils_folder"}\']').length > 0;
+	var is_webroot_sub_folders = elm.parents("li").children("a").children("i.webroot_folder").length > 0; //elm.parent().closest('[data-jstree=\'{"icon":"webroot_folder"}\']').length > 0;
 	
 	var projects_common = elm.find("li i.project_common");
 	var project_folders = elm.find("li i.project_folder");
 	var projects = elm.find("li i.project");
-	var folders = is_entity_sub_folders || is_util_sub_folders ? null : elm.find("li i.folder");
+	var folders = is_entity_sub_folders || is_util_sub_folders || is_webroot_sub_folders ? null : elm.find("li i.folder");
 	var files = elm.find("li i.file");
 	var entity_files = elm.find("li i.entity_file");
 	var entities_folder = elm.find("li i.entities_folder");
@@ -393,6 +396,7 @@ function initPresentationContextMenu(elm, request_data) {
 	var controller_files = elm.find("li i.controller_file");
 	var controllers_folder = elm.find("li i.controllers_folder");
 	var webroot_folder = elm.find("li i.webroot_folder");
+	var webroot_sub_folders = is_webroot_sub_folders ? elm.find("li i.folder") : null;
 	var webroot_files = elm.find("li i.webroot_file");
 	var css_files = elm.find("li i.css_file");
 	var js_files = elm.find("li i.js_file");
@@ -434,6 +438,7 @@ function initPresentationContextMenu(elm, request_data) {
 	controller_files.parent().addClass("link");
 	controllers_folder.parent().addClass("link");
 	webroot_folder.parent().addClass("link");
+	is_webroot_sub_folders && webroot_sub_folders.parent().addClass("link");
 	webroot_files.parent().addClass("link");
 	css_files.parent().addClass("link");
 	js_files.parent().addClass("link");
@@ -453,6 +458,8 @@ function initPresentationContextMenu(elm, request_data) {
 	objs.parent().addClass("link");
 	methods.parent().addClass("link");
 	functions.parent().addClass("link");
+	
+	var vendor_frameworks_by_item_id = getVendorFrameworksByItemId(request_data);
 	
 	addLiContextMenu(projects_common.parent(), "presentation_project_common_context_menu", {callback: onPresentationContextMenu});
 	addLiContextMenu(project_folders.parent(), "presentation_project_group_context_menu", {callback: onPresentationContextMenu});
@@ -474,7 +481,8 @@ function initPresentationContextMenu(elm, request_data) {
 	addLiContextMenu(configs_folder.parent(), "presentation_evc_group_context_menu", {callback: onPresentationContextMenu});
 	addLiContextMenu(controller_files.parent(), "presentation_file_context_menu", {callback: onPresentationContextMenu});
 	addLiContextMenu(controllers_folder.parent(), "presentation_evc_group_context_menu", {callback: onPresentationContextMenu});
-	addLiContextMenu(webroot_folder.parent(), "presentation_evc_group_context_menu", {callback: onPresentationContextMenu});
+	addLiContextMenu(webroot_folder.parent(), "presentation_webroot_folder_context_menu", {callback: onPresentationContextMenu});
+	is_webroot_sub_folders && addLiContextMenu(webroot_sub_folders.parent(), "presentation_group_context_menu", {callback: onPresentationContextMenu, vendor_frameworks_by_item_id: vendor_frameworks_by_item_id});
 	addLiContextMenu(webroot_files.parent(), "presentation_webroot_file_context_menu", {callback: onPresentationContextMenu});
 	addLiContextMenu(css_files.parent(), "presentation_webroot_file_context_menu", {callback: onPresentationContextMenu});
 	addLiContextMenu(js_files.parent(), "presentation_webroot_file_context_menu", {callback: onPresentationContextMenu});
@@ -846,13 +854,22 @@ function onHibernateContextMenu(target, contextmenu, originalEvent) {
 
 function onContextContextMenu(target, contextmenu, originalEvent) {
 	var a = $(originalEvent.target.parentNode);
+	var create_laravel_url = a.attr("create_laravel_url");
 	var create_automatically_url = a.attr("create_automatically_url");
+	
+	if (create_laravel_url)
+		contextmenu.children(".create_laravel").show();
+	else
+		contextmenu.children(".create_laravel").hide().prev(".line_break").hide();
 	
 	if (create_automatically_url)
 		contextmenu.children(".create_automatically").show();
 	else
 		contextmenu.children(".create_automatically").hide().prev(".line_break").hide();
 	
+	contextmenu.find(".create_laravel a").attr("create_laravel_url", create_laravel_url);
+	contextmenu.find(".laravel_preview a").attr("laravel_preview_url", a.attr("laravel_preview_url"));
+	contextmenu.find(".laravel_terminal a").attr("laravel_terminal_url", a.attr("laravel_terminal_url"));
 	contextmenu.find(".create_automatically a").attr("create_automatically_url", create_automatically_url);
 	contextmenu.find(".service_obj a").attr("add_service_obj_url", a.attr("add_service_obj_url"));
 	contextmenu.find(".service_obj a").attr("save_service_obj_url", a.attr("save_service_obj_url"));
@@ -865,19 +882,22 @@ function onContextContextMenu(target, contextmenu, originalEvent) {
 	contextmenu.find(".service_method a").attr("edit_service_method_url", a.attr("edit_service_method_url"));
 	contextmenu.find(".manage_includes a").attr("manage_includes_url", a.attr("manage_includes_url"));
 	
+	onVendorFrameworkContextMenu(target, contextmenu, originalEvent);
+	
 	return onContextMenu(target, contextmenu, originalEvent);
 }
 
 function onPresentationContextMenu(target, contextmenu, originalEvent) {
 	var a = $(originalEvent.target.parentNode);
+	var create_laravel_url = a.attr("create_laravel_url");
 	var create_automatically_url = a.attr("create_automatically_url");
 	var create_uis_diagram_url = a.attr("create_uis_diagram_url");
 	var inside_webroot = a.parent().closest('[data-jstree=\'{"icon":"webroot_folder"}\'], .mytree').is('[data-jstree=\'{"icon":"webroot_folder"}\']');
 	
-	if (inside_webroot)
-		contextmenu.children(".open_file").show();
+	if (create_laravel_url)
+		contextmenu.children(".create_laravel").show();
 	else
-		contextmenu.children(".open_file").hide();
+		contextmenu.children(".create_laravel").hide().prev(".line_break").hide();
 	
 	if (create_automatically_url)
 		contextmenu.children(".create_automatically").show();
@@ -892,8 +912,16 @@ function onPresentationContextMenu(target, contextmenu, originalEvent) {
 	if (!create_automatically_url && !create_uis_diagram_url)
 		contextmenu.children(".create_automatically").prev(".line_break").hide();
 		
+	if (inside_webroot)
+		contextmenu.children(".open_file").show();
+	else
+		contextmenu.children(".open_file").hide();
+	
 	contextmenu.find(".manage_wordpress a").attr("manage_wordpress_url", a.attr("manage_wordpress_url"));
 	
+	contextmenu.find(".create_laravel a").attr("create_laravel_url", create_laravel_url);
+	contextmenu.find(".laravel_preview a").attr("laravel_preview_url", a.attr("laravel_preview_url"));
+	contextmenu.find(".laravel_terminal a").attr("laravel_terminal_url", a.attr("laravel_terminal_url"));
 	contextmenu.find(".create_automatically a").attr("create_automatically_url", create_automatically_url);
 	contextmenu.find(".create_uis_diagram a").attr("create_uis_diagram_url", create_uis_diagram_url);
 	contextmenu.find(".install_template a").attr("install_template_url", a.attr("install_template_url"));
@@ -920,6 +948,8 @@ function onPresentationContextMenu(target, contextmenu, originalEvent) {
 	contextmenu.find(".class_method a").attr("save_class_method_url", a.attr("save_class_method_url"));
 	contextmenu.find(".class_method a").attr("edit_class_method_url", a.attr("edit_class_method_url"));
 	contextmenu.find(".manage_includes a").attr("manage_includes_url", a.attr("manage_includes_url"));
+	
+	onVendorFrameworkContextMenu(target, contextmenu, originalEvent);
 	
 	return onContextMenu(target, contextmenu, originalEvent);
 }
@@ -956,6 +986,20 @@ function onTestUnitContextMenu(target, contextmenu, originalEvent) {
 	contextmenu.find(".manage_test_units a").attr("manage_test_units_url", a.attr("manage_test_units_url"));
 	
 	return onContextMenu(target, contextmenu, originalEvent);
+}
+
+function onVendorFrameworkContextMenu(target, contextmenu, originalEvent) {
+	//toggle vendor framework menus
+	var a = $(originalEvent.target.parentNode);
+	var context_menu_options = target.data("context_menu_options");
+	var vendor_frameworks_by_item_id = $.isPlainObject(context_menu_options) ? context_menu_options["vendor_frameworks_by_item_id"] : null;
+	var properties_id= a.attr("properties_id");
+	var vendor_framework = properties_id && $.isPlainObject(vendor_frameworks_by_item_id) ? vendor_frameworks_by_item_id[properties_id] : "";
+	
+	if (vendor_framework)
+		contextmenu.attr("vendor_framework", vendor_framework)
+	else
+		contextmenu.removeAttr("vendor_framework");
 }
 
 function onContextMenu(target, contextmenu, originalEvent) {
@@ -1015,6 +1059,24 @@ function onContextMenu(target, contextmenu, originalEvent) {
 	}
 	
 	return false;
+}
+
+function getVendorFrameworksByItemId(request_data) {
+	var items = {};
+	
+	if ($.isPlainObject(request_data))
+		for (var file_key in request_data) {
+			var file_data = request_data[file_key];
+			
+			if ($.isPlainObject(file_data) && $.isPlainObject(file_data["properties"]) && file_data["properties"].hasOwnProperty("vendor_framework") && file_data["properties"]["vendor_framework"]) {
+				var item_id = file_data["properties"]["item_id"];
+				var vendor_framework = file_data["properties"]["vendor_framework"];
+				
+				items[item_id] = vendor_framework;
+			}
+		}
+	
+	return items;
 }
 
 //Any change in this method should be done too in the initDBTablesSorting method
