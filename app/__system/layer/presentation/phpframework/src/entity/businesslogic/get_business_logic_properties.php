@@ -67,15 +67,41 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 			$type = isset($args["type"]) ? $args["type"] : null;
 			
 			if ($name) {
+				$sub_names = null;
+				
 				if (strpos($name, "[") !== false) {
-					preg_match_all("/^([^\[]*)\[([^\[]*)\]/u", $name, $matches, PREG_PATTERN_ORDER); //'/u' means converts to unicode.
+					preg_match_all("/^([^\[]*)((\[[^\[]*\])+)/u", $name, $matches, PREG_PATTERN_ORDER); //'/u' means converts to unicode.
 					
-					if (!empty($matches[0]))
-						$name = $matches[2][0];
+					if (!empty($matches[0])) {
+						$names = preg_replace("/(^\[|\]$)/", "", $matches[2][0]);
+						$parts = explode("][", $names);
+						$name = array_shift($parts);
+						$sub_names = $parts;
+						//print_r($matches);
+					}
 				}
 				
-				if ($name && !isset($props[$name]))
-					$props[$name] = $type && !in_array($type, $numeric_types) ? "string" : "";
+				if ($name) {
+					$prop_type = $type && !in_array($type, $numeric_types) ? "string" : "";
+					
+					if (!isset($props[$name]))
+						$props[$name] = $prop_type;
+					
+					if ($sub_names) {
+						$prop_obj = $prop_type;
+						
+						for ($j = count($sub_names) - 1; $j >= 0; $j--) {
+							$sub_name = $sub_names[$j];
+							
+							$prop_obj = array($sub_name => $prop_obj);
+						}
+						
+						if (is_array($props[$name]))
+							$props[$name] = array_merge($props[$name], $prop_obj);
+						else
+							$props[$name] = $prop_obj;
+					}
+				}
 			}
 		}
 	}

@@ -171,10 +171,6 @@ class LaravelProjectHandler {
 		return $ret;
 	}
 	
-	/**
-	 * @param (name=data[class], not_null=1, sanitize_html=1)
-	 * @param (name=data[method], not_null=1, sanitize_html=1)
-	 */
 	public function callController($class_name, $method_name) {
 		if (!file_exists($this->laravel_project_path . "/app/Http/Controllers/" . $class_name . ".php"))
 			launch_exception(new Exception("Laravel class: '$class_name' doesn't exists in 'app/Http/Controllers' folder!"));

@@ -2635,20 +2635,44 @@ function updateBusinessLogicParams(main_div, bean_file_name, bean_name, file_pat
 	var parameters_type = params_elm.children(".parameters_type");
 	parameters_type.val("array");
 	CallBusinessLogicTaskPropertyObj.onChangeParametersType(parameters_type[0]);
+	
+	drawBusinessLogicParamsItems(parameters, attrs);
+}
 
-	var add_item = parameters.children(".items").first().children(".item_add");
-	var ul = parameters.children("ul");
+function drawBusinessLogicParamsItems(array_items, attrs) {
+	var items = array_items.children(".items").first();
+	var add_item = items.children(".item_add");
+	var add_group = items.children(".group_add");
+	var ul = array_items.children("ul");
 
 	for (var pname in attrs) {
 		var ptype = attrs[pname];
-	
 		var item = ul.children(".item").last();
-	
-		item.children(".key").val(pname);
-		item.children(".key_type").val("string");
-		item.children(".value").val("");
-		item.children(".value_type").val(ptype);
-	
+		
+		if ($.isPlainObject(ptype)) {
+			if (item[0])
+				item.remove();
+			
+			add_group.click();
+			item = ul.children("li:not(.item)").last();
+			var item_items = item.children(".items").first();
+			item_items.children(".key").val(pname);
+			item_items.children(".key_type").val("string");
+			
+			drawBusinessLogicParamsItems(item, ptype);
+		}
+		else {
+			if (!item[0]) {
+				add_item.click();
+				item = ul.children(".item").last();
+			}
+			
+			item.children(".key").val(pname);
+			item.children(".key_type").val("string");
+			item.children(".value").val("");
+			item.children(".value_type").val(ptype);
+		}
+		
 		add_item.click();
 	}
 

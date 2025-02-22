@@ -17,7 +17,8 @@ class LaravelProjectService extends #COMMON_SERVICE# {
 	/**
 	 * @param (name=data[uri], sanitize_html=1)
 	 * @param (name=data[headers], sanitize_html=1)
-	 * @param (name=data[authentication], sanitize_html=1)
+	 * @param (name=data[authentication][user], sanitize_html=1) 
+	 * @param (name=data[authentication][pass], sanitize_html=1) 
 	 * @param (name=data[cookies], sanitize_html=1)
 	 */
 	public function callRouter($data) {

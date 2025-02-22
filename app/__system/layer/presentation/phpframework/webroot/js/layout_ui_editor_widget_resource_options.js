@@ -780,15 +780,30 @@ function loadBrokerResourceArgsWithDefaultValues(broker_type, sla_broker_action_
 		var broker_data = getSLAResourceBrokerData(broker_type, sla_broker_action_body);
 		var is_post = isSLAResourceBrokerPostMethod(broker_type, broker_data);
 		
-		items.find(".item .key").each(function(idx, field) {
-			field = $(field);
-			var name = field.val();
-			var default_value = !is_post ? "#_GET[search_attrs][" + name + "]#" : (name.toLowerCase().indexOf("id") != -1 ? "#_POST[conditions][" + name + "]#" : "#_POST[attributes][" + name + "]#");
-			
-			field.parent().children(".value").val(default_value);
-			field.parent().children(".value_type").val("string");
-		});
+		loadBrokerResourceArgsItemsWithDefaultValues(items, is_post, "");
 	}
+}
+
+function loadBrokerResourceArgsItemsWithDefaultValues(array_items, is_post, prefix) {
+	var ul = array_items.children("ul");
+	
+	ul.find(" > .item > .key").each(function(idx, field) {
+		field = $(field);
+		var name = field.val();
+		var default_value = !is_post ? "#_GET[search_attrs]" + prefix + "[" + name + "]#" : (name.toLowerCase().indexOf("id") != -1 ? "#_POST[conditions]" + prefix + "[" + name + "]#" : "#_POST[attributes]" + prefix + "[" + name + "]#");
+		
+		field.parent().children(".value").val(default_value);
+		field.parent().children(".value_type").val("string");
+	});
+	
+	ul.children("li:not(.item)").each(function(idx, li) {
+		li = $(li);
+		
+		var li_items = li.children(".items").first();
+		var key = li_items.children(".key").val();
+		var li_prefix = prefix + "[" + key + "]";
+		loadBrokerResourceArgsItemsWithDefaultValues(li, is_post, li_prefix);
+	});
 }
 
 function addCreateTableOptionToChooseLayoutUIEditorWidgetResourceValueDBTables(elm) {
