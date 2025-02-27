@@ -208,7 +208,6 @@ function checkFilesPermission($files, $optional_files, $check_folder_sub_files, 
 }
 
 function checkSubFilesPermission($file, $optional_files, &$main_status) {
-	return array();//TODO remove this line
 	$incorrect_files = array();
 	
 	if (is_dir($file)) {
