@@ -24,6 +24,7 @@ $logged_name_initials = strtoupper(substr($logged_name_initials[0], 0, 1) . (iss
 $filter_by_layout_url_query = $filter_by_layout ? "&filter_by_layout=$filter_by_layout&filter_by_layout_permission=$filter_by_layout_permission" : "";
 $admin_home_project_page_url = "admin/admin_home_project?filter_by_layout=#filter_by_layout#";
 $admin_home_projects_page_url = "";
+$notifications_url = $project_url_prefix . "admin/get_notifications";
 
 $head = AdminMenuUIHandler::getHeader($project_url_prefix, $project_common_url_prefix);
 $head .= '
@@ -38,6 +39,7 @@ $head .= '
 <script>
 var admin_home_project_page_url = "' . $admin_home_project_page_url . '";
 var admin_home_projects_page_url = "' . $admin_home_projects_page_url . '";
+var notifications_url = "' . $notifications_url . '";
 </script>
 ';
 $head .= HeatMapHandler::getHtml($project_url_prefix);
