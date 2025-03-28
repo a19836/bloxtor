@@ -22,7 +22,7 @@ class SmtpEmail {
 		$this->smtp_secure = $smtp_secure;//ssl, tls or null
 		$this->smtp_encoding = $smtp_encoding;
 		
-		$this->phpmailer_class_exists = class_exists("PHPMailer");
+		$this->phpmailer_class_exists = class_exists("PHPMailer") || class_exists("PHPMailer\PHPMailer\PHPMailer");
 	}
 	
 	public function setDebug($debug, $output = 'echo') {
@@ -61,7 +61,7 @@ class SmtpEmail {
 		while ($offset !== false && $offset < strlen($to_email));
 		
 		//Create a new PHPMailer instance
-		$this->PHPMailer = new PHPMailer;
+		$this->PHPMailer = class_exists("PHPMailer") ? new PHPMailer : new PHPMailer\PHPMailer\PHPMailer;
 		//Tell PHPMailer to use SMTP
 		$this->PHPMailer->isSMTP();
 		//Set encoding

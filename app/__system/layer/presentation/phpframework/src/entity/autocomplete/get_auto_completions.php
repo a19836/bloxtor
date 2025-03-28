@@ -99,6 +99,9 @@ if ($file_path) {
 			if (is_a($obj, "PresentationLayer")) {
 				//by default EVC and all the inner methods are already added
 				
+				$config_path = $obj->getLayerPathSetting() . "/" . $obj->getCommonProjectName() . "/" . $obj->settings["presentation_configs_path"] . "/config.php";
+				$config_completions = getFileVariablesCompletions($config_path);
+				
 				$evc_completions = array();
 				$evc_file_abs_path = get_lib("org.phpframework.layer.presentation.PresentationLayer");
 				$evc_classes = file_exists($evc_file_abs_path) ? PHPCodePrintingHandler::getPHPClassesFromFile($evc_file_abs_path) : null;
@@ -201,6 +204,8 @@ if ($file_path) {
 						$completions = array_merge($completions, $evc_completions);
 				}
 				else if (strpos($pathname, "/presentation/edit_util") !== false) {
+					$completions = array_merge($completions, $config_completions);
+					
 					//add functions, methods and properties from the file
 					$completions = array_merge($completions, getClassesPropertiesCompletions($file_abs_path, $classes, null));
 					$completions = array_merge($completions, getClassesMethodCompletions($classes, null, null));
@@ -224,6 +229,9 @@ if ($file_path) {
 										$completions = array_merge($completions, getLocalPropertyCompletions($prop));
 							}
 						}
+				}
+				else {
+					$completions = array_merge($completions, $config_completions);
 				}
 			}
 			else if (is_a($obj, "BusinessLogicLayer")) {
@@ -450,7 +458,7 @@ if ($file_path) {
 
 echo json_encode($completions);
 die();
-	
+
 function getGlobalDynamicVarValues($meta, $vars, $prefix) {
 	$arr = array();
 	
@@ -471,6 +479,23 @@ function getGlobalDynamicVarValues($meta, $vars, $prefix) {
 		}
 	
 	return $arr;
+}
+
+function getFileVariablesCompletions($file_path) {
+	$completions = array();
+	
+	$vars = PHPVariablesFileHandler::getVarsFromFileContent($file_path);
+	
+	if ($vars)
+		foreach ($vars as $var_name => $var_value)
+			$completions[] = array(
+				"caption" => $var_name,
+				"value" => $var_name,
+				"meta" => "local",
+				"score" => 11
+			);
+	
+	return $completions;
 }
 
 function getClassesMethodCompletions($classes, $current_class, $current_method) {

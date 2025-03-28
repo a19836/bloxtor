@@ -115,6 +115,14 @@ class CMSObfuscatePHPFilesHandler {
 					),
 				),
 			),
+			$this->cms_path . "/app/lib/org/phpframework/cms/laravel/LaravelProjectHandler.php" => array(
+				"LaravelProjectHandler" => array(
+					"methods" => array(
+						"callController" => array("ignore_local_variables" => array('$controller')),
+						"getSQLResults" => array("ignore_local_variables" => array('$ret')),
+					),
+				),
+			),
 			$this->cms_path . "/app/lib/org/phpframework/db/driver/MySqlDB.php" => array(
 				"MySqlDB" => array(
 					"all_methods" => array("ignore_local_variables" => array('$default_schema', '$default_odbc_data_source', '$default_odbc_driver', '$available_php_extension_types', '$ignore_connection_options', '$ignore_connection_options_by_extension', '$db_connection_encodings', '$db_table_charsets', '$db_table_column_collations', '$charsets_to_collations', '$collations_to_charsets', '$storage_engines', '$php_to_db_column_types', '$db_to_php_column_types', '$db_column_types', '$db_column_simple_types', '$db_column_default_values_by_type', '$db_column_types_ignored_props', '$db_column_numeric_types', '$db_column_date_types', '$db_column_text_types', '$db_column_blob_types', '$db_column_boolean_types', '$db_column_mandatory_length_types', '$db_column_auto_increment_types', '$db_boolean_type_available_values', '$db_current_timestamp_available_values', '$attribute_value_reserved_words', '$mysqli_data_types', '$mysqli_flags', '$reserved_words')),
@@ -758,6 +766,7 @@ class CMSObfuscatePHPFilesHandler {
 			$this->cms_path . "/app/lib/org/phpframework/cms/wordpress/WordPressHacker.php",
 			$this->cms_path . "/app/lib/org/phpframework/cms/wordpress/WordPressInstallationHandler.php",
 			$this->cms_path . "/app/lib/org/phpframework/cms/wordpress/WordPressCMSBlockSettings.php",
+			$this->cms_path . "/app/lib/org/phpframework/cms/laravel/LaravelProjectHandler.php",
 			$this->cms_path . "/app/lib/org/phpframework/compression/FileCompressionFactory.php",
 			$this->cms_path . "/app/lib/org/phpframework/db/DB.php",
 			$this->cms_path . "/app/lib/org/phpframework/db/DBStatic.php",
