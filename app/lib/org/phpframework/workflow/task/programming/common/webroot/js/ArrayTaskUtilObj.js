@@ -64,12 +64,23 @@ var ArrayTaskUtilObj = {
 		
 		html += '<ul parent_name="' + parent_name + '">';
 		
+		//convert object to array
+		if ($.isArray(items) && !$.isPlainObject(items)) {
+			var items_obj = {};
+			
+			for (var i = 0, t = items.length; i < t; i++)
+				items_obj[i] = items[i];
+			
+			items = items_obj;
+		}
+		
 		var idx = 0;
 		for (var i in items) {
-			if (i >= 0) {
-				idx++;
-				
-				var item = items[i];
+			idx++;
+			
+			var item = items[i];
+			
+			if ($.isPlainObject(item)) {
 				var key = item["key"];
 				var key_type = item["key_type"];
 				
@@ -78,42 +89,42 @@ var ArrayTaskUtilObj = {
 				Sample:
 				Array
 				(
-				    [0] => Array
+					 [0] => Array
 					(
-					    [key] => 0
-					    [key_type] => 
-					    [items] => Array
+						 [key] => 0
+						 [key_type] => 
+						 [items] => Array
 						(
-						    [0] => Array
-						        (
-						            [key] => index
-						            [key_type] => string
-						            [value] => 1
-						            [value_type] => string
-						        )
+							 [0] => Array
+							     (
+							         [key] => index
+							         [key_type] => string
+							         [value] => 1
+							         [value_type] => string
+							     )
 
-						    [1] => Array
-						        (
-						            [key] => name
-						            [key_type] => string
-						            [value] => $condo['special_block_1_name']
-						            [value_type] => 
-						        )
+							 [1] => Array
+							     (
+							         [key] => name
+							         [key_type] => string
+							         [value] => $condo['special_block_1_name']
+							         [value_type] => 
+							     )
 
-						    [2] => Array
-						        (
-						            [key] => active
-						            [key_type] => string
-						            [value] => $condo['special_block_1_active']
-						            [value_type] => 
-						        )
+							 [2] => Array
+							     (
+							         [key] => active
+							         [key_type] => string
+							         [value] => $condo['special_block_1_active']
+							         [value_type] => 
+							     )
 
 						)
 
 					)
 
-				    	[1] => Array....
-				    */
+					 	[1] => Array....
+					 */
 					var sub_items = item["items"];
 					
 					if (sub_items.hasOwnProperty("key") || sub_items.hasOwnProperty("value") || sub_items.hasOwnProperty("value_type") || sub_items.hasOwnProperty("items")) {
@@ -122,7 +133,7 @@ var ArrayTaskUtilObj = {
 					
 					html += '<li>' + this.getItemsHtml(parent_name + "[" + idx + "]", key, key_type, sub_items) + '</li>';
 				}
-				else if ($.isPlainObject(item) && !item.hasOwnProperty("items") && (!item.hasOwnProperty("value") || $.isPlainObject(item["value"])) && (!item.hasOwnProperty("value_type") || $.isPlainObject(item["value_type"]))) {
+				else if (!item.hasOwnProperty("items") && (!item.hasOwnProperty("value") || $.isPlainObject(item["value"])) && (!item.hasOwnProperty("value_type") || $.isPlainObject(item["value_type"]))) {
 					/*
 					It means it is an associative array with real key values. It means it is a simply array.
 					
@@ -188,29 +199,29 @@ var ArrayTaskUtilObj = {
 					/*
 					Another sample, more simple:
 						Array(
-						    [0] => Array(
-							    [index] => Array(
-								    [key] => index
-								    [key_type] => string
-								    [value] => 1
-								    [value_type] => string
+							 [0] => Array(
+								 [index] => Array(
+									 [key] => index
+									 [key_type] => string
+									 [value] => 1
+									 [value_type] => string
 								)
 
-							    [name] => Array(
-								    [key] => name
-								    [key_type] => string
-								    [value] => $condo['special_block_1_name']
-								    [value_type] => 
+								 [name] => Array(
+									 [key] => name
+									 [key_type] => string
+									 [value] => $condo['special_block_1_name']
+									 [value_type] => 
 								)
 
-							    [active] => Array(
-								    [key] => active
-								    [key_type] => string
-								    [value] => $condo['special_block_1_active']
-								    [value_type] => 
+								 [active] => Array(
+									 [key] => active
+									 [key_type] => string
+									 [value] => $condo['special_block_1_active']
+									 [value_type] => 
 								)
 							)
-						    [1] => Array....
+							 [1] => Array....
 					*/
 				
 					var sub_items = [];
@@ -223,18 +234,21 @@ var ArrayTaskUtilObj = {
 				/*
 				Sample:
 				Array
-			        (
-			            [key] => index
-			            [key_type] => string
-			            [value] => 1
-			            [value_type] => string
-			        )
+				     (
+				         [key] => index
+				         [key_type] => string
+				         [value] => 1
+				         [value_type] => string
+				     )
 				*/
 					var value = item["value"];
 					var value_type = item["value_type"];
 					
 					html += this.getItemHtml(parent_name + "[" + idx + "]", key, key_type, value, value_type);
 				}
+			}
+			else { //This case should not happen, but just in case, we leave it here...
+				html += this.getItemHtml(parent_name + "[" + idx + "]", "", "null", item, "");
 			}
 		}
 		
