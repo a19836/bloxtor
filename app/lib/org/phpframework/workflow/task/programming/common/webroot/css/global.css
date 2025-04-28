@@ -437,7 +437,7 @@
 	left:calc(-50% - 5px) !important;
 	right:auto !important;
 	bottom:-15px !important;
-	border-radius:2px;
+	border-radius:5px;
 	border-color:#DFE1ED !important;
 	box-shadow:3px 3px 4px rgba(0, 0, 0, 0.05);
 	/*background:#fff;*/
@@ -464,8 +464,8 @@
 	background:#426efa;
 	color:#fff;
 	box-sizing:border-box;
-	border-top-left-radius:2px;
-	border-top-right-radius:2px;
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
 }
 .taskflowchartdiagram .task.logic_task.is_start_task:not(:hover):not(.dragActive) .task_info {
 	display:block;

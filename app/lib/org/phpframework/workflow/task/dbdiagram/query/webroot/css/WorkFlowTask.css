@@ -17,7 +17,7 @@
 	height:auto !important;
 	margin:0;
 	padding:5px 0 10px;
-	border-radius:2px;
+	border-radius:4px;
 	border-color:transparent !important;
 	background-color:transparent;
 	box-sizing:border-box;
@@ -38,8 +38,8 @@
 	border:1px solid #4070FF !important;
 	background:#4070FF;
 	color:#fff;
-	border-top-left-radius:2px;
-	border-top-right-radius:2px;
+	border-top-left-radius:4px;
+	border-top-right-radius:4px;
 	text-align:left;
 	box-sizing:border-box;
 	box-shadow:0px -1px 5px #ccc;
@@ -63,6 +63,8 @@
 	padding:0;
 	border:1px solid #4070FF !important;
 	background:#fff;
+	border-bottom-left-radius:4px;
+	border-bottom-right-radius:4px;
 	box-sizing:border-box;
 	box-shadow:0px 0px 5px #ccc;
 }
