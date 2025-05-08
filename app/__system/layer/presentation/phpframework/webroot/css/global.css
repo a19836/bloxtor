@@ -328,7 +328,7 @@ input[type=submit]:not(:disabled),
 	overflow-y:overlay;
 	position:relative;
 	border:1px solid #83889E;
-	border-radius:3px;
+	border-radius:5px;
 	background:#FFF !important;
 	color:#2C2D34;
 	font-size:13px;
