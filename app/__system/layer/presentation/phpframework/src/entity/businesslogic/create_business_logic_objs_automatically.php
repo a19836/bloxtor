@@ -799,9 +799,13 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 			$attributes = $this->getTableAttributes();
 			$pks = $do_not_include_pks ? self::getTablePrimaryKeys() : array();
 			
-			foreach ($data as $k => $v)
-				if (!in_array($k, $attributes) || in_array($k, $pks))
+			foreach ($data as $k => $v) {
+				$is_attribute = in_array($k, $attributes) || preg_match("/(^|\(|\.|`)(" . implode("|", $attributes) . ")($|\)|`)/", $k);
+				$is_pk = in_array($k, $pks) || preg_match("/(^|\(|\.|`)(" . implode("|", $pks) . ")($|\)|`)/", $k);
+				
+				if (!$is_attribute || $is_pk)
 					unset($data[$k]);
+			}
 		}
 		
 		return $data;
@@ -829,6 +833,29 @@ class ' . $class_name . ($alias ? "" : "Service") . ' extends ' . ($common_names
 		}
 		
 		return $data;
+	}
+	
+	private function filterConditionsByTableAttributes($conditions) {
+		if ($conditions) {
+			$attributes = $this->getTableAttributes();
+			$joins = array("or", "and", "&&", "||");
+			
+			foreach ($conditions as $k => $v) {
+				if (in_array(strtolower($k), $joins) || is_numeric($k)) {
+					if (is_array($v))
+						$conditions[$k] = $this->filterConditionsByTableAttributes($v);
+					//else leave it as it is. For more info check DBSQLConverter::getSQLConditions method
+				}
+				else {
+					$is_attribute = in_array($k, $attributes) || preg_match("/(^|\(|\.|`)(" . implode("|", $attributes) . ")($|\)|`)/", $k);
+					
+					if (!$is_attribute)
+						unset($conditions[$k]);
+				}
+			}
+		}
+		
+		return $conditions;
 	}
 	' . prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_driver, $tasks_file_path, $table_name, $queries, $broker_code_prefix, $reserved_sql_keywords, $tables_props, $with_ids) . '
 }
@@ -1040,7 +1067,7 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 		\$conditions = isset(\$data[\"conditions\"]) ? \$data[\"conditions\"] : null;
 		
 		if (\$conditions)
-			\$conditions = \$this->filterDataByTableAttributes(\$conditions, false);
+			\$conditions = \$this->filterConditionsByTableAttributes(\$conditions);
 		
 		\$options[\"all\"] = isset(\$data[\"all\"]) ? \$data[\"all\"] : null;
 		\$result = {$db_broker_prefix_code}->updateObject(\$this->getTableName(), \$attributes, \$conditions, \$options);";
@@ -1128,7 +1155,7 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 							$func_code .= "\$conditions = isset(\$data[\"conditions\"]) ? \$data[\"conditions\"] : null;
 		
 		if (\$conditions)
-			\$conditions = \$this->filterDataByTableAttributes(\$conditions, false);
+			\$conditions = \$this->filterConditionsByTableAttributes(\$conditions);
 		
 		\$options[\"all\"] = isset(\$data[\"all\"]) ? \$data[\"all\"] : null;
 		\$result = {$db_broker_prefix_code}->deleteObject(\$this->getTableName(), \$conditions, \$options);";
@@ -1186,7 +1213,7 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						
 						//prepare code
 						$func_code .= "if (!empty(\$data[\"conditions\"]))
-			\$data[\"conditions\"] = \$this->filterDataByTableAttributes(\$data[\"conditions\"], false);
+			\$data[\"conditions\"] = \$this->filterConditionsByTableAttributes(\$data[\"conditions\"]);
 		
 		self::prepareInputData(\$data);
 		
