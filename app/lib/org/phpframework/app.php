@@ -119,18 +119,15 @@ function debug_log($message, $log_type = "debug") {
 		
 		switch (strtolower($log_type)) {
 			case "exception":
-				if ($log_level >= 1)
-					$GlobalLogHandler->setExceptionLog($message);
+				$GlobalLogHandler->setExceptionLog($message);
 				break;
 			case "error":
-				if ($log_level >= 2)
-					$GlobalLogHandler->setErrorLog($message);
+				$GlobalLogHandler->setErrorLog($message);
 				break;
 			case "info":
-				if ($log_level >= 3)
-					$GlobalLogHandler->setInfoLog($message);
+				$GlobalLogHandler->setInfoLog($message);
 				break;
-			default:
+			default: //debug
 				$GlobalLogHandler->setDebugLog($message);
 		}
 		

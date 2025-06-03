@@ -197,7 +197,7 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 							}
 							
 							//create resource services
-							if ($new_statuses_index < count($statuses) && $statuses[$new_statuses_index]) { //it means the service was added
+							if ($resource_services && $new_statuses_index < count($statuses) && $statuses[$new_statuses_index]) { //it means the service was added
 								$status = $statuses[$new_statuses_index];
 								$service_file = $status[0];
 								$created_status = $status[2];
@@ -1038,6 +1038,10 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						if ($name == "updateAll")
 							$func_code .= "\$attributes = \$this->filterDataByTableAttributes(\$data);
 		\$conditions = isset(\$data[\"conditions\"]) ? \$data[\"conditions\"] : null;
+		
+		if (\$conditions)
+			\$conditions = \$this->filterDataByTableAttributes(\$conditions, false);
+		
 		\$options[\"all\"] = isset(\$data[\"all\"]) ? \$data[\"all\"] : null;
 		\$result = {$db_broker_prefix_code}->updateObject(\$this->getTableName(), \$attributes, \$conditions, \$options);";
 						else if ($name == "updatePrimaryKeys")
@@ -1122,6 +1126,10 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						//prepare code
 						if ($name == "deleteAll")
 							$func_code .= "\$conditions = isset(\$data[\"conditions\"]) ? \$data[\"conditions\"] : null;
+		
+		if (\$conditions)
+			\$conditions = \$this->filterDataByTableAttributes(\$conditions, false);
+		
 		\$options[\"all\"] = isset(\$data[\"all\"]) ? \$data[\"all\"] : null;
 		\$result = {$db_broker_prefix_code}->deleteObject(\$this->getTableName(), \$conditions, \$options);";
 						else
@@ -1177,7 +1185,10 @@ function prepareTableNodes($db_layer_obj, $db_broker, $db_driver, $include_db_dr
 						}
 						
 						//prepare code
-						$func_code .= "self::prepareInputData(\$data);
+						$func_code .= "if (!empty(\$data[\"conditions\"]))
+			\$data[\"conditions\"] = \$this->filterDataByTableAttributes(\$data[\"conditions\"], false);
+		
+		self::prepareInputData(\$data);
 		
 		if (!empty(\$data[\"searching_condition\"]))
 			\$options[\"sql_conditions\"] = \"1=1\" . \$data[\"searching_condition\"];
