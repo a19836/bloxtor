@@ -14,7 +14,7 @@ $vendor_framework = isset($_GET["vendor_framework"]) ? $_GET["vendor_framework"]
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
-	
+
 /*$UserCacheHandler = $PHPFrameWork->getObject("UserCacheHandler");
 $UserCacheHandler->config(false, true);
 
@@ -26,6 +26,7 @@ if ($UserCacheHandler->isValid($cached_file_name)) {
 
 if (empty($layers)) {*/
 	$AdminMenuHandler = new AdminMenuHandler();
+	$sort_sub_files = true;
 	
 	if ($item_type == "dao") {
 		$UserAuthenticationHandler->checkInnerFilePermissionAuthentication("vendor/dao/$path", "layer", "access");
@@ -76,8 +77,10 @@ if (empty($layers)) {*/
 		$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($layer_path_object_id, "layer", "access");
 		
 		if ($item_type == "presentation" && $path && $folder_type != "project_folder") {
-			if ($folder_type == "project") //refresh specific project
+			if ($folder_type == "project") { //refresh specific project
 				$sub_files = AdminMenuHandler::getBeanObjs($bean_file_name, $bean_name, $user_global_variables_file_path, $path, 1, $options);
+				$sort_sub_files = false;
+			}
 			else //get sub files from a project folder, like: entity, view, template, etc... or others sub-folders
 				$sub_files = AdminMenuHandler::getPresentationFolderFiles($bean_file_name, $bean_name, $user_global_variables_file_path, $path, 1, $folder_type, $options);
 		}
@@ -124,6 +127,30 @@ if (empty($layers)) {*/
 				}
 			}
 		}
+	}
+	
+	//sort files by folder first
+	if ($sort_sub_files && $sub_files) {
+		$sorted = array();
+		$folder_types = array("folder", "cms_module", "cms_program", "cms_resource", "cms_common");
+		
+		ksort($sub_files);
+		
+		if (isset($sub_files["properties"]))
+			$sorted["properties"] = $sub_files["properties"];
+		
+		if (isset($sub_files["aliases"]))
+			$sorted["aliases"] = $sub_files["aliases"];
+		
+		foreach ($sub_files as $file_name => $file)
+			if (isset($file["properties"]["item_type"]) && in_array($file["properties"]["item_type"], $folder_types))
+				$sorted[$file_name] = $file;
+		
+		foreach ($sub_files as $file_name => $file)
+			if (!isset($file["properties"]["item_type"]) || $file["properties"]["item_type"] != "folder")
+				$sorted[$file_name] = $file;
+		
+		$sub_files = $sorted;
 	}
 	
 	/*$UserCacheHandler->write($cached_file_name, $sub_files);

@@ -233,8 +233,13 @@ class LaravelInstallationHandler {
 		$default_extend = ($common_namespace ? "\\$common_namespace\\" : "") . "CommonService";
 		$contents = str_replace("#COMMON_SERVICE#", $default_extend, $contents);
 		
+		//prepare class prefix based in parent dirname
+		$laravel_path = preg_replace("/\s*\/+\s*$/", "", $laravel_path); //remove last slash and spaces at the end
+		$class_prefix = str_replace(" ", "", ucwords(str_replace("_", " ", strtolower(trim(basename($laravel_path))))));
+		$contents = str_replace("#CLASS_PREFIX#", $class_prefix, $contents);
+		
 		//save new file
-		return file_put_contents("$laravel_path/LaravelProjectService.php", $contents) !== false;
+		return file_put_contents("$laravel_path/{$class_prefix}LaravelProjectService.php", $contents) !== false;
 	}
 	
 	private static function getProjectHtaccess() {

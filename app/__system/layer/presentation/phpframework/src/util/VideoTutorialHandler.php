@@ -726,6 +726,12 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 				"video" => "https://www.youtube.com/embed/ImZg10DEWWg", //ai_summary.webm
 				"pages" => array("admin/index", "admin/admin_home", "admin/admin_home_project", "admin/choose_available_project"), //this is used in the TourGuideUIHandler
 			),
+			"37_create_stock_manager" => array(
+				"title" => "Create a Stock Manager Dashboard",
+				"description" => "Discover how to build a stock management dashboard from scratch — creating database tables, installing templates, and designing the UI — all with simple drag & drop.",
+				"image" => "",
+				"video" => "https://www.youtube.com/embed/jROPN8dMMjs", //create_stock_manager.webm
+			),
 		);
 	}
 
@@ -1949,6 +1955,20 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 						),
 					),
 				),
+			),
+			"11_integrate_with_laravel_projects" => array(
+				"title" => "Integrate Laravel",
+				"description" => "This video explains how to install and leverage Laravel inside of Bloxtor, by calling Laravel's Routers, Controllers, Views and SQL Queries inside of Bloxtor projects.<br/>
+	Discover how to install multiple Laravel instances inside of Bloxtor and organize all your Laravel projects in one centralized framework.<br/>
+	Although is also possible to call external Laravel installations from Bloxtor, through our REST integrators, the purpose of this tutorial, is to show how you can call the Laravel's Routers, Controllers, Views and SQL Queries internally.",
+				"image" => "",
+				"video" => "https://www.youtube.com/embed/oM3oZFO4Ypc", //integrate_with_laravel_projects.webm
+			),
+			"12_create_stock_manager" => array(
+				"title" => "Create a Stock Manager Dashboard",
+				"description" => "Discover how to build a stock management dashboard from scratch — creating database tables, installing templates, and designing the UI — all with simple drag & drop.",
+				"image" => "",
+				"video" => "https://www.youtube.com/embed/jROPN8dMMjs", //create_stock_manager.webm
 			),
 			
 			/*"install_final_app" => array(

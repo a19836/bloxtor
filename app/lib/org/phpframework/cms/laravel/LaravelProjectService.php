@@ -2,7 +2,7 @@
 include_once $vars["business_logic_modules_service_common_file_path"];
 include_once get_lib("org.phpframework.cms.laravel.LaravelProjectHandler");
 
-class LaravelProjectService extends #COMMON_SERVICE# {
+class #CLASS_PREFIX#LaravelProjectService extends #COMMON_SERVICE# {
 	
 	private $LaravelProjectHandler;
 	
