@@ -80,11 +80,22 @@
 			border-radius:5px;
 			overflow:auto;
 		}
+		.md_file h1 {
+			font-size:1.8em;
+		}
 		.md_file h2 {
+			font-size:1.5em;
 			margin-top:40px;
 		}
 		.md_file h3 {
+			font-size:1.3em;
 			margin-top:40px;
+		}
+		.md_file h4 {
+			font-size:1.15em;
+		}
+		.md_file h5 {
+			font-size:1em;
 		}
 		.md_file blockquote {
 			font: 14px/22px normal helvetica, sans-serif;

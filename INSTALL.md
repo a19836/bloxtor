@@ -10,8 +10,32 @@ To ensure minimum performance, the following hardware specifications are recomme
 
 Bloxtor is lightweight and runs seamlessly on a Raspberry Pi. Any hardware capable of running a web server (e.g., Apache, Nginx) and PHP can also run Bloxtor.
 
+---
 
-## 1. Install Web-server with PHP
+## Install through Docker
+
+Execute the following commands in your terminal:
+1. Build your Docker image:
+```
+docker build -t bloxtor .
+```
+
+2. Run the container:
+```
+docker run -p 8080:80 bloxtor	
+```
+
+3. Access your app:
+```
+Open your browser and go to http://localhost:8080/setup.php, then follow the correspondent instructions... (or use your Docker host IP if not running locally).
+You will see the printed access info in the container logs.
+```
+
+---
+
+## Install Manually in your local PC
+
+### 1. Install Web-server with PHP
 Install web-server (eg: Apache) and PHP 5.6 or higher (Bloxtor was tested until PHP 8.4).
 If you wish you can install also the Mysql and Postgres servers.
 
@@ -19,7 +43,7 @@ If you wish you can install also the Mysql and Postgres servers.
 > If you are a sysadmin or are not sure what you are doing, please do not execute the optional steps in this tutorial.
 
 .
-### PHP Modules
+#### PHP Modules
 To install all php modules, here is an exemplary command to install PHP 8.4 on Ubuntu 22, after adding the ondrej ppa:
 ```
 sudo apt install php8.4 php8.4-cli php8.4-cgi php8.4-pgsql php8.4-mbstring php8.4-curl php8.4-gd php8.4-bcmath php8.4-bz2 php8.4-dom php8.4-imap php8.4-mbstring php8.4-memcache php8.4-mongodb php8.4-mysqli php8.4-odbc php8.4-pdo php8.4-simplexml php8.4-soap php8.4-ssh2 php8.4-xmlrpc php8.4-intl php8.4-sqlite3 php8.4-zip
@@ -83,7 +107,7 @@ sudo apt/apt-get/yum install phpX.X-bcmath phpX.X-curl phpX.X-gd phpX.X-mbstring
 ```
 
 .
-### (optional) Install MS SQL Server module
+#### (optional) Install MS SQL Server module
 If you wish to connect to mssql-server, please install the "mssql-server" package. If you are not able to install this package on linux os, please follow the tutorials in order to install the odbc drivers for mssql-server:
 - https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-ver15
 - https://www.easysoft.com/developer/languages/php/sql_server_unix_tutorial.html
@@ -101,8 +125,8 @@ Note that the Driver path should be to your driver.
 
 ---
 
-## 2. Web Server configurations
-### Enable mod rewrite
+### 2. Web Server configurations
+#### Enable mod rewrite
 Please be sure that your Web Server has the mod_rewrite enable and the php.ini files are well configured.
 
 In linux, to enable the mod_rewrite in web-server (Apache), try to execute this command: 
@@ -112,7 +136,7 @@ sudo a2enmod rewrite
 Please be sure that the rewrite mod is really enabled, otherwise the framework redirects in the .htaccess won't work.
 
 .
-### Enable AllowOverride
+#### Enable AllowOverride
 Note that you must have your web-server configured to read the framework .htaccess files. 
 Please be sure that you have the following settings in your vhost conf file:
 ```
@@ -123,7 +147,7 @@ Options FollowSymLinks
 ```
 
 .
-### Set document root
+#### Set document root
 Configure web-server document root to the absolute_path_to_framework/ folder in your vhost conf file, like the example below where absolute_path_to_framework is "/var/www/html/bloxtor/":
 ```
 <VirtualHost *:80>
@@ -136,7 +160,7 @@ Configure web-server document root to the absolute_path_to_framework/ folder in 
 ```
 
 .
-### (optional) Edit mod security settings
+#### (optional) Edit mod security settings
 In case you have the web-server modsecurity active, change the correspondent configurations, in /etc/modsecurity/modsecurity.conf, but only if you get request body limit exceed error
 ```
 #to 32MB
@@ -178,7 +202,7 @@ if still the framework seems unstable with blocked or denied requests, you can a
 SecRuleEngine Off
 ```
 .
-### Exemplary vhost conf file
+#### Exemplary vhost conf file
 Here is an exemplary conf file from an web-server vhost, in /etc/apache2/sites-enable/bloxtor.conf:
 ```
 <VirtualHost *:80>
@@ -207,7 +231,7 @@ Here is an exemplary conf file from an web-server vhost, in /etc/apache2/sites-e
 ```
 
 .
-### Edit PHP.ini
+#### Edit PHP.ini
 Please update your php.ini files with:
 ```
 short_open_tag = On
@@ -310,7 +334,7 @@ or
 
 ---
 
-## 3. If Mysql is installed
+### 3. If Mysql is installed
 In case you have mysql installed, please go to your /etc/mysql/my.cnf and follow our recomendations:
 ```
 #The idea is to remove the NO_ZERO_IN_DATE and NO_ZERO_DATE settings in the sql-mode. 
@@ -346,7 +370,7 @@ Don't forget to restart mysql server and check if was started without errors.
 
 ---
 
-## 4. If your OS is CentOS
+### 4. If your OS is CentOS
 On CentOS, web-server probably has external network connections blocked, which doesn't allow MySQL to connect to databases.
 To check if this is OFF, please type the following commands:
 ```
@@ -360,7 +384,7 @@ sudo setsebool -P httpd_can_network_connect 1
 
 ---
 
-## 5. Set permissions
+### 5. Set permissions
 Open script absolute_path_to_framework/other/script/set_perms.sh and edit the APACHE_USER var with the right user for your web-server.
 Then execute this script:
 ```
@@ -369,7 +393,7 @@ sudo /bin/bash <absolute path to framework>/other/script/set_perms.sh <absolute 
 
 ---
 
-## 6. (optional) TMP folder
+### 6. (optional) TMP folder
 By default, the framework already have a tmp folder in absolute_path_to_framework/tmp, which will be detected automatically.
 
 If you wish to have a different TMP folder, you can create that folder and configure it in the global variables (absolute_path_to_framework/app/config/global_variables.php and/or absolute_path_to_framework/app/__system/config/global_variables.php). 
@@ -379,7 +403,7 @@ Additionally please remove all the temporary files inside of your TMP folder. By
 
 ---
 
-## 7. Other Notes:
+### 7. Other Notes:
 This framework uses some external libraries (with LGPL licenses) to improve its usability and add new functionalities, which means that if you want to have all the features, you must install them, but this is optional, because Bloxtor has an incompatible license and therefore cannot be distributed together with these libraries.
 When you run the framework installation script (through the url: "your.installation.domain/setup.php"), you will be prompted to install them or not.
 
@@ -397,19 +421,19 @@ The external libraries, with GPL licences, are:
 
 ---
 
-## 8. Restart web-server
+### 8. Restart web-server
 Restart web-server and check if it was started without errors.
 
 ---
 
-## 9. Open the setup.php in your browser
+### 9. Open the setup.php in your browser
 Open your browser, type htttp://your.installation.domain/setup.php, then follow the correspondent instructions...
 
 > The setup.php file is in the absolute_path_to_framework/app/ folder, but the absolute_path_to_framework/.htaccess file will redirect the 'htttp://your.installation.domain/setup.php' to the app folder, so don't worry... If this doesn't happen, it means you didn't activate the web-server rewrite mod.
 
 ---
 
-## 10. (optional) Cronjobs
+### 10. (optional) Cronjobs
 If apply, for each project, add the following cronjobs (in case you have the workerpool module installed):
 ```
 * * * * * sudo -u www-data php <absolute path to framework>/app/layer/presentation/<project_name>/webroot/script.php  --documentroot="<absolute path to framework>/" --url="http://<project_url>/module/workerpool/run_worker_pool_script" --urlpath="module/workerpool/run_worker_pool_script" --loglevel=3
