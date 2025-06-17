@@ -10,6 +10,9 @@ RUN apt-get update && \
     apt-get install -y apache2 mysql-server php8.3 php8.3-cli php8.3-cgi php8.3-pgsql php8.3-mbstring php8.3-curl php8.3-gd php8.3-bcmath php8.3-bz2 php8.3-dom php8.3-imap php8.3-memcache php8.3-mongodb php8.3-mysqli php8.3-odbc php8.3-pdo php8.3-simplexml php8.3-soap php8.3-ssh2 php8.3-xmlrpc php8.3-intl php8.3-sqlite3 php8.3-zip && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Set ServerName to suppress Apache warning
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 # Enable Apache mods
 RUN a2enmod rewrite
 
@@ -28,10 +31,6 @@ memory_limit = 1024M\n" > /etc/php/8.3/apache2/conf.d/99-bloxtor.ini
 
 # Step 3.1: MySQL recommended configuration
 RUN echo "[mysqld]\nsql-mode=\"ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION\"\nmax_allowed_packet=250M\nwait_timeout=28800\nmysql_native_password=ON\n\n[mysqld_safe]\nmax_allowed_packet=100M\n\n[client]\nmax_allowed_packet=100M\n\n[mysql]\nmax_allowed_packet=100M\n\n[mysqldump]\nmax_allowed_packet=100M\n" > /etc/mysql/my.cnf
-
-# Step 3.2: Set MySQL root password and authentication method
-RUN service mysql start && \
-    mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'bloxtor'; FLUSH PRIVILEGES;"
 
 # Step 4.1: Enable AllowOverride in Apache vhost
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf && \
