@@ -459,10 +459,13 @@ if ($file_path) {
 echo json_encode($completions);
 die();
 
-function getGlobalDynamicVarValues($meta, $vars, $prefix) {
+function getGlobalDynamicVarValues($meta, $vars, $prefix, $repeated = array()) {
 	$arr = array();
 	
-	foreach ($vars as $k => $v) {
+	foreach ($vars as $k => $v) 
+		if (!in_array($v, $repeated)) {
+			$repeated[] = $v;
+			
 			$var_caption = $prefix . '["' . $k . '"]';
 			
 			$arr[] = array(
@@ -473,7 +476,7 @@ function getGlobalDynamicVarValues($meta, $vars, $prefix) {
 			);
 			
 			if (is_array($v)) {
-				$sub_arr = getGlobalDynamicVarValues($meta, $vars, $var_caption);
+				$sub_arr = getGlobalDynamicVarValues($meta, $vars, $var_caption, $repeated);
 				$arr = array_merge($arr, $sub_arr);
 			}
 		}

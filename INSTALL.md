@@ -14,22 +14,67 @@ Bloxtor is lightweight and runs seamlessly on a Raspberry Pi. Any hardware capab
 
 ## Install through Docker
 
+Note that installation through docker, doesn't install the mssql server and apache security addons.
+
+
+### If you are using Docker Compose (recommended for PHP + MySQL)
+Execute the following commands in your terminal:
+1. Build and start all services:
+```
+docker compose -p bloxtor up --build
+#or
+docker-compose -p bloxtor up --build
+
+#you can also add '--force-recreate' at the end of the above commands.
+```
+
+2. To access your app, please open your browser and go to http://localhost:8888/setup.php (or use your Docker host IP if not running locally), then follow the correspondent instructions on **Step 9** below... 
+
+	To login into Bloxtor please use user/pass: admin/admin.
+	
+	Mysql server info:
+	- host: mysql
+	- port: 3306 (optional)
+	- db name: test
+	- user/pass: bloxtor/bloxtor
+
+	Postgres server info:
+	- host: postgres
+	- port: 5432 (optional)
+	- db name: test
+	- user/pass: bloxtor/bloxtor
+	
+	More info at ./docker-compose.yml
+
+### If you are using only the Dockerfile (single container)
 Execute the following commands in your terminal:
 1. Build your Docker image:
 ```
 docker build -t bloxtor .
+#or
+docker build --no-cache -t bloxtor .
+
+#'--no-cache' is optional.
 ```
 
 2. Run the container:
 ```
-docker run -p 8080:80 bloxtor	
+docker run --name bloxtor-server -p 8887:80 bloxtor
 ```
 
-3. Access your app:
+If already created, just start it:
 ```
-Open your browser and go to http://localhost:8080/setup.php, then follow the correspondent instructions... (or use your Docker host IP if not running locally).
-You will see the printed access info in the container logs.
+docker start bloxtor-server
 ```
+
+
+3. To access your app, please open your browser and go to http://localhost:8887/setup.php (or use your Docker host IP if not running locally), then follow the correspondent instructions on **Step 9** below...
+	
+	To login into Bloxtor please use user/pass: admin/admin.
+	
+	You will see the printed access info in the container logs.
+	
+	In this container there is no DB server, but you can connect your setup with your local DB or any other external DB, if apply.
 
 ---
 
@@ -431,6 +476,11 @@ Open your browser, type htttp://your.installation.domain/setup.php, then follow 
 
 > The setup.php file is in the absolute_path_to_framework/app/ folder, but the absolute_path_to_framework/.htaccess file will redirect the 'htttp://your.installation.domain/setup.php' to the app folder, so don't worry... If this doesn't happen, it means you didn't activate the web-server rewrite mod.
 
+Follow the installation steps in the [Bloxtor tutorial](https://bloxtor.com/onlineitframeworktutorial/):
+- [1st phase](https://bloxtor.com/onlineitframeworktutorial/?block_id=video/advanced#tutorial_setup): Complete setup;
+- [2nd phase](https://bloxtor.com/onlineitframeworktutorial/?block_id=video/advanced#tutorial_modules_installation): Install modules in your Bloxtor;
+- 3rd phase: Watch other videos and follow correspondent steps.
+
 ---
 
 ### 10. (optional) Cronjobs
@@ -452,3 +502,5 @@ Then:
 
 0 2 * * * sudo -u www-data php /var/www/html/livingroop/default/app/layer/presentation/condo/webroot/script.php  --documentroot="/var/www/html/livingroop/default/" --url="http://jplpinto.localhost/condo/script/purge_old_data" --urlpath="script/purge_old_data" --loglevel=3
 ```
+
+

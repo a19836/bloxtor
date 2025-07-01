@@ -2118,8 +2118,15 @@ return $options;';
 		//check if method doesn't exist already, bc meanwhile it may was created before. Note that it is possible to happen multiple concurrent calls of this function with the same method name. So just in case we check if exists again...
 		$file_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, $method_data["name"], $class_name);
 		
-		if (!$file_method_exists)
-			return PHPCodePrintingHandler::addFunctionToFile($file_path, $method_data, $class_name);
+		if (!$file_method_exists) {
+			$status = PHPCodePrintingHandler::addFunctionToFile($file_path, $method_data, $class_name);
+			
+			debug_log("[SequentialLogicalActivityBLResourceCreator->addFunctionToFile] Method created:\n- path: $file_path\n- class: $class_name\n- method: " . print_r($method_data, 1) . "\n- created: $status\n");
+			
+			return $status;
+		}
+		else
+			debug_log("[SequentialLogicalActivityBLResourceCreator->addFunctionToFile] Method already exists:\n- path: $file_path\n- class: $class_name\n- method: " . print_r($method_data, 1) . "\n");
 		
 		return true;
 	}
@@ -2495,6 +2502,8 @@ return $result;';
 		$tables_ui_props = json_decode($content, true);
 		//echo "<pre>$get_tables_ui_props_url\n<br>";print_r($post_data);print_r($tables_ui_props);die();
 		
+		debug_log("[SequentialLogicalActivityBLResourceCreator->getTableUIProps]:\n- Call getURLContent for: $get_tables_ui_props_url\n- With Post data: " . print_r($post_data, 1) . "\n- With raw response: $content\n- With decoded response: " . print_r($tables_ui_props, 1) . "\n");
+		
 		$this->UserCacheHandler->write($cache_id, $tables_ui_props);
 		
 		return $tables_ui_props;
@@ -2800,10 +2809,12 @@ return $result;';
 							//print_r($post_data);
 							
 							//create file automatically
-							$statuses = $this->UserAuthenticationHandler->getURLContent($url, $post_data);
+							$raw_statuses = $this->UserAuthenticationHandler->getURLContent($url, $post_data);
 							//echo "url:$url<br/>\nhtml:$statuses\n\n\n";
-							$statuses = $statuses ? json_decode($statuses, true) : $statuses;
+							$statuses = $raw_statuses ? json_decode($raw_statuses, true) : $raw_statuses;
 							//print_r($statuses);die();
+							
+							debug_log("[SequentialLogicalActivityBLResourceCreator->createBrokerService][based in BusinessLogicLayer]:\n- Call getURLContent for: $url\n- With Post data: " . print_r($post_data, 1) . "\n- With raw response: $raw_statuses\n- With decoded response: " . print_r($statuses, 1) . "\n");
 							
 							//check if file was created and if so checks if the correspondent function exists based in broker_service_type. If yes copies the function to $default_service_file_abs_path, or if it doesn't exists, rename the created file to $default_service_file_abs_path.
 							if ($statuses) {
@@ -2917,9 +2928,11 @@ return $result;';
 				);
 				
 				//create file automatically
-				$statuses = $this->UserAuthenticationHandler->getURLContent($url, $post_data);
-				$statuses = $statuses ? json_decode($statuses, true) : $statuses;
+				$raw_statuses = $this->UserAuthenticationHandler->getURLContent($url, $post_data);
+				$statuses = $raw_statuses ? json_decode($raw_statuses, true) : $raw_statuses;
 				//echo "<pre>$html\n<br>";print_r($statuses);die();
+				
+				debug_log("[SequentialLogicalActivityBLResourceCreator->createBrokerService][based in IbatisDataAccessLayer]:\n- Call getURLContent for: $url\n- With Post data: " . print_r($post_data, 1) . "\n- With raw response: $raw_statuses\n- With decoded response: " . print_r($statuses, 1) . "\n");
 				
 				//check if file was created and if so checks if the correspondent function exists based in broker_service_type. If yes copies the function to $default_service_file_abs_path, or if it doesn't exists, rename the created file to $default_service_file_abs_path.
 				if ($statuses) {
@@ -3016,9 +3029,11 @@ return $result;';
 					);
 					
 					//create file automatically
-					$statuses = $this->UserAuthenticationHandler->getURLContent($url, $post_data);
-					$statuses = $statuses ? json_decode($statuses, true) : $statuses;
+					$raw_statuses = $this->UserAuthenticationHandler->getURLContent($url, $post_data);
+					$statuses = $raw_statuses ? json_decode($raw_statuses, true) : $raw_statuses;
 					//echo "<pre>$html\n<br>";print_r($statuses);die();
+					
+					debug_log("[SequentialLogicalActivityBLResourceCreator->createBrokerService][based in HibernateDataAccessLayer]:\n- Call getURLContent for: $url\n- With Post data: " . print_r($post_data, 1) . "\n- With raw response: $raw_statuses\n- With decoded response: " . print_r($statuses, 1) . "\n");
 					
 					//check if file was created and if so checks if the correspondent function exists based in broker_service_type. If yes copies the function to $default_service_file_abs_path, or if it doesn't exists, rename the created file to $default_service_file_abs_path.
 					if ($statuses) {

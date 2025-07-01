@@ -6,7 +6,7 @@ Bloxtor is a **professional and intelligent web-development framework designed f
 The concept is to provide a centralized AI-powered web development platform with multiple levels of Citizen Development, empowering both technical and non-technical developers to easily create any type of web application, while also giving programmers a robust tool they can rely on as their primary development resource.
 Discover more about Bloxtor on our homepage: [https://www.bloxtor.com]
 
-- All installations steps are in [INSTALL.md](./INSTALL.md).
+- Installation instructions are available in [INSTALL.md](./INSTALL.md), including both Docker and local setup options.
 - Explore the Framework: Start learning how to work with Bloxtor by following the steps in [LEARN.md](./LEARN.md).
 - Please read our documentation [here](https://bloxtor.com/onlineitframeworktutorial/).
 - Please watch our video tutorials [here](https://bloxtor.com/onlineitframeworktutorial/?block_id=video/simple).
