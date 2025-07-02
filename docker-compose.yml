@@ -1,0 +1,31 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8888:80"   # (optional, but not needed if you want 8888 only)
+    #volumes:
+    #  - .:/var/www/html
+    depends_on:
+      - mysql
+      - postgres
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: bloxtor
+      MYSQL_DATABASE: test
+      MYSQL_USER: bloxtor
+      MYSQL_PASSWORD: bloxtor
+    ports:
+      - "8889:3306"
+    volumes:
+      - ./mysql.cnf:/etc/mysql/my.cnf
+  postgres:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: bloxtor
+      POSTGRES_PASSWORD: bloxtor
+    ports:
+      - "8890:5432"
