@@ -12,10 +12,10 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: bloxtor
-      MYSQL_DATABASE: test
-      MYSQL_USER: bloxtor
-      MYSQL_PASSWORD: bloxtor
+      MYSQL_ROOT_PASSWORD: ${DOCKER_COMPOSE_DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DOCKER_COMPOSE_DB_NAME}
+      MYSQL_USER: ${DOCKER_COMPOSE_DB_USER}
+      MYSQL_PASSWORD: ${DOCKER_COMPOSE_DB_PASS}
     ports:
       - "8889:3306"
     volumes:
@@ -24,8 +24,8 @@ services:
     image: postgres:12
     restart: always
     environment:
-      POSTGRES_DB: test
-      POSTGRES_USER: bloxtor
-      POSTGRES_PASSWORD: bloxtor
+      POSTGRES_DB: ${DOCKER_COMPOSE_DB_NAME}
+      POSTGRES_USER: ${DOCKER_COMPOSE_DB_USER}
+      POSTGRES_PASSWORD: ${DOCKER_COMPOSE_DB_PASS}
     ports:
       - "8890:5432"
