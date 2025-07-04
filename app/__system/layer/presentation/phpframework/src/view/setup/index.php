@@ -37,15 +37,15 @@ if (!empty($continue_function) || !empty($back_function)) {
 	$main_content_aux .= '<div class="buttons">';
 	
 	if (!empty($continue_function)) {
-		$main_content_aux .= '<input class="ok" type="button" name="continue" value="Continue" onClick="return ' . $continue_function . '" />';
+		$main_content_aux .= '<input class="ok" type="button" name="continue" value="Continue &gt;" onClick="return ' . $continue_function . '" />';
 	}
 	
 	if (!empty($back_function)) {
 		$back_label = empty($back_label) ? "Back" : $back_label;
-		$main_content_aux .= '<input class="back" type="button" name="back" value="' . $back_label . '" onClick="return ' . $back_function . '" />';
+		$main_content_aux .= '<input class="back" type="button" name="back" value="&lt; ' . $back_label . '" onClick="return ' . $back_function . '" />';
 	}
 	
-	$main_content_aux .= '<input class="cancel" type="button" name="cancel" value="Cancel" onClick="return cancelSetup();" />
+	$main_content_aux .= '<input class="cancel" type="button" name="cancel" value="&lt; Cancel" onClick="return cancelSetup();" />
 	</div>';
 }
 $main_content_aux .= (isset($main_content) ? $main_content : "") . '

@@ -2,6 +2,7 @@
 $manage_user_url = $user_id ? $project_url_prefix . 'user/edit_user?user_id=' . $user_id : $project_url_prefix . 'user/manage_users';
 $manage_openai_key_url = $project_url_prefix . 'user/change_other_settings';
 $manage_layers_url = $project_url_prefix . 'setup?step=3.1&iframe=1&hide_setup=1';
+$admin_url = $project_url_prefix . 'phpframework/admin/?default_page=' . urlencode($project_url_prefix) . 'admin/admin_home';
 
 $main_content = '<div id="end">
 		<div class="title">
@@ -20,7 +21,7 @@ $main_content = '<div id="end">
 			To preview your default project, please click here: <a href="' . $project_url_prefix . '../" target="project">here</a>.
 			<br/>
 			<br/>
-			<strong>To manage your projects in the framework, please click here: <a href="' . $project_url_prefix . 'phpframework/admin/" target="admin">here</a></strong>.
+			<strong>To manage your projects in the framework, please click here: <a href="' . $admin_url . '" target="admin">here</a></strong>.
 		</div>
 </div>';
 
