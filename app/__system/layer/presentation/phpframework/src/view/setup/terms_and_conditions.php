@@ -8,9 +8,9 @@ $head = '
 		var btn = $("#setup .buttons .ok")[0];
 		
 		if (elm.checked)
-			btn.value = "Continue with dependencies";
+			btn.value = "Continue with dependencies >";
 		else
-			btn.value = "Continue without dependencies";
+			btn.value = "Continue without dependencies >";
 	}
 	
 	function continueSetup() {
