@@ -31,7 +31,7 @@ env $(grep -v '^#' docker-compose.env | xargs) docker-compose -f docker-compose-
 
 2. To access the framework, please open your browser and go to http://localhost:8890/__system/admin (or use your Docker host IP if not running locally).
 	
-  To login into Bloxtor framework please use user/pass: admin/admin.
+	To login into Bloxtor framework please use user/pass: admin/admin.
 	
 	More info at [docker-compose-demo.yml](./docker-compose-demo.yml)
 
