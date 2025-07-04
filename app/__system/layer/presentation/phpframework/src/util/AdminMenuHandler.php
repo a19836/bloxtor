@@ -2065,7 +2065,7 @@ class AdminMenuHandler {
 								$item_type = "js_file";
 							else if ($extension == "zip")
 								$item_type = "zip_file";
-							else if (exif_imagetype($file_path)) 
+							else if (function_exists("exif_imagetype") && exif_imagetype($file_path)) 
 								$item_type = "img_file";
 							else 
 								$item_type = "undefined_file";

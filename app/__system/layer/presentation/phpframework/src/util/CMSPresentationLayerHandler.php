@@ -413,7 +413,7 @@ class CMSPresentationLayerHandler {
 							$file_type = "js_file";
 						else if ($extension == "zip")
 							$file_type = "zip_file";
-						else if (exif_imagetype($fp)) 
+						else if (function_exists("exif_imagetype") && exif_imagetype($fp)) 
 							$file_type = "img_file";
 						else
 							$file_type = "undefined_file";
