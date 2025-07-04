@@ -1,0 +1,21 @@
+services:
+  web:
+    image: bloxtor_demo_web
+    ports:
+      - "8890:80"   # (optional, but not needed if you want 8888 only)
+    #volumes:
+    #  - .:/var/www/html
+    depends_on:
+      - mysql
+  mysql:
+    image: bloxtor_demo_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DOCKER_COMPOSE_DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DOCKER_COMPOSE_DB_NAME}
+      MYSQL_USER: ${DOCKER_COMPOSE_DB_USER}
+      MYSQL_PASSWORD: ${DOCKER_COMPOSE_DB_PASS}
+    ports:
+      - "8891:3306"
+    volumes:
+      - ./mysql.cnf:/etc/mysql/my.cnf
