@@ -1,6 +1,6 @@
 services:
   web:
-    image: bloxtor_demo_web
+    image: jplpinto/bloxtor_demo-web:1.0
     ports:
       - "8890:80"   # (optional, but not needed if you want 8888 only)
     #volumes:
@@ -8,7 +8,7 @@ services:
     depends_on:
       - mysql
   mysql:
-    image: bloxtor_demo_mysql
+    image: jplpinto/bloxtor_demo-mysql:1.0
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DOCKER_COMPOSE_DB_ROOT_PASS}
