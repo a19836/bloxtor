@@ -17,8 +17,25 @@ Bloxtor is lightweight and runs seamlessly on a Raspberry Pi. Any hardware capab
 Note that installation through docker, doesn't install the mssql server and apache security addons.
 
 
-### If you are using Docker Compose (recommended for PHP + MySQL)
-Execute the following commands in your terminal:
+### Demo Installation - using Docker Compose
+To install a demo version with all features and modules available please type the following commands in your terminal:
+
+1. Start all services:
+```
+env $(grep -v '^#' docker-compose.env | xargs) docker compose -f docker-compose-demo.yml -p bloxtor_demo up --build
+#or
+env $(grep -v '^#' docker-compose.env | xargs) docker-compose -f docker-compose-demo.yml -p bloxtor_demo up --build
+
+#you can also add '--force-recreate' at the end of the above commands.
+```
+
+2. To access the framework, please open your browser and go to http://localhost:8890/__system/admin (or use your Docker host IP if not running locally).
+	
+  To login into Bloxtor framework please use user/pass: admin/admin.
+
+### Fresh Installation - using Docker Compose
+To execute a new fresh installation please type the following commands in your terminal:
+
 1. Build and start all services:
 ```
 env $(grep -v '^#' docker-compose.env | xargs) docker compose -p bloxtor up --build
@@ -28,25 +45,18 @@ env $(grep -v '^#' docker-compose.env | xargs) docker-compose -p bloxtor up --bu
 #you can also add '--force-recreate' at the end of the above commands.
 ```
 
-2. To access your app, please open your browser and go to http://localhost:8888/setup.php (or use your Docker host IP if not running locally), then follow the correspondent instructions on **Step 9** below... 
+2. Then access the framework, by opening http://localhost:8888/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **Step 9** below... 
 
-	To login into Bloxtor please use user/pass: admin/admin.
+	To login into Bloxtor framework please use user/pass: admin/admin.
 	
 	Mysql server info:
-	- host: mysql
-	- port: 3306 (optional)
-	- db name: test
-	- user/pass: bloxtor/bloxtor
-
-	Postgres server info:
-	- host: postgres
-	- port: 5432 (optional)
-	- db name: test
-	- user/pass: bloxtor/bloxtor
+	- Host: mysql
+	- Port: 3306 (optional)
+	- DB Name, User and Pass: please check the [docker-compose.env](./docker-compose.env) file.
 	
-	More info at ./docker-compose.yml
+	More info at [docker-compose.yml](./docker-compose.yml)
 
-### If you are using only the Dockerfile (single container)
+### Fresh Installation - using only the Dockerfile (single container)
 Execute the following commands in your terminal:
 1. Build your Docker image:
 ```
@@ -68,7 +78,7 @@ docker start bloxtor-server
 ```
 
 
-3. To access your app, please open your browser and go to http://localhost:8887/setup.php (or use your Docker host IP if not running locally), then follow the correspondent instructions on **Step 9** below...
+3. Then access the framework, by opening http://localhost:8887/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **Step 9** below...
 	
 	To login into Bloxtor please use user/pass: admin/admin.
 	

@@ -132,6 +132,10 @@ COPY . /var/www/html/
 # Ensure tmp folder exists
 RUN mkdir -p /var/www/html/tmp
 
+# Remove tmp files if exists, otherwise it may contain old and local cache that may cause inconsistencies. This is important for the bloxtor demo.
+RUN rm -rf /var/www/html/tmp/cache/
+RUN rm -rf /var/www/html/tmp/phpframework.log
+
 # Add the line 'other/authdb/' at the end of the /var/www/html/.gitignore file
 RUN echo "" >> /var/www/html/.gitignore
 RUN echo "other/authdb/" >> /var/www/html/.gitignore
@@ -142,7 +146,7 @@ RUN echo "<?php phpinfo(); ?>" > /var/www/html/info.php
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
 # Expose HTTP port
-EXPOSE 80 8887 8888
+EXPOSE 80 8887 8888 8890
 
 # Print access info
 RUN echo "--------------------------------------------------" \
