@@ -165,11 +165,12 @@ RUN echo "--------------------------------------------------" \
  && echo "--------------------------------------------------"
 
 RUN echo '#!/bin/bash' > /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "--------------------------------------------------"' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "Bloxtor is ready! Access it at: http://localhost:8887/setup.php or http://localhost:8888/setup.php or http://localhost:8890/setup.php"' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "Or use your Docker host IP if not running locally."' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "--------------------------------------------------"' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'exec apachectl -D FOREGROUND' >> /usr/local/bin/docker-entrypoint.sh
+	echo 'echo "--------------------------------------------------"' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'echo "Bloxtor is ready! Access it at: http://localhost:8887/setup.php or http://localhost:8888/setup.php or http://localhost:8890/setup.php"' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'echo "Or use your Docker host IP if not running locally."' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'echo "--------------------------------------------------"' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'exec apachectl -D FOREGROUND' >> /usr/local/bin/docker-entrypoint.sh
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

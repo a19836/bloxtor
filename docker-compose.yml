@@ -5,6 +5,8 @@ services:
       - "8888:80"   # (optional, but not needed if you want 8888 only)
     #volumes:
     #  - .:/var/www/html
+    env_file:
+      - docker-compose.env
     depends_on:
       - mysql
   mysql:
