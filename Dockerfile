@@ -99,9 +99,10 @@ LimitRequestFieldSize 10000000\n\
 LimitRequestLine 10000000\n\
 LimitXMLRequestBody 10000000\n" >> /etc/apache2/apache2.conf
 
-# Make Apache listen on 8887 and 8888 because of internal request to the same port.
+# Make Apache listen on 8887 8888 and 8890 because of internal request to the same port.
 RUN echo "Listen 8887" >> /etc/apache2/ports.conf
 RUN echo "Listen 8888" >> /etc/apache2/ports.conf
+RUN echo "Listen 8890" >> /etc/apache2/ports.conf
 
 RUN echo '<VirtualHost *:8887>\n\
     DocumentRoot /var/www/html\n\
@@ -122,6 +123,16 @@ RUN echo '<VirtualHost *:8888>\n\
     </Directory>\n\
 </VirtualHost>\n' > /etc/apache2/sites-available/8888.conf && \
     a2ensite 8888.conf
+
+RUN echo '<VirtualHost *:8890>\n\
+    DocumentRoot /var/www/html\n\
+    <Directory /var/www/html>\n\
+        Options FollowSymLinks\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+</VirtualHost>\n' > /etc/apache2/sites-available/8890.conf && \
+    a2ensite 8890.conf
 
 # Set document root
 WORKDIR /var/www/html
@@ -155,7 +166,7 @@ RUN echo "--------------------------------------------------" \
 
 RUN echo '#!/bin/bash' > /usr/local/bin/docker-entrypoint.sh && \
     echo 'echo "--------------------------------------------------"' >> /usr/local/bin/docker-entrypoint.sh && \
-    echo 'echo "Bloxtor is ready! Access it at: http://localhost:8887/setup.php or http://localhost:8888/setup.php"' >> /usr/local/bin/docker-entrypoint.sh && \
+    echo 'echo "Bloxtor is ready! Access it at: http://localhost:8887/setup.php or http://localhost:8888/setup.php or http://localhost:8890/setup.php"' >> /usr/local/bin/docker-entrypoint.sh && \
     echo 'echo "Or use your Docker host IP if not running locally."' >> /usr/local/bin/docker-entrypoint.sh && \
     echo 'echo "--------------------------------------------------"' >> /usr/local/bin/docker-entrypoint.sh && \
     echo 'exec apachectl -D FOREGROUND' >> /usr/local/bin/docker-entrypoint.sh
