@@ -21,9 +21,9 @@ Note that installation through docker, doesn't install the mssql server and apac
 Execute the following commands in your terminal:
 1. Build and start all services:
 ```
-env $(cat docker-compose.env | xargs) docker compose -p bloxtor up --build
+env $(grep -v '^#' docker-compose.env | xargs) docker compose -p bloxtor up --build
 #or
-env $(cat docker-compose.env | xargs) docker-compose -p bloxtor up --build
+env $(grep -v '^#' docker-compose.env | xargs) docker-compose -p bloxtor up --build
 
 #you can also add '--force-recreate' at the end of the above commands.
 ```
