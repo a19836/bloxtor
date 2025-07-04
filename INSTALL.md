@@ -75,9 +75,9 @@ docker run --name bloxtor-server -p 8887:80 bloxtor
 ```
 
 	If already created, just start it:
-	```
-	docker start bloxtor-server
-	```
+```
+docker start bloxtor-server
+```
 
 
 3. Then access the framework, by opening http://localhost:8887/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **Step 9** below...
