@@ -46,6 +46,7 @@
 			white-space: nowrap;
 			vertical-align: middle;
 			border: 1px solid transparent;
+			margin:0 10px;
 			padding: 10px 15px;
 			letter-spacing: 0.2px;
 			border-radius: 0.2rem;
@@ -436,7 +437,7 @@ echo '<style>.setup ul li.for_git_repo_creation {display:block !important;}</sty
 $html = "";
 
 if ($setup_already_executed)
-	$html .= '<div class="setup_already_executed">It seems this setup was already executed.<br/>If you continue, it may overwrite some of your changes...</div>';
+	$html .= '<div class="setup_already_executed">It seems this setup was already executed.<br/>If you continue, it may overwrite some of your changes...<br/><br/><strong>To enter in the Framework click <a href="__system/admin/">here</a>.</strong></div>';
 
 $html .= "<ol>
 	<li>Follow instructions from the INSTALL.md, this is:
@@ -530,7 +531,7 @@ $html .= "<ol>
 	<li>(optional) Delete the setup.php and INSTALL.md files.</li>
 	</ol>
 	
-	<div class=\"button\"><button onClick=\"document.location='__system/setup/'\"" . ($main_status ? "" : 'disabled title="Something above is not OK"') . ">Proceed with Setup</button></div>";
+	<div class=\"button\"><button onClick=\"document.location='__system/setup/'\"" . ($main_status ? "" : 'disabled title="Something above is not OK"') . ">" . ($setup_already_executed ? "Reinstall it again" : "Proceed with Setup") . "</button>" . ($setup_already_executed ? "<button onClick=\"document.location='__system/admin/'\">Go to Framework</button>" : "") . "</div>";
 
 echo $html;
 ?>

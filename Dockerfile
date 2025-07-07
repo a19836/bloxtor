@@ -99,40 +99,21 @@ LimitRequestFieldSize 10000000\n\
 LimitRequestLine 10000000\n\
 LimitXMLRequestBody 10000000\n" >> /etc/apache2/apache2.conf
 
-# Make Apache listen on 8887 8888 and 8890 because of internal request to the same port.
+# Make Apache listen on 8887, 8888, 8890 and 8892 because of internal request to the same port.
 RUN echo "Listen 8887" >> /etc/apache2/ports.conf
 RUN echo "Listen 8888" >> /etc/apache2/ports.conf
 RUN echo "Listen 8890" >> /etc/apache2/ports.conf
+RUN echo "Listen 8892" >> /etc/apache2/ports.conf
 
-RUN echo '<VirtualHost *:8887>\n\
+RUN echo '<VirtualHost *:8887 *:8888 *:8890 *:8892>\n\
     DocumentRoot /var/www/html\n\
     <Directory /var/www/html>\n\
         Options FollowSymLinks\n\
         AllowOverride All\n\
         Require all granted\n\
     </Directory>\n\
-</VirtualHost>\n' > /etc/apache2/sites-available/8887.conf && \
-    a2ensite 8887.conf
-
-RUN echo '<VirtualHost *:8888>\n\
-    DocumentRoot /var/www/html\n\
-    <Directory /var/www/html>\n\
-        Options FollowSymLinks\n\
-        AllowOverride All\n\
-        Require all granted\n\
-    </Directory>\n\
-</VirtualHost>\n' > /etc/apache2/sites-available/8888.conf && \
-    a2ensite 8888.conf
-
-RUN echo '<VirtualHost *:8890>\n\
-    DocumentRoot /var/www/html\n\
-    <Directory /var/www/html>\n\
-        Options FollowSymLinks\n\
-        AllowOverride All\n\
-        Require all granted\n\
-    </Directory>\n\
-</VirtualHost>\n' > /etc/apache2/sites-available/8890.conf && \
-    a2ensite 8890.conf
+</VirtualHost>\n' > /etc/apache2/sites-available/8887_92.conf && \
+    a2ensite 8887_92.conf
 
 # Set document root
 WORKDIR /var/www/html
@@ -157,7 +138,7 @@ RUN echo "<?php phpinfo(); ?>" > /var/www/html/info.php
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
 # Expose HTTP port
-EXPOSE 80 8887 8888 8890
+EXPOSE 80 8887 8888 8890 8892
 
 # Print access info
 RUN echo "--------------------------------------------------" \
@@ -165,8 +146,34 @@ RUN echo "--------------------------------------------------" \
  && echo "--------------------------------------------------"
 
 RUN echo '#!/bin/bash' > /usr/local/bin/docker-entrypoint.sh && \
+	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '#print env vars' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '/bin/echo "DOCKER_COMPOSE_DB_NAME: ${DOCKER_COMPOSE_DB_NAME}, DOCKER_COMPOSE_DB_USER: ${DOCKER_COMPOSE_DB_USER}"' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '#update global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'if [ -f /var/www/html/app/config/global_variables.php ] then' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	/bin/sed -i "s/\\$default_db_name\\s*:\\s*\\"[^\\"]*\\"/\\$default_db_name : \\"${DOCKER_COMPOSE_DB_NAME}\\"/g" /var/www/html/app/config/global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	/bin/sed -i "s/\\$default_db_user\\s*:\\s*\\"[^\\"]*\\"/\\$default_db_user : \\"${DOCKER_COMPOSE_DB_USER}\\"/g" /var/www/html/app/config/global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	/bin/sed -i "s/\\$default_db_pass\\s*:\\s*\\"[^\\"]*\\"/\\$default_db_pass : \\"${DOCKER_COMPOSE_DB_PASS}\\"/g" /var/www/html/app/config/global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	/bin/cat /var/www/html/app/config/global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'fi' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '#update docker-compose.env' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'if [ -f /var/www/html/docker-compose.env ] then' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	/bin/sed -i "s/DOCKER_COMPOSE_DB_NAME=.*/DOCKER_COMPOSE_DB_NAME=${DOCKER_COMPOSE_DB_NAME}/g" /var/www/html/docker-compose.env' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	/bin/sed -i "s/DOCKER_COMPOSE_DB_USER=.*/DOCKER_COMPOSE_DB_USER=${DOCKER_COMPOSE_DB_USER}/g" /var/www/html/docker-compose.env' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	/bin/sed -i "s/DOCKER_COMPOSE_DB_PASS=.*/DOCKER_COMPOSE_DB_PASS=${DOCKER_COMPOSE_DB_PASS}/g" /var/www/html/docker-compose.env' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	/bin/sed -i "s/DOCKER_COMPOSE_DB_ROOT_PASS=.*/DOCKER_COMPOSE_DB_ROOT_PASS=${DOCKER_COMPOSE_DB_ROOT_PASS}/g" /var/www/html/docker-compose.env' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	/bin/cat /var/www/html/docker-compose.env' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'fi' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '#remove cache files' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '/bin/rm -rf /var/www/html/tmp/cache' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '/bin/rm -rf /var/www/html/tmp/phpframework.log' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'echo ""' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo 'echo "--------------------------------------------------"' >> /usr/local/bin/docker-entrypoint.sh && \
-	echo 'echo "Bloxtor is ready! Access it at: http://localhost:8887/setup.php or http://localhost:8888/setup.php or http://localhost:8890/setup.php"' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'echo "Bloxtor is ready! Access it at: http://localhost:8887/setup.php or http://localhost:8888/setup.php or http://localhost:8890/setup.php" or http://localhost:8892/setup.php"' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo 'echo "Or use your Docker host IP if not running locally."' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo 'echo "--------------------------------------------------"' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '' >> /usr/local/bin/docker-entrypoint.sh && \

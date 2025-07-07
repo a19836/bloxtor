@@ -51,11 +51,6 @@
 #   Deny from all
 # </FilesMatch>
 
-# Deny access to .env, .yml, and .cnf files
-<FilesMatch "\.(env|yml|cnf|Dockerfile)$">
-    Require all denied
-</FilesMatch>
-
 # Cache-Control Headers for better performance
 # -- YOU SHOULD UNCOMMENT THE LINES BELOW:
 #<ifModule mod_headers.c>
