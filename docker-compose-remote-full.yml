@@ -1,0 +1,23 @@
+services:
+  web:
+    image: jplpinto/bloxtor_full-web:1.0
+    ports:
+      - "8892:80"   # (optional, but not needed if you want 8892 only)
+    #volumes:
+    #  - .:/var/www/html
+    env_file:
+      - docker-compose.env
+    depends_on:
+      - mysql
+  mysql:
+    image: jplpinto/bloxtor_full-mysql:1.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DOCKER_COMPOSE_DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DOCKER_COMPOSE_DB_NAME}
+      MYSQL_USER: ${DOCKER_COMPOSE_DB_USER}
+      MYSQL_PASSWORD: ${DOCKER_COMPOSE_DB_PASS}
+    ports:
+      - "8893:3306"
+    volumes:
+      - ./mysql.cnf:/etc/mysql/my.cnf
