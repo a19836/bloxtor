@@ -14,11 +14,29 @@ Bloxtor is lightweight and runs seamlessly on a Raspberry Pi. Any hardware capab
 
 ## Install through Docker
 
+You have four installation options for Bloxtor using Docker:
+* **A. Full Remote Installation with Prebuilt Image**: uses remote prebuilt images with all features and modules already installed on a MySQL database.
+	- Ready-to-use installation, no setup required.
+	- Using Docker Compose
+	- Faster Process
+* **B. Empty Remote Installation with Prebuilt Image**: uses remote prebuilt images but you need to run the setup from scratch on a fresh MySQL database.
+	- Requires setup to be completed after installation.
+	- Using Docker Compose
+	- Faster Process
+* **C. Empty Local Installation without Prebuilt Image**: builds a new local image from your current files using a MySQL database.
+	- Requires setup to be completed after installation.
+	- Using Docker Compose
+	- Slower Process
+* **D. Local Installation without Database**: builds a new local image from your current files without attaching a database.
+	- Ideal for frontend-only testing. Setup required afterward.
+	- Using Only the Dockerfile - Single Container
+	- Slower Process
+
 Note that installation through docker, doesn't install the mssql server and apache security addons.
 
-
-### Full Remote Installation - using Docker Compose (faster process)
-To install a version with all features and modules installed, __based in the latest available remote version__, please type the following commands in your terminal:
+### A. Full Remote Installation with Prebuilt Image
+This setup creates two containers (the web server container and the MySQL server container).
+To install a fully featured version — __with all__ modules and components preinstalled — based on the __latest available remote image__, run the following commands in your terminal:
 
 1. Start all services:
 ```
@@ -35,8 +53,9 @@ env $(grep -v '^#' docker-compose.env | xargs) docker-compose -f docker-compose-
 	
 	More info at [docker-compose-remote-full.yml](./docker-compose-remote-full.yml)
 
-### Empty Remote Installation - using Docker Compose (faster process)
-To execute a new fresh and empty installation, without any modules, projects and dependencies installed, __based in the latest available remote version__, please type the following commands in your terminal:
+### B. Empty Remote Installation with Prebuilt Image
+This setup creates two containers (the web server container and the MySQL server container).
+To launch a fresh and empty installation — __with no__ modules, projects, or dependencies — based on the __latest available remote version__, run the following commands in your terminal:
 
 1. Build and start all services:
 ```
@@ -58,8 +77,9 @@ env $(grep -v '^#' docker-compose.env | xargs) docker-compose -f docker-compose-
 	
 	More info at [docker-compose-remote-empty.yml](./docker-compose-remote-empty.yml)
 
-### Empty Local Installation - using Docker Compose (slower process)
-To execute a new fresh and empty installation, without any modules, projects and dependencies installed, __based in the current code__, please type the following commands in your terminal:
+### C. Empty Local Installation without Prebuilt Image
+This setup creates two containers (the web server container and the MySQL server container).
+To run a fresh, empty local installation — __with no__ preinstalled modules, projects, or dependencies — based on your __current local code__, execute the following commands in your terminal:
 
 1. Build and start all services:
 ```
@@ -81,8 +101,10 @@ env $(grep -v '^#' docker-compose.env | xargs) docker-compose -p bloxtor_local u
 	
 	More info at [docker-compose.yml](./docker-compose.yml)
 
-### Fresh Installation - using only the Dockerfile (single container - slower process)
-Execute the following commands in your terminal:
+### D. Local Installation without Prebuilt Image and Database
+This method builds and runs a single container (the web server only).
+To proceed, execute the following commands in your terminal:
+
 1. Build your Docker image:
 ```
 docker build -t bloxtor .

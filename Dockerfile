@@ -151,15 +151,19 @@ RUN echo '#!/bin/bash' > /usr/local/bin/docker-entrypoint.sh && \
 	echo '/bin/echo "DOCKER_COMPOSE_DB_NAME: ${DOCKER_COMPOSE_DB_NAME}, DOCKER_COMPOSE_DB_USER: ${DOCKER_COMPOSE_DB_USER}"' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '#update global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
-	echo 'if [ -f /var/www/html/app/config/global_variables.php ] then' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'if [ -f "/var/www/html/app/config/global_variables.php" ]' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'then' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '	/bin/sed -i "s/\\$default_db_name\\s*:\\s*\\"[^\\"]*\\"/\\$default_db_name : \\"${DOCKER_COMPOSE_DB_NAME}\\"/g" /var/www/html/app/config/global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '	/bin/sed -i "s/\\$default_db_user\\s*:\\s*\\"[^\\"]*\\"/\\$default_db_user : \\"${DOCKER_COMPOSE_DB_USER}\\"/g" /var/www/html/app/config/global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '	/bin/sed -i "s/\\$default_db_pass\\s*:\\s*\\"[^\\"]*\\"/\\$default_db_pass : \\"${DOCKER_COMPOSE_DB_PASS}\\"/g" /var/www/html/app/config/global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '	/bin/cat /var/www/html/app/config/global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'else' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	echo "Please open your browser and run the setup.php."' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo 'fi' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '#update docker-compose.env' >> /usr/local/bin/docker-entrypoint.sh && \
-	echo 'if [ -f /var/www/html/docker-compose.env ] then' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'if [ -f "/var/www/html/docker-compose.env" ]' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'then' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '	/bin/sed -i "s/DOCKER_COMPOSE_DB_NAME=.*/DOCKER_COMPOSE_DB_NAME=${DOCKER_COMPOSE_DB_NAME}/g" /var/www/html/docker-compose.env' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '	/bin/sed -i "s/DOCKER_COMPOSE_DB_USER=.*/DOCKER_COMPOSE_DB_USER=${DOCKER_COMPOSE_DB_USER}/g" /var/www/html/docker-compose.env' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '	/bin/sed -i "s/DOCKER_COMPOSE_DB_PASS=.*/DOCKER_COMPOSE_DB_PASS=${DOCKER_COMPOSE_DB_PASS}/g" /var/www/html/docker-compose.env' >> /usr/local/bin/docker-entrypoint.sh && \
@@ -173,7 +177,7 @@ RUN echo '#!/bin/bash' > /usr/local/bin/docker-entrypoint.sh && \
 	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo 'echo ""' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo 'echo "--------------------------------------------------"' >> /usr/local/bin/docker-entrypoint.sh && \
-	echo 'echo "Bloxtor is ready! Access it at: http://localhost:8887/setup.php or http://localhost:8888/setup.php or http://localhost:8890/setup.php" or http://localhost:8892/setup.php"' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo 'echo "Bloxtor is ready! Access it at: http://localhost:8887/setup.php or http://localhost:8888/setup.php or http://localhost:8890/setup.php or http://localhost:8892/setup.php"' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo 'echo "Or use your Docker host IP if not running locally."' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo 'echo "--------------------------------------------------"' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '' >> /usr/local/bin/docker-entrypoint.sh && \

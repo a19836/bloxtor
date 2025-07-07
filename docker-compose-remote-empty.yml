@@ -10,7 +10,7 @@ services:
     depends_on:
       - mysql
   mysql:
-    image: jplpinto/bloxtor_empty-mysql:1.0
+    image: mysql:8.0
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DOCKER_COMPOSE_DB_ROOT_PASS}
