@@ -72,7 +72,6 @@ env $(grep -v '^#' docker-compose.env | xargs) WEB_PORT=8890 DB_PORT=8891 docker
 	
 	Mysql server info:
 	- Host: mysql
-	- Port: 3306 (optional)
 	- DB Name, User and Pass: please check the [docker-compose.env](./docker-compose.env) file.
 	
 	More info at [docker-compose-remote-empty.yml](./docker-compose-remote-empty.yml)
@@ -96,7 +95,6 @@ env $(grep -v '^#' docker-compose.env | xargs) WEB_PORT=8888 DB_PORT=8889 docker
 	
 	Mysql server info:
 	- Host: mysql
-	- Port: 3306 (optional)
 	- DB Name, User and Pass: please check the [docker-compose.env](./docker-compose.env) file.
 	
 	More info at [docker-compose.yml](./docker-compose.yml)
