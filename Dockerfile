@@ -133,11 +133,13 @@ RUN echo "--------------------------------------------------" \
 RUN echo '#!/bin/bash' > /usr/local/bin/docker-entrypoint.sh && \
 	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '#print env vars' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '/bin/echo "Some env vars:"' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '/bin/echo "WEB_PORT:${WEB_PORT}"' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo 'if [ "${DOCKER_COMPOSE_DB_NAME}" != "" ]' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo 'then' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '	/bin/echo "DOCKER_COMPOSE_DB_NAME: ${DOCKER_COMPOSE_DB_NAME}, DOCKER_COMPOSE_DB_USER: ${DOCKER_COMPOSE_DB_USER}"' >> /usr/local/bin/docker-entrypoint.sh && \
+	echo '	/bin/echo ""' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '	#update global_variables.php' >> /usr/local/bin/docker-entrypoint.sh && \
 	echo '	if [ -f "/var/www/html/app/config/global_variables.php" ]' >> /usr/local/bin/docker-entrypoint.sh && \
