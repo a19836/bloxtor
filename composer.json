@@ -16,7 +16,10 @@
             "homepage": "https://www.jplpinto.com"
         }
     ],
-	"keywords": ["Bloxtor", "Citizen-Development", "No-Code", "Low-Code", "Pro-Code", "framework", "web-development", "web sites", "CMS", "ERP", "BPM", "B2B", "B2C", "Consultora Informática", "IT Consultance", "Apps", "software development", "DB development", "desenvolvimento de aplicações online", "programaçao", "desenvolvimento de sites", "workflow programming"],
+    "keywords": ["Bloxtor", "Citizen-Development", "No-Code", "Low-Code", "Pro-Code", "framework", "web-development", "web sites", "CMS", "ERP", "BPM", "B2B", "B2C", "Consultora Informática", "IT Consultance", "Apps", "software development", "DB development", "desenvolvimento de aplicações online", "programaçao", "desenvolvimento de sites", "workflow programming"],
+    "config": {
+        "vendor-dir": "app/lib/vendor"
+    },
     "require": {
         "php": ">=5.6",
         "ext-bcmath": "*",
