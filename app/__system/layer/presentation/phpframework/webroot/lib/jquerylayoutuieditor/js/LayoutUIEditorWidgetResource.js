@@ -5578,6 +5578,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 			 + '		<option value="MyWidgetResourceLib.PopupHandler.openButtonAddPopup(this)" title="openButtonAddPopup">openButtonAddPopup</option>'
 			 + '		<option value="MyWidgetResourceLib.ItemHandler.openItemEditPopupById(this)" title="openItemEditPopupById">openItemEditPopupById</option>'
 			 + '		<option value="MyWidgetResourceLib.ItemHandler.openItemViewPopupById(this)" title="openItemViewPopupById">openItemViewPopupById</option>'
+			 + '		<option value="MyWidgetResourceLib.ItemHandler.openItemDependentWidgets(this)" title="openItemDependentWidgets">openItemDependentWidgets</option>'
 			 + '		<option value="MyWidgetResourceLib.PopupHandler.openPopup(this)" title="openPopup">openPopup</option>'
 			 + '		<option value="MyWidgetResourceLib.PopupHandler.closePopup(this)" title="closePopup">closePopup</option>'
 			 + '		<option value="MyWidgetResourceLib.PopupHandler.closeParentPopup(this)" title="closeParentPopup. Note that the \'Popup Id\' setting will not be used by this function">closeParentPopup</option>'
@@ -14347,6 +14348,11 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 						description: "Get the item' values and open a popup with a readonly form with that values.<br/>The html element that will execute this function, must have the attribute 'data-widget-popup-id' with the correspondent popup id.<br/>Additionally this html element must be inside of a parent element with the following selector: '[data-widget-item], [data-widget-form], form' too."
 					},
 					{
+						value: "MyWidgetResourceLib.ItemHandler.openItemDependentWidgets(this); return false;",
+						title: "openItemDependentWidgets",
+						description: "Get the item' values and load dependent widgets.<br/>Additionally this html element must be inside of a parent element with the following selector: '[data-widget-item], [data-widget-form], form' too."
+					},
+					{
 						value: "MyWidgetResourceLib.PopupHandler.openPopup(this); return false;",
 						title: "openPopup",
 						description: "Open a popup.<br/>The html element that will execute this function, must have the attribute 'data-widget-popup-id' with the correspondent popup id."
@@ -14653,6 +14659,11 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 						
 						/* OTHER FUNCTIONS */
 						{
+							value: "MyWidgetResourceLib.ShortActionHandler.purgeCachedLoadDependentWidgetsResource(this); return false;",
+							title: "purgeCachedLoadDependentWidgetsResource",
+							description: "Purge cache from the dependent widgets."
+						},
+						{
 							value: "MyWidgetResourceLib.ShortActionHandler.addInlineResourceListItemToDependentWidgets(this); return false;",
 							title: "addInlineResourceListItemToDependentWidgets",
 							description: "Add an inline item inside of the dependent widgets."
@@ -14671,6 +14682,16 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							value: "MyWidgetResourceLib.ShortActionHandler.resetWidgetListResourceSort(this); return false;",
 							title: "resetWidgetListResourceSort",
 							description: "Reset sorting from the dependent widgets."
+						},
+						{
+							value: "MyWidgetResourceLib.ShortActionHandler.resetFormDependentWidgets(this); return false;",
+							title: "resetFormDependentWidgets",
+							description: "Resets all fields from the dependent form widgets."
+						},
+						{
+							value: "MyWidgetResourceLib.ShortActionHandler.resetFormDependentWidgetsAndConvertThemIntoAddForms(this); return false;",
+							title: "resetFormDependentWidgetsAndConvertThemIntoAddForms",
+							description: "Resets all fields from the dependent form widgets and remove the attribute: data-widget-pks-attrs.<br/>In case we wish to convert the edit forms to add forms, we should use this function. This allows to have forms that allows add and update items simultaneously."
 						},
 						{
 							value: "MyWidgetResourceLib.ShortActionHandler.executeResourceMultipleAddAction(this); return false;",
@@ -14785,7 +14806,12 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 						{
 							value: "MyWidgetResourceLib.ItemHandler.updateResourceItem(this); return false;",
 							title: "updateResourceItem",
-							description: "Get values of the current item and send request to server to save them.<br/>This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.<br/>Note that this function should be called inside of a list/form widget with a 'update' resource defined."
+							description: "Get values of the current item and send request to server to update them.<br/>This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.<br/>Note that this function should be called inside of a list/form widget with a 'update' resource defined."
+						},
+						{
+							value: "MyWidgetResourceLib.ItemHandler.saveResourceItem(this); return false;",
+							title: "saveResourceItem",
+							description: "Get values of the current item and send request to server to update them. If no record, adds a new one.<br/>This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.<br/>Note that this function should be called inside of a list/form widget with a 'update' resource defined."
 						},
 						{
 							value: "MyWidgetResourceLib.ItemHandler.removeResourceItem(this); return false;",
@@ -14801,6 +14827,11 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							value: "MyWidgetResourceLib.ItemHandler.updateViewFieldsBasedInEditFields(this); return false;",
 							title: "updateViewFieldsBasedInEditFields",
 							description: "Based in the edit fields' values, update the view fields, this is, when toggle between edit to view fields, the system calls automatically this function to update the new changed values. If you wish to call it too in another cenario, you can do it too..."
+						},
+						{
+							value: "MyWidgetResourceLib.ItemHandler.openItemDependentWidgets(this); return false;",
+							title: "openItemDependentWidgets",
+							description: "Get the item' values and load dependent widgets.<br/>Additionally this html element must be inside of a parent element with the following selector: '[data-widget-item], [data-widget-form], form' too."
 						},
 					],
 					"Attribute combox and input" : [
@@ -14866,6 +14897,11 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							description: "Get values of the current item and send request to server to save them.<br/>This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.<br/>Note that this function should be called inside of a list/form widget with a 'update' resource defined."
 						},
 						{
+							value: "MyWidgetResourceLib.ItemHandler.saveResourceItem(this); return false;",
+							title: "saveResourceItem",
+							description: "Get values of the current item and send request to server to update them. If no record, adds a new one.<br/>This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.<br/>Note that this function should be called inside of a list/form widget with a 'update' resource defined."
+						},
+						{
 							value: "MyWidgetResourceLib.ItemHandler.removeResourceItem(this); return false;",
 							title: "removeResourceItem",
 							description: "Send request to server to remove current item.<br/>This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'remove'.<br/>Note that this function should be called inside of a list/form widget with a 'remove' resource defined."
@@ -14889,6 +14925,11 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							value: "MyWidgetResourceLib.FormHandler.resetForm(this); return false;",
 							title: "resetForm",
 							description: "Resets all fields from a form."
+						},
+						{
+							value: "MyWidgetResourceLib.FormHandler.resetFormAndConvertItIntoAddForm(this); return false;",
+							title: "resetFormAndConvertItIntoAddForm",
+							description: "Resets all fields from a form and remove the attribute: data-widget-pks-attrs.<br/>In case we wish to convert an edit form to an add form, we should use this function. This allows to have a form that allows add and update items simultaneously."
 						}
 					]
 				}

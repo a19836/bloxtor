@@ -107,7 +107,7 @@
 	margin-top:20px;
 }
 .choose_widget_resource_value_attribute_popup > #new_resource_attribute > .db_table_attribute > div:not(.query_conditions) > label {
-	width:70px;
+	width:80px;
 	display:inline-block;
 }
 .choose_widget_resource_value_attribute_popup > #new_resource_attribute > .db_table_attribute > div.query_conditions > ul {

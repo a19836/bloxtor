@@ -432,6 +432,22 @@
 			MyWidgetResourceLib.fn.loadDependentWidgetsByIdWithoutResourcesToLoad(dependent_widgets_id, props, opts);
 		},
 		
+		//purge cache from the dependent widgets.
+		purgeCachedLoadDependentWidgetsResource: function(elm) {
+			var dependent_widgets_id = MyWidgetResourceLib.fn.prepareDependentWidgetsId(elm_properties["dependent_widgets_id"]);
+			dependent_widgets_id = MyWidgetResourceLib.fn.filterUniqueDependentWidgetsId(dependent_widgets_id);
+			
+			MyWidgetResourceLib.fn.each(dependent_widgets_id, function(idx, dependent_widget_id) {
+				var widgets = MyWidgetResourceLib.fn.getDependentWidgetsById(dependent_widget_id);
+				
+				if (widgets)
+					MyWidgetResourceLib.fn.each(widgets, function(idy, widget) {
+						if (widget)
+							MyWidgetResourceLib.ResourceHandler.purgeWidgetResources(widget, "load");
+					});
+			});
+		},
+		
 		getDependentWidgetsById: function(dependent_widget_id) {
 			if (dependent_widget_id) {
 				dependent_widget_id = ("" + dependent_widget_id).replace(/(^\s+|\s+$)/g, ""); //trim. Note that the dependent_widget_id maybe a composite selector, so do not replace white spaces between words.
@@ -6713,13 +6729,31 @@
 				MyWidgetResourceLib.MessageHandler.showErrorMessage("Error: No element in cancelAddResourceItem method!");
 		},
 		
-		//Get values of the current item and send request to server to save them.
+		//Get values of the current item and send request to server to update them.
 		//This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.
 		//Note that this function should be called inside of a list/form widget with a 'update' resource defined.
 		updateResourceItem: function(elm, resource_key) {
 			var opts = {update_item: true, include_opts_search_attrs: true};
 			
 			MyWidgetResourceLib.FieldHandler.executeResourceItemFieldsAction(elm, "[data-widget-list], [data-widget-form], form", "[data-widget-item], form", resource_key ? resource_key : "update", false, opts);
+		},
+		
+		//Get values of the current item and send request to server to update them. If no record, adds a new one.
+		//This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.
+		//Note that this function should be called inside of a list/form widget with a 'update' resource defined.
+		saveResourceItem: function(elm, resource_key) {
+			var search_attrs = null;
+			
+			if (elm) {
+				var item = elm.closest("[data-widget-item-add], [data-widget-item], form");
+				var search_attrs = item.getAttribute("data-widget-pks-attrs");
+				search_attrs = search_attrs ? MyWidgetResourceLib.fn.parseJson(search_attrs) : null;
+			}
+			
+			if (!search_attrs)
+				MyWidgetResourceLib.ItemHandler.addResourceItem(elm, resource_key);
+			else
+				MyWidgetResourceLib.ItemHandler.updateResourceItem(elm, resource_key);
 		},
 		
 		//Send request to server to remove current item.
@@ -6850,6 +6884,24 @@
 			var search_attrs = item ? item.getAttribute("data-widget-pks-attrs") : null;
 			
 			MyWidgetResourceLib.PopupHandler.openFormPopupById(elm, popup_id, search_attrs);
+		},
+		
+		//Get the item' values and load dependent widgets.
+		//Additionally this html element must be inside of a parent element with the following selector: '[data-widget-item], [data-widget-form], form' too.
+		openItemDependentWidgets: function(elm) {
+			var elm_properties = MyWidgetResourceLib.fn.getWidgetProperties(elm);
+			var item = elm ? elm.closest("[data-widget-item], [data-widget-form], form") : null;
+			var search_attrs = item ? item.getAttribute("data-widget-pks-attrs") : null;
+			
+			//execute search based in the search_attrs var
+			var dependent_widgets_id = MyWidgetResourceLib.fn.prepareDependentWidgetsId(elm_properties["dependent_widgets_id"]);
+			var search_props = {
+				search_attrs: search_attrs
+			};
+			var opts = {
+					"purge_cache": true 
+			};
+			MyWidgetResourceLib.fn.loadDependentWidgetsById(dependent_widgets_id, search_props, opts);
 		},
 		
 		//Toggle between view and edit fields. This will only work if there are view and edit fields together in the same item.
@@ -7401,6 +7453,15 @@
 			if (forms && forms.length > 0)
 				for (var i = 0, t = forms.length; i < t; i++)
 					MyWidgetResourceLib.FormHandler.resetForm(forms[i]); //Note that this method can be called as an handler so we cannot use the this.resetForm
+		},
+		
+		//Resets all fields from a form and remove the attribute: data-widget-pks-attrs.
+		//In case we wish to convert an edit form to an add form, we should use this function. This allows to have a form that allows add and update items simultaneously.
+		resetFormAndConvertItIntoAddForm: function(elm) {
+			if (elm) {
+				elm.removeAttribute("data-widget-pks-attrs");
+				MyWidgetResourceLib.FormHandler.resetForm(elm);
+			}
 		},
 		
 		//Handler to be called on success of an add action. In summary this handler closest the parent popup and resets the form for the next addition.
@@ -9960,6 +10021,70 @@
 							});
 					});
 				}
+			}
+		},
+		
+		//Purge cache from the dependent widgets.
+		purgeCachedLoadDependentWidgetsResource: function(elm) {
+			if (elm) {
+				var properties = MyWidgetResourceLib.fn.getWidgetProperties(elm);
+				var dependent_widgets_id = MyWidgetResourceLib.fn.prepareDependentWidgetsId(properties["dependent_widgets_id"]);
+				dependent_widgets_id = MyWidgetResourceLib.fn.filterUniqueDependentWidgetsId(dependent_widgets_id);
+				
+				MyWidgetResourceLib.fn.each(dependent_widgets_id, function(idx, dependent_widget_id) {
+					var widgets = MyWidgetResourceLib.fn.getDependentWidgetsById(dependent_widget_id);
+					
+					if (widgets)
+						MyWidgetResourceLib.fn.each(widgets, function(idy, widget) {
+							if (widget) {
+								if (widget.closest("[data-widget-form], form"))
+									MyWidgetResourceLib.FormHandler.purgeCachedLoadParentFormResource(widget);
+								else if (widget.closest("[data-widget-list]"))
+									MyWidgetResourceLib.ListHandler.purgeCachedLoadParentListResource(widget);
+								else
+									MyWidgetResourceLib.ResourceHandler.purgeWidgetResources(widget, "load");
+							}
+						});
+				});
+			}
+		},
+		
+		//Resets all fields from the dependent form widgets.
+		resetFormDependentWidgets: function(elm) {
+			if (elm) {
+				var properties = MyWidgetResourceLib.fn.getWidgetProperties(elm);
+				var dependent_widgets_id = MyWidgetResourceLib.fn.prepareDependentWidgetsId(properties["dependent_widgets_id"]);
+				dependent_widgets_id = MyWidgetResourceLib.fn.filterUniqueDependentWidgetsId(dependent_widgets_id);
+				
+				MyWidgetResourceLib.fn.each(dependent_widgets_id, function(idx, dependent_widget_id) {
+					var widgets = MyWidgetResourceLib.fn.getDependentWidgetsById(dependent_widget_id);
+					
+					if (widgets)
+						MyWidgetResourceLib.fn.each(widgets, function(idy, widget) {
+							if (widget)
+								MyWidgetResourceLib.FormHandler.resetForm(widget);
+						});
+				});
+			}
+		},
+		
+		//Resets all fields from the dependent form widgets and remove the attribute: data-widget-pks-attrs.
+		//In case we wish to convert the edit forms to add forms, we should use this function. This allows to have forms that allows add and update items simultaneously.
+		resetFormDependentWidgetsAndConvertThemIntoAddForms: function(elm) {
+			if (elm) {
+				var properties = MyWidgetResourceLib.fn.getWidgetProperties(elm);
+				var dependent_widgets_id = MyWidgetResourceLib.fn.prepareDependentWidgetsId(properties["dependent_widgets_id"]);
+				dependent_widgets_id = MyWidgetResourceLib.fn.filterUniqueDependentWidgetsId(dependent_widgets_id);
+				
+				MyWidgetResourceLib.fn.each(dependent_widgets_id, function(idx, dependent_widget_id) {
+					var widgets = MyWidgetResourceLib.fn.getDependentWidgetsById(dependent_widget_id);
+					
+					if (widgets)
+						MyWidgetResourceLib.fn.each(widgets, function(idy, widget) {
+							if (widget)
+								MyWidgetResourceLib.FormHandler.resetFormAndConvertItIntoAddForm(widget);
+						});
+				});
 			}
 		},
 		

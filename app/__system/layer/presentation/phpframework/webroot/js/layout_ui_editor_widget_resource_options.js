@@ -444,6 +444,14 @@ function toggleChooseLayoutUIEditorWidgetResourceValueAttributePopup(elm, widget
 				row_index.hide();
 				query_conditions.hide();
 			}
+			
+			/*disabled bc we only create one getAllOptions method in the server for each table/service file.
+			if (popup.attr("show_resource_attributes") != 1) {
+				if (this.value == "get_all_options")
+					db_table_attribute.children(".db_attribute").show();
+				else
+					db_table_attribute.children(".db_attribute").hide();
+			}*/
 		});
 		
 		$("body").append(popup);
@@ -1045,6 +1053,10 @@ function prepareChooseLayoutUIEditorWidgetResourceValueUserData(elm, menu_settin
 			//prepare resource_attribute, if apply
 			if (show_resource_attributes)
 				resource_attribute = db_attribute;
+			
+			//disabled bc we only create one getAllOptions method in the server for each table/service file.
+			//if (query_type == "get_all_options")
+			//	resource_data["attribute"] = db_attribute;
 			
 			//prepare resource possible names
 			var resources_name = createLayoutUIEditorWidgetResourceSLAResourceNamesBasedInResourceDBTable(query_type, db_driver, db_table, db_table_alias, null, resource_data);
@@ -2224,11 +2236,15 @@ function createLayoutUIEditorWidgetResourceSLAResourceNamesBasedInResourceDBTabl
 			
 			if ($.isArray(data)) {
 				//if data if invalid, set the data with the db_table
-				if (!$.isPlainObject(data[0]) || $.isEmptyObject(data[0]) || !data[0]["table"])
+				if (!$.isPlainObject(data[0]) || $.isEmptyObject(data[0]))
 					data = [{
 						table: db_table,
 						table_alias: db_table_alias
 					}];
+				else if (!data[0]["table"]) {
+					data[0]["table"] = db_table;
+					data[0]["table_alias"] = db_table_alias;
+				}
 				
 				//prepare names for table alias
 				if (data[0]["table_alias"]) {

@@ -854,7 +854,8 @@ $conditions_join = "and";
 		}
 		
 		if ($fk_attr) {
-			$title_attr = $fk_attrs ? WorkFlowDataAccessHandler::getTableAttrTitle($fk_attrs, $fk_table) : null;
+			$title_attr = $fk_attrs && is_array($resource_data) && array_key_exists("attribute", $resource_data) && is_string($resource_data["attribute"]) && !empty($fk_attrs[ $resource_data["attribute"] ]) ? $fk_attrs[ $resource_data["attribute"] ] : null;
+			$title_attr = !$title_attr && $fk_attrs ? WorkFlowDataAccessHandler::getTableAttrTitle($fk_attrs, $fk_table) : null;
 			$title_attr = $title_attr ? $title_attr : $fk_attr; //set $title_attr to $fk_attr if not exist. In this case the getAllOptions will simply return the a list with key/value pair like: 'primary key/primary key'.
 			
 			$keys = is_array($fk_attr) ? $fk_attr : array($fk_attr);

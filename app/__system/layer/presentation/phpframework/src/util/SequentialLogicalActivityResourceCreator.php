@@ -1918,6 +1918,7 @@ return $result;';
 		return false;
 	}
 
+	//TODO: In the future change this method to create multiple getAllOptions methods based in the 'resource_data[attribute]', if attribute exists.
 	private function createGetAllOptionsMethod($action_type, $resource_data, $class_name, $file_path, &$error_message) {
 		$get_all_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "getAll", $class_name);
 		
