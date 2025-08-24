@@ -9819,6 +9819,31 @@
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, null, null, null, true, true);
 		},
 		
+		/* REDIRECT FUNCTIONS - GENERIC */
+		
+		//Redirect browser to an url registered in the [data-widget-redirect-url] attribute.
+		redirectTo: function(elm) {
+			if (elm && elm.hasAttribute('data-widget-redirect-url')) {
+				var url = elm.getAttribute('data-widget-redirect-url');
+				
+				if (url)
+					document.location = url;
+			}
+		},
+		
+		//Redirect browser to an url registered in the [data-widget-redirect-url] attribute, but before replaces the url with the resource data if any is present.
+		redirectToBasedInResources: function(elm, resources_name, resources_cache_key, resource_index) {
+			if (elm) {
+				var url = elm.getAttribute('data-widget-redirect-url');
+				
+				if (url) {
+					var new_url = MyWidgetResourceLib.HashTagHandler.replaceHtmlHashTagsWithResources(url, resources_name, resources_cache_key, resource_index);
+					
+					document.location = new_url;
+				}
+			}
+		},
+		
 		/* OTHER FUNCTIONS */
 		
 		//Add an inline item inside of the dependent widgets.

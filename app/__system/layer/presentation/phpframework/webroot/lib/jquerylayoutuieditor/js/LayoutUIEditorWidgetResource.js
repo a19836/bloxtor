@@ -14214,6 +14214,9 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 					"MyWidgetResourceLib.ResourceHandler.setDependentWidgetsResourcesLoadedAttribute": "setDependentWidgetsResourcesLoadedAttribute",
 					"MyWidgetResourceLib.ResourceHandler.setParentWidgetResourcesLoadedAttribute": "setParentWidgetResourcesLoadedAttribute",
 					
+					"MyWidgetResourceLib.ShortActionHandler.redirectTo": "redirectTo",
+					"MyWidgetResourceLib.ShortActionHandler.redirectToBasedInResources": "redirectToBasedInResources",
+					
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInInputNonEmptyValue": "refreshDependentWidgetsBasedInInputNonEmptyValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue": "refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInInputValue": "refreshDependentWidgetsBasedInInputValue",
@@ -14236,6 +14239,9 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 					"MyWidgetResourceLib.ResourceHandler.setWidgetResourcesLoadedAttribute": "setWidgetResourcesLoadedAttribute",
 					"MyWidgetResourceLib.ResourceHandler.setDependentWidgetsResourcesLoadedAttribute": "setDependentWidgetsResourcesLoadedAttribute",
 					"MyWidgetResourceLib.ResourceHandler.setParentWidgetResourcesLoadedAttribute": "setParentWidgetResourcesLoadedAttribute",
+					
+					"MyWidgetResourceLib.ShortActionHandler.redirectTo": "redirectTo",
+					"MyWidgetResourceLib.ShortActionHandler.redirectToBasedInResources": "redirectToBasedInResources",
 					
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInInputNonEmptyValue": "refreshDependentWidgetsBasedInInputNonEmptyValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue": "refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue",
@@ -14655,6 +14661,18 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							value: "MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll(this); return false;",
 							title: "refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll",
 							description: "Reload data from the dependent widgets, that were not loaded yet, based on a resource-attribute name and value of a html element. If that value is empty, reload dependent widgets without any filter, this is, get all items from dependent widgets. The resource-attribute value is based in the available_values and if empty get the default value."
+						},
+						
+						/* REDIRECT FUNCTIONS */
+						{
+							value: "MyWidgetResourceLib.ShortActionHandler.redirectTo(this); return false;",
+							title: "redirectTo",
+							description: "Redirect browser to an url registered in the [data-widget-redirect-url] attribute."
+						},
+						{
+							value: "MyWidgetResourceLib.ShortActionHandler.redirectToBasedInResources(this, resources_name, resources_cache_key, resource_index); return false;",
+							title: "redirectToBasedInResources",
+							description: "Redirect browser to an url registered in the [data-widget-redirect-url] attribute, but before replaces the url with the resource data if any is present."
 						},
 						
 						/* OTHER FUNCTIONS */
