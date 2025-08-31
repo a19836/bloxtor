@@ -66,7 +66,7 @@ else if (!empty($layers_beans["presentation_layers"][$bean_name]) && $layers_bea
 	$filter_by_layout = "$layer_bean_folder_name/" . preg_replace("/\/+$/", "", $project); //remove last slash from $path
 	$filter_by_layout_permission = UserAuthenticationHandler::$PERMISSION_BELONG_NAME;
 }
-//echo "default_page:$default_page|<br>project:$project|filter_by_layout:$filter_by_layout";die();
+//echo "default_page:$default_page|<br>bean_name:$bean_name|<br>bean_file_name:$bean_file_name|<br>project:$project|<br>filter_by_layout:$filter_by_layout|";die();
 
 //Preparing permissions
 //Note that if a project doesn't have any layout_type_permission created, the presentation and DB layers should not be removed from the $layers variable. This is the "Citizen UI" and is for a specific project, so even if there isn't a layout_type_permissions defined, it should always show the correspondent presentation layer and default DB layer.

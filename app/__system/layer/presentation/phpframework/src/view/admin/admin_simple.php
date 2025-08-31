@@ -22,7 +22,7 @@ $logged_name_initials = explode(" ", $logged_name);
 $logged_name_initials = strtoupper(substr($logged_name_initials[0], 0, 1) . (isset($logged_name_initials[1]) ? substr($logged_name_initials[1], 0, 1) : ""));
 
 $filter_by_layout_url_query = $filter_by_layout ? "&filter_by_layout=$filter_by_layout&filter_by_layout_permission=$filter_by_layout_permission" : "";
-$admin_home_project_page_url = "admin/admin_home_project?filter_by_layout=#filter_by_layout#";
+$admin_home_project_page_url = $project_url_prefix . "admin/admin_home_project?filter_by_layout=#filter_by_layout#";
 $admin_home_projects_page_url = "";
 $notifications_url = $project_url_prefix . "admin/get_notifications";
 
