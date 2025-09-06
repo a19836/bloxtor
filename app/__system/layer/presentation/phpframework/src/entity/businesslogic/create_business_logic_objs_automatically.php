@@ -222,6 +222,10 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 											$resource_service_file_relative_path = substr($resource_service_file_path, strlen(LAYER_PATH));
 											$error_message = null;
 											
+											//note that the resource methods are only created if not exist yet, so if overwrite is present, we must first remove the resource file, so all methods get created again with the latest configurations.
+											if ($overwrite && file_exists($resource_service_file_path))
+												unlink($resource_service_file_path);
+											
 											$SequentialLogicalActivityBLResourceCreator = new SequentialLogicalActivityBLResourceCreator($resource_service_file_path, $resource_service_class_name, $tables_props, $table_name);
 											$resource_file_exists = $SequentialLogicalActivityBLResourceCreator->createBLResourceServiceFile($service_file_path, $service_class_name, $error_message);
 											
