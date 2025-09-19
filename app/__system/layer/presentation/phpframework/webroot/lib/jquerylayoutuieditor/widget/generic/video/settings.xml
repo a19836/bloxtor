@@ -127,8 +127,8 @@
 			me.onOpenWidgetSettings = function(widget, menu_settings) {
 				if (typeof ui_creator.options.on_choose_image_url_func == "function") {
 					var icon = $('<span class="zmdi zmdi-search-in-file search"></span>');
-					icon.on("click", function() {
-						ui_creator.options.on_choose_image_url_func(this);
+					icon.on("click", function(event) {
+						ui_creator.options.on_choose_image_url_func(this, event);
 					});
 					menu_settings.find(" > .settings-properties .settings-property.src").addClass("with-search-icon").append(icon);
 				}

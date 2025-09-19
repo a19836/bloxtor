@@ -230,27 +230,36 @@ class PHPVariablesFileHandler {
 		if ($content) {
 			//$content = PHPCodePrintingHandler::getCodeWithoutComments($content);
 			
-			preg_match_all('/([\w\$@:\-\>]+)([ ]*)=([ ]*)([^;]+);/u', $content, $matches, PREG_SET_ORDER); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 
+			$tokens = token_get_all($content);
+			$tokens_vars = self::getVarsFromTokens($tokens);
+			//echo "<pre>";print_r($tokens_vars);die();
+			
+			//$value_regex = '([^;]+)';
+			$value_regex = '("((?:\\\\.|[^"\\\\])*)"|\'((?:\\\\.|[^\'\\\\])*)\'|([^;]+))';
+
+			preg_match_all('/([\w\$@:\-\>]+)([ ]*)=([ ]*)' . $value_regex . ';/u', $content, $matches, PREG_SET_ORDER); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 
 			//echo "<pre>";print_r($matches);die();
 			
 			$t = count($matches);
 			for ($i = 0; $i < $t; $i++) {
 				$name = $matches[$i][1];
-				$value = trim($matches[$i][4]);
-				$char = substr($value, 0, 1);
 				
 				//check if real name, this is, if $... or Class::something
 				if (substr($name, 0, 1) == '$' || substr($name, 0, 2) == '@$' || strpos($name, "::") !== false) {
 					//it means is not a real variable and maybe there is a comment that is confusing the regex, this is, something like this: '//optional => only if you which to start a session, but if you DO, please do it here!' This example happens in the pre_init_config.php
-				
 					$name = substr($name, 0, 1) == "\$" && strpos($name, "::") === false && strpos($name, "->") === false ? substr($name, 1) : $name;
 					$name = substr($name, 0, 2) == "@\$" && strpos($name, "::") === false && strpos($name, "->") === false ? substr($name, 2) : $name;
+					
+					$value = isset($tokens_vars[$name]) ? $tokens_vars[$name] : $matches[$i][4];
+					$value = trim($value);
+					$char = substr($value, 0, 1);
 					
 					if ($char == '"' || $char == "'") {
 						$value = str_replace("\\" . $char, $char, substr($value, 1, -1)); //remove the \" added from the saveVarsToFile
 					}
 					else {
-						preg_match_all('/isset([ ]*)\(([ ]*)([\w\$@:\-\>]+)([ ]*)\)([ ]*)\?([ ]*)([\w\$@:\-\>]+)([ ]*)\:([ ]*)([^;]+);/iu', "$value;", $m, PREG_SET_ORDER); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 
+						preg_match_all('/isset([ ]*)\(([ ]*)([\w\$@:\-\>]+)([ ]*)\)([ ]*)\?([ ]*)([\w\$@:\-\>]+)([ ]*)\:([ ]*)' . $value_regex . ';/iu', "$value;", $m, PREG_SET_ORDER); //'\w' means all words with '_' and '/u' means with accents and ç too. '/u' converts unicode to accents chars. 
+						//echo "<pre>";print_r($m);
 						
 						$value_lower = strtolower($value);
 						
@@ -272,6 +281,44 @@ class PHPVariablesFileHandler {
 				}
 			}
 		}
+		
+		//echo "<pre>";print_r($vars);die();
+		return $vars;
+	}
+	
+	public static function getVarsFromTokens($tokens) {
+		$vars = array();
+			
+		if ($tokens) {
+			//echo "<pre>";print_r($tokens);die();
+			
+			$var_name = null;
+			$t = count($tokens);
+			
+			for ($i = 0; $i < $t; $i++) {
+				$token = $tokens[$i];
+				
+				if (is_array($token) && $token[0] === T_VARIABLE)
+					$var_name = substr($token[1], 1);
+
+				if ($var_name && $token === '=') {
+					// Procura o próximo valor até ao ;
+					$value = '';
+					
+					for ($j = $i + 1; $j < $t; $j++) {
+						if ($tokens[$j] === ';')
+							break;
+						
+						$value .= is_array($tokens[$j]) ? $tokens[$j][1] : $tokens[$j];
+					}
+
+					$vars[$var_name] = $value;
+					$var_name = null;
+					$i = $j + 1;
+				}
+			}
+		}
+		//echo "<pre>";print_r($vars);die();
 		
 		return $vars;
 	}

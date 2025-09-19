@@ -7687,8 +7687,8 @@ function LayoutUIEditor() {
 		if (typeof me.options.on_choose_image_url_func == "function") {
 			var icon = menu_settings.find(".settings-decorations .settings-background-image .search");
 			
-			icon.on("click", function() {
-				me.options.on_choose_image_url_func(this);
+			icon.on("click", function(event) {
+				me.options.on_choose_image_url_func(this, event);
 			});
 			icon.parent().addClass("with-search-icon");
 		}
@@ -8265,6 +8265,8 @@ function LayoutUIEditor() {
 							+ '<li class="enlarge-field"><a onClick="' + me.obj_var_name + '.enlargeMenuSettingsContextMenuField(this)">Enlarge Field</a></li>'
 							+ (typeof me.options.on_choose_variable_func == "function" ? '<li class="choose_variable"><a onClick="' + me.obj_var_name + '.chooseMenuSettingsContextMenuFieldVariable(this, event)">Choose Variable</a></li>' : '')
 							+ (typeof me.options.on_choose_event_func == "function" ? '<li class="choose_event"><a onClick="' + me.obj_var_name + '.chooseMenuSettingsContextMenuFieldEvent(this, event)">Choose Event</a></li>' : '')
+							+ (typeof me.options.on_choose_page_url_func == "function" ? '<li class="choose_page_url"><a onClick="' + me.obj_var_name + '.chooseMenuSettingsContextMenuFieldPageUrl(this, event)">Choose Page Url</a></li>' : '')
+							+ (typeof me.options.on_choose_image_url_func == "function" ? '<li class="choose_image_url"><a onClick="' + me.obj_var_name + '.chooseMenuSettingsContextMenuFieldImageUrl(this, event)">Choose Image Url</a></li>' : '')
 						+ '</ul>';
 				context_menu = $(html);
 				
@@ -8349,6 +8351,28 @@ function LayoutUIEditor() {
 			
 			if (field)
 				me.clearFieldsUserInput(field);
+			
+			MyContextMenu.hideContextMenu( $(elm).closest(".mycontextmenu") );
+		}
+	};
+	
+	me.chooseMenuSettingsContextMenuFieldPageUrl = function(elm, event) {
+		if (typeof MyContextMenu == "object") {
+			var field = MyContextMenu.getSelectedEventTarget();
+			
+			if (field && typeof me.options.on_choose_page_url_func == "function")
+				me.options.on_choose_page_url_func(field, event);
+			
+			MyContextMenu.hideContextMenu( $(elm).closest(".mycontextmenu") );
+		}
+	};
+	
+	me.chooseMenuSettingsContextMenuFieldImageUrl = function(elm, event) {
+		if (typeof MyContextMenu == "object") {
+			var field = MyContextMenu.getSelectedEventTarget();
+			
+			if (field && typeof me.options.on_choose_image_url_func == "function")
+				me.options.on_choose_image_url_func(field, event);
 			
 			MyContextMenu.hideContextMenu( $(elm).closest(".mycontextmenu") );
 		}
