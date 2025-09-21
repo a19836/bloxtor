@@ -120,6 +120,7 @@ if ($obj && is_a($obj, "BusinessLogicLayer")) {
 									
 									$module_id = getModuleId($file);
 									$dst_file_path = $folder_path . ($path ? basename($file) : $file); //if no path, this means is the root of the business logic layer, then write the full $file with folders according with what comes from the data-access layers. Otherwise, if $path exists, write all new services files to the $path folder.
+									//echo $dst_file_path;die();
 									
 									//check if $folder_path belongs to filter_by_layout and if not, add it.
 									$LayoutTypeProjectHandler->createLayoutTypePermissionsForFilePathAndLayoutTypeName($filter_by_layout, dirname($dst_file_path));
@@ -374,7 +375,7 @@ function createHibernateBusinessLogicFile($data_access_obj, $db_broker, $db_driv
 		}
 		else {
 			//$class_name = WorkFlowDataAccessHandler::getClassName($obj_id);
-			$class_name = str_replace(" ", "", ucwords(str_replace(array("_", "-"), " ", $obj_id))); // I cannot use the WorkFlowDataAccessHandler::getClassName bc it converts the $obj_id to lower case, and if the $obj_id=="CarCategory" it will return the class_name Carcategory, which will mess the rest of the automatic creation of interfaces.
+			$class_name = str_replace(" ", "", ucwords(str_replace(array("_", "-", "."), " ", $obj_id))); // I cannot use the WorkFlowDataAccessHandler::getClassName bc it converts the $obj_id to lower case, and if the $obj_id=="CarCategory" it will return the class_name Carcategory, which will mess the rest of the automatic creation of interfaces. Note that the obj_id may have the schema
 			$file_path = "$folder_name/{$class_name}Service.php";
 		}
 		

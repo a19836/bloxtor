@@ -69,7 +69,7 @@ function checkIfIsFileOrHbnObj(node) {
 		}
 		else {
 			var file_name = file_path.substring(file_path.lastIndexOf("/") + 1, file_path.lastIndexOf("."));
-			var parts = file_name.replace(/_/g, " ").split(" ");
+			var parts = file_name.replace(/[_\.]/g, " ").split(" ");
 			var service_name = "";
 			for (var i = 0; i < parts.length; i++)
 				service_name += parts[i].charAt(0).toUpperCase() + parts[i].slice(1).toLowerCase();
@@ -178,7 +178,7 @@ function updateDBTables(elm) {
 					for (var i = 0; i < data.length; i++) {
 						var table = data[i];
 						
-						var parts = ("" + table).replace(/_/g, " ").split(" ");
+						var parts = ("" + table).replace(/[_\.]/g, " ").split(" ");
 						var service_name = "";
 						for (var j = 0; j < parts.length; j++)
 							service_name += parts[j].charAt(0).toUpperCase() + parts[j].slice(1).toLowerCase();

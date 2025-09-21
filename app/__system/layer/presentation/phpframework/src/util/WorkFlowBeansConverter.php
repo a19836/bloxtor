@@ -1066,7 +1066,7 @@ class WorkFlowBeansConverter {
 	<var name="' . $ll . '_options">
 		<list>';
 			
-			$cdata_props = array("host", "db_name", "username", "password", "schema", "odbc_data_source", "odbc_driver", "extra_dsn");
+			$cdata_props = array("host", "db_name", "username", "password", "encoding", "schema", "odbc_data_source", "odbc_driver", "extra_dsn", "extra_settings");
 			
 			if (!empty($task["properties"]))
 				foreach ($task["properties"] as $property_name => $property_value)

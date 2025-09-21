@@ -1514,7 +1514,7 @@ trait DBStatic {
 		return $parsed_extra_settings;
 	}
 	
-	protected function parseExtraSettingsAsPDOSettings($extra_settings) {
+	protected static function parseExtraSettingsAsPDOSettings($extra_settings) {
 		$parsed_extra_settings = self::parseExtraSettings($extra_settings);
 		$pdo_settings = array();
 		
@@ -1530,6 +1530,74 @@ trait DBStatic {
 				}
 		
 		return $pdo_settings;
+	}
+	
+	/**
+	 * In MSSQLDB, PDO and ODBC: there is no option to return dates as strings; we have to convert them manually. In sqlsvr there is: '"ReturnDatesAsStrings" => true'. More info in the MSSQLDB::connect method.
+	 *
+	 * Normalizes a record returned from the DB:
+	 * - converts DateTimeInterface to 'Y-m-d H:i:s'
+	 * - converts objects with __toString() to strings
+	 * - for other objects, tries to convert public properties (get_object_vars),
+	 * otherwise, replaces with the class name (fallback)
+	 * - applies recursively to nested arrays
+	 */
+	protected static function normalizeRecord($record) {
+		 if (is_array($record)) {
+		     foreach ($record as $k => $v) {
+		         if ($v instanceof \DateTimeInterface) {
+		             $record[$k] = $v->format('Y-m-d H:i:s');
+		         } 
+		         elseif (is_array($v)) {
+		             $record[$k] = $this->normalizeRecord($v);
+		         } 
+		         elseif (is_object($v)) {
+		             if ($v instanceof \DateTimeInterface) {
+		                 $record[$k] = $v->format('Y-m-d H:i:s');
+		             } 
+		             elseif (method_exists($v, '__toString')) {
+		                 $record[$k] = (string)$v;
+		             } 
+		             else {
+		                 $vars = get_object_vars($v);
+		                 
+		                 if ($vars) {
+		                     $record[$k] = $this->normalizeRecord($vars);
+		                 } 
+		                 else {
+		                     $record[$k] = get_class($v);
+		                 }
+		             }
+		         }
+		     }
+		     
+		     return $record;
+		 }
+		 else if (is_object($record)) {
+		     foreach (get_object_vars($record) as $k => $v) {
+		         if ($v instanceof \DateTimeInterface) {
+		             $record->$k = $v->format('Y-m-d H:i:s');
+		         } 
+		         elseif (is_array($v)) {
+		             $record->$k = $this->normalizeRecord($v);
+		         } 
+		         elseif (is_object($v)) {
+		             if ($v instanceof \DateTimeInterface) {
+		                 $record->$k = $v->format('Y-m-d H:i:s');
+		             } 
+		             elseif (method_exists($v, '__toString')) {
+		                 $record->$k = (string)$v;
+		             } 
+		             else {
+		                 $record->$k = get_class($v);
+		             }
+		         }
+		     }
+		     
+		     return $record;
+		 }
+
+		 return $record;
 	}
 }
 ?>

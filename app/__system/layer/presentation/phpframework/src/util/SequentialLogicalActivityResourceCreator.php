@@ -2841,8 +2841,10 @@ return $result;';
 										//echo "created_file_abs_path:$created_file_abs_path\n";
 										//echo "default_file_abs_path:$default_service_file_abs_path\n";
 										
-										if ($created_file_abs_path == $default_service_file_abs_path)
+										if ($created_file_abs_path == $default_service_file_abs_path) {
 											$status = true;
+											//echo "files are the same\n";
+										}
 										//copy correspondent method from created_file_abs_path to default_service_file_abs_path
 										else if (file_exists($default_service_file_abs_path)) { 
 											$method_data["code"] = PHPCodePrintingHandler::getFunctionCodeFromFile($created_file_abs_path, $method_data["name"], $class_name);
@@ -2860,17 +2862,22 @@ return $result;';
 										}
 										//rename created_file_abs_path to default_service_file_abs_path
 										else {
+											$class_data = PHPCodePrintingHandler::getClassOfFile($created_file_abs_path); //must be here before the rename
 											$status = rename($created_file_abs_path, $default_service_file_abs_path);
+											//echo "rename:$status\n";
 											
 											if ($status) {
-												$class_data = PHPCodePrintingHandler::getClassOfFile($created_file_abs_path);
 												$class_data_name = isset($class_data["name"]) ? $class_data["name"] : null;
 												$class_data_namespace = isset($class_data["namespace"]) ? $class_data["namespace"] : null;
+												//echo "class_data:";print_r($class_data);echo "\n";
 												
 												$src_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace($class_data_name, $class_data_namespace);
-												$dst_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace(pathinfo($created_file_abs_path, PATHINFO_FILENAME), $class_data_namespace);
+												$dst_class_name = PHPCodePrintingHandler::prepareClassNameWithNameSpace(pathinfo($default_service_file_abs_path, PATHINFO_FILENAME), $class_data_namespace);
 												
-												$status = PHPCodePrintingHandler::renameClassFromFile($created_file_abs_path, $src_class_name, $dst_class_name);
+												$status = $src_class_name == $dst_class_name || PHPCodePrintingHandler::renameClassFromFile($default_service_file_abs_path, $src_class_name, $dst_class_name);
+												/*echo "src_class_name:$src_class_name\n";
+												echo "dst_class_name:$dst_class_name\n";
+												echo "renameClassFromFile:$status\n";*/
 												
 												//if rename was unsuccessfully, delete file
 												if (!$status)
@@ -2879,6 +2886,8 @@ return $result;';
 											else //if rename was unsuccessfully, delete file
 												@unlink($created_file_abs_path);
 										}
+										//echo "Final status:$status\n";
+										//die();
 										
 										//get out from this function if stsatus is ok, otherwise continues to next broker
 										if ($status)
@@ -3492,7 +3501,7 @@ $conds = $conds ? $conds : "1=1";
 	}
 
 	private static function getLabel($name) {
-		return ucwords(strtolower(str_replace(array("-", "_"), " ", $name)));
+		return ucwords(strtolower(str_replace(array("-", "_", "."), " ", $name)));
 	}
 
 	private static function isAssociativeArray($arr) {

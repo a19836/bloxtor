@@ -540,6 +540,7 @@ function getHibernateProps($objs, $table_name, $table, $fks, $db_broker, $db_dri
 	//PREPARING TABLE SETTINGS:
 	$table_alias = getTableAlias($table_name, $selected_tables_alias);
 	$tnl = strtolower($table_name);
+	$parsed_tnl = str_replace(".", "_", $tnl); //Table name may have schema
 	$tal = strtolower($table_alias);
 	
 	//PREPARING FOREIGN METHODS SETTINGS:
@@ -591,7 +592,7 @@ function getHibernateProps($objs, $table_name, $table, $fks, $db_broker, $db_dri
 			
 			$cond = isset($obj["item_type"]) && $obj["item_type"] == "obj" && 
 				($otl == $tnl || ($table_alias && $otl == $tal)) && 
-				(stripos($opl, "/{$tnl}.xml") !== false || ($table_alias && stripos($opl, "/{$tal}.xml") !== false));
+				(stripos($opl, "/{$tnl}.xml") !== false || stripos($opl, "/{$parsed_tnl}.xml") !== false || ($table_alias && stripos($opl, "/{$tal}.xml") !== false));
 			
 			if ($cond) {
 				$prop = array(
@@ -720,6 +721,7 @@ function getIbatisProps($objs, $table_name, $table, $fks, $db_broker, $db_driver
 	//PREPARING TABLE SETTINGS:
 	$table_alias = getTableAlias($table_name, $selected_tables_alias);
 	$tnl = strtolower($table_name);
+	$parsed_tnl = str_replace(".", "_", $tnl); //Table name may have schema
 	$tal = strtolower($table_alias);
 	
 	//PREPARING FOREIGN METHODS SETTINGS:
@@ -737,7 +739,7 @@ function getIbatisProps($objs, $table_name, $table, $fks, $db_broker, $db_driver
 			$opl = isset($obj["path"]) ? strtolower($obj["path"]) : null;
 			
 			$cond = isset($obj["item_type"]) && $obj["item_type"] == "query" && 
-				(stripos($opl, "/{$tnl}.xml") !== false || ($table_alias && stripos($opl, "/{$tal}.xml") !== false));
+				(stripos($opl, "/{$tnl}.xml") !== false || stripos($opl, "/{$parsed_tnl}.xml") !== false || ($table_alias && stripos($opl, "/{$tal}.xml") !== false));
 			
 			if ($cond) {
 				$name = isset($obj["name"]) ? $obj["name"] : null;
@@ -806,6 +808,7 @@ function getDBTableProps($table_name, $table, $fks, $db_broker, $db_driver, $inc
 	//PREPARING TABLE SETTINGS:
 	$table_alias = getTableAlias($table_name, $selected_tables_alias);
 	$tnl = strtolower($table_name);
+	$parsed_tnl = str_replace(".", "_", $tnl); //Table name may have schema
 	$tal = strtolower($table_alias);
 	
 	//PREPARING FOREIGN METHODS SETTINGS:

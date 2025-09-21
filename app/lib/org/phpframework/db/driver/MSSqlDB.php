@@ -120,6 +120,10 @@ class MSSqlDB extends DB {
 							if ($es_name)
 								$connection_info[$es_name] = $es_value;
 					
+					//sqlsrv_fetch_array() and sqlsrv_fetch_object() will map SQL Server data types to PHP types, instead of always giving you strings. By default, datetime, date, datetime2, smalldatetime columns are returned as DateTime objects (which implement DateTimeInterface). So we must explicit tell him to convert everything in string.
+					if (!array_key_exists("ReturnDatesAsStrings", $connection_info))
+						$connection_info["ReturnDatesAsStrings"] = true;
+					
 					//Note: I could not find how to create persistent connections through sqlsrv_ extension.
 					$this->link = sqlsrv_connect($server_name, $connection_info);
 					break;
@@ -129,8 +133,8 @@ class MSSqlDB extends DB {
 					
 					if (!array_key_exists(PDO::ATTR_ERRMODE, $pdo_settings))
 						$pdo_settings[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-			   		
-					if(!empty($this->options["persistent"]) && empty($this->options["new_link"]))
+			   	
+			   	if(!empty($this->options["persistent"]) && empty($this->options["new_link"]))
 						$pdo_settings[PDO::ATTR_PERSISTENT] = true;
 					
 					//prepare extra settings
@@ -560,36 +564,48 @@ class MSSqlDB extends DB {
 	
 	public function fetchArray($result, $array_type = false) {
 		try {
+			$records = null;
+			
 			switch ($this->default_php_extension_type) {
 				case "sqlsrv": 
 					if ($array_type == DB::FETCH_OBJECT)
-						return sqlsrv_fetch_object($result);
-					
-					$array_type = $this->convertFetchTypeToExtensionType($array_type ? $array_type : DB::FETCH_BOTH);
-					return sqlsrv_fetch_array($result, $array_type);
+						$records = sqlsrv_fetch_object($result);
+					else {
+						$array_type = $this->convertFetchTypeToExtensionType($array_type ? $array_type : DB::FETCH_BOTH);
+						$records = sqlsrv_fetch_array($result, $array_type);
+					}
+					break;
 				case "pdo": 
 					if ($array_type == DB::FETCH_OBJECT)
-						return $result->fetch(PDO::FETCH_OBJ);
-					
-					$array_type = $this->convertFetchTypeToExtensionType($array_type ? $array_type : DB::FETCH_BOTH);
-					return $result->fetch($array_type);
+						$records = $result->fetch(PDO::FETCH_OBJ);
+					else {
+						$array_type = $this->convertFetchTypeToExtensionType($array_type ? $array_type : DB::FETCH_BOTH);
+						$records = $result->fetch($array_type);
+					}
+					break;
 				case "odbc": 
 					if ($array_type == DB::FETCH_OBJECT)
-						return odbc_fetch_object($result);
-					
-					$is_assoc = false;
-					$records = false;
-					
-					if ($array_type == DB::FETCH_ASSOC || $array_type == DB::FETCH_BOTH || !$array_type) {
-						$records = odbc_fetch_array($result);
-						$is_assoc = true;
+						$records = odbc_fetch_object($result);
+					else {
+						$is_assoc = false;
+						$records = false;
+						
+						if ($array_type == DB::FETCH_ASSOC || $array_type == DB::FETCH_BOTH || !$array_type) {
+							$records = odbc_fetch_array($result);
+							$is_assoc = true;
+						}
+						
+						if ($array_type == DB::FETCH_NUM || $array_type == DB::FETCH_BOTH || !$array_type)
+							$records = is_array($records) ? array_merge($records, array_values($records)) : ($is_assoc ? $records : odbc_fetch_row($result));
 					}
-					
-					if ($array_type == DB::FETCH_NUM || $array_type == DB::FETCH_BOTH || !$array_type)
-						$records = is_array($records) ? array_merge($records, array_values($records)) : ($is_assoc ? $records : odbc_fetch_row($result));
-					
-					return $records;
+					break;
 			}
+			
+			// Normalize DateTime / objets inside of record (array or object)
+        	if (is_array($records) || is_object($records))
+            $records = self::normalizeRecord($records);
+			
+			return $records;
 		}
 		catch(Exception $e) {
 			return launch_exception(new SQLException(8, $e, array($result, $array_type)));
@@ -597,7 +613,7 @@ class MSSqlDB extends DB {
 		catch(Error $e) {
 			return launch_exception(new SQLException(8, $e, array($result, $array_type)));
 		}
-	} 
+	}
 	
 	public function fetchField($result, $offset) {
 		try {

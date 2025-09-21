@@ -107,8 +107,15 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 				
 				if (is_file($folder_path))
 					$file_path = $folder_path;
+				else if (empty($hbn_obj_id)) {
+					//table_alias and table_name can be dbo.xxx
+					if ($table_alias)
+						$file_path = $folder_path . strtolower(str_replace(".", "_", $table_alias)) . ".xml";
+					else
+						$file_path = $folder_path . strtolower(str_replace(".", "_", $table_name)) . ".xml";
+				}
 				else
-					$file_path = empty($hbn_obj_id) ? ($table_alias ? "${folder_path}$table_alias.xml" : "${folder_path}$table_name.xml") : "${folder_path}$hbn_obj_id.xml";
+					$file_path = $folder_path . strtolower(str_replace(".", "_", $hbn_obj_id)) . ".xml";
 				
 				if ($overwrite && file_exists($file_path))
 					unlink($file_path);

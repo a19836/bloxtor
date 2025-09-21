@@ -96,7 +96,7 @@ abstract class DB implements IDB {
 		$this->options["persistent"] = empty($this->options["persistent"]) || $this->options["persistent"] == "false" || $this->options["persistent"] == "0" || $this->options["persistent"] == "null" ? false : true;
 		$this->options["new_link"] = empty($this->options["new_link"]) || $this->options["new_link"] == "false" || $this->options["new_link"] == "0" || $this->options["new_link"] == "null" ? false : true;
 		$this->options["port"] = isset($this->options["port"]) && is_numeric($this->options["port"]) ? $this->options["port"] : null;
-		$this->options["encoding"] = !empty($this->options["encoding"]) ? $this->options["encoding"] : "utf8";
+		$this->options["encoding"] = !empty($this->options["encoding"]) ? $this->options["encoding"] : "";
 		
 		if (empty($this->options["data_source"]) && (empty($this->options["host"]) || empty($this->options["username"]))) {
 			launch_exception(new SQLException(18, null, $this->options));

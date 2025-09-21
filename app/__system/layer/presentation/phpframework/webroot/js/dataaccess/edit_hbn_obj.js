@@ -543,11 +543,12 @@ function saveHibernateObject() {
 
 function validateHibernateObject(hbn_obj) {
 	var error_msg = "";
+	var table_name_without_dot = hbn_obj["table"] ? ("" + hbn_obj["table"]).replace(/\./g, "") : hbn_obj["table"];
 	
 	if (!isUserRelationshipObjValid(hbn_obj["name"])) 
 		error_msg += "\n- Hibernate object name is empty or contains invalid characters";
 	
-	if (!isUserRelationshipObjValid(hbn_obj["table"]))
+	if (!isUserRelationshipObjValid(table_name_without_dot))
 		error_msg += "\n- Hibernate object table is empty or contains invalid characters";
 	
 	error_msg += validateUserRelationshipsObj(hbn_obj["relationships"]);
