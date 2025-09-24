@@ -17,28 +17,36 @@ if (!empty($bean_file_name) && file_exists($bean_path)) {
 	$layer_object_id = LAYER_PATH . "$layer_bean_folder_name/$bean_name";
 	$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($layer_object_id, "layer", "access");
 	
+	$post_data =  isset($_POST["data"]) ? $_POST["data"] : null;
+	
+	if ($post_data) {
+		if (!isset($post_data["persistent"])) $post_data["persistent"] = 0;
+		if (!isset($post_data["new_link"])) $post_data["new_link"] = 0;
+		if (!isset($post_data["reconnect"])) $post_data["reconnect"] = 0;
+	}
+	
 	$db_settings_variables = array();
 	$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($bean_path, $user_global_variables_file_path);
 	$WorkFlowBeansFileHandler->init();
 	$DBDriver = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
-	$db_settings = $WorkFlowBeansFileHandler->getDBSettings($bean_name, $db_settings_variables, isset($_POST["data"]) ? $_POST["data"] : null);
+	$db_settings = $WorkFlowBeansFileHandler->getDBSettings($bean_name, $db_settings_variables, $post_data);
 	$db_driver_type = isset($db_settings["type"]) ? $db_settings["type"] : null;
-	//echo "<pre>";print_r($db_settings);print_r($db_settings_variables);print_r($_POST["data"]);die();
+	//echo "<pre>";print_r($db_settings);print_r($db_settings_variables);print_r($post_data);die();
 	
 	//PREPARE POST EVENT
-	if (isset($_POST["data"])) {
+	if ($post_data) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
 		
 		include_once $EVC->getUtilPath("WorkFlowDBHandler");
 		$WorkFlowDBHandler = new WorkFlowDBHandler($user_beans_folder_path, $user_global_variables_file_path);
 		
-		$data_password = isset($_POST["data"]["password"]) ? $_POST["data"]["password"] : null;
+		$data_password = isset($post_data["password"]) ? $post_data["password"] : null;
 		
 		//check if DB credentials are valid here, before delete or create beans
-		if ($WorkFlowDBHandler->isDBDriverSettingsValid($_POST["data"], false)) {
+		if ($WorkFlowDBHandler->isDBDriverSettingsValid($post_data, false)) {
 			//SAVES NEW CHANGES TO DBDRIVER BEANS FILE
 			if ($WorkFlowBeansFileHandler->saveNodesBeans()) {
-				if (WorkFlowTasksFileHandler::updateTaskProperties($workflow_paths_id[ $workflow_path_id ], $bean_name, $_POST["data"])) {
+				if (WorkFlowTasksFileHandler::updateTaskProperties($workflow_paths_id[ $workflow_path_id ], $bean_name, $post_data)) {
 					if ($WorkFlowDBHandler->areTasksDBDriverBeanValid($workflow_paths_id[ $workflow_path_id ], false)) 
 						$status_message = "Settings saved successfully";
 					else

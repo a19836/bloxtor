@@ -124,7 +124,7 @@ DBDriverTaskPropertyObj.ignore_options_by_extension = ' . json_encode($ignore_co
 		<input type="text" class="task_property_field" name="extra_dsn" value="" autocomplete="new-password" />
 	</div>
 
-	<div class="extra_settings" title="Other settings attributes. Each setting must be splitted by comma.">
+	<div class="extra_settings" title="Other settings attributes. Each setting must be splitted by & as a url query string.">
 		<label>Extra Settings:</label>
 		<input type="text" class="task_property_field" name="extra_settings" value="" autocomplete="new-password" />
 	</div>

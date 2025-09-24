@@ -21,11 +21,13 @@ if (isset($_POST["data"])) {
 	$_POST["data"]["db_password"] = isset($_POST["data"]["db_password"]) ? $_POST["data"]["db_password"] : null;
 	$_POST["data"]["db_persistent"] = isset($_POST["data"]["db_persistent"]) ? $_POST["data"]["db_persistent"] : null;
 	$_POST["data"]["db_new_link"] = isset($_POST["data"]["db_new_link"]) ? $_POST["data"]["db_new_link"] : null;
+	$_POST["data"]["db_reconnect"] = isset($_POST["data"]["db_reconnect"]) ? $_POST["data"]["db_reconnect"] : null;
 	$_POST["data"]["db_encoding"] = isset($_POST["data"]["db_encoding"]) ? $_POST["data"]["db_encoding"] : null;
 	$_POST["data"]["db_schema"] = isset($_POST["data"]["db_schema"]) ? $_POST["data"]["db_schema"] : null;
 	$_POST["data"]["db_odbc_data_source"] = isset($_POST["data"]["db_odbc_data_source"]) ? $_POST["data"]["db_odbc_data_source"] : null;
 	$_POST["data"]["db_odbc_driver"] = isset($_POST["data"]["db_odbc_driver"]) ? $_POST["data"]["db_odbc_driver"] : null;
 	$_POST["data"]["db_extra_dsn"] = isset($_POST["data"]["db_extra_dsn"]) ? $_POST["data"]["db_extra_dsn"] : null;
+	$_POST["data"]["db_extra_settings"] = isset($_POST["data"]["db_extra_settings"]) ? $_POST["data"]["db_extra_settings"] : null;
 	
 	if ($_POST["data"]["db_name"])
 		$_POST["data"]["db_name"] = str_replace(" ", "_", strtolower($_POST["data"]["db_name"]));
@@ -43,11 +45,13 @@ if (isset($_POST["data"])) {
 	$content = str_replace("\$db_password", $_POST["data"]["db_password"], $content);
 	$content = str_replace("\$db_persistent", $_POST["data"]["db_persistent"] ? $_POST["data"]["db_persistent"] : 0, $content);
 	$content = str_replace("\$db_new_link", $_POST["data"]["db_new_link"] ? $_POST["data"]["db_new_link"] : 0, $content);
+	$content = str_replace("\$db_reconnect", $_POST["data"]["db_reconnect"] ? $_POST["data"]["db_reconnect"] : 0, $content);
 	$content = str_replace("\$db_encoding", $_POST["data"]["db_encoding"], $content);
 	$content = str_replace("\$db_schema", $_POST["data"]["db_schema"], $content);
 	$content = str_replace("\$db_odbc_data_source", $_POST["data"]["db_odbc_data_source"], $content);
 	$content = str_replace("\$db_odbc_driver", $_POST["data"]["db_odbc_driver"], $content);
 	$content = str_replace("\$db_extra_dsn", $_POST["data"]["db_extra_dsn"], $content);
+	$content = str_replace("\$db_extra_settings", $_POST["data"]["db_extra_settings"], $content);
 	
 	$folder = dirname($tasks_file_path);
 	

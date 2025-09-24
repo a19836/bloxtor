@@ -170,6 +170,21 @@ $form_settings = array(
 					),
 					10 => array(
 						"field" => array(
+							"class" => "form_field form_field_db form_field_db_advanced db_reconnect",
+							"label" => array(
+								"value" => "Reconnect: ",
+							),
+							"input" => array(
+								"type" => !empty($db_settings_variables["reconnect"]) ? "text" : "checkbox",
+								"name" => "data[reconnect]",
+								"value" => (!empty($db_settings_variables["reconnect"]) ? '$' . $db_settings_variables["reconnect"] : "#reconnect#"),
+								"next_html" => (!empty($db_settings_variables["reconnect"]) ? '<span>...with the global value: "#reconnect#"</span>' : ''),
+								"title" => "Automatically reconnect if connection becomes stale."
+							)
+						)
+					),
+					11 => array(
+						"field" => array(
 							"class" => "form_field form_field_db form_field_db_advanced db_encoding",
 							"label" => array(
 								"value" => "Encoding: ",
@@ -183,7 +198,7 @@ $form_settings = array(
 							)
 						)
 					),
-					11 => array(
+					12 => array(
 						"field" => array(
 							"class" => "form_field form_field_db form_field_db_advanced db_schema",
 							"label" => array(
@@ -197,7 +212,7 @@ $form_settings = array(
 							)
 						)
 					),
-					12 => array(
+					13 => array(
 						"field" => array(
 							"class" => "form_field form_field_db form_field_db_advanced db_odbc_data_source",
 							"label" => array(
@@ -212,7 +227,7 @@ $form_settings = array(
 							)
 						)
 					),
-					13 => array(
+					14 => array(
 						"field" => array(
 							"class" => "form_field form_field_db form_field_db_advanced db_odbc_driver",
 							"label" => array(
@@ -227,7 +242,7 @@ $form_settings = array(
 							)
 						)
 					),
-					14 => array(
+					15 => array(
 						"field" => array(
 							"class" => "form_field form_field_db form_field_db_advanced db_extra_dsn",
 							"label" => array(
@@ -239,6 +254,21 @@ $form_settings = array(
 								"value" => (!empty($db_settings_variables["extra_dsn"]) ? '$' . $db_settings_variables["extra_dsn"] : "#extra_dsn#"),
 								"next_html" => (!empty($db_settings_variables["extra_dsn"]) ? '<span>...with the global value: "#extra_dsn#"</span>' : ''),
 								"title" => "Other DSN attributes. Each attribute must be splitted by comma.",
+							)
+						)
+					),
+					16 => array(
+						"field" => array(
+							"class" => "form_field form_field_db form_field_db_advanced db_extra_settings",
+							"label" => array(
+								"value" => "Extra Settings: ",
+							),
+							"input" => array(
+								"type" => "text",
+								"name" => "data[extra_settings]",
+								"value" => (!empty($db_settings_variables["extra_settings"]) ? '$' . $db_settings_variables["extra_settings"] : "#extra_settings#"),
+								"next_html" => (!empty($db_settings_variables["extra_settings"]) ? '<span>...with the global value: "#extra_settings#"</span>' : ''),
+								"title" => "Other settings attributes. Each setting must be splitted by & as a url query string.",
 							)
 						)
 					)

@@ -267,6 +267,9 @@ function prepareProjectPaths($path, &$project_folder, &$project) {
 function createNewDB($EVC, $PEVC, $workflow_paths_id, $user_global_variables_file_path, $user_beans_folder_path, $user_global_settings_file_path, $webroot_cache_folder_path, $webroot_cache_folder_url, $css_and_js_optimizer_webroot_cache_folder_path, $deployments_temp_folder_path, $db_details, &$error_message, &$extra_message) {
 	$db_details["db_name"] = isset($db_details["db_name"]) ? trim($db_details["db_name"]) : null;
 	$db_details["host"] = isset($db_details["host"]) ? trim($db_details["host"]) : null;
+	$db_details["persistent"] = isset($db_details["persistent"]) ? $db_details["persistent"] : 0;
+	$db_details["new_link"] = isset($db_details["new_link"]) ? $db_details["new_link"] : 0;
+	$db_details["reconnect"] = isset($db_details["reconnect"]) ? $db_details["reconnect"] : 0;
 	
 	$project_db_driver = null;
 	

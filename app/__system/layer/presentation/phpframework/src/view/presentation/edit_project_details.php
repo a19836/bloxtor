@@ -347,7 +347,7 @@ if (empty($is_existent_project) || (!empty($_POST) && empty($status))) {
 					"name" => "db_details[persistent]",
 					"value" => "#persistent#",
 					"extra_attributes" => array(
-						"checked" => "checked"
+						"checked" => !empty($_POST) && empty($_POST["db_details"]["persistent"]) ? "" : "checked"
 					)
 				)
 			)
@@ -367,6 +367,20 @@ if (empty($is_existent_project) || (!empty($_POST) && empty($status))) {
 		),
 		10 => array(
 			"field" => array(
+				"class" => "form_field setup_input form_field_db form_field_db_advanced db_reconnect",
+				"label" => array(
+					"value" => "Reconnect: ",
+				),
+				"input" => array(
+					"type" => "checkbox",
+					"name" => "db_details[reconnect]",
+					"value" => "#reconnect#",
+					"title" => "Automatically reconnect if connection becomes stale."
+				)
+			)
+		),
+		11 => array(
+			"field" => array(
 				"class" => "form_field setup_input form_field_db form_field_db_advanced db_encoding",
 				"label" => array(
 					"value" => "Encoding: ",
@@ -379,7 +393,7 @@ if (empty($is_existent_project) || (!empty($_POST) && empty($status))) {
 				)
 			)
 		),
-		11 => array(
+		12 => array(
 			"field" => array(
 				"class" => "form_field setup_input form_field_db form_field_db_advanced db_schema",
 				"label" => array(
@@ -392,7 +406,7 @@ if (empty($is_existent_project) || (!empty($_POST) && empty($status))) {
 				)
 			)
 		),
-		12 => array(
+		13 => array(
 			"field" => array(
 				"class" => "form_field setup_input form_field_db form_field_db_advanced db_odbc_data_source",
 				"label" => array(
@@ -406,7 +420,7 @@ if (empty($is_existent_project) || (!empty($_POST) && empty($status))) {
 				)
 			)
 		),
-		13 => array(
+		14 => array(
 			"field" => array(
 				"class" => "form_field setup_input form_field_db form_field_db_advanced db_odbc_driver",
 				"label" => array(
@@ -420,7 +434,7 @@ if (empty($is_existent_project) || (!empty($_POST) && empty($status))) {
 				)
 			)
 		),
-		14 => array(
+		15 => array(
 			"field" => array(
 				"class" => "form_field setup_input form_field_db form_field_db_advanced db_extra_dsn",
 				"label" => array(
@@ -431,6 +445,20 @@ if (empty($is_existent_project) || (!empty($_POST) && empty($status))) {
 					"name" => "db_details[extra_dsn]",
 					"value" => "#extra_dsn#",
 					"title" => "Other DSN attributes. Each attribute must be splitted by comma.",
+				)
+			)
+		),
+		16 => array(
+			"field" => array(
+				"class" => "form_field setup_input form_field_db form_field_db_advanced db_extra_settings",
+				"label" => array(
+					"value" => "Extra Settings: ",
+				),
+				"input" => array(
+					"type" => "text",
+					"name" => "db_details[extra_settings]",
+					"value" => "#extra_settings#",
+					"title" => "Other settings attributes. Each setting must be splitted by & as a url query string.",
 				)
 			)
 		)

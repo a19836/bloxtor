@@ -65,7 +65,10 @@ function onChangeDBExtension(elm) {
 	elm = $(elm);
 	var extension = elm.val();
 	var p = elm.parent().closest(".form_fields");
+		
+	toggleDBFields(p);
 	
+	/* DEPRECATED: bc is already inside of the toggleFields which contains the ignore_options_by_extension
 	if (extension == "pdo" || extension == "odbc") {
 		var db_type = p.find(".db_type select").val();
 		
@@ -81,7 +84,7 @@ function onChangeDBExtension(elm) {
 		}
 	}
 	else
-		p.find(".db_odbc_data_source, .db_odbc_driver, .db_extra_dsn").hide();
+		p.find(".db_odbc_data_source, .db_odbc_driver, .db_extra_dsn").hide();*/
 }
 
 function prepareDBExtension(select, db_type) {

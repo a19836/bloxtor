@@ -158,6 +158,20 @@ $form_settings = array(
 					),
 					10 => array(
 						"field" => array(
+							"class" => "form_field setup_input form_field_db form_field_db_advanced db_reconnect",
+							"label" => array(
+								"value" => "Reconnect: ",
+							),
+							"input" => array(
+								"type" => "checkbox",
+								"name" => "data[db_reconnect]",
+								"value" => "#db_reconnect#",
+								"title" => "Automatically reconnect if connection becomes stale."
+							)
+						)
+					),
+					11 => array(
+						"field" => array(
 							"class" => "form_field setup_input form_field_db form_field_db_advanced db_encoding",
 							"label" => array(
 								"value" => "Encoding: ",
@@ -170,7 +184,7 @@ $form_settings = array(
 							)
 						)
 					),
-					11 => array(
+					12 => array(
 						"field" => array(
 							"class" => "form_field setup_input form_field_db form_field_db_advanced db_schema",
 							"label" => array(
@@ -183,7 +197,7 @@ $form_settings = array(
 							)
 						)
 					),
-					12 => array(
+					13 => array(
 						"field" => array(
 							"class" => "form_field setup_input form_field_db form_field_db_advanced db_odbc_data_source",
 							"label" => array(
@@ -197,7 +211,7 @@ $form_settings = array(
 							)
 						)
 					),
-					13 => array(
+					14 => array(
 						"field" => array(
 							"class" => "form_field setup_input form_field_db form_field_db_advanced db_odbc_driver",
 							"label" => array(
@@ -211,7 +225,7 @@ $form_settings = array(
 							)
 						)
 					),
-					14 => array(
+					15 => array(
 						"field" => array(
 							"class" => "form_field setup_input form_field_db form_field_db_advanced db_extra_dsn",
 							"label" => array(
@@ -222,6 +236,20 @@ $form_settings = array(
 								"name" => "data[db_extra_dsn]",
 								"value" => "#db_extra_dsn#",
 								"title" => "Other DSN attributes. Each attribute must be splitted by comma.",
+							)
+						)
+					),
+					16 => array(
+						"field" => array(
+							"class" => "form_field setup_input form_field_db form_field_db_advanced db_extra_settings",
+							"label" => array(
+								"value" => "Extra Settings: ",
+							),
+							"input" => array(
+								"type" => "text",
+								"name" => "data[db_extra_settings]",
+								"value" => "#db_extra_settings#",
+								"title" => "Other settings attributes. Each setting must be splitted by & as a url query string.",
 							)
 						)
 					)

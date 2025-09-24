@@ -53,11 +53,13 @@
 			<password><![CDATA[$db_password]]></password>
 			<persistent><![CDATA[$db_persistent]]></persistent>
 			<new_link><![CDATA[$db_new_link]]></new_link>
+			<reconnect><![CDATA[$db_reconnect]]></reconnect>
 			<encoding><![CDATA[$db_encoding]]></encoding>
 			<schema><![CDATA[$db_schema]]></schema>
 			<odbc_data_source><![CDATA[$db_odbc_data_source]]></odbc_data_source>
 			<odbc_driver><![CDATA[$db_odbc_driver]]></odbc_driver>
 			<extra_dsn><![CDATA[$db_extra_dsn]]></extra_dsn>
+			<extra_settings><![CDATA[$db_extra_settings]]></extra_settings>
 		</properties>
 	</task>
 	<task>

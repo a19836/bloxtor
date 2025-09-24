@@ -209,7 +209,7 @@ var  DBDriverTaskPropertyObj = {
 			ignore_options = this.ignore_options[type];
 		
 		if ($.isPlainObject(this.ignore_options_by_extension) && this.ignore_options_by_extension.hasOwnProperty(type) && $.isPlainObject(this.ignore_options_by_extension[type]) && $.isArray(this.ignore_options_by_extension[type][extension])) {
-			if (ignore_options)
+			if (!ignore_options)
 				ignore_options = this.ignore_options_by_extension[type][extension];
 			else
 				ignore_options = ignore_options.concat(this.ignore_options_by_extension[type][extension]);
