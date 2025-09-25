@@ -52,7 +52,7 @@
 # </FilesMatch>
 
 # Deny access to .env, .yml, and .cnf files
-<FilesMatch "\.(env|yml|cnf|Dockerfile)$">
+<FilesMatch "\.(env|yml|cnf|config|Dockerfile)$">
     Require all denied
 </FilesMatch>
 
