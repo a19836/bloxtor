@@ -16,7 +16,15 @@ abstract class LayerWebService {
 	
 	private function init() {
 		$url = $this->settings && isset($this->settings["url"]) ? $this->settings["url"] : false;
-		$url = empty($url) && isset($_GET["url"]) ? $_GET["url"] : $url;
+		
+		if (empty($url)) {
+			if (isset($_SERVER["QUERY_STRING"])) {
+				if (preg_match('/^url=([^&]*)/', $_SERVER["QUERY_STRING"], $matches))
+					$url = urldecode($matches[1]);
+			}
+			else if (isset($_GET["url"])) //Not very safe, bc if QUERY_STRING contains more than one url variable, then the $_GET["url"] will get the last one. And we want the first one.
+				$url = $_GET["url"];
+		}
 		
 		$aux = strstr($url, "?", true);
 		$this->url = $aux ? $aux : $url;
@@ -27,16 +35,30 @@ abstract class LayerWebService {
 	}
 	
 	private function cleanURLVarFromGlobalVars() {
-		unset($_GET["url"]);
-		
-		if (isset($_SERVER["QUERY_STRING"]))
-			$_SERVER["QUERY_STRING"] = preg_replace("/url=([^&]*)([&]?)/u", "", $_SERVER["QUERY_STRING"]); //'/u' means with accents and ç too.
+		if (isset($_SERVER["QUERY_STRING"])) {
+			if (preg_match_all('/\burl=/', $_SERVER["QUERY_STRING"], $matches) && count($matches[0]) == 1) { //\b is word boundary
+				unset($_GET["url"]);
+				
+				if (!isset($_POST["url"]))
+					unset($_REQUEST["url"]);
+				//echo "<pre>";print_r($matches);die();
+			}
+			
+			if (isset($_SERVER["QUERY_STRING"]))
+				$_SERVER["QUERY_STRING"] = preg_replace("/^url=([^&]*)([&]?)/u", "", $_SERVER["QUERY_STRING"]); //'/u' means with accents and ç too.
+		}
+		else {
+			unset($_GET["url"]);
+			
+			if (!isset($_POST["url"]))
+				unset($_REQUEST["url"]);
+		}
 		
 		if (isset($_SERVER["REDIRECT_QUERY_STRING"]))
-			$_SERVER["REDIRECT_QUERY_STRING"] = preg_replace("/url=([^&]*)([&]?)/u", "", $_SERVER["REDIRECT_QUERY_STRING"]); //'/u' means with accents and ç too.
+			$_SERVER["REDIRECT_QUERY_STRING"] = preg_replace("/^url=([^&]*)([&]?)/u", "", $_SERVER["REDIRECT_QUERY_STRING"]); //'/u' means with accents and ç too.
 		
 		if (isset($_SERVER["argv"]) && $_SERVER["argv"])
-			$_SERVER["argv"][0] = preg_replace("/url=([^&]*)([&]?)/u", "", $_SERVER["argv"][0]);
+			$_SERVER["argv"][0] = preg_replace("/^url=([^&]*)([&]?)/u", "", $_SERVER["argv"][0]);
 	}
 	
 	private function setUserGlobalVariables() {
