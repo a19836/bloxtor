@@ -648,6 +648,54 @@ END;";
 		return "CREATE INDEX $index_name ON $sql_table ([" . implode("], [", $attributes) . "]) $suffix";
 	}
 	
+	public static function getDropTableIndexStatement($table, $constraint_name, $options = false) {
+		$sql_table = self::getParsedTableEscapedSQL($table, $options);
+		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
+		
+		return "ALTER TABLE $sql_table DROP CONSTRAINT [$constraint_name] $suffix";
+	}
+	
+	public static function getTableIndexesStatement($table, $options = false) {
+		$sql_table = self::getParsedTableEscapedSQL($table, $options);
+		
+		$table_props = self::parseTableName($table, $options);
+		$table = isset($table_props["name"]) ? $table_props["name"] : null;
+		
+		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
+		
+		return "SELECT
+    i.name AS constraint_name,
+    CASE 
+        WHEN fk.object_id IS NOT NULL THEN 'FOREIGN KEY'
+        ELSE kc.type_desc
+    END AS constraint_type,
+    c.name AS column_name,
+    i.type_desc AS index_type,
+    CASE WHEN i.is_unique = 1 THEN 0 ELSE 1 END AS non_unique,
+    ic.key_ordinal AS seq_in_index,
+    CASE WHEN c.is_nullable = 1 THEN 'YES' ELSE 'NO' END AS nullable,
+    ep.value AS comment
+FROM sys.indexes i
+JOIN sys.index_columns ic
+    ON i.object_id = ic.object_id AND i.index_id = ic.index_id
+JOIN sys.columns c
+    ON ic.object_id = c.object_id AND ic.column_id = c.column_id
+JOIN sys.objects o
+    ON i.object_id = o.object_id
+LEFT JOIN sys.key_constraints kc
+    ON kc.parent_object_id = i.object_id AND kc.unique_index_id = i.index_id
+LEFT JOIN sys.extended_properties ep
+    ON i.object_id = ep.major_id AND i.index_id = ep.minor_id
+-- join foreign keys
+LEFT JOIN sys.foreign_key_columns fkc
+    ON fkc.parent_object_id = i.object_id 
+   AND fkc.parent_column_id = ic.column_id
+LEFT JOIN sys.foreign_keys fk
+    ON fk.object_id = fkc.constraint_object_id
+WHERE o.name = '$table'
+ORDER BY i.name, ic.key_ordinal $suffix";
+	}
+	
 	public static function getLoadTableDataFromFileStatement($file_path, $table, $options = false) {
 		//https://docs.microsoft.com/en-us/sql/t-sql/statements/bulk-insert-transact-sql?view=sql-server-ver15
 		//https://docs.microsoft.com/en-us/sql/relational-databases/import-export/bulk-import-and-export-of-data-sql-server?view=sql-server-ver15

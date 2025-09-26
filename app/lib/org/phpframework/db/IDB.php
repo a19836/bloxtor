@@ -116,6 +116,8 @@ interface IDB {
 	public static function getDropTableForeignKeysStatement($table, $options = false);
 	public static function getDropTableForeignConstraintStatement($table, $constraint_name, $options = false);
 	public static function getAddTableIndexStatement($table, $attributes, $options = false);
+	public static function getDropTableIndexStatement($table, $constraint_name, $options = false);
+	public static function getTableIndexesStatement($table, $options = false);
 	public static function getLoadTableDataFromFileStatement($file_path, $table, $options = false);
 	public static function getShowCreateTableStatement($table, $options = false);
 	public static function getShowCreateViewStatement($view, $options = false);

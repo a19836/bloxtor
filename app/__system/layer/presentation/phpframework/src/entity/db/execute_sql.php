@@ -29,13 +29,29 @@ if ($bean_name) {
 			$sql_aux = DB::removeSQLComments($sql);
 			
 			if (trim($sql_aux)) {
-				$data = $DBDriver->convertSQLToObject($sql_aux);
-				$query_type = $data && isset($data["type"]) ? $data["type"] : null;
-				$is_select_sql = $query_type == "select";
-				$options = $is_select_sql || $query_type == "insert" || $query_type == "update" || $query_type == "delete" ? array("remove_comments" => true) : null;
+				$type = isset($_POST["type"]) ? $_POST["type"] : null;
+				
+				if (!$type) {
+					//mysql: SELECT, SHOW, DESCRIBE, EXPLAIN, HELP, VALUES; postgres: SELECT, TABLE, VALUES, EXPLAIN, ; sqlserver: SELECT, VALUES, EXEC, DBCC.
+					$is_get_sql = preg_match("/^\s*(select|show|describe|explain|help|values|table|exec|dbcc)\s/", $sql_aux);
+					$is_set_sql = preg_match("/^\s*(insert|update|delete)\s/", $sql_aux);
+					
+					if (!$is_get_sql && !$is_set_sql) {
+						$data = $DBDriver->convertSQLToObject($sql_aux);
+						$query_type = $data && isset($data["type"]) ? $data["type"] : null;
+						$is_get_sql = $query_type == "select";
+						$is_set_sql = $query_type == "insert" || $query_type == "update" || $query_type == "delete";
+					}
+				}
+				else {
+					$is_get_sql = $type == "get";
+					$is_set_sql = $type == "set";
+				}
+				
+				$options = $is_get_sql || $is_set_sql ? array("remove_comments" => true) : null;
 				
 				try {
-					if ($is_select_sql)
+					if ($is_get_sql)
 						$results = $DBDriver->getData($sql, $options);
 					else
 						$results = $DBDriver->setData($sql, $options);

@@ -200,6 +200,7 @@ class AdminMenuUIHandler {
 	<li class="edit"><a onClick="return goTo(this, \'edit_url\', event)">Edit</a></li>
 	<li class="line_break"></li>
 	<li class="manage_records"><a onClick="return goTo(this, \'manage_records_url\', event)">Manage Records</a></li>
+	<li class="manage_indexes"><a onClick="return goTo(this, \'manage_indexes_url\', event)">Manage Indexes</a></li>
 	<li class="line_break"></li>
 	<li class="execute_sql"><a onClick="return goTo(this, \'execute_sql_url\', event)">Execute SQL</a></li>
 	<li class="import_data"><a onClick="return goTo(this, \'import_data_url\', event)">Import Data</a></li>
@@ -1270,6 +1271,7 @@ class AdminMenuUIHandler {
 				$li_props["table"]["attributes"]["db_dump_url"] = $project_url_prefix . "db/db_dump?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&table=#table#";
 				$li_props["table"]["attributes"]["execute_sql_url"] = $project_url_prefix . "db/execute_sql?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&table=#table#";
 				$li_props["table"]["attributes"]["manage_records_url"] = $project_url_prefix . "db/manage_records?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&table=#table#";
+				$li_props["table"]["attributes"]["manage_indexes_url"] = $project_url_prefix . "db/manage_indexes?layer_bean_folder_name=$layer_bean_folder_name&bean_name=#bean_name#&bean_file_name=#bean_file_name#&table=#table#";
 				$li_props["table"]["attributes"]["bean_name"] = "#bean_name#";
 				$li_props["table"]["attributes"]["bean_file_name"] = "#bean_file_name#";
 				$li_props["table"]["attributes"]["table_name"] = "#table#";

@@ -70,6 +70,8 @@ trait DBStatic {
 	abstract public static function getDropTableForeignKeysStatement($table, $options = false);
 	abstract public static function getDropTableForeignConstraintStatement($table, $constraint_name, $options = false);
 	abstract public static function getAddTableIndexStatement($table, $attributes, $options = false);
+	abstract public static function getDropTableIndexStatement($table, $constraint_name, $options = false);
+	abstract public static function getTableIndexesStatement($table, $options = false);
 	abstract public static function getLoadTableDataFromFileStatement($file_path, $table, $options = false);
 	abstract public static function getShowCreateTableStatement($table, $options = false);
 	abstract public static function getShowCreateViewStatement($view, $options = false);

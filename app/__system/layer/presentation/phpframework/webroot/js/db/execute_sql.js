@@ -18,11 +18,13 @@ $(function () {
 	});*/
 });
 
-function execute() {
+function execute(type) {
 	var editor = $(".sql_text_area").data("editor");
 	var sql = editor.getValue();
-
-	$("#main_column").append('<form id="form_sql" method="post" style="display:none"><textarea name="sql"></textarea></form>');
+	
+	type = type ? type : "";
+	
+	$("#main_column").append('<form id="form_sql" method="post" style="display:none"><textarea name="sql"></textarea><input type="hidden" name="type" value="' + type + '"/></form>');
 	$("#form_sql textarea").val(sql);
 	$("#form_sql")[0].submit();
 }

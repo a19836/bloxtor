@@ -39,6 +39,9 @@ $main_content = '
 				<li class="sub_menu" onClick="openSubmenu(this)">
 					<i class="icon sub_menu"></i>
 					<ul>
+						<li class="execute" title="Execute as Get Query"><a onClick="execute(\'get\')"><i class="icon continue"></i> Execute as Get Query</a></li>
+						<li class="execute" title="Execute as Set Query"><a onClick="execute(\'set\')"><i class="icon continue"></i> Execute as Set Query</a></li>
+						<li class="separator"></li>
 						<li class="ai" title="Generate SQL through AI"><a onClick="openGenerateSQLPopup(this)"><i class="icon ai"></i> Generate SQL through AI</a></li>
 						<li class="ai" title="Explain SQL through AI"><a onClick="explainSQL(this)"><i class="icon ai"></i> Explain SQL through AI</a></li>
 						<li class="ai" title="Open Code Chat Bot"><a onClick="openCodeChatBot(this)"><i class="icon ai"></i> Open Code Chat Bot</a></li>
@@ -77,7 +80,7 @@ if (!empty($_POST)) {
 			</td>
 		</tr>';
 	}
-	else if (empty($is_select_sql)) {
+	else if (empty($is_get_sql)) {
 		$message = !empty($results) ? "SQL executed successfully." : "SQL executed unsuccessfully.";
 		
 		$main_content .= '<tr>

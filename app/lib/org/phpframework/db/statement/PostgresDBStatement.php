@@ -845,6 +845,62 @@ END $$;";
 		return "CREATE INDEX ON $sql_table (\"" . implode("\", \"", $attributes) . "\") $suffix";
 	}
 	
+	public static function getDropTableIndexStatement($table, $constraint_name, $options = false) {
+		$sql_table = self::getParsedTableEscapedSQL($table, $options);
+		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
+		
+		return "ALTER TABLE $sql_table DROP CONSTRAINT \"$constraint_name\" $suffix";
+	}
+	
+	public static function getTableIndexesStatement($table, $options = false) {
+		$sql_table = self::getParsedTableEscapedSQL($table, $options);
+		
+		$table_props = self::parseTableName($table, $options);
+		$table = isset($table_props["name"]) ? $table_props["name"] : null;
+		
+		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
+		
+		return "SELECT
+    i.relname AS constraint_name,
+    CASE 
+        WHEN fk.constraint_name IS NOT NULL THEN 'FOREIGN KEY'
+        ELSE tc.constraint_type
+    END AS constraint_type,
+    a.attname AS column_name,
+    am.amname AS index_type,
+    NOT ix.indisunique AS non_unique,
+    kcu.ordinal_position AS seq_in_index,
+    CASE WHEN a.attnotnull THEN 'NO' ELSE 'YES' END AS nullable,
+    d.description AS comment
+FROM pg_class t
+JOIN pg_index ix ON t.oid = ix.indrelid
+JOIN pg_class i ON i.oid = ix.indexrelid
+JOIN pg_namespace n ON n.oid = t.relnamespace
+JOIN pg_am am ON i.relam = am.oid
+JOIN pg_attribute a ON a.attrelid = t.oid AND a.attnum = ANY(ix.indkey)
+LEFT JOIN pg_description d ON d.objoid = i.oid
+LEFT JOIN information_schema.table_constraints tc
+       ON tc.table_schema = n.nspname
+      AND tc.table_name = t.relname
+      AND tc.constraint_name = i.relname
+LEFT JOIN (
+    SELECT kcu.table_schema,
+           kcu.table_name,
+           kcu.column_name,
+           kcu.constraint_name
+    FROM information_schema.key_column_usage kcu
+    JOIN information_schema.referential_constraints rc
+      ON kcu.constraint_name = rc.constraint_name
+     AND kcu.table_schema = rc.constraint_schema
+) fk
+    ON fk.table_schema = n.nspname
+   AND fk.table_name = t.relname
+   AND fk.column_name = a.attname
+WHERE n.nspname = current_schema()
+  AND t.relname = '$table'
+ORDER BY constraint_name, seq_in_index $suffix";
+	}
+	
 	public static function getLoadTableDataFromFileStatement($file_path, $table, $options = false) {
 		//http://www.postgresql.org/docs/current/static/sql-copy.html
 		$sql_table = self::getParsedTableEscapedSQL($table, $options);

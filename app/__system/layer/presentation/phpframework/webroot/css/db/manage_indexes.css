@@ -1,0 +1,49 @@
+/* TABLE */
+.manage_indexes .responsive_table {
+	margin:0;
+	/*background: #eee;
+	border:1px inset #CCC;*/
+	overflow:auto;
+}
+.manage_indexes table {
+	border:0;
+	width:100%;
+	background-color:#FFF;
+}
+.manage_indexes table th {
+	height:20px;
+	line-height:20px;
+	padding:0 5px;
+	border-right:1px solid #eee;
+	color:#999;
+	font-size:10px;
+	white-space:nowrap;
+}
+.manage_indexes table td {
+	border-top:1px solid #eee;
+	border-right:1px solid #eee;
+	height:20px;
+	line-height:20px;
+	color:#333;
+	padding:0 5px;
+	vertical-align:top;
+}
+.manage_indexes table .empty {
+	text-align:center;
+}
+.manage_indexes table .actions {
+	text-align:center;
+	width:110px;
+}
+.manage_indexes table .actions .icon {
+	margin:3px 3px 0;
+	vertical-align:middle;
+	font-size:14px;
+}
+/* ERROR */
+.manage_indexes .error {
+	margin:20px 0;
+	color:#B51E3F;
+	text-align:center;
+}
+

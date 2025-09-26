@@ -277,6 +277,8 @@
 .mycontextmenu .execute_sql::before {content:"\f04b";}
 .mycontextmenu .manage_records::before {content:"\f00b"; color:#999;}
 .mycontextmenu .manage_records::after {content:"\f303";}
+.mycontextmenu .manage_indexes::before {content:"\f00b"; color:#999;}
+.mycontextmenu .manage_indexes::after {content:"\f303";}
 .mycontextmenu .edit_diagram::before {content:"\f0e8";}
 .mycontextmenu .create_diagram_sql::before {content:"\f121"; color:#999;}
 .mycontextmenu .create_diagram_sql::after {content:"\f0e8";}

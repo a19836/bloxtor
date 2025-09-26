@@ -493,6 +493,54 @@ DROP PROCEDURE IF EXISTS dropTableForeignKey;";
 		return "ALTER TABLE $sql_table ADD INDEX (`" . implode("`, `", $attributes) . "`) $suffix";
 	}
 	
+	public static function getDropTableIndexStatement($table, $constraint_name, $options = false) {
+		$sql_table = self::getParsedTableEscapedSQL($table, $options);
+		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
+		
+		return "ALTER TABLE $sql_table DROP INDEX `$constraint_name` $suffix";
+	}
+	
+	public static function getTableIndexesStatement($table, $options = false) {
+		$sql_table = self::getParsedTableEscapedSQL($table, $options);
+		
+		$table_props = self::parseTableName($table, $options);
+		$table = isset($table_props["name"]) ? $table_props["name"] : null;
+		
+		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
+		
+		//return "SHOW INDEX FROM $sql_table $suffix";
+		return "SELECT
+    CASE WHEN fk.referenced_column_name IS NOT NULL THEN fk.constraint_name ELSE s.index_name END AS constraint_name,
+    CASE WHEN fk.referenced_column_name IS NOT NULL THEN 'FOREIGN KEY' ELSE tc.constraint_type END AS constraint_type,
+	 s.column_name,
+	 s.index_type,
+    s.non_unique,
+	 s.seq_in_index,
+	 s.nullable,
+	 s.comment
+FROM information_schema.STATISTICS s
+LEFT JOIN information_schema.TABLE_CONSTRAINTS tc
+       ON s.TABLE_SCHEMA = tc.TABLE_SCHEMA
+      AND s.TABLE_NAME = tc.TABLE_NAME
+      AND s.INDEX_NAME = tc.CONSTRAINT_NAME
+LEFT JOIN (
+    SELECT k.table_schema,
+           k.table_name,
+           k.constraint_name,
+           k.column_name,
+           k.referenced_table_name,
+           k.referenced_column_name
+    FROM information_schema.key_column_usage k
+    WHERE k.referenced_table_name IS NOT NULL
+) fk
+    ON s.table_schema = fk.table_schema
+   AND s.table_name   = fk.table_name
+   AND s.column_name  = fk.column_name
+WHERE s.TABLE_SCHEMA = DATABASE()
+  AND s.TABLE_NAME = '$table'
+ORDER BY s.INDEX_NAME, s.SEQ_IN_INDEX $suffix";
+	}
+	
 	public static function getLoadTableDataFromFileStatement($file_path, $table, $options = false) {
 		//http://dev.mysql.com/doc/refman/5.1/en/load-data.html
 		$sql_table = self::getParsedTableEscapedSQL($table, $options);

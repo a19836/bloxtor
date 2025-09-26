@@ -524,6 +524,7 @@ function onDBContextMenu(target, contextmenu, originalEvent) {
 	contextmenu.find(".db_dump a").attr("db_dump_url", a.attr("db_dump_url"));
 	contextmenu.find(".phpmyadmin a").attr("phpmyadmin_url", a.attr("phpmyadmin_url"));
 	contextmenu.find(".manage_records a").attr("manage_records_url", a.attr("manage_records_url"));
+	contextmenu.find(".manage_indexes a").attr("manage_indexes_url", a.attr("manage_indexes_url"));
 	contextmenu.find(".edit_diagram a").attr("edit_diagram_url", a.attr("edit_diagram_url"));
 	contextmenu.find(".create_diagram_sql a").attr("create_diagram_sql_url", a.attr("create_diagram_sql_url"));
 	contextmenu.find(".create_sql a").attr("create_sql_url", a.attr("create_sql_url"));
