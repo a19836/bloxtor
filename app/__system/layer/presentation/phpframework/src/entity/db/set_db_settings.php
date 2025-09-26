@@ -33,12 +33,12 @@ if (!empty($bean_file_name) && file_exists($bean_path)) {
 	$db_driver_type = isset($db_settings["type"]) ? $db_settings["type"] : null;
 	//echo "<pre>";print_r($db_settings);print_r($db_settings_variables);print_r($post_data);die();
 	
+	include_once $EVC->getUtilPath("WorkFlowDBHandler");
+	$WorkFlowDBHandler = new WorkFlowDBHandler($user_beans_folder_path, $user_global_variables_file_path);
+	
 	//PREPARE POST EVENT
 	if ($post_data) {
 		$UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "write");
-		
-		include_once $EVC->getUtilPath("WorkFlowDBHandler");
-		$WorkFlowDBHandler = new WorkFlowDBHandler($user_beans_folder_path, $user_global_variables_file_path);
 		
 		$data_password = isset($post_data["password"]) ? $post_data["password"] : null;
 		
@@ -60,6 +60,10 @@ if (!empty($bean_file_name) && file_exists($bean_path)) {
 		}
 		else
 			$error_message = "DataBase settings are wrong. " . str_replace($data_password, "***", $WorkFlowDBHandler->getError());
+	}
+	else if (!$WorkFlowDBHandler->isDBDriverSettingsValid($db_settings, false)) {
+		$db_settings_password = isset($db_settings["password"]) ? $db_settings["password"] : null;
+		$error_message = "DataBase settings are wrong. " . str_replace($db_settings_password, "***", $WorkFlowDBHandler->getError());
 	}
 	
 	//preparing db types

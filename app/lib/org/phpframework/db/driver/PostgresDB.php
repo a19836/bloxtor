@@ -96,6 +96,8 @@ class PostgresDB extends DB {
 			if ($this->link)
 				$this->close();
 			
+			$this->areOptionsValid($this->options, true);
+			
 			$this->default_php_extension_type = !empty($this->options["extension"]) ? $this->options["extension"] : $this->default_php_extension_type;
 			
 			switch ($this->default_php_extension_type) {
@@ -182,6 +184,8 @@ class PostgresDB extends DB {
 			//close previous connection if exists
 			if ($this->link)
 				$this->close();
+			
+			$this->areOptionsValid($this->options, true);
 			
 			$this->default_php_extension_type = !empty($this->options["extension"]) ? $this->options["extension"] : $this->default_php_extension_type;
 			

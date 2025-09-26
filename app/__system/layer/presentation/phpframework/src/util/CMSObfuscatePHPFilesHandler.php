@@ -794,6 +794,7 @@ class CMSObfuscatePHPFilesHandler {
 			$this->cms_path . "/app/lib/org/phpframework/phpscript/docblock/annotation/ParamAnnotation.php",
 			$this->cms_path . "/app/lib/org/phpframework/phpscript/docblock/DocBlockParser.php",
 			$this->cms_path . "/app/lib/org/phpframework/phpscript/PHPScriptHandler.php",
+			$this->cms_path . "/app/lib/org/phpframework/phpscript/PHPScriptCommandLineHandler.php",
 			$this->cms_path . "/app/lib/org/phpframework/phpscript/sample_php_code_obfuscator.php",
 			$this->cms_path . "/app/lib/org/phpframework/ptl/PHPTemplateLanguage.php",
 			$this->cms_path . "/app/lib/org/phpframework/sqlmap/hibernate/HibernateClient.php",

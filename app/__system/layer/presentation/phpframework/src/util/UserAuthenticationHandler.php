@@ -199,7 +199,7 @@ class UserAuthenticationHandler {
 								$db_options[$opt_name] = $GLOBALS[$name_to_check];
 						}
 						
-						$obj->setOptions($db_options);
+						$obj->setOptions($db_options, true);
 					}
 				}
 			}

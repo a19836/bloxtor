@@ -90,7 +90,7 @@ abstract class DB implements IDB {
 		return isset($this->options[$option_name]) ? $this->options[$option_name] : null;
 	}
 	
-	public function setOptions($options) {
+	public function setOptions($options, $launch_exception = false) {
 		$this->options = $options;
 		
 		$this->options["persistent"] = empty($this->options["persistent"]) || $this->options["persistent"] == "false" || $this->options["persistent"] == "0" || $this->options["persistent"] == "null" ? false : true;
@@ -98,12 +98,16 @@ abstract class DB implements IDB {
 		$this->options["port"] = isset($this->options["port"]) && is_numeric($this->options["port"]) ? $this->options["port"] : null;
 		$this->options["encoding"] = !empty($this->options["encoding"]) ? $this->options["encoding"] : "";
 		
-		if (empty($this->options["data_source"]) && (empty($this->options["host"]) || empty($this->options["username"]))) {
-			launch_exception(new SQLException(18, null, $this->options));
+		return $this->areOptionsValid($this->options, $launch_exception);	
+	}
+	
+	public function areOptionsValid($options, $launch_exception = false) {
+		if (empty($options["data_source"]) && (empty($options["host"]) || empty($options["username"]))) {
+			$launch_exception && launch_exception(new SQLException(18, null, $options));
 			return false;
 		}
 		
-		return true;	
+		return true;
 	}
 	
 	/*

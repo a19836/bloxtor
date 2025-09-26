@@ -892,6 +892,13 @@ class WorkFlowBeansFileHandler {
 												foreach($items as $idx => $item_value) {
 													$key = XMLFileParser::getAttribute($item_value, "name");
 													$value = XMLFileParser::getValue($item_value);
+													//echo "$key: $value\n<br/>";
+													
+													$is_php_start_statement = substr($value, 0, strlen("&lt;?php echo ")) == "&lt;?php echo " || substr($value, 0, strlen("&lt;? echo ")) == "&lt;?php echo " || substr($value, 0, strlen("&lt;?=")) == "&lt;?=";
+													$is_php_end_statement = substr($value, - strlen("?&gt;")) == "?&gt;" || substr($value, -2) == "?>";
+													
+													if ($is_php_start_statement && $is_php_end_statement)
+														$value = preg_replace("/\?&gt;$/", "?>", preg_replace("/^&lt;\?/", "<?", $value));
 													
 													$contains_new_value = isset($new_settings_data[$key]);
 													$new_value = $contains_new_value ? $new_settings_data[$key] : null;

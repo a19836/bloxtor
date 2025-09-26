@@ -241,7 +241,8 @@ interface IDB {
 	public function getConnectionPHPExtensionType();
 	public function getOptions();
 	public function getOption($option_name);
-	public function setOptions($options);
+	public function setOptions($options, $launch_exception = false);
+	public function areOptionsValid($options, $launch_exception = false);
 	public function getFunction($function_name, $parameters = false, $options = false);
 	public function getData($sql, $options = false);
 	public function setData($sql, $options = false);
