@@ -100,10 +100,10 @@
 			me.parseSettings = function(widget, widget_settings) {
 				var type = ("" + widget[0].type).toLowerCase();
 				
-				if (type == "hidden") {
+				/*if (type == "hidden") {
 					widget[0].type = "text"; //change it to text otherwise the input will not show in the UI
 					widget.addClass("is-input-hidden");
-				}
+				}*/
 				
 				widget_settings["type"] = type;
 				widget_settings["name"] = widget.attr("name");
@@ -112,25 +112,30 @@
 			};
 			
 			me.reparseSettings = function(widget, widget_settings) {
-				if (widget_settings && widget_settings["class"])
+				/*if (widget_settings && widget_settings["class"])
 					widget_settings["class"] = widget_settings["class"].replace(/is-input-hidden/g, "");
+				
+				if (widget.hasClass("is-input-hidden"))
+					widget_settings["type"] = "hidden";*/
+				
+				console.log(widget_settings);
 			};
 			
 			me.cleanHtml = function(html_element) {
 				var widget = $(html_element);
-				var is_hidden = widget.hasClass("is-input-hidden");
+				/*var is_hidden = widget.hasClass("is-input-hidden");
 				
 				if (is_hidden)  {
 					html_element.type = "hidden";
 					widget.removeClass("is-input-hidden");
-				}
+				}*/
 				
 				var html = ui_creator.getCleanedHtmlElement(html_element);
 				
-				if (is_hidden)  {
+				/*if (is_hidden)  {
 					html_element.type = "text";
 					widget.addClass("is-input-hidden");
-				}
+				}*/
 				
 				return html;
 			};
@@ -159,20 +164,20 @@
 					var sprop = field.parent();
 					
 					if (sprop.hasClass("type")) {
-						if (field_value == "hidden") {
+						/*if (field_value == "hidden") {
 							widget[0].type = "text";
 							widget.addClass("is-input-hidden");
 						}
-						else {
+						else {*/
 							widget[0].type = field_value; //change type even if type is empty
-							widget.removeClass("is-input-hidden");
+							//widget.removeClass("is-input-hidden");
 							
 							//if submit input inside of a form, disable previous click events
 							if (widget.is("input[type=submit]") && widget.parent().closest("form").length > 0) {
 								widget.off("click");
 								ui_creator.setTemplateWidgetOnClickEvent(widget);
 							}
-						}
+						//}
 					}
 					else if (sprop.hasClass("name")) {
 						if (field_value != "")
