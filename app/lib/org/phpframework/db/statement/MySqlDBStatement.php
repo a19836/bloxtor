@@ -512,12 +512,12 @@ DROP PROCEDURE IF EXISTS dropTableForeignKey;";
 		return "SELECT
     CASE WHEN fk.referenced_column_name IS NOT NULL THEN fk.constraint_name ELSE s.index_name END AS constraint_name,
     CASE WHEN fk.referenced_column_name IS NOT NULL THEN 'FOREIGN KEY' ELSE tc.constraint_type END AS constraint_type,
-	 s.column_name,
-	 s.index_type,
-    s.non_unique,
-	 s.seq_in_index,
-	 s.nullable,
-	 s.comment
+	 s.COLUMN_NAME AS column_name,
+	 s.INDEX_TYPE AS index_type,
+    s.NON_UNIQUE AS non_unique,
+	 s.SEQ_IN_INDEX AS seq_in_index,
+	 s.NULLABLE AS nullable,
+	 s.COMMENT AS comment
 FROM information_schema.STATISTICS s
 LEFT JOIN information_schema.TABLE_CONSTRAINTS tc
        ON s.TABLE_SCHEMA = tc.TABLE_SCHEMA

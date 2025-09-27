@@ -901,6 +901,7 @@ class WorkFlowDBHandler {
 		$attributes_to_modify = array();
 		$attributes_to_rename = array();
 		$attributes_data_to_rename = array();
+		$attributes_to_remove_unique = array();
 		$attributes_to_delete = array();
 		$new_pks = $new_pks_attrs = $old_pks = $auto_increment_pks = array();
 		$sort_index_inc = 0;
@@ -966,6 +967,9 @@ class WorkFlowDBHandler {
 					
 					if (!isset($old_attr["has_default"]))
 						$old_attr["has_default"] = isset($old_attr["default"]);
+					
+					if (!empty($old_attr["unique"]) && empty($new_attr["unique"]))
+						$attributes_to_remove_unique[] = $new_attr;
 					
 					//check if old attribute is auto increment pk
 					if ($was_auto_increment_pk) 
@@ -1042,7 +1046,7 @@ class WorkFlowDBHandler {
 		}
 		
 		//update attributes
-		if ($attributes_to_add || $attributes_to_modify || $attributes_to_rename || $attributes_to_delete) {
+		if ($attributes_to_add || $attributes_to_modify || $attributes_to_rename || $attributes_to_remove_unique || $attributes_to_delete) {
 			$attrs_with_auto_increment_to_modify = array();
 			$pks_dropped = false;
 			
@@ -1094,6 +1098,29 @@ class WorkFlowDBHandler {
 				
 				$sql_statements[] = $DBDriver->getModifyTableAttributeStatement($table_name, $attr, $sql_options);
 				$sql_statements_labels[] = "Modify attribute " . $attr["name"] . " in table $table_name";
+			}
+			
+			if ($attributes_to_remove_unique) {
+				$sql = $DBDriver->getTableIndexesStatement($table_name, $sql_options);
+				$indexes = $DBDriver->getSQL($sql);
+				//echo "<pre>";print_r($attributes_to_remove_unique);print_r($indexes);
+				
+				if ($indexes)
+					foreach ($attributes_to_remove_unique as $attr) {
+						$attr_name = $attr["name"];
+						
+						foreach ($indexes as $index) {
+							$constraint_name = isset($index["constraint_name"]) ? $index["constraint_name"] : null;
+							$constraint_type = isset($index["constraint_type"]) ? $index["constraint_type"] : null;
+							$column_name = isset($index["column_name"]) ? $index["column_name"] : null;
+								
+							if ($constraint_name && strtolower($constraint_type) == "unique" && $column_name == $attr["name"]) {
+								echo "sql: ".$DBDriver->getDropTableIndexStatement($table_name, $constraint_name, $sql_options);
+								$sql_statements[] = $DBDriver->getDropTableIndexStatement($table_name, $constraint_name, $sql_options);
+								$sql_statements_labels[] = "Remove unique index from attribute " . $attr["name"] . " in table $table_name";
+							}
+						}
+					}
 			}
 			
 			//add new pks
