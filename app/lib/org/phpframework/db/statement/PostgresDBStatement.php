@@ -110,7 +110,7 @@ trait PostgresDBStatement { //must be "trait" and not "class" bc this code will 
 		LEFT JOIN (
 			SELECT 
 			  column_name AS cn, 
-			  consrc AS check_constraint_value,
+			  pg_get_expr(pg_constraint.conbin, pg_constraint.conrelid) AS check_constraint_value,
 			  constraint_name AS check_constraint_name
 			FROM information_schema.constraint_column_usage
 			INNER JOIN pg_constraint on conname = constraint_name and contype='c'
@@ -861,9 +861,41 @@ END $$;";
 		$suffix = $options && !empty($options["suffix"]) ? $options["suffix"] : "";
 		
 		return "SELECT
+    i.relname AS index_name,
+    c.conname AS constraint_name,
+    CASE 
+        WHEN c.contype = 'p' THEN 'PRIMARY'
+        WHEN c.contype = 'u' THEN 'UNIQUE'
+        WHEN c.contype = 'f' THEN 'FOREIGN'
+        ELSE 'INDEX'
+    END AS constraint_type,
+    a.attname AS column_name,
+    am.amname AS index_type,
+    CASE 
+        WHEN ix.indisunique = 't' THEN 0
+        ELSE 1
+    END AS non_unique,
+    array_position(ix.indkey, a.attnum) AS seq_in_index,
+    CASE WHEN a.attnotnull THEN '0' ELSE '1' END AS nullable,
+    d.description AS comment
+FROM pg_class t
+JOIN pg_index ix ON t.oid = ix.indrelid
+JOIN pg_class i ON i.oid = ix.indexrelid
+JOIN pg_namespace n ON n.oid = t.relnamespace
+JOIN pg_am am ON i.relam = am.oid
+JOIN pg_attribute a ON a.attrelid = t.oid AND a.attnum = ANY(ix.indkey)
+LEFT JOIN pg_description d ON d.objoid = i.oid
+LEFT JOIN pg_constraint c ON c.conindid = ix.indexrelid
+WHERE n.nspname = current_schema()
+  AND t.relname = '$table'
+ORDER BY constraint_name, seq_in_index $suffix";
+
+		/*return "SELECT
     i.relname AS constraint_name,
     CASE 
-        WHEN fk.constraint_name IS NOT NULL THEN 'FOREIGN KEY'
+        WHEN fk.constraint_name IS NOT NULL THEN 'FOREIGN'
+        WHEN tc.constraint_type = 'PRIMARY KEY' THEN 'PRIMARY'
+        WHEN ix.indisunique = 1 THEN 'UNIQUE'
         ELSE tc.constraint_type
     END AS constraint_type,
     a.attname AS column_name,
@@ -898,7 +930,7 @@ LEFT JOIN (
    AND fk.column_name = a.attname
 WHERE n.nspname = current_schema()
   AND t.relname = '$table'
-ORDER BY constraint_name, seq_in_index $suffix";
+ORDER BY constraint_name, seq_in_index $suffix";*/
 	}
 	
 	public static function getLoadTableDataFromFileStatement($file_path, $table, $options = false) {

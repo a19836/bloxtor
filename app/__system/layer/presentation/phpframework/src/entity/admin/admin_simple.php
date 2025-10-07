@@ -2,10 +2,20 @@
 include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
-$choose_available_project_url = "{$project_url_prefix}admin/choose_available_project?redirect_path=admin";
+$is_admin_ui_simple_allowed = $UserAuthenticationHandler->isFilePermissionAllowed("simple", "admin_ui", "access");
+
+if (empty($is_admin_ui_simple_allowed)) {
+	echo '<script>
+		alert("You don\'t have permission to access this Workspace!");
+		document.location="' . $project_url_prefix . 'auth/logout";
+	</script>';
+	die();
+}
 
 $default_page = isset($_GET["default_page"]) ? $_GET["default_page"] : null;
 //print_r($_GET);die();
+
+$choose_available_project_url = "{$project_url_prefix}admin/choose_available_project?redirect_path=admin";
 
 $layers_beans = AdminMenuHandler::getLayers($user_global_variables_file_path);
 //echo "<pre>";print_r($layers_beans);die();
@@ -48,6 +58,10 @@ if ($layers_beans && !empty($layers_beans["presentation_layers"])) {
 
 		if (!empty($_GET["project"])) {
 			$project = $_GET["project"];
+			$project = preg_replace("/[\/]+/", "/", $project); //remove duplicated "/"
+			$project = preg_replace("/^\//", "", $project); //remove first "/"
+			$project = preg_replace("/\/$/", "", $project); //remove last "/"
+			
 			CookieHandler::setCurrentDomainEternalRootSafeCookie("selected_project", $project);
 		}
 		else if (!empty($_COOKIE["selected_project"]))
@@ -88,9 +102,10 @@ if (!empty($layers["presentation_layers"]))
 		}
 
 //if project doesn't exist, forward it to choose project.
-if (!$projects || empty($projects[$project])) {
+if (empty($projects) || empty($projects[$project])) {
 	header("Location: $choose_available_project_url");
 	echo "<script>document.location='$choose_available_project_url';</script>";
 	die();
 }
+//echo "<pre>";print_r($projects);die();
 ?>

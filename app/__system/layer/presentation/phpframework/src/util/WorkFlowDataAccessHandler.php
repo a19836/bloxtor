@@ -397,8 +397,9 @@ class WorkFlowDataAccessHandler {
 			$relationship_type = $relationship_type ? $relationship_type : "queries";
 			
 			$oarr = !empty($data["queries"][0]["childs"]) ? $data["queries"][0]["childs"] : array();
+			$new_nodes_ids = array();
 			
-			if (!$nodes_ids) {
+			if (!$nodes_ids) { 
 				$nodes_ids = array();
 				foreach ($oarr as $node_type => $nodes) 
 					if ($nodes) {
@@ -406,6 +407,7 @@ class WorkFlowDataAccessHandler {
 						for ($i = 0; $i < $t; $i++) {
 							$node_id = !empty($nodes[$i]["@"]["id"]) ? $nodes[$i]["@"]["id"] : (isset($nodes[$i]["@"]["name"]) ? $nodes[$i]["@"]["name"] : null);
 							$nodes_ids[$node_type][$node_id] = $i;
+							$new_nodes_ids[] = $node_id;
 						}
 					}
 			}
@@ -444,7 +446,7 @@ class WorkFlowDataAccessHandler {
 												
 												unset($nodes_ids[$node_type][$node_id]);
 											}
-											else
+											else if (!in_array($node_id, $new_nodes_ids)) //only add if there is not already another repeated node id. Only unique ids are allowed, independent of the node type
 												$new_nodes[] = $node;
 										}
 									}
@@ -489,6 +491,8 @@ class WorkFlowDataAccessHandler {
 				$file_path .= "/queries.xml";
 			
 			if ($overwrite && file_exists($file_path)) {
+				$new_nodes_ids = array();
+				
 				if (!$nodes_ids) {
 					$nodes_ids = array();
 					foreach ($oarr as $node_type => $nodes) 
@@ -497,6 +501,7 @@ class WorkFlowDataAccessHandler {
 							for ($i = 0; $i < $t; $i++) {
 								$node_id = !empty($nodes[$i]["@"]["id"]) ? $nodes[$i]["@"]["id"] : $nodes[$i]["@"]["name"];
 								$nodes_ids[$node_type][$node_id] = $i;
+								$new_nodes_ids[] = $node_id;
 							}
 						}
 				}
@@ -524,7 +529,7 @@ class WorkFlowDataAccessHandler {
 									
 										unset($nodes_ids[$node_type][$node_id]);
 									}
-									else
+									else if (!in_array($node_id, $new_nodes_ids)) //only add if there is not already another repeated node id. Only unique ids are allowed, independent of the node type
 										$new_nodes[] = $node;
 								}
 							}

@@ -138,7 +138,6 @@ foreach ($raw_layers as $layer_type_name => $layer_type)
 $admin_uis = array(
 	"simple" => "Simple Workspace",
 	"citizen" => "Citizen-Development Workspace",
-	"low_code" => "Low-Code Workspace",
 	"advanced" => "Advanced Workspace",
 	"expert" => "Expert Workspace",
 );

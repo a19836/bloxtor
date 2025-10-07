@@ -326,6 +326,20 @@ $form_settings = array(
 					),
 					17 => array(
 						"field" => array(
+							"class" => "form_field form_field_db form_field_db_advanced db_reconnect" . ($is_local_db ? " hidden" : ""),
+							"label" => array(
+								"value" => "DB Reconnect: ",
+							),
+							"input" => array(
+								"type" => "checkbox",
+								"name" => "authentication_db_reconnect",
+								"value" => "#authentication_db_reconnect#",
+								"title" => "Automatically reconnect if connection becomes stale."
+							)
+						)
+					),
+					18 => array(
+						"field" => array(
 							"class" => "form_field form_field_db form_field_db_advanced db_encoding" . ($is_local_db ? " hidden" : ""),
 							"label" => array(
 								"value" => "DB Encoding: ",
@@ -338,7 +352,7 @@ $form_settings = array(
 							)
 						)
 					),
-					18 => array(
+					19 => array(
 						"field" => array(
 							"class" => "form_field form_field_db form_field_db_advanced db_schema" . ($is_local_db ? " hidden" : ""),
 							"label" => array(
@@ -351,7 +365,7 @@ $form_settings = array(
 							)
 						)
 					),
-					19 => array(
+					20 => array(
 						"field" => array(
 							"class" => "form_field form_field_db form_field_db_advanced db_odbc_data_source" . ($is_local_db ? " hidden" : ""),
 							"label" => array(
@@ -365,7 +379,7 @@ $form_settings = array(
 							)
 						)
 					),
-					20 => array(
+					21 => array(
 						"field" => array(
 							"class" => "form_field form_field_db form_field_db_advanced db_odbc_driver" . ($is_local_db ? " hidden" : ""),
 							"label" => array(
@@ -379,7 +393,7 @@ $form_settings = array(
 							)
 						)
 					),
-					21 => array(
+					22 => array(
 						"field" => array(
 							"class" => "form_field form_field_db form_field_db_advanced db_extra_dsn" . ($is_local_db ? " hidden" : ""),
 							"label" => array(
@@ -390,6 +404,20 @@ $form_settings = array(
 								"name" => "authentication_db_extra_dsn",
 								"value" => "#authentication_db_extra_dsn#",
 								"title" => "Other DSN attributes. Each attribute must be splitted by comma.",
+							)
+						)
+					),
+					23 => array(
+						"field" => array(
+							"class" => "form_field form_field_db form_field_db_advanced db_extra_settings" . ($is_local_db ? " hidden" : ""),
+							"label" => array(
+								"value" => "Extra Settings: ",
+							),
+							"input" => array(
+								"type" => "text",
+								"name" => "authentication_db_extra_settings",
+								"value" => "#authentication_db_extra_settings#",
+								"title" => "Other settings attributes. Each setting must be splitted by & as a url query string.",
 							)
 						)
 					)

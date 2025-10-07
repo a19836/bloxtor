@@ -505,7 +505,7 @@ if ($root_path) {
 								if ($action == "paste_and_remove")
 									$status = rename($src, $dst);
 								else
-									$status = is_dir($src) ? WorkFlowBeansFolderHandler::copyFolder($src . "/", $dst . "/") : copy($src, $dst);
+									$status = CMSModuleUtil::copyFile($src, $dst);
 								
 								//Rename service name according with file name.
 								if ($status) {

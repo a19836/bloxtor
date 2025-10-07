@@ -1,7 +1,7 @@
 <?php
 include $EVC->getUtilPath("BreadCrumbsUIHandler");
 
-$upload_url = $project_url_prefix . "admin/manage_file?bean_name=$bean_name&bean_file_name=$bean_file_name&filter_by_layout=$filter_by_layout&path=$path&action=upload&item_type=$item_type";
+$upload_url = !empty($upload_url) ? $upload_url : $project_url_prefix . "admin/manage_file?bean_name=$bean_name&bean_file_name=$bean_file_name&filter_by_layout=$filter_by_layout&path=$path&action=upload&item_type=$item_type";
 
 $on_success_js_func = $on_success_js_func ? $on_success_js_func : "refreshAndShowLastNodeChilds";
 

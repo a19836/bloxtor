@@ -15,6 +15,8 @@ $vendor_framework = isset($_GET["vendor_framework"]) ? $_GET["vendor_framework"]
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
 
+$sub_files = !empty($sub_files) ? $sub_files : null;
+
 /*$UserCacheHandler = $PHPFrameWork->getObject("UserCacheHandler");
 $UserCacheHandler->config(false, true);
 
@@ -25,7 +27,6 @@ if ($UserCacheHandler->isValid($cached_file_name)) {
 }
 
 if (empty($layers)) {*/
-	$AdminMenuHandler = new AdminMenuHandler();
 	$sort_sub_files = true;
 	
 	if ($item_type == "dao") {
@@ -66,7 +67,7 @@ if (empty($layers)) {*/
 		$sub_files["properties"]["bean_name"] = "test_unit";
 		$sub_files["properties"]["bean_file_name"] = "";
 	}
-	else {
+	else if ($bean_name) {
 		$layer_object_id = LAYER_PATH . WorkFlowBeansFileHandler::getLayerBeanFolderName($user_beans_folder_path . $bean_file_name, $bean_name, $user_global_variables_file_path) . "/";
 		$layer_path_object_id = $layer_object_id . $path . "/";
 		$options = array(
@@ -147,7 +148,7 @@ if (empty($layers)) {*/
 				$sorted[$file_name] = $file;
 		
 		foreach ($sub_files as $file_name => $file)
-			if (!isset($file["properties"]["item_type"]) || $file["properties"]["item_type"] != "folder")
+			if (!isset($file["properties"]["item_type"]) || !in_array($file["properties"]["item_type"], $folder_types))
 				$sorted[$file_name] = $file;
 		
 		$sub_files = $sorted;

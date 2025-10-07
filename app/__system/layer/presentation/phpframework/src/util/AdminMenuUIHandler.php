@@ -1666,6 +1666,7 @@ class AdminMenuUIHandler {
 	}
 	
 	public static function getNode($node_id, $node, $main_layer_properties = false, $parent_path = false, $class = false) {
+		//echo "<pre>$node_id";print_r($node);print_r($main_layer_properties);die();
 		//echo "node_id:$node_id<br>";
 		$html = "";
 		

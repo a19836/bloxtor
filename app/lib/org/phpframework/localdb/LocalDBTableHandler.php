@@ -4,10 +4,12 @@ include_once get_lib("org.phpframework.encryption.CryptoKeyHandler");
 class LocalDBTableHandler {
 	private $root_path;
 	private $encryption_key;
+	private $with_backup;
 	
-	public function __construct($root_path, $encryption_key) {
+	public function __construct($root_path, $encryption_key, $with_backup = true) {
 		$this->root_path = trim($root_path);
 		$this->encryption_key = $encryption_key;
+		$this->with_backup = $with_backup;
 		
 		$this->root_path .= substr($this->root_path, -1) == "/" ? "" : "/";
 	}
@@ -201,6 +203,11 @@ class LocalDBTableHandler {
 		
 		if (is_dir($parent_path)) {
 			$cipher_text = $items ? \CryptoKeyHandler::encryptJsonObject($items, $this->encryption_key) : null;
+			
+			if ($this->with_backup) {
+				$backup_path = $this->getTableFilePath($table_name . ".bkp");
+				copy($path, $backup_path);
+			}
 			
 			return file_put_contents($path, $cipher_text) !== false;
 		}

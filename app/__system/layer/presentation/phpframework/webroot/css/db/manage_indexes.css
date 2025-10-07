@@ -28,11 +28,16 @@
 	padding:0 5px;
 	vertical-align:top;
 }
-.manage_indexes table .empty {
+.manage_indexes table .empty,
+  .manage_indexes table .constraint_type,
+  .manage_indexes table .index_type,
+  .manage_indexes table .non_unique,
+  .manage_indexes table .seq_in_index,
+  .manage_indexes table .nullable {
 	text-align:center;
 }
 .manage_indexes table .actions {
-	text-align:center;
+	text-align:right;
 	width:110px;
 }
 .manage_indexes table .actions .icon {

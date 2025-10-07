@@ -1,7 +1,14 @@
 <?php
-include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
-
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
+$is_admin_ui_advanced_allowed = $UserAuthenticationHandler->isFilePermissionAllowed("advanced", "admin_ui", "access");
+
+if (empty($is_admin_ui_advanced_allowed)) {
+	echo '<script>
+		alert("You don\'t have permission to access this Workspace!");
+		document.location="' . $project_url_prefix . 'auth/logout";
+	</script>';
+	die();
+}
 
 $default_page = isset($_GET["default_page"]) ? $_GET["default_page"] : null;
 $tree_layout = isset($_GET["tree_layout"]) ? $_GET["tree_layout"] : null;
@@ -50,8 +57,6 @@ else if (!empty($_COOKIE["filter_by_layout"]))
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
 
 include $EVC->getUtilPath("admin_uis_layers_and_permissions");
-
-$is_terminal_console_allowed = $UserAuthenticationHandler->isPresentationFilePermissionAllowed($EVC->getEntityPath("admin/terminal_console"), "access");
 
 //echo "<pre>";print_r($layers);die();
 //echo "<pre>";print_r($presentation_projects_by_layer_label_and_folders);print_r($non_projects_layout_types);die();

@@ -314,6 +314,9 @@
 .icon.toggle_left_panel::before {
 	content:"\f0c9";
 }
+.icon.toggle_side_panel::before {
+	content:"\f0c9";
+}
 .icon.toggle_tree_layout::before {
 	content:"\e476";
 }

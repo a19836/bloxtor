@@ -1108,16 +1108,32 @@ class WorkFlowDBHandler {
 				if ($indexes)
 					foreach ($attributes_to_remove_unique as $attr) {
 						$attr_name = $attr["name"];
+						$t = count($indexes);
 						
-						foreach ($indexes as $index) {
+						//prepare unique index to remove
+						for ($i = 0; $i < $t; $i++) {
+							$index = $indexes[$i];
 							$constraint_name = isset($index["constraint_name"]) ? $index["constraint_name"] : null;
 							$constraint_type = isset($index["constraint_type"]) ? $index["constraint_type"] : null;
+							$unique = isset($index["non_unique"]) ? !$index["non_unique"] : null;
 							$column_name = isset($index["column_name"]) ? $index["column_name"] : null;
+							
+							if ($constraint_name && strtolower($constraint_type) == "unique" && $column_name == $attr["name"] && $unique) {
+								//check if the unique index is not a combined index with multiple columns.
+								$is_single_column_index = true;
 								
-							if ($constraint_name && strtolower($constraint_type) == "unique" && $column_name == $attr["name"]) {
-								echo "sql: ".$DBDriver->getDropTableIndexStatement($table_name, $constraint_name, $sql_options);
-								$sql_statements[] = $DBDriver->getDropTableIndexStatement($table_name, $constraint_name, $sql_options);
-								$sql_statements_labels[] = "Remove unique index from attribute " . $attr["name"] . " in table $table_name";
+								for ($j = 0; $j < $t; $j++) 
+									if ($j != $i && !empty($indexes[$j]["constraint_name"]) && $indexes[$j]["constraint_name"] == $constraint_name) {
+										$is_single_column_index = false;
+										break;
+									}
+								
+								//echo "is_single_column_index:$is_single_column_index";die();
+								//if single unique index, then add index to drop.
+								if ($is_single_column_index) {
+									$sql_statements[] = $DBDriver->getDropTableIndexStatement($table_name, $constraint_name, $sql_options);
+									$sql_statements_labels[] = "Remove unique index from attribute " . $attr["name"] . " in table $table_name";
+								}
 							}
 						}
 					}

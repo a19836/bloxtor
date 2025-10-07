@@ -31,11 +31,13 @@ $authentication_db_password = isset($GLOBALS[$authentication_db_driver . "_db_pa
 $authentication_db_port = isset($GLOBALS[$authentication_db_driver . "_db_port"]) ? $GLOBALS[$authentication_db_driver . "_db_port"] : null;
 $authentication_db_persistent = isset($GLOBALS[$authentication_db_driver . "_db_persistent"]) ? $GLOBALS[$authentication_db_driver . "_db_persistent"] : null;
 $authentication_db_new_link = isset($GLOBALS[$authentication_db_driver . "_db_new_link"]) ? $GLOBALS[$authentication_db_driver . "_db_new_link"] : null;
+$authentication_db_reconnect = isset($GLOBALS[$authentication_db_driver . "_db_reconnect"]) ? $GLOBALS[$authentication_db_driver . "_db_reconnect"] : null;
 $authentication_db_encoding = isset($GLOBALS[$authentication_db_driver . "_db_encoding"]) ? $GLOBALS[$authentication_db_driver . "_db_encoding"] : null;
 $authentication_db_schema = isset($GLOBALS[$authentication_db_driver . "_db_schema"]) ? $GLOBALS[$authentication_db_driver . "_db_schema"] : null;
 $authentication_db_odbc_data_source = isset($GLOBALS[$authentication_db_driver . "_db_odbc_data_source"]) ? $GLOBALS[$authentication_db_driver . "_db_odbc_data_source"] : null;
 $authentication_db_odbc_driver = isset($GLOBALS[$authentication_db_driver . "_db_odbc_driver"]) ? $GLOBALS[$authentication_db_driver . "_db_odbc_driver"] : null;
 $authentication_db_extra_dsn = isset($GLOBALS[$authentication_db_driver . "_db_extra_dsn"]) ? $GLOBALS[$authentication_db_driver . "_db_extra_dsn"] : null;
+$authentication_db_extra_settings = isset($GLOBALS[$authentication_db_driver . "_db_extra_settings"]) ? $GLOBALS[$authentication_db_driver . "_db_extra_settings"] : null;
 
 //posting new data
 if (!empty($_POST)) {
@@ -57,11 +59,13 @@ if (!empty($_POST)) {
 	$authentication_db_password = isset($_POST["authentication_db_password"]) ? $_POST["authentication_db_password"] : null;
 	$authentication_db_persistent = isset($_POST["authentication_db_persistent"]) ? $_POST["authentication_db_persistent"] : null;
 	$authentication_db_new_link = isset($_POST["authentication_db_new_link"]) ? $_POST["authentication_db_new_link"] : null;
+	$authentication_db_reconnect = isset($_POST["authentication_db_reconnect"]) ? $_POST["authentication_db_reconnect"] : null;
 	$authentication_db_encoding = isset($_POST["authentication_db_encoding"]) ? $_POST["authentication_db_encoding"] : null;
 	$authentication_db_schema = isset($_POST["authentication_db_schema"]) ? $_POST["authentication_db_schema"] : null;
 	$authentication_db_odbc_data_source = isset($_POST["authentication_db_odbc_data_source"]) ? $_POST["authentication_db_odbc_data_source"] : null;
 	$authentication_db_odbc_driver = isset($_POST["authentication_db_odbc_driver"]) ? $_POST["authentication_db_odbc_driver"] : null;
 	$authentication_db_extra_dsn = isset($_POST["authentication_db_extra_dsn"]) ? $_POST["authentication_db_extra_dsn"] : null;
+	$authentication_db_extra_settings = isset($_POST["authentication_db_extra_settings"]) ? $_POST["authentication_db_extra_settings"] : null;
 	
 	if (!is_numeric($maximum_failed_attempts) || $maximum_failed_attempts < 0)
 		$error_message = "Maximum # of Failed Attempts must be numeric and bigger or equal than 0! Please try again...";
@@ -114,11 +118,13 @@ if (!empty($_POST)) {
 				$global_variables[$authentication_db_driver . "_db_password"] = $authentication_db_password;
 				$global_variables[$authentication_db_driver . "_db_persistent"] = $authentication_db_persistent;
 				$global_variables[$authentication_db_driver . "_db_new_link"] = $authentication_db_new_link;
+				$global_variables[$authentication_db_driver . "_db_reconnect"] = $authentication_db_reconnect;
 				$global_variables[$authentication_db_driver . "_db_encoding"] = $authentication_db_encoding;
 				$global_variables[$authentication_db_driver . "_db_schema"] = $authentication_db_schema;
 				$global_variables[$authentication_db_driver . "_db_odbc_data_source"] = $authentication_db_odbc_data_source;
 				$global_variables[$authentication_db_driver . "_db_odbc_driver"] = $authentication_db_odbc_driver;
 				$global_variables[$authentication_db_driver . "_db_extra_dsn"] = $authentication_db_extra_dsn;
+				$global_variables[$authentication_db_driver . "_db_extra_settings"] = $authentication_db_extra_settings;
 				
 				//Saving db credentials
 				if (PHPVariablesFileHandler::saveVarsToFile(GLOBAL_VARIABLES_PROPERTIES_FILE_PATH, $global_variables, true)) {
@@ -179,11 +185,13 @@ $data["authentication_db_username"] = $authentication_db_username;
 $data["authentication_db_password"] = $authentication_db_password;
 $data["authentication_db_persistent"] = $authentication_db_persistent;
 $data["authentication_db_new_link"] = $authentication_db_new_link;
+$data["authentication_db_reconnect"] = $authentication_db_reconnect;
 $data["authentication_db_encoding"] = $authentication_db_encoding;
 $data["authentication_db_schema"] = $authentication_db_schema;
 $data["authentication_db_odbc_data_source"] = $authentication_db_odbc_data_source;
 $data["authentication_db_odbc_driver"] = $authentication_db_odbc_driver;
 $data["authentication_db_extra_dsn"] = $authentication_db_extra_dsn;
+$data["authentication_db_extra_settings"] = $authentication_db_extra_settings;
 
 //Preparing local and remote options
 $local_and_remote_options = array(

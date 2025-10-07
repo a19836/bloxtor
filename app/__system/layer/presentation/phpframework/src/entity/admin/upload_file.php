@@ -13,7 +13,8 @@ $popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 
 $path = str_replace("../", "", $path);//for security reasons
 $filter_by_layout = str_replace("../", "", $filter_by_layout);//for security reasons
-$root_path = $obj = null;
+$root_path = !empty($root_path) ? $root_path : null;
+$obj = null;
 
 if ($item_type == "dao")
 	$root_path = DAO_PATH;

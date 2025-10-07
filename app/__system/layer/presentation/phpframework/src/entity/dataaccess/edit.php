@@ -94,7 +94,11 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 			$selected_table = !empty($data["table"]) ? $data["table"] : (isset($data["attributes"][0]["table"]) ? $data["attributes"][0]["table"] : null);
 			//echo "<pre>";print_r($data);die("123");
 			
-			$rel_type = isset($data["type"]) ? $data["type"] : null;
+			$rel_type = isset($data["type"]) ? $data["type"] : (
+				!empty($obj_data["name"]) ? $obj_data["name"] : (
+					$query_type ? $query_type : null
+				)
+			);
 			$name = isset($obj_data["@"]["id"]) ? $obj_data["@"]["id"] : null;
 			$parameter_class = isset($obj_data["@"]["parameter_class"]) ? $obj_data["@"]["parameter_class"] : null;
 			$parameter_map = isset($obj_data["@"]["parameter_map"]) ? $obj_data["@"]["parameter_map"] : null;
@@ -102,6 +106,14 @@ if ($obj && is_a($obj, "DataAccessLayer")) {
 			$result_map = isset($obj_data["@"]["result_map"]) ? $obj_data["@"]["result_map"] : null;
 			
 			if ($sql) {
+				if (!$rel_type && !$data) {
+					if (SQLQueryHandler::isSetSQL($sql))
+						$rel_type = SQLQueryHandler::getSQLType($sql);
+					else if (SQLQueryHandler::isGetSQL($sql))
+						$rel_type = "select";
+				}
+				//echo "$rel_type = $query_type";echo "<pre>";print_r($obj_data);die("123");
+				
 				$converted_sql = $obj->getFunction("convertObjectToSQL", array($data));
 				
 				//remove "as" keyword bc is optional. Remove spaces, quotes (double and single), apostrophes, paranthesis...

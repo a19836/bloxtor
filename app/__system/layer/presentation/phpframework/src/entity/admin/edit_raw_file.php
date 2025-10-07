@@ -18,6 +18,7 @@ $popup = isset($_GET["popup"]) ? $_GET["popup"] : null;
 $path = str_replace("../", "", $path);//for security reasons
 
 $WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
+$layer_path = !empty($layer_path) ? $layer_path : null;
 
 if ($item_type == "dao") 
 	$layer_path = DAO_PATH;
@@ -27,7 +28,7 @@ else if ($item_type == "test_unit")
 	$layer_path = TEST_UNIT_PATH;
 else if ($item_type == "other")
 	$layer_path = OTHER_PATH;
-else {
+else if ($bean_name) {
 	if ($item_type != "presentation")
 		$obj = $WorkFlowBeansFileHandler->getBeanObject($bean_name);
 	else {
@@ -35,7 +36,6 @@ else {
 		$obj = $PEVC ? $PEVC->getPresentationLayer() : null;
 	}
 	
-	$layer_path = null;
 	if ($obj)
 		$layer_path = $obj->getLayerPathSetting();
 }
@@ -59,8 +59,8 @@ if ($layer_path) { //bc of hackings, like trying to know the code for libs or sy
 	
 	$code = "";
 	$file_exists = file_exists($file_path);
-
-	if ($path && ($file_exists || $create_dependencies)) {
+	
+	if ($path) {
 		$layer_object_id = $item_type == "dao" ? "vendor/dao/$path" : ($item_type == "vendor" || $item_type == "other" ? "$item_type/$path" : ($item_type == "test_unit" ? "vendor/testunit/$path" : $file_path));
 		$UserAuthenticationHandler->checkInnerFilePermissionAuthentication($layer_object_id, "layer", "access");
 		

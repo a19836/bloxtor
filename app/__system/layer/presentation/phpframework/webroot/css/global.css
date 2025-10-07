@@ -311,6 +311,7 @@ input[type=submit]:not(:disabled),
 	z-index:99999 !important;
 	overflow-y:auto;
 	overflow-y:overlay;
+	overflow-wrap:break-word;
 }
 .status_message:not(.bottom_messages) .status_message_info,
   .status_message:not(.bottom_messages) .status_message_error {

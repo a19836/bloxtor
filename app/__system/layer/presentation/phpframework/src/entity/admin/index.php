@@ -15,7 +15,6 @@ if (!empty($admin_type)) {
 	
 	if ( ($admin_type == "simple" && !$is_admin_ui_simple_allowed)
 		|| ($admin_type == "citizen" && !$is_admin_ui_citizen_allowed)
-		|| ($admin_type == "low_code" && !$is_admin_ui_low_code_allowed)
 		|| ($admin_type == "advanced" && !$is_admin_ui_advanced_allowed)
 		|| ($admin_type == "expert" && !$is_admin_ui_expert_allowed)
 	)
@@ -24,7 +23,20 @@ if (!empty($admin_type)) {
 
 $entity_view_id = !empty($admin_type) ? "admin/admin_" . $admin_type : "admin/admin_uis";
 $entity_path = $EVC->getEntityPath($entity_view_id);
-include $entity_path;
+
+//catch this bc if the bean xml files are invalid, this will break the system.
+$error_reporting = error_reporting();
+error_reporting(0);
+
+try {
+	include $entity_path;
+}
+catch (Throwable $e) {
+	$beans_xml_exception = $e;
+	$is_admin_ui_expert_allowed = $UserAuthenticationHandler->isFilePermissionAllowed("expert", "admin_ui", "access");
+}
+
+error_reporting($error_reporting);
 
 //check if licence is valid, otherwise deletes folders
 function validateLicence($EVC, $user_global_variables_file_path, $user_beans_folder_path) {
@@ -71,9 +83,19 @@ function validateLicence($EVC, $user_global_variables_file_path, $user_beans_fol
 		if ($status && $project_maximum_number != -1) {
 			$projects_count = 0;
 			
-			include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
-			$layers = CMSPresentationLayerHandler::getPresentationLayersProjectsFiles($user_global_variables_file_path, $user_beans_folder_path, "webroot", false, 0);
-			if ($layers)
+			//catch this bc if the bean xml files are invalid, this will break the system.
+			$error_reporting = error_reporting();
+			error_reporting(0);
+			
+			try {
+				include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
+				$layers = CMSPresentationLayerHandler::getPresentationLayersProjectsFiles($user_global_variables_file_path, $user_beans_folder_path, "webroot", false, 0);
+			}
+		  	catch (Throwable $e) {}
+				
+			error_reporting($error_reporting);
+			
+			if (!empty($layers))
 				foreach ($layers as $layer)
 					if (!empty($layer["projects"])) {
 						$projects_count += count($layer["projects"]);

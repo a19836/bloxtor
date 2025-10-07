@@ -18,6 +18,7 @@
 	float:none;
 	clear:right;
 	overflow-y:auto;
+	overflow-wrap:break-word;
 }
 .status_message .status_message_info span.close_message, 
 	.status_message .status_message_error span.close_message {

@@ -8,6 +8,28 @@ class SQLQueryHandler {
 	public static $exception = null;
 	public static $reserved_conditions = array("#searching_condition#");
 	
+	public static function isGetSQL($sql) {
+		return $sql && preg_match("/^\s*(select|show|describe|explain|help|values|table|exec|dbcc)\s/i", $sql);
+	}
+	
+	public static function isSetSQL($sql) {
+		return $sql && preg_match("/^\s*(insert|update|delete)\s/i", $sql);
+	}
+	
+	public static function getSQLType($sql) {
+		if ($sql) {
+			$data = self::parse($sql);
+			
+			if (!empty($data["type"]))
+				return $data["type"];
+			
+			if (preg_match("/^\s*(insert|update|delete)\s/i", $sql, $m, PREG_OFFSET_CAPTURE))
+				return strtolower($m[1][0]);
+		}
+		
+		return null;
+	}
+	
 	public static function parse($sql) {
 	//$sql = "insert into activity (name, id)values('as', 12);";
 	//$sql = "update activity set name='as', date='1223123' where activity_id=12;";

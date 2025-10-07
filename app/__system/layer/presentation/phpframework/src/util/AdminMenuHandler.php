@@ -1098,6 +1098,7 @@ class AdminMenuHandler {
 							"item_type" => $item_type, 
 							"item_id" => self::getItemId("$file_path/$node_id"),
 							"item_menu" => $item_menu,
+							"item_title" => $node_type . " " . $item_type,
 							"query_type" => $node_type,
 							"relationship_type" => $relationship_type,
 						);

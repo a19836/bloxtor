@@ -510,13 +510,22 @@ DROP PROCEDURE IF EXISTS dropTableForeignKey;";
 		
 		//return "SHOW INDEX FROM $sql_table $suffix";
 		return "SELECT
-    CASE WHEN fk.referenced_column_name IS NOT NULL THEN fk.constraint_name ELSE s.index_name END AS constraint_name,
-    CASE WHEN fk.referenced_column_name IS NOT NULL THEN 'FOREIGN KEY' ELSE tc.constraint_type END AS constraint_type,
+    CASE 
+        WHEN fk.referenced_column_name IS NOT NULL THEN fk.constraint_name 
+        ELSE s.index_name 
+    END AS constraint_name,
+    CASE 
+        WHEN fk.referenced_column_name IS NOT NULL THEN 'FOREIGN' 
+        WHEN tc.constraint_type = 'PRIMARY KEY' THEN 'PRIMARY'
+        WHEN s.NON_UNIQUE = 0 && tc.constraint_type = 'UNIQUE' THEN 'UNIQUE'
+        WHEN tc.constraint_type IS NULL THEN 'INDEX'
+        ELSE tc.constraint_type 
+    END AS constraint_type,
 	 s.COLUMN_NAME AS column_name,
 	 s.INDEX_TYPE AS index_type,
     s.NON_UNIQUE AS non_unique,
 	 s.SEQ_IN_INDEX AS seq_in_index,
-	 s.NULLABLE AS nullable,
+    CASE WHEN s.NULLABLE THEN '1' ELSE '0' END AS nullable,
 	 s.COMMENT AS comment
 FROM information_schema.STATISTICS s
 LEFT JOIN information_schema.TABLE_CONSTRAINTS tc

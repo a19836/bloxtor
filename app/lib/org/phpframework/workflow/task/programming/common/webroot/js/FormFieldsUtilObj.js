@@ -1418,7 +1418,7 @@ var FormFieldsUtilObj = {
 		'				<input type="text" class="task_property_field" name="' + prefix + '[validation_regex]" value="' + validation_regex + '" />' +
 		'				<span class="icon add_variable inline" onClick="ProgrammingTaskUtil.onProgrammingTaskChooseCreatedVariable(this)">Add Variable</span>' +
 		'			</div>' +
-		'			<div class="validation_func" ' + (!validation_type && (is_input || is_search || is_url || is_email || is_tel || is_number || is_range || is_date || is_color) ? '' : 'style="display:none;"') + ' title="Insert here the javascript func which will validate the user input value. This function must return true/false and receives the arguments: Input field as html node, Validation-Type as string, Validation-Regex as string.">' +
+		'			<div class="validation_func" ' + (!validation_type && (is_input || is_search || is_url || is_email || is_tel || is_number || is_range || is_date || is_color) ? '' : 'style="display:none;"') + ' title="Insert here the javascript func which will validate the user input value. This function must return true/false and receives the arguments: Input value, Validation-Type as string, Validation-Regex as string.">' +
 		'				<label>Validation Func:</label>' +
 		'				<input type="text" class="task_property_field" name="' + prefix + '[validation_func]" value="' + validation_func + '" />' +
 		'				<span class="icon add_variable inline" onClick="ProgrammingTaskUtil.onProgrammingTaskChooseCreatedVariable(this)">Add Variable</span>' +

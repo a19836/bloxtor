@@ -8,7 +8,10 @@ include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
 
 class FlushCacheHandler {
 	
-	public static function flushCache($EVC, $webroot_cache_folder_path, $webroot_cache_folder_url, $workflow_paths_id, $user_global_variables_file_path, $user_beans_folder_path, $css_and_js_optimizer_webroot_cache_folder_path, $deployments_temp_folder_path) {
+	public static function flushCache($EVC, $webroot_cache_folder_path, $webroot_cache_folder_url, $workflow_paths_id, $user_global_variables_file_path, $user_beans_folder_path, $css_and_js_optimizer_webroot_cache_folder_path, $deployments_temp_folder_path, &$errors = null) {
+		if (!is_array($errors))
+			$errors = array();
+		
 		//Delete workflows in LAYER_CACHE_PATH and in app/__system/layer/presentation/phpframework/webroot/__system/cache/
 		$WorkFlowTaskHandler = new WorkFlowTaskHandler($webroot_cache_folder_path, $webroot_cache_folder_url);
 		$WorkFlowTaskHandler->setCacheRootPath(LAYER_CACHE_PATH);
@@ -44,21 +47,33 @@ class FlushCacheHandler {
 		if ($user_tmp_path)
 			CacheHandlerUtil::deleteFolder("$user_tmp_path/$cache_relative_path");
 		
-		$files = CMSPresentationLayerHandler::getPresentationLayersProjectsFiles($user_global_variables_file_path, $user_beans_folder_path);
-		if (is_array($files))
-			foreach ($files as $layer_name => $layer_props)
-				if (isset($layer_props["projects"]) && is_array($layer_props["projects"])) {
-					$bean_file_name = isset($layer_props["bean_file_name"]) ? $layer_props["bean_file_name"] : null;
-					$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
-					$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($layer_name);
-				
-					foreach ($layer_props["projects"] as $project_name => $project_props) {
-						$user_tmp_path = self::getUserTmpPath(array($user_global_variables_file_path, $PEVC->getConfigPath("pre_init_config", $project_name)));
-						
-						if ($user_tmp_path)
-							CacheHandlerUtil::deleteFolder("$user_tmp_path/$cache_relative_path");
+		$error_reporting = error_reporting();
+		error_reporting(0);
+		
+		try {
+			$files = CMSPresentationLayerHandler::getPresentationLayersProjectsFiles($user_global_variables_file_path, $user_beans_folder_path);
+			if (is_array($files))
+				foreach ($files as $layer_name => $layer_props)
+					if (isset($layer_props["projects"]) && is_array($layer_props["projects"])) {
+						$bean_file_name = isset($layer_props["bean_file_name"]) ? $layer_props["bean_file_name"] : null;
+						$WorkFlowBeansFileHandler = new WorkFlowBeansFileHandler($user_beans_folder_path . $bean_file_name, $user_global_variables_file_path);
+						$PEVC = $WorkFlowBeansFileHandler->getEVCBeanObject($layer_name);
+					
+						foreach ($layer_props["projects"] as $project_name => $project_props) {
+							$user_tmp_path = self::getUserTmpPath(array($user_global_variables_file_path, $PEVC->getConfigPath("pre_init_config", $project_name)));
+							
+							if ($user_tmp_path)
+								CacheHandlerUtil::deleteFolder("$user_tmp_path/$cache_relative_path");
+						}
 					}
-				}
+		}
+     	catch (Throwable $e) {
+			$errors[] = $e->getMessage();
+			launch_exception($e);
+			$status = false;
+     	}
+		
+		error_reporting($error_reporting);
 		
 		//Delete old deployments
 		if (is_dir($deployments_temp_folder_path)) {

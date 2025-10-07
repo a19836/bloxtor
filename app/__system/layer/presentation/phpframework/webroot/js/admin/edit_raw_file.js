@@ -166,8 +166,10 @@ function save(force) {
 						}
 						else if (file_was_changed) 
 							showSavingActionConfirmation(json_data["old_code"], json_data["new_code"]);
-						else
-							StatusMessageHandler.showError("Error trying to save new changes. Please try again..." + (data ? "\n" + data : ""));
+						else {
+							var msg = data ? "\n" + ($.isPlainObject(json_data) ? "<pre>" + JSON.stringify(json_data, null, 2) + "</pre>" : data) : "";
+							StatusMessageHandler.showError("Error trying to save new changes. Please try again..." + msg);
+						}
 					}
 						
 					if (!is_from_auto_save)

@@ -557,6 +557,11 @@ class CMSObfuscatePHPFilesHandler {
 					"validateLicence" => array("obfuscate_name" => 1, "ignore_local_variables" => array('$EVC', '$user_global_variables_file_path', '$user_beans_folder_path')),
 				),
 			),
+			$this->cms_path . "/app/__system/layer/presentation/phpframework/src/entity/admin/admin_expert.php" => array(
+				"0" => array(
+					"getAction" => array("obfuscate_name" => 1, "ignore_local_variables" => array('$UserAuthenticationHandler')),
+				),
+			),
 			$this->cms_path . "/app/__system/layer/presentation/phpframework/src/entity/admin/manage_file.php" => array(
 				"0" => array(
 					"getRootPath" => array("obfuscate_name" => 1),
@@ -827,6 +832,7 @@ class CMSObfuscatePHPFilesHandler {
 			$this->cms_path . "/app/__system/layer/presentation/phpframework/src/config/authentication.php",
 			$this->cms_path . "/app/__system/layer/presentation/phpframework/src/controller/index.php",
 			$this->cms_path . "/app/__system/layer/presentation/phpframework/src/entity/admin/index.php", //it contains a commented eval, but that will be uncommented when the package manager runs
+			$this->cms_path . "/app/__system/layer/presentation/phpframework/src/entity/admin/admin_expert.php",
 			$this->cms_path . "/app/__system/layer/presentation/phpframework/src/entity/admin/manage_file.php",
 			$this->cms_path . "/app/__system/layer/presentation/phpframework/src/entity/admin/edit_task_source.php",
 			$this->cms_path . "/app/__system/layer/presentation/phpframework/src/entity/cms/wordpress/admin_login.php",

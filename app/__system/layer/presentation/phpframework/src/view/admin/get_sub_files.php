@@ -1,5 +1,5 @@
 <?php
-$obj = isset($sub_files) ? $sub_files : null;
+$obj = $sub_files;
 
 $EVC->setTemplate("json");
 ?>

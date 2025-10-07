@@ -666,14 +666,17 @@ END;";
 		return "SELECT
     i.name AS constraint_name,
     CASE 
-        WHEN fk.object_id IS NOT NULL THEN 'FOREIGN KEY'
+        WHEN fk.object_id IS NOT NULL THEN 'FOREIGN'
+        WHEN kc.type_desc = 'PRIMARY_KEY_CONSTRAINT' THEN 'PRIMARY'
+        WHEN i.is_unique = 1 THEN 'UNIQUE'
+        WHEN kc.type_desc IS NULL THEN 'INDEX'
         ELSE kc.type_desc
     END AS constraint_type,
     c.name AS column_name,
     i.type_desc AS index_type,
     CASE WHEN i.is_unique = 1 THEN 0 ELSE 1 END AS non_unique,
     ic.key_ordinal AS seq_in_index,
-    CASE WHEN c.is_nullable = 1 THEN 'YES' ELSE 'NO' END AS nullable,
+    CASE WHEN c.is_nullable = 1 THEN '1' ELSE '0' END AS nullable,
     ep.value AS comment
 FROM sys.indexes i
 JOIN sys.index_columns ic

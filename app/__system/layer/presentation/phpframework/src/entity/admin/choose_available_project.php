@@ -21,12 +21,24 @@ $admin_type = !empty($_COOKIE["admin_type"]) ? $_COOKIE["admin_type"] : "simple"
 $tutorials = VideoTutorialHandler::getSimpleTutorials($project_url_prefix, $online_tutorials_url_prefix);
 $filtered_tutorials = VideoTutorialHandler::filterTutorials($tutorials, $entity, $admin_type);
 
-//get projects with logos
-$layers_projects = CMSPresentationLayerHandler::getPresentationLayersProjectsFiles($user_global_variables_file_path, $user_beans_folder_path, false, false, -1, true, null, true);
-$LayoutTypeProjectHandler = new LayoutTypeProjectHandler($UserAuthenticationHandler, $user_global_variables_file_path, $user_beans_folder_path);
-$LayoutTypeProjectHandler->filterPresentationLayersProjectsByUserAndLayoutPermissions($layers_projects, $filter_by_layout);
-//echo "<pre>";print_r($layers_projects);die();
+//catch this bc if the bean xml files are invalid, this will break the system.
+$error_reporting = error_reporting();
+error_reporting(0);
+$layers_projects = array(); //get projects with logos
 
+try {
+	$layers_projects = CMSPresentationLayerHandler::getPresentationLayersProjectsFiles($user_global_variables_file_path, $user_beans_folder_path, false, false, -1, true, null, true);
+	$LayoutTypeProjectHandler = new LayoutTypeProjectHandler($UserAuthenticationHandler, $user_global_variables_file_path, $user_beans_folder_path);
+	$LayoutTypeProjectHandler->filterPresentationLayersProjectsByUserAndLayoutPermissions($layers_projects, $filter_by_layout);
+	//echo "<pre>";print_r($layers_projects);die();
+}
+catch (Throwable $e) {
+	launch_exception($e);
+}
+
+error_reporting($error_reporting);
+
+//prepare projects
 $projects_exists = false;
 $selected_project_id = null;
 

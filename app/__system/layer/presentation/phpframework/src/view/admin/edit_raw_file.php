@@ -66,7 +66,7 @@ if ($editor_code_type) {
 							<li class="editor_settings" title="Open Editor Setings"><a onClick="openEditorSettings()"><i class="icon settings"></i> Open Editor Setings</a></li>';
 	
 	if ($editor_code_type == "php")
-		$main_content .= '		<li class="pretty_print" title="Pretty Print Code"><a onClick="prettyPrintCode()"><i class="icon pretty_print"></i> Pretty Print Code</a></li>';
+		$main_content .= '<li class="pretty_print" title="Pretty Print Code"><a onClick="prettyPrintCode()"><i class="icon pretty_print"></i> Pretty Print Code</a></li>';
 	
 	$main_content .= '<li class="set_word_wrap" title="Toggle Word Wrap"><a onClick="setWordWrap(this)" wrap="0"><i class="icon word_wrap"></i> Word Wrap</a></li>
 							<li class="separator"></li>

@@ -44,7 +44,7 @@ function normalize_windows_path_to_linux($path) { //This function will be used e
 	return DIRECTORY_SEPARATOR != "/" ? str_replace(DIRECTORY_SEPARATOR, "/", $path) : $path;
 }
 
-function launch_exception(Exception $exception) {
+function launch_exception(Throwable $exception) {
 	global $GlobalErrorHandler;
 	
 	$GlobalErrorHandler->stop();

@@ -1,17 +1,6 @@
 <?php
-include_once $EVC->getUtilPath("AdminMenuUIHandler");
+include $EVC->getViewPath("admin/admin_simple");
 
-if (empty($is_admin_ui_citizen_allowed)) {
-	echo '<script>
-		alert("You don\'t have permission to access this Workspace!");
-		document.location="' . $project_url_prefix . 'auth/logout";
-	</script>';
-	die();
-}
-
-$filter_by_layout = isset($filter_by_layout) ? $filter_by_layout : null;
-$filter_by_layout_permission = isset($filter_by_layout_permission) ? $filter_by_layout_permission : null;
-$project = isset($project) ? $project : null;
 $db_driver_layer_folder_name = isset($db_driver_layer_folder_name) ? $db_driver_layer_folder_name : null;
 $db_driver_bean_name = isset($db_driver_bean_name) ? $db_driver_bean_name : null;
 $db_driver_bean_file_name = isset($db_driver_bean_file_name) ? $db_driver_bean_file_name : null;
@@ -19,12 +8,6 @@ $db_driver_layer_bean_file_name = isset($db_driver_layer_bean_file_name) ? $db_d
 $db_driver_layer_bean_name = isset($db_driver_layer_bean_name) ? $db_driver_layer_bean_name : null;
 $db_driver_broker_name = isset($db_driver_broker_name) ? $db_driver_broker_name : null;
 
-$switch_project_url = $project_url_prefix . "admin?bean_name=$bean_name&bean_file_name=$bean_file_name&project=#project#";
-$logged_name = $UserAuthenticationHandler->auth["user_data"]["name"] ? $UserAuthenticationHandler->auth["user_data"]["name"] : $UserAuthenticationHandler->auth["user_data"]["username"];
-
-$filter_by_layout_url_query = $filter_by_layout ? "&filter_by_layout=$filter_by_layout&filter_by_layout_permission=$filter_by_layout_permission" : "";
-
-$head = AdminMenuUIHandler::getHeader($project_url_prefix, $project_common_url_prefix);
 $head .= '
 <!-- Add Local JS and CSS files -->
 <link rel="stylesheet" href="' . $project_url_prefix . 'css/admin/admin_citizen.css" type="text/css" charset="utf-8" />
@@ -40,39 +23,146 @@ if (empty($projects))
 	$main_content .= '<script>alert("Error: No projects available! Please contact your sysadmin...");</script>';
 
 $main_content .= '
-<div id="selected_menu_properties" class="myfancypopup">
+<div id="selected_menu_properties" class="myfancypopup with_title">
 	<div class="title">Properties</div>
 	<p class="content"></p>
 </div>
 
-<div id="left_panel">
-	<ul class="dropdown-1">
-		<li class="selected_project with_sub_menu">
-			<a class="item_header" href="javascript:void(0)" onClick="showSubMenu(this);" title="' . $project . '">
-				<label>' . $project . '</label>
-				<i class="fas fa-chevron-down sub_menu"></i>
-			</a>
+<div id="top_panel">
+	<ul class="left">
+		<li class="logo"><a href="' . $project_url_prefix . '"></a></li>
+		<li class="icon toggle_side_panel" data-title="Collapse left panel" onClick="toggleLeftpanel(this)"></li>
+	</ul>
+	<ul class="center">
+		<li class="sub_menu filter_by_layout" data-title="Selected project" current_selected_project="' . $filter_by_layout . '">
+			<!--label>Project: </label-->
+			<span class="selected_project" onClick="openFilterByLayoutSubMenu(this)">
+				<span>' . ($filter_by_layout ? basename($filter_by_layout) : '') . '</span>
+				<i class="icon dropdown_arrow"></i>
+			</span>
 			
 			<ul>
-				<li class="choose_another_project" title="Choose a different project">
-					<a class="item_header" href="javascript:void(0)" onClick="chooseAvailableProject(\'' . $project_url_prefix . 'admin/choose_available_project?redirect_path=admin&popup=1\');">
-						<i class="selected"></i>
-						<span class="fas fa-toggle-on logo"></span>
-						<label>Choose another project</label>
-					</a>
-				</li>
+				<div class="triangle_up"></div>
 				
-				' . getProjectsHtml(isset($projects) ? $projects : null, $switch_project_url) . '
+				<li class="scroll">
+					<ul>
+						<li class="label"><a>Select a Project:</a></li>';
+	
+	$selected_project_name = "";
+	$is_single_presentation_layer = is_array($presentation_projects_by_layer_label_and_folders) && count($presentation_projects_by_layer_label_and_folders) == 1;
+	
+	foreach ($presentation_projects_by_layer_label_and_folders as $layer_label => $projs) {
+		if (!$is_single_presentation_layer) //only show presentation layer if is not the only one.
+			$main_content .= '<li class="projects_group">
+							<a><i class="icon project_folder"></i> <span>' . $layer_label . '</span></a>
+							<ul>';
+		
+		$layer_bean_folder_name = isset($presentation_bean_folder_name_by_layer_label[$layer_label]) ? $presentation_bean_folder_name_by_layer_label[$layer_label] : null;
+		$main_content .= getProjectsHtml($projs, $filter_by_layout, $layer_bean_folder_name . "/" . $EVC->getCommonProjectName());
+		
+		if (!$is_single_presentation_layer) //only show presentation layer if is not the only one.
+			$main_content .= '	</ul>
+						</li>';
+		
+		if ($filter_by_layout && !empty($presentation_projects_by_layer_label[$layer_label][$filter_by_layout]))
+			$selected_project_name = $presentation_projects_by_layer_label[$layer_label][$filter_by_layout];
+	}
+
+	foreach ($non_projects_layout_types as $lname => $lid)
+		$main_content .= '<li class="project' . ($filter_by_layout == $lname ? ' selected' : '') . '">
+							<a value="' . $lname . '" onClick="filterByLayout(this)"><i class="icon project"></i> <span>' . $lname . '</span></a>
+						</li>';
+	
+	$main_content .= '	</ul>
+				</li>	
+			</ul>
+			
+			<!--span class="icon project" onClick="chooseAvailableProject(\'' . $project_url_prefix . 'admin/choose_available_project?redirect_path=admin&popup=1\');" data-title="' . ($selected_project_name ? 'Selected Project: \'' . $selected_project_name . '\'. ' : '') . 'Please click here to choose another project."></span-->
+			<!--a class="got_to_project_home" onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'admin/admin_home_project?filter_by_layout=' . $filter_by_layout . '" data-title="Go to project homepage"><span class="icon project_home"></span></a-->
+		</li>
+		
+		' . (!empty($layers["presentation_layers"]) ? '
+		<li class="separator">|</li>
+		<li class="pages link" onClick="goTo(this, \'url\', event)" url="' . str_replace("#filter_by_layout#", $filter_by_layout, $admin_home_project_page_url) . '">Pages</li>' : '') . '
+	</ul>
+	<ul class="right">
+		<li class="icon go_back" onClick="goBack()" data-title="Go Back"></li>
+		<li class="icon go_forward" onClick="goForward()" data-title="Go Forward"></li>
+		<li class="separator">|</li>
+		
+		' . (!empty($is_flush_cache_allowed) ? '<li class="icon flush_cache" data-title="Flush Cache" onClick="flushCacheFromAdmin(\'' . $project_url_prefix . 'admin/flush_cache\')"></li>' : '') . '
+		<li class="icon refresh" onClick="refreshIframe()" data-title="Refresh"></li>
+		<li class="icon full_screen" data-title="Toggle Full Screen" onClick="toggleFullScreen(this)"></li>
+		<li class="separator">|</li>
+		
+		<li class="sub_menu sub_menu_notifications" data-title="Notifications" onClick="openSubmenu(this)">
+			<span class="icon notification"></span>
+			<i class="icon dropdown_arrow"></i>
+			
+			<ul>
+				<div class="triangle_up"></div>
+				
+				<li class="empty_notification"><div>There are no notifications</div></li>
+				<!--li class="notification"><div>test</div></li-->
 			</ul>
 		</li>
-		<li class="dashboard">
-			<a class="item_header" href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . "{$project_url_prefix}admin/admin_home?selected_layout_project=$filter_by_layout" . '" title="Go Home">
-				<span class="fas fa-tachometer-alt logo"></span>
-				<label>Dashboard</label>
-			</a>
+		<li class="separator">|</li>
+		
+		<li class="icon tools" onClick="chooseAvailableTool(\'' . "{$project_url_prefix}admin/choose_available_tool?element_type=util&bean_name=$bean_name&bean_file_name=$bean_file_name&filter_by_layout=$filter_by_layout&path=$project&popup=1" . '\')" data-title="Tools"></li>
+		<li class="icon home" data-title="Home" onClick="goTo(this, \'url\', event)" url="' . "{$project_url_prefix}admin/admin_home?selected_layout_project=$filter_by_layout" . '"></li>
+		<li class="separator">|</li>
+		
+		<li class="sub_menu sub_menu_user" data-title="Others" onClick="openSubmenu(this)">
+			<span class="logged_user_icon">' . $logged_name_initials . '</span>
+			<i class="icon dropdown_arrow"></i>
+			<!--i class="icon user"></i-->
+			
+			<ul>
+				<div class="triangle_up"></div>
+				
+				<li class="login_info" title="Logged as \'' . $logged_name . '\' user."><a><span class="logged_user_icon">' . $logged_name_initials . '</span> Logged in as "' . $logged_name . '"</a></li>
+				<li class="separator"></li>
+				
+				';
+				
+/*$main_content .= ($is_switch_admin_ui_allowed ? '<li><a href="' . $project_url_prefix . 'admin/admin_uis"><i class="icon toggle_theme_layout"></i> Switch Workspace</a></li>' : '') . '
+				<li><a href="javascript:void(0)" onClick="chooseAvailableProject(\'' . $project_url_prefix . 'admin/choose_available_project?redirect_path=admin&popup=1\')"><i class="icon project"></i> Switch Project</a></li>
+				<li class="separator"></li>
+				';*/
+
+/*$main_content .= '	
+				' . ($is_manage_projects_allowed ? '<li><a href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'phpframework/presentation/manage_projects"><i class="icon list_view"></i> Manage Projects</a></li>' : '') . '
+				' . ($is_manage_layers_allowed ? '<li><a href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'setup?step=3.1&iframe=1&hide_setup=1"><i class="icon list_view"></i> Manage Layers</a></li>' : '') . '
+				' . ($is_manage_modules_allowed ? '<li><a href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'phpframework/admin/manage_modules"><i class="icon list_view"></i> Manage Modules</a></li>' : '') . '
+				' . ($is_manage_users_allowed ? '<li><a href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'user/manage_users"><i class="icon list_view"></i> Manage Users</a></li>' : '') . '
+				' . ($is_testunits_allowed ? '<li><a href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'phpframework/testunit/"><i class="icon list_view"></i> Test-Units Management</a></li>' : '') . '
+				' . ($is_deployment_allowed ? '<li><a href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'phpframework/deployment/"><i class="icon list_view"></i> Deployments Management</a></li>' : '') . '
+				' . ($is_program_installation_allowed ? '<li><a href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . "{$project_url_prefix}phpframework/admin/install_program?bean_name=$bean_name&bean_file_name=$bean_file_name&path=$project" . '"><i class="icon list_view"></i> Install a Program</a></li>' : '') . '
+				' . ($is_diff_files_allowed ? '<li><a href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'phpframework/diff/"><i class="icon list_view"></i> Diff Files</a></li>' : '') . '
+				' . ($layers["others"]["other"] ? '<li><a href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'phpframework/presentation/list?item_type=other"><i class="icon list_view"></i> Other Files</a></li>' : '') . '
+				<li><a href="javascript:void(0)" onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'docbook/" title="Go to Doc-Book"><i class="icon list_view"></i> Doc Book</a></li>
+				<li class="separator"></li>
+				';*/
+
+$main_content .= '
+				<!--li class="toggle_theme_layout" title="Toggle Theme"><a onClick="toggleThemeLayout(this)"><i class="icon toggle_theme_layout"></i> <span>Show dark theme</span></a></li>
+				<li class="toggle_main_navigator_side" title="Toggle Navigator Side"><a onClick="toggleNavigatorSide(this)"><i class="icon toggle_main_navigator_side"></i> <span>Show navigator on right side</span></a></li>
+				<li class="separator"></li-->
+				<li class="console" title="Logs Console"><a onClick="openConsole(\'' . $project_url_prefix . 'admin/logs_console?popup=1\', event);"><i class="icon logs_console"></i> Logs Console</a></li>
+				<!--li class="question" title="Tutorials - How To?"><a onClick="chooseAvailableTutorial(\'' . $project_url_prefix . 'admin/choose_available_tutorial?popup=1\', event);"><i class="icon tutorials"></i> Tutorials - How To?</a></li-->
+				<li class="question" title="Tutorials - How To?"><a onClick="openOnlineTutorialsPopup(\'' . $online_tutorials_url_prefix . '\', event);"><i class="icon tutorials"></i> Tutorials - How To?</a></li>
+				<li class="question" title="Open Tour Guide"><a onClick="MyTourGuide.restart()"><i class="icon question"></i> Open Tour Guide</a></li>
+				<li class="info" title="About"><a onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'admin/about"><i class="icon info"></i> About</a></li>
+				<li class="feedback" title="Feedback - Send us your questions"><a onClick="goToPopup(this, \'url\', event, \'with_title\')" url="' . $project_url_prefix . 'admin/feedback?popup=1"><i class="icon chat"></i> Feedback</a></li>
+				<!--li class="framework_update" title="Update to the Latest Version of the Framework"><a onClick="goTo(this, \'url\', event)" url="' . $project_url_prefix . 'admin/framework_update"><i class="icon download"></i> Framework Update</a></li-->
+				<li class="separator"></li>
+				<li class="logout" title="Logout"><a onClick="document.location=this.getAttribute(\'logout_url\')" logout_url="' . $project_url_prefix . 'auth/logout"><i class="icon logout"></i> Logout</a></li>
+			</ul>
 		</li>
 	</ul>
-	<ul class="dropdown-2">
+</div>
+<div id="side_panel">
+	<ul>
 		' . (!empty($is_db_layer_allowed) ? '
 		<li class="db with_sub_menu">
 			<a class="item_header" href="javascript:void(0)" onClick="showSubMenu(this);">
@@ -277,89 +367,22 @@ $main_content .= '
 	}
 	
 	$main_content .= '
-				<li class="tools">
-					<a class="item_header" href="javascript:void(0)" onClick="chooseAvailableTool(\'' . "{$project_url_prefix}admin/choose_available_tool?bean_name=$bean_name&bean_file_name=$bean_file_name&filter_by_layout=$filter_by_layout&path=$project&selected_db_driver=$db_driver_broker_name&popup=1" . '\')">
-						<i class="selected"></i>
-						<span class="fas fa-tools logo"></span>
-						<label>Tools</label>
-					</a>
-				</li>
-				' . (!empty($is_switch_admin_ui_allowed) ? '<li class="switch_admin_ui">
-					<a class="item_header" href="' . $project_url_prefix . 'admin/admin_uis">
-						<i class="selected"></i>
-						<span class="fas fa-th-large logo"></span>
-						<label>Switch Workspace</label>
-					</a>
-				</li>' : '') . '
-				' . (!empty($is_flush_cache_allowed) ? '<li class="flush_cache">
-					<a class="item_header" href="javascript:void(0)" onClick="flushCacheFromAdmin(\'' . $project_url_prefix . 'admin/flush_cache\');">
-						<i class="selected"></i>
-						<span class="fas fa-broom logo"></span>
-						<label>Flush Cache</label>
-					</a>
-				</li>' : '') . '
-				<li class="logout">
-					<a class="item_header" href="' . $project_url_prefix . 'auth/logout">
-						<i class="selected"></i>
-						<span class="fas fa-sign-out-alt logo"></span>
-						<label>Logout</label>
-					</a>
-				</li>
-				<li class="about">
-					<a class="item_header" href="javascript:void(0)" onClick="goTo(this,\'url\', event)" url="' . $project_url_prefix . 'phpframework/admin/about">
-						<i class="selected"></i>
-						<span class="fas fa-info-circle logo"></span>
-						<label>About</label>
-					</a>
-				</li>
 			</ul>
 		</li>
 	</ul>
 </div>
-<div id="top_right_panel">
-	<span class="icon toggle_left_panel" onClick="toggleLeftpanel(this)"></span>
-	<span class="login_info"><i class="icon user"></i>  "' . $logged_name . '"</span>
-	<span class="icon go_back" onClick="goBack()" title="Go Back"></span>
-	<span class="icon refresh" onClick="refreshIframe()" title="Refresh"></span>
-	<span class="icon home" onClick="goTo(this, \'home_url\', event)" home_url="' . "{$project_url_prefix}admin/admin_home?selected_layout_project=$filter_by_layout" . '" title="Go Home"></span>
-</div>
-<div id="right_panel">
-	<iframe src="' . "{$project_url_prefix}admin/" . ($filter_by_layout ? "admin_home_project?$filter_by_layout_url_query" : "admin_home?selected_layout_project=$filter_by_layout") . '"></iframe>
+<div id="right_panel">';
+
+$iframe_url = $default_page ? $default_page : (
+	$project_url_prefix . 'admin/' . ($filter_by_layout ? "admin_home_project?$filter_by_layout_url_query" : "admin_home?selected_layout_project=$filter_by_layout")
+);
+
+$main_content .= '
+	<iframe src="' . $iframe_url . '"></iframe>
 	<div class="iframe_overlay">
 		<div class="iframe_loading">Loading...</div>
 	</div>
 </div>';
 
-function getProjectsHtml($projects, $switch_project_url) {
-	$html = '';
-	
-	if ($projects)
-		foreach ($projects as $project_name => $project_props) {
-			if (!empty($project_props["is_project"])) {
-				$element_type_path = isset($project_props["element_type_path"]) ? $project_props["element_type_path"] : null;
-				
-				$html .= '<li class="project' . (!empty($project_props["is_selected"]) ? " shown_project" : "") . '">
-							<a class="item_header" href="' . str_replace("#project#", $element_type_path, $switch_project_url) . '" title="' . $project_name . '">
-								<i class="selected"></i>
-								<span class="fas fa-globe logo"></span>
-								<label>' . $project_name . '</label>
-							</a>
-						</li>';
-			}
-			else {
-				$html .= '<li class="project project_folder">
-							<div class="item_header" title="' . $project_name . '">
-								<span class="fas fa-folder logo"></span>
-								<label>' . $project_name . '</label>
-							</div>';
-				
-				if ($project_props)
-					$html .= '<ul>' . getProjectsHtml($project_props, $switch_project_url) . '</ul>';
-				
-				$html .= '</li>';
-			}
-		}
-	
-	return $html;
-}
+$main_content .= TourGuideUIHandler::getHtml($entity, $project_url_prefix, $project_common_url_prefix, $online_tutorials_url_prefix, array("restart_allow" => false));
 ?>

@@ -33,8 +33,8 @@ if ($bean_name) {
 				
 				if (!$type) {
 					//mysql: SELECT, SHOW, DESCRIBE, EXPLAIN, HELP, VALUES; postgres: SELECT, TABLE, VALUES, EXPLAIN, ; sqlserver: SELECT, VALUES, EXEC, DBCC.
-					$is_get_sql = preg_match("/^\s*(select|show|describe|explain|help|values|table|exec|dbcc)\s/", $sql_aux);
-					$is_set_sql = preg_match("/^\s*(insert|update|delete)\s/", $sql_aux);
+					$is_get_sql = SQLQueryHandler::isGetSQL($sql_aux);
+					$is_set_sql = SQLQueryHandler::isSetSQL($sql_aux);
 					
 					if (!$is_get_sql && !$is_set_sql) {
 						$data = $DBDriver->convertSQLToObject($sql_aux);

@@ -118,7 +118,7 @@
 				if (widget.hasClass("is-input-hidden"))
 					widget_settings["type"] = "hidden";*/
 				
-				console.log(widget_settings);
+				//console.log(widget_settings);
 			};
 			
 			me.cleanHtml = function(html_element) {

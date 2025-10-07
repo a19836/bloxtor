@@ -1,4 +1,6 @@
 <?php
+include_once $EVC->getUtilPath("CMSPresentationLayerHandler");
+
 //getting all layers
 /*$UserCacheHandler = $PHPFrameWork->getObject("UserCacheHandler");
 $UserCacheHandler->config(false, true);
@@ -218,6 +220,7 @@ $is_deployment_allowed = $UserAuthenticationHandler->isPresentationFilePermissio
 $is_testunits_allowed = $UserAuthenticationHandler->isPresentationFilePermissionAllowed($EVC->getEntityPath("testunit/index"), "access");
 $is_program_installation_allowed = $UserAuthenticationHandler->isPresentationFilePermissionAllowed($EVC->getEntityPath("admin/install_program"), "access");
 $is_diff_files_allowed = $UserAuthenticationHandler->isPresentationFilePermissionAllowed($EVC->getEntityPath("diff/index"), "access");
+$is_terminal_console_allowed = $UserAuthenticationHandler->isPresentationFilePermissionAllowed($EVC->getEntityPath("admin/terminal_console"), "access");
 
 $is_module_user_installed = file_exists($EVC->getModulesPath($EVC->getCommonProjectName()) . "user/");
 

@@ -10,7 +10,7 @@ $(function() {
 		if (is_covertable_sql)
 			enableAutoConvert(onToggleQueryAutoConvert);
 		else
-			disableAutoConvert(onToggleQueryAutoConvert);
+			disableAutoConvert(onToggleQueryAutoSave);
 		
 		initAutoSave(".top_bar li.sub_menu li.save a");
 		
@@ -52,8 +52,8 @@ $(function() {
 		//set sync_ui_settings_with_sql to 1 so it updates automatically the sql query on every change on UI.
 		eval('var WF = taskFlowChartObj_' + rand_number + ';');
 		var main_tasks_flow_obj = $("#" + WF.TaskFlow.main_tasks_flow_obj_id);
-		main_tasks_flow_obj.attr("sync_ui_settings_with_sql", 1);
-		main_tasks_flow_obj.attr("sync_sql_with_ui_settings", 1);
+		main_tasks_flow_obj.attr("sync_ui_settings_with_sql", is_covertable_sql ? 1 : 0);
+		main_tasks_flow_obj.attr("sync_sql_with_ui_settings", is_covertable_sql ? 1 : 0);
 		
 		//set save function to sql editor
 		var query_sql_elm = query.find(".sql_text_area")
