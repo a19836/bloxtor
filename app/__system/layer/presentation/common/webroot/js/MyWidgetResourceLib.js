@@ -6738,7 +6738,7 @@
 			MyWidgetResourceLib.FieldHandler.executeResourceItemFieldsAction(elm, "[data-widget-list], [data-widget-form], form", "[data-widget-item], form", resource_key ? resource_key : "update", false, opts);
 		},
 		
-		//Get values of the current item and send request to server to update them. If no record, adds a new one.
+		//Get values of the current item and send request to server to save it. If no record, adds a new one. If the attribute [data-widget-pks-attrs] is present calls the updateResourceItem function, otherwise the addResourceItem.
 		//This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.
 		//Note that this function should be called inside of a list/form widget with a 'update' resource defined.
 		saveResourceItem: function(elm, resource_key) {
@@ -7489,6 +7489,31 @@
 						else
 							input.value = "";
 					});
+			}
+		},
+		
+		//Handler to be called on success of an add action. In summary this handler sets data-widget-pks-attrs with the returned pks values in the returned_data variable.
+		//Note that the returned_data variable can be a simple value (such as a numeric value) or a string or JSON object, such as an associative array with pks attributes.
+		//In case we wish to convert an add form to an edit form, we should use this function. This allows you to have a form that allows you to add and update items simultaneously, where after adding an item, it allows you to edit it later.
+		onAddResourceItemAndConvertItIntoEditForm: function(elm, returned_data) {
+			if (elm && !elm.hasAttribute("data-widget-pks-attrs") && returned_data) {
+				returned_data = typeof returned_data == "string" && returned_data[0] == "{" ? MyWidgetResourceLib.fn.parseJson(returned_data) : returned_data;
+				
+				var properties = MyWidgetResourceLib.fn.getWidgetProperties(elm);
+				var pks_attrs_names = properties.hasOwnProperty("pks_attrs_names") ? properties["pks_attrs_names"] : "";
+				pks_attrs_names = MyWidgetResourceLib.fn.isArray(pks_attrs_names) ? pks_attrs_names : pks_attrs_names.replace(/;/g, ",").split(",");
+				var pks_attrs = {};
+				
+				for (var i = 0, t = pks_attrs_names.length; i < t; i++) {
+					var pk_attr_name = ("" + pks_attrs_names[i]).replace(/\s+/g, "");
+					
+					if (pk_attr_name && (!pks_attrs.hasOwnProperty(pk_attr_name) || pks_attrs[pk_attr_name] === null)) {
+						pks_attrs[pk_attr_name] = MyWidgetResourceLib.fn.isPlainObject(returned_data) && returned_data.hasOwnProperty(pk_attr_name) ? returned_data[pk_attr_name] : returned_data;
+					}
+				}
+				
+				//set PKs
+				elm.setAttribute("data-widget-pks-attrs", JSON.stringify(pks_attrs));
 			}
 		},
 		

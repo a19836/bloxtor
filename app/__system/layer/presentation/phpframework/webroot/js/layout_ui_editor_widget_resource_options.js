@@ -326,6 +326,7 @@ function toggleChooseLayoutUIEditorWidgetResourceValueAttributePopup(elm, widget
 								+ '<option value="get">Get a specific record</option>'
 								+ '<option value="insert">Add a record</option>'
 								+ '<option value="update">Update a record</option>'
+								+ '<option value="save">Save a record (Add and Update)</option>'
 								+ '<option value="update_attribute">Update a record attribute</option>'
 								+ '<option value="insert_update_attribute">Insert or update a record attribute</option>'
 								+ '<option value="insert_delete_attribute" title="Insert or delete a record based if a value from an attribute exists or not">Insert or delete a record attribute</option>'
@@ -467,7 +468,7 @@ function toggleChooseLayoutUIEditorWidgetResourceValueAttributePopup(elm, widget
 			var new_resource_attribute = popup.children("#new_resource_attribute");
 			var db_table_attribute = new_resource_attribute.children(".db_table_attribute");
 			var query_type_select = db_table_attribute.find(" > .query_type > select");
-			var query_type_select_options = query_type_select.find("option[value=insert], option[value=update], option[value=update_attribute], option[value=insert_update_attribute], option[value=insert_delete_attribute], option[value=multiple_insert_delete_attribute], option[value=multiple_save], option[value=delete], option[value=multiple_delete], option[value=get_all_options], option[value=]");
+			var query_type_select_options = query_type_select.find("option[value=insert], option[value=update], option[value=save], option[value=update_attribute], option[value=insert_update_attribute], option[value=insert_delete_attribute], option[value=multiple_insert_delete_attribute], option[value=multiple_save], option[value=delete], option[value=multiple_delete], option[value=get_all_options], option[value=]");
 			
 			if (show_resource_attributes) {
 				popup.addClass("show_resource_attributes");
@@ -2130,6 +2131,12 @@ function createLayoutUIEditorWidgetResourceSLAResourceNamesBasedInResourceDBTabl
 				resource_names.push("update_" + db_table);
 			
 			resource_names.push("update_" + db_driver_table);
+			break;
+		case "save": 
+			if (is_default_db_driver)
+				resource_names.push("save_" + db_table);
+			
+			resource_names.push("save_" + db_driver_table);
 			break;
 		case "multiple_save": 
 			if (is_default_db_driver) {

@@ -162,6 +162,19 @@ class SequentialLogicalActivityResourceCreator {
 				$resource_description = "Update data into table: " . $this->db_table . ".";
 				$create_unsuccessfully_resource = true;
 				break;
+			case "save": 
+				//prepare resource to save the attributes correspondent to db_table based in:
+				//- $_POST[attributes] which are an array with attr_name:value format, this is: {table_pk_1:3, attr_name_1:"...", attr_name_2:"..."}
+				//- $_POST[conditions] which are an array with pk:value format, this is: {table_pk_1:1, table_pk_2:1}. $_POST[conditions] are only mandatory if action is update, otherwise insert will be called.
+				$calling_parameters = array(
+					array("value" => '$EVC', "type" => ""),
+					array("value" => '@$_POST["attributes"]', "type" => ""),
+					array("value" => '@$_POST["conditions"]', "type" => ""),
+				);
+				$resource_conditions .= ' && !empty(\\$_POST)';
+				$resource_description = "Save data into table: " . $this->db_table . ".";
+				$create_unsuccessfully_resource = true;
+				break;
 			case "multiple_save": 
 				//prepare resource to update multiple items correspondent to db_table based in:
 				//- $_POST[attributes] which are an array with attr_name:value format, this is: [{table_pk_1:3, attr_name_1:"...", attr_name_2:"..."}, {attr_name_1:"...", attr_name_2: "..."}]
@@ -446,6 +459,9 @@ class SequentialLogicalActivityResourceCreator {
 						break;
 					case "update": 
 						$file_method_exists = $this->createUpdateMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
+						break;
+					case "save": 
+						$file_method_exists = $this->createSaveMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
 						break;
 					case "multiple_save": 
 						$file_method_exists = $this->createMultipleSaveMethod($action_type, $resource_data, $class_name, $file_path, $error_message);
@@ -923,7 +939,86 @@ return 0;';
 		
 		return false;
 	}
+	
+	private function createSaveMethod($action_type, $resource_data, $class_name, $file_path, &$error_message) {
+		$insert_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "insert", $class_name);
+		$update_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "update", $class_name);
+		
+		if (!$insert_method_exists)
+			$insert_method_exists = $this->createInsertMethod("insert", $resource_data, $class_name, $file_path, $error_message);
+		
+		if (!$update_method_exists)
+			$update_method_exists = $this->createUpdateMethod("update", $resource_data, $class_name, $file_path, $error_message);
+		
+		if (!$insert_method_exists)
+			$error_message = "Error: Couldn't find any service for insert action.";
+		else if (!$update_method_exists)
+			$error_message = "Error: Couldn't find any service for update action.";
+		else {
+			//prepare code
+			$code = '$status = empty($pks) ? self::insert($EVC, $attributes, $no_cache) : self::update($EVC, $attributes, $pks, $no_cache);
 
+return $status;';
+			
+			//prepare task in business logic layer
+			$task = $this->loadTask("update");
+			
+			if ($task && isset($task["item_type"]) && $task["item_type"] == "businesslogic") {
+				//echo "<pre>createSaveMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
+				$bl_method_name = $this->getTaskBusinessLogicResourceServiceClassMethodName($task);
+				$bl_method_name = $bl_method_name ? $bl_method_name : "save";
+				$bl_method_comments = "Save a record into table: " . $this->db_table . ".";
+				$bl_code = '$pks = isset($data["pks"]) ? $data["pks"] : null;
+
+$status = empty($pks) ? $this->insert($data) : $this->' . $bl_method_name . '($data);
+
+return $status;';
+				$bl_task = $task;
+				$bl_task["service"]["service_id"] = isset($bl_task["service"]["service_id"]) ? $bl_task["service"]["service_id"] : null;
+				$bl_task["service"]["service_id"] = strstr($bl_task["service"]["service_id"], ".", true) . ".save";
+				$bl_task["service"]["method"] = "save";
+				
+				if ($this->createTaskBusinessLogicResourceService($bl_task, $bl_code, $bl_method_comments, $error_message)) {
+					$bl_task = $this->convertTaskToBusinessLogicResourceService($bl_task);
+					$bl_broker_code = $this->getBrokerCode($bl_task);
+					$bl_task_code = $this->getTaskCode($action_type, $bl_task, $bl_broker_code);
+					
+					$exists_logged_user_id_attribute = $this->containsLoggedUserIdAttribute();
+					
+					$code = '$options = array(
+	"no_cache" => $no_cache
+);
+$data = array(
+	"attributes" => $attributes,
+	"pks" => $pks,';
+					
+					if ($exists_logged_user_id_attribute)
+						$code .= '
+	"logged_user_id" => self::getLoggedUserId($EVC)';
+					
+					$code .= '
+);
+$result = ' . $bl_task_code . ';
+return $result;';
+				}
+			}
+			
+			//save resource util task
+			$method_args = array('EVC' => null, 'attributes' => null, 'pks' => null, 'no_cache' => 'true');
+			$method_comments = "Save a record into table: " . $this->db_table . ".";
+			
+			return $this->addFunctionToFile($file_path, array(
+				"name" => "save",
+				"static" => true,
+				"arguments" => $method_args,
+				"code" => $code,
+				"comments" => $method_comments
+			), $class_name);
+		}
+		
+		return false;
+	}
+	
 	private function createMultipleSaveMethod($action_type, $resource_data, $class_name, $file_path, &$error_message) {
 		$insert_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "insert", $class_name);
 		$update_method_exists = PHPCodePrintingHandler::getFunctionFromFile($file_path, "update", $class_name);
@@ -963,7 +1058,7 @@ return $status;';
 				//echo "<pre>createMultipleSaveMethod \nbroker_code:$broker_code\ntask:";print_r($task);die();
 				$bl_method_name = $this->getTaskBusinessLogicResourceServiceClassMethodName($task);
 				$bl_method_name = $bl_method_name ? $bl_method_name : "update";
-				$bl_method_comments = "Update multiple records at once parsed resource record into table: " . $this->db_table . ".";
+				$bl_method_comments = "Save multiple records at once parsed resource record into table: " . $this->db_table . ".";
 				$bl_code = '$status = true;
 
 $pks = isset($data["pks"]) ? $data["pks"] : null;
@@ -994,7 +1089,10 @@ return $status;';
 					
 					$exists_logged_user_id_attribute = $this->containsLoggedUserIdAttribute();
 					
-					$code = '$data = array(
+					$code = '$options = array(
+	"no_cache" => $no_cache
+);
+$data = array(
 	"attributes" => $attributes,
 	"pks" => $pks,';
 					
@@ -1011,7 +1109,7 @@ return $result;';
 			
 			//save resource util task
 			$method_args = array('EVC' => null, 'attributes' => null, 'pks' => null, 'no_cache' => 'true');
-			$method_comments = "Update multiple records at once into table: " . $this->db_table . ".";
+			$method_comments = "Save multiple records at once into table: " . $this->db_table . ".";
 			
 			return $this->addFunctionToFile($file_path, array(
 				"name" => "multipleSave",
@@ -3741,7 +3839,7 @@ $conds = $conds ? $conds : "1=1";
 	}
 
 	private static function getActionTaskType($action_type, $item_type) {
-		$is_set = in_array($action_type, array("insert", "update", "multiple_save", "update_attribute", "insert_update_attribute", "insert_delete_attribute", "multiple_insert_delete_attribute", "delete", "multiple_delete"));
+		$is_set = in_array($action_type, array("insert", "update", "save", "multiple_save", "update_attribute", "insert_update_attribute", "insert_delete_attribute", "multiple_insert_delete_attribute", "delete", "multiple_delete"));
 		
 		switch ($item_type) {
 			case "businesslogic": return "callbusinesslogic";

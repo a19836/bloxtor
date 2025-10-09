@@ -14177,6 +14177,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 					"MyWidgetResourceLib.FormHandler.reloadParentFormResource": "reloadParentFormResource",
 					"MyWidgetResourceLib.FormHandler.onAddPopupResourceItem": "onAddPopupResourceItem",
 					"MyWidgetResourceLib.FormHandler.onAddResourceItem": "onAddResourceItem",
+					"MyWidgetResourceLib.FormHandler.onAddResourceItemAndConvertItIntoEditForm": "onAddResourceItemAndConvertItIntoEditForm",
 					"MyWidgetResourceLib.FormHandler.resetForm": "resetForm"
 				},
 				"update": {
@@ -14829,7 +14830,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 						{
 							value: "MyWidgetResourceLib.ItemHandler.saveResourceItem(this); return false;",
 							title: "saveResourceItem",
-							description: "Get values of the current item and send request to server to update them. If no record, adds a new one.<br/>This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.<br/>Note that this function should be called inside of a list/form widget with a 'update' resource defined."
+							description: "Get values of the current item and send request to server to save it. If no record, adds a new one. If the attribute [data-widget-pks-attrs] is present calls the updateResourceItem function, otherwise the addResourceItem.<br/>This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.<br/>Note that this function should be called inside of a list/form widget with a 'update' resource defined."
 						},
 						{
 							value: "MyWidgetResourceLib.ItemHandler.removeResourceItem(this); return false;",
@@ -14917,7 +14918,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 						{
 							value: "MyWidgetResourceLib.ItemHandler.saveResourceItem(this); return false;",
 							title: "saveResourceItem",
-							description: "Get values of the current item and send request to server to update them. If no record, adds a new one.<br/>This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.<br/>Note that this function should be called inside of a list/form widget with a 'update' resource defined."
+							description: "Get values of the current item and send request to server to save it. If no record, adds a new one. If the attribute [data-widget-pks-attrs] is present calls the updateResourceItem function, otherwise the addResourceItem.<br/>This function receives a second parameter, which is a string with the resource key to be called, in case the user wishes to defined a different one from the default resource key: 'update'.<br/>Note that this function should be called inside of a list/form widget with a 'update' resource defined."
 						},
 						{
 							value: "MyWidgetResourceLib.ItemHandler.removeResourceItem(this); return false;",
@@ -15241,6 +15242,11 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							value: "MyWidgetResourceLib.FormHandler.onAddResourceItem(this); return false;",
 							title: "onAddResourceItem",
 							description: "Handler to be called on success of an add action. In summary this handler reloads the data from the parent widget."
+						},
+						{
+							value: "MyWidgetResourceLib.FormHandler.onAddResourceItemAndConvertItIntoEditForm(this, returned_data); return false;",
+							title: "onAddResourceItemAndConvertItIntoEditForm",
+							description: "Handler to be called on success of an add action. In summary this handler sets data-widget-pks-attrs with the returned pks values in the returned_data variable.<br/>Note that the returned_data variable can be a simple value (such as a numeric value) or a string or JSON object, such as an associative array with pks attributes.<br/>In case we wish to convert an add form to an edit form, we should use this function. This allows you to have a form that allows you to add and update items simultaneously, where after adding an item, it allows you to edit it later."
 						},
 						{
 							value: "MyWidgetResourceLib.FormHandler.resetForm(this); return false;",
