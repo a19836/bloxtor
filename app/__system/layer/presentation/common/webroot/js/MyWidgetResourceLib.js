@@ -375,12 +375,10 @@
 			dependent_widgets_id = this.prepareDependentWidgetsId(dependent_widgets_id);
 			dependent_widgets_id = this.filterUniqueDependentWidgetsId(dependent_widgets_id);
 			
-			//TODO: find a way to loop asyncronously
 			MyWidgetResourceLib.fn.each(dependent_widgets_id, function(idx, dependent_widget_id) {
 				var widgets = MyWidgetResourceLib.fn.getDependentWidgetsById(dependent_widget_id);
 				
 				if (widgets)
-					//TODO: find a way to loop asyncronously
 					MyWidgetResourceLib.fn.each(widgets, function(idy, widget) {
 						if (widget) {
 							var status = true;
@@ -6020,7 +6018,12 @@
 					html += list_item_html.html;
 				}
 				
-				var div = document.createElement("div");
+				html = html.replace(/^\s+/g, "");
+				var tag_name = html.substr(1, html.indexOf(" ") - 1).toLowerCase();
+				var node_name = tag_name == "li" ? "ul" : (
+					tag_name == "tr" || tag_name == "tbody" || tag_name == "thead" ? "table" : "div"
+				); //get the right node name otherwise when we append the elm_or_html the browser will discard the invalid nodes.
+				var div = document.createElement(node_name);
 				div.innerHTML = html;
 				
 				var items = div.querySelectorAll("[data-widget-resource-value]");
@@ -9037,7 +9040,12 @@
 				
 				if (selector) {
 					try {
-						var div = document.createElement("DIV");
+						var resource_result_html = resource_result.replace(/^\s+/g, "");
+						var tag_name = resource_result_html.substr(1, resource_result_html.indexOf(" ") - 1).toLowerCase();
+						var node_name = tag_name == "li" ? "ul" : (
+							tag_name == "tr" || tag_name == "tbody" || tag_name == "thead" ? "table" : "div"
+						); //get the right node name otherwise when we append the elm_or_html the browser will discard the invalid nodes.
+						var div = document.createElement(node_name);
 						div.innerHTML = resource_result;
 						
 						var items = div.querySelectorAll(selector);
@@ -9405,7 +9413,7 @@
 				else if (node_name == "INPUT" || node_name == "TEXTAREA" || node_name == "SELECT")
 					value = this.getInputValue(elm);
 				else
-					value = elm.innerHTML;
+					value = elm.hasAttribute("value") ? elm.getAttribute("value") : elm.innerHTML;
 				
 				if (opts && opts["with_default"] && !value && !MyWidgetResourceLib.fn.isNumeric(value)) {
 					var default_value = this.getWidgetResourceValueDefaultValue(elm);
@@ -9866,6 +9874,29 @@
 					
 					document.location = new_url;
 				}
+			}
+		},
+		
+		//Redirect browser to an url registered in the [data-widget-redirect-url] attribute, but before replaces the url with the returned data if any is present.
+		redirectToBasedInData: function(elm, input_data, input_idx) {
+			if (elm) {
+				var url = elm.getAttribute('data-widget-redirect-url');
+				
+				if (url) {
+					var new_url = MyWidgetResourceLib.HashTagHandler.replaceHtmlHashTagsWithData(url, input_data, input_idx);
+					
+					document.location = new_url;
+				}
+			}
+		},
+		
+		//Redirect browser to an url registered in the [data-widget-redirect-url] attribute, but before append returned data if any is present. This is very usefull to be called after add resources get executed, since most of them return a numeric value correspondent to the new pk.
+		appendDataAndRedirectTo: function(elm, data) {
+			if (elm) {
+				var url = elm.getAttribute('data-widget-redirect-url');
+				
+				if (url)
+					document.location = url + data;
 			}
 		},
 		
@@ -10888,6 +10919,7 @@
 				if (elm_or_html.replace(/\s+/g, "") == "")
 					return hash_tags;
 				
+				elm_or_html = elm_or_html.replace(/^\s+/g, "");
 				var tag_name = elm_or_html.substr(1, elm_or_html.indexOf(" ") - 1).toLowerCase();
 				var node_name = tag_name == "li" ? "ul" : (
 					tag_name == "tr" || tag_name == "tbody" || tag_name == "thead" ? "table" : "div"
@@ -10951,6 +10983,7 @@
 				if (elm_or_html.replace(/\s+/g, "") == "")
 					return hash_tags;
 				
+				elm_or_html = elm_or_html.replace(/^\s+/g, "");
 				var tag_name = elm_or_html.substr(1, elm_or_html.indexOf(" ") - 1).toLowerCase();
 				var node_name = tag_name == "li" ? "ul" : (
 					tag_name == "tr" || tag_name == "tbody" || tag_name == "thead" ? "table" : "div"

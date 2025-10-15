@@ -3153,6 +3153,7 @@ function updateDBDriverOnBrokerNameChange(elm) {
 	}
 	
 	var db_drivers = brokers_db_drivers[broker];
+	var selected_db_driver = select.val();
 	var html = "";
 	
 	if (db_drivers)
@@ -3163,6 +3164,7 @@ function updateDBDriverOnBrokerNameChange(elm) {
 		}
 	
 	select.html(html);
+	select.val(selected_db_driver);
 }
 
 function updateDBTablesOnBrokerDBDriverChange(elm) {

@@ -6863,12 +6863,6 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 			 	 + '			<i class="zmdi zmdi-search choose-event" title="View and choose pre-defined handlers" onClick="' + ui_creator.obj_var_name + '.LayoutUIEditorWidgetResource.toggleChooseWidgetHandlerPopup(this, event)"></i>'
 				 + '		</li>'
 				 + '		<li class="widget-resource-parse-callback" title="Callback to parse the response. This function returns data and receives the arguments: elm, data">'
-				 + '			<label>On Parse Data Callback: </label>'
-				 + '			<i class="zmdi zmdi-close clear-user-input" title="Reset field"></i>'
-				 + '			<input name="' + prefix + '[idx][parse]" />'
-			 	 + '			<i class="zmdi zmdi-search choose-event" title="View and choose pre-defined handlers" onClick="' + ui_creator.obj_var_name + '.LayoutUIEditorWidgetResource.toggleChooseWidgetHandlerPopup(this, event)"></i>'
-				 + '		</li>'
-				 + '		<li class="widget-resource-parse-callback" title="Callback to parse the response. This function returns data and receives the arguments: elm, data">'
 				 + '			<label>On Parse Callback: </label>'
 				 + '			<i class="zmdi zmdi-close clear-user-input" title="Reset field"></i>'
 				 + '			<input name="' + prefix + '[idx][parse]" />'
@@ -14217,6 +14211,8 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 					
 					"MyWidgetResourceLib.ShortActionHandler.redirectTo": "redirectTo",
 					"MyWidgetResourceLib.ShortActionHandler.redirectToBasedInResources": "redirectToBasedInResources",
+					"MyWidgetResourceLib.ShortActionHandler.redirectToBasedInData": "redirectToBasedInData",
+					"MyWidgetResourceLib.ShortActionHandler.appendDataAndRedirectTo": "appendDataAndRedirectTo",
 					
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInInputNonEmptyValue": "refreshDependentWidgetsBasedInInputNonEmptyValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue": "refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue",
@@ -14243,6 +14239,8 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 					
 					"MyWidgetResourceLib.ShortActionHandler.redirectTo": "redirectTo",
 					"MyWidgetResourceLib.ShortActionHandler.redirectToBasedInResources": "redirectToBasedInResources",
+					"MyWidgetResourceLib.ShortActionHandler.redirectToBasedInData": "redirectToBasedInData",
+					"MyWidgetResourceLib.ShortActionHandler.appendDataAndRedirectTo": "appendDataAndRedirectTo",
 					
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInInputNonEmptyValue": "refreshDependentWidgetsBasedInInputNonEmptyValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue": "refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue",
@@ -14674,6 +14672,16 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							value: "MyWidgetResourceLib.ShortActionHandler.redirectToBasedInResources(this, resources_name, resources_cache_key, resource_index); return false;",
 							title: "redirectToBasedInResources",
 							description: "Redirect browser to an url registered in the [data-widget-redirect-url] attribute, but before replaces the url with the resource data if any is present."
+						},
+						{
+							value: "MyWidgetResourceLib.ShortActionHandler.redirectToBasedInData(this, input_data, input_idx); return false;",
+							title: "redirectToBasedInData",
+							description: "Redirect browser to an url registered in the [data-widget-redirect-url] attribute, but before replaces the url with the returned data if any is present."
+						},
+						{
+							value: "MyWidgetResourceLib.ShortActionHandler.appendDataAndRedirectTo(this, data); return false;",
+							title: "appendDataAndRedirectTo",
+							description: "Redirect browser to an url registered in the [data-widget-redirect-url] attribute, but before append returned data if any is present. This is very usefull to be called after add resources get executed, since most of them return a numeric value correspondent to the new pk."
 						},
 						
 						/* OTHER FUNCTIONS */

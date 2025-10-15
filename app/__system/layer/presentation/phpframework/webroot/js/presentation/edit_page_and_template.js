@@ -321,10 +321,10 @@ function onPresentationProgrammingTaskChooseCreatedVariable(elm) {
 	elm = $(elm);
 	var p = $(elm).parent();
 	var select = p.children("select");
-	var target_field = p.children("input[type=text]").first();
+	var target_field = elm.is("input[type=text]") ? elm : p.children("input[type=text]").first();
 	
 	if (!target_field[0]) //input may not have the type attribute
-		target_field = p.children("input").first(); 
+		target_field = elm.is("input") ? elm : p.children("input").first(); 
 	
 	var auto_save_bkp = auto_save;
 	auto_save = false;
@@ -344,20 +344,21 @@ function onPresentationProgrammingTaskChooseCreatedVariable(elm) {
 }
 
 function onPresentationIncludePageUrlTaskChooseFile(elm) {
-	var p = $(elm).parent();
+	elm = $(elm);
+	var p = elm.parent();
 	var select = p.children("select");
-	var target_field = p.children("input[type=text]").first();
+	var target_field = elm.is("input[type=text]") ? elm : p.children("input[type=text]").first();
 	
 	if (!target_field[0]) //input may not have the type attribute
-		target_field = p.children("input").first(); 
+		target_field = elm.is("input") ? elm : p.children("input").first(); 
 	
 	var auto_save_bkp = auto_save;
 	auto_save = false;
 	
-	onIncludePageUrlTaskChooseFile(elm);
+	onIncludePageUrlTaskChooseFile(elm[0]);
 	
 	var popup = $("#choose_page_url_from_file_manager");
-	onUrlQueryString(elm, popup, target_field);
+	onUrlQueryString(elm[0], popup, target_field);
 	
 	IncludePageUrlFancyPopup.settings.targetField = target_field;
 	IncludePageUrlFancyPopup.settings.onClose = function() {
@@ -372,17 +373,18 @@ function onPresentationIncludePageUrlTaskChooseFile(elm) {
 }
 
 function onPresentationIncludeImageUrlTaskChooseFile(elm) {
-	var p = $(elm).parent();
+	elm = $(elm);
+	var p = elm.parent();
 	var select = p.children("select");
-	var target_field = p.children("input[type=text]").first();
+	var target_field = elm.is("input[type=text]") ? elm : p.children("input[type=text]").first();
 	
 	if (!target_field[0]) //input may not have the type attribute
-		target_field = p.children("input").first(); 
+		target_field = elm.is("input") ? elm : p.children("input").first(); 
 	
 	var auto_save_bkp = auto_save;
 	auto_save = false;
 	
-	onIncludeImageUrlTaskChooseFile(elm);
+	onIncludeImageUrlTaskChooseFile(elm[0]);
 	
 	MyFancyPopup.settings.targetField = target_field;
 	MyFancyPopup.settings.onClose = function() {
@@ -397,17 +399,18 @@ function onPresentationIncludeImageUrlTaskChooseFile(elm) {
 }
 
 function onPresentationIncludeWebrootFileUrlTaskChooseFile(elm) {
-	var p = $(elm).parent();
+	elm = $(elm);
+	var p = elm.parent();
 	var select = p.children("select");
-	var target_field = p.children("input[type=text]").first();
+	var target_field = elm.is("input[type=text]") ? elm : p.children("input[type=text]").first();
 	
 	if (!target_field[0]) //input may not have the type attribute
-		target_field = p.children("input").first(); 
+		target_field = elm.is("input") ? elm : p.children("input").first(); 
 	
 	var auto_save_bkp = auto_save;
 	auto_save = false;
 	
-	onIncludeWebrootFileUrlTaskChooseFile(elm);
+	onIncludeWebrootFileUrlTaskChooseFile(elm[0]);
 	
 	MyFancyPopup.settings.targetField = target_field;
 	MyFancyPopup.settings.onClose = function() {
@@ -423,12 +426,13 @@ function onPresentationIncludeWebrootFileUrlTaskChooseFile(elm) {
 
 //target_field is used by the workflow task: GetUrlContentsTaskPropertyObj
 function onPresentationChooseColor(elm) {
-	var color = elm.value;
-	var p = $(elm).parent();
-	var target_field = p.children("input[type=text]").first();
+	elm = $(elm);
+	var color = elm[0].value;
+	var p = elm.parent();
+	var target_field = elm.is("input[type=text]") ? elm : p.children("input[type=text]").first();
 	
 	if (!target_field[0]) //input may not have the type attribute
-		target_field = p.children("input").first(); 
+		target_field = elm.is("input") ? elm : p.children("input").first(); 
 	
 	target_field.val(color);
 }

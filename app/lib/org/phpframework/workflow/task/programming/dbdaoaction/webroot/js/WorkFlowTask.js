@@ -619,7 +619,8 @@ var DBDAOActionTaskPropertyObj = {
 			task_html_elm.find(".table_name select").val("string");
 			
 			//prepare table attributes fields html
-			var method_name = task_html_elm.find(".method_name select").val();
+			var method_name_elm = task_html_elm.find(".method_name select");
+			var method_name = method_name_elm.val();
 			var attributes_options = task_html_elm.find(".attrs > .attributes_options");
 			var conditions_options = task_html_elm.find(".conds > .conditions_options");
 			var keys_options = task_html_elm.find(".kys > .keys_options");
@@ -650,6 +651,7 @@ var DBDAOActionTaskPropertyObj = {
 			DBDAOActionTaskPropertyObj.onChangeKeysType(keys_type[0]);
 			DBDAOActionTaskPropertyObj.onChangeRelElmType(relations_type[0]);
 			DBDAOActionTaskPropertyObj.onChangeParentConditionsType(parent_conditions_type[0]);
+			DBDAOActionTaskPropertyObj.onChangeMethodName(method_name_elm[0]);
 		}
 	},
 	

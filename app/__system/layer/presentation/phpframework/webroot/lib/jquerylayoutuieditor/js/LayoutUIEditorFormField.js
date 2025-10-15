@@ -245,7 +245,99 @@ function LayoutUIEditorFormField(ui_creator) {
 				ui_creator.addMenuSettingsContextMenu(fields);
 			});
 			
+			var new_attributes_to_ignore = {
+				"data-allow-null": "allow_null", 
+				"allow-null": "allow_null", 
+				"allow_null": "allow_null", 
+				"allownull": "allow_null", 
+				"data-allow-javascript": "allow_javascript", 
+				"allow-javascript": "allow_javascript", 
+				"allow_javascript": "allow_javascript", 
+				"allowjavascript": "allow_javascript", 
+				"data-validation-regex": "validation_regex", 
+				"validation-regex": "validation_regex", 
+				"validation_regex": "validation_regex", 
+				"validationregex": "validation_regex", 
+				"data-validation-func": "validation_func", 
+				"validation-func": "validation_func", 
+				"validation_func": "validation_func", 
+				"validationfunc": "validation_func", 
+				"data-validation-label": "validation_label", 
+				"validation-label": "validation_label", 
+				"validation_label": "validation_label", 
+				"validationlabel": "validation_label", 
+				"data-validation-message": "validation_message", 
+				"validation-message": "validation_message", 
+				"validation_message": "validation_message", 
+				"validationmessage": "validation_message", 
+				"data-validation-type": "validation_type", 
+				"validation-type": "validation_type", 
+				"validation_type": "validation_type", 
+				"validationtype": "validation_type", 
+				"data-confirmation": "confirmation", 
+				"confirmation": "confirmation", 
+				"data-confirmation-message": "confirmation_message", 
+				"confirmation-message": "confirmation_message", 
+				"confirmation_message": "confirmation_message", 
+				"confirmationmessage": "confirmation_message", 
+				"data-min-words": "min_words", 
+				"min-words": "min_words", 
+				"min_words": "min_words", 
+				"minwords": "min_words", 
+				"data-max-words": "max_words", 
+				"max-words": "max_words", 
+				"max_words": "max_words", 
+				"maxwords": "max_words", 
+				"data-min-length": "min_length", 
+				"min-length": "min_length", 
+				"min_length": "min_length", 
+				"minlength": "min_length", 
+				"data-max-length": "max_length", 
+				"max-length": "max_length", 
+				"max_length": "max_length", 
+				"maxlength": "max_length", 
+				"data-min": "min_value", 
+				"min": "min_value", 
+				"data-min-value": "min_value", 
+				"min-value": "min_value", 
+				"min_value": "min_value", 
+				"minvalue": "min_value", 
+				"data-max": "max_value", 
+				"max": "max_value", 
+				"data-max-value": "max_value", 
+				"max-value": "max_value", 
+				"max_value": "max_value", 
+				"maxvalue": "max_value"
+			};
+			
 			settings_properties_elm.children("ul").append(items);
+			
+			//prepare other attributes that are hidden by default (from the FormFieldsUtilObj) and show them
+			var settings_attributes = ui_creator.getMenuSettings().find(".settings-attributes").first();
+			var settings_attributes_add_icon = settings_attributes.children(".add");
+			var settings_attributes_ul = settings_attributes.children("ul");
+			//console.log(items);
+			
+			for (var attribute_name in new_attributes_to_ignore)
+				if (widget[0].hasAttribute(attribute_name)) {
+					var c = "." + ("" + new_attributes_to_ignore[attribute_name]).replace(/_/g, "-");
+					var item = items.filter(c);
+					//console.log(c+":"+item.css("display"));
+					
+					if (!item[0]) {
+						settings_attributes_add_icon.trigger("click");
+						var li = settings_attributes_ul.children("li:not(.settings-empty-attributes)").last();
+						
+						if (li[0]) {
+							var inputs = li.children("input");
+							inputs.first().val(attribute_name);
+							inputs.last().val(widget.attr(attribute_name));
+							//console.log(attribute_name+":"+widget.attr(attribute_name));
+						}
+					}
+					else if (item.css("display") == "none")
+						item.css("display", "");
+				}
 		}
 	};
 	

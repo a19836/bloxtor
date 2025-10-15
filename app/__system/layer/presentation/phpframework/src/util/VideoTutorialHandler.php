@@ -592,25 +592,31 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/NJ_jlnZahR4", //recursive_complex_structure.webm
 			),
-			"28_create_page_with_dynamic_recursive_complex_structures" => array(
+			"28_create_page_to_show_dynamic_recursive_complex_structures" => array(
 				"title" => "Create page showing redundant database structures recursively",
 				"description" => "This video explains how to create pages showing records from a database table connected to itself, as in this example: a Category can have another Category or belong to another Category.",
 				"image" => "",
-				"video" => "https://www.youtube.com/embed/nl7NhjbFxJQ", //dynamic_recursive_structure.webm
+				"video" => "https://www.youtube.com/embed/nl7NhjbFxJQ", //show_dynamic_recursive_structure.webm
 			),
-			"29_create_page_for_api" => array(
+			"29_create_page_to_edit_dynamic_recursive_complex_structures" => array(
+				"title" => "Create page to edit redundant database structures recursively",
+				"description" => "This video explains how to create pages to edit records from a database table connected to itself, as in this example: a Category can have another Category or belong to another Category.",
+				"image" => "",
+				"video" => "https://www.youtube.com/embed/nl7NhjbFxJQ", //edit_dynamic_recursive_structure.webm
+			),
+			"30_create_page_for_api" => array(
 				"title" => "Create page to be used by external APIs or AJAX requests",
 				"description" => "This video explains how to create pages to be used by external APIs, AJAX requests or via the command line. In this video we will create a page that will be used externally to insert records into a database table.",
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/v40WwynoNSY", //create_page_for_api.webm
 			),
-			"30_create_page_with_data_from_rest_api" => array(
+			"31_create_page_with_data_from_rest_api" => array(
 				"title" => "Create a page that shows results from third-party REST services",
 				"description" => "This video explains how to create Pages that communicate with third-party REST services, parse their response in json/xml, displaying that data in html. All of this will be done through page resources and business logic services that we will create manually.",
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/ZQaEJ2xvWGM", //6_3_13_create_page_with_html_widgets
 			),
-			"31_creation_of_simple_site_with_modules_integration" => array(
+			"32_creation_of_simple_site_with_modules_integration" => array(
 				"title" => "Create Pages that print DB metadata using pre-installed Modules",
 				"description" => "This video explains how to create a simple site in the framework, with a homepage, a list of articles and another page to see each article individually.<br/>
 		Learn how to create simple sites by creating basic templates and configure pre-installed modules.<br/>
@@ -618,55 +624,55 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/ir8WAnVi5Cg",
 			),
-			"32_install_a_program" => array(
+			"33_install_a_program" => array(
 				"title" => "How to install a Program in a project",
 				"description" => "This video explains how to install a program from our store in a project, that is, our store has some predefined applications, pages and other files that you can install in your project, and then change them according to your needs.",
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/rr0cvDV9Gv4",
 			),
-			"33_create_pages_with_authentication" => array(
+			"34_create_pages_with_authentication" => array(
 				"title" => "Create a Page with authentication",
 				"description" => "This video explains how to create a Page with authentication where the user needs to authenticate first to access it. To achieve this result, we will install the 'Auth' program from our store.",
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/dgBBBBeZ1ZQ",
 			),
-			"34_manage_user_in_project" => array(
+			"35_manage_user_in_project" => array(
 				"title" => "How to manage your application's users within a Project",
 				"description" => "This video explains how to manage users within a project, setting permissions for private pages that need authentication to access.",
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/XSLKry20aXw",
 			),
-			"35_understand_the_layers" => array(
+			"36_understand_the_layers" => array(
 				"title" => "Understand Layers in more detail",
 				"description" => "The following videos explain in detail how layers work and what their characteristics are.",
 				"pages" => array("admin/index"), //this is used in the TourGuideUIHandler
 				"workspaces" => array("advanced"), //this is used in the TourGuideUIHandler
 				"items" => array(
-					"35_1_db_layer" => array(
+					"36_1_db_layer" => array(
 						"title" => "DB Layer",
 						"description" => "Learn how to manage your DBs, create tables diagrams...<br/>To know more about this please read the <a href=\"{$online_tutorials_url_prefix}documentation/layers/database\" target=\"documentation\">Data Base Layer</a> section.",
 						"items" => array(
-							"35_1_1_advanced_workspace_db_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
+							"36_1_1_advanced_workspace_db_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
 								"title" => "Understand the DB Layer Tab",
 								"description" => "This video explains how to work with the DB Layer Tab in the Advanced Workspace and what are its funcionalities.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/X4y7CZwQ700",
 							),
-							"35_1_2_creation_of_db_diagram" => array(
+							"36_1_2_creation_of_db_diagram" => array(
 								"title" => "Create DB Tables Diagram and Reverse Engineering",
 								"description" => "This video explains how to create a DataBase diagram, generate the correspondent SQL and insert it to a DB.<br/>
 			Additionally shows how to reverse engineering a schema from a DataBase into a tables diagram.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/__FeuikKvUI",
 							),
-							"35_1_3_table_generation_through_ai" => array(
+							"36_1_3_table_generation_through_ai" => array(
 								"title" => "How to generate a table through AI",
 								"description" => "Learn how to generate a new table with artificial intelligence by writing what you wish in natural language.<br/>
 Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/iHuYUFCcaJ0", //db_table.webm
 							),
-							"35_1_4_sql_generation_through_ai" => array(
+							"36_1_4_sql_generation_through_ai" => array(
 								"title" => "How to generate SQL statements through AI",
 								"description" => "Learn how to generate SQL statements with artificial intelligence by writing what you wish in natural language.<br/>
 Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
@@ -675,18 +681,18 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 							),
 						),
 					),
-					"35_2_business_logic_layer" => array(
+					"36_2_business_logic_layer" => array(
 						"title" => "Business Logic Layer",
 						"description" => "Learn how to create Services in the Business Logic Layer.",
 						"pages" => array("businesslogic/edit_method", "businesslogic/edit_function", "admin/edit_file_class_method", "admin/edit_file_function"), //this is used in the TourGuideUIHandler
 						"items" => array(
-							"35_2_1_advanced_workspace_bll_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
+							"36_2_1_advanced_workspace_bll_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
 								"title" => "Understand the Business-Logic Layer Tab",
 								"description" => "This video explains how to work with the Business-Logic Layer Tab in the Advanced Workspace and what are its funcionalities.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/Si_aJW46bU8",
 							),
-							"35_2_2_creation_of_soa" => array(
+							"36_2_2_creation_of_soa" => array(
 								"title" => "Create a Business Logic Service",
 								"description" => "This video explains how to create a Service in the Business Logic Layer and relate it to the data-access layer.<br/>
 			Additionally it shows how to create these services automatically from SQL queries and objects in the Data-Access Layer. Basically the framework will generate automatically the services from the rules of a Data-Access Layer, saving time to the programmer and maximizing his work...<br/>
@@ -694,14 +700,14 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/pEPOW0HfueE",
 							),
-							"35_2_3_creation_of_manual_soa" => array(
+							"36_2_3_creation_of_manual_soa" => array(
 								"title" => "Create a Business Logic Service Manually",
 								"description" => "This video explains how to create manually, step by step, a Service in the Business Logic Layer that gets a record from a DB table.<br/>
 			Note that if the Business-Logic Layer is connected directly to the DB Layer, which means it can execute sql directly.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/Iq8hOqzQCw0",
 							),
-							"35_2_4_code_generation_through_ai" => array(
+							"36_2_4_code_generation_through_ai" => array(
 								"title" => "How to generate code through AI",
 								"description" => "Learn how to generate code with artificial intelligence by writing what you wish in natural language. You can ask AI to explain a specific piece of code, or create test units for it, or generate a new function and logic code according with your requirements, or something else...<br/>
 Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
@@ -710,7 +716,7 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 							),
 						),
 					),
-					"35_3_advanced_workspace_pl_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
+					"36_3_advanced_workspace_pl_tab" => array( //this was copied from the 2_get_familiar_with_the_framework section
 						"title" => "Understand the Presentation Layer Tab",
 						"description" => "This video explains how to work with the Presentation Layer in the Advanced Workspace and what are its funcionalities.",
 						"image" => "",
@@ -718,7 +724,7 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 					),
 				)
 			),
-			"36_ai_summary" => array(
+			"37_ai_summary" => array(
 				"title" => "How to use AI to help you achieve your goals faster",
 				"description" => "Discover how to leverage artificial intelligence to achieve your goals: simply describe what you need in natural language, and AI will generate it for you.<br/>
 Note that, in order to take advantage of the Artificial Intelligence features, you must configure your OpenAI key in the 'Manage Permissions/Users' panel.",
@@ -726,7 +732,7 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 				"video" => "https://www.youtube.com/embed/ImZg10DEWWg", //ai_summary.webm
 				"pages" => array("admin/index", "admin/admin_home", "admin/admin_home_project", "admin/choose_available_project"), //this is used in the TourGuideUIHandler
 			),
-			"37_create_stock_manager" => array(
+			"38_create_stock_manager" => array(
 				"title" => "Create a Stock Manager Dashboard",
 				"description" => "Discover how to build a stock management dashboard from scratch — creating database tables, installing templates, and designing the UI — all with simple drag & drop.",
 				"image" => "",
@@ -1607,19 +1613,25 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/NJ_jlnZahR4", //recursive_complex_structure.webm
 							),
-							"28_create_page_with_dynamic_recursive_complex_structures" => array(
+							"28_create_page_to_show_dynamic_recursive_complex_structures" => array(
 								"title" => "Create page showing redundant database structures recursively",
 								"description" => "This video explains how to create pages showing records from a database table connected to itself, as in this example: a Category can have another Category or belong to another Category.",
 								"image" => "",
-								"video" => "https://www.youtube.com/embed/nl7NhjbFxJQ", //dynamic_recursive_structure.webm
+								"video" => "https://www.youtube.com/embed/nl7NhjbFxJQ", //show_dynamic_recursive_structure.webm
 							),
-							"29_create_page_for_api" => array(
+							"29_create_page_to_edit_dynamic_recursive_complex_structures" => array(
+								"title" => "Create page to edit redundant database structures recursively",
+								"description" => "This video explains how to create pages to edit records from a database table connected to itself, as in this example: a Category can have another Category or belong to another Category.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/nl7NhjbFxJQ", //edit_dynamic_recursive_structure.webm
+							),
+							"30_create_page_for_api" => array(
 								"title" => "Create page to be used by external APIs or AJAX requests",
 								"description" => "This video explains how to create pages to be used by external APIs, AJAX requests or via the command line. In this video we will create a page that will be used externally to insert records into a database table.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/v40WwynoNSY", //create_page_for_api.webm
 							),
-							"30_create_page_with_data_from_rest_api" => array(
+							"31_create_page_with_data_from_rest_api" => array(
 								"title" => "Create a page that shows results from third-party REST services",
 								"description" => "This video explains how to create Pages that communicate with third-party REST services, parse their response in json/xml, displaying that data in html. All of this will be done through page resources and business logic services that we will create manually.",
 								"image" => "",

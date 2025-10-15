@@ -10038,7 +10038,6 @@ function LayoutUIEditor() {
 				me.showError("Settings not saved. Please try again...");
 				return;
 			}
-			
 			var setting_value = "";
 			
 			//Preparing setting field
@@ -10056,7 +10055,7 @@ function LayoutUIEditor() {
 				var default_attributes = getWidgetAttributesToIgnore(widget);
 				
 				setting_value = [];
-				
+			
 				for (var i = 0, t = settings_attributes_lis.length; i < t; i++) {
 					var settings_attributes_li = $(settings_attributes_lis[i]);
 					var inputs = settings_attributes_li.children("input");
@@ -10180,6 +10179,7 @@ function LayoutUIEditor() {
 				
 				//change user attributes ignoring some reserved attributes
 				var default_attributes = getWidgetAttributesToIgnore(widget);
+				var default_events = getWidgetEventAttributesToIgnore(widget);
 				
 				//preparing new attributes
 				var old_attributes = widget[0].attributes;
@@ -10189,7 +10189,7 @@ function LayoutUIEditor() {
 					for (var i = 0; i < old_attributes.length; i++) {
 						var attr = old_attributes[i];
 						
-						if (attr && default_attributes.indexOf(attr.name.toLowerCase()) == -1) {
+						if (attr && default_attributes.indexOf(attr.name.toLowerCase()) == -1 && default_events.indexOf(attr.name.toLowerCase()) == -1) {
 							widget[0].removeAttribute(attr.name);
 							i--;
 						}
@@ -10225,7 +10225,7 @@ function LayoutUIEditor() {
 					$.each(widget[0].attributes, function(idx, attr) {
 						var attr_name = attr.name.toLowerCase();
 						
-						if (attr && default_attributes.indexOf(attr_name) != -1 && repeated_attrs.indexOf(attr_name) == -1) {
+						if (attr && (default_attributes.indexOf(attr_name) != -1 || default_events.indexOf(attr_name) != -1) && repeated_attrs.indexOf(attr_name) == -1) {
 							new_widget += " " + attr.name.replace(/&gt;/, ">").replace(/&#47;/, "/") + (attr.value != "" ? '="' + attr.value + '"' : ""); //Do not do this: attr.value.replace(/"/g, "&quot;")
 							repeated_attrs.push(attr_name);
 						}
@@ -10425,6 +10425,23 @@ function LayoutUIEditor() {
 				if (name)
 					ignore_attributes.push(name.toLowerCase());
 			});
+		
+		return ignore_attributes;
+	}
+	
+	function getWidgetEventAttributesToIgnore(widget) {
+		var ignore_attributes = [];
+		
+		//Add widget events to ignore_attributes
+		var props = menu_settings.find(".settings-events > ul > li");
+		$.each(props, function(idx, item) {
+			var item_class = item.getAttribute("class");
+			var item_name = item_class ? item_class.match(/settings-[a-zA-Z0-9_\-]+/g) : "";
+			item_name = item_name && item_name[0] ? item_name[0].substr(("settings-").length) : "";
+			
+			if (item_name)
+				ignore_attributes.push(item_name);
+		});
 		
 		return ignore_attributes;
 	}
