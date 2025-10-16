@@ -9424,20 +9424,7 @@ function LayoutUIEditor() {
 			widget_settings["class"] = me.getTemplateWidgetCurrentClassesWithoutReservedClasses(widget);
 		
 		//get available settings
-		var available_settings = {};
-		var settings = menu_settings.find(".group > ul > li:not(.group), .group-block > li");
-		$.each(settings, function(idx, item) {
-			item = $(item);
-			var c = item.attr("class");
-			
-			if (c) {
-				setting_name = c.match(/(\s|^)settings-[a-zA-Z0-9_\-]+/g);
-				setting_name = setting_name && setting_name[0] ? setting_name[0].substr(("settings-").length) : "";
-				
-				if (setting_name != "")
-					available_settings[setting_name] = 1;
-			}
-		});
+		var available_settings = getAvailableSettings();
 		
 		var properties_case_insensitive = {};
 		if (default_properties) 
@@ -9474,29 +9461,7 @@ function LayoutUIEditor() {
 		var style = widget.attr("style");
 		
 		if (style) {
-			var new_style = "";
-			var parts = style.split(";");
-			var repeated = [];
-			
-			for (var j = parts.length - 1; j >= 0; j--) {
-				var part = parts[j];
-				var trimmed = part.replace(/[\n\r]+/g, "").replace(/^\s+/g, "").replace(/\s+$/g, "");
-				
-				if (trimmed != "") {
-					var splitted = trimmed.split(":");
-					var l = splitted[0].replace(/\s+$/g, "").toLowerCase();
-					
-					//only if not exists yet, otherwise it means it was replaced by the last css property existent, this is, if I have 2 css properties repeated, only the last one will be used.
-					if (repeated.indexOf(l) == -1) { 
-						if (splitted.length >= 2 && available_settings.hasOwnProperty(l)) //if smaller or bigger, it means is not a typically css attr so we should leave it alone. Must be >= bc if the style contains a background-image with "https://", the splitted.length will be 3.
-							widget_settings[l] = splitted.join(":").substr(splitted[0].length + 1).replace(/^\s+/g, "").replace(/\s+$/g, "");
-						else
-							new_style += part + ";";
-						
-						repeated.push(l);
-					}
-				}
-			}
+			var new_style = filterRepeatedStyles(style, available_settings, widget_settings);
 			
 			if (new_style != "")
 				widget_settings["style"] = new_style;
@@ -10118,6 +10083,7 @@ function LayoutUIEditor() {
 			//Setting Widget with appropriate settings
 			if (setting_name == "style") { //Set style to widget
 				var setting_style = setting_value;
+				var available_settings = getAvailableSettings();
 				
 				if (widget[0].hasAttribute("style")) {
 					var style = widget.attr("style");
@@ -10125,6 +10091,10 @@ function LayoutUIEditor() {
 					
 					//remove old style from current style
 					if (old_style) {
+						//console.log("old_style plain:"+old_style);
+						old_style = filterStylesWithoutAvailableSettings(old_style, available_settings);
+						//console.log("old_style fitered:"+old_style);
+						
 						style = style.replace(old_style, "");
 						
 						var parts = old_style.split(";");
@@ -10136,20 +10106,34 @@ function LayoutUIEditor() {
 							style = style.replace(part, "");
 							
 							if (sub_parts.length > 1) {
-								var regex = new RegExp("\\s*" + sub_parts[0] + "\\s*:\\s*" + sub_parts[1] + "\\s*;?");
+								var style_name = sub_parts[0];
+								var style_value = sub_parts[1];
+								
+								var regex = new RegExp("\\s*" + style_name + "\\s*:\\s*" + style_value + "\\s*;?");
 								style = style.replace(regex, "");
 							}
 						}
 					}
+					//console.log("old_style:"+old_style);
+					//console.log("style:"+style);
 					
 					style = style.replace(/\s\s+/g, "").replace(/^\s+/g, "").replace(/\s+$/g, "").replace(/;+/g, ";").replace(/^;+$/g, "");
-					style += style && (style.substr(style.length - 1) == ";" ? "" : ";");
+					style += !style || style.substr(style.length - 1) == ";" ? "" : ";";
 					
 					//add others styles from other settings and the css from the style attribute.
 					setting_value = (style + setting_value).replace(/;+/g, ";").replace(/^\s*;+/g, "").replace(/^\s+/g, "").replace(/\s+$/g, "");
+					
+					//remove repeated styles
+					setting_value = filterRepeatedStyles(setting_value);
 				}
 				
-				widget.attr("style", setting_value).data("old-style", setting_style);
+				if (setting_style)
+					setting_style = filterStylesWithoutAvailableSettings(setting_style, available_settings);
+				
+				//console.log("setting_style:"+setting_style);
+				//console.log("setting_value:"+setting_value);
+				widget.attr("style", setting_value);
+				widget.data("old-style", setting_style);
 				
 				if (setting_value == "")
 					widget.removeAttr("style");
@@ -10311,6 +10295,73 @@ function LayoutUIEditor() {
 				}
 			}
 		}
+	}
+	
+	function filterStylesWithoutAvailableSettings(style, available_settings, widget_settings) {
+		if (style && $.isPlainObject(available_settings) && !$.isEmptyObject(available_settings)) {
+			style = "" + style;
+			var parts = style.split(";");
+			
+			for (var i = 0; i < parts.length; i++) {
+				var part = parts[i].replace(/^\s+/g, "").replace(/\s+$/g, "");
+				var sub_parts = part.split(":");
+				var style_name = sub_parts[0];
+				var style_value = null;
+				
+				if (sub_parts.length > 1)
+					style_value = sub_parts[1];
+					
+				var style_name_setting = style_name.replace(/\s+$/g, "").toLowerCase();
+				
+				if (available_settings.hasOwnProperty(style_name_setting)) {
+					style = style.replace(part, "");
+					
+					var regex = new RegExp("\\s*" + style_name + "\\s*:[^;]*(;|$|\n|\r)?");
+					style = style.replace(regex, "");
+					
+					var regex = new RegExp("\\s*" + style_name + "\\s*(;|$)?");
+					style = style.replace(regex, "");
+					
+					if ($.isPlainObject(widget_settings) && sub_parts.length >= 2) //if smaller or bigger, it means is not a typically css attr so we should leave it alone. Must be >= bc if the style contains a background-image with "https://", the splitted.length will be 3.
+						widget_settings[style_name_setting] = sub_parts.join(":").substr(sub_parts[0].length + 1).replace(/^\s+/g, "").replace(/\s+$/g, "");
+				}
+			}
+		}
+		
+		return style;
+	}
+	
+	function filterRepeatedStyles(style, available_settings, widget_settings) {
+		var new_style = "";
+		
+		if (style) {
+			style = "" + style;
+		
+			var parts = style.split(";");
+			var repeated = [];
+			
+			for (var j = parts.length - 1; j >= 0; j--) {
+				var part = parts[j];
+				var trimmed = part.replace(/[\n\r]+/g, "").replace(/^\s+/g, "").replace(/\s+$/g, "");
+				
+				if (trimmed != "") {
+					var splitted = trimmed.split(":");
+					var l = splitted[0].replace(/\s+$/g, "").toLowerCase();
+					
+					//only if not exists yet, otherwise it means it was replaced by the last css property existent, this is, if I have 2 css properties repeated, only the last one will be used.
+					if (repeated.indexOf(l) == -1) { 
+						if ($.isPlainObject(widget_settings) && $.isPlainObject(available_settings) && splitted.length >= 2 && available_settings.hasOwnProperty(l)) //if smaller or bigger, it means is not a typically css attr so we should leave it alone. Must be >= bc if the style contains a background-image with "https://", the splitted.length will be 3.
+							widget_settings[l] = splitted.join(":").substr(splitted[0].length + 1).replace(/^\s+/g, "").replace(/\s+$/g, "");
+						else
+							new_style += part + ";";
+						
+						repeated.push(l);
+					}
+				}
+			}
+		}
+		
+		return new_style;
 	}
 	
 	//convert '&' to '&amp;' and '"' to '&quot;' but only for the php and ptl text.
@@ -11474,19 +11525,7 @@ function LayoutUIEditor() {
 		var php = menu_widgets.find(".menu-widget-php").first();
 		
 		//get available settings
-		var available_settings = {};
-		var settings = menu_settings.find(".group > ul > li, .group-block > li");
-		$.each(settings, function(idx, item) {
-			var c = $(item).attr("class");
-			
-			if (c) {
-				setting_name = c.match(/settings-[a-zA-Z0-9_\-]+/g);
-				setting_name = setting_name && setting_name[0] ? setting_name[0].substr(("settings-").length) : "";
-				
-				if (setting_name != "")
-					available_settings[setting_name] = 1;
-			}
-		});
+		var available_settings = getAvailableSettings();
 		
 		//prepare parse html funcs
 		var menu_widgets_parse_html_func = {};
@@ -11509,6 +11548,25 @@ function LayoutUIEditor() {
 			available_settings: available_settings,
 			menu_widgets_parse_html_func: menu_widgets_parse_html_func
 		};
+	}
+	
+	function getAvailableSettings() {
+		//get available settings
+		var available_settings = {};
+		var settings = menu_settings.find(".group > ul > li:not(.group), .group-block > li");
+		$.each(settings, function(idx, item) {
+			var c = $(item).attr("class");
+			
+			if (c) {
+				setting_name = c.match(/settings-[a-zA-Z0-9_\-]+/g);
+				setting_name = setting_name && setting_name[0] ? setting_name[0].substr(("settings-").length) : "";
+				
+				if (setting_name != "")
+					available_settings[setting_name] = 1;
+			}
+		});
+		
+		return available_settings;
 	}
 	
 	function convertHtmlContentIntoWidget(elm, template_container, options) {

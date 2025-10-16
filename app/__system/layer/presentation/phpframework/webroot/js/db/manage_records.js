@@ -197,7 +197,12 @@ function deleteRow(elm) {
 				dataType : "text",
 				success : function(data, textStatus, jqXHR) {
 					if (data == "1") {
+						var tbody = row.parent().closest("tbody, table");
 						row.remove();
+						
+						if (tbody[0] && tbody.children("tr").length == 1)
+							tbody.find("td.empty").closest("tr").show();
+						
 						StatusMessageHandler.showMessage("Record deleted successfully!", "", "bottom_messages", 1500);
 					}
 					else
@@ -449,6 +454,7 @@ function addCurrentRow(attributes) {
 	setPKsObj(html, attributes);
 	
 	tbody.append(html);
+	tbody.find("td.empty").closest("tr").hide();
 }
 
 //This method will be call from popup url
@@ -495,8 +501,13 @@ function updateCurrentRow(pks) {
 function deleteCurrentRow() {
 	var row = $(MyFancyPopup.settings.targetRow);
 	
-	if (row[0])
+	if (row[0]) {
+		var tbody = row.parent().closest("tbody, table");
 		row.remove();
+		
+		if (tbody[0] && tbody.children("tr").length == 1)
+			tbody.find("td.empty").closest("tr").show();
+	}
 }
 
 function getRowFromPks(pks) {

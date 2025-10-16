@@ -602,7 +602,7 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 				"title" => "Create page to edit redundant database structures recursively",
 				"description" => "This video explains how to create pages to edit records from a database table connected to itself, as in this example: a Category can have another Category or belong to another Category.",
 				"image" => "",
-				"video" => "https://www.youtube.com/embed/nl7NhjbFxJQ", //edit_dynamic_recursive_structure.webm
+				"video" => "https://www.youtube.com/embed/YA4e-sW52Zk", //edit_dynamic_recursive_structure.webm
 			),
 			"30_create_page_for_api" => array(
 				"title" => "Create page to be used by external APIs or AJAX requests",
@@ -1615,15 +1615,15 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 							),
 							"28_create_page_to_show_dynamic_recursive_complex_structures" => array(
 								"title" => "Create page showing redundant database structures recursively",
-								"description" => "This video explains how to create pages showing records from a database table connected to itself, as in this example: a Category can have another Category or belong to another Category.",
+								"description" => "This video explains how to create pages showing records from a database table connected to itself, as in this example: a Category can have another Category or belong to another Category. This is also very useful to show menus with other menu items inside.",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/nl7NhjbFxJQ", //show_dynamic_recursive_structure.webm
 							),
 							"29_create_page_to_edit_dynamic_recursive_complex_structures" => array(
 								"title" => "Create page to edit redundant database structures recursively",
-								"description" => "This video explains how to create pages to edit records from a database table connected to itself, as in this example: a Category can have another Category or belong to another Category.",
+								"description" => "This video explains how to create pages to edit records from a database table connected to itself, as in this example: a Category can have another Category or belong to another Category. This is also very useful to edit and manage menus with other menu items inside.",
 								"image" => "",
-								"video" => "https://www.youtube.com/embed/nl7NhjbFxJQ", //edit_dynamic_recursive_structure.webm
+								"video" => "https://www.youtube.com/embed/YA4e-sW52Zk", //edit_dynamic_recursive_structure.webm
 							),
 							"30_create_page_for_api" => array(
 								"title" => "Create page to be used by external APIs or AJAX requests",
