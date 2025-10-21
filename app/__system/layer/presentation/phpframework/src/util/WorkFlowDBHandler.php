@@ -422,8 +422,17 @@ class WorkFlowDBHandler {
 			//prepare new tasks_details with only the tasks in $filter_by_tables
 			$new_tasks_details = array();
 			
-			foreach ($filter_by_tasks_ids as $task_id)
-				$new_tasks_details[$task_id] = isset($tasks_details[$task_id]) ? $tasks_details[$task_id] : null;
+			foreach ($filter_by_tasks_ids as $task_id) {
+				$task = isset($tasks_details[$task_id]) ? $tasks_details[$task_id] : null;
+				
+				if ($task["offset_left"] > 600)
+					$task["offset_left"] = 10;
+				
+				if ($task["offset_top"] > 600)
+					$task["offset_top"] = 10;
+				
+				$new_tasks_details[$task_id] = $task;
+			}
 			
 			$tasks_details = $new_tasks_details;
 			$workflow_data["tasks"] = $tasks_details;
