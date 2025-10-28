@@ -30,7 +30,7 @@
 			<on_success_task_deletion>ProgrammingTaskUtil.onAfterTaskDeletion</on_success_task_deletion>
 			
 			<on_success_task_between_connection>ProgrammingTaskUtil.onSuccessTaskBetweenConnection</on_success_task_between_connection>
-			<on_success_connection_drag>onlyAllowOneConnectionPerExitAndNotToItSelf</on_success_connection_drag>
+			<on_success_connection_drag>ProgrammingTaskUtil.onConnectionDragForFinalTasks</on_success_connection_drag>
 			<on_success_connection_drop>ProgrammingTaskUtil.onConnectionDrop</on_success_connection_drop>
 			
 			<on_show_task_menu>ProgrammingTaskUtil.removeCodeMenuOnShowTaskMenu</on_show_task_menu>

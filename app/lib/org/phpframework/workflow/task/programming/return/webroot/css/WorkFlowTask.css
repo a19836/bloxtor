@@ -5,7 +5,9 @@
 	background-image:url('../img/bg_hover.svg');
 }
 .taskflowchartdiagram .task.task_return .eps .ep {
-	display:none;
+	/*display:none;*/
+	border-color:transparent !important;
+	background-color:transparent !important;
 }
 .taskflowchartdiagram .task.task_return:hover:after {
 	content:"Click to view menu or move. Linking to boxes is not allowed!";

@@ -5,6 +5,7 @@
 	background-image:url('../img/bg_hover.svg');
 }
 .taskflowchartdiagram .task.task_exit .ep {
+	/*display:none;*/
 	border-color:transparent !important;
 	background-color:transparent !important;
 }

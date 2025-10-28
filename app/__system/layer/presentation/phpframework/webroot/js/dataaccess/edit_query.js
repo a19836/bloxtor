@@ -1707,6 +1707,10 @@ function addNewTable(rand_number, table_name, table_attr_names, offset) {
 	console.log(offset);
 	console.log(WF);*/
 	
+	var previous_tasks = WF.TaskFlow.getAllTasks();
+	if (previous_tasks.length == 0)
+		default_db_table = table_name;
+	
 	//If table name is repeated, give an automatically alias
 	var tasks = getTasksByTableName(table_name, WF);
 	if (tasks.length > 0)
@@ -1720,7 +1724,7 @@ function addNewTable(rand_number, table_name, table_attr_names, offset) {
 	}
 	myWFObj.setTaskFlowChart(WF);
 	DBQueryTaskPropertyObj.prepareTableAttributes(task_id, data, rand_number);
-		
+	
 	$("#" + WF.TaskFlow.main_tasks_flow_obj_id + " #" + task_id + " ." + WF.TaskFlow.task_label_class_name + " span").each(function(idx, elm){
 		var j_elm = $(elm);
 		
@@ -1728,7 +1732,12 @@ function addNewTable(rand_number, table_name, table_attr_names, offset) {
 			j_elm.unbind("click");
 		}
 	});
-		
+	
+	if (previous_tasks.length == 0) {
+		WF.ContextMenu.setContextMenuTaskId(task_id);
+		WF.ContextMenu.setSelectedStartTask({do_not_call_hide_properties: true});
+	}
+	
 	return task_id;
 }
 

@@ -1402,7 +1402,7 @@ function getNewVarWithSubGroupsInProgrammingTaskChooseCreatedVariablePopup(type_
 	if (group)
 		value = group + "[" + ($.isNumeric(value) ? value : quotes + value + quotes) + "]";
 	
-	var lis = type_elm.find(" > .name > .sub_group > li");
+	var lis = type_elm.find(" > .name > .sub_group li"); //Do not add ".sub_group > li" bc li can have other sub li items inside of each other
 	
 	for (var i = 0; i < lis.length; i++) {
 		var li = $(lis[i]);

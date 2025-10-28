@@ -18,7 +18,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				"label" => "Break " . self::prepareTaskPropertyValueLabelFromCodeStmt($value),
 				"exits" => array(
 					self::DEFAULT_EXIT_ID => array(
-						"color" => "#426efa",
+						"color" => "#ff0000",//"#426efa",
 					),
 				),
 			);

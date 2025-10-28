@@ -31,9 +31,9 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 				"type" => self::getConfiguredParsedType($type),
 				"label" => "Die " . self::prepareTaskPropertyValueLabelFromCodeStmt($code),
 				"exits" => array(
-					/*self::DEFAULT_EXIT_ID => array(
-						"color" => "#426efa",
-					),*/
+					self::DEFAULT_EXIT_ID => array(
+						"color" => "#ff0000",//"#426efa",
+					),
 				),
 			);
 			

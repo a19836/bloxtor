@@ -8,6 +8,8 @@ var is_from_auto_save = false;
 var saved_obj_id = null;
 var MyFancyPopupLogin = new MyFancyPopupClass();
 
+monitorMemory(1000, 20); //check every 20 secs if used memory exceeds 1GB
+
 if (typeof _orgAjax == "undefined") { //this avoids the infinit loop if this file gets call twice, like it happens in some modules. DO NOT REMOVE THIS - 2020-09-28!
 	var jquery_native_xhr_object = null;
 	var _orgAjax = jQuery.ajaxSettings.xhr;
@@ -26,6 +28,117 @@ if (document.addEventListener) {
 	document.addEventListener('fullscreenchange', onEscapeF11KeyPress, false);
 	document.addEventListener('MSFullscreenChange', onEscapeF11KeyPress, false);
 }
+
+/* Prepare memory usage */
+function monitorMemory(threshold, interval) {
+	if (threshold > 0 && typeof MyJSLib != "undefined") {
+		//if is inside of iframe, ignore this check, bc is already done by the parent window.
+		if (window.parent != window && typeof window.parent.monitorMemory == "function")
+			return;
+		
+		//set cookie name so every tab contains its own check
+		var cookie_name = "memory_exceed_time_" + parseInt(Math.random() * 1000);
+		
+		//start checks every x seconds
+		var interval_id = setInterval(function() {
+			//get used memory
+			var mem = measureMemory();
+			//console.log(mem);
+			
+			if (mem.used > 0) {
+				//console && console.log && console.log("[MEM] Heap usada: " + mem.used_mb.toFixed(2) + " MB");
+				
+				//if used memory exceeds limit or treshold
+				if (mem.used_mb > threshold || (mem.limit && mem.used >= mem.limit)) {
+					var met = parseInt( MyJSLib.CookieHandler.getCookie(cookie_name) );
+					var ct = (new Date()).getTime();
+					var diff = met > 0 ? (ct - met) / 1000 / 60 : null;
+					//console.log(diff);
+					
+					//show message every hour
+					if (diff === null || diff > 1) {
+						//update cookie
+						MyJSLib.CookieHandler.setCookie(cookie_name, ct, 0.01, "/"); //0.01: expires in 15min
+						
+						//show log message
+						var msg = "Current memory usage exceeds the " + threshold + " MB limit. If your browser slows down, restart it. If the problem persists, restart your computer.";
+						console && console.warn && console.warn(msg);
+						
+						//show ui message but only if not present - avoid multiple repeated messages
+						if (typeof StatusMessageHandler != "undefined" && StatusMessageHandler && StatusMessageHandler.showError) {
+							var exists = StatusMessageHandler.message_html_obj && StatusMessageHandler.message_html_obj.find(".exceed_memory").length > 0;
+							
+							if (!exists) {
+								var msg_elm = StatusMessageHandler.showError(msg, "", "", 6000000);
+								
+								if (msg_elm)
+									msg_elm.addClass("exceed_memory");
+							}
+						}
+						else
+							alert(msg);
+					}
+				}
+			}
+			//clear interval if memory doesn't work in user browser
+			else if (interval_id)
+				clearInterval(interval_id);
+		}, interval * 1000); // a cada x segundos
+	}
+}
+
+/*performance.memory : {
+  totalJSHeapSize: 12345678,     // total da heap reservada pelo JS
+  usedJSHeapSize:  9876543,       // memória atualmente usada pelo JS
+  jsHeapSizeLimit: 2190000000    // limite máximo (~2 GB normalmente)
+}*/
+function measureMemory() {
+	var deprecated_way = true;
+	var used = 0;
+	var limit = 0;
+
+	try {
+		if (typeof performance != "undefined" && performance && performance.memory && performance.memory.jsHeapSizeLimit)
+		  	limit = performance.memory.jsHeapSizeLimit;
+	}
+	catch (e) {
+		console && console.log && console.log(e);
+	}
+	
+	if (window.crossOriginIsolated && performance.measureUserAgentSpecificMemory) {
+		try {
+			var result = (async () => {
+				return await performance.measureUserAgentSpecificMemory();
+			})();
+			
+			if (result && result.bytes) {
+				used = result.bytes;
+				
+				if (used)
+					deprecated_way = false;
+			}
+		} 
+		catch (e) {
+			if (e instanceof DOMException && e.name === 'SecurityError')
+				console && console.log && console.log('The context is not secure.');
+			else
+				console && console.log && console.log(e);
+		}
+	} 
+
+	if (deprecated_way) {
+		if (typeof performance != "undefined" && performance && performance.memory && performance.memory.usedJSHeapSize)
+			used = performance.memory.usedJSHeapSize;
+	}
+
+	return {
+		used: used,
+		limit: limit,
+		used_mb: used / 1024 / 1024,
+		limit_mb: limit > 0 ? limit / 1024 / 1024 : 0
+	};
+}
+
 
 /* Auto Save Functions */
 function addAutoSaveMenu(selector, callback) {

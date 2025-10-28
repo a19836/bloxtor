@@ -67,6 +67,13 @@ if (typeof is_global_programming_common_file_already_included == "undefined") {
 			return false;
 		},
 		
+		onConnectionDragForFinalTasks : function(conn) {
+			if (confirm("This is a final task!\nIf you proceed and connect this task with others, this connection will be ignored in the code generation.\nPlease only use this for diagram usuability purposes.\n\nDo you wish to proceed?"))
+				return onlyAllowOneConnectionPerExitAndNotToItSelf(conn);
+			
+			return false;
+		},
+		
 		onConnectionDrop : function(conn) {
 			//check if target is start task, and if so sets source to start task and remove target as start task.
 			if (conn.target.attr("is_start_task")) {
