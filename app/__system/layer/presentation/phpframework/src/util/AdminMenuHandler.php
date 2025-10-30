@@ -1151,7 +1151,7 @@ class AdminMenuHandler {
 		$absolute_path = $path_prefix . $path;
 		$rl = $recursive_level > 0 ? $recursive_level - 1 : $recursive_level;
 		
-		$reserved_business_logic_file_names = array("modules.xml", "services.xml", "cache.xml", "cache_handler.xml", "CommonService.php"); //all these files can be editable!
+		$reserved_business_logic_file_names = array("modules.xml", "services.xml", "cache.xml", "cache_handler.xml"/*, "CommonService.php"*/); //all these files can be editable!
 		
 		//PREPARING IF LARAVEL
 		$vendor_framework = VendorFrameworkHandler::getVendorFrameworkFolder($absolute_path);
