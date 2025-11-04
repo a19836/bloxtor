@@ -430,6 +430,119 @@
 			MyWidgetResourceLib.fn.loadDependentWidgetsByIdWithoutResourcesToLoad(dependent_widgets_id, props, opts);
 		},
 		
+		//reload data from the dependent widgets synchronously where the dependend widgets will be reload by order - one by one.
+		reloadWidgetDependentWidgetsSynchronously: function(widget, props, opts) {
+			opts = MyWidgetResourceLib.fn.isPlainObject(opts) ? opts : {};
+			opts["async"] = true;
+			
+			MyWidgetResourceLib.fn.reloadWidgetDependentWidgets(widget, props, opts);
+		},
+		
+		//reload available values from the dependent widgets items.
+		reloadWidgetDependentWidgetsItemsAvailableValues: function(widget, opts) {
+			var properties = MyWidgetResourceLib.fn.getWidgetProperties(widget);
+			var dependent_widgets_id = properties["dependent_widgets_id"];
+			dependent_widgets_id = MyWidgetResourceLib.fn.prepareDependentWidgetsId(dependent_widgets_id);
+			dependent_widgets_id = MyWidgetResourceLib.fn.filterUniqueDependentWidgetsId(dependent_widgets_id);
+			
+			opts = MyWidgetResourceLib.fn.isPlainObject(opts) ? opts : {};
+			opts["force"] = true;
+			
+			var repeated_resources_name = [];
+			
+			MyWidgetResourceLib.fn.each(dependent_widgets_id, function(idx, dependent_widget_id) {
+				var widgets = MyWidgetResourceLib.fn.getDependentWidgetsById(dependent_widget_id);
+				
+				if (widgets)
+					MyWidgetResourceLib.fn.each(widgets, function(idy, widget) {
+						if (widget)
+							MyWidgetResourceLib.fn.reloadWidgetAvailableValues(widget, opts, repeated_resources_name);
+					});
+			});
+		},
+		
+		//reload synchronously the available values from the dependent widgets items by order - one by one.
+		reloadWidgetDependentWidgetsItemsAvailableValuesSynchronously: function(widget, opts) {
+			opts = MyWidgetResourceLib.fn.isPlainObject(opts) ? opts : {};
+			opts["async"] = true;
+			
+			MyWidgetResourceLib.fn.reloadWidgetDependentWidgetsItemsAvailableValues(widget, opts);
+		},
+		
+		//reload available values from the dependent widgets items.
+		reloadWidgetAvailableValues: function(widget, opts, repeated_resources_name) {
+			if (widget) {
+				if (!repeated_resources_name)
+					repeated_resources_name = [];
+				
+				//get widget available values resources name
+				var resources_name = MyWidgetResourceLib.FieldHandler.getWidgetResourceValueAvailableValuesResourcesName(widget);
+				
+				if (!resources_name)
+					resources_name = [];
+				
+				//remove repeated resources_name
+				var resources_name_to_reload = resources_name.filter(function(resource_name, pos) {
+					return resources_name.indexOf(resource_name) == pos && repeated_resources_name.indexOf(resource_name) == -1;
+				});
+				
+				if (resources_name_to_reload.length > 0) {
+					//get widget resources names with load definition
+					var resources = MyWidgetResourceLib.ResourceHandler.getWidgetResources(widget, "load");
+					var existing_resources_name = [];
+					
+					if (resources.length > 0)
+						for (var i = 0, t = resources.length; i < t; i++) {
+							var resource = resources[i];
+							
+							if (resource["name"])
+								existing_resources_name.push(resource["name"]);
+						}
+						
+					//reload available values
+					for (var i = 0, t = resources_name_to_reload.length; i < t; i++) {
+						var resource_name = resources_name_to_reload[i];
+						
+						//only if is a valid and existing load resource
+						if (existing_resources_name.indexOf(resource_name) != -1) {
+							//clone opts, otherwise if the loadWidgetResource method changes the opts object, then it will take efect here too.
+							var cloned_opts = MyWidgetResourceLib.fn.isPlainObject(opts) ? MyWidgetResourceLib.fn.assignObjectRecursively({}, opts) : {}; 
+							
+							MyWidgetResourceLib.ResourceHandler.executeSetWidgetResourcesRequest(widget, resource_name, cloned_opts);
+							
+							repeated_resources_name.push(resource_name);
+						}
+					}
+				}
+				
+				//get available values resources name from the getNodeElementData, if apply
+				var possible_data_names = ["attr_item_html", "pages_numbers_items_html", "table_loading_html", "table_empty_html", "tree_loading_html", "tree_empty_html", "list_items_html", "list_items_add_html", "inner_html", "matrix_inner_html", "columns_html", "list_item_html"];
+				
+				for (var i = 0, t = possible_data_names.length; i < t; i++) {
+					var html = MyWidgetResourceLib.fn.getNodeElementData(widget, possible_data_names[i]);
+					
+					if (html) {
+						var node_name = MyWidgetResourceLib.fn.getHtmlParentNodeName(html);
+						var div = document.createElement(node_name);
+						div.innerHTML = html;
+						
+						var items = div.querySelectorAll("[data-widget-resource-value]");
+						
+						MyWidgetResourceLib.fn.each(items, function (idx, item) {
+							MyWidgetResourceLib.fn.reloadWidgetAvailableValues(item, opts, repeated_resources_name);
+						});
+					}
+				}
+				
+				//get sub widgets available values resources name
+				var items = widget.querySelectorAll("[data-widget-resource-value]");
+				
+				MyWidgetResourceLib.fn.each(items, function (idx, item) {
+					MyWidgetResourceLib.fn.reloadWidgetAvailableValues(item, opts, repeated_resources_name);
+				});
+			}
+		},
+		
 		//purge cache from the dependent widgets.
 		purgeCachedLoadDependentWidgetsResource: function(elm) {
 			var dependent_widgets_id = MyWidgetResourceLib.fn.prepareDependentWidgetsId(elm_properties["dependent_widgets_id"]);
@@ -776,6 +889,22 @@
 			}
 			
 			return null;
+		},
+		
+		//get the right node name otherwise when we append the html the browser will discard the invalid nodes. 
+		getHtmlParentNodeName: function(html) {
+			var node_name = "div";
+			
+			if (html) {
+				html = html.replace(/^\s+/g, "");
+				var tag_name = html.substr(1, html.indexOf(" ") - 1).toLowerCase();
+				
+				node_name = tag_name == "li" ? "ul" : (
+					tag_name == "tr" || tag_name == "tbody" || tag_name == "thead" ? "table" : node_name
+				);
+			}
+			
+			return node_name;
 		}
 	};
 	
@@ -6018,11 +6147,7 @@
 					html += list_item_html.html;
 				}
 				
-				html = html.replace(/^\s+/g, "");
-				var tag_name = html.substr(1, html.indexOf(" ") - 1).toLowerCase();
-				var node_name = tag_name == "li" ? "ul" : (
-					tag_name == "tr" || tag_name == "tbody" || tag_name == "thead" ? "table" : "div"
-				); //get the right node name otherwise when we append the elm_or_html the browser will discard the invalid nodes.
+				var node_name = MyWidgetResourceLib.fn.getHtmlParentNodeName(html);
 				var div = document.createElement(node_name);
 				div.innerHTML = html;
 				
@@ -9040,11 +9165,7 @@
 				
 				if (selector) {
 					try {
-						var resource_result_html = resource_result.replace(/^\s+/g, "");
-						var tag_name = resource_result_html.substr(1, resource_result_html.indexOf(" ") - 1).toLowerCase();
-						var node_name = tag_name == "li" ? "ul" : (
-							tag_name == "tr" || tag_name == "tbody" || tag_name == "thead" ? "table" : "div"
-						); //get the right node name otherwise when we append the elm_or_html the browser will discard the invalid nodes.
+						var node_name = MyWidgetResourceLib.fn.getHtmlParentNodeName(resource_result);
 						var div = document.createElement(node_name);
 						div.innerHTML = resource_result;
 						
@@ -9085,6 +9206,51 @@
 			return null;
 		},
 		
+		getWidgetResourceValueAvailableValuesObj: function(elm) {
+			var widget_resource_value = this.getWidgetResourceValueObj(elm);
+			
+			if (MyWidgetResourceLib.fn.isPlainObject(widget_resource_value) && widget_resource_value.hasOwnProperty("available_values"))
+				return widget_resource_value["available_values"];
+			
+			return null;
+		},
+		
+		getWidgetResourceValueAvailableValuesResourcesName: function(elm) {
+			var resources_name = [];
+			var items = this.getWidgetResourceValueAvailableValuesObj(elm);
+			
+			if (items) {
+				if (!MyWidgetResourceLib.fn.isArray(items))
+					items = [items];
+				
+				for (var i = 0, ti = items.length; i < ti; i++) {
+					var item = items[i];
+					
+					if (MyWidgetResourceLib.fn.isPlainObject(item) && !MyWidgetResourceLib.fn.isEmptyObject(item)) {
+						for (var k in item) {
+							var v = item[k];
+							
+							if (MyWidgetResourceLib.fn.isPlainObject(v))
+								v = [v];
+							
+							if (MyWidgetResourceLib.fn.isArray(v)) {
+								for (var j = 0, tj = v.length; j < tj; j++)
+									if (MyWidgetResourceLib.fn.isPlainObject(v[j])) {
+										if (v[j]["name"] || MyWidgetResourceLib.fn.isNumeric(v[j]["name"])) {
+											var resource_name = v[j]["name"];
+											
+											resources_name.push(resource_name);
+										}
+									}
+							}
+						}
+					}
+				}
+			}
+			
+			return resources_name;
+		},
+		
 		/*
 		 * data-widget-resource-value: {
 		 * 	available_values: {
@@ -9110,10 +9276,9 @@
 			var available_values = !opts || !opts["force"] ? MyWidgetResourceLib.fn.getNodeElementData(elm, "widget_resource_value_available_values") : null;
 			
 			if (!available_values) {
-				var widget_resource_value = this.getWidgetResourceValueObj(elm);
+				var items = this.getWidgetResourceValueAvailableValuesObj(elm);
 				
-				if (MyWidgetResourceLib.fn.isPlainObject(widget_resource_value) && widget_resource_value.hasOwnProperty("available_values")) {
-					var items = widget_resource_value["available_values"];
+				if (items) {
 					var available_values = {};
 					
 					if (!MyWidgetResourceLib.fn.isArray(items))
@@ -9449,22 +9614,8 @@
 		setFieldValue: function(elm, value, opts) {
 			if (elm) {
 				try {
-					if (opts && opts["with_available_values"]) {
-						var available_values = this.getWidgetResourceValueAvailableValues(elm, opts);
-						
-						//update value with available_values
-						if (MyWidgetResourceLib.fn.isPlainObject(available_values) && available_values.hasOwnProperty(value))
-							value = available_values[value];
-					}
+					value = this.prepareFieldValueToDisplay(elm, value, opts);
 					
-					if (opts && opts["with_default"] && !value && !MyWidgetResourceLib.fn.isNumeric(value)) {
-						var default_value = this.getWidgetResourceValueDefaultValue(elm);
-						
-						if (default_value !== null && default_value.length)
-							value = default_value;
-					}
-					
-					var node_name = elm.nodeName.toUpperCase();
 					var replacement_type = this.getWidgetResourceValueReplacementType(elm);
 					var target_type = this.getWidgetResourceValueDisplayTargetType(elm);
 					var target_attribute = this.getWidgetResourceValueDisplayTargetAttributeName(elm);
@@ -9472,84 +9623,9 @@
 					display_handler = MyWidgetResourceLib.fn.convertIntoFunctions(display_handler);
 					
 					if (display_handler)
-						MyWidgetResourceLib.fn.executeFunctions(display_handler, elm, value, replacement_type, target_type, target_attribute);
-					else if (target_type == "attribute") {
-						if (target_attribute || MyWidgetResourceLib.fn.isNumeric(target_attribute)) {
-							if (elm.hasAttribute(target_attribute)) {
-								if (replacement_type == "append")
-									value += "" + elm.getAttribute(target_attribute); //"" so it can append as a string and not numeric
-								else if (replacement_type == "prepend")
-									value = elm.getAttribute(target_attribute) + "" + value; //"" so it can append as a string and not numeric
-							}
-							
-							elm.setAttribute(target_attribute, value);
-						}
-						else
-							elm.setAttribute(value, "");
-					}
-					else if (node_name == "INPUT" || node_name == "TEXTAREA" || node_name == "SELECT") {
-						if (elm.type == "checkbox" || elm.type == "radio")
-							MyWidgetResourceLib.FieldHandler.setInputValue(elm, value);
-						else if (node_name == "SELECT") {
-							MyWidgetResourceLib.FieldHandler.setInputValue(elm, value);
-							
-							var allow_new_options = this.getWidgetResourceValueAllowNewOptions(elm);
-							
-							if (allow_new_options) {
-								//select multiple values if value is an array
-								if (MyWidgetResourceLib.fn.isArray(value)) {
-									var options = elm.querySelectorAll("option");
-									
-									MyWidgetResourceLib.fn.each(value, function(idx, v) {
-										var exists = false;
-										
-										MyWidgetResourceLib.fn.each(options, function(idy, option) {
-											if (option.value == v) {
-												exists = true;
-												return false;
-											}
-										});
-										
-										if (!exists && (v || MyWidgetResourceLib.fn.isNumeric(v))) {
-											var option_html = '<option value="' + ("" + v).replace(/"/g, "&quot;") + '" title="this is a hard-coded value" selected>-- ' + v + ' --</option>';
-											
-											if (replacement_type == "prepend")
-												elm.insertAdjacentHTML('afterbegin', option_html);
-											else
-												elm.insertAdjacentHTML('beforeend', option_html);
-										}
-									});
-								}
-								else if (elm.value != value && (value || MyWidgetResourceLib.fn.isNumeric(value))) { //if no value in select field, add it if allowed
-									var option_html = '<option value="' + ("" + value).replace(/"/g, "&quot;") + '" title="this is a hard-coded value" selected>-- ' + value + ' --</option>';
-									
-									if (replacement_type == "prepend")
-										elm.insertAdjacentHTML('afterbegin', option_html);
-									else
-										elm.insertAdjacentHTML('beforeend', option_html);
-								}
-							}
-						}
-						else {
-							var prev_value = MyWidgetResourceLib.FieldHandler.getInputValue(elm);
-							prev_value = prev_value != undefined && prev_value !== null ? prev_value : "";
-							
-							if (replacement_type == "append")
-								value = prev_value + value;
-							else if (replacement_type == "prepend")
-								value = value + prev_value;
-							
-							MyWidgetResourceLib.FieldHandler.setInputValue(elm, value);
-						}
-					}
-					else {
-						if (replacement_type == "append")
-							elm.insertAdjacentHTML('beforeend', value); //last child
-						else if (replacement_type == "prepend")
-							elm.insertAdjacentHTML('afterbegin', value); //first child
-						else
-							elm.innerHTML = value;
-					}
+						MyWidgetResourceLib.fn.executeFunctions(display_handler, elm, value, opts, replacement_type, target_type, target_attribute);
+					else
+						this.displayFieldValue(elm, value, opts, replacement_type, target_type, target_attribute);
 					
 					//if display callback exists, execute it
 					var display_callback = this.getWidgetResourceValueDisplayCallback(elm);
@@ -9562,6 +9638,130 @@
 						console.log(e);
 				}
 			}
+		},
+		
+		prepareFieldValueToDisplay: function(elm, value, opts) {
+			if (opts && opts["with_available_values"]) {
+				var available_values = this.getWidgetResourceValueAvailableValues(elm, opts);
+				//console.log(elm);
+				//console.log(available_values);
+				//console.log(MyWidgetResourceLib.fn.assignObjectRecursively({}, MyWidgetResourceLib.ResourceHandler.loaded_sla_results["get_category_category_id_options"]));
+				
+				//update value with available_values
+				if (MyWidgetResourceLib.fn.isPlainObject(available_values) && available_values.hasOwnProperty(value))
+					value = available_values[value];
+			}
+			
+			if (opts && opts["with_default"] && !value && !MyWidgetResourceLib.fn.isNumeric(value)) {
+				var default_value = this.getWidgetResourceValueDefaultValue(elm);
+				
+				if (default_value !== null && default_value.length)
+					value = default_value;
+			}
+			
+			return value;
+		},
+		
+		//Display the value in the field. This is the default display handler.
+		displayFieldValue: function(elm, value, opts, replacement_type, target_type, target_attribute) {
+			var node_name = elm.nodeName.toUpperCase();
+			
+			if (target_type == "attribute") {
+				if (target_attribute || MyWidgetResourceLib.fn.isNumeric(target_attribute)) {
+					if (elm.hasAttribute(target_attribute)) {
+						if (replacement_type == "append")
+							value += "" + elm.getAttribute(target_attribute); //"" so it can append as a string and not numeric
+						else if (replacement_type == "prepend")
+							value = elm.getAttribute(target_attribute) + "" + value; //"" so it can append as a string and not numeric
+					}
+					
+					elm.setAttribute(target_attribute, value);
+				}
+				else
+					elm.setAttribute(value, "");
+			}
+			else if (node_name == "INPUT" || node_name == "TEXTAREA" || node_name == "SELECT") {
+				if (elm.type == "checkbox" || elm.type == "radio")
+					MyWidgetResourceLib.FieldHandler.setInputValue(elm, value);
+				else if (node_name == "SELECT") {
+					MyWidgetResourceLib.FieldHandler.setInputValue(elm, value);
+					
+					var allow_new_options = MyWidgetResourceLib.FieldHandler.getWidgetResourceValueAllowNewOptions(elm);
+					
+					if (allow_new_options) {
+						//select multiple values if value is an array
+						if (MyWidgetResourceLib.fn.isArray(value)) {
+							var options = elm.querySelectorAll("option");
+							
+							MyWidgetResourceLib.fn.each(value, function(idx, v) {
+								var exists = false;
+								
+								MyWidgetResourceLib.fn.each(options, function(idy, option) {
+									if (option.value == v) {
+										exists = true;
+										return false;
+									}
+								});
+								
+								if (!exists && (v || MyWidgetResourceLib.fn.isNumeric(v))) {
+									var option_html = '<option value="' + ("" + v).replace(/"/g, "&quot;") + '" title="this is a hard-coded value" selected>-- ' + v + ' --</option>';
+									
+									if (replacement_type == "prepend")
+										elm.insertAdjacentHTML('afterbegin', option_html);
+									else
+										elm.insertAdjacentHTML('beforeend', option_html);
+								}
+							});
+						}
+						else if (elm.value != value && (value || MyWidgetResourceLib.fn.isNumeric(value))) { //if no value in select field, add it if allowed
+							var option_html = '<option value="' + ("" + value).replace(/"/g, "&quot;") + '" title="this is a hard-coded value" selected>-- ' + value + ' --</option>';
+							
+							if (replacement_type == "prepend")
+								elm.insertAdjacentHTML('afterbegin', option_html);
+							else
+								elm.insertAdjacentHTML('beforeend', option_html);
+						}
+					}
+				}
+				else {
+					var prev_value = MyWidgetResourceLib.FieldHandler.getInputValue(elm);
+					prev_value = prev_value != undefined && prev_value !== null ? prev_value : "";
+					
+					if (replacement_type == "append")
+						value = prev_value + value;
+					else if (replacement_type == "prepend")
+						value = value + prev_value;
+					
+					MyWidgetResourceLib.FieldHandler.setInputValue(elm, value);
+				}
+			}
+			else {
+				if (replacement_type == "append")
+					elm.insertAdjacentHTML('beforeend', value); //last child
+				else if (replacement_type == "prepend")
+					elm.insertAdjacentHTML('afterbegin', value); //first child
+				else
+					elm.innerHTML = value;
+			}
+		},
+		
+		//Load the resource of the field and then display the value in the field. This is very usefull to be used to force a field to load the available values again before displaying the value.
+		loadAndDisplayFieldValue: function(elm, value, opts, replacement_type, target_type, target_attribute) {
+			MyWidgetResourceLib.ResourceHandler.loadWidgetResource(elm, {async: false, force: true}); //must be async false otherwise we will loose the the real attribute values, when the load function gets executed
+			
+			var new_value = MyWidgetResourceLib.FieldHandler.prepareFieldValueToDisplay(elm, value, opts);
+			//console.log("value:"+value);
+			//console.log("new_value:"+new_value);
+			
+			MyWidgetResourceLib.FieldHandler.displayFieldValue(elm, new_value, opts, replacement_type, target_type, target_attribute);
+		},
+		
+		//Load the resource of the field if the value is numeric and then display the value in the field. This is very usefull to be used to force a field to load the available values again before displaying the value. Eg: if a list column is not showing the available values correctly because meanwhile the available values changed, then we can always force it to load it again.
+		loadAndDisplayFieldValueIfNumeric: function(elm, value, opts, replacement_type, target_type, target_attribute) {
+			if (MyWidgetResourceLib.fn.isNumeric(value))
+				MyWidgetResourceLib.FieldHandler.loadAndDisplayFieldValue(elm, value, opts, replacement_type, target_type, target_attribute);
+			else
+				MyWidgetResourceLib.FieldHandler.displayFieldValue(elm, value, opts, replacement_type, target_type, target_attribute);
 		},
 		
 		//Handler to be called on complete of a load action. In summary this handler selects the first option of a combobox. This method is used on comboboxes that don't have any option selected by default.
@@ -9687,6 +9887,11 @@
 		//Reload data from the dependent widgets, that were not loaded yet.
 		refreshNotYetLoadedDependentWidgets: function(elm) {
 			MyWidgetResourceLib.fn.reloadWidgetDependentWidgetsWithoutResourcesToLoad(elm);
+		},
+		
+		//Reload data from the dependent widgets synchronously where the dependend widgets will be reload by order - one by one.
+		refreshDependentWidgetsSynchronously: function(elm) {
+			MyWidgetResourceLib.fn.reloadWidgetDependentWidgetsSynchronously(elm);
 		},
 		
 		refreshDependentWidgetsBasedInNameAndValue: function(elm, name, value, complete_func, force, ignore_widgets_with_resources_to_load) {
@@ -9850,6 +10055,18 @@
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, name, value, null, true, true);
 			else
 				MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInNameAndValue(elm, null, null, null, true, true);
+		},
+		
+		/* RELOAD FUNCTIONS - GENERIC */
+		
+		//Reload available values from the dependent widgets items.
+		reloadDependentWidgetsItemsAvailableValues: function(elm) {
+			MyWidgetResourceLib.fn.reloadWidgetDependentWidgetsItemsAvailableValues(elm);
+		},
+		
+		//Reload synchronously the available values from the dependent widgets items by order - one by one.
+		reloadDependentWidgetsItemsAvailableValuesSynchronously: function(elm) {
+			MyWidgetResourceLib.fn.reloadWidgetDependentWidgetsItemsAvailableValuesSynchronously(elm);
 		},
 		
 		/* REDIRECT FUNCTIONS - GENERIC */
@@ -10919,11 +11136,7 @@
 				if (elm_or_html.replace(/\s+/g, "") == "")
 					return hash_tags;
 				
-				elm_or_html = elm_or_html.replace(/^\s+/g, "");
-				var tag_name = elm_or_html.substr(1, elm_or_html.indexOf(" ") - 1).toLowerCase();
-				var node_name = tag_name == "li" ? "ul" : (
-					tag_name == "tr" || tag_name == "tbody" || tag_name == "thead" ? "table" : "div"
-				); //get the right node name otherwise when we append the elm_or_html the browser will discard the invalid nodes.
+				var node_name = MyWidgetResourceLib.fn.getHtmlParentNodeName(elm_or_html);
 				elm = document.createElement(node_name);
 				elm.insertAdjacentHTML('afterbegin', elm_or_html);
 			}
@@ -10983,11 +11196,7 @@
 				if (elm_or_html.replace(/\s+/g, "") == "")
 					return hash_tags;
 				
-				elm_or_html = elm_or_html.replace(/^\s+/g, "");
-				var tag_name = elm_or_html.substr(1, elm_or_html.indexOf(" ") - 1).toLowerCase();
-				var node_name = tag_name == "li" ? "ul" : (
-					tag_name == "tr" || tag_name == "tbody" || tag_name == "thead" ? "table" : "div"
-				); //get the right node name otherwise when we append the elm_or_html the browser will discard the invalid nodes.
+				var node_name = MyWidgetResourceLib.fn.getHtmlParentNodeName(elm_or_html);
 				elm = document.createElement(node_name);
 				elm.insertAdjacentHTML('afterbegin', elm_or_html);
 			}

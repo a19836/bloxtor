@@ -6479,10 +6479,12 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 			 + '			<i class="zmdi zmdi-close clear-user-input" title="Reset field"></i>'
 			 + '			<input name="widget_resource_value[display][]" placeHolder="Blank for default" />'
 			 + '			<select name="widget_resource_value[display][]">'
-			 + '				<option value="" selected title="Default handler">-- Default --</option>'
+			 + '				<option value="" selected title="Default handler: displayFieldValue">-- Default --</option>'
 			 + '				<option value="MyWidgetResourceLib.ListHandler.drawListData">drawListData</option>'
 			 + '				<option value="MyWidgetResourceLib.ListHandler.drawListDataRecursively">drawListDataRecursively</option>'
 			 + '				<option value="MyWidgetResourceLib.ListHandler.loadAndDrawListDataRecursively">loadAndDrawListDataRecursively</option>'
+			 + '				<option value="MyWidgetResourceLib.FieldHandler.loadAndDisplayFieldValue">loadAndDisplayFieldValue</option>'
+			 + '				<option value="MyWidgetResourceLib.FieldHandler.loadAndDisplayFieldValueIfNumeric">loadAndDisplayFieldValueIfNumeric</option>'
 			 + '			</select>'
 			 + '			<i class="zmdi zmdi-swap swap-input-select" title="Swap between pre-defined options or open text option" onClick="' + ui_creator.obj_var_name + '.LayoutUIEditorWidgetResource.swapInputAndSelectFields(this, event)"></i>'
 		 	 + '			<i class="zmdi zmdi-search choose-event" title="View and choose pre-defined handlers" onClick="' + ui_creator.obj_var_name + '.LayoutUIEditorWidgetResource.toggleChooseWidgetHandlerPopup(this, event)"></i>'
@@ -14140,21 +14142,25 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 		if (elm.hasAttribute("data-widget-list"))
 			return {
 				"add": {
+					"MyWidgetResourceLib.ResourceHandler.loadWidgetResource": "loadWidgetResource",
 					"MyWidgetResourceLib.ListHandler.reloadParentListResource": "reloadParentListResource",
 					"MyWidgetResourceLib.ListHandler.onAddResourceItem": "onAddResourceItem"
 				},
 				"update": {
+					"MyWidgetResourceLib.ResourceHandler.loadWidgetResource": "loadWidgetResource",
 					"MyWidgetResourceLib.ListHandler.reloadParentListResource": "reloadParentListResource",
 					"MyWidgetResourceLib.ItemHandler.updateViewFieldsBasedInEditFields": "updateViewFieldsBasedInEditFields",
 					"MyWidgetResourceLib.ListHandler.onUpdateResourceItem": "onUpdateResourceItem"
 				},
 				"update_attribute": {
+					"MyWidgetResourceLib.ResourceHandler.loadWidgetResource": "loadWidgetResource",
 					"MyWidgetResourceLib.ListHandler.reloadParentListResource": "reloadParentListResource",
 					"MyWidgetResourceLib.ItemHandler.updateViewFieldsBasedInEditFields": "updateViewFieldsBasedInEditFields",
 					"MyWidgetResourceLib.ListHandler.onUpdateResourceItemAttribute": "onUpdateResourceItemAttribute",
 					"MyWidgetResourceLib.ListHandler.purgeCachedLoadParentListResource": "purgeCachedLoadParentListResource"
 				},
 				"remove": {
+					"MyWidgetResourceLib.ResourceHandler.loadWidgetResource": "loadWidgetResource",
 					"MyWidgetResourceLib.ListHandler.reloadParentListResource": "reloadParentListResource",
 					"MyWidgetResourceLib.ListHandler.onRemoveResourceItem": "onRemoveResourceItem"
 				}
@@ -14168,6 +14174,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 				},
 				"add": {
 					"MyWidgetResourceLib.PopupHandler.closeParentPopup": "closeParentPopup",
+					"MyWidgetResourceLib.ResourceHandler.loadWidgetResource": "loadWidgetResource",
 					"MyWidgetResourceLib.FormHandler.reloadParentFormResource": "reloadParentFormResource",
 					"MyWidgetResourceLib.FormHandler.onAddPopupResourceItem": "onAddPopupResourceItem",
 					"MyWidgetResourceLib.FormHandler.onAddResourceItem": "onAddResourceItem",
@@ -14176,6 +14183,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 				},
 				"update": {
 					"MyWidgetResourceLib.PopupHandler.closeParentPopup": "closeParentPopup",
+					"MyWidgetResourceLib.ResourceHandler.loadWidgetResource": "loadWidgetResource",
 					"MyWidgetResourceLib.FormHandler.reloadParentFormResource": "reloadParentFormResource",
 					"MyWidgetResourceLib.ItemHandler.updateViewFieldsBasedInEditFields": "updateViewFieldsBasedInEditFields",
 					"MyWidgetResourceLib.FormHandler.onUpdatePopupResourceItem": "onUpdatePopupResourceItem",
@@ -14184,6 +14192,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 				},
 				"update_attribute": {
 					"MyWidgetResourceLib.PopupHandler.closeParentPopup": "closeParentPopup",
+					"MyWidgetResourceLib.ResourceHandler.loadWidgetResource": "loadWidgetResource",
 					"MyWidgetResourceLib.FormHandler.reloadParentFormResource": "reloadParentFormResource",
 					"MyWidgetResourceLib.ItemHandler.updateViewFieldsBasedInEditFields": "updateViewFieldsBasedInEditFields",
 					"MyWidgetResourceLib.FormHandler.onUpdatePopupResourceItemAttribute": "onUpdatePopupResourceItemAttribute",
@@ -14192,6 +14201,7 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 				},
 				"remove": {
 					"MyWidgetResourceLib.PopupHandler.closeParentPopup": "closeParentPopup",
+					"MyWidgetResourceLib.ResourceHandler.loadWidgetResource": "loadWidgetResource",
 					"MyWidgetResourceLib.FormHandler.reloadParentFormResource": "reloadParentFormResource",
 					"MyWidgetResourceLib.FormHandler.onRemovePopupResourceItem": "onRemovePopupResourceItem",
 					"MyWidgetResourceLib.FormHandler.onRemoveResourceItem": "onRemoveResourceItem",
@@ -14214,6 +14224,10 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 					"MyWidgetResourceLib.ShortActionHandler.redirectToBasedInData": "redirectToBasedInData",
 					"MyWidgetResourceLib.ShortActionHandler.appendDataAndRedirectTo": "appendDataAndRedirectTo",
 					
+					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgets": "refreshDependentWidgets",
+					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgets": "refreshNotYetLoadedDependentWidgets",
+					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsSynchronously": "refreshDependentWidgetsSynchronously",
+					
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInInputNonEmptyValue": "refreshDependentWidgetsBasedInInputNonEmptyValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue": "refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInInputValue": "refreshDependentWidgetsBasedInInputValue",
@@ -14226,7 +14240,10 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInResourceValue": "refreshDependentWidgetsBasedInResourceValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInResourceValue": "refreshNotYetLoadedDependentWidgetsBasedInResourceValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInResourceValueButIfEmptyGetAll": "refreshDependentWidgetsBasedInResourceValueButIfEmptyGetAll",
-					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll": "refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll"
+					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll": "refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll",
+					
+					"MyWidgetResourceLib.ShortActionHandler.reloadDependentWidgetsItemsAvailableValues": "reloadDependentWidgetsItemsAvailableValues",
+					"MyWidgetResourceLib.ShortActionHandler.reloadDependentWidgetsItemsAvailableValuesSynchronously": "reloadDependentWidgetsItemsAvailableValuesSynchronously"
 				}
 			};
 		
@@ -14242,6 +14259,10 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 					"MyWidgetResourceLib.ShortActionHandler.redirectToBasedInData": "redirectToBasedInData",
 					"MyWidgetResourceLib.ShortActionHandler.appendDataAndRedirectTo": "appendDataAndRedirectTo",
 					
+					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgets": "refreshDependentWidgets",
+					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgets": "refreshNotYetLoadedDependentWidgets",
+					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsSynchronously": "refreshDependentWidgetsSynchronously",
+					
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInInputNonEmptyValue": "refreshDependentWidgetsBasedInInputNonEmptyValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue": "refreshNotYetLoadedDependentWidgetsBasedInInputNonEmptyValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInInputValue": "refreshDependentWidgetsBasedInInputValue",
@@ -14254,7 +14275,10 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInResourceValue": "refreshDependentWidgetsBasedInResourceValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInResourceValue": "refreshNotYetLoadedDependentWidgetsBasedInResourceValue",
 					"MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsBasedInResourceValueButIfEmptyGetAll": "refreshDependentWidgetsBasedInResourceValueButIfEmptyGetAll",
-					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll": "refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll"
+					"MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll": "refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll",
+					
+					"MyWidgetResourceLib.ShortActionHandler.reloadDependentWidgetsItemsAvailableValues": "reloadDependentWidgetsItemsAvailableValues",
+					"MyWidgetResourceLib.ShortActionHandler.reloadDependentWidgetsItemsAvailableValuesSynchronously": "reloadDependentWidgetsItemsAvailableValuesSynchronously"
 				}
 			};
 		
@@ -14597,6 +14621,11 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							title: "refreshNotYetLoadedDependentWidgets",
 							description: "Reload data from the dependent widgets, that were not loaded yet."
 						},
+						{
+							value: "MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgetsSynchronously(this); return false;",
+							title: "refreshDependentWidgetsSynchronously",
+							description: "Reload data from the dependent widgets synchronously where the dependend widgets will be reload by order - one by one."
+						},
 						
 						/* REFRESH FUNCTIONS - INPUT VALUE */
 						{
@@ -14660,6 +14689,18 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							value: "MyWidgetResourceLib.ShortActionHandler.refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll(this); return false;",
 							title: "refreshNotYetLoadedDependentWidgetsBasedInResourceValueButIfEmptyGetAll",
 							description: "Reload data from the dependent widgets, that were not loaded yet, based on a resource-attribute name and value of a html element. If that value is empty, reload dependent widgets without any filter, this is, get all items from dependent widgets. The resource-attribute value is based in the available_values and if empty get the default value."
+						},
+						
+						/* RELOAD FUNCTIONS */
+						{
+							value: "MyWidgetResourceLib.ShortActionHandler.reloadDependentWidgetsItemsAvailableValues(this); return false;",
+							title: "reloadDependentWidgetsItemsAvailableValues",
+							description: "Reload available values from the dependent widgets items."
+						},
+						{
+							value: "MyWidgetResourceLib.ShortActionHandler.reloadDependentWidgetsItemsAvailableValuesSynchronously(this); return false;",
+							title: "reloadDependentWidgetsItemsAvailableValuesSynchronously",
+							description: "Reload synchronously the available values from the dependent widgets items by order - one by one."
 						},
 						
 						/* REDIRECT FUNCTIONS */
@@ -15103,6 +15144,11 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 						value: "MyWidgetResourceLib.FieldHandler.cacheFieldResource(this); return false;",
 						title: "cacheFieldResource",
 						description: "Load data of a field widget.<br/>This function can be called by any html element with a 'load' resource defined.<br/>The difference between cacheFieldResource and loadFieldResource methods, is that the cacheFieldResource method checks if the 'load' resource was previously loaded and, if yes, use it instead of loading it again. Additionally only executes a resource without loading its values or executing the dependent_widget_ids. This is used to load the available_values."
+					},
+					{
+						value: "MyWidgetResourceLib.ResourceHandler.loadWidgetResource(this); return false;",
+						title: "loadWidgetResource",
+						description: "Fetch the load resource of a widget.<br/>This function can be called by any html element with a 'load' resource defined.<br/>Note that this function only executes the load resource to the server and caches its result. It does not execute the complete and end callbacks, neither refreshes the dependent widgets."
 					}
 				]
 			},
@@ -15214,6 +15260,21 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							value: "MyWidgetResourceLib.FieldHandler.onLoadElementFieldsResourceCleanAllHashTagsLeft(this); return false;",
 							title: "onLoadElementFieldsResourceCleanAllHashTagsLeft",
 							description: "Callback to be called after a load or display handler get executed, to clean all the hashtags left from the html inside of the node element passed as argument."
+						},
+						{
+							value: "MyWidgetResourceLib.FieldHandler.displayFieldValue(this, value, opts, replacement_type, target_type, target_attribute); return false;",
+							title: "displayFieldValue",
+							description: "Display the value in the field. This is the default display handler."
+						},
+						{
+							value: "MyWidgetResourceLib.FieldHandler.loadAndDisplayFieldValue(this, value, opts, replacement_type, target_type, target_attribute); return false;",
+							title: "loadAndDisplayFieldValue",
+							description: "Load the resource of the field and then display the value in the field. This is very usefull to be used to force a field to load the available values again before displaying the value."
+						},
+						{
+							value: "MyWidgetResourceLib.FieldHandler.loadAndDisplayFieldValueIfNumeric(this, value, opts, replacement_type, target_type, target_attribute); return false;",
+							title: "loadAndDisplayFieldValueIfNumeric",
+							description: "Load the resource of the field if the value is numeric and then display the value in the field. This is very usefull to be used to force a field to load the available values again before displaying the value. Eg: if a list column is not showing the available values correctly because meanwhile the available values changed, then we can always force it to load it again."
 						}
 					]
 				},
@@ -15368,6 +15429,21 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							value: "MyWidgetResourceLib.FieldHandler.onLoadElementFieldsResourceCleanAllHashTagsLeft(this); return false;",
 							title: "onLoadElementFieldsResourceCleanAllHashTagsLeft",
 							description: "Callback to be called after a load or display handler get executed, to clean all the hashtags left from the html inside of the node element passed as argument."
+						},
+						{
+							value: "MyWidgetResourceLib.FieldHandler.displayFieldValue(this, value, opts, replacement_type, target_type, target_attribute); return false;",
+							title: "displayFieldValue",
+							description: "Display the value in the field. This is the default display handler."
+						},
+						{
+							value: "MyWidgetResourceLib.FieldHandler.loadAndDisplayFieldValue(this, value, opts, replacement_type, target_type, target_attribute); return false;",
+							title: "loadAndDisplayFieldValue",
+							description: "Load the resource of the field and then display the value in the field. This is very usefull to be used to force a field to load the available values again before displaying the value."
+						},
+						{
+							value: "MyWidgetResourceLib.FieldHandler.loadAndDisplayFieldValueIfNumeric(this, value, opts, replacement_type, target_type, target_attribute); return false;",
+							title: "loadAndDisplayFieldValueIfNumeric",
+							description: "Load the resource of the field if the value is numeric and then display the value in the field. This is very usefull to be used to force a field to load the available values again before displaying the value. Eg: if a list column is not showing the available values correctly because meanwhile the available values changed, then we can always force it to load it again."
 						}
 					]
 				},
@@ -15529,6 +15605,21 @@ function LayoutUIEditorWidgetResource(ui_creator) {
 							value: "MyWidgetResourceLib.FieldHandler.onLoadElementFieldsResourceCleanAllHashTagsLeft(this); return false;",
 							title: "onLoadElementFieldsResourceCleanAllHashTagsLeft",
 							description: "Callback to be called after a load or display handler get executed, to clean all the hashtags left from the html inside of the node element passed as argument."
+						},
+						{
+							value: "MyWidgetResourceLib.FieldHandler.displayFieldValue(this, value, opts, replacement_type, target_type, target_attribute); return false;",
+							title: "displayFieldValue",
+							description: "Display the value in the field. This is the default display handler."
+						},
+						{
+							value: "MyWidgetResourceLib.FieldHandler.loadAndDisplayFieldValue(this, value, opts, replacement_type, target_type, target_attribute); return false;",
+							title: "loadAndDisplayFieldValue",
+							description: "Load the resource of the field and then display the value in the field. This is very usefull to be used to force a field to load the available values again before displaying the value."
+						},
+						{
+							value: "MyWidgetResourceLib.FieldHandler.loadAndDisplayFieldValueIfNumeric(this, value, opts, replacement_type, target_type, target_attribute); return false;",
+							title: "loadAndDisplayFieldValueIfNumeric",
+							description: "Load the resource of the field if the value is numeric and then display the value in the field. This is very usefull to be used to force a field to load the available values again before displaying the value. Eg: if a list column is not showing the available values correctly because meanwhile the available values changed, then we can always force it to load it again."
 						}
 					]
 				}
