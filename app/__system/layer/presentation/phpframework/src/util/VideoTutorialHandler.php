@@ -733,10 +733,30 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 				"pages" => array("admin/index", "admin/admin_home", "admin/admin_home_project", "admin/choose_available_project"), //this is used in the TourGuideUIHandler
 			),
 			"38_create_stock_manager" => array(
-				"title" => "Create a Stock Manager Dashboard",
-				"description" => "Discover how to build a stock management dashboard from scratch — creating database tables, installing templates, and designing the UI — all with simple drag & drop.",
+				"title" => "Create a complete Stock Manager from scratch",
+				"description" => "Discover how to build a complete stock management software from scratch - creating database tables, installing templates, and designing the UI.<br/>
+				<br/>
+This tutorial is composed by the following lessons:
+<ul>
+	<li>- <a href='https://youtu.be/-iywg0oqrAE?si=MIfBIFwHXr8NWRPC' target='youtube'>Lesson 1: Overviewing the data-model in a spreadsheet</a></li>
+	<li>- <a href='https://youtu.be/K8Eqi1DZJpo?si=2zupcCxX9r8nU33y' target='youtube'>Lesson 2: Creating the DB structure</a></li>
+	<li>- <a href='https://youtu.be/rOWjshrHFY8?si=tPvpXJo16_ICLKvU' target='youtube'>Lesson 3: Creating user interface automatically for DB structure</a></li>
+	<li>- <a href='https://youtu.be/2wyUfzY0ulA?si=ODHKnMraB4f883NR' target='youtube'>Lesson 4: Creating page to manage a purchase and its products</a></li>
+	<li>- <a href='https://youtu.be/RXC3lzp3i0k?si=WbT5PrUool422Xvp' target='youtube'>Lesson 5: Changing the purchase editing page with a single form</a></li>
+	<li>- <a href='https://youtu.be/WJ5aTZnNN2I?si=zThgBOfu5XxfzdyS' target='youtube'>Lesson 6: Creating a page to manage the products of a sale</a></li>
+	<li>- <a href='https://youtu.be/ffsjM1BT3PY?si=2BEGipkeQsYbh3ci' target='youtube'>Lesson 7: Listing product batches and auto-update some fields</a></li>
+	<li>- <a href='https://youtu.be/ezV_YF-yMzk?si=wk4MiAuk1xTRgEtx' target='youtube'>Lesson 8: Auto-updating some product fields</a></li>
+	<li>- <a href='https://youtu.be/iAcmbX1P8Qw?si=QFbLfSpGuEklH4Oe' target='youtube'>Lesson 9: Creating Notifications</a></li>
+	<li>- <a href='https://youtu.be/IpvHfP2__rk?si=SEyoSSJMkxKJohqF' target='youtube'>Lesson 10: Creating reports in spreadsheet format</a></li>
+	<li>- <a href='https://youtu.be/k_y1SB72upQ?si=5bMt4kZhztgPV7n7' target='youtube'>Lesson 11: Creating reports in PDF format</a></li>
+	<li>- <a href='https://youtu.be/mmsN860z46I?si=0725rg_PiZK8Gwrh' target='youtube'>Lesson 12: Displaying SQL query and download it into a report</a></li>
+	<li>- <a href='https://youtu.be/-erI6VM_uqI?si=j5PJB2sjC63QlGSO' target='youtube'>Lesson 13: Adding active/inactive status to products</a></li>
+	<li>- <a href='https://youtu.be/4A2vB09P1RM?si=avy_Hl10reA8wg1M' target='youtube'>Lesson 14: Adding authentication to your pages</a></li>
+	<li>- <a href='https://youtu.be/fBo8I2EDbVw?si=BVXJ74h-7gbkxrJq' target='youtube'>Lesson 15: Allowing multi-level categories within categories</a></li>
+</ul>",
 				"image" => "",
-				"video" => "https://www.youtube.com/embed/jROPN8dMMjs", //create_stock_manager.webm
+				"video" => "https://www.youtube.com/embed/videoseries?si=_vOXV94CaJX_Q3qN&amp;list=PLqnlfrS34juvmf4eueUMN1Av5QpWCK2wO", //create_stock_manager.webm
+				"pages" => array("admin/index", "admin/admin_home", "admin/admin_home_project", "admin/choose_available_project"), //this is used in the TourGuideUIHandler
 			),
 		);
 	}
@@ -1977,10 +1997,30 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 				"video" => "https://www.youtube.com/embed/oM3oZFO4Ypc", //integrate_with_laravel_projects.webm
 			),
 			"12_create_stock_manager" => array(
-				"title" => "Create a Stock Manager Dashboard",
-				"description" => "Discover how to build a stock management dashboard from scratch — creating database tables, installing templates, and designing the UI — all with simple drag & drop.",
+				"title" => "Create a complete Stock Manager from scratch",
+				"description" => "Discover how to build a complete stock management software from scratch - creating database tables, installing templates, and designing the UI.<br/>
+				<br/>
+This tutorial is composed by the following lessons:
+<ul>
+	<li>- <a href='https://youtu.be/-iywg0oqrAE?si=MIfBIFwHXr8NWRPC' target='youtube'>Lesson 1: Overviewing the data-model in a spreadsheet</a></li>
+	<li>- <a href='https://youtu.be/K8Eqi1DZJpo?si=2zupcCxX9r8nU33y' target='youtube'>Lesson 2: Creating the DB structure</a></li>
+	<li>- <a href='https://youtu.be/rOWjshrHFY8?si=tPvpXJo16_ICLKvU' target='youtube'>Lesson 3: Creating user interface automatically for DB structure</a></li>
+	<li>- <a href='https://youtu.be/2wyUfzY0ulA?si=ODHKnMraB4f883NR' target='youtube'>Lesson 4: Creating page to manage a purchase and its products</a></li>
+	<li>- <a href='https://youtu.be/RXC3lzp3i0k?si=WbT5PrUool422Xvp' target='youtube'>Lesson 5: Changing the purchase editing page with a single form</a></li>
+	<li>- <a href='https://youtu.be/WJ5aTZnNN2I?si=zThgBOfu5XxfzdyS' target='youtube'>Lesson 6: Creating a page to manage the products of a sale</a></li>
+	<li>- <a href='https://youtu.be/ffsjM1BT3PY?si=2BEGipkeQsYbh3ci' target='youtube'>Lesson 7: Listing product batches and auto-update some fields</a></li>
+	<li>- <a href='https://youtu.be/ezV_YF-yMzk?si=wk4MiAuk1xTRgEtx' target='youtube'>Lesson 8: Auto-updating some product fields</a></li>
+	<li>- <a href='https://youtu.be/iAcmbX1P8Qw?si=QFbLfSpGuEklH4Oe' target='youtube'>Lesson 9: Creating Notifications</a></li>
+	<li>- <a href='https://youtu.be/IpvHfP2__rk?si=SEyoSSJMkxKJohqF' target='youtube'>Lesson 10: Creating reports in spreadsheet format</a></li>
+	<li>- <a href='https://youtu.be/k_y1SB72upQ?si=5bMt4kZhztgPV7n7' target='youtube'>Lesson 11: Creating reports in PDF format</a></li>
+	<li>- <a href='https://youtu.be/mmsN860z46I?si=0725rg_PiZK8Gwrh' target='youtube'>Lesson 12: Displaying SQL query and download it into a report</a></li>
+	<li>- <a href='https://youtu.be/-erI6VM_uqI?si=j5PJB2sjC63QlGSO' target='youtube'>Lesson 13: Adding active/inactive status to products</a></li>
+	<li>- <a href='https://youtu.be/4A2vB09P1RM?si=avy_Hl10reA8wg1M' target='youtube'>Lesson 14: Adding authentication to your pages</a></li>
+	<li>- <a href='https://youtu.be/fBo8I2EDbVw?si=BVXJ74h-7gbkxrJq' target='youtube'>Lesson 15: Allowing multi-level categories within categories</a></li>
+</ul>",
 				"image" => "",
-				"video" => "https://www.youtube.com/embed/jROPN8dMMjs", //create_stock_manager.webm
+				"video" => "https://www.youtube.com/embed/videoseries?si=_vOXV94CaJX_Q3qN&amp;list=PLqnlfrS34juvmf4eueUMN1Av5QpWCK2wO", //create_stock_manager.webm
+				"pages" => array("admin/index", "admin/admin_home", "admin/admin_home_project", "admin/choose_available_project"), //this is used in the TourGuideUIHandler
 			),
 			
 			/*"install_final_app" => array(
