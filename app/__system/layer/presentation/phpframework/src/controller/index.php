@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 include $EVC->getConfigPath("config");
 checkLicenceProjects($EVC, $user_global_variables_file_path, $user_beans_folder_path);
 include $EVC->getUtilPath("sanitize_html_in_post_request", $EVC->getCommonProjectName());

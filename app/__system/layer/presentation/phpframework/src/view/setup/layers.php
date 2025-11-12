@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 include $EVC->getViewPath("/layer/diagram");
 
 $confirm_msg = $diagram_already_exists ? "If you added new DataBases in this diagram, you can have some issues in the future, because when you did the installation, there were some tables that were created automatically, which will not be created in the new DataBases, this is, tables from installed Modules and maybe from the CMS authentication system...\\n\\nDo you still wish to continue?" : "We will save this workflow automatically. Do you wish to continue?";

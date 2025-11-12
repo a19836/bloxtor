@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 var blocks_handler_source_codes = {};
 var page_blocks_join_points_htmls = {};
 var page_blocks_join_points_htmls_loading = {};

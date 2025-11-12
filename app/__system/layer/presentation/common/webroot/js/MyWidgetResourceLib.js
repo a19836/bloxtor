@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 //default vars from server
 //window.public_user_type_id = 1; //This is set by default by the system when we load a page.
 //window.logged_user_type_ids = [...]; //This is set by default by the system when we load a page.

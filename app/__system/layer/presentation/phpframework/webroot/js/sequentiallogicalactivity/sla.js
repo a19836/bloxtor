@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 var cached_data_for_variables_in_workflow = {};
 var update_sla_programming_task_variables_from_sla_groups = true;
 var update_sla_programming_task_variables_from_workflow = false;

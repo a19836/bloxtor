@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 //This file is called directly in some wordpress files, so we need to create the get_lib and normalize_windows_path_to_linux functions
 if (!function_exists("normalize_windows_path_to_linux")) {
 	function normalize_windows_path_to_linux($path) { //This function will be used everytime that we use the php code: __FILE__ and __DIR__

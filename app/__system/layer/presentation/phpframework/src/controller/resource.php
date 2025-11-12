@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 define("PROJECTS_CHECKED", 123); //otherwise the system will think that the user hacked the licence. This must be here, otherwise when the code check for the PROJECTS_CHECKED variable, will not find it and proceed to purge the __system folder and others...
 
 include $EVC->getConfigPath("config");

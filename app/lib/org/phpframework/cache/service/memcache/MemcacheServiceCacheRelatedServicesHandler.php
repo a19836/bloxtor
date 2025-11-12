@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 include_once get_lib("org.phpframework.cache.CacheHandlerUtil");
 include_once get_lib("org.phpframework.cache.service.ServiceCacheRelatedServicesHandler");
 
@@ -206,7 +213,7 @@ class MemcacheServiceCacheRelatedServicesHandler extends ServiceCacheRelatedServ
 			
 			if ($this->CacheHandler->getMemcacheHandler()->nsSet($ns, self::MEMCACHE_KEY_NAMES_WITH_THE_OTHER_MEMCACHE_KEYS_FILE_NAME, $cont)) {
 				$arr = array($key => true);
-				$cont = CacheHandlerUtil:serializeContent($arr);
+				$cont = CacheHandlerUtil::serializeContent($arr);
 				
 				//echo "<br>$ns, $new_file_name";
 				if ($this->CacheHandler->getMemcacheHandler()->nsSet($ns, $new_file_name, $cont)) {

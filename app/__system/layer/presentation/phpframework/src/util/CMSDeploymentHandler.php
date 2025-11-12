@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 include_once get_lib("org.phpframework.compression.ZipHandler");
 include_once get_lib("org.phpframework.util.web.SSHHandler");
 include_once get_lib("org.phpframework.workflow.WorkFlowTaskHandler");
@@ -2220,9 +2227,15 @@ if (\$perms)
 if (!file_exists(\$installation_folder_path . \".htaccess\") && !rename(\$deploying_folder_path . \"phpframework/.htaccess\", \$installation_folder_path . \".htaccess\"))
 	exitScript(\"Error: Could not move '\$deploying_folder_path/phpframework/.htaccess' to '\$installation_folder_path/.htaccess'!\");
 
-//add \$installation_folder_path/LICENSE.md if not exists
-if (!file_exists(\$installation_folder_path . \"LICENSE.md\") && !rename(\$deploying_folder_path . \"phpframework/LICENSE.md\", \$installation_folder_path . \"LICENSE.md\"))
-	exitScript(\"Error: Could not move '\$deploying_folder_path/phpframework/LICENSE.md' to '\$installation_folder_path/LICENSE.md'!\");
+//add \$installation_folder_path/LICENSE.md and other .md and .txt files, if not exists
+\$files_to_copy = array_diff(scandir(\$deploying_folder_path . \"phpframework/\"), array('..', '.'));
+
+foreach (\$files_to_copy as \$file_to_copy) {
+	\$extension = strtolower(pathinfo(\$file_to_copy, PATHINFO_EXTENSION));
+	
+	if ((\$extension == \"md\" || \$extension == \"txt\") && !rename(\$deploying_folder_path . \"phpframework/\" . \$file_to_copy, \$installation_folder_path . \$file_to_copy))
+		exitScript(\"Error: Could not move '\$deploying_folder_path/phpframework/\$file_to_copy' to '\$installation_folder_path/\$file_to_copy'!\");
+}
 
 //remove old folder in case it exists. It should already have been removed via the CMSDeploymentHandler::fushCacheOnRemoteServer method, but just in case do it again
 removeFile(\$installation_folder_path . \"app_old\"); 

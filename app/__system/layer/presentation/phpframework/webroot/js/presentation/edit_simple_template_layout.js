@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 window.onload = function() { //for some reason the load is getting called multiple times, so we need to use the is_inited var to avoid calling multiple times the onLoadEditSimpleTemplateLayout function. I think it's because the ajax requests of the simulate html for each region block.
 	onLoadEditSimpleTemplateLayout();
 };

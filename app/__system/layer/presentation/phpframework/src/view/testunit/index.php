@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 include $EVC->getUtilPath("WorkFlowPresentationHandler");
 
 $choose_test_units_files_from_file_manager_url = $project_url_prefix . "admin/get_sub_files?item_type=test_unit&path=#path#";

@@ -1,6 +1,8 @@
 /*
- * Copyright (c) 2007 PHPMyFrameWork - Joao Paulo Lopes Pinto -- http://jplpinto.com
- * The use of this code must comply with the Bloxtor framework license.
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
  */
 
 /*Go to line 535 of the file jquery.jsPlumb-1.3.16-all.js and jquery.jsPlumb-1.3.16-all-min.js and change the _getOffset function to the folowing, because has a bug.

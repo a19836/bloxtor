@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 $ft = str_replace("edit_file_", "", $file_type);
 $path_extra = hash('crc32b', "$bean_file_name/$bean_name/$path/$class_id/" . ($ft == "class_method" ? $method_id : $function_id) );
 $get_workflow_tasks_id = "business_logic_workflow&path_extra=_$path_extra";

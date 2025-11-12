@@ -1,1 +1,6 @@
-a:1:{i:0;a:1:{s:7:"methods";a:1:{s:16:"print_code_trace";a:14:{s:4:"name";s:16:"print_code_trace";s:16:"start_line_index";i:2;s:17:"start_token_index";i:1;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:22:"start_args_token_index";i:4;s:20:"end_args_token_index";i:5;s:25:"start_brackets_line_index";i:2;s:26:"start_brackets_token_index";i:7;s:23:"end_brackets_line_index";i:39;s:24:"end_brackets_token_index";i:415;s:14:"end_line_index";i:39;s:15:"end_token_index";i:415;}}}}
+a:1:{i:0;a:1:{s:7:"methods";a:1:{s:16:"print_code_trace";a:19:{s:4:"name";s:16:"print_code_trace";s:16:"start_line_index";i:9;s:17:"start_token_index";i:3;s:4:"type";s:6:"public";s:8:"abstract";b:0;s:6:"static";b:0;s:8:"comments";a:1:{i:0;s:258:"/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */";}s:25:"start_comments_line_index";i:2;s:26:"start_comments_token_index";i:1;s:23:"end_comments_line_index";i:2;s:24:"end_comments_token_index";i:1;s:22:"start_args_token_index";i:6;s:20:"end_args_token_index";i:7;s:25:"start_brackets_line_index";i:9;s:26:"start_brackets_token_index";i:9;s:23:"end_brackets_line_index";i:46;s:24:"end_brackets_token_index";i:417;s:14:"end_line_index";i:46;s:15:"end_token_index";i:417;}}}}

@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 include_once get_lib("org.phpframework.layer.presentation.cms.module.ICMSModuleInstallationHandler");
 include_once get_lib("org.phpframework.layer.presentation.cms.module.CMSModuleUtil");
 include_once get_lib("org.phpframework.layer.presentation.cms.module.CMSModuleInstallationBLNamespaceHandler");
@@ -128,6 +135,9 @@ class CMSModuleInstallationHandler implements ICMSModuleInstallationHandler {
 				
 				if ($status && file_exists($this->unzipped_module_path . "/CMSModuleInstallationHandlerImpl.php") && !$this->copyUnzippedFileToSystemPresentationSettingsModuleFolder("CMSModuleInstallationHandlerImpl.php"))
 					$status = false;
+				
+				if ($status && file_exists($this->unzipped_module_path . "/LICENSE.md") && !$this->copyUnzippedFileToSystemPresentationSettingsModuleFolder("LICENSE.md"))
+					$status = false;
 			}
 			
 			if (is_dir($this->unzipped_module_path . "/presentation")) {
@@ -141,6 +151,9 @@ class CMSModuleInstallationHandler implements ICMSModuleInstallationHandler {
 					if ($status && $this->presentation_webroot_module_paths && !CMSModuleUtil::copyFileToLayers("presentation/webroot", "", $this->unzipped_module_path, $this->presentation_webroot_module_paths))
 						$status = false;
 				}
+				
+				if ($status && file_exists($this->unzipped_module_path . "/LICENSE.md") && !$this->copyUnzippedFileToPresentationModuleFolder("LICENSE.md"))
+					$status = false;
 			}
 			
 			if (is_dir($this->unzipped_module_path . "/businesslogic") && $this->business_logic_module_paths) {

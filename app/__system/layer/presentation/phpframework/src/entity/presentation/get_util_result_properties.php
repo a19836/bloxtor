@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 //This file tries to find what are the possible attributes for the result object in a Resource Util class method. This is, based in a method name (like get, get, getAll, etc...), tries to read the inner code and get sql or business logic services or data-access rules or DB methods callls and get the correspondent table. From the table get the correspondent attributes which is probably the attributes of the returned object.
 
 include_once $EVC->getUtilPath("CodeResultGuesser");

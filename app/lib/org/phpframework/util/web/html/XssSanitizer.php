@@ -1,4 +1,11 @@
 <?php
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ */
+
 //Sanitize XSS (Cross-Site Scripting) Attacks
 //load external lib dynamically bc is a LGPL licence, which means our framework must work without this library also. This means if the user doesn't have this library installed or if he removes it, our code still needs to work.
 if (file_exists( get_lib("lib.vendor.xsssanitizer.src.Sanitizer") )) {
