@@ -435,6 +435,12 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/WgTCaDU9pCc", //report.webm
 			),
+			"8_create_pdf_reports" => array(
+				"title" => "Create PDF Reports",
+				"description" => "This video explains how to create PDF reports that contains records coming from database tables or third-parthy services.",
+				"image" => "",
+				"video" => "https://www.youtube.com/embed/k_y1SB72upQ", //stock_manager_11.webm
+			),
 			"9_understand_the_page_editor_in_detail" => array(
 				"title" => "Understand the Page Editor in detail",
 				"description" => "This video explains how to work in the Page Editor in detail and what are its key features...",
@@ -1484,6 +1490,12 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/WgTCaDU9pCc", //report.webm
 							),
+							"8_create_pdf_reports" => array(
+								"title" => "Create PDF Reports",
+								"description" => "This video explains how to create PDF reports that contains records coming from database tables or third-parthy services.",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/k_y1SB72upQ", //stock_manager_11.webm
+							),
 							"9_create_page_with_html_widgets_in_detail" => array(
 								"title" => "Create a page with HTML Widgets in detail",
 								"description" => "This video explains how to create a Page using Html Widgets to design your page layout and print some resources...",
@@ -1791,6 +1803,12 @@ Note that, in order to take advantage of the Artificial Intelligence features, y
 								"description" => "This video teaches how to create Excel reports in only a few minutes, based in meta-data from a Data-Base...",
 								"image" => "",
 								"video" => "https://www.youtube.com/embed/9h7vNkAZohQ",
+							),
+							"6_6_6_creation_of_pdf_reports" => array(
+								"title" => "Create PDF Reports - on Advanced Workspace",
+								"description" => "This video teaches how to create PDF reports in only a few minutes, based in meta-data from a Data-Base...",
+								"image" => "",
+								"video" => "https://www.youtube.com/embed/k_y1SB72upQ", //stock_manager_11.webm
 							),
 						),
 					),
