@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
+	<!-- (optional) Add Code Beautifier -->
+	<script language="javascript" type="text/javascript" src="../../../../common/vendor/mycodebeautifier/js/MyCodeBeautifier.js"></script>
+
+	<!-- (optional) Add Html/CSS/JS Beautify code -->
+	<script language="javascript" type="text/javascript" src="../../../../common/vendor/jsbeautify/js/lib/beautify.js"></script>
+	<script language="javascript" type="text/javascript" src="../../../../common/vendor/jsbeautify/js/lib/beautify-css.js"></script>
+	
+	<!-- Add MyHtmlBeautify code -->
+	<script language="javascript" type="text/javascript" src="MyHtmlBeautify.js"></script>
+	
+	<script>
+		var html = '<!DOCTYPE html><html><head></head><body><!-- &rarr; algo &larr; --><p style="text-align: center;"><span style="color: #bdc3c7;">&rarr; This is a full-featured editor demo. Please explore! &larr;</span></p><script>var x = "abc";</' + 'script><p style="text-align: center;">&nbsp;</p><h2 style="text-align: center;">TinyMCE provides a <span style="text-decoration: underline;">full-featured</span> rich text editing experience, and a featherweight download.</h2><p style="text-align: center;"><strong> <span style="font-size: 14pt;"> <span style="color: #7e8c8d; font-weight: 600;">No matter what you\'re building, TinyMCE has got you covered.</span> </span> </strong></p><p style="text-align: center;">&nbsp;</p><table style="border-collapse: collapse; width: 85%; margin-left: auto; margin-right: auto; border: 0;"><tbody><tr><td style="width: 25%; text-align: center; padding: 7px;"><span style="color: #95a5a6;">50+ Plugins</span></td><td style="width: 25%; text-align: center; padding: 7px;"><span style="color: #95a5a6;">Premium Support</span></td><td style="width: 25%; text-align: center; padding: 7px;"><span style="color: #95a5a6;">Custom Skins</span></td><td style="width: 25%; text-align: center; padding: 7px;"><span style="color: #95a5a6;">Full API Access</span></td></tr></tbody></table><br/><br/><br/><br/><style>.a {width:100%;height:80px;color:red;background:#ff0000;}</style><script>function foo() {return 123;} foo();</' + 'script>test</body></html>';
+	</script>
+</head>
+<body>
+	<h3>Original html</h3>
+	<textarea id="ta_1" style="width:100%; height:100px;"></textarea>
+	<script>
+		document.getElementById("ta_1").value = html;
+	</script>
+	<br/><br/>
+	
+	<h3>Pretty html</h3>
+	<textarea id="ta_2" style="width:100%; height:200px;"></textarea>
+	<script>
+		document.getElementById("ta_2").value = MyHtmlBeautify.beautify(html);
+	</script>
+	<br/><br/>
+	
+	<h3>Script tag inner content</h3>
+	<textarea id="ta_3" style="width:100%; height:40px;"></textarea>
+	<textarea id="ta_4" style="width:100%; height:40px;"></textarea>
+	<script>
+		//MyHtmlBeautify.getTagContent(html, starting_index, tag_name): gets the content inside of a html tag
+		//eg: MyHtmlBeautify.getTagContent('<html><head><style>.a{color:red;}</style></head></html>', 10, "style")
+		var res1 = MyHtmlBeautify.getTagContent(html, 0, "script");
+		var res2 = MyHtmlBeautify.getTagContent(html, 1000, "script");
+		document.getElementById("ta_3").value = res1[0];
+		document.getElementById("ta_4").value = res2[0];
+	</script>
+	<br/><br/>
+	
+	<h3>Script tag outer content</h3>
+	<textarea id="ta_5" style="width:100%; height:20px;"></textarea>
+	<textarea id="ta_6" style="width:100%; height:20px;"></textarea>
+	<script>
+		var res3 = MyHtmlBeautify.getTagContent(html, 0, "script");
+		var res4 = MyHtmlBeautify.getTagContent(html, 1000, "script");
+		document.getElementById("ta_5").value = res3[2];
+		document.getElementById("ta_6").value = res4[2];
+	</script>
+	<br/><br/>
+	
+	<h3>Get html tag</h3>
+	<textarea id="ta_7" style="width:100%; height:20px;"></textarea>
+	<script>
+		// MyHtmlBeautify.getTagHtml(html, starting_index, prefix): returns the html tag starting at the position starting_index
+		//eg: MyHtmlBeautify.getTagHtml(html, 4)
+		var html_element_tag = MyHtmlBeautify.getTagHtml('<html><body><div x=y w="as" foo=123>some other inner html</div></body></html>', 12);
+		document.getElementById("ta_7").value = html_element_tag[0];
+	</script>
+	<br/><br/>
+	
+	<h3>Get html tag name</h3>
+	<textarea id="ta_8" style="width:100%; height:20px;"></textarea>
+	<script>
+		// MyHtmlBeautify.getTagName(html, starting_index): returns the html tag name starting at the position starting_index
+		//eg: MyHtmlBeautify.getTagName(html, 4)
+		var html_element_tag_name = MyHtmlBeautify.getTagName('<html><body><div x=y w="as" foo=123>some other inner html</div></body></html>', 12);
+		document.getElementById("ta_8").value = html_element_tag_name;
+		
+		//eg:
+		//var html_element_tag_name = MyHtmlBeautify.getTagName(html_element_tag[0], 0);
+		//document.getElementById("ta_8").value = html_element_tag_name;
+	</script>
+	<br/><br/>
+	
+	<h3>Get attributes object from an html tag</h3>
+	<textarea id="ta_9" style="width:100%; height:100px;"></textarea>
+	<script>
+		//MyHtmlBeautify.getAttributes(html, starting_index, delimiter): returns an object with the attributes, something like: {name: 'yu', cols: '12'}
+		//eg: MyHtmlBeautify.getAttributes('<div x=y w="as" foo==="sdf""as" ass" bar="as""as"></div>', 4, ">")
+		//eg: MyHtmlBeautify.getAttributes(' x=y w="as" foo==="sdf""as" ass" bar="as""as"')
+		//eg: MyHtmlBeautify.getAttributes('<div x=y w="as" foo==="sdf""as" ass" bar="as""as" <?php echo "x=12"; ?> x=<?php echo "x=12"; ?> x=12></div>', 4, ">");
+		var attributes_obj = MyHtmlBeautify.getAttributes(html_element_tag[0], html_element_tag_name.length + 1, '>');
+		document.getElementById("ta_9").value = JSON.stringify(attributes_obj, null, 2);
+	</script>
+	<br/><br/>
+	
+	<h3>Get attributes html content</h3>
+	<textarea id="ta_10" style="width:100%; height:20px;"></textarea>
+	<script>
+		//MyHtmlBeautify.getAttributesContent(html, starting_index, delimiter): returns an object with the attributes, something like: {name: 'yu', cols: '12'}
+		//eg: MyHtmlBeautify.getAttributesContent('<div x=y w="as" foo==="sdf""as" ass" bar="as""as"></div>', 4, ">")
+		var attributes_html = MyHtmlBeautify.getAttributesContent(html_element_tag[0], html_element_tag_name.length + 1, '>');
+		document.getElementById("ta_10").value = attributes_html[0];
+	</script>
+	<br/><br/>
+	
+	<h3>Some other functions</h3>
+	<ul>
+		<li>Gets the tag names for tags that don't have content:
+			<pre>MyHtmlBeautify.single_html_tags</pre>
+		</li>
+		<li>Checks if a tag is a single tag, this is a tag that don't have content
+			<pre>var is_simple_html_tag = MyHtmlBeautify.isSingleHtmlTag('&lt;input name="aaa" /&gt;');</pre>
+			<pre>var is_simple_html_tag = MyHtmlBeautify.isSingleHtmlTag('&lt;br&gt;');</pre>
+		</li>
+		<li>To get the content inside of: script, style and textarea nodes
+			<pre>var tag_html = MyHtmlBeautify.getNonParseInnerTagsNodeContent(html, 0, 'style');</pre>
+		</li>
+		<li>To get the text until exists any tag, this is, lets say in the html, you have a huge text and only after you have html tags again. In this case you may want to get the text until it finds the first html tag.
+			<pre>tag_html = MyHtmlBeautify.getTextContent(html, starting_index);</pre>
+		</li>
+		<li>Check if a character is escaped. This is very usefl when parsing attributes that contains quotes inside of values, this is, eg: '&lt;div name="abc\"def"&gt;&lt;/div&gt;', where the name is 'abc"def'.
+			<pre>//let's say you are inside of a loop:
+if (char == '"' && !MyHtmlBeautify.isCharEscaped(html, i))</pre>
+		</li>
+		<li>Check if a tag is a comment and continues loop to next tag
+			<pre>if (MyHtmlBeautify.isComment(html, i)) { //parse comment if exists
+	tag_html = MyHtmlBeautify.getComment(html, i);
+	i = tag_html[1];
+}
+else if (MyHtmlBeautify.isPHP(html, i)) { //parse php code if exists
+	tag_html = MyHtmlBeautify.getPHP(html, i);
+	i = tag_html[1];
+}
+else if (MyHtmlBeautify.isPTL(html, i)) { //parse ptl if exists
+	tag_html = MyHtmlBeautify.getPTL(html, i);
+	i = tag_html[1];
+}
+else if (!MyHtmlBeautify.isTagHtml(html, i)) { //check if html or ptl tag. This could be a simple text - supposedly this case should not happen.
+	tag_html = MyHtmlBeautify.getTextContent(html, i);
+	i = tag_html[1];
+}
+else { //check if html or ptl tag. This could be a simple text - supposedly this case should not happen.
+	tag_html = MyHtmlBeautify.getTagHtml(html, i);
+	i = tag_html[1];
+	
+	var tag_name = MyHtmlBeautify.getTagName(tag_html[0], 0);
+	var tag_name_lower = tag_name.toLowerCase();
+	var tag_attributes_str = MyHtmlBeautify.getAttributesContent(tag_html[0], tag_name.length + 1, '&gt;');
+	var tag_attributes_obj = MyHtmlBeautify.getAttributes(tag_html[0], tag_name.length + 1, '&gt;');
+	var tag_content = MyHtmlBeautify.getTagContent(tag_html[0], 0, tag_name);
+	
+	var is_tag_close = tag_html[0].substr(0, 2) == "&lt;/";
+	is_style = tag_name_lower == "style";
+	is_script = tag_name_lower == "script";
+	is_textarea = tag_name_lower == "textarea";
+	
+	if (!is_tag_close && (is_style || is_script || is_textarea))
+		tag_content = MyHtmlBeautify.getNonParseInnerTagsNodeContent(html, i, tag_name);
+							
+	...
+}</pre>
+		</li>
+	</ul>
+</body>
+</html>

@@ -759,7 +759,9 @@ This tutorial is composed by the following lessons:
 	<li>- <a href='https://youtu.be/mmsN860z46I?si=0725rg_PiZK8Gwrh' target='youtube'>Lesson 12: Displaying SQL query and download it into a report</a></li>
 	<li>- <a href='https://youtu.be/-erI6VM_uqI?si=j5PJB2sjC63QlGSO' target='youtube'>Lesson 13: Adding active/inactive status to products</a></li>
 	<li>- <a href='https://youtu.be/4A2vB09P1RM?si=avy_Hl10reA8wg1M' target='youtube'>Lesson 14: Adding authentication to your pages</a></li>
-	<li>- <a href='https://youtu.be/fBo8I2EDbVw?si=BVXJ74h-7gbkxrJq' target='youtube'>Lesson 15: Allowing multi-level categories within categories</a></li>
+	<li>- <a href='https://youtu.be/FU50lRz8JaQ?si=kZSSp3jgJGVflErS' target='youtube'>Lesson 15: Changing user module to list users with a search bar</a></li>
+	<li>- <a href='https://youtu.be/nW2FIdsGRqY?si=yZT3eJ4PILpT-2Qe' target='youtube'>Lesson 16: Showing, hiding and removing elements by conditions</a></li>
+	<li>- <a href='https://youtu.be/fBo8I2EDbVw?si=BVXJ74h-7gbkxrJq' target='youtube'>Lesson 17: Allowing multi-level categories within categories</a></li>
 </ul>",
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/videoseries?si=_vOXV94CaJX_Q3qN&amp;list=PLqnlfrS34juvmf4eueUMN1Av5QpWCK2wO", //create_stock_manager.webm
@@ -2023,7 +2025,9 @@ This tutorial is composed by the following lessons:
 	<li>- <a href='https://youtu.be/mmsN860z46I?si=0725rg_PiZK8Gwrh' target='youtube'>Lesson 12: Displaying SQL query and download it into a report</a></li>
 	<li>- <a href='https://youtu.be/-erI6VM_uqI?si=j5PJB2sjC63QlGSO' target='youtube'>Lesson 13: Adding active/inactive status to products</a></li>
 	<li>- <a href='https://youtu.be/4A2vB09P1RM?si=avy_Hl10reA8wg1M' target='youtube'>Lesson 14: Adding authentication to your pages</a></li>
-	<li>- <a href='https://youtu.be/fBo8I2EDbVw?si=BVXJ74h-7gbkxrJq' target='youtube'>Lesson 15: Allowing multi-level categories within categories</a></li>
+	<li>- <a href='https://youtu.be/FU50lRz8JaQ?si=kZSSp3jgJGVflErS' target='youtube'>Lesson 15: Changing user module to list users with a search bar</a></li>
+	<li>- <a href='https://youtu.be/nW2FIdsGRqY?si=yZT3eJ4PILpT-2Qe' target='youtube'>Lesson 16: Showing, hiding and removing elements by conditions</a></li>
+	<li>- <a href='https://youtu.be/fBo8I2EDbVw?si=BVXJ74h-7gbkxrJq' target='youtube'>Lesson 17: Allowing multi-level categories within categories</a></li>
 </ul>",
 				"image" => "",
 				"video" => "https://www.youtube.com/embed/videoseries?si=_vOXV94CaJX_Q3qN&amp;list=PLqnlfrS34juvmf4eueUMN1Av5QpWCK2wO", //create_stock_manager.webm

@@ -23,6 +23,10 @@
 	background:linear-gradient(180deg, #FFF 0%, #CCC 70%, #2C2D34 100%);
 }
 
+.featured_tutorials a {
+	color:var(--link-color);
+}
+
 /* HEADER */
 .featured_tutorials .featured_header {
 	margin-bottom:40px;

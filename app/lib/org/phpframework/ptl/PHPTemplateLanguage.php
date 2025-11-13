@@ -227,6 +227,8 @@ class PHPTemplateLanguage {
 	public function getCacheHandler() { return $this->CacheHandler; }
    
 	public function parseTemplate($template, $input_vars = false, $encoding = false) {
+		$html = null;
+		
 		try {
 			$ignore_undefined_vars_errors = !empty($GLOBALS["ignore_undefined_vars_errors"]);
 			

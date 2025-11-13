@@ -1,10 +1,9 @@
 <html>
 <head>
-	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
 	<script src="js/MyCodeBeautifier.js"></script>
 </head>
 <body>
-	<textarea class="textarea1" rows=20 cols=150>
+	<textarea class="textarea1" rows=20 style="width:100%;">
 <?php
 foo();
 $obj->bar();
@@ -131,11 +130,16 @@ self::preparePaging($data);
 return $this->getBroker()->callSelect('test.service', 'get_price_types', $data);
 ?>
 	</textarea>
-	<textarea class="textarea2" rows=20 cols=150></textarea>
-<script>
-var code = $(".textarea1").val();
-var new_code = CodeBeautifier.prettyPrint(code);
-$(".textarea2").val(new_code);
-</script>
+	<textarea class="textarea2" rows=20 style="width:100%;"></textarea>
+	<button onClick="beautify()">Beautify</button>
+	<script>
+		function beautify() {
+			var code = document.querySelector(".textarea1").value;
+			var new_code = MyCodeBeautifier.prettyPrint(code);
+			document.querySelector(".textarea2").value = new_code;
+		}
+		
+		beautify();
+	</script>
 </body>
 </html>
