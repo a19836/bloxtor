@@ -1,0 +1,173 @@
+<html>
+<head>
+	<link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+	
+	<script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+	<script language="javascript" type="text/javascript" src="js/statusmessage.js"></script>
+	
+	<style>
+		body {
+			font-family:arial;
+		}
+		
+		.status_message .status_message_info,
+		  .status_message .status_message_error {
+			position:relative;  
+		}
+		.status_message span.close_message {
+			margin-top:1px !important;
+			background:none !important;
+			text-indent:0 !important;
+			position: absolute;
+			right: -5px;
+			top: 0;
+		}
+		.status_message span.close_message:before {
+			content:"\00D7";
+			font-weight:bold;
+			font-size:20px;
+			margin-right:10px;
+		}
+		
+		.status_message.top_messages {
+			position:fixed;
+			top:0;
+			left:0;
+			right:0;
+			bottom:auto;
+			padding-top:0;
+		}
+		
+		.status_message.centered_messages:not(:empty) {
+			position:fixed;
+			top:0;
+			left:0;
+			right:0;
+			bottom:0;
+			background:rgba(0, 0, 0, .5);
+			/*display:flex;
+			flex-direction:column;
+			justify-content:center;
+			align-items:center;*/
+			z-index:99999 !important;
+			overflow-y:auto;
+			overflow-y:overlay;
+			overflow-wrap:break-word;
+		}
+		.status_message.centered_messages .status_message_info,
+		  .status_message.centered_messages .status_message_error {
+			width:auto !important;
+			min-width:200px;
+			max-width:80vw;
+			min-height:105px !important;
+			max-height:80vh !important;
+			margin:20px auto;
+			padding:0 15px 15px;
+			display:block;
+			box-sizing:border-box;
+			overflow-x:hidden;
+			overflow-y:auto;
+			overflow-y:overlay;
+			position:relative;
+			border:1px solid #83889E;
+			border-radius:5px;
+			background:#FFF !important;
+			color:#000;
+			font-size:13px;
+			text-align:left;
+		}
+		.status_message.centered_messages .status_message_info {
+			background:#198754;
+		}
+		.status_message.centered_messages .status_message_error {
+			background:#dc3545;
+		}
+		.status_message.centered_messages .status_message_info:only-child,
+		  .centered_messages .status_message_error:only-child {
+			display:inline-block;
+			margin-top:40vh;
+		}
+		.status_message.centered_messages .status_message_info::before,
+		  .centered_messages .status_message_error::before {
+			display:block;
+			margin:0 -15px 15px;
+			padding:15px;
+			color:#FFF;
+			font-weight:bold;
+			text-align:left;
+		}
+		.status_message.centered_messages .status_message_info::before {
+			content:"Info";
+			background:#198754;
+		}
+		.status_message.centered_messages .status_message_error::before {
+			content:"Error";
+			background:#dc3545;
+		}
+		.status_message.centered_messages .status_message_info span.close_message, 
+		  .status_message.centered_messages .status_message_error span.close_message {
+			width:20px !important;
+			height:auto !important;
+			margin-right:0 !important;
+			position:absolute;
+			top:15px;
+			right:10px;
+			display:inline-block !important;
+			color:#FFF !important;
+		}
+	</style>
+</head>
+<body>
+	<h1>Simple examples:</h1>
+	<div>
+		<button onClick="showMessage()">Show bottom message with default timeout (5s)</button>
+		<br/>
+		<br/>
+		<button onClick="showError()">Show bottom error with default timeout (5s)</button>
+		<br/>
+		<br/>
+		<button onClick="showBottomMessageWithTimeout()">Show bottom message with timeout 2s</button>
+		<br/>
+		<br/>
+		<button onClick="showTopErrorWithTimeout()">Show top error with timeout 2s</button>
+		<br/>
+		<br/>
+		<button onClick="showCenteredMessageWithTimeout()">Show centered message with timeout 2s</button>
+		<br/>
+		<br/>
+		<button onClick="showCenteredError()">Show centered error with default timeout (5s)</button>
+	</div>
+	
+	<script>
+	function showMessage() {
+		StatusMessageHandler.showMessage("Info Message");
+	}
+	function showError() {
+		StatusMessageHandler.showError("Error Message");
+	}
+	function showBottomMessageWithTimeout() {
+		StatusMessageHandler.showMessage("Bottom Message with timeout", "", "", 2000);
+	}
+	function showTopErrorWithTimeout() {
+		StatusMessageHandler.showError("Bottom Message with timeout", "", "top_messages", 2000);
+	}
+	function showCenteredMessageWithTimeout() {
+		StatusMessageHandler.showMessage("Bottom Message with timeout", "", "centered_messages", 2000);
+	}
+	function showCenteredError() {
+		var elm = StatusMessageHandler.showError("Bottom Message with timeout", "", "centered_messages");
+		var p = elm.parent().closest(".status_message");
+		
+		p.click(function(event) {
+			event && typeof event.stopPropagation == "function" && event.stopPropagation(); //avoids to call the onClick event from message_html_obj
+			
+			var timeout_id = p.data("timeout_id");
+			StatusMessageHandler.removeMessage( elm.children().first() );
+			
+			if (timeout_id)
+				clearTimeout(timeout_id);
+		});
+	}
+	</script>
+</body>
+</html>

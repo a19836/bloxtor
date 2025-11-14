@@ -3434,7 +3434,7 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 					//show popup
 					MyFancyPopupClone.init({
 						elementToShow : selected_connection_properties,
-						onOpen() {
+						onOpen : function() {
 							if (resizable_connection_properties) {
 								WF.Property.resizePropertiesPanel(selected_connection_properties, selected_connection_properties.outerHeight());
 							}
@@ -3670,7 +3670,7 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 						//show popup
 						MyFancyPopupClone.init({
 							elementToShow : selected_task_properties,
-							onOpen() {
+							onOpen : function() {
 								if (resizable_task_properties)
 									WF.Property.resizePropertiesPanel(selected_task_properties, selected_task_properties.outerHeight());
 							},

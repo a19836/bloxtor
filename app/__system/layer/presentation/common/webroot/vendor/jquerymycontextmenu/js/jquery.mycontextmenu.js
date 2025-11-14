@@ -18,7 +18,7 @@ jQuery.fn.addcontextmenu = function(context_menu_id, options) {
 function MyContextMenuClass() {
 	var me = this;
 	var right_arrow_html = '<div class="right_arrow"></div>'; //html for the right arrow
-	var context_menu_offsets = [1, -1]; //additional mouse event offsets to position the context menu
+	var context_menu_offset = [1, -1]; //additional mouse event offset to position the context menu
 	var built_context_menu_ids = []; //ids of the context menus that were already built
 	var selected_event = null; //current mouse click event
 	var ff_shadows_offset = 40; //40 is to account for shadows in FF
@@ -37,12 +37,12 @@ function MyContextMenuClass() {
 		right_arrow_html = html;
 	};
 	
-	me.getContextMenuOffsets = function() {
-		return context_menu_offsets;
+	me.getContextMenuOffset = function() {
+		return context_menu_offset;
 	};
 	
-	me.setContextMenuOffsets = function(offsets) {
-		context_menu_offsets = offsets;
+	me.setContextMenuOffset = function(offset) {
+		context_menu_offset = offset;
 	};
 	
 	me.getBuildContextMenuIds = function() {
@@ -260,8 +260,8 @@ function MyContextMenuClass() {
 		var ul_dimensions = ul.data("dimensions");
 		
 		if (is_main_context_menu) { //if main context menu DIV
-			var x = ev.pageX + context_menu_offsets[0]; //x pos of main context menu UL
-			var y = ev.pageY + context_menu_offsets[1];
+			var x = ev.pageX + context_menu_offset[0]; //x pos of main context menu UL
+			var y = ev.pageY + context_menu_offset[1];
 			
 			//if not enough horizontal room to the ridge of the cursor
 			if (x + ul_dimensions.width > doc_in_right_edge)

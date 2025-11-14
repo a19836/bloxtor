@@ -3,21 +3,78 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	
+	<!-- Add jquery lib -->
 	<script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+	
+	<!-- (Optional) Add jquery ui lib -->
 	<script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" type="text/css" media="all" />
 	
-	<!-- Fancy LighBox -->
+	<!-- Add Fancy LighBox lib -->
 	<link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" media="screen, projection" />
-	<script language="javascript" type="text/javascript" src="js/jquery.fancybox.js"></script>
+	<script language="javascript" type="text/javascript" src="js/jquery.myfancybox.js"></script>
+	
+	<style>
+	a {margin-bottom:10px; display:block;}
+	.myfancypopup.yellow { background:yellow; }
+	</style>
+	<script>
+	var MyFancyPopup2 = null;
+	
+	function showPopup1() {
+		MyFancyPopup.init({
+			elementToShow: $('#popup1')
+		});
+		MyFancyPopup.showPopup({
+			not_draggable: true
+		});
+	}
+	function showPopup2() {
+		MyFancyPopup.init({
+			elementToShow: $('#popup2')
+		});
+		MyFancyPopup.showPopup();
+	}
+	function showPopup3() {
+		if (!MyFancyPopup2) {
+			MyFancyPopup2 = new MyFancyPopupClass();
+			MyFancyPopup2.init({
+				elementToShow: $('#popup3'),
+				parentElement: $('section').first(),
+				type: "iframe",
+				url: "iframe.html",
+				refreshIframeOnOpen: true,
+				popupClass: "yellow",
+				onIframeOnLoad: function() {
+					MyFancyPopup.hideLoading();
+				}
+			});
+		}
+		
+		MyFancyPopup2.showPopup();
+	}
+	</script>
 </head>	
 <body>
-	<div id="selected_menu" class="myfancypopup">
-		<div class="title">TITLE HERE</div>
+	<div id="popup1" class="myfancypopup">
+		<div class="title">NOT Draggable Popup</div>
 		<p class="content">CONTENT HERE</p>
 	</div>
 	
-	<a href="#" onClick="MyFancyPopup.showPopup($('#selected_menu'));">CLICK HERE TO SEE POPUP</a>
+	<div id="popup2" class="myfancypopup">
+		<h1>Draggable Popup with inline iframe</h1>
+		<iframe src="iframe.html"></iframe>
+	</div>
+	
+	<section class="some_node">
+		<div id="popup3" class="myfancypopup">
+			<h1>Popup with auto iframe</h1>
+		</div>
+	</section>
+	
+	<a href="#" onClick="showPopup1();">CLICK HERE TO SEE POPUP 1</a>
+	<a href="#" onClick="showPopup2();">CLICK HERE TO SEE POPUP 2</a>
+	<a href="#" onClick="showPopup3();">CLICK HERE TO SEE POPUP 3</a>
 </body>
 </html>
 

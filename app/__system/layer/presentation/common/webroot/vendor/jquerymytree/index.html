@@ -3,1069 +3,150 @@
 	<link rel="stylesheet" href="css/style.min.css" type="text/css" charset="utf-8" />
 	<script language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 	<script language="javascript" type="text/javascript" src="js/mytree.js"></script>
+	
+	<style>
+	.folder {
+		background-image: url("img/folder.png") !important;
+	}
+	.service {
+		background-image: url("img/service.png") !important;
+	}
+	.method {
+		background-image: url("img/method.png") !important;
+	}
+	</style>
 </head>
 <body>
 	<script>
 	$(function () {
-		var mytree = new MyTree();
-		mytree.init("file_tree");
+		var mytree1 = new MyTree();
+		mytree1.init("file_tree_1");
+		
+		var mytree2 = new MyTree();
+		mytree2.init("file_tree_2");
 	});
 	</script>
 	
-	<div id="file_tree" class="hidden">
+	<div id="file_tree_1" class="hidden">
 		<ul>
-			<li class="db_layers jstree-open">
-				<label>DB Layers</label>
-				<ul><li><a class="link" onClick="return goTo(this, 'edit_url')" edit_url="http://jplpinto.localhost/__system/admin/set_db_settings?file=MYSQL_DBL.xml&name=MYSQL" properties_id="MYSQL"><label>Mysql</label></a></li>
+			<li class="jstree-open">
+				<label>Folder A</label>
+				<ul>
+					<li><a onClick="window.open('//bloxtor.com')">Link</a></li>
 				</ul>
 			</li>
-			<li class="data_access_layers jstree-open">
-				<label>Rule Layers</label>
-				<ul><li class="jstree-open"><label>Rule hibernate</label><ul>
-<li class="layer_hibernate" data-jstree='{"icon":"folder"}'><label>test</label>
-<ul><li class="layer_hibernate" data-jstree='{"icon":"folder"}'><label>subtest</label>
-<ul><li class="layer_hibernate" data-jstree='{"icon":"file"}'><label>sub_item.xml</label>
-<ul><li class="layer_hibernate" data-jstree='{"icon":"obj"}'><label>SubItemObjNotRegistered</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"file"}'><label>item_subitem.xml</label>
-<ul><li class="layer_hibernate" data-jstree='{"icon":"obj"}'><label>ItemObj2</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"obj"}'><label>ItemObj</label>
-<ul><li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>select_sample_4</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>select_item</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>select_items</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>select_all_by_status</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>insert_item</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>insert_item_not_registered</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>update_item</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>update_all_items</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>delete_item</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>procedure_items_class</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>procedure_items</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"map"}'><label>resultMapTest</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"map"}'><label>selectItemsResultMap</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"map"}'><label>selectItemsParameterMap</label>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"map"}'><label>selectItemsParameterMapWithClass</label>
-</li>
-</ul>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"obj"}'><label>SubItemObj</label>
-<ul><li class="layer_hibernate" data-jstree='{"icon":"query"}'><label>select_all_by_item</label>
-</li>
-</ul>
-</li>
-<li class="layer_hibernate" data-jstree='{"icon":"obj"}'><label>ItemObjNotRegistered</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-
-</ul></li>
-<li class="jstree-open"><label>Rule ibatis</label><ul>
-<li class="layer_ibatis" data-jstree='{"icon":"folder"}'><label>test</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"folder"}'><label>service</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>protocol_service_price.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_protocol_service_price</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_protocol_services_price_by_price_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_protocol_service_price</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_protocol_service_price</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_protocol_service_prices_by_protocol_and_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocol_service_price</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocol_service_prices_by_protocol_and_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocol_services_prices_by_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_service_protocols_prices_by_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocol_service_prices</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>service_price.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_service_price</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_service_price</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_service_price</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_service_price</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_service_prices_by_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_service_prices_by_price_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_service_prices</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_service_prices</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>price_type.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_price_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_price_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_price_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_price_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_price_types</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_price_types</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>service.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_services_by_parent</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_services</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_services</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>protocol_service.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_protocol_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_protocol_services_by_price_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_protocol_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_protocol_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocol_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocol_services_by_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_protocol_services_by_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_service_protocols_by_service</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocol_services</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"folder"}'><label>protocol</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>store_contact.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_store_contact</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_store_contact</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_store_contact</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_store_contacts_by_store</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_store_contact</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_store_contacts_by_store</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_stores_contacts</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>store_protocol.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_store_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_store_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_store_protocols_by_store</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocol_stores_by_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_protocol_stores_by_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_stores_protocols</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>company.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_company</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_company</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_company</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_company</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_companies_by_ssn</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_companies</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>store.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_store</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_store</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_store</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_store</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_stores_by_company</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_stores_by_all</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_stores</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_stores</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>protocol.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocol</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocols_by_company</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocols_by_store</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_protocols</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_protocols_by_store</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_protocols</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"folder"}'><label>zip</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>country.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_country</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_country</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_country</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_country</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_countries</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_countries</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>zip.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_zip</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_zip</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_zip</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_zip</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_zip_by_zone</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_zips</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_zips</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>zone.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_zone</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_zone</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_zone</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_zone</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_zones_by_city</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_zones</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_zones</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>city.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_city</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_city</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_city</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_city</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_cities_by_state</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_cities</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_cities</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>state.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_state</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_state</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_state</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_state</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_states_by_country</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_states</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_states</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"folder"}'><label>user</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>user_type.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_user_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_user_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_user_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_user_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_user_types</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_user_types</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>user.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_user</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_user</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_user_using_password</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_user_password</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_user</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_user</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_users_by_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_users_by_username</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>user_credentials_exists</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_users</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_users</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>activity.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_activity</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_activity</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_activity</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_activity</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_activities</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_activities</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>user_type_permission.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_user_type_permission</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>update_user_type_permission</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_user_type_permission</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_user_type_permission_by_user_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_user_type_permission</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_user_type_permissions_by_user_type</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_user_type_permissions</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_user_type_permissions</label>
-</li>
-</ul>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"file"}'><label>user_activity.xml</label>
-<ul><li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>insert_user_activity</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>delete_user_activity</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_activity_users_by_activity</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_user_activities_by_user</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_users_activities</label>
-</li>
-<li class="layer_ibatis" data-jstree='{"icon":"query"}'><label>get_total_num_of_users_activities</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-
-</ul></li>
-<li class="jstree-open"><label>Daos</label><ul>
-<li class="layer_dao" data-jstree='{"icon":"folder"}'><label>test</label>
-<ul><li class="layer_dao" data-jstree='{"icon":"objtype"}'><label>ItemTest</label>
-</li>
-<li class="layer_dao" data-jstree='{"icon":"objtype"}'><label>MySubItem</label>
-</li>
-<li class="layer_dao" data-jstree='{"icon":"hibernatemodel"}'><label>MyItemHbnModel</label>
-</li>
-<li class="layer_dao" data-jstree='{"icon":"hibernatemodel"}'><label>MySubItemHbnModel</label>
-</li>
-<li class="layer_dao" data-jstree='{"icon":"objtype"}'><label>MyItem</label>
-</li>
-<li class="layer_dao" data-jstree='{"icon":"hibernatemodel"}'><label>MyHbnModelObj</label>
-</li>
-</ul>
-</li>
-
-</ul></li>
-
+			<li>
+				<label>Folder B</label>
+				<ul>
+					<li class="jstree-open">
+						Sub-Folder C
+						<ul>
+							<li data-jstree='{"icon":"jstree-file"}'>
+								<label>test</label>
+								<ul>
+									<li data-jstree='{"icon":"jstree-folder"}'>subtest</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li data-jstree='{"icon":"jstree-file"}'>file.xml</li>
 				</ul>
 			</li>
-			<li class="business_logic_layers jstree-open">
-				<label>Context Layers</label>
-				<ul><li class="jstree-open"><label>Context</label><ul>
-<li class="layer_context" data-jstree='{"icon":"folder"}'><label>test</label>
-<ul><li class="layer_context" data-jstree='{"icon":"folder"}'><label>service</label>
-<ul><li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicarePriceTypeService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertPriceType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updatePriceType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deletePriceType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getPriceType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllPriceTypes</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllPriceTypes</label>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareServiceService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getServicesByParent</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllServices</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllServices</label>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareServicePriceService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertServicePrice</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateServicePrice</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteServicePrice</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getServicePrice</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getServicePricesByService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getServicePricesByPriceType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllServicePrices</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllServicePrices</label>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareProtocolServiceService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertProtocolService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>insertProtocolServicesByPriceType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>insertProtocolServicePrice</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>insertProtocolServicesPriceByPriceType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateProtocolService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateProtocolServicePrice</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteProtocolService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteProtocolServicePrice</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteProtocolServicePricesByProtocolAndService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getProtocolService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getProtocolServicesByProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfProtocolServicesByProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getProtocolServicesByService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getProtocolServicePricesByProtocolAndService</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllProtocolServices</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"folder"}'><label>protocol</label>
-<ul><li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareProtocolService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>insertStoreProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteStoreProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getProtocolsByCompany</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getProtocolsByStore</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllProtocols</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfProtocolsByStore</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllProtocols</label>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareCompanyService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertCompany</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateCompany</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteCompany</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getCompany</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getCompaniesBySSN</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllCompanies</label>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareStoreContactService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertContact</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateContact</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteContact</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteContactsByStore</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getContact</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getContactsByStore</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllContacts</label>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareStoreService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertStore</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>insertStoreProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateStore</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteStore</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteStoreProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getStore</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getStoresByProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfStoresByProtocol</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getStoresByCompany</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllStoresByAll</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllStores</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllStores</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"folder"}'><label>zip</label>
-<ul><li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareZipService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertZip</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateZip</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteZip</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getZip</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getZipsByZone</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllZips</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllZips</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>insertZone</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateZone</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteZone</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getZone</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getZonesByCity</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllZones</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllZones</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>insertCity</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateCity</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteCity</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getCity</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getCitiesByState</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllCities</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllCities</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>insertState</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateState</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteState</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getState</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getStatesByCountry</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllStates</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllStates</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>insertCountry</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateCountry</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteCountry</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getCountry</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllCountries</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllCountries</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"folder"}'><label>user</label>
-<ul><li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareActivityService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertActivity</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateActivity</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteActivity</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getActivity</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllActivities</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllActivities</label>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareUserTypeService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertUserType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateUserType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteUserType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getUserType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllUserTypes</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllUserTypes</label>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareUserTypePermissionService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertUserTypePermission</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateUserTypePermission</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteUserTypePermission</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteUserTypePermissionByUserType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getUserTypePermission</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getUserTypePermissionsByUserType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllUserTypePermissions</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllUserTypePermissions</label>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareUserActivityService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertUserActivity</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllUsersActivities</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllUsersActivities</label>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"service"}'><label>MedicareUserService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>insertUser</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateUser</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>updateUserUsingPassword</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>deleteUser</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getUser</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getUsersByUsername</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getUsersByType</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getUserCredentialsExists</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getAllUsers</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getTotalNumOfAllUsers</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_context" data-jstree='{"icon":"folder"}'><label>common</label>
-<ul><li class="layer_context" data-jstree='{"icon":"service"}'><label>CommonService</label>
-<ul><li class="layer_context" data-jstree='{"icon":"method"}'><label>__construct</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>setPHPFrameWorkObjName</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>setUserCacheHandler</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getUserCacheHandler</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>setBusinessLogicLayer</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getBusinessLogicLayer</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>getBroker</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>preparePagingAnSorting</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>preparePaging</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>prepareSorting</label>
-</li>
-<li class="layer_context" data-jstree='{"icon":"method"}'><label>prepareSearch</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-
-</ul></li>
-
+			<li data-jstree='{"icon":"jstree-folder"}'>Fake Folder</li>
+			<li>Through Ajax on open
+				<ul url="http://some_url_with_json_response/to/be/called/on/open/or/click"></ul>
+			</li>
+		</ul>
+	</div>
+	
+	<hr/>
+	
+	<div id="file_tree_2" class="hidden">
+		<ul>
+			<li class="jstree-open">
+				<label>DBs Layer</label>
+				<ul>
+					<li>
+						<a class="link" href="$">
+							<label>Mysql DB Foo</label>
+						</a>
+					</li>
 				</ul>
 			</li>
-			<li class="presentation_layers jstree-open">
+			<li>
+				<label>Business Logic Layer</label>
+				<ul>
+					<li data-jstree='{"icon":"folder"}'>
+						<label>common</label>
+						<ul>
+							<li data-jstree='{"icon":"service"}'>
+								<label>CommonService</label>
+								<ul>
+									<li data-jstree='{"icon":"method"}'>
+										<label>getBusinessLogicLayer</label>
+									</li>
+									<li data-jstree='{"icon":"method"}'>
+										<label>getBroker</label>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li data-jstree='{"icon":"folder"}'>
+						<label>My Project</label>
+						<ul>
+							<li data-jstree='{"icon":"service"}'>
+								<label>PriceTypeService</label>
+								<ul>
+									<li data-jstree='{"icon":"method"}'>
+										<label>insertPriceType</label>
+									</li>
+									<li data-jstree='{"icon":"method"}'>
+										<label>updatePriceType</label>
+									</li>
+									<li data-jstree='{"icon":"method"}'>
+										<label>getPriceType</label>
+									</li>
+								</ul>
+							</li>
+							<li data-jstree='{"icon":"service"}'>
+								<label>MedicareServicePriceService</label>
+								<ul>
+									<li data-jstree='{"icon":"method"}'>
+										<label>insertServicePrice</label>
+									</li>
+									<li data-jstree='{"icon":"method"}'>
+										<label>updateServicePrice</label>
+									</li>
+									<li data-jstree='{"icon":"method"}'>
+										<label>getServicePrice</label>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li class="presentation_layers">
 				<label>Presentation Layers</label>
-				<ul><li class="jstree-open"><label>Presentation</label><ul>
-<li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>test</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":""}'><label>Pages</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>admin</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>index.php</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>index.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>auth</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>admin_logout.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>admin_login.php</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Template</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>basic.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>message.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>menu.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>admin.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>empty.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>main.php</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Utils</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>language_translations.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>utils.php</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Webroot</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>js</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>global.js</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>test_db_diagram.pdf</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>css</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>global.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>table_fields.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>tree_fields.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>form_fields.css</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>index.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>img</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Others</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":""}'><label>Controllers</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>admin.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>index.php</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Caches</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Routers</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Dispatchers</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>common</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":""}'><label>Pages</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Template</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Utils</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>SortHandler.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>SearchSortHandler.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>PaginationHandler.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>XXX.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>SearchHandler.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>LanguageTranslationHandler.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>YYY.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>utils.php</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Webroot</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>js</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>jquery-1.7.2.min.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>jquery.center.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>jquery-1.3.2.min.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>jquery-ui-1.8.21.custom.min.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>readme.txt</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>jquery-1.3.1.min.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>mootools.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>global.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>mootools_src.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>MyHandler.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>jquery.easing.1.2.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>MyJSLib.js</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>jquery-1.3.1.js</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>vendor</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>css</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>loading.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>pagination.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>top_buttons.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>search_sort_pagination.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>my_form.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>yyy.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>simple_jquery_drop_downs.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>global.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>my_list.css</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>table_col_resizable.css</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"folder"}'><label>img</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>search_icon.gif</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>go_bt.png</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>add_icon.gif</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>loading.gif</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>view_icon.gif</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>dot.gif</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>sort_icon.png</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>delete_icon.gif</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>update_icon.gif</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Others</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":""}'><label>Controllers</label>
-<ul><li class="layer_presentation" data-jstree='{"icon":"file"}'><label>get_file.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>pages.php</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":"file"}'><label>index.php</label>
-</li>
-</ul>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Caches</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Routers</label>
-</li>
-<li class="layer_presentation" data-jstree='{"icon":""}'><label>Dispatchers</label>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-
-</ul></li>
-
-				</ul>
+				<ul></ul>
 			</li>
 			<li class="management jstree-open">
 				<label>Management</label>
 				<ul>
-					<li><label>Users Management</label></li>
-					<li><a class="link" onClick="return goTo(this)" url="http://jplpinto.localhost/__system/phpframework/layer/list_layers"><label>Layers Management</label></a></li>
-					</ul></li>
+					<li>
+						<a href="#">Users Management</a>
+					</li>
+					<li>
+						<a href="#">
+							<label>Layers Management</label>
+						</a>
+					</li>
 				</ul>
 			</li>
 		</ul>
+	</li>
+	</ul>
 	</div>
 </body>
 </html>

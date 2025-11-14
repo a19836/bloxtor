@@ -1,8 +1,11 @@
 <html>
 <head>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<script language="javascript" type="text/javascript" src="lib/tourguide/tourguide.js"></script>
+	<script language="javascript" type="text/javascript" src="js/MyTourGuide.js"></script>
 </head>
 <body>
-	<h1>More examples <a href="lib/tourguide/index.html" target="eg">here</a></h1>
+	<h1>Simple example</h1>
 	<ul>
 		<li>
 			<button class="btn">Button TEST 1</button>
@@ -17,9 +20,24 @@
 		<button onClick="MyTourGuide.restart()">Restart tour again</button>
 	</div>
 	
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-	<script language="javascript" type="text/javascript" src="lib/tourguide/tourguide.js"></script>
-	<script language="javascript" type="text/javascript" src="js/MyTourGuide.js"></script>
+	<hr/>
+	
+	<h3>Other examples:</h3>
+    <ul>
+    	<li>
+    		<label>Steps are based in html attributes in each element (data-tour attribute): </label>
+    		<a href="lib/tourguide/test/index_with_html_attribute.html" target="index_with_html_attribute">check this example here</a>
+    	</li>
+    	<li>
+    		<label>Steps in written in javascript code: </label>
+    		<a href="lib/tourguide/test/index_with_js_steps.html" target="index_with_js_steps">check this example here</a>
+    	</li>
+    	<li>
+    		<label>Get Remote Steps: </label>
+    		<a href="lib/tourguide/test/index_with_remote_steps.html" target="index_with_remote_steps">check this example here</a>
+    	</li>
+    </ul>
+	
 	<script>
 	var steps = [
 		{
@@ -37,6 +55,7 @@
 	MyTourGuide.init({
 		steps: steps
 	});
+	MyTourGuide.start();
 	</script>
 </body>
 </html>

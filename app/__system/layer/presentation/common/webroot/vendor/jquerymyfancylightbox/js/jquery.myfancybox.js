@@ -481,7 +481,7 @@ function MyFancyPopupClass() {
 
 			var overlay = document.createElement("DIV");
 			overlay.id = popup_overlay_id;
-			overlay.className = "popup_overlay" + (options && options.popup_class ? " " + options.popup_class : "");
+			overlay.className = "popup_overlay" + (options && options.popupClass ? " " + options.popupClass : "");
 
 			$(overlay).click(function(originalEvent) {
 				originalEvent.preventDefault();
@@ -586,7 +586,7 @@ function MyFancyPopupClass() {
 
 			var div = document.createElement("DIV");
 			div.id = popup_loading_id;
-			div.className = "popup_loading" + (options && options.popup_class ? " " + options.popup_class : "");
+			div.className = "popup_loading" + (options && options.popupClass ? " " + options.popupClass : "");
 			div.innerHTML = '<div class="spining"></div>';
 			appendElementToAnotherElement(div, parent);
 			
@@ -643,7 +643,7 @@ function MyFancyPopupClass() {
 			
 			if (!elm) {
 				elm = document.createElement("DIV");
-				elm.className = "myfancypopup" + (options && options.popup_class ? " " + options.popup_class : "");
+				elm.className = "myfancypopup" + (options && options.popupClass ? " " + options.popupClass : "");
 				appendElementToAnotherElement(elm, parent);
 			}
 			
@@ -656,40 +656,46 @@ function MyFancyPopupClass() {
 			
 			var j_iframe = $(iframe);
 			
-			var iframe_unload_func = function(originalEvent) {
-				self.showLoading();
+			if (j_iframe.data("is_init") != 1) {
+				j_iframe.data("is_init", 1);
 				
-				if (options && typeof options.onIframeUnLoad == "function")
-					options.onIframeUnLoad(originalEvent, iframe);
-			};
-			
-			j_iframe.load(function(originalEvent) {
-				//set beforeunload func
-				if (options && typeof options.onIframeBeforeUnLoad == "function")
-					$(iframe.contentWindow).bind('beforeunload', function(originalEvent2){
-						return options.onIframeBeforeUnLoad(originalEvent2, iframe); //If this function returns something, the browser will show a confirmation message to be sure the user really wants to leave the current page
-					});
+				var iframe_unload_func = function(originalEvent) {
+					self.showLoading();
+					
+					if (options && typeof options.onIframeUnLoad == "function")
+						options.onIframeUnLoad(originalEvent, iframe);
+				};
 				
-				//set unload func
-				$(iframe.contentWindow).unload(iframe_unload_func);
+				j_iframe.load(function(originalEvent) {
+					//set beforeunload func
+					if (options && typeof options.onIframeBeforeUnLoad == "function")
+						$(iframe.contentWindow).bind('beforeunload', function(originalEvent2){
+							return options.onIframeBeforeUnLoad(originalEvent2, iframe); //If this function returns something, the browser will show a confirmation message to be sure the user really wants to leave the current page
+						});
+					
+					//set unload func
+					$(iframe.contentWindow).unload(iframe_unload_func);
+					
+					var w = j_iframe.contents().outerWidth() + 5;
+					var h = j_iframe.contents().outerHeight() + 5;
+					
+					j_iframe.css({"width" : w + "px", "height" : h + "px"});
+					
+					self.updatePopup();
+					self.hideLoading();
+					
+					if (options && typeof options.onIframeOnLoad == "function")
+						options.onIframeOnLoad(originalEvent, iframe);
+				});
 				
-				var w = j_iframe.contents().outerWidth() + 5;
-				var h = j_iframe.contents().outerHeight() + 5;
+				//Unload event should be set here too bc the iframe may be already loaded when the popup gets created, so we must set the unload here. Otherwise the unload won't work the first time, bc the onLoad event didn't occur yet and so the unload wasn't yet set. Please leave the unload event here.
+				//If you do not wish to execute the unload function at the first time the iframe gets created, do not use the options.onIframeUnLoad and set your unload event manually, inside of the options.onIframeOnLoad function (like it is above).
+				$(iframe.contentWindow).unload(iframe_unload_func); 
 				
-				j_iframe.css({"width" : w + "px", "height" : h + "px"});
-				
-				self.updatePopup();
-				self.hideLoading();
-				
-				if (options && typeof options.onIframeOnLoad == "function")
-					options.onIframeOnLoad(originalEvent, iframe);
-			});
-			
-			//Unload event should be set here too bc the iframe may be already loaded when the popup gets created, so we must set the unload here. Otherwise the unload won't work the first time, bc the onLoad event didn't occur yet and so the unload wasn't yet set. Please leave the unload event here.
-			//If you do not wish to execute the unload function at the first time the iframe gets created, do not use the options.onIframeUnLoad and set your unload event manually, inside of the options.onIframeOnLoad function (like it is above).
-			$(iframe.contentWindow).unload(iframe_unload_func); 
-			
-			j_iframe.attr("src", options.url);
+				j_iframe.attr("src", options.url);
+			}
+			else if (options && options.refreshIframeOnOpen)
+				j_iframe.attr("src", options.url);
 			
 			return iframe;
 		}

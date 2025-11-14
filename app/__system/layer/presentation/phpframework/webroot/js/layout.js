@@ -1285,7 +1285,7 @@ function showChatBotPopup() {
 		MyFancyPopup.init({
 			elementToShow: popup,
 			parentElement: document,
-			popup_class: "chat_bot_popup",
+			popupClass: "chat_bot_popup",
 		});
 		
 		MyFancyPopup.showPopup();

@@ -4077,7 +4077,7 @@ function showSQLToExecute(a, attr_name, action, on_success_callback, on_error_ca
 				on_error_callback(a, attr_name, action, new_name, url, tree_node_id_to_be_updated);
 		},
 		
-		popup_class: "execute_sql",
+		popupClass: "execute_sql",
 	});
 	MyFancyPopup.showPopup();
 }

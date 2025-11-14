@@ -8,6 +8,7 @@
 .status_message {
 	position:fixed;
 	bottom:0px;
+	left:0px;
 	width:100%;
 	padding-top:5px;
 	color:#000;

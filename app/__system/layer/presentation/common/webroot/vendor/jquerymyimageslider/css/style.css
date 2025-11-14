@@ -13,7 +13,7 @@
 .image_slider {
 	width:450px;
 	position:relative;
-	margin:0 auto 10px;
+	margin:10px auto;
 }
 .image_slider ul, .image_slider li {
 	margin:0;
@@ -47,6 +47,7 @@
 	width:100%;
 	height:100%;
 	/*height:281px;/* Some browsers like Iphone 4, have a problem if we don't hard code the height for the image. If you prefer you can change this line and hard code the height. */
+	border-radius:5px;
 }
 .image_slider .slides .slide.opaque {
 	z-index:1;
@@ -67,6 +68,8 @@
 	color:#FFF;
 	background-color:none;
 	background-color:rgba(10, 10, 10, 0.5);
+	border-bottom-left-radius:5px;
+	border-bottom-right-radius:5px;
 	z-index:1000;
 }
 .image_slider .slides .slide .image_title:hover {
@@ -116,9 +119,13 @@
 }
 .image_slider .navigation .prev {
 	left:0px; 
+	border-top-right-radius:5px;
+	border-bottom-right-radius:5px;
 }
 .image_slider .navigation .next {
 	right:0px; 
+	border-top-left-radius:5px;
+	border-bottom-left-radius:5px;
 }
 .image_slider .navigation .prev, 
    .image_slider .navigation .prev:focus, 

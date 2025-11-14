@@ -194,6 +194,13 @@ class CMSObfuscateJSFilesHandler {
 				),
 			),
 			
+			//task_flow_chart_old.js
+			$this->cms_path . $cms_relative_system_webroot_path . "lib/jquerytaskflowchart/js/task_flow_chart_old.js" => array(
+				1 => array(
+					"save_path" => $dest . $cms_relative_system_webroot_path . "lib/jquerytaskflowchart/js/task_flow_chart_old.js",
+				),
+			),
+			
 			//MyHtmlBeautify.js
 			/* For some reason the Tholu\Packer\Packer doesn't like too much the code:
 			  	'if (str[i] == "\\")', which is replacing it with 'if (str[i] == "\")'

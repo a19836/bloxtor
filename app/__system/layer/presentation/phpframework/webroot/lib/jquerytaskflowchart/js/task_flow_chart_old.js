@@ -3283,7 +3283,7 @@ function jsPlumbWorkFlowHandler(jsPlumbWorkFlowObjVarName, jsPlumbWorkFlowObjOpt
 					//show popup
 					MyFancyPopupClone.init({
 						elementToShow : selected_connection_properties,
-						onOpen() {
+						onOpen : function() {
 							if (resizable_connection_properties) {
 								WF.jsPlumbProperty.resizePropertiesPanel(selected_connection_properties, selected_connection_properties.outerHeight());
 							}
@@ -3519,7 +3519,7 @@ function jsPlumbWorkFlowHandler(jsPlumbWorkFlowObjVarName, jsPlumbWorkFlowObjOpt
 						//show popup
 						MyFancyPopupClone.init({
 							elementToShow : selected_task_properties,
-							onOpen() {
+							onOpen : function() {
 								if (resizable_task_properties)
 									WF.jsPlumbProperty.resizePropertiesPanel(selected_task_properties, selected_task_properties.outerHeight());
 							},
