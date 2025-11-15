@@ -460,6 +460,7 @@
 .taskflowchart .task .task_info {
 	min-height:25px;
 	padding:5px 40px 5px 5px;
+	box-sizing:border-box;
 	position:absolute;
 	top:auto;
 	left:0;
@@ -545,6 +546,8 @@
 	
 	margin-top:2.5px;
 	margin-bottom:2.5px;
+	position:relative;
+	z-index:1;
 }
 
 .taskflowchart .tasks_flow .task .task_droppable.task_droppable_over {
@@ -884,6 +887,7 @@
   .taskflowchart > .selected_connection_properties .title {
 	width:auto;
 	min-width:auto;
+	max-width:calc(100% - 120px);
 	height:20px;
 	min-height:auto;
 	line-height:20px;
@@ -895,6 +899,9 @@
 	display: inline-block;
 	font-weight: normal;
 	font-size: inherit;
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
 }
 .taskflowchart > .selected_task_properties > .title:after, 
   .taskflowchart > .selected_connection_properties .title:after {
@@ -922,6 +929,7 @@
 	top:10px;
 	right:51px;
 	cursor:pointer;
+	z-index:1;
 	
 	/* Hide Text */
 	text-indent:-9999px;
@@ -947,6 +955,7 @@
 	top:10px;
 	right:71px;
 	cursor:pointer;
+	z-index:1;
 	
 	/* Hide Text */
 	text-indent:-9999px;
@@ -968,7 +977,7 @@
 
 .selected_task_properties > .properties_task_id, 
   .selected_connection_properties > .properties_connection_id {
-	width:calc(100% - 210px);
+	width:calc(100% - 220px);
 	min-width:auto;
 	height:20px;
 	line-height:20px;
@@ -976,7 +985,7 @@
 	display:inline-block;
 	position:absolute;
 	top:9px;
-	left:100px;
+	left:120px;
 	font-size:inherit;
 	color:#333;
 	text-align:left;
@@ -985,8 +994,8 @@
 	overflow:hidden;
 }
 .selected_connection_properties > .properties_connection_id {
-	width:calc(100% - 250px);
-	left:140px;
+	width:calc(100% - 265px);
+	left:165px;
 }
 .selected_task_properties > .properties_task_id:before,
   .selected_connection_properties > .properties_connection_id:before {

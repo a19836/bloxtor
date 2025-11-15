@@ -3049,6 +3049,19 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 				},
 			});
 		},
+			
+		prepareUserResizablePropertiesPanel : function(properties_panel) {
+			var parent = $("#" + WF.TaskFlow.main_tasks_flow_obj_id).parent().closest(".taskflowchart");
+			var is_fixed_side_properties = parent.hasClass("fixed_side_properties");
+			var is_fixed_properties = parent.hasClass("fixed_properties");
+			
+			if (!is_fixed_side_properties && !is_fixed_properties)
+				properties_panel.resizable({
+					stop: function(originalEvent, ui) {
+						MyFancyPopupClone.resizeOverlay();
+					}
+				});
+		},
 		
 		resizePropertiesPanel : function(properties_panel, height) {
 			var wh = $(window).height();
@@ -3131,6 +3144,7 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 				
 				//remove previous draggable event
 				WF.Property.removePropertiesPanelDraggableEvent(properties_panel);
+				WF.Property.removePropertiesPanelUserResizableEvent(properties_panel);
 				
 				//add draggable event
 				properties_panel.draggable({
@@ -3138,6 +3152,9 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 						MyFancyPopupClone.resizeOverlay();
 					}
 				});
+				
+				//add resizable event
+				WF.Property.prepareUserResizablePropertiesPanel(properties_panel);
 				
 				//center popup
 				setTimeout(function() { //must be with settimeout
@@ -3163,6 +3180,7 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 				
 				//remove previous draggable event
 				WF.Property.removePropertiesPanelDraggableEvent(properties_panel);
+				WF.Property.removePropertiesPanelUserResizableEvent(properties_panel);
 				
 				if (properties_panel_resizable) {
 					//add draggable event
@@ -3233,6 +3251,11 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 		removePropertiesPanelDraggableEvent : function(properties_panel) {
 			if (typeof properties_panel.draggable == "function" && (properties_panel.data("draggable") || properties_panel.hasClass("ui-draggable")))
 				properties_panel.removeClass("ui-draggable").draggable("destroy");
+		},
+		
+		removePropertiesPanelUserResizableEvent : function(properties_panel) {
+			if (typeof properties_panel.resizable == "function" && (properties_panel.data("resizable") || properties_panel.hasClass("ui-resizable")))
+				properties_panel.removeClass("ui-resizable").resizable("destroy");
 		},
 		
 		callTaskSettingsCallback : function(task_type, callback_name, callback_args) {
@@ -3424,8 +3447,10 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 					var is_fixed_props = panels.first().parent().closest(".taskflowchart").is(".fixed_properties, .fixed_side_properties");
 					
 					//reset popup draggable. Very important otherwise when we toggle between fixed_properties, fixed_side_properties and popup panels, the moveable draggable event is not init in some cases.
-					if (!is_fixed_props || !resizable_connection_properties)
+					if (!is_fixed_props || !resizable_connection_properties) {
 						WF.Property.removePropertiesPanelDraggableEvent(selected_connection_properties);
+						WF.Property.removePropertiesPanelUserResizableEvent(selected_connection_properties);
+					}
 					
 					//if is no a fixed popup, remove the width and height styles that were set before by the fixed popup, so it can get the right dimensions with the new task properties content. This is very important, otherwise if we open a task properties as fixed popup and then toggle to non fixed popup and close it. When we open it again but with a Connection properties, it will have a predefined width, which will mess the popup dimensions, appearing the task properties content weirded and outside the popup.
 					if (!is_fixed_props)
@@ -3438,6 +3463,9 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 							if (resizable_connection_properties) {
 								WF.Property.resizePropertiesPanel(selected_connection_properties, selected_connection_properties.outerHeight());
 							}
+							
+							if (!is_fixed_props && resizable_connection_properties)
+								WF.Property.prepareUserResizablePropertiesPanel(selected_connection_properties);
 						},
 						onClose : function() {
 							if (!WF.Property.from_hide_selected_connection_properties_func) {
@@ -3464,7 +3492,7 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 						}
 					});
 					MyFancyPopupClone.showPopup({
-						not_draggable: !resizable_connection_properties && is_fixed_props
+						not_draggable: is_fixed_props && !resizable_connection_properties
 					});
 				}
 			}
@@ -3660,8 +3688,10 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 						var is_fixed_props = panels.first().parent().closest(".taskflowchart").is(".fixed_properties, .fixed_side_properties");
 						
 						//reset popup draggable. Very important otherwise when we toggle between fixed_properties, fixed_side_properties and popup panels, the moveable draggable event is not init in some cases.
-						if (!is_fixed_props || !resizable_task_properties)
+						if (!is_fixed_props || !resizable_task_properties) {
 							WF.Property.removePropertiesPanelDraggableEvent(selected_task_properties);
+							WF.Property.removePropertiesPanelUserResizableEvent(selected_task_properties);
+						}
 						
 						//if is no a fixed popup, remove the width and height styles that were set before by the fixed popup, so it can get the right dimensions with the new task properties content. This is very important, otherwise if we open a task properties as fixed popup and then toggle to non fixed popup and close it. When we open it again but with a Connection properties, it will have a predefined width, which will mess the popup dimensions, appearing the task properties content weirded and outside the popup.
 						if (!is_fixed_props)
@@ -3673,6 +3703,9 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 							onOpen : function() {
 								if (resizable_task_properties)
 									WF.Property.resizePropertiesPanel(selected_task_properties, selected_task_properties.outerHeight());
+								
+								if (!is_fixed_props && resizable_task_properties)
+									WF.Property.prepareUserResizablePropertiesPanel(selected_task_properties);
 							},
 							onClose : function() {
 								if (!WF.Property.from_hide_selected_task_properties_func) {
@@ -3700,7 +3733,7 @@ function TaskFlowChart(taskFlowChartObjVarName, taskFlowChartObjOptions) {
 						});
 						
 						MyFancyPopupClone.showPopup({
-							not_draggable: !resizable_task_properties && is_fixed_props
+							not_draggable: is_fixed_props && !resizable_task_properties
 						});
 					}
 				}
