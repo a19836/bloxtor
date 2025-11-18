@@ -545,7 +545,7 @@ Follow the installation steps in the [Bloxtor tutorial](https://bloxtor.com/onli
 
 ---
 
-## Install on a Hosting Service
+## Install on a Shared Hosting Server
 
 ### Requirements:
 - Linux server with cPanel
@@ -707,7 +707,7 @@ Then:
 0 2 * * * sudo -u www-data php /var/www/html/livingroop/default/app/layer/presentation/condo/webroot/script.php  --documentroot="/var/www/html/livingroop/default/" --url="http://jplpinto.localhost/condo/script/purge_old_data" --urlpath="script/purge_old_data" --loglevel=3
 ```
 
-### On Hosting Server
+### On Shared Hosting Server
 
 Go to cPanel and add the cronjobs:
 ```
