@@ -671,6 +671,16 @@ max_input_vars = 10000
 ```
 7. Bloxtor allows installation without a database, but for a full setup, you should create one. Log in to cPanel, navigate to the Databases section, and create a new database and a corresponding user. Alternatively, if your existing database user has root permissions, you can skip manual creation; Bloxtor will create the database automatically during the setup if selected.
 8. Open your web browser and navigate to `http://your.installation.domain/setup.php`. Follow the on-screen instructions, which correspond to the setup step `9` described above.
+9. To unlock **Bloxtor's full potential**, please install the **Modules available in our Store**. 
+The **User module** is crucial, as it allows you to convert any web-app with private access.
+
+	**To Install the Modules:**
+	- Log in to Bloxtor.
+	- Click Settings (top-right corner).
+	- Select Manage Modules.
+	- Click Install New Module.
+	- Select all modules, and finally, press the Install button in the top-right corner.
+
 
 ---
 
