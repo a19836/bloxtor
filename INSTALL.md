@@ -133,7 +133,7 @@ docker start bloxtor-local-server
 
 ---
 
-## Install Manually in your local PC
+## Install Manually on a Local PC
 
 ### 1. Install Web-server with PHP
 Install web-server (eg: Apache) and PHP 5.6 or higher (Bloxtor was tested until PHP 8.4).
@@ -223,7 +223,8 @@ UsageCount=1
 
 Note that the Driver path should be to your driver.
 
----
+
+.
 
 ### 2. Web Server configurations
 #### Enable mod rewrite
@@ -432,7 +433,7 @@ or
 </VirtualHost>
 ```
 
----
+.
 
 ### 3. If Mysql is installed
 In case you have mysql installed, please go to your /etc/mysql/my.cnf and follow our recomendations:
@@ -468,7 +469,8 @@ max_allowed_packet=100M
 
 Don't forget to restart mysql server and check if was started without errors.
 
----
+
+.
 
 ### 4. If your OS is CentOS
 On CentOS, web-server probably has external network connections blocked, which doesn't allow MySQL to connect to databases.
@@ -482,7 +484,8 @@ If the httpd_can_network_connect is OFF, you should enable them by typing:
 sudo setsebool -P httpd_can_network_connect 1
 ```
 
----
+
+.
 
 ### 5. Set permissions
 Open script absolute_path_to_framework/other/script/set_perms.sh and edit the APACHE_USER var with the right user for your web-server.
@@ -491,7 +494,8 @@ Then execute this script:
 sudo /bin/bash <absolute path to framework>/other/script/set_perms.sh <absolute path to framework>
 ```
 
----
+
+.
 
 ### 6. (optional) TMP folder
 By default, the framework already have a tmp folder in absolute_path_to_framework/tmp, which will be detected automatically.
@@ -501,7 +505,8 @@ In this case please don't forget to give write permission to web-server for that
 
 Additionally please remove all the temporary files inside of your TMP folder. By default the TMP folder that is in absolute_path_to_framework/tmp is already empty. In case you are running the setup.php again, please erase the files inside of this folder, except the .htaccess file.
 
----
+
+.
 
 ### 7. Other Notes:
 This framework uses some external libraries (with LGPL licenses) to improve its usability and add new functionalities, which means that if you want to have all the features, you must install them, but this is optional, because Bloxtor has an incompatible license and therefore cannot be distributed together with these libraries.
@@ -519,12 +524,14 @@ The external libraries, with GPL licences, are:
 - *wordpress* (wordpress.zip): that should be copied to the app/__system/layer/presentation/phpframework/webroot/vendor/ folder;
 - *phpmyadmin* (phpmyadmin.zip): that should be copied to the app/__system/layer/presentation/common/webroot/cms/ folder;
 
----
+
+.
 
 ### 8. Restart web-server
 Restart web-server and check if it was started without errors.
 
----
+
+.
 
 ### 9. Open the setup.php in your browser
 Open your browser, type htttp://your.installation.domain/setup.php, then follow the correspondent instructions...
@@ -538,7 +545,139 @@ Follow the installation steps in the [Bloxtor tutorial](https://bloxtor.com/onli
 
 ---
 
-### 10. (optional) Cronjobs
+## Install on a Hosting Service
+
+### Requirements:
+- Linux server with cPanel
+- MySQL
+- Apache
+- PHP
+
+### Steps:
+1. Log in to your cPanel and open the File Manager application.
+2. Copy the contents of the `Bloxtor` folder into the `public_html` or `www` directory of your remote server.
+3. Select the PHP version, activate the required PHP modules, and configure the `php.ini` file according to steps 1 and 2 described above.
+4. Confirm that cPanel correctly modified the `public_html/.htaccess` file. Otherwise, apply the necessary changes. Here is an example:
+```
+# BEGIN cPanel-generated php ini directives
+<IfModule php7_module>
+   php_flag short_open_tag On
+   php_value max_execution_time 1000
+   php_value variables_order "EGPCS"
+   php_value upload_max_filesize 200M
+   php_value post_max_size 200M
+   php_value date.timezone "Europe/Lisbon"
+   #php_value error_reporting "E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT"
+   php_value error_reporting 22519
+   php_flag display_errors On
+   php_flag display_startup_errors Off
+   php_flag log_errors On
+   php_flag mail.add_x_header Off
+   php_value session.cookie_httponly "1"
+   php_value session.cookie_secure "1"
+   php_flag session.use_strict_mode On
+   php_value max_input_time 360
+   php_value memory_limit 1024M
+   php_value max_input_vars 10000
+</IfModule>
+<IfModule lsapi_module>
+   php_flag short_open_tag On
+   php_value max_execution_time 1000
+   php_value variables_order "EGPCS"
+   php_value upload_max_filesize 200M
+   php_value post_max_size 200M
+   php_value date.timezone "Europe/Lisbon"
+   #php_value error_reporting "E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT"
+   php_value error_reporting 22519
+   php_flag display_errors On
+   php_flag display_startup_errors Off
+   php_flag log_errors On
+   php_flag mail.add_x_header Off
+   php_value session.cookie_httponly "1"
+   php_value session.cookie_secure "1"
+   php_flag session.use_strict_mode On
+   php_value max_input_time 360
+   php_value memory_limit 1024M
+   php_value max_input_vars 10000
+</IfModule>
+# END cPanel-generated php ini directives
+
+# BEGIN cPanel-generated handler
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php72___lsphp .php .php7 .phtml
+</IfModule>
+# END cPanel-generated handler
+
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+   
+   RewriteRule ^$ app/ [L,NC]
+   
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteRule (.*) app/$1 [L,NC]
+</IfModule>
+```
+5. Confirm that cPanel correctly modified the `public_html/php.ini` file. Otherwise, apply the necessary changes. Here is an example:
+```
+; cPanel-generated php ini directives
+short_open_tag = On
+max_execution_time = 1000
+variables_order = "EGPCS"
+upload_max_filesize = 200M
+post_max_size = 200M
+date.timezone = "Europe/Lisbon"
+error_reporting = "E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT"
+#error_reporting = 22519
+#error_reporting = "E_ALL & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED & ~E_STRICT"
+display_errors = On
+display_startup_errors = Off
+log_errors = On
+expose_php = Off
+mail.add_x_header = Off
+session.cookie_httponly = On
+session.cookie_secure = On
+session.use_strict_mode = On
+allow_url_fopen = Off
+allow_url_include = Off
+max_input_time = 360
+memory_limit = 1024M
+max_input_vars = 10000
+suhosin.get.max_vars = 10000
+suhosin.post.max_vars = 10000
+suhosin.request.max_vars = 10000
+```
+6. Confirm that cPanel correctly modified the `public_html/user.ini` file. Otherwise, apply the necessary changes. Here is an example:
+```
+; cPanel-generated php ini directives
+short_open_tag = On
+max_execution_time = 1000
+variables_order = "EGPCS"
+upload_max_filesize = 200M
+post_max_size = 200M
+date.timezone = "Europe/Lisbon"
+error_reporting = "E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT"
+#error_reporting = 22519
+display_errors = On
+display_startup_errors = Off
+log_errors = On
+mail.add_x_header = Off
+session.cookie_httponly = "1"
+session.cookie_secure = "1"
+session.use_strict_mode = On
+max_input_time = 360
+memory_limit = 1024M
+max_input_vars = 10000
+```
+7. Bloxtor allows installation without a database, but for a full setup, you should create one. Log in to cPanel, navigate to the Databases section, and create a new database and a corresponding user. Alternatively, if your existing database user has root permissions, you can skip manual creation; Bloxtor will create the database automatically during the setup if selected.
+8. Open your web browser and navigate to `http://your.installation.domain/setup.php`. Follow the on-screen instructions, which correspond to the setup step `9` described above.
+
+---
+
+## Configure Cronjobs
+
+### On Local PC
+
 If apply, for each project, add the following cronjobs (in case you have the workerpool module installed):
 ```
 * * * * * sudo -u www-data php <absolute path to framework>/app/layer/presentation/<project_name>/webroot/script.php  --documentroot="<absolute path to framework>/" --url="http://<project_url>/module/workerpool/run_worker_pool_script" --urlpath="module/workerpool/run_worker_pool_script" --loglevel=3
@@ -556,6 +695,23 @@ Then:
 * * * * * sudo -u www-data php /var/www/html/livingroop/demo/app/layer/presentation/condo/webroot/script.php  --documentroot="/var/www/html/livingroop/demo/" --url="http://jplpinto.localhost/demo/condo/module/workerpool/run_worker_pool_script" --urlpath="module/workerpool/run_worker_pool_script" --loglevel=3
 
 0 2 * * * sudo -u www-data php /var/www/html/livingroop/default/app/layer/presentation/condo/webroot/script.php  --documentroot="/var/www/html/livingroop/default/" --url="http://jplpinto.localhost/condo/script/purge_old_data" --urlpath="script/purge_old_data" --loglevel=3
+```
+
+### On Hosting Server
+
+Go to cPanel and add the cronjobs:
+```
+#with php.ini
+* * * * * /usr/local/bin/php -c /home/xxx/public_html/php.ini /home/xxx/public_html/bloxtor/app/layer/presentation/project_yyy/webroot/script.php --documentroot="/home/xxx/public_html/bloxtor/" --scriptname="/app/layer/presentation/project_yyy/webroot/index.php" --url="https://client_xxx.clients.bloxtor.com/module/workerpool/run_worker_pool_script" --urlpath="module/workerpool/run_worker_pool_script" --loglevel=3
+
+#without php.ini
+* * * * * php /home/xxx/public_html/bloxtor/app/layer/presentation/project_yyy/webroot/script.php --documentroot="/home/xxx/public_html/bloxtor/" --scriptname="/app/layer/presentation/project_yyy/webroot/index.php" --url="https://client_xxx.clients.bloxtor.com/module/workerpool/run_worker_pool_script" --urlpath="module/workerpool/run_worker_pool_script" --loglevel=3
+
+#here is an example:
+/usr/local/bin/php -c /home/diferma1/public_html/php.ini /home/diferma1/public_html/bloxtor/app/layer/presentation/eerp/webroot/script.php --documentroot="/home/diferma1/public_html/bloxtor/" --scriptname="/app/layer/presentation/eerp/webroot/index.php" --url="https://ipcm.clients.bloxtor.com/eerp/module/workerpool/run_worker_pool_script" --urlpath="module/workerpool/run_worker_pool_script" --loglevel=3
+
+#here is another example:
+php /home/diferma1/public_html/bloxtor/app/layer/presentation/eerp/webroot/script.php  --documentroot="/home/diferma1/public_html/bloxtor/" --scriptname="/app/layer/presentation/eerp/webroot/index.php" --url="http://ipcm.clients.bloxtor.com/eerp/module/workerpool/run_worker_pool_script" --urlpath="module/workerpool/run_worker_pool_script" --loglevel=3
 ```
 
 
