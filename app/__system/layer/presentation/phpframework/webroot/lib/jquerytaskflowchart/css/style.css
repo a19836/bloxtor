@@ -547,7 +547,7 @@
 	margin-top:2.5px;
 	margin-bottom:2.5px;
 	position:relative;
-	z-index:1;
+	z-index:13;
 }
 
 .taskflowchart .tasks_flow .task .task_droppable.task_droppable_over {
