@@ -3,6 +3,11 @@
  * 
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
+ *
+ * Original JQuery Layout UI Editor Repo: https://github.com/a19836/jquerylayoutuieditor/
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
 /* popup */
@@ -30,6 +35,8 @@
 	background:var(--add-widget-popup-bg);
 	color:var(--add-widget-popup-color);
 	box-sizing:border-box;
+	border-top-left-radius:5px;
+	border-top-right-radius:5px;
 }
 
 /* popup - content */
@@ -42,6 +49,8 @@
 	border:0;
 	border-radius:0;
 	font-size:inherit;
+	overflow:auto;
+	overflow:overlay;
 }
 .layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup.clone > .content {
 	background:#fff;
@@ -132,6 +141,8 @@
 }
 .layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup.clone > .buttons {
 	background:#fff;
+	border-bottom-left-radius:5px;
+	border-bottom-right-radius:5px;
 }
 .layout-ui-editor > .layout-ui-editor-popup.layout-ui-editor-bootstrap-widgets-popup > .buttons > button {
 	padding:0.375rem 0.75rem;

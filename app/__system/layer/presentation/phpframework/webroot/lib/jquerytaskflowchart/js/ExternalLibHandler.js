@@ -3,6 +3,11 @@
  * 
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
+ *
+ * Original JQuery Task flow Chart Repo: https://github.com/a19836/jquerytaskflowchart/
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
 /*Go to line 535 of the file jquery.jsPlumb-1.3.16-all.js and jquery.jsPlumb-1.3.16-all-min.js and change the _getOffset function to the folowing, because has a bug.

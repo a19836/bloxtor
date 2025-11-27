@@ -3,6 +3,11 @@
  * 
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
+ *
+ * Original JQuery Layout UI Editor Repo: https://github.com/a19836/jquerylayoutuieditor/
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
 //TODO: add feature when we hover the html elements in the layout, to show the margin and padding with a background with opacity, like when we inspect the dom elements from the developer tools of the browser...
@@ -285,7 +290,7 @@ function LayoutUIEditor() {
 	me.default_attributes_name_to_convert_to_or_from_php_vars = ["src", "href"];
 	
 	me.default_template_full_source_html = MyHtmlBeautify.beautify('<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
-		//+ '<link rel="stylesheet" href="' + me.getLayoutUIEditorFolderPath() + 'vendor/bootstrap/bootstrap.min.css">'
+		//+ '<link rel="stylesheet" href="' + me.getLayoutUIEditorFolderPath() + 'lib/bootstrap/bootstrap.min.css">'
 		//+ '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">'
 	+ '</head><body></body></html>');
 	
@@ -2038,11 +2043,11 @@ function LayoutUIEditor() {
 	}
 	
 	function initLayoutUIEditorFormField() {
-		me.LayoutUIEditorFormField.init();
+		me.LayoutUIEditorFormField && me.LayoutUIEditorFormField.init();
 	}
 	
 	function initLayoutUIEditorWidgetResource() {
-		me.LayoutUIEditorWidgetResource.init();
+		me.LayoutUIEditorWidgetResource && me.LayoutUIEditorWidgetResource.init();
 	}
 	
 	function initTextSelection() {
@@ -2313,7 +2318,7 @@ function LayoutUIEditor() {
 	//when we move the layout-ui-editor html element to another parent, the inner iframes (like template_widgets_iframe) will get refreshed (browser default behaviour and we cannot change it). 
 	//This refresh action will loose all the droppable elements, but the elements from the previous iframe's html will continue in the $.ui.ddmanager.droppables, which means, that when we try to drag something in jquery, the jquery will break because is trying to access elements that don't exist anymore. So we need to check the existent droppables and remove the old ones.
 	me.resetDroppables = function() {
-		return resetJqueryUIDDManagerDroppables(); //this inside of the ../vendor/jqueryuidroppableiframe/js/jquery-ui-droppable-iframe-fix.js file. This file must be loaded before.
+		return resetJqueryUIDDManagerDroppables(); //this inside of the ../lib/jqueryuidroppableiframe/js/jquery-ui-droppable-iframe-fix.js file. This file must be loaded before.
 	};
 	
 	/* INIT METHODS - TEMPLATE PREVIEW */
@@ -2429,10 +2434,10 @@ function LayoutUIEditor() {
 		var default_menu_widget_text = $(me.default_menu_widget_text_html.replace(/#LayoutUIEditor#/g, me.obj_var_name));
 		var default_menu_widget_code = $(me.default_menu_widget_code_html.replace(/#LayoutUIEditor#/g, me.obj_var_name));
 		var default_menu_widget_comment = $(me.default_menu_widget_comment_html.replace(/#LayoutUIEditor#/g, me.obj_var_name));
+		var selector = ".menu-widget-iframe, .menu-widget-listitem, .menu-widget-list, .menu-widget-video, .menu-widget-image, .menu-widget-href";
+			menu_widgets.find(selector).first().after(default_menu_widget_comment).after(default_menu_widget_text).after(default_menu_widget_code).after(default_menu_widget_tag);
 		
-		menu_widgets.find(".menu-widget-iframe").after(default_menu_widget_comment).after(default_menu_widget_text).after(default_menu_widget_code).after(default_menu_widget_tag);
-		
-		if (!menu_widgets.find(".menu-widget-iframe")[0])
+		if (!menu_widgets.find(selector)[0])
 			menu_widgets
 				.append(default_menu_widget_tag)
 				.append(default_menu_widget_text)
@@ -2720,7 +2725,7 @@ function LayoutUIEditor() {
 			
 			me.initPopup({
 				elementToShow: popup_content,
-				parentElement: document,
+				parentElement: ui.hasClass("full-screen") ? ui : document,
 				onOpen: function() {
 					//console.log("on open");
 					var editor = c.data("editor");
@@ -4970,6 +4975,8 @@ function LayoutUIEditor() {
 	/* MAIN MENU METHODS */
 	
 	function setMainOptions(main_elm) {
+		var full_icon_class = ui.hasClass("full-screen") ? "zmdi-fullscreen-exit" : "zmdi-fullscreen";
+		
 		main_elm.prepend(
 		  '<div class="options">' +
 			'<div class="options-left">' +
@@ -4995,7 +5002,7 @@ function LayoutUIEditor() {
 		  	'</div>' +
 			'<div class="options-right">' +
 			  '<i class="zmdi zmdi-code-setting option show-full-source" title="Toggle Full Source"></i>' +
-			  '<i class="zmdi zmdi-fullscreen option full-screen" title="Full Screen"></i>' +
+			  '<i class="zmdi ' + full_icon_class + ' option full-screen" title="Full Screen"></i>' +
 			  '<span class="option sub-options toggles">' +
 				'<i class="zmdi zmdi-border-clear"></i>' +
 				'<i class="zmdi zmdi-chevron-down caret-down"></i>' +
@@ -10720,7 +10727,9 @@ function LayoutUIEditor() {
 				if (child.nodeType != Node.ELEMENT_NODE || !me.hasNodeClass($(child), "layout-ui-editor-reserved"))
 					head[0].removeChild(child);
 			});
-			head.prepend(head_html);
+			
+			head[0].innerHTML = head_html + head[0].innerHTML; //Do not use .html(head_html) or .prepend(head_html), bc if the head_html contains some javascript, the jquery.html() or jquery.prepend() or jquery.append() methods, remove all the script tags. Use innerHTML instead to keep the original code.
+			convertTemplateSourceOrLayoutToPreviewScript(head);
 			
 			var j_body_html = $(body_html);
 			
@@ -12955,6 +12964,8 @@ function LayoutUIEditor() {
 				me.hidePopup();
 			});
 			me.popup_elm.prepend(close_btn);
+			
+			me.popup_elm.draggable();
 		}
 		
 		return true;

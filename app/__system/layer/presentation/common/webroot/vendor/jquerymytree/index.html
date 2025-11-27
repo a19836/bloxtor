@@ -19,7 +19,41 @@
 <body>
 	<script>
 	$(function () {
-		var mytree1 = new MyTree();
+		var mytree1 = new MyTree({
+			multiple_selection : true, //allow multiple selection
+			toggle_selection : false, //click one to select, click again to deselect
+			toggle_children_on_click : true, //toggle children on click the element, besides clicking the arrow icon
+			ajax_callback_before : function(ul, json_obj, mytree) { //on ajax request, after getting json response from server this gets called as second callback, before the initChilds. This function is responsible to parse the json_obj and convert it into html nodes inside of the ul node: func1(ul, json_obj, mytree);
+				if (json_obj && $.isPlainObject(json_obj)) {
+					$.each(json_obj, function(name, item) {
+						if (item && item.hasOwnProperty("properties") && item["properties"]) {
+							var props = item["properties"];
+							var type = props["type"];
+							var path = props["path"];
+							var files = item["files"];
+							
+							var html = type == "folder" ? '<li>' + name + '<ul url="sub_folders.json?path=' + path + '"></ul></li>' : '<li data-jstree=\'{"icon":"jstree-file"}\'>' + name + '</li>';
+							
+							ul.insertAdjacentHTML("beforeend", html);
+							
+							if (type == "folder" && files) {
+								var li = ul.lastElementChild;
+								li.classList.add("jstree-open");
+								var li_ul = li.querySelector("ul");
+								
+								mytree.options.ajax_callback_before(li_ul, files, mytree);
+							}
+						}
+					});
+				}
+			},
+			ajax_callback_after : function(ul, json_obj, mytree) { //on ajax request, after getting json response from server this gets called as third callback, after the initChilds: func2(ul, json_obj, mytree);
+				//here I can set some other events to the ul items
+			},
+			ajax_callback_error : function(ul, jqXHR, textStatus, errorThrown, mytree) { //on ajax request error callback: func3(ul, jqXHR, textStatus, errorThrown, mytree) 
+				alert(errorThrown);
+			},
+		});
 		mytree1.init("file_tree_1");
 		
 		var mytree2 = new MyTree();
@@ -54,7 +88,7 @@
 			</li>
 			<li data-jstree='{"icon":"jstree-folder"}'>Fake Folder</li>
 			<li>Through Ajax on open
-				<ul url="http://some_url_with_json_response/to/be/called/on/open/or/click"></ul>
+				<ul url="sub_folders.json"></ul>
 			</li>
 		</ul>
 	</div>

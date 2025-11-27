@@ -1,0 +1,651 @@
+/*
+ * Copyright (c) 2025 Bloxtor (http://bloxtor.com) and Joao Pinto (http://jplpinto.com)
+ * 
+ * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
+ * Choose one license that best fits your needs.
+ *
+ * Original JQuery Layout UI Editor Repo: https://github.com/a19836/jquerylayoutuieditor/
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
+ */
+
+/* GENERIC */
+body {
+	margin:0 !important;
+}
+@font-face {
+  font-family:"Poppins-Regular";
+  src:url('../../../../vendor/google-poppins/Poppins-Regular.ttf');
+}
+
+:root {
+  	--main-font-family:"Poppins-Regular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  	--main-font-family:"Poppins-Regular",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Helvetica,Arial,sans-serif;
+	
+	--resize-bar-bg:#F8F9FC;/*#83889E;*/
+	/*--resize-bar-vertical-img:url(../img/back_frame_open_close_vertical_red.gif);
+	--resize-bar-horizontal-img:url(../../img/back_frame_open_close_horizontal_red.gif);*/
+	--resize-bar-border:#BFC4DB;
+	
+	--link-color:#4070FF;
+	
+	--main-scrollbar-thumb-bg:#83889E;
+	--main-scrollbar-thumb-shadow-color:rgba(250,250,250,0.8);
+	
+	/* used in icons.css */
+	--icon-font-size:14px;
+	--icon-hover-color:#4070FF;
+	--icon-active-color:#4070FF;
+	--icon-after-color:#4070FF;
+	--icon-after-hover-color:#2C2D34;
+	
+	--info-label-tooltip-border-radius:0;/*3px*/
+	--info-label-tooltip-border:#fff;
+	--info-label-tooltip-bg:#2C2D34;/*var(--main-template-bg);*/
+	--info-label-tooltip-color:#fff;/*var(--main-template-color);*/
+	
+	--main-ace-editor-bg:var(--main-iframe-bg);
+	--main-ace-editor-color:#BFC4DB;
+	--main-ace-editor-active-line-bg:#F0F1F5;
+	--main-ace-editor-active-line-number-bg:#DFE1ED;
+
+	--main-template-border:transparent;
+	--main-template-bg:#F8F9FC;
+	--main-template-color:#585B69;
+	
+	--main-iframe-bg:#F0F1F5;
+	--main-iframe-color:var(--main-template-color);
+	--main-iframe-top-title-color:#83889E;
+	
+	--main-popup-header-bg:var(--icon-active-color);
+	--main-popup-header-color:#fff;
+	
+	--main-context-menu-triangle-border:#AAA;
+	--main-context-menu-border:#CCC;
+	--main-context-menu-bg:#FFF;
+	--main-context-menu-color:#585B69;
+	--main-context-menu-hover-bg:#4070FF;
+	--main-context-menu-hover-color:#FFF;
+	
+	--main-settings-bg:var(--main-template-bg);/*#DFE1ED*/
+	--main-settings-color:var(--main-template-color);
+	--main-settings-header-bg:var(--main-settings-bg);
+	--main-settings-header-color:var(--main-settings-color);
+	--main-settings-header-border:rgba(0, 0, 0, .1);
+	
+	--main-navigator-tree-item-hover-shadow:#999;
+	--main-navigator-tree-item-hover-bg:#eef2ff;
+	--main-navigator-tree-item-clicked-color:#000;
+	--main-navigator-tree-item-clicked-bg:#DFE1ED;
+	--main-navigator-tree-item-clicked-shadow:#999;
+}
+
+/* LAYOUT CODE EDITOR */
+body .layout-ui-editor-beauty:not(.full-screen) {
+	margin:100px 20px 50px;
+	border:1px solid var(--tabs-item-active-border, #ccc);
+}
+body .layout-ui-editor-beauty {
+	/* generic */
+	--main-editor-bg:var(--main-iframe-bg, #F0F1F5);
+	--main-editor-color:#888;
+	--main-editor-font-family:var(--main-font-family);
+	
+	/* tabs */
+	--tabs-bg:#fff;
+	--tabs-item-border:#ccc;
+	--tabs-item-bg:#fff;
+	--tabs-item-active-border:#ccc;
+	--tabs-item-active-bg:#F0F1F5;
+	--tabs-item-hover-color:#333;
+	
+	/* menu-widgets */
+	--menu-widgets-widget-border:transparent;
+	--menu-widgets-widget-color:#4070FF;
+	--menu-widgets-group-color:var(--main-template-color);
+	
+	/* template-source */
+	--template-source-border:#ddd;
+	--template-source-bg:#fff;
+	
+	/* template-preview */
+	--template-preview-border:#ddd;
+	--template-preview-bg:#fff;
+	
+	/* template-widgets-droppable */
+	--template-widgets-droppable-border:#ddd;
+	--template-widgets-droppable-bg:#fff;
+	
+	/* menu-settings */
+	--menu-settings-bg:var(--main-settings-bg);
+	
+	--menu-settings-resize-bg:#666;
+	
+	--menu-settings-input-border:#ccc;
+	--menu-settings-input-bg:#fff;
+	--menu-settings-input-color:#333;
+	--menu-settings-select-option-bg:#fff;
+	--menu-settings-select-option-color:#666;
+	
+	--menu-settings-button-border:transparent;
+	--menu-settings-button-bg:#4070ff;
+	--menu-settings-button-color:#fff;
+	--menu-settings-button-hover-bg:#4070ffdd;
+	--menu-settings-button-hover-color:#fff;
+	
+	--menu-settings-user-classes-bg:var(--main-iframe-bg);
+	--menu-settings-user-class-border:transparent;
+	--menu-settings-user-class-bg:#4070ff;
+	--menu-settings-user-class-color:#fff;
+	
+	--menu-settings-group-color:#555;
+	--menu-settings-group-list-bg:transparent;
+	--menu-settings-group-block-list-border:transparent;
+	--menu-settings-group-block-list-bg:var(--main-iframe-bg);
+	
+	--menu-settings-measurement-style-select-border-left:transparent;
+	--menu-settings-buttons-style-btn-border:transparent;
+	--menu-settings-buttons-style-btn-bg:#eee;
+	--menu-settings-buttons-style-btn-color:#999;
+	--menu-settings-buttons-style-btn-hover-color:#000;
+	--menu-settings-buttons-style-btn-selected-border:transparent;
+	--menu-settings-buttons-style-btn-selected-bg:#4070ff;
+	--menu-settings-buttons-style-btn-selected-color:#fff;
+	--menu-settings-color-style-color-selector-border:transparent;
+	--menu-settings-color-style-color-selector-bg:transparent;
+	--menu-settings-color-style-color-code-bg:transparent;
+	--menu-settings-color-style-color-code-border:transparent;
+	
+	--menu-settings-info-border:var(--main-settings-bg);
+	--menu-settings-info-bg:var(--main-settings-bg);
+	
+	/* widget-header */
+	--widget-header-border:transparent;
+	--widget-header-bg:#4070ff;
+	--widget-header-color:#fff;
+	--widget-header-hover-color:#fff;
+	--widget-header-option-color:var(--widget-header-color);
+	
+	/* droppable-header */
+	--droppable-header-border:transparent;
+	--droppable-header-bg:#4070ff;
+	--droppable-header-color:#fff;
+	--droppable-header-hover-color:#fff;
+	--droppable-header-option-color:var(--droppable-header-color);
+	
+	/* menu-layers */
+	--menu-layers-group-border:transparent;
+	--menu-layers-group-hover-border:#333;
+	--menu-layers-group-selected-border:transparent;
+	--menu-layers-group-title-border:rgba(0, 0, 0, .005);
+	--menu-layers-group-title-color:#585B69;
+	--menu-layers-group-selected-title-bg:#4070ff;
+	--menu-layers-group-selected-title-color:#fff;
+	--menu-layers-group-open-title-color:var(--menu-layers-group-title-color);
+	--menu-layers-group-title-hover-color:#4070ff;
+	--menu-layers-place-holder-bg:#eee;
+	--menu-layers-sort-clone-bg:#eee;
+	
+	/* option */
+	--option-active-color:#555;
+	--option-hover-color:#777;
+	--option-input-border:#ddd;
+	--option-input-bg:#fff;
+	--option-input-color:#000;
+	--option-label-color:#000;
+	--option-label-hover-color:#333;
+
+	/* scrollbar */
+	--scrollbar-track-bg:transparent;
+	--scrollbar-thumb-bg:var(--main-scrollbar-thumb-bg);
+	--scrollbar-thumb-hover-bg:rgba(0,0,0,0.5);
+	
+	/* resize-panel */
+	--resize-panel-bg:#666;
+	
+	/* text-selection-menu */
+	--text-selection-menu-bg:var(--main-iframe-bg);
+	--text-selection-menu-color:var(--main-iframe-color);
+	
+	--text-selection-menu-item-hover-color:var(--icon-hover-color);
+	--text-selection-menu-item-active-border:#4070ff;
+	--text-selection-menu-item-active-color:#4070ff;
+	
+	--text-selection-menu-input-border:#ddd;
+	--text-selection-menu-input-bg:#fff;
+	--text-selection-menu-input-color:#333;
+	--text-selection-menu-input-size:8px;
+	--text-selection-menu-select-option-disabled-bg:#eee;
+	--text-selection-menu-select-option-disabled-color:#999;
+	--text-selection-menu-icon-color:#555;
+	
+	--text-selection-menu-popup-border:#ddd;
+	--text-selection-menu-popup-button-border:#ddd;
+	--text-selection-menu-popup-button-bg:#4070ff;
+	--text-selection-menu-popup-button-color:#eee;
+	--text-selection-menu-popup-input-border:#ddd;
+	--text-selection-menu-popup-input-bg:#fff;
+	--text-selection-menu-popup-input-color:#333;
+	
+	--text-selection-menu-table-border:#ddd;
+	--text-selection-menu-table-bg:#fff;
+	
+	--text-selection-menu-tooltip-bg:var(--main-iframe-color);
+	--text-selection-menu-tooltip-color:var(--main-iframe-bg);
+	
+	--text-selection-menu-msg-color:#fff;
+	--text-selection-menu-error-msg-bg:rgba(255, 0, 0, 0.4);
+	--text-selection-menu-info-msg-bg:rgba(0, 0, 0, 0.1);
+	
+	/* add-widget-popup */
+	--add-widget-popup-border:#ddd;
+	--add-widget-popup-bg:#fff;
+	--add-widget-popup-color:#999;
+	--add-widget-popup-button-border:#ddd;
+	--add-widget-popup-button-bg:#4070ff;
+	--add-widget-popup-button-color:#eee;
+	--add-widget-popup-input-border:#ddd;
+	--add-widget-popup-input-bg:#fff;
+	--add-widget-popup-input-color:#333;
+	
+	/* template-widget-source-popup */
+	--template-widget-source-popup-border:#BFC4DB;
+	--template-widget-source-popup-bg:#fff;
+	--template-widget-source-popup-color:#999;
+	--template-widget-source-popup-size:10px;
+	
+	/* messages */
+	--editor-info-msg-bg:rgba(204, 255, 153, 0.8);
+	--editor-error-msg-bg:rgba(255, 0, 0, 0.8);
+	--editor-error-msg-color:#fff;
+	
+	/* auto complete */
+	--auto-complete-bg:var(--menu-settings-input-bg);
+	--auto-complete-color:var(--menu-settings-input-color);
+	--auto-complete-hover-bg:var(--main-settings-bg);
+	--auto-complete-hover-color:var(--main-settings-color);
+	--auto-complete-active-bg:#4070ff;
+	--auto-complete-active-color:#fff;
+}
+body .layout-ui-editor-beauty > .menu-widgets, 
+  body .layout-ui-editor-beauty > .menu-layers, 
+  body .layout-ui-editor-beauty > .template-widgets-options,
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings {
+	right:calc(100% - 205px);
+}
+body .layout-ui-editor-beauty.reverse > .menu-widgets, 
+  body .layout-ui-editor-beauty.reverse > .menu-layers, 
+  body .layout-ui-editor-beauty.reverse > .template-widgets-options,
+  body .layout-ui-editor-beauty.reverse.fixed-side-properties > .menu-settings {
+	left:calc(100% - 205px);
+}
+body .layout-ui-editor-beauty > .template-widgets {
+	left:210px;
+}
+body .layout-ui-editor-beauty.reverse > .template-widgets {
+	right:210px;
+}
+body .layout-ui-editor-beauty > .resize-panels {
+	left:205px;
+	border-left:1px solid var(--resize-bar-border);
+	border-right:1px solid var(--resize-bar-border);
+	background:var(--resize-bar-bg);
+	/*background:var(--resize-bar-vertical-img) repeat-x var(--main-template-bg);*/
+	box-sizing:border-box;
+}
+body .layout-ui-editor-beauty.reverse > .resize-panels {
+	right:205px;
+}
+body .layout-ui-editor-beauty > .resize-panels .button {
+	margin-left:-1px;
+}
+body .layout-ui-editor-beauty.reverse.with-minimized-panels > .resize-panels .button {
+	margin-left:0;
+	margin-right:-1px;
+}
+
+body .layout-ui-editor-beauty > .menu-widgets,
+  body .layout-ui-editor-beauty > .menu-layers,
+  body .layout-ui-editor-beauty > .menu-settings,
+  body .layout-ui-editor-beauty > .template-widgets-options,
+  body .layout-ui-editor-beauty > .template-widgets {
+	border-top:1px solid var(--tabs-item-active-border, #ccc);
+	border-bottom:1px solid var(--tabs-item-active-border, #ccc);
+}
+
+/* LAYOUT CODE EDITOR - MENU-LAYERS */
+body .layout-ui-editor-beauty > .menu-layers .main-group > .main-group-title,
+  body .layout-ui-editor-beauty > .menu-layers .group > .group-title {
+	line-height:23px;
+	font-size:11px;
+}
+body .layout-ui-editor-beauty > .menu-layers .main-group > .main-group-title > label,
+  body .layout-ui-editor-beauty > .menu-layers .group > .group-title > label {
+	color:inherit;
+}
+body .layout-ui-editor-beauty > .menu-layers .main-group > .main-group-title > .toggle,
+  body .layout-ui-editor-beauty > .menu-layers .group > .group-title > .toggle {
+	width:10px;
+	font-size:inherit;
+	vertical-align:baseline;
+}
+body .layout-ui-editor-beauty > .menu-layers .main-group > .main-group-title > .toggle::before,
+  body .layout-ui-editor-beauty > .menu-layers .group > .group-title .toggle::before {
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f054";
+}
+body .layout-ui-editor-beauty > .menu-layers .main-group.main-group-open > .main-group-title > .toggle::before,
+  body .layout-ui-editor-beauty > .menu-layers .group.group-open > .group-title .toggle::before {
+	content:"\f078";
+}
+body .layout-ui-editor-beauty > .menu-layers .main-group > .main-group-title > .visibility,
+  body .layout-ui-editor-beauty > .menu-layers .group > .group-title .visibility,
+  body .layout-ui-editor-beauty > .menu-layers .group > .group-title .move,
+  body .layout-ui-editor-beauty > .menu-layers .group > .group-title .sort,
+  body .layout-ui-editor-beauty > .menu-layers .group > .group-title .props {
+	margin-top:5px;
+	font-size:9pt;
+}
+
+/* LAYOUT CODE EDITOR - MENU-WIDGETS */
+body .layout-ui-editor-beauty > .menu-widgets .group > .group-title {
+	margin:15px 0 0;
+	padding:15px 15px 0;
+	font-size:11px;
+	color:var(--main-iframe-top-title-color);
+	opacity:1;
+	border-top-style:solid;
+}
+body .layout-ui-editor-beauty > .menu-widgets .group > ul > .group > .group-title {
+	font-size:10px;
+}
+body .layout-ui-editor-beauty > .menu-widgets .group > .group-title:hover:after {
+	margin-top:-14px;
+	display:none; /* hide this bc is noise. The user already knows how to do. */
+}
+body .layout-ui-editor-beauty > .menu-widgets .group > ul > .group > .group-title:hover:after {
+	margin-top:-12px;
+}
+body .layout-ui-editor-beauty > .menu-widgets .group > .group-title .toggle {
+	width:10px;
+	font-size:inherit;
+}
+body .layout-ui-editor-beauty > .menu-widgets .group > .group-title .toggle::before {
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f054";
+}
+body .layout-ui-editor-beauty > .menu-widgets .group.group-open > .group-title .toggle::before {
+	content:"\f078";
+}
+
+/* LAYOUT CODE EDITOR - MENU-OPTIONS */
+.layout-ui-editor-beauty > .options .sub-options ul {
+	font-size:10pt !important;
+}
+.layout-ui-editor > .options > .options-center {
+	left:250px;
+}
+.layout-ui-editor.reverse > .options > .options-center {
+	right:250px;
+}
+
+/* LAYOUT CODE EDITOR - SETTINGS */
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings,
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings {
+	max-height:calc(100vh - 50px); /* bc of the top bar */
+	color:var(--main-settings-color);
+	border-top:0;
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings.full-screen {
+	top:50px !important;
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings > .settings-info,
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings > .settings-info {
+	border-top:0;
+	border-bottom:1px solid var(--main-settings-header-border);
+	color:var(--main-settings-color);
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings > .settings-info {
+	padding-left:15px;
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings > .group {
+	margin-left:10px;
+	margin-right:10px;
+	position:relative;
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings li,
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings li {
+	font-size:8pt;
+	padding-left:0;
+	padding-right:0;
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings > .resize-menu-settings, 
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings > .resize-menu-settings {
+	border-top:1px solid var(--resize-bar-border);
+	border-bottom:1px solid var(--resize-bar-border);
+	background:var(--resize-bar-bg);
+	/*background:var(--resize-bar-horizontal-img) repeat-x var(--main-template-bg);*/
+	box-sizing:border-box;
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings > .resize-menu-settings .button, 
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings > .resize-menu-settings .button {
+	margin-top:-1px;
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings .group > .group-title,
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings .group > .group-title {
+	padding:15px 5px 0;
+	font-size:11px;
+	color:var(--main-iframe-top-title-color);
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings .group.settings-tabs-container.settings-tabs-container-first > .group-title,
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings .group.settings-tabs-container.settings-tabs-container-first > .group-title {
+	padding-top:0;
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings .group > ul > .group > .group-title,
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings .group > ul > .group > .group-title {
+	font-size:10px;
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings .group > .group-title > .toggle,
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings .group > .group-title > .toggle {
+	width:10px;
+	font-size:inherit;
+	vertical-align:baseline;
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings .group > .group-title .toggle::before,
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings .group > .group-title > .toggle::before {
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	content:"\f054";
+}
+body .layout-ui-editor-beauty.fixed-properties > .menu-settings .group.group-open > .group-title .toggle::before,
+  body .layout-ui-editor-beauty.fixed-side-properties > .menu-settings .group.group-open > .group-title > .toggle::before {
+	content:"\f078";
+}
+body .layout-ui-editor-beauty > .menu-settings li.group.settings-typography .settings-letter-spacing > label {
+	width:calc(100% - 90px);
+}
+body .layout-ui-editor-beauty > .menu-settings li.group.settings-typography .settings-vertical-align > label {
+	width:calc(100% - 80px);
+}
+body .layout-ui-editor-beauty > .menu-settings li.group.settings-typography .settings-text-align > label {
+	width:calc(100% - 100px);
+}
+body .layout-ui-editor-beauty > .menu-settings li.group .settings-attributes > ul > li.settings-empty-attributes {
+	color:var(--main-iframe-top-title-color);
+}
+
+/* MENU SETTINGS - WIDGET - PROPERTIES */
+body .layout-ui-editor-beauty > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-calendar-data-sets-settings > .group-title > .toggle-advanced-options {
+	line-height:unset;
+	margin:-5px -5px 0 0;
+	position:absolute;
+	right:20px;
+}
+body .layout-ui-editor-beauty > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-calendar-data-sets > ul > li.widget-property-calendar-data-set > .toggle-advanced-options,
+  body .layout-ui-editor-beauty > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-calendar-resources-data-sets > ul > li.widget-property-calendar-resources-data-set > .toggle-advanced-options {
+	margin-left:10px;
+	margin-right:0;
+	padding:1px 0 0;
+	float:right;
+}
+
+/* MENU SETTINGS - WIDGET - PROPERTIES - ACTIONS */
+body .layout-ui-editor-beauty > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-viewable,
+  body .layout-ui-editor-beauty > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-addable,
+  body .layout-ui-editor-beauty > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-editable,
+  body .layout-ui-editor-beauty > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-removable,
+  body .layout-ui-editor-beauty > .menu-settings li.group.settings-widget .widget-properties > ul > li.widget-property-multiple-items-actions {
+	background-color:rgba(0, 0, 0, 0.01);
+}
+
+/* MENU SETTINGS - TABS */
+.layout-ui-editor-beauty > .tabs {
+	font-size:11px;
+}
+
+/* LAYOUT CODE EDITOR - ADD WIDGET POPUP */
+body .layout-ui-editor-beauty .template-widgets > .add-widget-popup select, 
+  body .layout-ui-editor-beauty .template-widgets > .add-widget-popup button {
+	font-size:8pt;
+	font-family:inherit;
+}
+
+/* LAYOUT CODE EDITOR - TEXT SELECTION MENU */
+body .layout-ui-editor-beauty .text-selection-menu {
+	padding-left:10px;
+}
+body .layout-ui-editor-beauty .text-selection-menu > .messages:not(:empty) {
+	margin-right:-30px; /* -30px: text-selection-menu has padding-right of 40px and padding-left of 10px, which results of 30px. */
+}
+.layout-ui-editor-beauty .text-selection-menu .text-selection-item.toggle-menu,
+  .layout-ui-editor-beauty .text-selection-menu .text-selection-item.close-menu {
+	top:7px !important;
+}
+body .layout-ui-editor-beauty .text-selection-menu .menu-item-popup {
+	font-size:8pt;
+}
+body .layout-ui-editor-beauty .text-selection-menu .menu-item-popup input, 
+  body .layout-ui-editor-beauty .text-selection-menu .menu-item-popup select, 
+  body .layout-ui-editor-beauty .text-selection-menu .menu-item-popup textarea, 
+  body .layout-ui-editor-beauty .text-selection-menu .menu-item-popup button {
+	font-size:8pt;
+	font-family:inherit;
+}
+body .layout-ui-editor-beauty .text-selection-menu .table-props table tbody tr td:not(.actions) .delete {
+	margin-top:8px;
+}
+
+/* LAYOUT CODE EDITOR - MESSAGE */
+body .layout-ui-editor-beauty > .messages:not(:empty) {
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	background:rgba(0, 0, 0, .5);
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
+	align-items:center;
+	z-index:99999 !important;
+	overflow-y:auto;
+}
+body .layout-ui-editor-beauty > .messages .message {
+	width:auto !important;
+	min-width:200px;
+	max-width:80vw;
+	min-height:105px !important;
+	max-height:80vh !important;
+	margin:20px;
+	padding:0 15px 15px;
+	display:inline-block;
+	box-sizing:border-box;
+	overflow-x:hidden;
+	overflow-y:auto;
+	position:relative;
+	border:1px solid #83889E;
+	border-radius:3px;
+	background:#FFF !important;
+	color:#2C2D34 !important;
+	font-size:13px;
+	text-align:center;
+}
+body .layout-ui-editor-beauty > .messages .message::before {
+	display:block;
+	margin:0 -15px 15px;
+	padding:15px;
+	color:#FFF;
+	font-weight:bold;
+	text-align:left;
+}
+body .layout-ui-editor-beauty > .messages .message.message-info::before {
+	content:"Info";
+	background:#198754;
+}
+body .layout-ui-editor-beauty > .messages .message.message-error::before {
+	content:"Error";
+	background:#dc3545;
+}
+body .layout-ui-editor-beauty > .messages .message .close {
+	width:20px;
+	height:auto;
+	margin-right:0;
+	display:inline-block;
+	position:absolute;
+	top:15px;
+	right:15px;
+	text-indent:0;
+	background:none;
+	color:#FFF;
+	font-size:20px;
+}
+body .layout-ui-editor-beauty > .messages .message .close::before {
+	width:15px;
+	display:inline-block;
+	text-rendering:auto;
+	-webkit-font-smoothing:antialiased;
+	font:var(--fa-font-solid);
+	/*content:"\f057";*/
+	content:"\f00d";
+	margin-right:20px;
+}
+
+/* MENU SETTINGS CONTEXT MENU */
+body .layout-ui-editor-menu-settings-context-menu {
+	padding:10px 0;
+	border-radius:3px;
+	border:1px solid var(--main-context-menu-border);
+	background:var(--main-context-menu-bg);
+	color:var(--main-context-menu-color);
+	font-size:10pt;
+}
+body .layout-ui-editor-menu-settings-context-menu li:hover {
+	background:var(--main-context-menu-hover-bg);
+	color:var(--main-context-menu-hover-color);
+}
+body .layout-ui-editor-menu-settings-context-menu li a {
+	padding:4px 15px 4px 15px;
+	font-size:inherit;
+	font-family:inherit;
+	background:inherit;
+	color:inherit;
+	cursor:pointer;
+}
+body .layout-ui-editor-menu-settings-context-menu li a:hover {
+	background:inherit;
+	color:inherit;
+}
+
+/* BOOTSTRAP WIDGETS POPUP */
+body .layout-ui-editor-bootstrap-widgets-popup {
+	max-height:calc(100vh - 90px);
+}
+body .layout-ui-editor-bootstrap-widgets-popup > .buttons > button {
+	padding:10px 15px;
+}

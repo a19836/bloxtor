@@ -4,6 +4,10 @@
  * 
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
+ *
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
 //This file tries to find what are the possible attributes for the result object in a Resource Util class method. This is, based in a method name (like get, get, getAll, etc...), tries to read the inner code and get sql or business logic services or data-access rules or DB methods callls and get the correspondent table. From the table get the correspondent attributes which is probably the attributes of the returned object.

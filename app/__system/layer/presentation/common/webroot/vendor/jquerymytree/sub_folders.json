@@ -1,0 +1,28 @@
+{
+    "sub folder A": {
+        "properties": {
+            "type": "folder",
+            "path": "fake_folder/sub_folder_a"
+        },
+        "files": {
+        		"file A1": {
+				  "properties": {
+				      "type": "file",
+				      "path": "fake_folder/sub_folder_a/file_a1.txt"
+				  }
+        		},
+        		"folder A2": {
+				  "properties": {
+				      "type": "folder",
+				      "path": "fake_folder/sub_folder_a/folder_a2"
+				  }
+        		}
+        }
+    },
+    "sub file B": {
+        "properties": {
+            "type": "file",
+            "path": "fake_folder/sub_file_b.txt"
+        }
+    }
+}

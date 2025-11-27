@@ -14,6 +14,9 @@
 		  .status_message .status_message_error {
 			position:relative;  
 		}
+		.status_message .status_message_info {
+			background-color:#198754;
+		}
 		.status_message span.close_message {
 			margin-top:1px !important;
 			background:none !important;
@@ -149,7 +152,7 @@
 		StatusMessageHandler.showMessage("Bottom Message with timeout", "", "", 2000);
 	}
 	function showTopErrorWithTimeout() {
-		StatusMessageHandler.showError("Bottom Message with timeout", "", "top_messages", 2000);
+		StatusMessageHandler.showError("Top Message with timeout", "", "top_messages", 2000);
 	}
 	function showCenteredMessageWithTimeout() {
 		StatusMessageHandler.showMessage("Bottom Message with timeout", "", "centered_messages", 2000);

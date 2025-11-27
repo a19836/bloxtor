@@ -3,6 +3,10 @@
  * 
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
+ *
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
 //default vars from server
@@ -140,6 +144,54 @@
 			return true;
 		},
 		
+		//Simulates the jquery function: $(obj).parents(filter_selector);
+		parents: function(elm, filter_selector) {
+			var result = [];
+			var parent = elm.parentElement;
+
+			while (parent) {
+				// Optional filter selector
+				if (!filter_selector)
+					result.push(parent);
+				else if (typeof filter_selector == "string" && parent.matches(filter_selector))
+					result.push(parent);
+				else if (filter_selector === parent) //in case the filter_selector be a html node
+					result.push(parent);
+				
+				parent = parent.parentElement;
+			}
+
+			return result;
+		},
+		
+		//Simulates the jquery function: $(obj).parentsUntil(stop_node|stop_selector, filter_selector);
+		parentsUntil: function(elm, stop_selector, filter_selector) {
+			var result = [];
+			var parent = elm.parentElement;
+			
+			while (parent) {
+				// Stop if we reached the stop selector
+				if (stop_selector) {
+					if (typeof stop_selector == "string" && parent.matches(stop_selector))
+						break;
+					else if (stop_selector === parent) //in case the stop_selector be a html node
+						break;
+				}
+				
+				// Optional filter selector
+				if (!filter_selector)
+					result.push(parent);
+				else if (typeof filter_selector == "string" && parent.matches(filter_selector))
+					result.push(parent);
+				else if (filter_selector === parent) //in case the filter_selector be a html node
+					result.push(parent);
+
+				parent = parent.parentElement;
+			}
+
+			return result;
+		},
+		
 		//Simulates the jquery function: $.each(array, handler);
 		each: function(obj, handler) {
 			if (MyWidgetResourceLib.fn.isArray(obj) || NodeList.prototype.isPrototypeOf(obj) || HTMLCollection.prototype.isPrototypeOf(obj)) {
@@ -211,6 +263,16 @@
 			if (elm && elm.nodeType == Node.ELEMENT_NODE) {
 				elm.style.display = "none";
 	    		}
+		},
+		
+		isVisible: function(elm, strict) {
+			if (elm && elm.nodeType == Node.ELEMENT_NODE) {
+				var style = window.getComputedStyle(elm);
+				
+				return style.display != "none" && (!strict || style.visibility != "hidden");
+			}
+			
+			return false;
 		},
 		
 		//Fire an event handler to the specified node element.
@@ -760,16 +822,6 @@
 			//console.log(selector);
 			
 			return selector;
-		},
-		
-		isVisible: function(elm) {
-			if (elm && elm.nodeType == Node.ELEMENT_NODE) {
-				var style = window.getComputedStyle(elm);
-	    			
-	    			return style.display != "none" && style.visibility != "hidden";
-	    		}
-	    		
-	    		return false;
 		},
 		
 		parseJson: function(str, do_not_catch) {
@@ -6061,28 +6113,38 @@
 						var list_items_html = MyWidgetResourceLib.fn.getNodeElementData(widget, "list_items_add_html");
 						
 						if (list_items_html) {
+							var is_table_and_tree = widget.querySelectorAll("[data-widget-list-table], [data-widget-list-tree]").length >= 2;
+							
 							for (var i = 0, t = list_items_html.length; i < t; i++) {
 								var list_item_html = list_items_html[i];
 								var item_html = list_item_html.html;
 								var item_parent = list_item_html.parent;
+								var allowed = true;
 								
-								//append html element to item_parent
-								item_parent.insertAdjacentHTML('beforeend', item_html);
-								/*var item_elm = item_parent.lastElementChild;
+								if (is_table_and_tree) {
+									var item_sub_widget = item_parent.closest("[data-widget-list-table], [data-widget-list-tree]");
+									allowed = !item_sub_widget || MyWidgetResourceLib.fn.isVisible(item_sub_widget);
+								}
 								
-								var view_fields = item_elm.querySelectorAll("[data-widget-item-attribute-field-view], [data-widget-item-attribute-link-view], [data-widget-item-attribute-field-edit], [data-widget-item-attribute-link-edit], [data-widget-item-button-view], [data-widget-item-button-edit], [data-widget-item-button-update]");
-								var edit_fields = item_elm.querySelectorAll("[data-widget-item-attribute-field-add], [data-widget-item-button-add], [data-widget-item-button-add-cancel]");
-								
-								if (edit_fields)
-									//TODO: find a way to loop asyncronously
-									MyWidgetResourceLib.fn.each(edit_fields, function(idx, item) {
-										MyWidgetResourceLib.fn.show(item);
-									});
-								
-								if (view_fields)
-									MyWidgetResourceLib.fn.each(view_fields, function(idx, item) {
-										MyWidgetResourceLib.fn.hide(item);
-									});*/
+								if (allowed) {
+									//append html element to item_parent
+									item_parent.insertAdjacentHTML('beforeend', item_html);
+									/*var item_elm = item_parent.lastElementChild;
+									
+									var view_fields = item_elm.querySelectorAll("[data-widget-item-attribute-field-view], [data-widget-item-attribute-link-view], [data-widget-item-attribute-field-edit], [data-widget-item-attribute-link-edit], [data-widget-item-button-view], [data-widget-item-button-edit], [data-widget-item-button-update]");
+									var edit_fields = item_elm.querySelectorAll("[data-widget-item-attribute-field-add], [data-widget-item-button-add], [data-widget-item-button-add-cancel]");
+									
+									if (edit_fields)
+										//TODO: find a way to loop asyncronously
+										MyWidgetResourceLib.fn.each(edit_fields, function(idx, item) {
+											MyWidgetResourceLib.fn.show(item);
+										});
+									
+									if (view_fields)
+										MyWidgetResourceLib.fn.each(view_fields, function(idx, item) {
+											MyWidgetResourceLib.fn.hide(item);
+										});*/
+								}
 							}
 							
 							var empty_items = widget.querySelectorAll("[data-widget-empty]");
@@ -6264,10 +6326,19 @@
 				if (item_parent) {
 					var search_attrs_str = item.getAttribute("data-widget-pks-attrs");
 					
+					//remove item
 					item_parent.removeChild(item);
 					
+					//get other items from list - from table and tree widgets
+					var items = null;
+					var widget = item_parent.closest("[data-widget-list]");
+					
+					if (widget) //if list is table and tree at the same time, removes item from both places.
+						items = widget.querySelectorAll("[data-widget-item]");
+					else
+						items = item_parent.querySelectorAll("[data-widget-item]");
+					
 					//remove other items with the same search_attrs
-					var items = item_parent.querySelectorAll("[data-widget-item]");
 					var is_page_empty = true;
 					
 					if (items)
@@ -13400,7 +13471,7 @@
 						//prepare loading bar and empty
 						var loading_elm = elm.querySelector("[data-widget-loading]");
 						var empty_elm = elm.querySelector("[data-widget-empty]");
-						var is_elm_shown = MyWidgetResourceLib.MatrixHandler.isShown(elm);
+						var is_elm_shown = MyWidgetResourceLib.fn.isVisible(elm);
 						
 						if (loading_elm)
 							MyWidgetResourceLib.fn.show(loading_elm);
@@ -13415,7 +13486,7 @@
 						var items = elm.querySelectorAll("[data-widget-matrix-head-column], [data-widget-matrix-body-row], [data-widget-matrix-body-column], [data-widget-matrix-previous-related]:not([data-widget-matrix-head-row])");
 						
 						MyWidgetResourceLib.fn.each(items, function (idx, item) {
-							var is_shown = MyWidgetResourceLib.MatrixHandler.isShown(item);
+							var is_shown = MyWidgetResourceLib.fn.isVisible(item);
 							
 							if (is_shown) {
 								MyWidgetResourceLib.fn.hide(item);
@@ -14110,7 +14181,7 @@
 					if (!resource) {
 						//in case there are no data-widget-resources defined or the resource didn't get executed, show the default row.
 						var is_shown = MyWidgetResourceLib.fn.getNodeElementData(elm, "is_shown");
-						var is_hidden = !MyWidgetResourceLib.MatrixHandler.isShown(elm);
+						var is_hidden = !MyWidgetResourceLib.fn.isVisible(elm);
 						
 						if (is_shown && is_hidden)
 							MyWidgetResourceLib.fn.show(elm);
@@ -14122,7 +14193,7 @@
 							MyWidgetResourceLib.fn.each(columns, function (idx, column) {
 								//show column
 								var is_column_shown = MyWidgetResourceLib.fn.getNodeElementData(column, "is_shown");
-								var is_column_hidden = !MyWidgetResourceLib.MatrixHandler.isShown(column);
+								var is_column_hidden = !MyWidgetResourceLib.fn.isVisible(column);
 								
 								if (is_column_shown && is_column_hidden)
 									MyWidgetResourceLib.fn.show(column);
@@ -14298,7 +14369,7 @@
 					}
 					
 					var is_shown = MyWidgetResourceLib.fn.getNodeElementData(element, "is_shown");
-					var is_hidden = !MyWidgetResourceLib.MatrixHandler.isShown(element);
+					var is_hidden = !MyWidgetResourceLib.fn.isVisible(element);
 					
 					if (is_shown)
 						MyWidgetResourceLib.fn.show(element);
@@ -14350,7 +14421,7 @@
 											}
 											
 											var is_shown = MyWidgetResourceLib.fn.getNodeElementData(column, "is_shown");
-											var is_hidden = !MyWidgetResourceLib.MatrixHandler.isShown(column);
+											var is_hidden = !MyWidgetResourceLib.fn.isVisible(column);
 											
 											if (is_shown)
 												MyWidgetResourceLib.fn.show(column);
@@ -14457,7 +14528,7 @@
 										
 										if (column) {
 											var is_shown = MyWidgetResourceLib.fn.getNodeElementData(column, "is_shown");
-											var is_hidden = !MyWidgetResourceLib.MatrixHandler.isShown(column);
+											var is_hidden = !MyWidgetResourceLib.fn.isVisible(column);
 											
 											if (is_shown)
 												MyWidgetResourceLib.fn.show(column);
@@ -16032,10 +16103,6 @@
 		decrementMatrixItemsCountWithResourceToLoad: function(elm) {
 			var c = MyWidgetResourceLib.MatrixHandler.getMatrixItemsCountWithResourceToLoad(elm);
 			MyWidgetResourceLib.MatrixHandler.setMatrixItemsCountWithResourceToLoad(elm, c > 0 ? c - 1 : 0);
-		},
-		
-		isShown: function(elm) {
-			return elm && elm.nodeType == Node.ELEMENT_NODE && elm.style.display != "none";
 		}
 	});
 	/****************************************************************************************

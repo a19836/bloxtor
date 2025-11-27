@@ -1,5 +1,9 @@
 # JQuery My Tree
 
+> Original Repos:   
+> - JQuery My My Tree: https://github.com/a19836/jquerymytree/   
+> - Bloxtor: https://github.com/a19836/bloxtor/
+
 ## Overview
 
 **JQuery My Tree** is a lightweight JavaScript library that transforms <ul> and <li> elements into an intuitive, user-friendly tree view, listing these nodes into a collapsible and hierarchical tree structure, ideal for file system navigation.

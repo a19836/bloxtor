@@ -3,6 +3,11 @@
  * 
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
+ *
+ * Original JQuery Layout UI Editor Repo: https://github.com/a19836/jquerylayoutuieditor/
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
 function LayoutUIEditorFormField(ui_creator) {
@@ -11,7 +16,7 @@ function LayoutUIEditorFormField(ui_creator) {
 	var me = this;
 	
 	me.init = function() {
-		if (ui_creator && typeof FormFieldsUtilObj == "object" && typeof ProgrammingTaskUtil == "object") {
+		if (ui_creator && typeof FormFieldsUtilObj == "object") {
 			var menu_widgets = ui_creator.getMenuWidgets().find(".menu-widget-input, .menu-widget-textarea, .menu-widget-radiobox, .menu-widget-checkbox, .menu-widget-select, .menu-widget-button");
 			
 			$.each(menu_widgets, function(idx, menu_widget) {

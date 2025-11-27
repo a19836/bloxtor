@@ -1,5 +1,9 @@
 # JQuery My Image Slider
 
+> Original Repos:   
+> - JQuery My Image Slider: https://github.com/a19836/jquerymyimageslider/   
+> - Bloxtor: https://github.com/a19836/bloxtor/
+
 ## Overview
 
 **JQuery My Image Slider** is a lightweight JavaScript library to show images in a slider.

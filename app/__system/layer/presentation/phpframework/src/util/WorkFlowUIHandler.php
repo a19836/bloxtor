@@ -4,6 +4,10 @@
  * 
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
+ *
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
 include_once get_lib("org.phpframework.util.web.html.CssAndJSFilesOptimizer");
@@ -187,23 +191,23 @@ class WorkFlowUIHandler {
 <script language="javascript" type="text/javascript" src="' . $this->common_webroot_url . 'vendor/he/he.js"></script>
 
 <!-- Layout UI Editor - Material-design-iconic-font -->
-<link rel="stylesheet" href="' . $this->webroot_url . 'lib/jquerylayoutuieditor/vendor/materialdesigniconicfont/css/material-design-iconic-font.min.css">
+<link rel="stylesheet" href="' . $this->webroot_url . 'lib/jquerylayoutuieditor/lib/materialdesigniconicfont/css/material-design-iconic-font.min.css">
 
 <!-- Layout UI Editor - JQuery Nestable2 -->
-<link rel="stylesheet" href="' . $this->webroot_url . 'lib/jquerylayoutuieditor/vendor/nestable2/jquery.nestable.min.css" type="text/css" charset="utf-8" />
-<script language="javascript" type="text/javascript" src="' . $this->webroot_url . 'lib/jquerylayoutuieditor/vendor/nestable2/jquery.nestable.min.js"></script>
+<link rel="stylesheet" href="' . $this->webroot_url . 'lib/jquerylayoutuieditor/lib/nestable2/jquery.nestable.min.css" type="text/css" charset="utf-8" />
+<script language="javascript" type="text/javascript" src="' . $this->webroot_url . 'lib/jquerylayoutuieditor/lib/nestable2/jquery.nestable.min.js"></script>
 
 <!-- Layout UI Editor - HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
-	 <script src="' . $this->webroot_url . 'lib/jquerylayoutuieditor/vendor/jqueryuidroppableiframe/js/html5_ie8/html5shiv.min.js"></script>
-	 <script src="' . $this->webroot_url . 'lib/jquerylayoutuieditor/vendor/jqueryuidroppableiframe/js/html5_ie8/respond.min.js"></script>
+	 <script src="' . $this->webroot_url . 'lib/jquerylayoutuieditor/lib/jqueryuidroppableiframe/js/html5_ie8/html5shiv.min.js"></script>
+	 <script src="' . $this->webroot_url . 'lib/jquerylayoutuieditor/lib/jqueryuidroppableiframe/js/html5_ie8/respond.min.js"></script>
 <![endif]-->
 
 <!-- Layout UI Editor - Add Iframe droppable fix -->
-<script type="text/javascript" src="' . $this->webroot_url . 'lib/jquerylayoutuieditor/vendor/jqueryuidroppableiframe/js/jquery-ui-droppable-iframe-fix.js"></script>    
+<script type="text/javascript" src="' . $this->webroot_url . 'lib/jquerylayoutuieditor/lib/jqueryuidroppableiframe/js/jquery-ui-droppable-iframe-fix.js"></script>    
 
 <!-- Layout UI Editor - Add Iframe droppable fix - IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="' . $this->webroot_url . 'lib/jquerylayoutuieditor/vendor/jqueryuidroppableiframe/js/ie10-viewport-bug-workaround.js"></script>
+<script src="' . $this->webroot_url . 'lib/jquerylayoutuieditor/lib/jqueryuidroppableiframe/js/ie10-viewport-bug-workaround.js"></script>
 
 <!-- Layout UI Editor - Add Layout UI Editor -->
 <link rel="stylesheet" href="' . $this->webroot_url . 'lib/jquerylayoutuieditor/css/some_bootstrap_style.css" type="text/css" charset="utf-8" />

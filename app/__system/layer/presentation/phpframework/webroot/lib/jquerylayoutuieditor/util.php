@@ -4,13 +4,33 @@
  * 
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
+ *
+ * Original JQuery Layout UI Editor Repo: https://github.com/a19836/jquerylayoutuieditor/
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
-$main_app_folder_path = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
-$main_app_folder_path = basename($main_app_folder_path) == "app" ? $main_app_folder_path : dirname($main_app_folder_path); //it measn it is inside of the __system
-
-if (!class_exists("CssAndJSFilesOptimizer")) //Note that this is very important, bc this file is called from the __system files and we have multiple installations of bloxtor with the common/webroot folder shared across that installations (as a symbolic link) then this class may be already included from another installation.
-	include_once $main_app_folder_path . "/lib/org/phpframework/util/web/html/CssAndJSFilesOptimizer.php";
+//Note that this is very important, bc this file is called from the __system files and we have multiple installations of bloxtor with the common/webroot folder shared across that installations (as a symbolic link) then these classes may be already included from another installation.
+if (!class_exists("XMLFileParser") || !class_exists("CssAndJSFilesOptimizer")) {
+	$main_app_folder_path = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+	$main_app_folder_path = basename($main_app_folder_path) == "app" ? $main_app_folder_path : dirname($main_app_folder_path); //it measn it is inside of the __system
+	$import_lib_path = $main_app_folder_path . "/lib/org/phpframework/util/import/lib.php";
+	
+	if (file_exists($import_lib_path)) {
+		define('LIB_PATH', $main_app_folder_path . "/lib/");
+		include_once $import_lib_path;
+		
+		$parser_path = get_lib("org.phpframework.xmlfile.XMLFileParser");
+		$optimizer_path = get_lib("org.phpframework.util.web.htm.CssAndJSFilesOptimizer");
+		
+		if (!class_exists("XMLFileParser") && file_exists($parser_path))
+			include_once $parser_path;
+		
+		if (!class_exists("CssAndJSFilesOptimizer") && file_exists($optimizer_path))
+			include_once $optimizer_path;
+	}
+}
 
 $GLOBALS["layout_ui_editor_widgets_files_included"] = array();
 
@@ -26,6 +46,17 @@ function getDefaultWidgetsPriorityFiles() {
 			"code" => array("php", "ptl"),
 		),
 	);
+}
+
+function getDefaultWidgetsRootPath() {
+	return __DIR__ . DIRECTORY_SEPARATOR . "widget" . DIRECTORY_SEPARATOR;
+}
+
+function scanDefaultWidgets($options = null) {
+	$widgets_root_path = getDefaultWidgetsRootPath();
+	$widgets = scanWidgets($widgets_root_path, $options);
+	
+	return $widgets;
 }
 
 function scanWidgets($dir, $options = null) {
@@ -109,6 +140,14 @@ function filterWidgets($widgets, $widgets_root_path, $widgets_root_url, $options
 	return $widgets;
 }
 
+function getDefaultMenuWidgetsHTML($widgets_root_url, $webroot_cache_folder_path = "", $webroot_cache_folder_url = "") {
+	$widgets_root_path = getDefaultWidgetsRootPath();
+	$widgets = scanDefaultWidgets();
+	$menu_widgets_html = getMenuWidgetsHTML($widgets, $widgets_root_path, $widgets_root_url, $webroot_cache_folder_path, $webroot_cache_folder_url);
+	
+	return $menu_widgets_html;
+}
+
 function getMenuWidgetsHTML($widgets, $widgets_root_path, $widgets_root_url, $webroot_cache_folder_path = "", $webroot_cache_folder_url = "") {
 	if ($widgets) {
 		$widgets_html = $groups_html = '';
@@ -138,12 +177,24 @@ function getMenuWidgetsHTML($widgets, $widgets_root_path, $widgets_root_url, $we
 		//remove repeated files
 		$menu_widgets_css_files = array_unique($menu_widgets_css_files); 
 		$menu_widgets_js_files = array_unique($menu_widgets_js_files); 
-		$wcfp = $webroot_cache_folder_path ? $webroot_cache_folder_path . "/files/" : null;
-		$wcfu = $webroot_cache_folder_url ? $webroot_cache_folder_url . "/files/" : null;
 		
-		$CssAndJSFilesOptimizer = new CssAndJSFilesOptimizer($wcfp, $wcfu);
-		$head = $CssAndJSFilesOptimizer->getCssAndJSFilesHtml($menu_widgets_css_files, $menu_widgets_js_files);
-		
+		if (class_exists("CssAndJSFilesOptimizer")) {
+			$wcfp = $webroot_cache_folder_path ? $webroot_cache_folder_path . "/files/" : null;
+			$wcfu = $webroot_cache_folder_url ? $webroot_cache_folder_url . "/files/" : null;
+			
+			$CssAndJSFilesOptimizer = new CssAndJSFilesOptimizer($wcfp, $wcfu);
+			$head = $CssAndJSFilesOptimizer->getCssAndJSFilesHtml($menu_widgets_css_files, $menu_widgets_js_files);
+		}
+		else {
+			$head = '';
+			
+			foreach ($menu_widgets_css_files as $path => $url)
+				$head .= '<link rel="stylesheet" href="' . $url . '">' . "\n";
+			
+			foreach ($menu_widgets_js_files as $path => $url)
+				$head .= '<script language="javascript" type="text/javascript" src="' . $url . '"></script>' . "\n";
+		}
+
 		return $head . $widgets_html . $groups_html;
 	}
 }
@@ -156,9 +207,18 @@ function parseWidgetFile($file_path, $widgets_root_path, $widgets_root_url) {
 		
 		$content = file_get_contents($file_path);
 		$content = str_replace("#widget_webroot_url#", $widget_root_url, $content); //replace url
-		$widget = XMLFileParser::parseXMLContentToArray($content, false, $file_path, false, false);
-		$widget = MyXML::complexArrayToBasicArray($widget);
-		$widget = isset($widget["widget"]) ? $widget["widget"] : null;
+		
+		if (class_exists("XMLFileParser")) {
+			$widget = XMLFileParser::parseXMLContentToArray($content, false, $file_path, false, false);
+			$widget = MyXML::complexArrayToBasicArray($widget);
+			$widget = isset($widget["widget"]) ? $widget["widget"] : null;
+		}
+		else {
+			$xml = simplexml_load_string($content, "SimpleXMLElement", LIBXML_NOCDATA);
+			//$xml = new SimpleXMLElement($content);
+			$widget = xmlToArray($xml);
+		}
+		//print_r($widget);die();
 		
 		//If the menu_widget xml node is empty but has attributes, the MyXML::complexArrayToBasicArray will merge the attributes in to the node without the @ property. So we must prevent this case, so the widget be prepared for the getMenuWidgetHTML method
 		if (isset($widget["menu_widget"]) && is_array($widget["menu_widget"]) && !array_key_exists("@", $widget["menu_widget"]))
@@ -277,7 +337,7 @@ function getMenuWidgetHTML($file_path, $widgets_root_path, $widgets_root_url, &$
 				foreach ($files["css"] as $file_css) 
 					if ($file_css && !in_array($widget_root_url . $file_css, $GLOBALS["layout_ui_editor_widgets_files_included"])) {
 						$GLOBALS["layout_ui_editor_widgets_files_included"][] = $widget_root_url . $file_css;
-						$menu_widgets_css_files[ realpath($widget_abs_folder_path . $file_css) ] = $widget_root_url . $file_css;
+						$menu_widgets_css_files[ realpath($widget_abs_folder_path . $file_css) ] = normalizeUrlPath($widget_root_url . $file_css);
 					}
 			}
 			
@@ -288,7 +348,7 @@ function getMenuWidgetHTML($file_path, $widgets_root_path, $widgets_root_url, &$
 				foreach ($files["js"] as $file_js)
 					if ($file_js && !in_array($widget_root_url . $file_js, $GLOBALS["layout_ui_editor_widgets_files_included"])) {
 						$GLOBALS["layout_ui_editor_widgets_files_included"][] = $widget_root_url . $file_js;
-						$menu_widgets_js_files[ realpath($widget_abs_folder_path . $file_js) ] = $widget_root_url . $file_js;
+						$menu_widgets_js_files[ realpath($widget_abs_folder_path . $file_js) ] = normalizeUrlPath($widget_root_url . $file_js);
 				}
 			}
 		}
@@ -320,5 +380,100 @@ function convertWidgetXmlAttributesToHtmlAttributes($attributes) {
 			$html .= ' ' . $k . '="' . addcslashes($v, '\\"') . '"';
 	
 	return $html;
+}
+
+function xmlToArray(SimpleXMLElement $xml) {
+	 $result = [];
+
+    // Convert children
+    foreach ($xml->children() as $childName => $child) {
+        $childArray = xmlToArray($child);
+
+        // Handle repeated nodes
+        if (isset($result[$childName])) {
+            if (!is_array($result[$childName]) || !array_is_list($result[$childName])) {
+                $result[$childName] = [$result[$childName]];
+            }
+            $result[$childName][] = $childArray;
+        } else {
+            $result[$childName] = $childArray;
+        }
+    }
+
+    // Handle attributes
+    $attributes = [];
+    foreach ($xml->attributes() as $attrName => $attrValue) {
+        $attributes[$attrName] = (string)$attrValue;
+    }
+
+    // Extract value (text content)
+    $text = trim((string)$xml);
+
+    // Case 1: node has attributes and optionally text
+    if (!empty($attributes)) {
+        $entry = ["@" => $attributes];
+        if ($text !== '') {
+            if (!empty($result)) {
+                $entry["value"] = $text;
+            } else {
+                // No children, just attributes + value
+                $entry["value"] = $text;
+            }
+        }
+        // Has children?
+        if (!empty($result)) {
+            $entry = array_merge($entry, $result);
+        }
+        return $entry;
+    }
+
+    // Case 2: node has children only
+    if (!empty($result)) {
+        return $result;
+    }
+
+    // Case 3: node has only value
+    return $text !== '' ? $text : null;
+}
+
+function normalizeUrlPath($url) {
+	$is_relative_url = strpos($url, '://') === false;
+	$parts = $is_relative_url ? array('path' => $url) : parse_url($url);
+	$path_prefix = $url[0] == '/' ? '/' : '';
+	
+	if (!isset($parts['path']) || $parts['path'] == "..")
+		return $url;
+	else if ($is_relative_url && preg_match('/^((?:\.\.\/)+)(.*)$/', $parts['path'], $m)) { //if start with "../"
+		$path_prefix .= $m[1] . ($m[2] == '..' ? $m[2] . '/' : '');
+		$parts['path'] = $m[2] != '..' ? $m[2] : '';
+	}
+	
+	// Split path into segments
+	$segments = explode('/', $parts['path']);
+	$resolved = [];
+
+	foreach ($segments as $seg) {
+		if ($seg === '' || $seg === '.') // ignore empty or dot
+			continue;
+		else if ($seg === '..') // go up one level
+			array_pop($resolved);
+		else
+			$resolved[] = $seg;
+	}
+
+	// Rebuild path
+	$normalized_path = $path_prefix . implode('/', $resolved);
+
+	// Rebuild URL fully
+	$final =
+		(isset($parts['scheme']) ? $parts['scheme'] . '://' : '') .
+		($parts['host'] ?? '') .
+		($parts['port'] ?? '' ? ':' . $parts['port'] : '') .
+		$normalized_path .
+		(isset($parts['query']) ? '?' . $parts['query'] : '') .
+		(isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
+
+	//echo "url:$url\nfinal:$final\n";
+	return $final;
 }
 ?>

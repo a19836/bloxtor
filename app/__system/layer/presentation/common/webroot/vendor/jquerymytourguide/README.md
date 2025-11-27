@@ -1,5 +1,9 @@
 # JQuery My Tour Guide
 
+> Original Repos:   
+> - JQuery My Tour Guide: https://github.com/a19836/jquerymytourguide/   
+> - Bloxtor: https://github.com/a19836/bloxtor/
+
 ## Overview
 
 **JQuery My My Tour Guide** is a lightweight JavaScript library that extends the functionality of the [LikaloLLC Tourguide](https://github.com/LikaloLLC/tourguide.js?tab=readme-ov-file) library.

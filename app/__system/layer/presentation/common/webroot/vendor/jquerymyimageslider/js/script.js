@@ -4,6 +4,11 @@
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
  *
+ * Original JQuery My Image Slider Repo: https://github.com/a19836/jquerymyimageslider/
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
+ *
  * Image Slider - jQuery Image Slider
  * @version: 1.0 - (2016/02/13)
  * @requires jQuery 

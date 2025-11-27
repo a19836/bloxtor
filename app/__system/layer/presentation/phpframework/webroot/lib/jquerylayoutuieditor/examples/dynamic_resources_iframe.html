@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+	
+	<!-- Bootstrap icons -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+	
+	<!-- MyWidgetResourceLib -->
+	<link href="../../../../common/css/MyWidgetResourceLib.css" rel="stylesheet">
+	<script src="../../../../common/js/MyWidgetResourceLib.js"></script>
+</head>
+<body class="droppable main-droppable">
+	<div class="m-3 p-3">
+		<div class="text-center fw-bold mb-4 text-success">
+			<h2>Dynamic Resources</h2>
+			<div>For more information on how to convert html elements into dynamic nodes please open the <a href="https://bloxtor.com/onlineitframeworktutorial/?block_id=documentation/layout_ui_editor/widget_resource_lib" target="MyWidgetResourceLib">MyWidgetResourceLib Tutorial</a>
+			</div>
+			<h5 class="text-primary mt-2">To test, click on the "Preview" tab below and then the buttons to call the configured resources</h5>
+		</div>
+		
+		<!-- List -->
+		<div class="text-right text-end" data-widget-group-list data-widget-props="{&quot;db_broker&quot;:&quot;&quot;,&quot;db_driver&quot;:&quot;mysql&quot;,&quot;db_type&quot;:&quot;diagram&quot;,&quot;db_table&quot;:&quot;item&quot;,&quot;db_table_alias&quot;:&quot;&quot;}">
+			<!-- List Search -->
+			<div class="card mb-4 text-left text-start" id="widget_search_1_1" data-widget-search data-widget-props="{&quot;dependent_widgets_id&quot;:[&quot;widget_list_1&quot;,&quot;widget_bottom_pagination_1_1&quot;]}">
+				<div class="card-body">
+					<label class="text-muted mb-1 small">Filter by:</label>
+					<div class="input-group input-group-sm" data-widget-search-input data-widget-props="{&quot;search_attrs&quot;:&quot;item_id,name&quot;, &quot;search_operator&quot;:&quot;or&quot;}">
+						<input class="form-control border border-secondary" placeholder="Type to search..." onkeyup="MyWidgetResourceLib.SearchHandler.onKeyUpSearchWidgetThroughInput(this, 1); return false;" onblur="MyWidgetResourceLib.SearchHandler.refreshSearchWidgetThroughInput(this); return false;"/>
+						<button class="btn btn-sm btn-outline-secondary text-nowrap" onclick="MyWidgetResourceLib.SearchHandler.refreshSearchWidgetThroughInput(this, true); return false;" title="Search">
+							<i class="bi bi-search icon icon-search overflow-visible"></i>
+						</button>
+						<button class="btn btn-sm btn-outline-secondary text-nowrap" onclick="MyWidgetResourceLib.SearchHandler.resetSearchWidgetThroughInput(this, true); return false;" title="Reset">
+							<i class="bi bi-x icon icon-reset overflow-visible"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+			
+			<!-- List Short-Actions -->
+			<div class="mb-4 btn-group text-center mw-100" id="widget_short_actions_1_1" data-widget-short-actions style="overflow:auto;">
+				<button class="btn btn-sm btn-outline-danger text-nowrap" onclick="MyWidgetResourceLib.ShortActionHandler.executeResourceMultipleRemoveAction(this); return false;" data-widget-button-multiple-remove data-widget-props="{&quot;empty_message&quot;:&quot;Please select some records first...&quot;,&quot;dependent_widgets_id&quot;:[&quot;widget_list_1&quot;]}" data-widget-resources="{&quot;error_message&quot;:&quot;Error trying to remove. Please try again...&quot;,&quot;success_message&quot;:&quot;Removed successfully!&quot;,&quot;confirmation_message&quot;:&quot;Are you sure you want to continue?&quot;,&quot;name&quot;:&quot;delete_all_items&quot;}" title="Remove">
+					<i class="bi bi-trash icon icon-remove mr-1 me-1 overflow-visible"></i>Remove</button>
+				<button class="btn btn-sm btn-outline-success text-nowrap" onclick="MyWidgetResourceLib.ShortActionHandler.addInlineResourceListItemToDependentWidgets(this); return false;" data-widget-button-add title="Add" data-widget-props="{&quot;dependent_widgets_id&quot;:[&quot;widget_list_1&quot;]}">
+					<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add Inline</button>
+				<button class="btn btn-sm btn-outline-success text-nowrap" onclick="MyWidgetResourceLib.PopupHandler.openButtonAddPopup(this); return false;" data-widget-button-add data-widget-popup-id="widget_popup_add_1" title="Add">
+					<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add via Popup</button>
+				<button class="btn btn-sm btn-outline-secondary text-nowrap" onclick="MyWidgetResourceLib.ShortActionHandler.toggleWidgetListTableAndTree(this); return false;" data-widget-button-toggle-between-widgets data-widget-props="{&quot;dependent_widgets_id&quot;:[&quot;widget_list_1&quot;]}" title="Toggle table to/from tree">
+					<i class="bi bi-back icon icon-toggle mr-1 me-1 overflow-visible"></i>Toggle table to/from tree</button>
+				<button class="btn btn-sm btn-outline-secondary text-nowrap" onclick="MyWidgetResourceLib.ShortActionHandler.resetWidgetListResourceSort(this); return false;" data-widget-props="{&quot;dependent_widgets_id&quot;:[&quot;widget_list_1&quot;]}" data-widget-button-reset-sorting title="Reset Sorting">
+					<i class="bi bi-x-circle icon icon-reset mr-1 me-1 overflow-visible"></i>Reset Sorting</button>
+				<button class="btn btn-sm btn-outline-secondary text-nowrap" onclick="MyWidgetResourceLib.ShortActionHandler.toggleWidgetListAttributeSelectCheckboxes(this); return false;" data-widget-props="{&quot;dependent_widgets_id&quot;:[&quot;widget_list_1&quot;]}" data-widget-button-toggle-list-attribute-select-checkboxes title="Select All">
+					<i class="bi bi-check2-square icon icon-reset mr-1 me-1 overflow-visible"></i>Select All</button>
+				<button class="btn btn-sm btn-outline-secondary text-nowrap" onclick="MyWidgetResourceLib.ShortActionHandler.refreshDependentWidgets(this); return false;" data-widget-props="{&quot;dependent_widgets_id&quot;:[&quot;widget_list_1&quot;]}" title="Refresh">
+					<i class="bi bi-arrow-clockwise icon icon-refresh mr-1 me-1 overflow-visible"></i>Refresh</button>
+			</div>
+			
+			<!-- List -->
+			<div class="card mb-3 text-left text-start" id="widget_list_1" data-widget-list data-widget-props="{&quot;items_limit_per_page&quot;:5,&quot;pks_attrs_names&quot;:&quot;item_id&quot;,&quot;load&quot;:[&quot;MyWidgetResourceLib.ListHandler.loadListTableAndTreeResource&quot;],&quot;dependent_widgets_id&quot;:&quot;widget_list_caption_1&quot;,&quot;complete&quot;:{&quot;add&quot;:[&quot;MyWidgetResourceLib.ListHandler.onAddResourceItem&quot;],&quot;update&quot;:&quot;MyWidgetResourceLib.ItemHandler.updateViewFieldsBasedInEditFields&quot;,&quot;update_attribute&quot;:&quot;MyWidgetResourceLib.ItemHandler.updateViewFieldsBasedInEditFields&quot;,&quot;remove&quot;:[&quot;MyWidgetResourceLib.ListHandler.onRemoveResourceItem&quot;]}}" data-widget-resources="{&quot;load&quot;:[{&quot;name&quot;:&quot;items&quot;}],&quot;add&quot;:[{&quot;name&quot;:&quot;insert_item&quot;,&quot;success_message&quot;:&quot;Added successfully!&quot;,&quot;error_message&quot;:&quot;Error trying to add. Please try again...&quot;}],&quot;update&quot;:[{&quot;name&quot;:&quot;update_item&quot;,&quot;success_message&quot;:&quot;Updated successfully!&quot;,&quot;error_message&quot;:&quot;Error trying to update. Please try again...&quot;}],&quot;update_attribute&quot;:[{&quot;name&quot;:&quot;update_item_attribute&quot;,&quot;error_message&quot;:&quot;Error trying to update. Please try again...&quot;}],&quot;remove&quot;:[{&quot;name&quot;:&quot;delete_item&quot;,&quot;confirmation_message&quot;:&quot;Are you sure you want to continue?&quot;,&quot;success_message&quot;:&quot;Removed successfully!&quot;,&quot;error_message&quot;:&quot;Error trying to remove. Please try again...&quot;}]}" data-widget-list-with-toggle-table-tree data-widget-resources-load="">
+				<div class="card-body">
+					<div class="list-responsive table-responsive">
+						
+						<!-- List Table -->
+						<table class="table table-sm table-striped table-hover text-left text-start list-table mb-0 small" data-widget-list-table>
+							<thead>
+								<tr>
+									<th class="border-0 pt-0 text-center text-muted fw-normal align-middle small" data-widget-list-select-items-head>
+										<input type="checkbox" onclick="MyWidgetResourceLib.ListHandler.toggleListAttributeSelectCheckboxes(this); return true;" data-widget-list-select-items-checkbox/>
+									</th>
+									<th class="border-0 pt-0 text-muted fw-normal align-middle small text-nowrap" data-widget-item-head onclick="MyWidgetResourceLib.ListHandler.sortListResource(this, event); return false;" data-widget-item-attribute-name="item_id">Item Id<i class="bi bi-filter-left ml-1 ms-1 overflow-visible icon icon-sort text-center"></i>
+										<i class="bi bi-sort-down-alt ml-1 ms-1 overflow-visible icon icon-sort-asc text-center"></i>
+										<i class="bi bi-sort-up ml-1 ms-1 overflow-visible icon icon-sort-desc text-center"></i>
+										<i class="bi bi-x-circle-fill ml-1 ms-1 overflow-visible icon icon-sort-reset text-center" onclick="MyWidgetResourceLib.ListHandler.resetListResourceSortAttribute(this, event); return false;"></i>
+									</th>
+									<th class="border-0 pt-0 text-muted fw-normal align-middle small text-nowrap" data-widget-item-head onclick="MyWidgetResourceLib.ListHandler.sortListResource(this, event); return false;" data-widget-item-attribute-name="name">Name<i class="bi bi-filter-left ml-1 ms-1 overflow-visible icon icon-sort text-center"></i>
+										<i class="bi bi-sort-down-alt ml-1 ms-1 overflow-visible icon icon-sort-asc text-center"></i>
+										<i class="bi bi-sort-up ml-1 ms-1 overflow-visible icon icon-sort-desc text-center"></i>
+										<i class="bi bi-x-circle-fill ml-1 ms-1 overflow-visible icon icon-sort-reset text-center" onclick="MyWidgetResourceLib.ListHandler.resetListResourceSortAttribute(this, event); return false;"></i>
+									</th>
+									<th class="border-0 pt-0 text-right text-end text-muted fw-normal align-middle small" data-widget-item-actions-head>
+										<button class="btn btn-sm btn-success text-nowrap m-1" onclick="MyWidgetResourceLib.ListHandler.addInlineResourceListItem(this); return false;" data-widget-button-add title="Add">
+											<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add Inline</button>
+										<button class="btn btn-sm btn-success text-nowrap m-1" onclick="MyWidgetResourceLib.PopupHandler.openButtonAddPopup(this); return false;" data-widget-button-add data-widget-popup-id="widget_popup_add_1" title="Add">
+											<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add via Popup</button>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr data-widget-item data-widget-with-button-toggle-inline-edit-view>
+									<td class="border-0 text-center align-middle" data-widget-item-selected-column>
+										<input type="checkbox" data-widget-item-selected-checkbox/>
+									</td>
+									<td class="border-0 align-middle" data-widget-item-column data-widget-item-attribute-name="item_id">
+										<span class="form-control-plaintext" data-widget-item-attribute-field-view data-widget-resource-value="{&quot;attribute&quot;:&quot;item_id&quot;}"></span>
+										<span class="form-control-plaintext" data-widget-item-attribute-field-edit data-widget-resource-value="{&quot;attribute&quot;:&quot;item_id&quot;}"></span>
+									</td>
+									<td class="border-0 align-middle" data-widget-item-column data-widget-item-attribute-name="name">
+										<span class="form-control-plaintext" data-widget-item-attribute-field-view data-widget-resource-value="{&quot;attribute&quot;:&quot;name&quot;}"></span>
+										<input class="form-control" type="text" data-widget-item-attribute-field-edit data-widget-resource-value="{&quot;attribute&quot;:&quot;name&quot;}" data-allow-null="1" data-validation-label="Name" maxlength="255" onblur="MyWidgetResourceLib.ItemHandler.updateResourceItemAttributeOnBlur(this); return false;" onkeyup="MyWidgetResourceLib.ItemHandler.updateResourceItemAttributeOnKeyUp(this); return false;"/>
+									</td>
+									<td class="border-0 text-right text-end align-middle" data-widget-item-actions-column>
+										<div class="btn-group justify-content-center align-items-center">
+											<button class="btn btn-sm btn-primary text-nowrap" data-widget-item-button-edit onclick="MyWidgetResourceLib.ItemHandler.openItemEditPopupById(this); return false;" data-widget-popup-id="widget_popup_edit_1" title="Edit">
+												<i class="bi bi-pencil icon icon-edit mr-1 me-1 overflow-visible"></i>Edit</button>
+											<button class="btn btn-sm btn-danger text-nowrap float-left float-start" data-widget-item-button-remove onclick="MyWidgetResourceLib.ItemHandler.removeResourceItem(this); return false;" title="Remove">
+												<i class="bi bi-trash icon icon-remove mr-1 me-1 overflow-visible"></i>Remove</button>
+											<button class="btn btn-sm btn-secondary text-nowrap" data-widget-item-button-update onclick="MyWidgetResourceLib.ItemHandler.updateResourceItem(this); return false;" title="Save">
+												<i class="bi bi-save icon icon-save mr-1 me-1 overflow-visible"></i>Save</button>
+											<button class="btn btn-sm btn-light text-nowrap" data-widget-item-button-toggle-inline-edit-view onclick="MyWidgetResourceLib.ItemHandler.toggleResourceAttributesEditing(this); return false;" title="Toggle Edit and View Fields">
+												<i class="bi bi-back icon icon-toggle mr-1 me-1 overflow-visible"></i>Toggle</button>
+										</div>
+									</td>
+								</tr>
+								<tr data-widget-item-add>
+									<td class="border-0 text-center align-middle" data-widget-item-selected-column></td>
+									<td class="border-0 align-middle" data-widget-item-column data-widget-item-attribute-name="item_id"></td>
+									<td class="border-0 align-middle" data-widget-item-column data-widget-item-attribute-name="name">
+										<input class="form-control" type="text" data-widget-item-attribute-field-add data-widget-resource-value="{&quot;attribute&quot;:&quot;name&quot;}" data-allow-null="1" data-validation-label="Name" maxlength="255"/>
+									</td>
+									<td class="border-0 text-right text-end align-middle" data-widget-item-actions-column>
+										<div class="btn-group justify-content-center align-items-center">
+											<button class="btn btn-sm btn-secondary text-nowrap m-1" data-widget-item-button-add-cancel onclick="MyWidgetResourceLib.ItemHandler.cancelAddResourceItem(this); return false;" title="Cancel">
+												<i class="bi bi-backspace icon icon-cancel mr-1 me-1 overflow-visible"></i>Cancel</button>
+											<button class="btn btn-sm btn-primary text-nowrap m-1" data-widget-item-button-add onclick="MyWidgetResourceLib.ItemHandler.addResourceItem(this); return false;" title="Add">
+												<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add</button>
+										</div>
+									</td>
+								</tr>
+								<tr data-widget-loading>
+									<td class="border-0 text-center text-muted small p-3" colspan="4">Loading new data... Please wait a while...</td>
+								</tr>
+								<tr data-widget-empty>
+									<td class="border-0 text-center text-muted small p-3" colspan="4">There are no records available.<div data-widget-empty-add>Please click in the button below to add new records:<br/>
+											<br/>
+											<button class="btn btn-sm btn-success text-nowrap m-1" onclick="MyWidgetResourceLib.ListHandler.addInlineResourceListItem(this); return false;" data-widget-button-add title="Add">
+												<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add Inline</button>
+											<button class="btn btn-sm btn-success text-nowrap m-1" onclick="MyWidgetResourceLib.PopupHandler.openButtonAddPopup(this); return false;" data-widget-button-add data-widget-popup-id="widget_popup_add_1" title="Add">
+												<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add new Record</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						
+						<!-- List Tree -->
+						<ul class="list-group border-0" data-widget-list-tree>
+							<li class="list-group-item" data-widget-item data-widget-with-button-toggle-inline-edit-view>
+								<div data-widget-item-selected-column>
+									<input type="checkbox" data-widget-item-selected-checkbox/>
+								</div>
+								<div class="row mb-3" data-widget-item-column data-widget-item-attribute-name="item_id">
+									<label class="col-sm-4 col-form-label" data-widget-item-head>Item Id<span class="label-colon">:</span>
+									</label>
+									<div class="col-sm-8">
+										<span class="form-control-plaintext" data-widget-item-attribute-field-view data-widget-resource-value="{&quot;attribute&quot;:&quot;item_id&quot;}"></span>
+									</div>
+									<span class="form-control-plaintext" data-widget-item-attribute-field-edit data-widget-resource-value="{&quot;attribute&quot;:&quot;item_id&quot;}"></span>
+								</div>
+								<div class="row mb-3" data-widget-item-column data-widget-item-attribute-name="name">
+									<label class="col-sm-4 col-form-label" data-widget-item-head>Name<span class="label-colon">:</span>
+									</label>
+									<div class="col-sm-8">
+										<span class="form-control-plaintext" data-widget-item-attribute-field-view data-widget-resource-value="{&quot;attribute&quot;:&quot;name&quot;}"></span>
+									</div>
+									<input class="form-control" type="text" data-widget-item-attribute-field-edit data-widget-resource-value="{&quot;attribute&quot;:&quot;name&quot;}" data-allow-null="1" data-validation-label="Name" maxlength="255" onblur="MyWidgetResourceLib.ItemHandler.updateResourceItemAttributeOnBlur(this); return false;" onkeyup="MyWidgetResourceLib.ItemHandler.updateResourceItemAttributeOnKeyUp(this); return false;"/>
+								</div>
+								<div class="text-right text-end mt-4" data-widget-item-actions-column>
+									<button class="btn btn-sm btn-primary text-nowrap m-1" data-widget-item-button-edit onclick="MyWidgetResourceLib.ItemHandler.openItemEditPopupById(this); return false;" data-widget-popup-id="widget_popup_edit_1" title="Edit">
+										<i class="bi bi-pencil icon icon-edit mr-1 me-1 overflow-visible"></i>Edit</button>
+									<button class="btn btn-sm btn-danger text-nowrap float-left float-start m-1" data-widget-item-button-remove onclick="MyWidgetResourceLib.ItemHandler.removeResourceItem(this); return false;" title="Remove">
+										<i class="bi bi-trash icon icon-remove mr-1 me-1 overflow-visible"></i>Remove</button>
+									<button class="btn btn-sm btn-primary text-nowrap m-1" data-widget-item-button-update onclick="MyWidgetResourceLib.ItemHandler.updateResourceItem(this); return false;" title="Save">
+										<i class="bi bi-save icon icon-save mr-1 me-1 overflow-visible"></i>Save</button>
+									<button class="btn btn-sm btn-light text-nowrap m-1" data-widget-item-button-toggle-inline-edit-view onclick="MyWidgetResourceLib.ItemHandler.toggleResourceAttributesEditing(this); return false;" title="Toggle Edit and View Fields">
+										<i class="bi bi-back icon icon-toggle mr-1 me-1 overflow-visible"></i>Toggle</button>
+								</div>
+							</li>
+							<li class="list-group-item" data-widget-item-add>
+								<div data-widget-item-selected-column></div>
+								<div class="row mb-3" data-widget-item-column data-widget-item-attribute-name="name">
+									<label class="col-sm-4 col-form-label" data-widget-item-head>Name<span class="label-colon">:</span>
+									</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" data-widget-item-attribute-field-add data-widget-resource-value="{&quot;attribute&quot;:&quot;name&quot;}" data-allow-null="1" data-validation-label="Name" maxlength="255"/>
+									</div></div>
+								<div class="text-right text-end mt-4" data-widget-item-actions-column>
+									<button class="btn btn-sm btn-secondary text-nowrap m-1" data-widget-item-button-add-cancel onclick="MyWidgetResourceLib.ItemHandler.cancelAddResourceItem(this); return false;" title="Cancel">
+										<i class="bi bi-backspace icon icon-cancel mr-1 me-1 overflow-visible"></i>Cancel</button>
+									<button class="btn btn-sm btn-primary text-nowrap m-1" data-widget-item-button-add onclick="MyWidgetResourceLib.ItemHandler.addResourceItem(this); return false;" title="Add">
+										<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add</button>
+								</div>
+							</li>
+							<li class="list-group-item" data-widget-loading>Loading new data... Please wait a while...</li>
+							<li class="list-group-item" data-widget-empty>There are no records available.<div data-widget-empty-add>Please click in the button below to add new records:<br/>
+									<br/>
+									<button class="btn btn-sm btn-success text-nowrap m-1" onclick="MyWidgetResourceLib.ListHandler.addInlineResourceListItem(this); return false;" data-widget-button-add title="Add">
+										<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add Inline</button>
+									<button class="btn btn-sm btn-success text-nowrap m-1" onclick="MyWidgetResourceLib.PopupHandler.openButtonAddPopup(this); return false;" data-widget-button-add data-widget-popup-id="widget_popup_add_1" title="Add">
+										<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add new Record</button>
+								</div>
+							</li>
+						</ul>
+					</div>
+					
+					<!-- List Caption -->
+					<div class="text-muted small mt-3" id="widget_list_caption_1" data-widget-list-caption data-widget-props="{&quot;load&quot;:&quot;MyWidgetResourceLib.ListHandler.loadListCaptionResource&quot;}" data-widget-resources="{&quot;load&quot;:&quot;count_items&quot;}">
+						<div data-widget-list-caption-info></div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- List Pagination -->
+			<div class="btn-toolbar justify-content-between text-left text-start mb-3" id="widget_bottom_pagination_1_1" data-widget-pagination data-widget-props="{&quot;number_of_pages_to_show_at_once&quot;:10,&quot;load&quot;:&quot;MyWidgetResourceLib.PaginationHandler.loadPaginationResource&quot;,&quot;dependent_widgets_id&quot;:[&quot;widget_list_1&quot;]}" data-widget-resources="count_items" data-widget-resources-load="">
+				<div class="input-group input-group-sm col-6 col-sm-4 col-md-3 col-lg-3 col-xl-1 align-items-start p-0" data-widget-pagination-go-to-page style="min-width:150px;">
+					<select class="form-control custom-select form-select border-secondary text-muted" data-widget-pagination-go-to-page-dropdown onchange="MyWidgetResourceLib.PaginationHandler.goToDropdownPage(this); return false;"></select>
+					<button class="btn btn-sm btn-outline-secondary text-nowrap" href="javascript:void(0)" onclick="MyWidgetResourceLib.PaginationHandler.goToDropdownPage(this, true); return false;" title="Refresh">
+						<i class="bi bi-arrow-clockwise icon icon-refresh mr-1 me-1 overflow-visible"></i>Refresh</button>
+				</div>
+				<div class="btn-group justify-content-end align-items-start" data-widget-pagination-pages role="group">
+					<a class="btn btn-sm btn-outline-secondary" data-widget-pagination-pages-first href="javascript:void(0)" onclick="MyWidgetResourceLib.PaginationHandler.goToFirstPage(this); return false;">First</a>
+					<a class="btn btn-sm btn-outline-secondary" data-widget-pagination-pages-previous href="javascript:void(0)" onclick="MyWidgetResourceLib.PaginationHandler.goToPreviousPage(this); return false;">Previous</a>
+					<div class="btn-group" data-widget-pagination-pages-numbers role="group">
+						<a class="btn btn-sm btn-outline-secondary" data-widget-pagination-pages-numbers-item href="javascript:void(0)" onclick="MyWidgetResourceLib.PaginationHandler.goToElementPage(this); return false;">
+							<span data-widget-pagination-pages-numbers-item-value>dummy page #</span>
+						</a>
+					</div>
+					<a class="btn btn-sm btn-outline-secondary" data-widget-pagination-pages-next href="javascript:void(0)" onclick="MyWidgetResourceLib.PaginationHandler.goToNextPage(this); return false;">Next</a>
+					<a class="btn btn-sm btn-outline-secondary" data-widget-pagination-pages-last href="javascript:void(0)" onclick="MyWidgetResourceLib.PaginationHandler.goToLastPage(this); return false;">Last</a>
+				</div>
+			</div>
+			
+			<!-- Add Popup -->
+			<div class="modal fade text-left text-start" id="widget_popup_add_1" data-widget-popup data-widget-popup-add tabindex="-1" role="dialog" data-widget-props="{&quot;dependent_widgets_id&quot;:&quot;widget_popup_add_form_1&quot;}" style="background-color:rgba(0, 0, 0, .5);">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title text-muted">Add Item</h5>
+							<button class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" title="Close Popup"></button>
+						</div>
+						<div class="modal-body">
+							<form class="show-add-fields" id="widget_popup_add_form_1" method="post" onsubmit="return false;" data-widget-form data-widget-resources="{&quot;add&quot;:{&quot;error_message&quot;:&quot;Error trying to add. Please try again...&quot;,&quot;success_message&quot;:&quot;Added successfully!&quot;,&quot;name&quot;:&quot;insert_item&quot;}}" data-widget-props="{&quot;pks_attrs_names&quot;:&quot;&quot;,&quot;dependent_widgets_id&quot;:[&quot;widget_list_1&quot;,&quot;widget_bottom_pagination_1_1&quot;],&quot;complete&quot;:{&quot;add&quot;:&quot;MyWidgetResourceLib.FormHandler.onAddPopupResourceItem&quot;},&quot;enter_key_press_button&quot;:&quot;[data-widget-item-button-add]&quot;}">
+								<div class="row mb-3" data-widget-item-column data-widget-item-attribute-name="name">
+									<label class="col-sm-4 col-form-label" data-widget-item-head>Name<span class="label-colon">:</span>
+									</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" data-widget-item-attribute-field-add data-widget-resource-value="{&quot;attribute&quot;:&quot;name&quot;}" data-allow-null="1" data-validation-label="Name" maxlength="255"/>
+									</div></div>
+								<div class="text-right text-end mt-4" data-widget-item-actions-column>
+									<button class="btn btn-sm btn-secondary text-nowrap m-1 cancel" onclick="MyWidgetResourceLib.PopupHandler.closeParentPopup(this); return false;" title="Cancel">
+										<i class="bi bi-backspace icon icon-cancel mr-1 me-1 overflow-visible"></i>Cancel</button>
+									<button class="btn btn-sm btn-primary text-nowrap m-1" data-widget-item-button-add onclick="MyWidgetResourceLib.ItemHandler.addResourceItem(this); return false;" title="Add">
+										<i class="bi bi-plus-lg icon icon-add mr-1 me-1 overflow-visible"></i>Add</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Edit Popup -->
+			<div class="modal fade text-left text-start" id="widget_popup_edit_1" data-widget-popup data-widget-popup-edit tabindex="-1" role="dialog" data-widget-props="{&quot;dependent_widgets_id&quot;:&quot;widget_popup_edit_form_1&quot;,&quot;load&quot;:&quot;MyWidgetResourceLib.PopupHandler.loadPopupResource&quot;}" style="background-color:rgba(0, 0, 0, .5);">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title text-muted">Edit Item</h5>
+							<button class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close" title="Close Popup"></button>
+						</div>
+						<div class="modal-body">
+							<form id="widget_popup_edit_form_1" method="post" onsubmit="return false;" data-widget-form data-widget-resources="{&quot;load&quot;:[{&quot;error_message&quot;:&quot;No record available...&quot;,&quot;name&quot;:&quot;item&quot;}],&quot;update&quot;:[{&quot;error_message&quot;:&quot;Error trying to update. Please try again...&quot;,&quot;success_message&quot;:&quot;Updated successfully!&quot;,&quot;name&quot;:&quot;update_item&quot;}],&quot;remove&quot;:[{&quot;error_message&quot;:&quot;Error trying to remove. Please try again...&quot;,&quot;success_message&quot;:&quot;Removed successfully!&quot;,&quot;confirmation_message&quot;:&quot;Are you sure you want to continue?&quot;,&quot;name&quot;:&quot;delete_item&quot;}]}" data-widget-props="{&quot;pks_attrs_names&quot;:&quot;item_id&quot;,&quot;dependent_widgets_id&quot;:[&quot;widget_list_1&quot;],&quot;load&quot;:&quot;MyWidgetResourceLib.FormHandler.loadFormResource&quot;,&quot;complete&quot;:{&quot;update&quot;:&quot;MyWidgetResourceLib.FormHandler.onUpdatePopupResourceItem&quot;,&quot;remove&quot;:&quot;MyWidgetResourceLib.FormHandler.onRemovePopupResourceItem&quot;},&quot;enter_key_press_button&quot;:&quot;[data-widget-item-button-edit],[data-widget-item-button-update]&quot;}">
+								<div class="row mb-3" data-widget-item-column data-widget-item-attribute-name="item_id">
+									<label class="col-sm-4 col-form-label" data-widget-item-head>Item Id<span class="label-colon">:</span>
+									</label>
+									<div class="col-sm-8">
+										<span class="form-control-plaintext" data-widget-item-attribute-field-edit data-widget-resource-value="{&quot;attribute&quot;:&quot;item_id&quot;}"></span>
+									</div></div>
+								<div class="row mb-3" data-widget-item-column data-widget-item-attribute-name="name">
+									<label class="col-sm-4 col-form-label" data-widget-item-head>Name<span class="label-colon">:</span>
+									</label>
+									<div class="col-sm-8">
+										<input class="form-control" type="text" data-widget-item-attribute-field-edit data-widget-resource-value="{&quot;attribute&quot;:&quot;name&quot;}" data-allow-null="1" data-validation-label="Name" maxlength="255"/>
+									</div></div>
+								<div class="text-right text-end mt-4" data-widget-item-actions-column>
+									<button class="btn btn-sm btn-secondary text-nowrap m-1 cancel" onclick="MyWidgetResourceLib.PopupHandler.closeParentPopup(this); return false;" title="Cancel">
+										<i class="bi bi-backspace icon icon-cancel mr-1 me-1 overflow-visible"></i>Cancel</button>
+									<button class="btn btn-sm btn-danger text-nowrap float-left float-start m-1" data-widget-item-button-remove onclick="MyWidgetResourceLib.ItemHandler.removeResourceItem(this); return false;" title="Remove">
+										<i class="bi bi-trash icon icon-remove mr-1 me-1 overflow-visible"></i>Remove</button>
+									<button class="btn btn-sm btn-primary text-nowrap m-1" data-widget-item-button-update onclick="MyWidgetResourceLib.ItemHandler.updateResourceItem(this); return false;" title="Save">
+										<i class="bi bi-save icon icon-save mr-1 me-1 overflow-visible"></i>Save</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script>
+			var start_init = !document.body.classList.contains("droppable");
+			
+			if (start_init) {
+				if (typeof window.public_user_type_id == "undefined") 
+					window.public_user_type_id = 1;
+				
+				if (typeof window.get_resource_url == "undefined") 
+					window.get_resource_url = "dynamic_resources_server.php";
+				
+				if (typeof window.chart_js_url == "undefined") 
+					window.chart_js_url = "../lib/chartjs/chart.js";
+				
+				if (typeof window.calendar_js_url == "undefined") 
+					window.calendar_js_url = "../lib/fullcalendar/dist/index.global.min.js";
+				
+				if (typeof window.sla_results == "undefined") 
+					window.sla_results = {};
+				
+				var initMyWidgetResourceLib = function() {
+					if (typeof MyWidgetResourceLib == "function") 
+						MyWidgetResourceLib.fn.initWidgets();
+					else 
+						setTimeout(initMyWidgetResourceLib, 1000);
+				}
+				
+				initMyWidgetResourceLib();
+			}
+		</script>
+	</div>
+</body>
+</html>

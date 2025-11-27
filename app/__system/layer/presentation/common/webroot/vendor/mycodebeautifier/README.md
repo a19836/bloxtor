@@ -1,5 +1,9 @@
 # My Code Beautifier
 
+> Original Repos:   
+> - My Code Beautifier: https://github.com/a19836/mycodebeautifier/   
+> - Bloxtor: https://github.com/a19836/bloxtor/
+
 ## Overview
 
 **My Code Beautifier** is a javascript library to beautify PHP code, but it also works in other languages.

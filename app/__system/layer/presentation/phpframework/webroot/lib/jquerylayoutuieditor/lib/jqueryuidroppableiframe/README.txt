@@ -1,5 +1,5 @@
 To access this page please open the browser the following url:
-	http://jplpinto.localhost/__system/common/webroot/vendor/jquerylayoutuieditor/vendor/jqueryuidroppableiframe/index.html
+	http://jplpinto.localhost/__system/lib/jquerylayoutuieditor/lib/jqueryuidroppableiframe/index.html
 
 http://maxazan.github.io/jquery-ui-droppable-iframe/
 	with fix: js/jquery-ui-droppable-iframe-fix-1.js

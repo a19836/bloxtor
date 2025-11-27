@@ -3,6 +3,10 @@
  * 
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
+ *
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
 //IMPORTANT: DO NOT ADD HERE THE ADD_SECURITY_CODE_HERE, BC THIS FILE WILL BE USED IN THE PROJECTS LEVEL TOO AND THE PROJECTS CAN BE EXPORTED TO ANY CLIENT SERVER, WHICH MEANS IT CAN RUN IN ANY DOMAIN.

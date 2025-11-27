@@ -3,7 +3,8 @@
 	<script src="js/MyCodeBeautifier.js"></script>
 </head>
 <body>
-	<textarea class="textarea1" rows=20 style="width:100%;">
+	<h3>PHP Code to beautify</h3>
+	<textarea class="textarea1" rows=10 style="width:100%;">
 <?php
 foo();
 $obj->bar();
@@ -130,8 +131,10 @@ self::preparePaging($data);
 return $this->getBroker()->callSelect('test.service', 'get_price_types', $data);
 ?>
 	</textarea>
+	
+	<h3 style="margin-top:50px;">PHP Code already beautified <button style="float:right;" onClick="beautify()">Beautify Again</button></h3>
 	<textarea class="textarea2" rows=20 style="width:100%;"></textarea>
-	<button onClick="beautify()">Beautify</button>
+	
 	<script>
 		function beautify() {
 			var code = document.querySelector(".textarea1").value;

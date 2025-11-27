@@ -1,6 +1,6 @@
 [
   {
-    "image": "https://cdn.docsie.io/workspace_x276s7jrJhnLKVh3n/doc_eIWkWMNchrMYpUSGw/file_zL84IvnQjMxj3wAvR/6f7ee74d-48c0-e460-4e51-b0fae3a839a3castlebytheriver2.png",
+    "image": "https://bloxtor.com/img/logo/bloxtor_logo_full.svg",
     "width": "320px",
     "title": "Introducing timelines",
     "placement": "bottom-right",
@@ -29,7 +29,7 @@
   {
     "selector": "h2",
     "video": "http://techslides.com/demos/sample-videos/small.webm",
-    "image": "https://cdn.docsie.io/workspace_x276s7jrJhnLKVh3n/doc_eIWkWMNchrMYpUSGw/file_zL84IvnQjMxj3wAvR/6f7ee74d-48c0-e460-4e51-b0fae3a839a3castlebytheriver2.png",
+    "image": "https://bloxtor.com/img/logo/bloxtor_logo_full.svg",
     "width": "320px",
     "title": "Paragraphs & Emphasis",
     "content": "<p>I really like using Markdown.<br>\nAnd the next line.<br>\n<strong>This</strong> is bold text.<br>\n<em>This</em> is italic text.<br>\n<strong><em>This</em></strong> is important text.</p>"
@@ -60,7 +60,7 @@
   },
   {
     "selector": "body>div:first-of-type>div>div>ul>li:first-of-type>a",
-    "image": "https://cdn.docsie.io/workspace_x276s7jrJhnLKVh3n/doc_eIWkWMNchrMYpUSGw/file_zL84IvnQjMxj3wAvR/6f7ee74d-48c0-e460-4e51-b0fae3a839a3castlebytheriver2.png",
+    "image": "https://bloxtor.com/img/logo/bloxtor_logo_full.svg",
     "height": "320px",
     "title": "This is the first",
     "content": "First item in the dropdown",
@@ -68,14 +68,14 @@
   },
   {
     "selector": "body>div:first-of-type>div>div>ul>li:nth-of-type(2)>a",
-    "image": "https://cdn.docsie.io/workspace_x276s7jrJhnLKVh3n/doc_eIWkWMNchrMYpUSGw/file_zL84IvnQjMxj3wAvR/6f7ee74d-48c0-e460-4e51-b0fae3a839a3castlebytheriver2.png",
+    "image": "https://bloxtor.com/img/logo/bloxtor_logo_full.svg",
     "width": "320px",
     "title": "This is the second",
     "content": "Second item in the dropdown"
   },
   {
     "selector": "body>div:first-of-type>div>div>ul>li:nth-of-type(3)>a",
-    "image": "https://cdn.docsie.io/workspace_x276s7jrJhnLKVh3n/doc_eIWkWMNchrMYpUSGw/file_zL84IvnQjMxj3wAvR/6f7ee74d-48c0-e460-4e51-b0fae3a839a3castlebytheriver2.png",
+    "image": "https://bloxtor.com/img/logo/bloxtor_logo_full.svg",
     "title": "This is the third",
     "content": "Third item in the dropdown!"
   },

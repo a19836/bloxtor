@@ -16,10 +16,13 @@
 	
 	<style>
 	a {margin-bottom:10px; display:block;}
+	.myfancypopup iframe {width:100%; height:100%;}
 	.myfancypopup.yellow { background:yellow; }
+	
+	#popup1 {cursor:default;}
 	</style>
 	<script>
-	var MyFancyPopup2 = null;
+	var MyFancyPopupAux = null;
 	
 	function showPopup1() {
 		MyFancyPopup.init({
@@ -36,9 +39,9 @@
 		MyFancyPopup.showPopup();
 	}
 	function showPopup3() {
-		if (!MyFancyPopup2) {
-			MyFancyPopup2 = new MyFancyPopupClass();
-			MyFancyPopup2.init({
+		if (!MyFancyPopupAux) {
+			MyFancyPopupAux = new MyFancyPopupClass();
+			MyFancyPopupAux.init({
 				elementToShow: $('#popup3'),
 				parentElement: $('section').first(),
 				type: "iframe",
@@ -51,30 +54,66 @@
 			});
 		}
 		
-		MyFancyPopup2.showPopup();
+		MyFancyPopupAux.showPopup();
 	}
 	</script>
 </head>	
 <body>
+	<h3>Popup 1 - Not draggable</h3>
+	<a href="#" onClick="showPopup1();">CLICK HERE TO SEE POPUP 1</a>
 	<div id="popup1" class="myfancypopup">
 		<div class="title">NOT Draggable Popup</div>
 		<p class="content">CONTENT HERE</p>
 	</div>
+	<p>Javascript Code:</p>
+	<pre>
+	MyFancyPopup.init({
+		elementToShow: $('#popup1')
+	});
+	MyFancyPopup.showPopup({
+		not_draggable: true
+	});
+	</pre>
+	<hr/>
 	
+	<h3>Popup 2 - Draggable</h3>
+	<a href="#" onClick="showPopup2();">CLICK HERE TO SEE POPUP 2</a>
 	<div id="popup2" class="myfancypopup">
 		<h1>Draggable Popup with inline iframe</h1>
 		<iframe src="iframe.html"></iframe>
 	</div>
+	<p>Javascript Code:</p>
+	<pre>
+	MyFancyPopup.init({
+		elementToShow: $('#popup2')
+	});
+	MyFancyPopup.showPopup();
+	</pre>
+	<hr/>
 	
+	<h3>Popup 3 - Draggable with auto-iframe</h3>
+	<a href="#" onClick="showPopup3();">CLICK HERE TO SEE POPUP 3</a>
 	<section class="some_node">
 		<div id="popup3" class="myfancypopup">
 			<h1>Popup with auto iframe</h1>
 		</div>
 	</section>
+	<pre>
+	MyFancyPopupAux = new MyFancyPopupClass();
+	MyFancyPopupAux.init({
+		elementToShow: $('#popup3'),
+		parentElement: $('section').first(),
+		type: "iframe",
+		url: "iframe.html",
+		refreshIframeOnOpen: true,
+		popupClass: "yellow",
+		onIframeOnLoad: function() {
+			MyFancyPopup.hideLoading();
+		}
+	});
+	MyFancyPopupAux.showPopup();
+	</pre>
 	
-	<a href="#" onClick="showPopup1();">CLICK HERE TO SEE POPUP 1</a>
-	<a href="#" onClick="showPopup2();">CLICK HERE TO SEE POPUP 2</a>
-	<a href="#" onClick="showPopup3();">CLICK HERE TO SEE POPUP 3</a>
 </body>
 </html>
 

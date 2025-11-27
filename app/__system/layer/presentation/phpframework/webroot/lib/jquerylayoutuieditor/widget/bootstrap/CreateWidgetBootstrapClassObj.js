@@ -3,6 +3,11 @@
  * 
  * Multi-licensed: BSD 3-Clause | Apache 2.0 | GNU LGPL v3 | HLNC License (http://bloxtor.com/LICENSE_HLNC.md)
  * Choose one license that best fits your needs.
+ *
+ * Original JQuery Layout UI Editor Repo: https://github.com/a19836/jquerylayoutuieditor/
+ * Original Bloxtor Repo: https://github.com/a19836/bloxtor
+ *
+ * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
 function CreateWidgetBootstrapClassObj(ui_creator, menu_widget, widget_tag) {
@@ -52,7 +57,7 @@ function CreateWidgetBootstrapClassObj(ui_creator, menu_widget, widget_tag) {
 			
 			ui_creator.initPopup({
 				elementToShow: popup_content,
-				parentElement: document,
+				parentElement: ui.hasClass("full-screen") ? ui : document,
 				onClose: function() {
 					if (me.widget && me.widget[0] && me.widget[0].parentNode) //check if widget really exists, bc this function is called on hide and if the user selects a bootstrap widget, then the handler will replace this widget, whcih means its parentNode will not exists, bc the widget was removed before.
 						ui_creator.deleteTemplateWidget(me.widget);
