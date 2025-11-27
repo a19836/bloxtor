@@ -8,6 +8,8 @@
 
 **JQuery My Fancy Light Box** is a lightweight JavaScript library to display popups.
 
+Check out a live example by opening [index.html](index.html).
+
 Requirements:
 - jquery library
 

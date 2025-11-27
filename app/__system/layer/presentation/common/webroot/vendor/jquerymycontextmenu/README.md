@@ -8,6 +8,8 @@
 
 **JQuery My Context Menu** is a lightweight JavaScript library for displaying user-defined context menus on right-click.
 
+Check out a live example by opening [index.html](index.html).
+
 Requirements:
 - jquery library
 

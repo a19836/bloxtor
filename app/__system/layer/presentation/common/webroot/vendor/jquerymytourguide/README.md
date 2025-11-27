@@ -7,8 +7,9 @@
 ## Overview
 
 **JQuery My My Tour Guide** is a lightweight JavaScript library that extends the functionality of the [LikaloLLC Tourguide](https://github.com/LikaloLLC/tourguide.js?tab=readme-ov-file) library.
-
 It provides an easy way to create interactive guided tours for your web applications.
+
+Check out a live example by opening [index.html](index.html).
 
 Requirements:
 - jquery library

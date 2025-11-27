@@ -6,10 +6,13 @@
 
 ## Overview
 
-**JQuery Layout UI Editor** is a powerful WYSIWYG (What-You-See-Is-What-You-Get) layout builder designed to convert frontend and backend code — including **HTML**, **CSS**, **JavaScript**, and **PHP** code - into reusable, visual, draggable and configurable UI components.  
-With an intuitive **drag & drop editor**, users can visually design interfaces and responsive layouts without manually writing code, while still having the ability to view, edit, or export the underlying source.
-This library is composed of multiple widgets that allow you to draw any type of layout, but you can also **extend our widget library by creating your own components**, making the editor highly flexible and scalable.
-It is ideal for developers, designers, and tools that need dynamic UI assembly from existing code.
+**JQuery Layout UI Editor** is a powerful WYSIWYG (What-You-See-Is-What-You-Get) layout builder designed to convert frontend and backend code - including **HTML**, **CSS**, **JavaScript**, and **PHP** code - into reusable, visual, draggable and configurable UI components.  
+With an intuitive **drag & drop editor**, users can visually design interfaces and responsive layouts without manually writing code, while still having the ability to view, edit, or export the underlying source.   
+This library is composed of multiple widgets that allow you to draw any type of layout, but you can also **extend our widget library by creating your own components**, making the editor highly flexible and scalable.   
+   
+It is ideal for developers, designers, and tools that need dynamic UI assembly from existing code.   
+
+Check out a live example by opening [index_simple.html](index_simple.html) (simple example) or [index.php](index.php) (full and optimized example).   
 
 > **Optional integrations**  
 > This editor also works with the following complementary libraries:

@@ -8,6 +8,8 @@
 
 **My Code Beautifier** is a javascript library to beautify PHP code, but it also works in other languages.
 
+Check out a live example by opening [index.html](index.html).
+
 ---
 
 ## Usage

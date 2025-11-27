@@ -8,6 +8,8 @@
 
 **JQuery Task flow Chart** is a JavaScript library to draw diagrams, like: work-flows, logic flows, DB tables diagrams, use cases diagrams or any other type of diagrams. Basically you define your widgets and the exit points for each widget and then you connect them through drag and drop.
 
+Check out a live example by opening [index.php](index.php).
+
 Requirements:
 - jquery
 - jquerymycontextmenu

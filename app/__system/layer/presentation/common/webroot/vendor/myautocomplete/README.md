@@ -8,6 +8,8 @@
 
 **My Auto Complete** is a lightweight JavaScript library that transforms a text box into a smart autocomplete field, displaying matching suggestions in a dropdown list to make user selection faster and easier as you type.
 
+Check out a live example by opening [index.html](index.html).
+
 ---
 
 ## Usage

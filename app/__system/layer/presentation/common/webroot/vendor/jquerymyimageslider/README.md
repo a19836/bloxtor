@@ -8,6 +8,8 @@
 
 **JQuery My Image Slider** is a lightweight JavaScript library to show images in a slider.
 
+Check out a live example by opening [index.html](index.html).
+
 Requirements:
 - jquery library
 

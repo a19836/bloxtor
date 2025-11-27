@@ -8,6 +8,8 @@
 
 **JQuery My Tree** is a lightweight JavaScript library that transforms <ul> and <li> elements into an intuitive, user-friendly tree view, listing these nodes into a collapsible and hierarchical tree structure, ideal for file system navigation.
 
+Check out a live example by opening [index.html](index.html).
+
 Requirements:
 - jquery library
 

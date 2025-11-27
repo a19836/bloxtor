@@ -6,7 +6,9 @@
 
 ## Overview
 
-**JQuery My My Status Message** is a lightweight JavaScript library for displaying info and error messages elegantly.
+**JQuery My Status Message** is a lightweight JavaScript library for displaying info and error messages elegantly.
+
+Check out a live example by opening [index.html](index.html).
 
 Requirements:
 - jquery library
