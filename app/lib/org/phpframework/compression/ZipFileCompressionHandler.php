@@ -11,7 +11,6 @@
  */
 
 include_once get_lib("org.phpframework.compression.IFileCompressionHandler");
-include_once get_lib("org.phpframework.compression.ZipHandler");
 
 class ZipFileCompressionHandler implements IFileCompressionHandler {
 	protected $file_pointer = null;

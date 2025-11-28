@@ -1506,22 +1506,25 @@ trait DBStatic {
 			return $extra_settings;
 		
 		$parsed_extra_settings = array();
-		$pairs = explode('&', $extra_settings);
 		
-		foreach ($pairs as $pair) {
-			//split into name and value
-			list($name, $value) = explode('=', $pair, 2);
+		if (trim($extra_settings)) {
+			$pairs = explode('&', $extra_settings);
+			
+			foreach ($pairs as $pair) {
+				//split into name and value
+				list($name, $value) = explode('=', $pair, 2);
 
-			//if name already exists
-			if (isset($parsed_extra_settings[$name])) {
-				//stick multiple values into an array
-				if (is_array($parsed_extra_settings[$name]))
-					$parsed_extra_settings[$name][] = $value;
-				else
-					$parsed_extra_settings[$name] = array($parsed_extra_settings[$name], $value);
+				//if name already exists
+				if (isset($parsed_extra_settings[$name])) {
+					//stick multiple values into an array
+					if (is_array($parsed_extra_settings[$name]))
+						$parsed_extra_settings[$name][] = $value;
+					else
+						$parsed_extra_settings[$name] = array($parsed_extra_settings[$name], $value);
+				}
+				else //otherwise, simply stick it in a scalar
+					$parsed_extra_settings[$name] = $value;
 			}
-			else //otherwise, simply stick it in a scalar
-				$parsed_extra_settings[$name] = $value;
 		}
 		
 		return $parsed_extra_settings;
