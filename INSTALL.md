@@ -23,19 +23,19 @@ Bloxtor is lightweight and runs seamlessly on a Raspberry Pi. Any hardware capab
 ## Install through Docker
 
 You have four installation options for Bloxtor using Docker:
-* **A. Full Remote Installation with Prebuilt Image**: uses remote prebuilt images with all features and modules already installed on a MySQL database.
+* **[A. Full Remote Installation with Prebuilt Image](#a-full-remote-installation-with-prebuilt-image)**: uses remote prebuilt images with all features and modules already installed on a MySQL database.
 	- Ready-to-use installation, no setup required.
 	- Using Docker Compose
 	- Faster Process
-* **B. Empty Remote Installation with Prebuilt Image**: uses remote prebuilt images but you need to run the setup from scratch on a fresh MySQL database.
+* **[B. Empty Remote Installation with Prebuilt Image](#b-empty-remote-installation-with-prebuilt-image)**: uses remote prebuilt images but you need to run the setup from scratch on a fresh MySQL database.
 	- Requires setup to be completed after installation.
 	- Using Docker Compose
 	- Faster Process
-* **C. Empty Local Installation without Prebuilt Image**: builds a new local image from your current files using a MySQL database.
+* **[C. Empty Local Installation without Prebuilt Image](#c-empt-local-installation-without-prebuilt-image)**: builds a new local image from your current files using a MySQL database.
 	- Requires setup to be completed after installation.
 	- Using Docker Compose
 	- Slower Process
-* **D. Local Installation without Database**: builds a new local image from your current files without attaching a database.
+* **[D. Local Installation without Database](#d-local-installation-without-database)**: builds a new local image from your current files without attaching a database.
 	- Ideal for frontend-only testing. Setup required afterward.
 	- Using Only the Dockerfile - Single Container
 	- Slower Process

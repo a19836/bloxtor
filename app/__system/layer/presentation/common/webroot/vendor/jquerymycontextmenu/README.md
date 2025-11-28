@@ -74,7 +74,14 @@ Requirements:
 		$('a.mylinks').addcontextmenu('contextmenu1');
 
 		//apply context menu to all images on the page
-		$('img').addcontextmenu('contextmenu2');
+		$('img').addcontextmenu('contextmenu2', {
+			callback: function(elm, context_menu_elm, ev) { //This gets called everytime the contextmenu opens, this is, everytime the mouse right button gets clicked.
+				console.log(elm);
+				console.log(context_menu_elm);
+				console.log(ev);
+			},
+			ignore_tap_hold: true, //If true, then the taphold event will not be set and the contextmenu will not be triggered on taphold. The default value is false, which means the taphold event is set by default.
+		});
 	</script>
 </body>
 </html>
@@ -89,7 +96,13 @@ var MyContextMenu2 = new MyContextMenuClass();
 
 Sets a contextmenu to a node based in a html element:
 ```
-$('#selector').addcontextmenu('id for contextmenu node');
+//var options = null; //options variable can also be null
+var options = {
+	callback: function(elm, context_menu_elm, ev) {...}, //This gets called everytime the contextmenu opens, this is, everytime the mouse right button gets clicked.
+	ignore_tap_hold: true, //If true, then the taphold event will not be set and the contextmenu will not be triggered on taphold. The default value is false, which means the taphold event is set by default.
+};
+
+$('#selector').addcontextmenu('id for contextmenu node', options); //options are optional
 ```
 
 Sets a contextmenu to a node based in a html element:
