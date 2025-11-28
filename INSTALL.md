@@ -1,5 +1,13 @@
 # Bloxtor installation steps
 
+## Table of Contents
+
+- [Hardware Requirements](#hardware-requirements)
+- [Install through Docker](#install-through-docker)
+- [Install Manually on a Local PC](#install-manually-on-a-local-pc)
+- [Install on a Shared Hosting Server](#install-on-a-shared-hosting-server)
+- [Configure Cronjobs](#configure-cronjobs)
+
 ## Hardware Requirements
 
 To ensure minimum performance, the following hardware specifications are recommended:
