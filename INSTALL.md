@@ -31,11 +31,11 @@ You have four installation options for Bloxtor using Docker:
 	- Requires setup to be completed after installation.
 	- Using Docker Compose
 	- Faster Process
-* **[C. Empty Local Installation without Prebuilt Image](#c-empt-local-installation-without-prebuilt-image)**: builds a new local image from your current files using a MySQL database.
+* **[C. Empty Local Installation without Prebuilt Image](#c-empty-local-installation-without-prebuilt-image)**: builds a new local image from your current files using a MySQL database.
 	- Requires setup to be completed after installation.
 	- Using Docker Compose
 	- Slower Process
-* **[D. Local Installation without Database](#d-local-installation-without-database)**: builds a new local image from your current files without attaching a database.
+* **[D. Local Installation without Prebuilt Image and Database](#d-local-installation-without-prebuilt-image-and-database)**: builds a new local image from your current files without attaching a database.
 	- Ideal for frontend-only testing. Setup required afterward.
 	- Using Only the Dockerfile - Single Container
 	- Slower Process
