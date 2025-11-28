@@ -58,7 +58,7 @@ class AliasBuilder {
             return "";
         }
         $sql = "";
-        if ($parsed['alias']['as']) {
+        if (!empty($parsed['alias']['as'])) {
             $sql .= " as";
         }
         $sql .= " " . $parsed['alias']['name'];

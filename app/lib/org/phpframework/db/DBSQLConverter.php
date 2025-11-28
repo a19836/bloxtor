@@ -533,8 +533,11 @@ trait DBSQLConverter {
 			for($i = 0; $i < $t; $i++) {
 				$key = $keys[$i];
 				
-				if (!empty($key["ftable"]))
-					$sql .= ($sql ? ", " : "") . SQLQueryHandler::getParsedSqlTableName($key["ftable"]) . ".*";
+				if (!empty($key["ftable"])) {
+					$f_table_alias = SQLQueryHandler::getAlias($key["ftable"]);
+					
+					$sql .= ($sql ? ", " : "") . self::prepareTableAttributeWithFunction("*", $f_table_alias ? $f_table_alias : $key["ftable"]);
+				}
 			}
 			//print_r($attrs);echo"table:$table_name";print_r($keys);die($sql);
 		}
