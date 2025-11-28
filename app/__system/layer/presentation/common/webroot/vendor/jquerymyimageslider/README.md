@@ -67,6 +67,24 @@ Create new image slider handler:
 var MyImgSlider2 = new createMyImageSlider();
 ```
 
+Change default settings, if apply:
+```
+MyImgSlider2.interval_ttl = 5000;
+MyImgSlider2.image_slider_class = "image_slider";
+MyImgSlider2.navigation_class = "navigation";
+MyImgSlider2.controls_class = "controls";
+MyImgSlider2.control_class = "control";
+MyImgSlider2.slides_class = "slides";
+MyImgSlider2.slide_class = "slide";
+MyImgSlider2.prev_class = "prev";
+MyImgSlider2.next_class = "next";
+MyImgSlider2.on_image_change = function(selected_slide_index, selected_slide_elm, selected_control_elm) { //callback called everytime an image is slided.
+	console.log(selected_slide_index);
+	console.log(selected_slide_elm);
+	console.log(selected_control_elm);
+}
+```
+
 Initialize the slider:
 ```
 MyImgSlider.init();

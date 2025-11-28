@@ -81,3 +81,21 @@ Check out a live example by opening [index.html](index.html).
 </html>
 ```
 
+## Other calls
+
+Set some default settings:
+```
+MyHtmlBeautify.alert_errors = false; //If true alert errors. Default is false.
+MyHtmlBeautify.single_html_tags = ["meta", "base", "basefont", "input", "img", "link", "br", "wbr", "hr", "frame", "area", "source", "track", "circle", "col", "embed", "param"]; //single html tags
+```
+
+Beautify an html:
+```
+var options = {
+	indent_size: 4, //default value is 1
+	indent_char: ' ', //default is \t
+};
+var new_html = MyHtmlBeautify.beautify(html, options); //options are optional
+```
+
+

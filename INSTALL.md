@@ -688,6 +688,7 @@ The **User module** is crucial, as it allows you to convert any web-app with pri
 	- Select Manage Modules.
 	- Click Install New Module.
 	- Select all modules, and finally, press the Install button in the top-right corner.
+	- Next, you will be redirected to the Manage Modules page, where you will need to activate all of them.
 
 
 ---

@@ -89,6 +89,11 @@ Get html element initialized as tree:
 var elm = mytree.tree_elm;
 ```
 
+Get options:
+```
+var options = mytree.options;
+```
+
 Converts a html element into a tree based in its id:
 ```
 mytree.init(tree_elm_id);

@@ -36,3 +36,25 @@ Check out a live example by opening [index.html](index.html).
 </html>
 ```
 
+## Other calls
+
+Create an auto complete field:
+```
+var input_elm = document.getElementById("myInput"); //get a html element
+var list_of_available_values = ["a", "b", "..."];
+var options = {
+	get: function(input_elm) { //(optional) this callback function is triggered when the user enters something into the input field. Thus, when the user types something, a list of available values ​​is displayed based on what they typed. Basically, the system filters the list of all available values ​​according to the user's input. This function allows changing that value to another, filtering the list of available values ​​by that new value.
+		console.log(input_elm);
+		
+		return input_elm.value; //must return the input value. Note that this is already the default behaviour.
+	},
+	set: function(input_elm, selected_value) { //(optional) callback called when one value from the available list gets selected by the user
+		console.log(input_elm);
+		console.log(selected_value);
+		
+		input_elm.value = selected_value; //must set the value to input. Note that this is already the default behaviour.
+	}
+};
+
+MyAutoComplete.init(input_elm, list_of_available_values, options);
+```

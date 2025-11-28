@@ -110,3 +110,10 @@ Remove all shown nodes messages based in the message_html_obj_class class:
 ```
 StatusMessageHandler.removeMessages(type, message_html_obj_class); //optional: message_html_obj_class
 ```
+
+Get some elements of the StatusMessageHandler:
+```
+var message_html_obj = StatusMessageHandler.message_html_obj; //get current shown message html element
+var other_message_html_objs = StatusMessageHandler.other_message_html_objs; //get the list of html elements created to show messages
+```
+
