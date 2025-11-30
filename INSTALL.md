@@ -563,7 +563,7 @@ Follow the installation steps in the [Bloxtor tutorial](https://bloxtor.com/onli
 
 ### Steps:
 1. Log in to your cPanel and open the File Manager application.
-2. Copy the contents of the `Bloxtor` folder into the `public_html` or `www` directory of your remote server.
+2. Copy the contents of the `Bloxtor` folder into the `public_html` or `www` directory of your remote server. Ensure that you copy the internal contents of the `Bloxtor` folder only, not the folder itself.
 3. Select the PHP version, activate the required PHP modules, and configure the `php.ini` file according to steps 1 and 2 described above.
 4. Confirm that cPanel correctly updated the `public_html/.htaccess` file by prepending the required PHP settings. If it didn’t, apply the necessary changes manually. The goal is to ensure that the following PHP directives are added at the beginning of the .htaccess file. Here is an example on PHP 7:
 ```
