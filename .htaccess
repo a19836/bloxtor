@@ -1,22 +1,23 @@
-#Set secure options
+
+ #Set secure options
  #disables server signature
-# -- YOU SHOULD UNCOMMENT THE LINE BELOW:
+ # -- YOU SHOULD UNCOMMENT THE LINE BELOW:
 # ServerSignature Off 
 
  #disable CGI and lists of files
-# -- YOU SHOULD UNCOMMENT THE LINE BELOW:
+ # -- YOU SHOULD UNCOMMENT THE LINE BELOW:
 # Options All -ExecCGI -Indexes 
 
  #prevent folder listing
-# -- YOU SHOULD UNCOMMENT THE LINE BELOW:
+ # -- YOU SHOULD UNCOMMENT THE LINE BELOW:
 # IndexIgnore *
  
  #secure directory by disabling script execution
-# -- YOU SHOULD UNCOMMENT THE LINE BELOW:
+ # -- YOU SHOULD UNCOMMENT THE LINE BELOW:
 # RemoveHandler .cgi .php .php2 .php3 .php4 .php5 .php6 .php7 .phtml .htm .shtml .pl .plx .ppl .perl .py .pyc .pyo .jsp .asp
 
  #remove all handlers and only add the handler for php
-# -- YOU SHOULD UNCOMMENT THE LINES BELOW:
+ # -- YOU SHOULD UNCOMMENT THE LINES BELOW:
 # <FilesMatch ".*">
 #   SetHandler none
 #   SetHandler default-handler
@@ -25,27 +26,46 @@
 #   SetHandler application/x-httpd-php
 # </FilesMatch>
 
- #NOTE THAT THIS VARS SHOULD BE DEFINED INSTEAD IN THE /etc/apache2/sites-available/bloxtor.conf, otherwise you can set them here if you have permission for that:
- #set php base dir to only allow the php to execute code inside of these folders. Replace "/var/www/html/bloxtor/" by the correct installation folder path.
- #php_value open_basedir "/var/www/html/bloxtor/"
- #php_value sys_temp_dir "/var/www/html/bloxtor/tmp"
- #php_value upload_tmp_dir "/var/www/html/bloxtor/tmp"
- #php_value session.save_path "/var/www/html/bloxtor/tmp"
- #php_value soap.wsdl_cache_dir "/var/www/html/bloxtor/tmp"
+ #NOTE THAT THIS VARS SHOULD BE DEFINED IN THE bloxtor.conf INSTEAD, otherwise you can set them here if you have permission for that:
+ #set some php settings
+#php_flag short_open_tag On
+#php_value date.timezone "Europe/Lisbon"
+#php_value variables_order "EGPCS"
+#php_value upload_max_filesize 200M
+#php_value post_max_size 200M
+#php_value max_input_time 360
+#php_value max_input_vars 10000 
+#php_value max_execution_time 1000
+ 
+ #set php errors
+##php_value error_reporting "E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT"
+#php_value error_reporting 22519
+#php_flag display_startup_errors Off
+#php_value display_errors Off
+#php_flag log_errors On
 
- #disable php errors
- #php_value expose_php Off
- #php_value display_errors Off
- #php_value mail.add_x_header Off
- #php_value session.cookie_httponly On
- #php_value session.cookie_secure On
- #php_value session.use_strict_mode On
- #php_value allow_url_fopen Off
- #php_value allow_url_include Off
- #php_value disable_functions dl,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,exec,shell_exec,passthru,system,proc_open,popen,parse_ini_file,show_source
+ #set php memory limit
+#php_value memory_limit 1024M
+
+ #secure php
+#php_value expose_php Off
+#php_value mail.add_x_header Off
+#php_value session.cookie_httponly On
+#php_value session.cookie_secure On
+#php_value session.use_strict_mode On
+#php_value allow_url_fopen Off
+#php_value allow_url_include Off
+#php_value disable_functions dl,pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,exec,shell_exec,passthru,system,proc_open,popen,parse_ini_file,show_source
+
+ #set php base dir to only allow the php to execute code inside of these folders. Replace "/var/www/html/bloxtor/" by the correct installation folder path.
+#php_value open_basedir "/var/www/html/bloxtor/"
+#php_value sys_temp_dir "/var/www/html/bloxtor/tmp"
+#php_value upload_tmp_dir "/var/www/html/bloxtor/tmp"
+#php_value session.save_path "/var/www/html/bloxtor/tmp"
+#php_value soap.wsdl_cache_dir "/var/www/html/bloxtor/tmp"
 
  #disable access to .htaccess or .htpsswd, etc... for better security
-# -- YOU SHOULD UNCOMMENT THE LINES BELOW:
+ # -- YOU SHOULD UNCOMMENT THE LINES BELOW:
 # <FilesMatch "\.(htaccess|htpasswd|ini|phps|fla|psd|log|sh)$">
 #   Order allow,deny
 #   Deny from all
@@ -56,8 +76,8 @@
     Require all denied
 </FilesMatch>
 
-# Cache-Control Headers for better performance
-# -- YOU SHOULD UNCOMMENT THE LINES BELOW:
+ # Cache-Control Headers for better performance
+ # -- YOU SHOULD UNCOMMENT THE LINES BELOW:
 #<ifModule mod_headers.c>
    #set cache for static files
 #   <filesMatch "\.(js|css|pdf|txt|flv|swf|jpg|jpeg|png|gif|ico|html|htm)$">
@@ -76,8 +96,8 @@
 #   </filesMatch>
 #</IfModule>
 
-#add gzip compression for better performance
-# -- YOU SHOULD UNCOMMENT THE LINES BELOW:
+ #add gzip compression for better performance
+ # -- YOU SHOULD UNCOMMENT THE LINES BELOW:
 #<IfModule mod_deflate.c>
 #   <IfModule mod_filter.c>
       # these are known to be safe with MSIE 6
