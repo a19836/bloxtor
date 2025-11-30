@@ -561,6 +561,8 @@ Follow the installation steps in the [Bloxtor tutorial](https://bloxtor.com/onli
 - Apache
 - PHP
 
+> Before proceeding, check that all other requirements in the [Install Manually on a Local PC](#install-manually-on-a-local-pc) section are met.
+
 ### Steps:
 1. Log in to your cPanel and open the File Manager application.
 2. Copy the contents of the `Bloxtor` folder into the `public_html` or `www` directory of your remote server.
