@@ -565,7 +565,7 @@ Follow the installation steps in the [Bloxtor tutorial](https://bloxtor.com/onli
 1. Log in to your cPanel and open the File Manager application.
 2. Copy the contents of the `Bloxtor` folder into the `public_html` or `www` directory of your remote server.
 3. Select the PHP version, activate the required PHP modules, and configure the `php.ini` file according to steps 1 and 2 described above.
-4. Confirm that cPanel correctly modified the `public_html/.htaccess` file. Otherwise, apply the necessary changes. The idea is to have the following PHP settings in the .htaccess. Here is an example on PHP 7:
+4. Confirm that cPanel correctly updated the `public_html/.htaccess` file by prepending the required PHP settings. If it didn’t, apply the necessary changes manually. The goal is to ensure that the following PHP directives are added at the beginning of the .htaccess file. Here is an example on PHP 7:
 ```
 # BEGIN cPanel-generated php ini directives
 <IfModule php7_module>
@@ -610,7 +610,7 @@ Follow the installation steps in the [Bloxtor tutorial](https://bloxtor.com/onli
 </IfModule>
 # END cPanel-generated php ini directives
 
-#This is also very important, because will redirect requests to app folder, so Bloxtor can work properly
+#This is the original htaccess code and is very important, because will redirect requests to app folder, so Bloxtor can work properly
 <IfModule mod_rewrite.c>
    RewriteEngine on
    
