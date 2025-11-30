@@ -74,7 +74,7 @@ env $(grep -v '^#' docker-compose.env | xargs) WEB_PORT=8890 DB_PORT=8891 docker
 #you can also add '--force-recreate' at the end of the above commands.
 ```
 
-2. Then access the framework, by opening http://localhost:8890/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **[Step 9](#9-open-the-setup-php-in-your-browser)** below... 
+2. Then access the framework, by opening http://localhost:8890/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **[Step 9](#9-open-the-setupphp-in-your-browser)** below... 
 
 	To login into Bloxtor framework please use user/pass: admin/admin.
 	
@@ -97,7 +97,7 @@ env $(grep -v '^#' docker-compose.env | xargs) WEB_PORT=8888 DB_PORT=8889 docker
 #you can also add '--force-recreate' at the end of the above commands.
 ```
 
-2. Then access the framework, by opening http://localhost:8888/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **[Step 9](#9-open-the-setup-php-in-your-browser)** below... 
+2. Then access the framework, by opening http://localhost:8888/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **[Step 9](#9-open-the-setupphp-in-your-browser)** below... 
 
 	To login into Bloxtor framework please use user/pass: admin/admin.
 	
@@ -131,7 +131,7 @@ docker start bloxtor-local-server
 ```
 
 
-3. Then access the framework, by opening http://localhost:8887/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **[Step 9](#9-open-the-setup-php-in-your-browser)** below...
+3. Then access the framework, by opening http://localhost:8887/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **[Step 9](#9-open-the-setupphp-in-your-browser)** below...
 	
 	To login into Bloxtor please use user/pass: admin/admin.
 	
@@ -674,7 +674,7 @@ max_input_vars = 10000
 ```
 7. Bloxtor allows installation without a database, but for a full setup, you should create one. Log in to cPanel, navigate to the Databases section, and create a new database and a corresponding user. Alternatively, if your existing database user has root permissions, you can skip manual creation; Bloxtor will create the database automatically during the setup if selected.
 8. Before proceeding, check that all other requirements in the [Install Manually on a Local PC](#install-manually-on-a-local-pc) section are met.
-9. Open your web browser and navigate to `http://your.installation.domain/setup.php`. Follow the on-screen instructions, which correspond to the setup **[Step 9](#9-open-the-setup-php-in-your-browser)** described above.
+9. Open your web browser and navigate to `http://your.installation.domain/setup.php`. Follow the on-screen instructions, which correspond to the setup **[Step 9](#9-open-the-setupphp-in-your-browser)** described above.
 10. To unlock **Bloxtor's full potential**, please install the **Modules available in our Store**. 
 The **User module** is crucial, as it allows you to convert any web-app with private access.
 
