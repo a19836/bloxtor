@@ -74,7 +74,7 @@ env $(grep -v '^#' docker-compose.env | xargs) WEB_PORT=8890 DB_PORT=8891 docker
 #you can also add '--force-recreate' at the end of the above commands.
 ```
 
-2. Then access the framework, by opening http://localhost:8890/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **Step 9** below... 
+2. Then access the framework, by opening http://localhost:8890/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **[Step 9](9-open-the-setup-php-in-your-browser)** below... 
 
 	To login into Bloxtor framework please use user/pass: admin/admin.
 	
@@ -97,7 +97,7 @@ env $(grep -v '^#' docker-compose.env | xargs) WEB_PORT=8888 DB_PORT=8889 docker
 #you can also add '--force-recreate' at the end of the above commands.
 ```
 
-2. Then access the framework, by opening http://localhost:8888/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **Step 9** below... 
+2. Then access the framework, by opening http://localhost:8888/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **[Step 9](9-open-the-setup-php-in-your-browser)** below... 
 
 	To login into Bloxtor framework please use user/pass: admin/admin.
 	
@@ -131,7 +131,7 @@ docker start bloxtor-local-server
 ```
 
 
-3. Then access the framework, by opening http://localhost:8887/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **Step 9** below...
+3. Then access the framework, by opening http://localhost:8887/setup.php (or use your Docker host IP if not running locally), and follow the correspondent instructions on **[Step 9](9-open-the-setup-php-in-your-browser)** below...
 	
 	To login into Bloxtor please use user/pass: admin/admin.
 	
@@ -561,13 +561,11 @@ Follow the installation steps in the [Bloxtor tutorial](https://bloxtor.com/onli
 - Apache
 - PHP
 
-> Before proceeding, check that all other requirements in the [Install Manually on a Local PC](#install-manually-on-a-local-pc) section are met.
-
 ### Steps:
 1. Log in to your cPanel and open the File Manager application.
 2. Copy the contents of the `Bloxtor` folder into the `public_html` or `www` directory of your remote server.
 3. Select the PHP version, activate the required PHP modules, and configure the `php.ini` file according to steps 1 and 2 described above.
-4. Confirm that cPanel correctly modified the `public_html/.htaccess` file. Otherwise, apply the necessary changes. Here is an example:
+4. Confirm that cPanel correctly modified the `public_html/.htaccess` file. Otherwise, apply the necessary changes. The idea is to have the following PHP settings in the .htaccess. Here is an example on PHP 7:
 ```
 # BEGIN cPanel-generated php ini directives
 <IfModule php7_module>
@@ -612,12 +610,7 @@ Follow the installation steps in the [Bloxtor tutorial](https://bloxtor.com/onli
 </IfModule>
 # END cPanel-generated php ini directives
 
-# BEGIN cPanel-generated handler
-<IfModule mime_module>
-  AddHandler application/x-httpd-ea-php72___lsphp .php .php7 .phtml
-</IfModule>
-# END cPanel-generated handler
-
+#This is also very important, because will redirect requests to app folder, so Bloxtor can work properly
 <IfModule mod_rewrite.c>
    RewriteEngine on
    
@@ -680,8 +673,9 @@ memory_limit = 1024M
 max_input_vars = 10000
 ```
 7. Bloxtor allows installation without a database, but for a full setup, you should create one. Log in to cPanel, navigate to the Databases section, and create a new database and a corresponding user. Alternatively, if your existing database user has root permissions, you can skip manual creation; Bloxtor will create the database automatically during the setup if selected.
-8. Open your web browser and navigate to `http://your.installation.domain/setup.php`. Follow the on-screen instructions, which correspond to the setup step `9` described above.
-9. To unlock **Bloxtor's full potential**, please install the **Modules available in our Store**. 
+8. Before proceeding, check that all other requirements in the [Install Manually on a Local PC](#install-manually-on-a-local-pc) section are met.
+9. Open your web browser and navigate to `http://your.installation.domain/setup.php`. Follow the on-screen instructions, which correspond to the setup **[Step 9](9-open-the-setup-php-in-your-browser)** described above.
+10. To unlock **Bloxtor's full potential**, please install the **Modules available in our Store**. 
 The **User module** is crucial, as it allows you to convert any web-app with private access.
 
 	**To Install the Modules:**
