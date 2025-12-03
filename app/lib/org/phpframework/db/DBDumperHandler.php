@@ -723,7 +723,7 @@ class DBDumperHandler {
 			$sql = "";
 			
 			foreach ($this->tables as $table)
-				if ($this->tables_outside_fks[$table])
+				if (!empty($this->tables_outside_fks[$table]))
 					foreach ($this->tables_outside_fks[$table] as $fk)
 						if (!empty($fk["constraint_name"]))
 							$sql .= $this->DBDriverDumper->getDropTableForeignConstraintStmt($table, $fk["constraint_name"]);
@@ -829,7 +829,8 @@ class DBDumperHandler {
 			foreach ($rows as $r)
 				$res[] = $r;
 			
-			$sql = $this->DBDriverDumper->createTable($res, $table_name, $this->tables_outside_fks[$table_name]);
+			$table_outside_fks = isset($this->tables_outside_fks[$table_name]) ? $this->tables_outside_fks[$table_name] : null;
+			$sql = $this->DBDriverDumper->createTable($res, $table_name, $table_outside_fks);
 			
 			if ($sql) {
 				if (empty($this->db_dumper_settings['skip-comments']))
@@ -916,8 +917,10 @@ class DBDumperHandler {
 
 	public function prepareViewStandInTableSQL($view_name) {
 		$ret = array();
-		foreach ($this->tables_attributes_types[$view_name] as $k => $v)
-			$ret[] = $this->escapeTableAttribute($k, $view_name) . " " . (isset($v["type_sql"]) ? $v["type_sql"] : null);
+		
+		if (!empty($this->tables_attributes_types[$view_name]))
+			foreach ($this->tables_attributes_types[$view_name] as $k => $v)
+				$ret[] = $this->escapeTableAttribute($k, $view_name) . " " . (isset($v["type_sql"]) ? $v["type_sql"] : null);
 		
 		$ret = implode(PHP_EOL . ",", $ret);
 
@@ -1205,20 +1208,21 @@ class DBDumperHandler {
 	public function getTableAttributesProperties($table_name) {
 		$attrs = array();
 		
-		foreach ($this->tables_attributes_types[$table_name] as $attr_name => $attr_type) {
-			$cn = $this->escapeTableAttribute($attr_name, $table_name);
-			
-			if ((!empty($attr_type['type']) && $attr_type['type'] == 'bit') && !empty($this->db_dumper_settings['hex-blob']))
-				$attrs[] = $this->DBDriverDumper->getTableAttributesPropertiesBitHexFunc($cn) . " AS " . $this->escapeTableAttributeAlias($attr_name);
-			else if (!empty($attr_type['is_blob']) && !empty($this->db_dumper_settings['hex-blob']))
-				$attrs[] = $this->DBDriverDumper->getTableAttributesPropertiesBlobHexFunc($cn) . " AS " . $this->escapeTableAttributeAlias($attr_name);
-			else if (!empty($attr_type['is_virtual'])) {
-				$this->db_dumper_settings['complete-insert'] = true;
-				continue;
-			} 
-			else
-				$attrs[] = $cn;
-		}
+		if (!empty($this->tables_attributes_types[$table_name]))
+			foreach ($this->tables_attributes_types[$table_name] as $attr_name => $attr_type) {
+				$cn = $this->escapeTableAttribute($attr_name, $table_name);
+				
+				if ((!empty($attr_type['type']) && $attr_type['type'] == 'bit') && !empty($this->db_dumper_settings['hex-blob']))
+					$attrs[] = $this->DBDriverDumper->getTableAttributesPropertiesBitHexFunc($cn) . " AS " . $this->escapeTableAttributeAlias($attr_name);
+				else if (!empty($attr_type['is_blob']) && !empty($this->db_dumper_settings['hex-blob']))
+					$attrs[] = $this->DBDriverDumper->getTableAttributesPropertiesBlobHexFunc($cn) . " AS " . $this->escapeTableAttributeAlias($attr_name);
+				else if (!empty($attr_type['is_virtual'])) {
+					$this->db_dumper_settings['complete-insert'] = true;
+					continue;
+				} 
+				else
+					$attrs[] = $cn;
+			}
 
 		return $attrs;
 	}
@@ -1227,14 +1231,15 @@ class DBDumperHandler {
 	public function getTableAttributesNames($table_name, $with_table_name = false) {
 		$attr_names = array();
 		
-		foreach ($this->tables_attributes_types[$table_name] as $attr_name => $attr_type) {
-			if (!empty($attr_type['is_virtual'])) {
-				$this->db_dumper_settings['complete-insert'] = true;
-				continue;
-			} 
-			else
-				$attr_names[] = $this->escapeTableAttribute($attr_name, $with_table_name ? $table_name : false);
-		}
+		if (!empty($this->tables_attributes_types[$table_name]))
+			foreach ($this->tables_attributes_types[$table_name] as $attr_name => $attr_type) {
+				if (!empty($attr_type['is_virtual'])) {
+					$this->db_dumper_settings['complete-insert'] = true;
+					continue;
+				} 
+				else
+					$attr_names[] = $this->escapeTableAttribute($attr_name, $with_table_name ? $table_name : false);
+			}
 		
 		return $attr_names;
 	}
