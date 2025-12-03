@@ -72,13 +72,16 @@ if ($obj && is_a($obj, "DB")) {
 				$errors = $DBFileExporter->getErrors();
 				$error_message = "Error: File not exported!";
 				
-				if ($errors)
+				if ($errors) {
+					$func = function($v) { return nl2br($v, false); };
+					
 					$error_message .= '<br/><br/><div style="text-align:left;">
 						<label style="font-weight:bold;">Errors:</label>
 						<ul>
-							<li>' . implode('</li><li>', array_map(fn($v) => nl2br($v, false), $errors)) . '</li>
+							<li>' . implode('</li><li>', array_map($func, $errors)) . '</li>
 						</ul>
 					</div>';
+				}
 			}
 		}
 	}
