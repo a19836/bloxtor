@@ -1354,7 +1354,7 @@ class SQLQueryHandler {
 		return $alias;
 	}
 	
-	private static function getTableName($table) {
+	public static function getTableName($table) {
 		$parts = explode(" ", $table);
 		return $parts[0];
 	}

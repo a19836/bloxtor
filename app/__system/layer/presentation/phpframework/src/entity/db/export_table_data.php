@@ -10,9 +10,10 @@
  * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
+include_once get_lib("org.phpframework.workflow.WorkFlowTaskHandler");
+include_once get_lib("org.phpframework.db.DBFileExporter");
 include_once $EVC->getUtilPath("WorkFlowQueryHandler");
 include_once $EVC->getUtilPath("WorkFlowBeansFileHandler");
-include_once get_lib("org.phpframework.workflow.WorkFlowTaskHandler");
 
 $UserAuthenticationHandler->checkPresentationFileAuthentication($entity_path, "access");
 
@@ -49,62 +50,40 @@ if ($obj && is_a($obj, "DB")) {
 		if (!$sql) 
 			$error_message = "Please write a select sql statement.";
 		else {
-			try {
-				$data = $obj->getData($sql);
-				//echo "<pre>";print_r($data);die();
+			$doc_name = $doc_name ? $doc_name : "{$table}_export";
 			
-				//set header
-				$doc_name = $doc_name ? $doc_name : "{$table}_export";
-				$content_type = $export_type == "xls" ? "application/vnd.ms-excel" : ($export_type == "csv" ? "text/csv" : "text/plain");
-				header("Content-Type: $content_type");
-				header('Content-Disposition: attachment; filename="' . $doc_name . '.' . $export_type . '"');
-				
-				//set output
-				$str = "";
-				
-				if ($data && is_array($data)) {
-					$columns = isset($data["fields"]) ? $data["fields"] : null;
-					$columns_length = count($columns);
-					$results = isset($data["result"]) ? $data["result"] : null;
-					
-					$rows_delimiter = "\n";
-					$columns_delimiter = "\t";
-					$enclosed_by = "";
-					
-					if ($export_type == "csv") {
-						$columns_delimiter = ",";
-						$enclosed_by = '"';
-						
-						$str .= "sep=$columns_delimiter$rows_delimiter"; //Alguns programas, como o Microsoft Excel 2010, requerem ainda um indicador "sep=" na primeira linha do arquivo, apontando o caráter de separação.
-					}
-					
-					//prepare columns
-					for ($i = 0; $i < $columns_length; $i++)
-						$str .= ($i > 0 ? $columns_delimiter : "") . $enclosed_by . addcslashes($columns[$i]->name, $columns_delimiter . $enclosed_by . "\\") . $enclosed_by;
-					
-					//prepare rows
-					if ($str && is_array($results)) {
-						$str .= $rows_delimiter;
-						
-						foreach ($results as $row)
-							if (is_array($row)) {
-								for ($i = 0; $i < $columns_length; $i++)
-									$str .= ($i > 0 ? $columns_delimiter : "") . $enclosed_by . addcslashes($row[ $columns[$i]->name ], $columns_delimiter . $enclosed_by . "\\") . $enclosed_by;
-								
-								$str .= $rows_delimiter;
-							}
-					}
-				}
-				
-				echo $str;
-				die();
+			$DBFileExporter = new DBFileExporter($obj);
+			$DBFileExporter->setOptions(array( //all the following options are optional:
+				"export_type" => $export_type, //default is txt 
+			));
+			$status = true;
+			
+			try {
+				if (!$DBFileExporter->exportFile($sql, $doc_name)) 
+					$status = false;
 			}
-			catch(Exception $e) {
-				throw $e;
+			catch (Exception $e) {
+				$status = false;
+			}
+			
+			if ($status) 
+					$status_message = "File dumped successfully from DB!";
+			else {
+				$errors = $DBFileExporter->getErrors();
+				$error_message = "Error: File not exported!";
+				
+				if ($errors)
+					$error_message .= '<br/><br/><div style="text-align:left;">
+						<label style="font-weight:bold;">Errors:</label>
+						<ul>
+							<li>' . implode('</li><li>', array_map(fn($v) => nl2br($v, false), $errors)) . '</li>
+						</ul>
+					</div>';
 			}
 		}
 	}
 	
+	//because we are calling the view/edit_query in the view/export_table_data.php, we need to have this vars initialized
 	$db_driver_borker_name = WorkFlowBeansConverter::getBrokerNameFromRawLabel($bean_name);
 	$db_drivers = array($layer_bean_folder_name => array($db_driver_borker_name));
 	

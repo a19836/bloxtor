@@ -604,12 +604,17 @@ trait DBSQLConverter {
 			$join_keys = array();
 			$join_key_index = null;
 			
+			$p_table_only = SQLQueryHandler::getTableName($p_table);
+			$f_table_only = SQLQueryHandler::getTableName($f_table);
+			
 			if ($f_column && $f_table) {
-				$table_alias = $f_table == $table_name ? $f_table . "_aux" : SQLQueryHandler::getAlias($f_table);
-				$join_key_index = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($f_table) . ($table_alias != $f_table ? " {$table_alias}" : "") . " ON ";
+				$f_table_alias = $f_table == $table_name ? $f_table . "_aux" : SQLQueryHandler::getAlias($f_table);
+				$join_key_index = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($f_table_only) . ($f_table_alias != $f_table ? " {$f_table_alias}" : "") . " ON ";
 				
 				//Add new inner join table in case of multiple tables in joins
-				$join_key_index_aux = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($p_table) . " ON ";
+				$p_table_alias = $p_table == $table_name ? $p_table . "_aux" : SQLQueryHandler::getAlias($p_table);
+				$join_key_index_aux = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($p_table_only) . " ON ";
+				
 				if (!empty($joins[ $join_key_index ]) && $p_table && $p_table != $table_name && empty($joins[ $join_key_index_aux ])) {
 					$join_key_index = $join_key_index_aux;
 				}
@@ -617,14 +622,14 @@ trait DBSQLConverter {
 				$join_keys = isset($joins[ $join_key_index ]) && is_array($joins[ $join_key_index ]) ? $joins[ $join_key_index ] : array();
 				
 				if($p_column) {
-					$join_sql = " " . self::prepareTableAttributeWithFunction($f_column, $table_alias) . " $operator " . self::prepareTableAttributeWithFunction($p_column, $p_table);
+					$join_sql = " " . self::prepareTableAttributeWithFunction($f_column, $f_table_alias) . " $operator " . self::prepareTableAttributeWithFunction($p_column, $p_table);
 					if(!in_array($join_sql, $join_keys)) {
 						$join_keys[] = $join_sql;
 					}
 				}
 				
 				if ($value_exists) {
-					$join_sql = " " . self::prepareTableAttributeWithFunction($f_column, $table_alias) . " $operator {$value}";
+					$join_sql = " " . self::prepareTableAttributeWithFunction($f_column, $f_table_alias) . " $operator {$value}";
 					if (!in_array($join_sql, $join_keys)) {
 						$join_keys[] = $join_sql;
 					}
@@ -638,8 +643,8 @@ trait DBSQLConverter {
 				}
 			}
 			else if ($p_column && $value_exists) {
-				$table_alias = $p_table == $table_name ? $p_table . "_aux" : SQLQueryHandler::getAlias($p_table);
-				$join_key_index = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($p_table) . ($table_alias != $p_table ? " {$table_alias}" : "") . " ON ";
+				$p_table_alias = $p_table == $table_name ? $p_table . "_aux" : SQLQueryHandler::getAlias($p_table);
+				$join_key_index = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($p_table_only) . ($p_table_alias != $p_table ? " {$p_table_alias}" : "") . " ON ";
 				
 				$join_keys = isset($joins[ $join_key_index ]) && is_array($joins[ $join_key_index ]) ? $joins[ $join_key_index ] : array();
 				
@@ -649,12 +654,12 @@ trait DBSQLConverter {
 				}
 			}
 			else if ($f_column && $value_exists) {
-				$table_alias = $f_table == $table_name ? $f_table . "_aux" : SQLQueryHandler::getAlias($f_table);
-				$join_key_index = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($f_table) . ($table_alias != $f_table ? " {$table_alias}" : "") . " ON ";
+				$f_table_alias = $f_table == $table_name ? $f_table . "_aux" : SQLQueryHandler::getAlias($f_table);
+				$join_key_index = " {$join} JOIN " . SQLQueryHandler::getParsedSqlTableName($f_table_only) . ($f_table_alias != $f_table ? " {$f_table_alias}" : "") . " ON ";
 				
 				$join_keys = isset($joins[ $join_key_index ]) && is_array($joins[ $join_key_index ]) ? $joins[ $join_key_index ] : array();
 				
-				$join_sql = " " . self::prepareTableAttributeWithFunction($f_column, $table_alias) . " $operator {$value}";
+				$join_sql = " " . self::prepareTableAttributeWithFunction($f_column, $f_table_alias) . " $operator {$value}";
 				if(!in_array($join_sql, $join_keys)) {
 					$join_keys[] = $join_sql;
 				}

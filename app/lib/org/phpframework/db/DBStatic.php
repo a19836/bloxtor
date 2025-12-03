@@ -807,12 +807,12 @@ trait DBStatic {
 			$open_double_quotes = false;
 			$open_single_quotes = false;
 			
+			if (is_numeric($sql))
+				$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
+			
 			$start = 0;
 			$end = strlen($sql);
 			$delimiter_length = strlen($delimiter);
-			
-			if (is_numeric($sql))
-				$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
 			
 			for ($i = 0 ; $i < $end; $i++) {
 				$char = $sql[$i];
@@ -918,12 +918,12 @@ trait DBStatic {
 			$open_double_quotes = false;
 			$open_single_quotes = false;
 			
+			if (is_numeric($sql))
+				$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
+			
 			$start = 0;
 			$end = strlen($sql);
 			$new_sql = "";
-			
-			if (is_numeric($sql))
-				$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
 			
 			for ($i = 0 ; $i < $end; $i++) {
 				$char = $sql[$i];
@@ -975,11 +975,11 @@ trait DBStatic {
 		$open_single_quotes = false;
 		$open_delimiter = false;
 		
-		$end = strlen($sql);
-		$new_sql = "";
-		
 		if (is_numeric($sql))
 			$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
+		
+		$end = strlen($sql);
+		$new_sql = "";
 		
 		for ($i = 0 ; $i < $end; $i++) {
 			$char = $sql[$i];
@@ -1060,6 +1060,9 @@ trait DBStatic {
 			$end_delimiter_to_replace = $start_delimiter_to_replace;
 		
 		if ($start_delimiter_to_search && strpos($sql, $start_delimiter_to_search) !== false) {
+			if (is_numeric($sql))
+				$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
+		
 			$open_double_quotes = false;
 			$open_single_quotes = false;
 			
@@ -1069,9 +1072,6 @@ trait DBStatic {
 			$start_delimiter_length = strlen($start_delimiter_to_search);
 			$end_delimiter_length = strlen($end_delimiter_to_search);
 			
-			if (is_numeric($sql))
-				$sql = (string)$sql; //bc of php > 7.4 if we use $sql[$i] gives an warning
-		
 			for ($i = 0 ; $i < $end; $i++) {
 				$char = $sql[$i];
 			
@@ -1383,6 +1383,9 @@ trait DBStatic {
 			in_array(strtoupper($match[1][0]), $reserved_words) && //check if function is a real function
 			strpos($value, ")", $match[1][1] + strlen($match[1][0]) + 1) !== false; //check if exists ) after the function call
 		
+		if (is_numeric($value))
+			$value = (string)$value; //bc of php > 7.4 if we use $value[$i] gives an warning
+		
 		//check if there is any open quotes
 		$open_double_quotes = false;
 		$open_single_quotes = false;
@@ -1391,9 +1394,6 @@ trait DBStatic {
 		$is_dash_line_comment_open = false;
 		$semicolon = false;
 		$end = strlen($value);
-		
-		if (is_numeric($value))
-			$value = (string)$value; //bc of php > 7.4 if we use $value[$i] gives an warning
 		
 		for ($i = 0 ; $i < $end; $i++) {
 			$char = $value[$i];
