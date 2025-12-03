@@ -65,7 +65,7 @@ class DBFileExporter {
 		}
 	}
 	
-	public function exportFile($sql, $doc_name = null, $stop = true) {
+	public function exportFile($sql, $doc_name = null, $output_type = "print") {
 		$status = false;
 		
 		if (!$sql) 
@@ -117,9 +117,7 @@ class DBFileExporter {
 					}
 				}
 				
-				$status = true;
-				
-				//set header
+				//prepare doc name
 				if (!$doc_name) {
 					$doc_name = self::getSQLTable($sql);
 					
@@ -127,16 +125,38 @@ class DBFileExporter {
 						$doc_name = "table_export";
 				}
 				
-				$content_type = $export_type == "xls" ? "application/vnd.ms-excel" : ($export_type == "csv" ? "text/csv" : "text/plain");
-				
-				header("Content-Type: $content_type");
-				header('Content-Disposition: attachment; filename="' . $doc_name . '.' . $export_type . '"');
-				
-				//print export file
-				echo $str;
-				
-				if ($stop)
+				//prepare output
+				if ($output_type == "return")
+					return $str;
+				else if ($output_type == "save") { //note that doc_name var must be a file path
+					$extension = pathinfo($doc_name, PATHINFO_EXTENSION);
+					$fp = $doc_name . (!$extension ? "." . $export_type : "");
+					$status = is_writable($fp) && file_put_contents($fp, $str) !== null;
+					
+					if (!$status) {
+						if (file_exists($fp) && !is_writable($fp))
+							$this->errors[] = "File '$fp' is not writable.";
+						else if (!file_exists($fp)) {
+							$dir = dirname($fp);
+							
+							if ($dir && !is_writable($dir))
+								$this->errors[] = "Folder '$dir' is not writable.";
+						}
+					}
+				}
+				else { //if $output_type == "print"
+					$status = true;
+					
+					//set header
+					$content_type = $export_type == "xls" ? "application/vnd.ms-excel" : ($export_type == "csv" ? "text/csv" : "text/plain");
+					
+					header("Content-Type: $content_type");
+					header('Content-Disposition: attachment; filename="' . $doc_name . '.' . $export_type . '"');
+					
+					//print export file
+					echo $str;
 					die();
+				}
 			}
 			catch(Exception $e) {
 				$message = $e->getMessage();
