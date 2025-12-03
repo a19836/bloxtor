@@ -10,6 +10,7 @@
  * YOU ARE NOT AUTHORIZED TO MODIFY OR REMOVE ANY PART OF THIS NOTICE!
  */
 
+include_once get_lib("org.phpframework.compression.ZipHandler");
 include_once get_lib("org.phpframework.db.DBDumperHandler");
 include_once get_lib("org.phpframework.util.MimeTypeHandler");
 include_once $EVC->getUtilPath("WorkFlowDBHandler");
@@ -45,22 +46,15 @@ if ($bean_name) {
 				$dump_file_name = "dbsqldump_data." . (isset($db_options["host"]) ? $db_options["host"] : "") . (!empty($db_options["port"]) ? "-" . $db_options["port"] : "") . "-" . (isset($db_options["db_name"]) ? $db_options["db_name"] : "") . ".sql";
 				$compression = DBDumperHandler::NONE;
 				
-				if (isset($settings["compress"]))
-					switch ($settings["compress"]) {
-						case "bzip2": 
-							$compression = DBDumperHandler::BZIP2; 
-							$dump_file_name .= ".bz2";
-							break;
-						case "gzip": $compression = DBDumperHandler::GZIP; 
-							$dump_file_name .= ".gz";
-							break;
-						case "gzipstream": $compression = DBDumperHandler::GZIPSTREAM; 
-							$dump_file_name .= ".gz";
-							break;
-						case "zip": $compression = DBDumperHandler::ZIP; 
-							$dump_file_name .= ".zip";
-							break;
+				if (isset($settings["compress"])) {
+					$aux = FileCompressionFactory::getClassPrefixByType($settings["compress"]);
+					
+					if ($aux) {
+						$compression = $aux;
+						$extension = FileCompressionFactory::getExtension($compression);
+						$dump_file_name .= "." . $extension;
 					}
+				}
 				
 				$tmp_file = tmpfile();
 				$tmp_file_path = stream_get_meta_data($tmp_file);
@@ -101,6 +95,7 @@ if ($bean_name) {
 					'where' => isset($settings["where"]) ? $settings["where"] : null,
 				);
 				$pdo_settings = !empty($db_options["persistent"]) && empty($db_options["new_link"]) ? array(PDO::ATTR_PERSISTENT => true) : array();
+				//echo "<pre>";print_r($dump_settings);die();
 				
 				$DBDumperHandler = new DBDumperHandler($DBDriver, $dump_settings, $pdo_settings);
 				$DBDumperHandler->connect();

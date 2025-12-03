@@ -19,11 +19,7 @@ class DBDumperHandler {
 	const MAX_LINE_SIZE = 1000000; //default of mysqldump
 
 	//compression types - class prefixes
-	const GZIP  = 'Gzip';
-	const BZIP2 = 'Bzip2';
 	const NONE  = 'None';
-	const GZIPSTREAM = 'Gzipstream';
-	const ZIP = 'Zip';
 
 	//encodings
 	const UTF8    = 'utf8';

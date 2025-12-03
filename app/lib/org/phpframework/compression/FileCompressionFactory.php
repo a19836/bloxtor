@@ -34,5 +34,38 @@ class FileCompressionFactory {
 		
 		return false;
 	}
+	
+	public static function getClassPrefixByType($type) {
+		switch (strtolower($type)) {
+			case "bzip2": return "Bzip2";
+			case "gzip": return "Gzip";
+			case "gzipstream": return "Gzipstream";
+			case "zip": return "Zip";
+		}
+		
+		return null;
+	}
+	
+	public static function getClassPrefixByExtension($extension) {
+		switch (strtolower($extension)) {
+			case "bz2": return "Bzip2";
+			case "gz": return "Gzip";
+			//case "gz": return "Gzipstream"; //It never enters here
+			case "zip": return "Zip";
+		}
+		
+		return null;
+	}
+	
+	public static function getExtension($class_prefix) {
+		switch ($class_prefix) {
+			case "Bzip2": return "bz2";
+			case "Gzip": return "gz";
+			case "Gzipstream": return "gz";
+			case "Zip": return "zip";
+		}
+		
+		return null;
+	}
 }
 ?>
