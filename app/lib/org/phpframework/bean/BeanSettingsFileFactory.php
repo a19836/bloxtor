@@ -61,7 +61,7 @@ class BeanSettingsFileFactory {
 			}
 		}
 		
-		self::executeSettingsWithPHPCode($settings, $settings_to_execute_php_code);
+		self::executeSettingsWithPHPCode($settings, $settings_to_execute_php_code, $external_vars);
 				
 		return $settings;
 	}
@@ -114,7 +114,7 @@ class BeanSettingsFileFactory {
 		return $keys;
 	}
 	
-	private static function executeSettingsWithPHPCode(&$settings, $settings_to_execute_php_code) {
+	private static function executeSettingsWithPHPCode(&$settings, $settings_to_execute_php_code, $external_vars) {
 		$total = $settings_to_execute_php_code ? count($settings_to_execute_php_code) : 0;
 		
 		for ($i = 0; $i < $total; $i++) {
@@ -126,7 +126,7 @@ class BeanSettingsFileFactory {
 				$value = str_replace("?&gt;", "?>", $value);
 				
 				//error_log("\n$key:$value", 3, "/tmp/error.log");
-				$value = PHPScriptHandler::parseContent($value);
+				$value = PHPScriptHandler::parseContent($value, $external_vars);
 				
 				eval("\$settings" . $key . " = \$value;");
 			}
