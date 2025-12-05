@@ -13,6 +13,7 @@
 include get_lib("org.phpframework.bean.Bean");
 include get_lib("org.phpframework.bean.exception.BeanFactoryException");
 include get_lib("org.phpframework.bean.BeanSettingsFileFactory");
+include_once get_lib("org.phpframework.cache.xmlsettings.XmlSettingsCacheHandler");
 
 class BeanFactory {
 	const APP_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtec+xMxVPOgL2KiCALkF"; //DO NOT CHANGE THIS. THIS IS THEPHPMYFRAMEWORK PUBLIC KEY TO DECODE THE LICENCE
@@ -284,6 +285,10 @@ class BeanFactory {
 	
 	public function setCacheRootPath($dir_path) {
 		$this->BeanSettingsFileFactory->setCacheRootPath($dir_path);
+	}
+	
+	public function setCacheHandler(XmlSettingsCacheHandler $XmlSettingsCacheHandler) {
+		$this->BeanSettingsFileFactory->setCacheHandler($XmlSettingsCacheHandler);
 	}
 }
 ?>

@@ -12,22 +12,23 @@
 
 include_once get_lib("org.phpframework.cache.xmlsettings.filesystem.FileSystemXmlSettingsCacheHandler");
 
-class BeanFactoryCache extends FileSystemXmlSettingsCacheHandler {
+class BeanFactoryCache {
 	private $cache_dir_name = "__system/beans/";
 	
+	private $CacheHandler;
 	private $cache_root_path;
 	
 	private $is_active = false;
 	
 	public function __construct() {
-		
+		$this->CacheHandler = new FileSystemXmlSettingsCacheHandler();
 	}
 	
 	/******* START: File Path *******/
 	public function cachedFileExists($file_path) {
 		$file_path = $this->getCacheFilePath($file_path);
-		if($file_path && $this->isCacheValid($file_path)) {
-			$arr = $this->getCache($file_path);
+		if($file_path && $this->CacheHandler->isCacheValid($file_path)) {
+			$arr = $this->CacheHandler->getCache($file_path);
 			return $arr ? true : false;
 		}
 		return false;
@@ -35,19 +36,23 @@ class BeanFactoryCache extends FileSystemXmlSettingsCacheHandler {
 	
 	public function getCachedFile($file_path) {
 		$file_path = $this->getCacheFilePath($file_path);
-		return $this->getCache($file_path);
+		return $this->CacheHandler->getCache($file_path);
 	}
 	
 	public function setCachedFile($file_path, $data, $renew_data = false) {
 		$file_path = $this->getCacheFilePath($file_path);
 		if($file_path) {
-			return $this->setCache($file_path, $data, $renew_data);
+			return $this->CacheHandler->setCache($file_path, $data, $renew_data);
 		}
 		return true;
 	}
 	/******* END: File Path *******/
 	
 	/******* START: COMMON *******/
+	public function setCacheHandler(XmlSettingsCacheHandler $XmlSettingsCacheHandler) {
+		$this->CacheHandler = $XmlSettingsCacheHandler;
+	}
+	
 	public function initCacheDirPath($dir_path) {
 		if(!$this->cache_root_path) {
 			if($dir_path) {
