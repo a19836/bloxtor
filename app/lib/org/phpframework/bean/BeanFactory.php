@@ -127,6 +127,31 @@ class BeanFactory {
 		$this->beans = $this->getBeansFromSettings($settings, $this->sort_elements);
 	}
 	
+	public function add($data) {
+		if(!empty($data["external_vars"])) {
+			$objs = isset($this->external_vars["objs"]) ? $this->external_vars["objs"] : null;
+			$vars = isset($this->external_vars["vars"]) ? $this->external_vars["vars"] : null;
+			$this->external_vars = empty($this->external_vars) ? $data["external_vars"] : array_merge($this->external_vars, $data["external_vars"]);
+			
+			if ($objs)
+				$this->external_vars["objs"] = array_merge($this->external_vars["objs"], $data["external_vars"]["objs"]);
+						
+			if ($vars)
+				$this->external_vars["vars"] = array_merge($this->external_vars["vars"], $data["external_vars"]["vars"]);
+		}
+		
+		if(!empty($data["file"])) 
+			$settings = $this->getSettingsFromFile($data["file"]);
+		
+		if(isset($data["settings"]) && is_array($data["settings"])) 
+			$settings = empty($settings) ? $data["settings"] : array_merge($settings, $data["settings"]);
+		
+		$this->sort_elements = array();//We must reset the $this->sort_elements array everytime that we call the getBeansFromSettings.
+		$new_beans = $this->getBeansFromSettings($settings, $this->sort_elements);
+		
+		$this->beans = empty($this->beans) ? $new_beans : array_merge($this->beans, $new_beans);
+	}
+	
 	public function initObjects() {
 		$t = $this->sort_elements ? count($this->sort_elements) : 0;
 		for($i = 0; $i < $t; $i++) {
@@ -273,12 +298,16 @@ class BeanFactory {
 		$this->sort_elements = array();
 	}
 	
-	public function addObjects($objs) {
-		$this->objs = empty($this->objs) ? $objs : array_merge($this->objs, $objs);
+	public function addBeans($beans) {
+		$this->beans = empty($this->beans) ? $beans : array_merge($this->beans, $beans);
 	}
 	
 	public function getBeans() {return $this->beans;}
 	public function getBean($bean_name) {return isset($this->beans[$bean_name]) ? $this->beans[$bean_name] : null;}
+	
+	public function addObjects($objs) {
+		$this->objs = empty($this->objs) ? $objs : array_merge($this->objs, $objs);
+	}
 	
 	public function getObjects() {return $this->objs;}
 	public function getObject($obj_name) {return isset($this->objs[$obj_name]) ? $this->objs[$obj_name] : null;}
