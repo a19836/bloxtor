@@ -5,7 +5,7 @@
 	<import relative="1">maps.xml</import>
 	
 	<insert id="insert_item">
-		insert into item (title) values ('#title#')
+		insert into item (title, status) values ('#title#', '#status#')
 	</insert> 
 
 	<insert id="insert_item_not_registered">

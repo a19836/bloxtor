@@ -12,6 +12,7 @@
 
 include_once get_lib("org.phpframework.sqlmap.exception.SQLMapQueryException");
 include_once get_lib("org.phpframework.object.ObjectHandler");
+include_once get_lib("org.phpframework.object.ObjTypeHandler");
 include_once get_lib("org.phpframework.util.HashTagParameter");
 
 class SQLMapQueryHandler extends SQLMap {

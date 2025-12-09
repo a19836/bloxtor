@@ -12,6 +12,7 @@
 
 include_once get_lib("org.phpframework.sqlmap.exception.SQLMapResultException");
 include_once get_lib("org.phpframework.object.ObjectHandler");
+include_once get_lib("org.phpframework.object.ObjTypeHandler");
 
 class SQLMapResultHandler extends SQLMap {
 	public function __construct() {
