@@ -57,7 +57,7 @@ $main_content = '
 		</div>
 		<div class="email">
 			<label>Email: <span class="mandatory">*</span></label>
-			<input type="text" name="msg[email]" value="' . (isset($data["email"]) ? $data["email"] : "") . '" data-allow-null="0" data-validation-message="Invalid email." data-validation-type="email" placeHolder="Please write your email here..." required>
+			<input type="email" name="msg[email]" value="' . (isset($data["email"]) ? $data["email"] : "") . '" data-allow-null="0" data-validation-message="Invalid email." data-validation-type="email" placeHolder="Please write your email here..." required>
 		</div>
 		<div class="phone">
 			<label>Phone:</label>

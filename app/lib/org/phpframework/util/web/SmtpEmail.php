@@ -67,9 +67,18 @@ class SmtpEmail {
 				$offset = $offset !== false ? $offset + 1 : false;
 			}
 			
-			$to_emails[] = array($te, $tn);
+			if (self::getEmail($te))
+				$to_emails[] = array($te, $tn);
 		}
 		while ($offset !== false && $offset < strlen($to_email));
+		
+		if (empty($to_emails) || !self::getEmail($from_email)) {
+			$this->PHPMailer->ErrorInfo  = "Invalid email format";
+			return false;
+		}
+		
+		if (!self::getEmail($reply_to_email))
+			$reply_to_email = $from_email;
 		
 		//Create a new PHPMailer instance
 		$this->PHPMailer = class_exists("PHPMailer") ? new PHPMailer : new PHPMailer\PHPMailer\PHPMailer;
@@ -157,6 +166,12 @@ class SmtpEmail {
 	
 	public function getErrorInfo() { 
 		return $this->phpmailer_class_exists ? $this->PHPMailer->ErrorInfo : "PHPMailer library is not loaded, wasn't installed or doesn't exists!";
+	}
+	
+	public static function getEmail($text) {
+		$regex = '/^(?:([^<>]+)\s*<)?([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,})>?$/i';
+		
+		return is_string($text) && preg_match($regex, $text, $m) ? $m[2] : false;
 	}
 
 	private function prepareEmailAndName(&$email, &$name, $offset = 0) {
