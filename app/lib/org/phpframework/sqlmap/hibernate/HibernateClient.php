@@ -43,16 +43,16 @@ class HibernateClient extends SQLMapClient {
 			$this->setNodesData($nodes);
 		}
 		else {
-			$nodes = self::getHibernateObjectNodeConfiguredFromFilePath($obj_path);
+			$nodes = self::getHibernateObjectNodeConfiguredFromFilePath($obj_path, $external_vars);
 			$this->setNodesData($nodes);
 			
 			$this->getSQLMapClientCache()->setCachedXMLElm($cache_path, $nodes);
 		}
 	}
 	
-	public static function getHibernateObjectNodeConfiguredFromFilePath($obj_path) {
+	public static function getHibernateObjectNodeConfiguredFromFilePath($obj_path, $external_vars = false) {
 		$xml_schema_file_path = get_lib("org.phpframework.xmlfile.schema.hibernate_sql_mapping", "xsd");
-		$nodes = XMLFileParser::parseXMLFileToArray($obj_path, false, $xml_schema_file_path);
+		$nodes = XMLFileParser::parseXMLFileToArray($obj_path, $external_vars, $xml_schema_file_path);
 		
 		$first_node_name = is_array($nodes) ? array_keys($nodes) : array();
 		$first_node_name = isset($first_node_name[0]) ? $first_node_name[0] : null;

@@ -39,7 +39,7 @@ class IBatisClient extends SQLMapClient {
 		}
 		else {
 			$xml_schema_file_path = get_lib("org.phpframework.xmlfile.schema.ibatis_sql_mapping", "xsd");
-			$nodes = XMLFileParser::parseXMLFileToArray($obj_path, false, $xml_schema_file_path);
+			$nodes = XMLFileParser::parseXMLFileToArray($obj_path, $external_vars, $xml_schema_file_path);
 			
 			$first_node_name = is_array($nodes) ? array_keys($nodes) : array();
 			$first_node_name = isset($first_node_name[0]) ? $first_node_name[0] : null;
