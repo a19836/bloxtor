@@ -132,7 +132,8 @@ class HibernateModelBase extends SQLMap {
 	public function setCacheLayer($CacheLayer) {
 		$this->CacheLayer = $CacheLayer;
 		
-		$this->HibernateModelCache->initCacheDirPath($this->CacheLayer->getCachedDirPath());
+		if ($this->CacheLayer)
+			$this->HibernateModelCache->initCacheDirPath($this->CacheLayer->getCachedDirPath());
 	}
 	public function getCacheLayer() {return $this->CacheLayer;}
 

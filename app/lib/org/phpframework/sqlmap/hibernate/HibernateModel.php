@@ -13,6 +13,7 @@
 include get_lib("org.phpframework.sqlmap.hibernate.HibernateModelBase");
 include get_lib("org.phpframework.sqlmap.hibernate.IHibernateModel");
 include_once get_lib("org.phpframework.object.ObjTypeHandler");
+include_once get_lib("org.phpframework.db.DB");
 
 class HibernateModel extends HibernateModelBase implements IHibernateModel {
 	private $default_options = array();
@@ -1027,7 +1028,7 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 			
 			if(is_array($parent_conditions))
 				foreach($parent_conditions as $parent_key => $parent_value)
-					$sql = str_replace(array("'#$parent_key#'", "#$parent_key#"), DBSQLConverter::createBaseExprValue($parent_value), $sql);
+					$sql = str_replace(array("'#$parent_key#'", "#$parent_key#"), DB::createBaseExprValue($parent_value), $sql);
 			
 		//echo "\n<br/>$sql\n<br/>";
 			
@@ -1105,7 +1106,7 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 			
 			if(is_array($parent_conditions))
 				foreach($parent_conditions as $parent_key => $parent_value)
-					$sql = str_replace(array("'#$parent_key#'", "#$parent_key#"), DBSQLConverter::createBaseExprValue($parent_value), $sql);
+					$sql = str_replace(array("'#$parent_key#'", "#$parent_key#"), DB::createBaseExprValue($parent_value), $sql);
 			
 		//echo "\n<br/>$sql\n<br/>";
 		
@@ -1292,8 +1293,9 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 		}
 	}
 	
-	//Based on DBSQLConverter::getSQLConditions
+	//Based on DB::getSQLConditions
 	protected function configureAttributeConditions(&$conditions) {
+		$original_conditions = $conditions;
 		$this->QueryHandler->transformData($conditions, $this->parameter_class, $this->parameter_map, false, true);
 		
 		if(is_array($conditions)) {
@@ -1323,10 +1325,14 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 					else
 						$exists = isset($this->table_attributes[$real_key]); //2020-01-24: isset here is correct. Do not change it to array_key_exists
 				}
+				//Note that this only works if there is no parameter map, otherwise the transformData already convert the attributes, so we need to check in fthe table_attributes instead.
 				else if (!empty($this->properties_to_attributes[$key])) {
 					$key = $this->properties_to_attributes[$key];
 					$exists = isset($this->table_attributes[$key]); //2020-01-24: isset here is correct. Do not change it to array_key_exists
 				}
+				//Note that if the transformData already convert the attributes, then $key is already the real attribute name, so we need to check in fthe table_attributes.
+				else if ($original_conditions != $conditions && isset($this->table_attributes[$key]))
+					$exists = true;
 				
 				if ($exists)
 					$new_conditions[$key] = $value;
@@ -1336,7 +1342,7 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 		}
 	}
 	
-	//convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DBSQLConverter, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
+	//convert string to real numeric value. This is very important, bc in the insert and update primitive actions of the DB, the sql must be created with numeric values and without quotes, otherwise the DB server gives a sql error.
 	protected function convertNumericAttributesStringValues($attributes) {
 		if ($attributes)
 			foreach($attributes as $key => $value) 

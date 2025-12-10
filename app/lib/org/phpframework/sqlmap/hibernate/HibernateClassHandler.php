@@ -39,6 +39,20 @@ class HibernateClassHandler extends SQLMap {
 			
 			if ($this->HibernateClientCache->setCachedPHPClass($class_file_obj_name, $content))
 				return $file_path;
+			else if (!$file_path) { //if no cache defined then create temp file that will be deleted when php script ends
+				$file_path = tempnam(sys_get_temp_dir(), 'HibernateClassObj_'); // good
+				
+				if (file_put_contents($file_path, $content) !== false) {
+					$func = function() use ($file_path) {
+						//echo "file_path:$file_path<br/>";
+						if (file_exists($file_path))
+							unlink($file_path);
+					};
+					register_shutdown_function($func);
+					
+					return $file_path;
+				}
+			}
 		}
 		
 		return false;
