@@ -13,7 +13,6 @@
 include_once get_lib("org.phpframework.sqlmap.SQLMapClient");
 include get_lib("org.phpframework.sqlmap.hibernate.HibernateClientCache");
 include get_lib("org.phpframework.sqlmap.hibernate.HibernateClassHandler");
-include get_lib("org.phpframework.sqlmap.hibernate.IHibernateClientCacheLayer");
 include get_lib("org.phpframework.sqlmap.hibernate.exception.HibernateException");
 
 class HibernateClient extends SQLMapClient {
@@ -227,7 +226,8 @@ class HibernateClient extends SQLMapClient {
 		return false;
 	}
 	
-	public function setCacheLayer(IHibernateClientCacheLayer $CacheLayer) {$this->CacheLayer = $CacheLayer;}
+	//$CacheLayer should be this type org.phpframework.sqlmap.hibernate.IHibernateClientCacheLayer
+	public function setCacheLayer($CacheLayer) {$this->CacheLayer = $CacheLayer;}
 	public function getCacheLayer() {return $this->CacheLayer;}
 }
 ?>
