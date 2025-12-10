@@ -30,9 +30,11 @@ class IBatisClient extends SQLMapClient {
 		$this->setSQLMapClientCache(new IBatisClientCache());
 	}
 	
-	public function loadXML($obj_path) {
-		if ($this->getSQLMapClientCache()->cachedXMLElmExists($obj_path)) {
-			$nodes = $this->getSQLMapClientCache()->getCachedXMLElm($obj_path);
+	public function loadXML($obj_path, $external_vars = false) {
+		$cache_path = $obj_path . ($external_vars ? "_" . hash("crc32b", serialize($external_vars)) : "");
+		
+		if ($this->getSQLMapClientCache()->cachedXMLElmExists($cache_path)) {
+			$nodes = $this->getSQLMapClientCache()->getCachedXMLElm($cache_path);
 			$this->setNodesData($nodes);
 		}
 		else {
@@ -51,7 +53,7 @@ class IBatisClient extends SQLMapClient {
 			
 			$this->setNodesData($nodes);
 			
-			$this->getSQLMapClientCache()->setCachedXMLElm($obj_path, $nodes);
+			$this->getSQLMapClientCache()->setCachedXMLElm($cache_path, $nodes);
 		}
 	}
 	

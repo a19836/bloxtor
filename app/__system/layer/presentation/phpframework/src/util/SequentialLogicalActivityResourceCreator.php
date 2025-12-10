@@ -3098,6 +3098,10 @@ return $result;';
 								//echo "cache exists(".$obj->getSQLClient()->getSQLMapClientCache()->cachedXMLElmExists($default_service_file_abs_path)."):".$obj->getSQLClient()->getSQLMapClientCache()->getCachedFilePath($default_service_file_abs_path);die();
 								$obj->getSQLClient()->getSQLMapClientCache()->deleteCachedXMLElm($default_service_file_abs_path);
 								
+								//no need for this
+								//$cache_folder_path = dirname( $obj->getSQLClient()->getSQLMapClientCache()->getCachedFilePath($default_service_file_abs_path) );
+								//CacheHandlerUtil::deleteFolder($cache_folder_path, false);
+								
 								@unlink($created_file_abs_path);
 							}
 							//rename created_file_abs_path to default_service_file_abs_path
