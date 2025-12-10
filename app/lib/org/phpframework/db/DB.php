@@ -292,12 +292,16 @@ abstract class DB implements IDB {
 							//prepare results
 							$prepare_results = empty($options["return_type"]) || $options["return_type"] != "fields";
 							
-							if ($prepare_results)
+							if ($prepare_results) {
+								if (!is_array($data["result"])) //This is very important, bc if there is another query before that returns true, then the $data["result"] will be a boolean and not an array, which will give a php error.
+									$data["result"] = array();
+								
 								while ($row = $this->fetchAssoc($result))
 									$data["result"][] = $row;
+							}
 							
 							//set fields if none set before. Note that fetchField in PDO doesn't work for some drivers like mssql server, so we need to perfomr this code.
-							if ($prepare_fields && !empty($get_fields_from_results) && !empty($data["result"][0])) {
+							if ($prepare_fields && !empty($get_fields_from_results) && !empty($data["result"][0]) && is_array($data["result"][0])) {
 								$j = 0;
 								
 								foreach ($data["result"][0] as $k => $v)

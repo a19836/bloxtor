@@ -1207,9 +1207,19 @@ class HibernateModel extends HibernateModelBase implements IHibernateModel {
 		$this->prepareOptions($options);
 		return $this->RDBBroker->setData($sql, $options);
 	}
+	
+	public function getSQL($sql, $options = false) {
+		$this->prepareOptions($options);
+		return $this->RDBBroker->getSQL($sql, $options);
+	}
+	
+	public function setSQL($sql, $options = false) {
+		$this->prepareOptions($options);
+		return $this->RDBBroker->setSQL($sql, $options);
+	}
 
-    	public function getInsertedId($options = false) {
-    		$this->prepareOptions($options);
+ 	public function getInsertedId($options = false) {
+ 		$this->prepareOptions($options);
 		return $this->RDBBroker->getInsertedId($options);
 	}
 	

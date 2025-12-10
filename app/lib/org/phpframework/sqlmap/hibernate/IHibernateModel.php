@@ -22,10 +22,14 @@ interface IHibernateModel {
 	public function updatePrimaryKeys($data, $options = false);
 	public function delete($data, $options = false);
 	public function deleteAll($data, &$statuses = false, $options = false);
+	public function deleteByConditions($data, $options = false);
 	public function findById($ids, $data = array(), $options = false);
 	public function find($data = array(), $options = false);
+	public function count($data = array(), $options = false);
 	public function findRelationships($parent_ids, $options = false);
 	public function findRelationship($rel_name, $parent_ids, $options = false);
+	public function countRelationships($parent_ids, $options = false);
+	public function countRelationship($rel_name, $parent_ids, $options = false); 
 	
 	/*********** IBATIS ************/
 	public function callQuerySQL($query_type, $query_id, $parameters = false);
@@ -50,6 +54,9 @@ interface IHibernateModel {
 	
 	public function getData($sql, $options = false);
 	public function setData($sql, $options = false);
-    	public function getInsertedId($options = false);
+	public function getSQL($sql, $options = false);
+	public function setSQL($sql, $options = false);
+ 	public function getInsertedId($options = false);
+ 	public function getFunction($function_name, $parameters = false, $options = false);
 }
 ?>

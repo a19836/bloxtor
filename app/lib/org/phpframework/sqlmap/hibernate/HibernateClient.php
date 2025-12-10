@@ -13,6 +13,7 @@
 include_once get_lib("org.phpframework.sqlmap.SQLMapClient");
 include get_lib("org.phpframework.sqlmap.hibernate.HibernateClientCache");
 include get_lib("org.phpframework.sqlmap.hibernate.HibernateClassHandler");
+include get_lib("org.phpframework.sqlmap.hibernate.IHibernateClientCacheLayer");
 include get_lib("org.phpframework.sqlmap.hibernate.exception.HibernateException");
 
 class HibernateClient extends SQLMapClient {
@@ -177,12 +178,15 @@ class HibernateClient extends SQLMapClient {
 		return $node;
 	}
 	
-	public function getHbnObj($obj_name, $module_id, $service_id, $options = false) {
+	public function getHbnObj($obj_name, $module_id = false, $service_id = false, $options = false) {
 		$xml_data = $this->getNodesData();
 		$obj_data = isset($xml_data["class"][$obj_name]) ? $xml_data["class"][$obj_name] : null;
 	
 		if ($obj_data) {
 			$options = is_array($options) ? $options : array();
+			
+			if (!$service_id && strlen($service_id) == 0)
+				$service_id = $obj_name;
 			
 			$class_file_obj_name = $obj_name . '_' . hash("crc32b", serialize(array($module_id, $service_id, $options)));
 			
@@ -223,7 +227,7 @@ class HibernateClient extends SQLMapClient {
 		return false;
 	}
 	
-	public function setCacheLayer($CacheLayer) {$this->CacheLayer = $CacheLayer;}
+	public function setCacheLayer(IHibernateClientCacheLayer $CacheLayer) {$this->CacheLayer = $CacheLayer;}
 	public function getCacheLayer() {return $this->CacheLayer;}
 }
 ?>
