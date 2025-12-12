@@ -67,6 +67,7 @@ class BeanFactory {
 				}
 				
 				$bean_name = isset($s["name"]) ? $s["name"] : null;
+				$bean_group = isset($s["group"]) ? $s["group"] : (isset($s["bean_group"]) ? $s["bean_group"] : null);
 				$beans[$bean_name] = new Bean(
 					$bean_name, 
 					isset($s["path"]) ? $s["path"] : null, 
@@ -78,7 +79,8 @@ class BeanFactory {
 						"extension" => isset($s["extension"]) ? $s["extension"] : null, 
 						"bean_to_extend" => isset($s["bean_to_extend"]) ? $s["bean_to_extend"] : null, 
 						"namespace" => isset($s["namespace"]) ? $s["namespace"] : null, 
-						"class_name" => isset($s["class_name"]) ? $s["class_name"] : null
+						"class_name" => isset($s["class_name"]) ? $s["class_name"] : null, 
+						"group" => $bean_group
 					)
 				);
 				
@@ -96,7 +98,8 @@ class BeanFactory {
 					isset($setting["function"]["parameters"]) ? $setting["function"]["parameters"] : null, 
 					isset($setting["function"]["reference"]) ? $setting["function"]["reference"] : null, 
 					array(
-						"namespace" => isset($setting["function"]["namespace"]) ? $setting["function"]["namespace"] : null
+						"namespace" => isset($setting["function"]["namespace"]) ? $setting["function"]["namespace"] : null, 
+						"group" => isset($s["group"]) ? $s["group"] : null
 					)
 				);
 				$sort_elements[] = array("type" => "function", "function" => $func);
@@ -162,6 +165,29 @@ class BeanFactory {
 					$this->initObject($sort_element["name"]);
 				else if ($sort_element["type"] == "function") 
 					$this->initFunction($sort_element);
+			}
+		 }
+	}
+	
+	public function initObjectsByGroup($group) {
+		$t = $this->sort_elements ? count($this->sort_elements) : 0;
+		for($i = 0; $i < $t; $i++) {
+			$sort_element = $this->sort_elements[$i];
+			
+			if (isset($sort_element["type"])) {
+				if ($sort_element["type"] == "bean" && !empty($sort_element["name"])) {
+					$bean_name = $sort_element["name"];
+					$bean = isset($this->beans[$bean_name]) ? $this->beans[$bean_name] : null;
+					
+					if ($bean && isset($bean->settings["group"]) && $bean->settings["group"] == $group)
+						$this->initObject($bean_name);
+				}
+				else if ($sort_element["type"] == "function") {
+					$func = $sort_element["function"];
+					
+					if ($func && isset($func->settings["group"]) && $func->settings["group"] == $group)
+						$this->initFunction($sort_element);
+				}
 			}
 		 }
 	}
@@ -304,6 +330,16 @@ class BeanFactory {
 	
 	public function getBeans() {return $this->beans;}
 	public function getBean($bean_name) {return isset($this->beans[$bean_name]) ? $this->beans[$bean_name] : null;}
+	public function getBeansByGroup($group) {
+		$beans = array();
+		
+		if ($this->beans)
+			foreach ($this->beans as $bean_name => $bean)
+				if (isset($bean->settings["group"]) && $bean->settings["group"] == $group)
+					$beans[] = $bean;
+		
+		return $beans;
+	}
 	
 	public function addObjects($objs) {
 		$this->objs = empty($this->objs) ? $objs : array_merge($this->objs, $objs);
@@ -311,6 +347,21 @@ class BeanFactory {
 	
 	public function getObjects() {return $this->objs;}
 	public function getObject($obj_name) {return isset($this->objs[$obj_name]) ? $this->objs[$obj_name] : null;}
+	public function getObjectsByGroup($group) {
+		$objects = array();
+		$beans = $this->getBeansByGroup($group);
+		
+		if ($beans)
+			foreach ($beans as $bean_name => $bean)
+				if (!empty($bean->name)) {
+					$obj = $this->getObject($bean->name);
+					
+					if ($obj)
+						$objects[] = $obj;
+				}
+				
+		return $objects;
+	}
 	
 	public function setCacheRootPath($dir_path) {
 		$this->BeanSettingsFileFactory->setCacheRootPath($dir_path);

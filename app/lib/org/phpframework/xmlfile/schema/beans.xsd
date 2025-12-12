@@ -19,6 +19,8 @@
 						<xs:element name="extension" type="valueType" minOccurs="0" maxOccurs="1" />
 						<xs:element name="extend" type="valueType" minOccurs="0" maxOccurs="1" />
 						<xs:element name="namespace" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="group" type="valueType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="bean_group" type="valueType" minOccurs="0" maxOccurs="1" />
 					</xs:choice>
 	  				
 	  				<xs:attribute name="name" type="xs:string" />
@@ -28,6 +30,7 @@
 	  				<xs:attribute name="extension" type="xs:string" />
 	  				<xs:attribute name="extend" type="xs:string" />
 	  				<xs:attribute name="namespace" type="xs:string" />
+	  				<xs:attribute name="group" type="xs:string" />
 	  				<xs:attribute name="bean_group" type="xs:string" />
 	  			</xs:complexType>
 	  		</xs:element>
@@ -71,11 +74,13 @@
 			<xs:element name="name" type="valueType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="namespace" type="valueType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="reference" type="valueType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="group" type="valueType" minOccurs="0" maxOccurs="1" />
 		</xs:choice>
 		
 		<xs:attribute name="name" type="xs:string" />
 		<xs:attribute name="namespace" type="xs:string" />
 		<xs:attribute name="reference" type="xs:string" />
+		<xs:attribute name="group" type="xs:string" />
 	</xs:complexType>
 	<xs:complexType name="servicesType">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
