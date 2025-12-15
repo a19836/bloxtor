@@ -240,7 +240,7 @@ class WorkFlowTaskImpl extends \WorkFlowTask {
 			}
 			
 			//get common_exit_task_id
-			if (!$common_exit_task_id)
+			if (empty($common_exit_task_id))
 				$common_exit_task_id = self::getCommonTaskExitIdFromTaskId($tasks, isset($data["id"]) ? $data["id"] : null);
 			//error_log("common_exit_task_id:".$common_exit_task_id."\n\n", 3, "/var/www/html/livingroop/default/tmp/phpframework.log");
 			
