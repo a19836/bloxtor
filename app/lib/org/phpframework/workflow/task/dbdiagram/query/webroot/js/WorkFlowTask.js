@@ -464,7 +464,7 @@ var DBQueryTaskPropertyObj = {
 			myWFObj.getTaskFlowChart().StatusMessage.showError("Error: Couldn't detect this connection's properties. Please remove this connection, create a new one and try again...");
 		}
 		else {
-			$("#" + myWFObj.getTaskFlowChart().TaskFlow.main_tasks_flow_obj_id + " .db_table_connection_html .table_attrs").append(html);
+			$("#" + myWFObj.getTaskFlowChart().Property.selected_connection_properties_id + " .db_table_connection_html .table_attrs").append(html);
 		}
 	},
 	

@@ -12,6 +12,8 @@
 
 class OpenSSLCipherHandler {
 	
+	public static $cipher = "AES-128-CBC";
+	
 	/**
 	 * Encrypt a text with a salt into a ciphertext.
 	 * Note that according with our tests we realized that the returned cipher text has a length of 108 chars. To be safe, the DB attribute where this cipher will be saved, should have a length of 150 chars, just in case.
@@ -21,11 +23,10 @@ class OpenSSLCipherHandler {
 	 */
 	public static function encryptText($text, $key) {
 		if (strlen($text)) {
-			$cipher = "AES-128-CBC";
-			$ivlen = openssl_cipher_iv_length($cipher);
+			$ivlen = openssl_cipher_iv_length(self::$cipher);
 			$iv = openssl_random_pseudo_bytes($ivlen);
 			
-			$cipher_text_raw = openssl_encrypt($text, $cipher, $key, $options = OPENSSL_RAW_DATA, $iv);
+			$cipher_text_raw = openssl_encrypt($text, self::$cipher, $key, $options = OPENSSL_RAW_DATA, $iv);
 			$hmac = hash_hmac('sha256', $cipher_text_raw, $key, $as_binary = true);
 			$cipher_text = base64_encode( $iv . $hmac . $cipher_text_raw );
 			
@@ -72,14 +73,13 @@ class OpenSSLCipherHandler {
 	 */
 	public static function decryptText($cipher_text, $key) {
 		if (strlen($cipher_text)) {
-			$cipher = "AES-128-CBC";
 			$c = base64_decode($cipher_text);
-			$ivlen = openssl_cipher_iv_length($cipher);
+			$ivlen = openssl_cipher_iv_length(self::$cipher);
 			$iv = substr($c, 0, $ivlen);
 			$hmac = substr($c, $ivlen, $sha2len = 32);
 			$cipher_text_raw = substr($c, $ivlen + $sha2len);
 			
-			$original_plaintext = openssl_decrypt($cipher_text_raw, $cipher, $key, $options = OPENSSL_RAW_DATA, $iv);
+			$original_plaintext = openssl_decrypt($cipher_text_raw, self::$cipher, $key, $options = OPENSSL_RAW_DATA, $iv);
 			$calcmac = hash_hmac('sha256', $cipher_text_raw, $key, $as_binary = true);
 			
 			if (hash_equals($hmac, $calcmac)) //PHP 5.6+ timing attack safe comparison 

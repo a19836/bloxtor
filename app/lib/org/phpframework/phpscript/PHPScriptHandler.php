@@ -584,7 +584,11 @@ class PHPScriptHandler {
 		$meta_data = stream_get_meta_data($temp);
 		$path = isset($meta_data['uri']) ? $meta_data['uri'] : null;
 		
+		ob_start(null, 0);
+		
 		include $path;
+		
+		ob_end_clean();
 		
 		fclose($temp); // this removes the file
 		
