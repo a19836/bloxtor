@@ -18,7 +18,7 @@
 				<th class="target_column table_header"></th>
 				<th class="column_value table_header">value</th>
 				<th class="table_attr_icons">
-					<a class="icon add" onClick="DBQueryTaskPropertyObj.addTableJoinKey()">ADD</a>
+					<a class="icon add" onClick="DBQueryTaskPropertyObj.addTableJoinKey(this)">ADD</a>
 				</th>
 			</tr>
 		</thead>
