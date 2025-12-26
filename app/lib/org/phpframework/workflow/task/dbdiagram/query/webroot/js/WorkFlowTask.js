@@ -458,13 +458,14 @@ var DBQueryTaskPropertyObj = {
 	},
 	
 	addTableJoinKey : function(elm) {
+		var WF = myWFObj.getTaskFlowChart();
 		var html = DBQueryTaskPropertyObj.getTableJoinKey();
 		
 		if (!html) {
-			myWFObj.getTaskFlowChart().StatusMessage.showError("Error: Couldn't detect this connection's properties. Please remove this connection, create a new one and try again...");
+			WF.StatusMessage.showError("Error: Couldn't detect this connection's properties. Please remove this connection, create a new one and try again...");
 		}
 		else {
-			var db_table_connection_html = elm ? $(elm).closest(".db_table_connection_html") : $("#" + myWFObj.getTaskFlowChart().Property.selected_connection_properties_id + " .db_table_connection_html");
+			var db_table_connection_html = elm ? $(elm).closest(".db_table_connection_html") : $("#" + WF.Property.selected_connection_properties_id + " .db_table_connection_html");
 			
 			db_table_connection_html.find(".table_attrs").append(html);
 		}
