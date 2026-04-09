@@ -58,8 +58,9 @@ class PresentationRouter {
 					
 					$to_search = XMLFileParser::getAttribute($router_node, "to_search");
 					$to_replace = XMLFileParser::getAttribute($router_node, "to_replace");
+					$escape_only_slashes = XMLFileParser::getAttribute($router_node, "escape_only_slashes");
 					
-					$routers[] = array($to_search, $to_replace);
+					$routers[] = array($to_search, $to_replace, $escape_only_slashes);
 				}
 				$this->routers = $routers;
 				
@@ -88,12 +89,16 @@ class PresentationRouter {
 	
 	private function getNewLocation($url) {
 		$t = count($this->routers);
+		
 		for($i = 0; $i < $t; $i++) {
 			$router = $this->routers[$i];
 			$old_location = isset($router[0]) ? $router[0] : null;
 			$new_location = isset($router[1]) ? $router[1] : null;
+			$escape_only_slashes = isset($router[2]) ? $router[2] : null;
 			
-			$regex = $this->getLocationRegex($old_location);
+			$regex = $this->getLocationRegex($old_location, $escape_only_slashes);
+			//echo "regex(".preg_match_all($regex, $url, $matches)."):$regex<br>";
+			
 			if(preg_match_all($regex, $url, $matches)) {
 				$input = array();
 				$t = count($matches);
@@ -105,6 +110,7 @@ class PresentationRouter {
 				$vars = array("input" => $input);
 				
 				$new_location = PHPScriptHandler::parseContent($new_location, $vars);
+				//echo "<pre>new_location:$new_location|".print_r($vars, 1)."</pre>";
 				
 				if(strpos($new_location, "?") !== false) {
 					$parts = explode("?", $new_location);
@@ -116,6 +122,7 @@ class PresentationRouter {
 				return $new_location;
 			}
 		}
+		//echo "<pre>$url<textarea>".print_r($this->routers, 1)."</textarea>";die();
 		return $url;
 	}
 	
@@ -134,9 +141,11 @@ class PresentationRouter {
 		}
 	}
 	
-	private function getLocationRegex($old_location) {
-		//$regex = "/^" . str_replace("/", "\/", $old_location) . "$/iu"; //'/u' means with accents and ç too.
-		$regex = "/^" . preg_quote($old_location, "/") . "$/iu"; //'/u' means with accents and ç too.
+	private function getLocationRegex($old_location, $escape_only_slashes = false) {
+		if ($escape_only_slashes)
+			$regex = "/^" . str_replace("/", "\/", $old_location) . "$/iu"; //'/u' means with accents and ç too.
+		else
+			$regex = "/^" . preg_quote($old_location, "/") . "$/iu"; //'/u' means with accents and ç too.
 		
 		return $regex;
 	}

@@ -267,7 +267,7 @@ class TextShuffler {
 			if ($i + 3 <= $t)
 				$str = ($i + 1 < $t ? $string_chars[$i + 1] : "") . $string_chars[$i] . ($i + 2 < $t ? $string_chars[$i + 2] : "") . $str;
 			else
-				$str = $string_chars[$i] . $str;
+				$str = implode("", array_slice($string_chars, $i)) . $str;
 		}
 		
 		return $str;
@@ -387,6 +387,12 @@ class TextShuffler {
 	}
 }
 
+/*function get_lib($path) {
+	$cms_path = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__)))))) . "/";
+	
+	$path = strpos($path, "lib.") === 0 ? substr($path, strlen("lib.")) : $path;
+	return $cms_path . "app/lib/" . str_replace(".", "/", $path) . ".php";
+}*/
 //To test uncomment this lines:
 /*$s1 = TextShuffler::autoShuffle("joao pinto");
 $s2 = TextShuffler::autoShuffle("ana pinto");
@@ -417,8 +423,19 @@ echo "!$s12:".TextShuffler::autoUnshuffle($s12)."!\n";*/
 
 /*echo "test123@gmail.com:t".TextShuffler::shuffle1("est123@gmail.com")."!\n";
 echo "tom.cilmag@231ste:t".TextShuffler::unshuffle1("om.cilmag@231ste")."!\n\n";
+
 $s12 = TextShuffler::shuffle2("ofia Andrade");
-echo "!S$s12:S".TextShuffler::unshuffle2($s12)."!\n";
+echo "!S$s12:S".TextShuffler::unshuffle2($s12)."!\n\n";
+
+echo "jpinto:".TextShuffler::shuffle3("jpinto")."!\n";
+echo "pjniot:".TextShuffler::unshuffle3("pjniot")."!\n\n";
+
+echo "jamapinto@gmail.com:".TextShuffler::shuffle4("jamapinto@gmail.com")."!\n";
+echo "moc.liamg@otnipamaj:".TextShuffler::unshuffle4("moc.liamg@otnipamaj")."!\n\n";
+
+echo "jplpinto:".TextShuffler::shuffle5("jplpinto")."!\n";
+echo "plpjinto:".TextShuffler::unshuffle5("plpjinto")."!\n\n";
+
 $s12 = TextShuffler::autoShuffle("Test");
 echo "!$s12:".TextShuffler::autoUnshuffle($s12)."!\n";*/
 

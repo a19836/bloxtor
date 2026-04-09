@@ -8,10 +8,12 @@
 		  				<xs:choice minOccurs="0" maxOccurs="unbounded">
 		  					<xs:element name="to_search" type="valueType" minOccurs="0" maxOccurs="1" />
 		  					<xs:element name="to_replace" type="valueType" minOccurs="0" maxOccurs="1" />
+		  					<xs:element name="escape_only_slashes" type="valueType" minOccurs="0" maxOccurs="1" />
 		  				</xs:choice>
 	  					
 	  					<xs:attribute name="to_search" type="xs:string" />
 						<xs:attribute name="to_replace" type="xs:string" />
+						<xs:attribute name="escape_only_slashes" type="xs:string" />
 					</xs:complexType>
 		  		</xs:element>
 			</xs:choice>
