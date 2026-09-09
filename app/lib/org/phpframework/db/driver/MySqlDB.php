@@ -529,6 +529,7 @@ class MySqlDB extends DB {
 				if (substr($sql, -1) == ";") 
 					$sql = substr($sql, 0, -1);
 				
+				/* DEPRECATED
 				if (!empty($options["sort"])) {
 					$sort = self::addSortOptionsToSQL($options["sort"]);
 					if ($sort) {
@@ -544,13 +545,28 @@ class MySqlDB extends DB {
 						$sql = "SELECT * FROM (" . $sql . ") AS QUERY_WITH_PAGINATION LIMIT " . (!empty($options["start"]) ? $options["start"] : 0) . ", " . $options["limit"];
 					else
 						$sql .= " LIMIT " . (!empty($options["start"]) ? $options["start"] : 0) . ", " . $options["limit"];
+				}*/
+				
+				/* NEW: LIMIT MUST BE TOGETHER WITH SORT IN NEW MYSQL SERVER VERSIONS */
+				if (!empty($options["sort"])) {
+					$sort = self::addSortOptionsToSQL($options["sort"]);
+					if ($sort) {
+						if (stripos($sql, " limit ") !== false)
+							$sql = "SELECT * FROM (" . $sql . ") AS QUERY_WITH_SORTING ORDER BY " . $sort;
+						else 
+							$sql .= " ORDER BY " . $sort;
+					}
 				}
+				
+				if(isset($options["limit"]) && is_numeric($options["limit"]))
+					$sql .= " LIMIT " . (!empty($options["start"]) ? $options["start"] : 0) . ", " . $options["limit"];
 			}
 			
 			//echo "$sql<br>";
 			//error_log($this->options["db_name"] . ":\n". $sql . "\n\n", 3, "/tmp/sql_log.log");
 			//error_log($this->options["db_name"] . ":\n". $sql . "\n\n", 3, $GLOBALS["log_file_path"] ? $GLOBALS["log_file_path"] : "/var/www/html/livingroop/default/tmp/phpframework.log");
 			//error_log("mysql query sql:\noptions:".print_r($options, true) . "\n$sql\n\n", 3, "/var/www/html/livingroop/default/tmp/test.log");
+			debug_log_function("MySqlDB->query", array($sql), "debug");
 			
 			switch ($this->default_php_extension_type) {
 				case "mysqli": return @mysqli_query($this->link, $sql); //@ is very important bc if the connection is stale, this will give a php warning and launch an exception. The @ char avoids the warning to be shown. This is ok, bc we always catch the exception and the db error.

@@ -438,6 +438,7 @@ class PostgresDB extends DB {
 			
 			$sql = self::replaceSQLEnclosingDelimiter(trim($sql), "`", self::getEnclosingDelimiters()); //replace the mysql enclosing delimiter: ` with the postgres enclosing delimiter ".
 			//error_log("pg query sql:$sql\noptions:".print_r($options, 1)."\n\n", 3, "/var/www/html/livingroop/default/tmp/test.log");
+			debug_log_function("PostgresDB->query", array($sql), "debug");
 			
 			switch ($this->default_php_extension_type) {
 				case "pg": return @pg_query($this->link, $sql); //@ is very important bc if the connection is stale, this will give a php warning and launch an exception. The @ char avoids the warning to be shown. This is ok, bc we always catch the exception and the db error.

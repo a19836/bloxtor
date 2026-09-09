@@ -530,6 +530,7 @@ class MSSqlDB extends DB {
 			//echo "$sql<br>";
 			//error_log($this->options["db_name"] . ":\n". $sql . "\n\n", 3, "/tmp/sql_log.log");
 			//error_log("mssql query [".$this->options["db_name"] . "]:\n". $sql . "\n\n", 3, "/var/www/html/livingroop/default/tmp/test.log");
+			debug_log_function("MSSqlDB->query", array($sql), "debug");
 			
 			switch ($this->default_php_extension_type) {
 				case "sqlsrv": return @sqlsrv_query($this->link, $sql); //@ is very important bc if the connection is stale, this will give a php warning and launch an exception. The @ char avoids the warning to be shown. This is ok, bc we always catch the exception and the db error.
